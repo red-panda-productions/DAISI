@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE params SYSTEM "params.dtd">
+
+<params name="OSGHUDconfiguration" version="1.11">
+	<section name="board">
+		<!-- board backgrounds -->
+		<section name="board-player1-background">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-normal.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attnum name="position-verticalModifier" val="-120"/>
+			<attnum name="position-horizontalModifier" val="5"/>
+		</section>
+
+		<section name="board-player1-background-current">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-current.png"/>
+			<attstr name="position-refObj" val="board-player1-background"/>
+		</section>
+
+		<section name="board-player1-background-first">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-first.png"/>
+			<attstr name="position-refObj" val="board-player1-background"/>
+		</section>
+
+		<section name="board-player2-background">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-normal.png"/>
+			<attstr name="position-refObj" val="board-player1-background"/>
+			<attnum name="position-verticalModifier" val="-30"/>
+		</section>
+
+		<section name="board-player2-background-current">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-current.png"/>
+			<attstr name="position-refObj" val="board-player2-background"/>
+		</section>
+
+		<section name="board-player2-background-first">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-first.png"/>
+			<attstr name="position-refObj" val="board-player2-background"/>
+		</section>
+
+		<section name="board-player3-background">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-normal.png"/>
+			<attstr name="position-refObj" val="board-player2-background"/>
+			<attnum name="position-verticalModifier" val="-30"/>
+		</section>
+
+		<section name="board-player3-background-current">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-current.png"/>
+			<attstr name="position-refObj" val="board-player3-background"/>
+		</section>
+
+		<section name="board-player3-background-first">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-first.png"/>
+			<attstr name="position-refObj" val="board-player3-background"/>
+		</section>
+
+		<section name="board-player4-background">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-normal.png"/>
+			<attstr name="position-refObj" val="board-player3-background"/>
+			<attnum name="position-verticalModifier" val="-30"/>
+		</section>
+
+		<section name="board-player4-background-current">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-current.png"/>
+			<attstr name="position-refObj" val="board-player4-background"/>
+		</section>
+
+		<section name="board-player4-background-first">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-first.png"/>
+			<attstr name="position-refObj" val="board-player4-background"/>
+		</section>
+
+		<section name="board-player5-background">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-normal.png"/>
+			<attstr name="position-refObj" val="board-player4-background"/>
+			<attnum name="position-verticalModifier" val="-30"/>
+		</section>
+
+		<section name="board-player5-background-current">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-current.png"/>
+			<attstr name="position-refObj" val="board-player5-background"/>
+		</section>
+
+		<section name="board-player5-background-first">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/board-first.png"/>
+			<attstr name="position-refObj" val="board-player5-background"/>
+		</section>
+
+		<!-- board player numbers-->
+		<section name="board-player1-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="18"/>
+			<attstr name="position-refObj" val="board-player1-background"/>
+			<attnum name="position-horizontalModifier" val="10"/>
+			<attstr name="text" val="{{position}}"/>
+		</section>
+
+		<section name="board-player2-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="18"/>
+			<attstr name="position-refObj" val="board-player2-background"/>
+			<attnum name="position-horizontalModifier" val="10"/>
+			<attstr name="text" val="{{position}}"/>
+		</section>
+
+		<section name="board-player3-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="18"/>
+			<attstr name="position-refObj" val="board-player3-background"/>
+			<attnum name="position-horizontalModifier" val="10"/>
+			<attstr name="text" val="{{position}}"/>
+		</section>
+
+		<section name="board-player4-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="18"/>
+			<attstr name="position-refObj" val="board-player4-background"/>
+			<attnum name="position-horizontalModifier" val="10"/>
+			<attstr name="text" val="{{position}}"/>
+		</section>
+		<section name="board-player5-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="18"/>
+			<attstr name="position-refObj" val="board-player5-background"/>
+			<attnum name="position-horizontalModifier" val="10"/>
+			<attstr name="text" val="{{position}}"/>
+		</section>
+
+		<!-- board player names-->
+		<section name="board-player1-name">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player1-background"/>
+			<attnum name="position-horizontalModifier" val="45"/>
+			<attstr name="text" val="{{playerName}}"/>
+		</section>
+
+		<section name="board-player2-name">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player2-background"/>
+			<attnum name="position-horizontalModifier" val="45"/>
+			<attstr name="text" val="{{playerName}}"/>
+		</section>
+
+		<section name="board-player3-name">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player3-background"/>
+			<attnum name="position-horizontalModifier" val="45"/>
+			<attstr name="text" val="{{playerName}}"/>
+		</section>
+
+		<section name="board-player4-name">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player4-background"/>
+			<attnum name="position-horizontalModifier" val="45"/>
+			<attstr name="text" val="{{playerName}}"/>
+		</section>
+
+		<section name="board-player5-name">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player5-background"/>
+			<attnum name="position-horizontalModifier" val="45"/>
+			<attstr name="text" val="{{playerName}}"/>
+		</section>
+
+		<!-- board player diffs-->
+		<section name="board-player1-timediff">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/><!-- as rgba-->
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player1-background"/>
+			<attnum name="position-horizontalModifier" val="200"/>
+			<attstr name="text" val="{{timediff}}"/>
+		</section>
+
+		<section name="board-player2-timediff">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/><!-- as rgba-->
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player2-background"/>
+			<attnum name="position-horizontalModifier" val="200"/>
+			<attstr name="text" val="{{timediff}}"/>
+		</section>
+
+		<section name="board-player3-timediff">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/><!-- as rgba-->
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player3-background"/>
+			<attnum name="position-horizontalModifier" val="200"/>
+			<attstr name="text" val="{{timediff}}"/>
+		</section>
+
+		<section name="board-player4-timediff">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/><!-- as rgba-->
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player4-background"/>
+			<attnum name="position-horizontalModifier" val="200"/>
+			<attstr name="text" val="{{timediff}}"/>
+		</section>
+
+		<section name="board-player5-timediff">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="1.0#1.0#1.0#1.0"/><!-- as rgba-->
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/> <!-- path from data folder -->
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="board-player5-background"/>
+			<attnum name="position-horizontalModifier" val="200"/>
+			<attstr name="text" val="{{timediff}}"/>
+		</section>
+
+		<!-- race positions info -->
+		<section name="position-container">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/position-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attnum name="position-verticalModifier" val="-5"/>
+			<attnum name="position-horizontalModifier" val="5"/>
+		</section>
+
+		<section name="position-container-descr">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="30"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attnum name="position-verticalModifier" val="-20"/>
+			<attnum name="position-horizontalModifier" val="35"/>
+			<attstr name="text" val="POS"/>
+		</section>
+
+		<section name="position-container-totalplayers">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="30"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attnum name="position-verticalModifier" val="-50"/>
+			<attnum name="position-horizontalModifier" val="35"/>
+			<attstr name="text" val="59"/>
+		</section>
+
+		<section name="position-container-separator">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/vera/VeraBd.ttf"/>
+			<attnum name="fontSize" val="80"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attnum name="position-verticalModifier" val="-5"/>
+			<attnum name="position-horizontalModifier" val="90"/>
+			<attstr name="text" val="/"/>
+		</section>
+
+		<section name="position-container-currentposition">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="70"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attnum name="position-verticalModifier" val="-20"/>
+			<attnum name="position-horizontalModifier" val="120"/>
+			<attstr name="text" val="59"/>
+		</section>
+
+		<!-- race laps info -->
+		<section name="lap-container">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/lap-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-5"/>
+			<attnum name="position-horizontalModifier" val="-5"/>
+		</section>
+
+		<section name="lap-container-descr">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="30"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-20"/>
+			<attnum name="position-horizontalModifier" val="-35"/>
+			<attstr name="text" val="LAP"/>
+		</section>
+
+		<section name="lap-container-totallaps">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="30"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-50"/>
+			<attnum name="position-horizontalModifier" val="-50"/>
+			<attstr name="text" val="59"/>
+		</section>
+
+		<section name="lap-container-separator">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/vera/VeraBd.ttf"/>
+			<attnum name="fontSize" val="80"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-5"/>
+			<attnum name="position-horizontalModifier" val="-90"/>
+			<attstr name="text" val="\"/>
+		</section>
+
+		<section name="lap-container-currentlap">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="70"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-20"/>
+			<attnum name="position-horizontalModifier" val="-150"/>
+			<attstr name="text" val="59"/>
+		</section>
+
+		<!-- laptime -->
+		<section name="laptime-best">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/laptime-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-130"/>
+			<attnum name="position-horizontalModifier" val="-5"/>
+		</section>
+
+		<section name="laptime-last-background-normal">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/laptime-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-165"/>
+			<attnum name="position-horizontalModifier" val="-5"/>
+		</section>
+
+		<section name="laptime-last-background-red">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/laptime-container-red.png"/>
+			<attstr name="position-refObj" val="laptime-last-background-normal"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+		</section>
+
+		<section name="laptime-last-background-violet">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/laptime-container-violet.png"/>
+			<attstr name="position-refObj" val="laptime-last-background-normal"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+		</section>
+
+		<section name="laptime-last-background-grey">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/laptime-container-grey.png"/>
+			<attstr name="position-refObj" val="laptime-last-background-normal"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+		</section>
+
+		<section name="laptime-last-background-green">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/laptime-container-green.png"/>
+			<attstr name="position-refObj" val="laptime-last-background-normal"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+		</section>
+
+		<section name="laptime-best-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-140"/>
+			<attnum name="position-horizontalModifier" val="-190"/>
+			<attstr name="text" val="BEST"/>
+		</section>
+
+		<section name="laptime-last-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-175"/>
+			<attnum name="position-horizontalModifier" val="-190"/>
+			<attstr name="text" val="LAST"/>
+		</section>
+
+		<section name="laptime-sector-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.5#0.5#0.5#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="20"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-137"/>
+			<attnum name="position-horizontalModifier" val="-160"/>
+			<attstr name="text" val="S"/>
+		</section>
+
+		<section name="laptime-best-time">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="20"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-137"/>
+			<attnum name="position-horizontalModifier" val="-40"/>
+			<attstr name="text" val="00.00:000"/>
+		</section>
+
+		<section name="laptime-last-time">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="20"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="tr"/>
+			<attstr name="position-myPoint" val="tr"/>
+			<attnum name="position-verticalModifier" val="-172"/>
+			<attnum name="position-horizontalModifier" val="-40"/>
+			<attstr name="text" val="00.00:000"/>
+		</section>
+
+		<!-- car status icons and info -->
+		<section name="fuel-icon-full">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/fuel-icon-full.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="5"/>
+			<attnum name="position-horizontalModifier" val="5"/>
+		</section>
+
+		<section name="fuel-icon-empty">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/fuel-icon-empty.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="5"/>
+			<attnum name="position-horizontalModifier" val="5"/>
+		</section>
+
+		<section name="fuel-info">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/fuel-info-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="5"/>
+			<attnum name="position-horizontalModifier" val="60"/>
+		</section>
+
+		<section name="fuel-info-quantity-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="35"/>
+			<attnum name="position-horizontalModifier" val="130"/>
+			<attstr name="textAlign" val="RIGHT_BOTTOM"/>
+			<attstr name="text" val="Lt."/>
+		</section>
+
+		<section name="fuel-info-laps-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#0.5"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="15"/>
+			<attnum name="position-horizontalModifier" val="130"/>
+			<attstr name="textAlign" val="RIGHT_BOTTOM"/>
+			<attstr name="text" val="Laps"/>
+		</section>
+
+		<section name="fuel-info-quantity-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="35"/>
+			<attnum name="position-horizontalModifier" val="75"/>
+			<attstr name="text" val="100.6"/>
+		</section>
+
+		<section name="fuel-info-laps-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="15"/>
+			<attnum name="position-horizontalModifier" val="75"/>
+			<attstr name="text" val="100"/>
+		</section>
+
+		<section name="abs-icon">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/abs-icon-normal.png"/>
+			<attstr name="position-refObj" val="fuel-icon"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="60"/>
+		</section>
+
+		<section name="tcs-icon">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/tractioncontrol-icon-normal.png"/>
+			<attstr name="position-refObj" val="abs-icon"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="60"/>
+		</section>
+
+		<section name="engine-icon">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/engine-icon.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="br"/>
+			<attstr name="position-myPoint" val="br"/>
+			<attnum name="position-verticalModifier" val="5"/>
+			<attnum name="position-horizontalModifier" val="-4"/>
+		</section>
+
+		<section name="engine-icon-damaged">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/engine-icon-damaged.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="br"/>
+			<attstr name="position-myPoint" val="br"/>
+			<attnum name="position-verticalModifier" val="5"/>
+			<attnum name="position-horizontalModifier" val="-4"/>
+		</section>
+
+		<!-- rpm -->
+		<section name="rpm-off">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/rpm-off.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="5"/>
+		</section>
+
+		<section name="rpm-on">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/rpm-on.png"/>
+			<attstr name="position-refObj" val="rpm-off"/>
+		</section>
+
+		<!-- gear -->
+		<section name="gear-container">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/gear-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="40"/>
+			<attnum name="position-horizontalModifier" val="-90"/>
+		</section>
+
+		<section name="gear-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="br"/>
+			<attnum name="position-verticalModifier" val="90"/>
+			<attnum name="position-horizontalModifier" val="-60"/>
+			<attstr name="text" val="GEAR"/>
+		</section>
+
+		<section name="gear-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="30"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="br"/>
+			<attnum name="position-verticalModifier" val="60"/>
+			<attnum name="position-horizontalModifier" val="-70"/>
+			<attstr name="text" val="0"/>
+		</section>
+
+		<!-- speed -->
+		<section name="speed-container">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/speed-container.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="40"/>
+			<attnum name="position-horizontalModifier" val="90"/>
+		</section>
+
+		<section name="speed-description">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="90"/>
+			<attnum name="position-horizontalModifier" val="60"/>
+			<attstr name="text" val="SPEED"/>
+		</section>
+
+		<section name="speed-number">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="30"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="60"/>
+			<attnum name="position-horizontalModifier" val="70"/>
+			<attstr name="text" val="0"/>
+		</section>
+
+		<!-- plots -->
+		<section name="graph-FPS">
+			<attstr name="type" val="graph"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="60"/>
+			<attnum name="position-horizontalModifier" val="0"/>
+
+			<attnum name="width" val="300"/>
+			<attnum name="height" val="50"/>
+			<attnum name="maxValue" val="200"/>
+			<attnum name="minValue" val="0"/>
+			<attnum name="timeFrame" val="5"/>
+			<attnum name="referenceLineAtValue" val="60"/>
+
+			<attstr name="Xdata" val="time"/>
+			<attstr name="Ydata" val="fps"/>
+		</section>
+
+		<section name="graph-speed">
+			<attstr name="type" val="graph"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bl"/>
+			<attstr name="position-myPoint" val="bl"/>
+			<attnum name="position-verticalModifier" val="190"/>
+			<attnum name="position-horizontalModifier" val="0"/>
+
+			<attnum name="width" val="300"/>
+			<attnum name="height" val="50"/>
+			<attnum name="maxValue" val="200"/>
+			<attnum name="minValue" val="0"/>
+			<attnum name="timeFrame" val="5"/>
+			<attnum name="referenceLineAtValue" val="60"/>
+
+			<attstr name="Xdata" val="time"/>
+			<attstr name="Ydata" val="carspeed"/>
+		</section>
+
+		<!-- dash items -->
+		<section name="dash-items-container">
+			<attstr name="type" val="image"/>
+			<attstr name="url" val="data/img/osg-hud/dash-items.png"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="120"/>
+			<attnum name="position-horizontalModifier" val="0"/>
+		</section>
+
+		<section name="dash-items-type">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="126"/>
+			<attnum name="position-horizontalModifier" val="-120"/>
+		</section>
+
+		<section name="dash-items-value1">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="126"/>
+			<attnum name="position-horizontalModifier" val="0"/>
+		</section>
+
+		<section name="dash-items-value2">
+			<attstr name="type" val="text"/>
+			<attstr name="color" val="0.0#0.0#0.0#1.0"/>
+			<attstr name="fontFileUrl" val="/Montserrant/Montserrat-Bold.ttf"/>
+			<attnum name="fontSize" val="15"/>
+			<attstr name="position-refObj" val="screen"/>
+			<attstr name="position-refObjPoint" val="bc"/>
+			<attstr name="position-myPoint" val="bc"/>
+			<attnum name="position-verticalModifier" val="126"/>
+			<attnum name="position-horizontalModifier" val="60"/>
+		</section>
+
+	</section>
+</params>

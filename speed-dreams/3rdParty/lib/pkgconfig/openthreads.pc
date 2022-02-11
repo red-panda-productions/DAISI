@@ -1,0 +1,14 @@
+# pkg-config source file
+
+prefix=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: openthreads
+Description: Object-Oriented (OO) thread interface for C++ programmers
+Version: 3.3.1
+Requires:
+Conflicts:
+Libs: -L${libdir} -lOpenThreads
+Cflags: -I${includedir}

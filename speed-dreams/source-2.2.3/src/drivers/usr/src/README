@@ -1,0 +1,29 @@
+
+Bot name: usr_2017
+Version: I've lost count
+copyleft 2006 - 2017: 
+   Andrew Sumner <novocas7rian@gmail.com>
+   Remi Coulom
+   Bernhard Wymann <berniw@bluewin.ch>
+
+The origins of this robot began with Andrew melding the raceline logic from 
+Remi's K1999 and the framework code from Berniw's BT into a new bot, "locus",
+which was designed to provide a competitive entry-level codebase for the 
+annual TRB championship.
+
+After a break of several years, in 2015 Andrew began with a copy of the locus 
+code and started a series of hacks & tweaks to improve its laptimes and its
+ability to overtake, resulting in the USR and Axiom robots you see today.
+
+_INSTALL:
+* On Windows
+The Windows project file hymie_2015.vcproj can be used with VC++ 2010 or later.
+ You can use the *.dsp file with your VS 2008.
+
+* On Linux
+$ tar xvjf hymie_2015.tar.bz2 -C $TORCS_BASE/src/drivers
+$ cd $TORCS_BASE/src/drivers/usr_2017
+$ make clean
+$ make
+$ sudo make install
+

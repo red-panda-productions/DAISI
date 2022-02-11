@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://sourceforge.net/projects/freesolid/files/FreeSOLID-2.1.2.zip/download'
+tag='SHA256=89edc6afdd9d60c8020b2b865b61558c86a8928dc6f1773b9f4708b5c28eb873'

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    file          : drivers/usr_sc/sc-boxer-96/genetic-template
+    created       : 24/05/20
+    last modified : 24/05/20
+    copyright     : (C) 2020 Xavier BERTAUX
+
+    SVN version   : $Id:$
+-->
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!-- <!DOCTYPE params SYSTEM "params.dtd"> -->
+
+<!-- META DATA FOR GENETIC PARAMETER OPTIMIZATION -->
+<params name="Genetic Optimization">
+  <!-- TABLE OF CONTENT -->
+  <section name="Table of Content">
+    <attnum name="major version" val="1"/>
+    <attnum name="minor version" val="0"/>
+    <attstr name="robot" val="usr_sc"/>
+    <attstr name="car type" val="sc-boxer-96"/>
+    <attstr name="private" val="private"/>
+    <attnum name="weight of damages" val="10.0"/>
+    <attnum name="get initial value" val="1"/>
+    <attnum name="optimisation loops" val="1000"/>
+    <attstr name="author" val="Xavier BERTAUX"/>
+  </section>
+  <!-- END OF TABLE OF CONTENT -->
+
+  <!-- META DATA OF GLOBAL PARAMETERS -->
+  <section name="Global">
+
+    <!-- FIRST GROUP OF META DATA OF GLOBAL PARAMETERS -->
+    <!-- THERE ARE NEARLY NO CAR PARAMETERS ALLOWED AT -->
+    <!-- THE CAR TYPE SETUPS OF THE CAR SET SUPERCARS! -->
+
+    <!-- META DATA OF FIRST GLOBAL PARAMETER -->
+    <section name="Brake Balance">
+      <attnum name="active" val="1"/>
+      <attstr name="label" val="BrakeRepart."/>
+      <attstr name="section" val="Brake System"/>
+      <attstr name="parameter" val="front-rear brake repartition"/>
+      <attnum name="range" min="0.45" max="0.65" val="0.51"/>
+      <attnum name="weight" val="5"/>
+      <attnum name="scale" val="0.1"/>
+      <attnum name="round" val="10000"/>
+    </section>
+
+    <section name="Brake Pressure">
+      <attnum name="active" val="1"/>
+      <attstr name="label" val="MxBrakePress"/>
+      <attstr name="section" val="Brake System"/>
+      <attstr name="parameter" val="max pressure"/>
+      <attstr name="unit" val="kPa"/>
+      <attnum name="range" min="5000" max="20000" unit="kPa" val="13000"/>
+      <attnum name="weight" val="1"/>
+      <attnum name="scale" val="500"/>
+      <attnum name="round" val="0.01"/>
+    </section>
+
+    <section name="ABS slip">
+	<attnum name="active" val="1"/>
+	<attstr name="label" val="ABS slip"/>
+	<attstr name="section" val="private"/>
+	<attstr name="parameter" val="ABS slip"/>
+	<attnum name="range" min="0.00" max="20.00" val="14.0"/>
+	<attnum name="weight" val="3"/>
+	<attnum name="scale" val="0.1"/>
+	<attnum name="round" val="100000"/>
+    </section>
+
+    <section name="brake mu factor">
+	<attnum name="active" val="1"/>
+	<attstr name="label" val="brake mu factor"/>
+	<attstr name="section" val="private"/>
+	<attstr name="parameter" val="brake mu factor"/>
+	<attnum name="range" min="0.00" max="1.2" val="0.92"/>
+	<attnum name="weight" val="3"/>
+	<attnum name="scale" val="0.01"/>
+	<attnum name="round" val="100000"/>
+    </section>
+
+    <section name="mu scale">
+      <attnum name="active" val="1"/>
+      <attstr name="label" val="mu scale"/>
+      <attstr name="section" val="private"/>
+      <attstr name="parameter" val="mu scale"/>
+      <attnum name="range" min="0.0" max="1.2" val="0.90"/>
+      <attnum name="weight" val="5"/>
+      <attnum name="scale" val="0.01"/>
+      <attnum name="round" val="10000"/>
+    </section>
+
+  </section>
+  <!-- END OF META DATA OF GLOBAL PARAMETERS -->
+
+  </section>
+  <!-- END OF META DATA FOR THIS PART -->
+
+  <!-- META DATA OF NEXT PART OF LOCAL PARAMETERS -->
+  <!-- ... -->
+  <!-- END OF META DATA FOR THIS PART -->
+
+  </section>
+  <!-- END OF META DATA -->
+</params>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    file                 : peters.xml
+    created              : Sun Mar 25 01:36:37 CET 2001
+    copyright            : (C) 2001 by Eric Espi�
+    email                : Eric.Espie@torcs.org
+    version              : $Id: default.xml,v 1.5 2005/04/10 23:37:21 olethros Exp $
+-->
+
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!DOCTYPE params SYSTEM "../../../../src/libs/tgf/params.dtd">
+
+<params name="sc-deckard-conejo">
+  	<section name="Features">
+    	<attstr name="enable abs" in="yes,no" val="yes"/>
+    	<attstr name="enable tcl" in="yes,no" val="yes"/>
+    	<attstr name="enable esp" in="yes,no" val="yes"/>
+  	</section>
+
+	<section name="Brake System">
+		<attnum name="front-rear brake repartition" min="0.4" max="0.7" val="0.42"/>
+		<attnum name="max pressure" unit="kPa" min="5000" max="30000" val="28500"/>
+	</section>
+
+  <section name="private">
+    <!-- Others -->
+    <attnum name="test line" min="0" max="2" val="0"/> <!-- test line: 1 left, 2 right -->
+    <attnum name="message on" min="0" max="1" val="0"/>
+    <attnum name="data log on" min="0" max="1" val="0"/>
+
+    <attnum name="ABS slip" val="14.0"/>
+	<attnum name="TCL side slip" val="25.0"/>
+	<attnum name="TCL side slip qualy" val="40.0"/>
+	<attnum name="TCL side slip factor" val="0.03"/>
+    <attnum name="brake mu factor" val="0.85"/>
+    <attnum name="LR mu scale" val="0.85"/>
+    <attnum name="mu scale" val="0.86"/>
+    <attnum name="brakepressrace" val="21000"/>
+    <attnum name="brakepressnorm" val="21000"/>
+    <attnum name="bump speed factor" val="1000.0"/>
+    <attnum name="fuel per meter" val="0.0007"/>
+	<attnum name="fuel weight factor" val="1.0"/>
+	<attnum name="tire wear per meter" val="0.00001"/>
+	<attnum name="max fuel" val="63"/>
+
+    <attnum name="pitdamage" val="5000"/>
+    <attnum name="pitentrymargin" val="0.0"/>
+    <attnum name="pitentryspeed" val="35.0"/>
+    <attnum name="pitexitspeed" val="50.0"/>
+    <attnum name="pittest" val="0"/>
+
+    <attnum name="targetfactor" val="0.32"/>
+    <attnum name="targetwalldist" val="0.0"/>
+	<attnum name="lookahead" val="14.0"/>
+	<attnum name="hottemp" val="115.0"/>
+    <!-- Race line ClothoidPath -->
+    <attnum name="maxleft" val="10.0"/>
+    <attnum name="maxright" val="10.0"/>
+    <attnum name="clothoidfactor" val="1.013"/>
+    <attnum name="seglen" val="4.0"/>
+	<attnum name="vmaxk" val="0.00183"/>
+  </section>
+
+</params>

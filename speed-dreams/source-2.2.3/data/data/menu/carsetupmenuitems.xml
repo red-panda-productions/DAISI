@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    file                 : carsetupmenuitems.xml
+    created              : March 2020
+    copyright            : (C) 2020 by Robert Reif
+    web                  : speed-dreams.sourceforge.net
+    version              : $Id: $
+-->
+
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!-- 
+
+	Car settup menu items
+
+	page and index are zero based (first one is 0)
+	
+-->
+
+<!DOCTYPE params SYSTEM "../tgf/params.dtd">
+
+<params name="carsetupmenuitems">
+  
+    <!-- Brake bias -->
+    <section name="BrakeBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Brake System"/>
+        <attstr name="param" val="front-rear brake repartition"/>
+		<attstr name="unit" val="%"/>
+        <attnum name="page" val="0"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Brake Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="BrakeMaxPressure">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Brake System"/>
+        <attstr name="param" val="max pressure"/>
+		<attstr name="unit" val="kPa"/>
+        <attnum name="page" val="0"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Brake Max Pressure"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Anti-Roll Bar -->
+    <section name="FrontARB">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Anti-Roll Bar"/>
+        <attstr name="param" val="spring"/>
+		<attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="0"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Front Anti-Roll Bar"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <!-- Rear Anti-Roll Bar -->
+    <section name="RearARB">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Anti-Roll Bar"/>
+        <attstr name="param" val="spring"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="0"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Rear Anti-Roll Bar"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <!-- Front Wing angle -->
+    <section name="FrontWing">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Wing"/>
+        <attstr name="param" val="angle"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="0"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Front Wing Angle"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Wing angle -->
+    <section name="RearWing">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Wing"/>
+        <attstr name="param" val="angle"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="0"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Rear Wing Angle"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Differential ratio -->
+    <section name="FrontDiffRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Front Diff Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Front Differential type -->
+    <section name="FrontDiffType">
+        <attstr name="type" val="combo"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="type"/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Front Diff Type"/>
+    </section>
+
+    <!-- Front Differential max slip bias -->
+    <section name="FrontDiffSlip">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="max slip bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Front Diff Max Slip Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Differential coast max slip bias -->
+    <section name="FrontDiffCoastSlip">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="coast max slip bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Front Diff Coast Max Slip Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Differential min torque bias -->
+    <section name="FrontDiffMinTQBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="min torque bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Front Diff Min Torque Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Differential max torque bias -->
+    <section name="FrontDiffMaxTQBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="max torque bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="5"/>
+        <attstr name="label" val="Front Diff Max Torque Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Differential locking input torque -->
+    <section name="FrontDiffLockingInputTorque">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="locking input torque"/>
+        <attstr name="unit" val="N.m"/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Front Diff Locking Input Torque"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Front Differential viscosity factor -->
+    <section name="FrontDiffViscosityFactor">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Differential"/>
+        <attstr name="param" val="viscosity factor"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="1"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Front Diff Viscosity Factor"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Central Differential ratio -->
+    <section name="CentralDiffRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Central Diff Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Central Differential type -->
+    <section name="CentralDiffType">
+        <attstr name="type" val="combo"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="type"/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Central Diff Type"/>
+    </section>
+
+    <!-- Central Differential max slip bias -->
+    <section name="CentralDiffSlip">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="max slip bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Central Diff Max Slip Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Central Differential coast max slip bias -->
+    <section name="CentralDiffCoastSlip">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="coast max slip bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Central Diff Coast Max Slip Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Central Differential min torque bias -->
+    <section name="CentralDiffMinTQBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="min torque bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Central Diff Min Torque Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Central Differential max torque bias -->
+    <section name="CentralDiffMaxTQBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="max torque bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="5"/>
+        <attstr name="label" val="Central Diff Max Torque Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Central Differential locking input torque -->
+    <section name="CentralDiffLockingInputTorque">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="locking input torque"/>
+        <attstr name="unit" val="N.m"/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Central Diff Locking Input Torque"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Central Differential viscosity factor -->
+    <section name="CentralDiffViscosityFactor">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Central Differential"/>
+        <attstr name="param" val="viscosity factor"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="2"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Central Diff Viscosity Factor"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Differential ratio -->
+    <section name="RearDiffRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Rear Diff Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Rear Differential type -->
+    <section name="RearDiffType">
+        <attstr name="type" val="combo"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="type"/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Rear Diff Type"/>
+    </section>
+
+    <!-- Rear Differential max slip bias -->
+    <section name="RearDiffSlip">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="max slip bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Rear Diff Max Slip Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Differential coast max slip bias -->
+    <section name="RearDiffCoastSlip">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="coast max slip bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Rear Diff Coast Max Slip Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Differential min torque bias -->
+    <section name="RearDiffMinTQBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="min torque bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Rear Diff Min Torque Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Differential max torque bias -->
+    <section name="RearDiffMaxTQBias">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="max torque bias"/>
+        <attstr name="unit" val="%"/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="5"/>
+        <attstr name="label" val="Rear Diff Max Torque Bias"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Differential locking input torque -->
+    <section name="RearDiffLockingInputTorque">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="locking input torque"/>
+        <attstr name="unit" val="N.m"/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Rear Diff Locking Input Torque"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <!-- Rear Differential viscosity factor -->
+    <section name="RearDiffViscosityFactor">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Differential"/>
+        <attstr name="param" val="viscosity factor"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="3"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Rear Diff Viscosity Factor"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+
+    <!-- Gearbox gear ratios -->
+    <section name="ReverseGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/r"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Reverse Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="FirstGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/1"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="First Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="SecondGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/2"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Second Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="ThirdGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/3"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Third Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="ForthGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/4"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Forth Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="FifthGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/5"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="5"/>
+        <attstr name="label" val="Fifth Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="SixthGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/6"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Sixth Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="SeventhGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/7"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Seventh Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="EighthGearRatio">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Gearbox/gears/8"/>
+        <attstr name="param" val="ratio"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="4"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Eighth Gear Ratio"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Front Right Wheel-->
+    <section name="RightFrontRideHeight">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Wheel"/>
+        <attstr name="param" val="ride height"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Right Front Ride Height"/>
+        <attnum name="precision" val="0"/>
+    </section>
+
+    <section name="RightFrontToe">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Wheel"/>
+        <attstr name="param" val="toe"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Right Front Toe"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontCamber">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Wheel"/>
+        <attstr name="param" val="camber"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Right Front Camber"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontTirePressure">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Wheel"/>
+        <attstr name="param" val="pressure"/>
+        <attstr name="unit" val="PSI"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="9"/>
+        <attstr name="label" val="Right Front Tire Pressure"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Front Left Wheel-->
+    <section name="LeftFrontRideHeight">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Wheel"/>
+        <attstr name="param" val="ride height"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Left Front Ride Height"/>
+        <attnum name="precision" val="0"/>
+    </section>
+
+    <section name="LeftFrontToe">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Wheel"/>
+        <attstr name="param" val="toe"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Left Front Toe"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontCamber">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Wheel"/>
+        <attstr name="param" val="camber"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Left Front Camber"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontTirePressure">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Wheel"/>
+        <attstr name="param" val="pressure"/>
+        <attstr name="unit" val="PSI"/>
+        <attnum name="page" val="5"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Left Front Tire Pressure"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Rear Right Wheel-->
+    <section name="RightRearRideHeight">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Wheel"/>
+        <attstr name="param" val="ride height"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Right Rear Ride Height"/>
+        <attnum name="precision" val="0"/>
+    </section>
+
+    <section name="RightRearToe">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Wheel"/>
+        <attstr name="param" val="toe"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Right Rear Toe"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearCamber">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Wheel"/>
+        <attstr name="param" val="camber"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Right Rear Camber"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearTirePressure">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Wheel"/>
+        <attstr name="param" val="pressure"/>
+        <attstr name="unit" val="PSI"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="9"/>
+        <attstr name="label" val="Right Rear Tire Pressure"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Rear Left Wheel-->
+    <section name="LeftRearRideHeight">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Wheel"/>
+        <attstr name="param" val="ride height"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Left Rear Ride Height"/>
+        <attnum name="precision" val="0"/>
+    </section>
+
+    <section name="LeftRearToe">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Wheel"/>
+        <attstr name="param" val="toe"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Left Rear Toe"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearCamber">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Wheel"/>
+        <attstr name="param" val="camber"/>
+        <attstr name="unit" val="deg"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Left Rear Camber"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearTirePressure">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Wheel"/>
+        <attstr name="param" val="pressure"/>
+        <attstr name="unit" val="PSI"/>
+        <attnum name="page" val="6"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Left Rear Tire Pressure"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Front Left Suspension -->
+    <section name="LeftFrontSuspensionSpring">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="spring"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Left Front Spring"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontSuspensionCourse">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="suspension course"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Left Front Suspension Course"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontSuspensionBellcrank">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="bellcrank"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Left Front Bellcrank"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <section name="LeftFrontSuspensionPackers">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="packers"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Left Front Packers"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <!-- Front Right Suspension -->
+    <section name="RightFrontSuspensionSpring">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="spring"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Right Front Spring"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontSuspensionCourse">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="suspension course"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Right Front Suspension Course"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontSuspensionBellcrank">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="bellcrank"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Right Front Bellcrank"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <section name="RightFrontSuspensionPackers">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="packers"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="7"/>
+        <attnum name="index" val="9"/>
+        <attstr name="label" val="Right Front Packers"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <!-- Rear Left Suspension -->
+    <section name="LeftRearSuspensionSpring">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="spring"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Left Rear Spring"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearSuspensionCourse">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="suspension course"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Left Rear Suspension Course"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearSuspensionBellcrank">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="bellcrank"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Left Rear Bellcrank"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <section name="LeftRearSuspensionPackers">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="packers"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Left Rear Packers"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <!-- Rear Right Suspension -->
+    <section name="RightRearSuspensionSpring">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="spring"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Right Rear Spring"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearSuspensionCourse">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="suspension course"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Right Rear Suspension Course"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearSuspensionBellcrank">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="bellcrank"/>
+        <attstr name="unit" val=""/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Right Rear Bellcrank"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <section name="RightRearSuspensionPackers">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="packers"/>
+        <attstr name="unit" val="mm"/>
+        <attnum name="page" val="8"/>
+        <attnum name="index" val="9"/>
+        <attstr name="label" val="Right Rear Packers"/>
+        <attnum name="precision" val="2"/>
+    </section>
+
+    <!-- Front Left Damper-->
+    <section name="LeftFrontDamperSlowBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="slow bump"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Left Front Slow Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontDamperSlowRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="slow rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Left Front Slow Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontDamperFastBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="fast bump"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Left Front Fast Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontDamperFastRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="fast rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Left Front Fast Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftFrontDamperBumpLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="bump limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Left Front Bump Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="LeftFrontDamperReboundLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Left Suspension"/>
+        <attstr name="param" val="rebound limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="5"/>
+        <attstr name="label" val="Left Front Rebound Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Front Right Damper-->
+    <section name="RightFrontDamperSlowBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="slow bump"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Right Front Slow Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontDamperSlowRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="slow rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Right Front Slow Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontDamperFastBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="fast bump"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Right Front Fast Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontDamperFastRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="fast rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="9"/>
+        <attstr name="label" val="Right Front Fast Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightFrontDamperBumpLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="bump limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="10"/>
+        <attstr name="label" val="Right Front Bump Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="RightFrontDamperReboundLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Front Right Suspension"/>
+        <attstr name="param" val="rebound limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="9"/>
+        <attnum name="index" val="11"/>
+        <attstr name="label" val="Right Front Rebound Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Rear Left Damper-->
+    <section name="LeftRearDamperSlowBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="slow bump"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="0"/>
+        <attstr name="label" val="Left Rear Slow Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearDamperSlowRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="slow rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="1"/>
+        <attstr name="label" val="Left Rear Slow Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearDamperFastBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="fast bump"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="2"/>
+        <attstr name="label" val="Left Rear Fast Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearDamperFastRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="fast rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="3"/>
+        <attstr name="label" val="Left Rear Fast Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="LeftRearDamperBumpLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="bump limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="4"/>
+        <attstr name="label" val="Left Rear Bump Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="LeftRearDamperReboundLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Left Suspension"/>
+        <attstr name="param" val="rebound limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="5"/>
+        <attstr name="label" val="Left Rear Rebound Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <!-- Rear Right Damper-->
+    <section name="RightRearDamperSlowBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="slow bump"/>
+        <attstr name="unit" val="kN/M"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="6"/>
+        <attstr name="label" val="Right Rear Slow Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearDamperSlowRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="slow rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="7"/>
+        <attstr name="label" val="Right Rear Slow Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearDamperFastBump">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="fast bump"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="8"/>
+        <attstr name="label" val="Right Rear Fast Bump"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearDamperFastRebound">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="fast rebound"/>
+        <attstr name="unit" val="kN/m"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="9"/>
+        <attstr name="label" val="Right Rear Fast Rebound"/>
+        <attnum name="precision" val="1"/>
+    </section>
+
+    <section name="RightRearDamperBumpLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="bump limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="10"/>
+        <attstr name="label" val="Right Rear Bump Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+    <section name="RightRearDamperReboundLimitVelocity">
+        <attstr name="type" val="edit"/>
+        <attstr name="section" val="Rear Right Suspension"/>
+        <attstr name="param" val="rebound limit velocity"/>
+        <attstr name="unit" val="m/s"/>
+        <attnum name="page" val="10"/>
+        <attnum name="index" val="11"/>
+        <attstr name="label" val="Right Rear Rebound Limit Velocity"/>
+        <attnum name="precision" val="3"/>
+    </section>
+
+</params>
+

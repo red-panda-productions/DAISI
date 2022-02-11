@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!DOCTYPE params SYSTEM "params.dtd">
+
+<params name="">
+  <section name="private">
+        <attnum name="save paths" min="0" max="1" val="0"/>
+        <attnum name="carmodel flags" min="0" max="65535" val="10"/>
+        <attnum name="mu scale" min="0" max="2" val="1.0"/>
+        <attnum name="brake mu scale" min="0" max="2" val="0.95"/>
+        <attnum name="kz scale" min="0" max="1" val="0.166"/>
+        <attnum name="kv scale" min="0" max="2" val="1.0"/>
+        <attnum name="fly height" unit="m" min="0" max="0.5" val="0.06"/>
+        <attnum name="bump mod" min="0" max="2" val="1"/>
+        <attnum name="quad smooth iters" min="0" max="999" val="5"/>
+        <attnum name="apex factor" min="0" max="2" val="0.1"/>
+        <attnum name="factor 0" min="0" max="1.2" val="1.027"/>
+        <attnum name="steer k acc" min="-10" max="10" val="0"/>
+        <attnum name="steer k dec" min="-10" max="10" val="0"/>
+        <attnum name="spd ctrl normal" min="0" max="9" val="4"/>
+        <attnum name="spd ctrl traffic" min="0" max="9" val="4"/>
+        <attnum name="stay together" unit="m" min="0" max="2000" val="0"/>
+        <attnum name="safety limit" min="0" max="4" val="2.5"/>
+        <attnum name="safety multiplier" min="0" max="500" val="250"/>
+        <attnum name="pit entry offset" unit="m" min="-250" max="250" val="-20"/>
+        <attnum name="pit exit offset" unit="m" min="-250" max="250" val="0"/>
+        <!--attnum name="practice init fuel" val="10.0"/-->
+        <attnum name="pit test stop" min="0" max="1" val="0"/>
+        <attnum name="gear up rpm" unit="rpm" min="0" max="10000" val="8350"/>
+        <attnum name="fuel per m" min="0" max="0.01" val="0.00068"/>
+        <attnum name="rear lat slip factor" min="0" max="5" val="2.5"/>
+        <attnum name="rear lat slip limit" min="0" max="1" val="0.19"/>
+        <attnum name="rear lat slip dscale" min="0" max="1" val="0.1"/>
+  </section>
+</params>

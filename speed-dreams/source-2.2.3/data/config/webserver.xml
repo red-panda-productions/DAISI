@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    file                 : webserver.xml
+    created              : 08/03/2015
+    copyright            : (C) 2015 MadBad
+    email                : madbad82@gmail.com
+    version              : $Id: webserver.xml                                  
+-->
+
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!DOCTYPE params SYSTEM "../../../libs/tgf/params.dtd">
+
+<params name="webserver" type="param" mode="mw" version="2">
+	<section name="WebServer Settings">
+		<attstr name="url" val="http://www.madbad.altervista.org/speed-dreams/webserver.php"/>
+	</section>
+</params>
+

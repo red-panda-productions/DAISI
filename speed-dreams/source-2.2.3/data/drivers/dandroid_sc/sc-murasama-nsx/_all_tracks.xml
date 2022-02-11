@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    file                 : _all_tracks.xml
+    created              : 2012-03-25
+    copyright            : (C) 2012 Daniel Schellhammer                        
+-->
+
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!DOCTYPE params SYSTEM "../../../../src/libs/tgf/params.dtd">
+
+<params name="" type="template" mode="mw">
+
+  <section name="private">
+    <attnum name="learning" min="0" max="1" val="0"/> <!-- LEARNING: drive qualifying or practice laps until lap time is constant, then disable LEARNING and move local tracks .csv file into src tracks dir to ship for races -->
+    <attnum name="test pitstop" min="0" max="1" val="0"/>
+    <attnum name="test line" min="0" max="3" val="0"/> <!-- test line: 1 left, 2 right, 3 left and right -->
+    <attnum name="driver message" min="0" max="4" val="0"/> <!-- DRIVER MESSAGE: 1 selected, 2 some, 3 most, 4 all -->
+    <attnum name="driver message car index" min="0" max="19" val="0"/>
+    <attnum name="frontcollmargin" min="2.0" max="4.0" val="2.0"/> <!-- How near do we dare to go -->
+    <attnum name="startclutchrate" min="0.001" max="0.020" val="0.013"/> <!-- How fast do we let the clutch go -->
+  </section>
+
+</params>

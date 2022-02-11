@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--    This program is free software; you can redistribute it and/or modify  -->
+<!--    it under the terms of the GNU General Public License as published by  -->
+<!--    the Free Software Foundation; either version 2 of the License, or     -->
+<!--    (at your option) any later version.                                   -->
+
+<!DOCTYPE params SYSTEM "params.dtd">
+
+<params name="">
+
+  <section name="private">
+    <attnum name="brakeforcefactor" val="0.95"/>
+    <attnum name="brakeforcemin" val="0.25"/>
+    <attnum name="bumpspeedfactor" val="2.0"/>
+	<attnum name="muscale" val="0.85"/>
+    <attnum name="brakescale" val="1.94"/>
+    <attnum name="fuelpermeter" val="0.0007"/>
+    <attnum name="fuelweightfactor" val="1.0"/>
+    <attnum name="pitdamage" val="5000"/>
+    <attnum name="pitentrymargin" val="70.0"/>
+    <attnum name="pitentryspeed" val="25.0"/>
+    <attnum name="pitexitspeed" val="25.0"/>
+    <attnum name="targetfactor" val="0.3"/>
+    <attnum name="targetwalldist" val="0.0"/>
+    <attnum name="tractioncontrol" val="1"/>
+    <!-- Race line ClothoidPath -->
+    <attnum name="maxleft" val="10.0"/>
+    <attnum name="maxright" val="10.0"/>
+    <attnum name="margininside" val="1.2"/>
+    <attnum name="marginoutside" val="1.8"/>
+    <attnum name="clothoidfactor" val="1.0052"/>
+    <attnum name="seglen" val="4.0"/>
+  </section>
+
+</params>

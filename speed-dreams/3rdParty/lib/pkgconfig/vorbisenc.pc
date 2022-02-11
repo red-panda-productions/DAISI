@@ -1,0 +1,14 @@
+# libvorbisenc pkg-config source file
+
+prefix=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty
+exec_prefix=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty/bin
+libdir=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty/lib
+includedir=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty/include
+
+Name: vorbisenc
+Description: vorbisenc is a library that provides a convenient API for setting up an encoding environment using libvorbis
+Version: 1.3.7
+Requires.private: vorbis
+Conflicts:
+Libs: -L${libdir} -lvorbisenc
+Cflags: -I${includedir}

@@ -1,0 +1,249 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
+
+MESSAGE(STATUS CMAKE_VERSION = "${CMAKE_VERSION}")
+
+IF(POLICY CMP0003)
+   CMAKE_POLICY(SET CMP0003 NEW)
+ENDIF(POLICY CMP0003)
+
+IF(POLICY CMP0048)
+   CMAKE_POLICY(SET CMP0048 NEW)
+ENDIF(POLICY CMP0048)
+
+IF(POLICY CMP0056)
+   CMAKE_POLICY(SET CMP0056 NEW)
+ENDIF(POLICY CMP0056)
+
+IF(POLICY CMP0066)
+  CMAKE_POLICY(SET CMP0066 NEW)
+ENDIF(POLICY CMP0066)
+
+IF(POLICY CMP0072)
+  CMAKE_POLICY(SET CMP0072 NEW)
+ENDIF(POLICY CMP0072)
+
+IF(NOT ${CMAKE_VERSION} VERSION_LESS "3.0.2")
+   # Speed Dreams project
+   PROJECT(speed-dreams-2 VERSION 2.2.3)
+ELSE(NOT ${CMAKE_VERSION} VERSION_LESS "3.0.2")
+   # Speed Dreams project
+   PROJECT(speed-dreams-2)
+
+   SET(PROJECT_VERSION_MAJOR 2)
+   SET(PROJECT_VERSION_MINOR 2)
+   SET(PROJECT_VERSION_PATCH 3)
+   SET(PROJECT_VERSION_TWEAK )
+   SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR})
+
+   IF(DEFINED PROJECT_VERSION_MINOR)
+      SET(PROJECT_VERSION ${PROJECT_VERSION}.${PROJECT_VERSION_MINOR})
+      IF(DEFINED PROJECT_VERSION_PATCH)
+         SET(PROJECT_VERSION ${PROJECT_VERSION}.${PROJECT_VERSION_PATCH})
+         IF(DEFINED PROJECT_VERSION_TWEAK)
+            SET(PROJECT_VERSION ${PROJECT_VERSION}.${PROJECT_VERSION_TWEAK})
+         ENDIF(DEFINED PROJECT_VERSION_TWEAK)
+      ENDIF(DEFINED PROJECT_VERSION_PATCH)
+   ENDIF(DEFINED PROJECT_VERSION_MINOR)
+   
+   SET(speed-dreams-2_VERSION ${PROJECT_VERSION})
+   #MESSAGE(WARNING "CMAKE_VERSION ${CMAKE_VERSION} is deprecated")
+ENDIF(NOT ${CMAKE_VERSION} VERSION_LESS "3.0.2")
+
+INCLUDE(cmake/macros.cmake)
+INCLUDE(cmake/checks.cmake)
+
+CHECK_HEADERS_H()
+CHECK_FUNCTIONS()
+CHECK_LIBRARIES()
+
+# Determine version
+SET(NEXT_LESSER_VERSION 0) # The next lesser version
+MATH(EXPR NEXT_MINOR "${PROJECT_VERSION_MINOR} + 1")
+SET(NEXT_MAJOR_MINOR_VERSION "${PROJECT_VERSION_MAJOR}.${NEXT_MINOR}") # Next major.minor version
+#MESSAGE(STATUS "NEXT_MAJOR_MINOR_VERSION ${NEXT_MAJOR_MINOR_VERSION}")
+
+# Uncomment if you don't want automatic SVN version detection
+# (poor performances under Windows, don't work with git-svn, ...)
+# SET(OPTION_AUTOVERSION Off)
+
+IF(NOT OPTION_AUTOVERSION)
+	
+	SET(VERSION "${NEXT_MAJOR_MINOR_VERSION}-dev")
+	SET(VERSION_LONG "${VERSION}")
+	
+	MESSAGE(STATUS "Version '${VERSION_LONG}' (not auto-detected from SVN source tree)")
+
+ELSE(NOT OPTION_AUTOVERSION)
+
+	# Use SVN HeadURL property on this CMakeLists.txt file in order to automatically get the current version
+	SET(HEAD_URL "$HeadURL: https://svn.code.sf.net/p/speed-dreams/code/tags/2.2.3/CMakeLists.txt $")
+
+	# Define regular expressions
+	SET(REGEX_TAG        "^\\$HeadURL:.*speed-dreams/code/tags/([^/\\$ ]*).*\\$$")
+	SET(REGEX_BUG_BRANCH "^\\$HeadURL:.*speed-dreams/code/branches/([0-9]+\\.[0-9]+)(\\.[xX])?/.*\\$$")
+	SET(REGEX_TRUNK      "^\\$HeadURL:.*speed-dreams/code/trunk/.*\\$$")
+	SET(REGEX_BRANCH     "^\\$HeadURL:.*speed-dreams/code/branches/([^/\\$ ]*).*\\$$")
+
+	# Check regular expressions
+	STRING(REGEX MATCH "${REGEX_TAG}"        VERSION_IS_TAG "${HEAD_URL}")
+	STRING(REGEX MATCH "${REGEX_BUG_BRANCH}" VERSION_IS_BUG_BRANCH "${HEAD_URL}")
+	STRING(REGEX MATCH "${REGEX_TRUNK}"      VERSION_IS_TRUNK "${HEAD_URL}")
+	STRING(REGEX MATCH "${REGEX_BRANCH}"     VERSION_IS_BRANCH "${HEAD_URL}")
+
+	# See if we need to look at the current SVN revision
+	SET(NEED_SVN_REV TRUE)
+	IF(VERSION_IS_TAG)
+		STRING(REGEX REPLACE "${REGEX_TAG}" "\\1" VERSION "${HEAD_URL}")
+	ELSEIF(VERSION_IS_BUG_BRANCH)
+		STRING(REGEX REPLACE "${REGEX_BUG_BRANCH}" "\\1" TMP_VERSION "${HEAD_URL}")
+		SET(VERSION "${TMP_VERSION}.${NEXT_LESSER_VERSION}-dev")
+	ELSEIF(VERSION_IS_TRUNK)
+		SET(VERSION "${NEXT_MAJOR_MINOR_VERSION}-trunk")
+	ELSEIF(VERSION_IS_BRANCH)
+		STRING(REGEX REPLACE "${REGEX_BRANCH}" "\\1" VERSION "${HEAD_URL}")
+	ELSE(VERSION_IS_TAG)
+		MESSAGE("Warning: Could not determine version name from HeadURL ${HEAD_URL}")
+		SET(VERSION "${NEXT_MAJOR_MINOR_VERSION}-dev")
+		SET(NEED_SVN_REV FALSE)
+	ENDIF(VERSION_IS_TAG)
+	
+	# Try to get current SVN revision
+	IF(NEED_SVN_REV)
+		SET(SVN_FIND_REV_FAILED FALSE)
+		FIND_PROGRAM(SVNVERSION_EXEC svnversion PATHS /usr/local/bin /usr/bin)
+		MARK_AS_ADVANCED(SVNVERSION_EXEC)
+		IF(NOT SVNVERSION_EXEC)
+			SET(SVN_FIND_REV_FAILED TRUE)
+		ENDIF(NOT SVNVERSION_EXEC)
+		IF(NOT SVN_FIND_REV_FAILED)
+			MESSAGE(STATUS "Looking for current subversion revision (may be long) ...")
+			EXECUTE_PROCESS(COMMAND ${SVNVERSION_EXEC} ${CMAKE_CURRENT_SOURCE_DIR} --no-newline
+							RESULT_VARIABLE SVNVERSION_RESULT
+							OUTPUT_VARIABLE SVN_REV_LONG)
+			IF(NOT ${SVNVERSION_RESULT} EQUAL 0)
+				SET(SVN_FIND_REV_FAILED TRUE)
+			ENDIF(NOT ${SVNVERSION_RESULT} EQUAL 0)
+		ENDIF(NOT SVN_FIND_REV_FAILED)
+		IF(NOT SVN_FIND_REV_FAILED)
+			IF("${SVN_REV_LONG}" MATCHES ":")
+				STRING(REGEX REPLACE "^[^:]*:(.*)$" "\\1" SVN_REV "${SVN_REV_LONG}")
+			ELSE("${SVN_REV_LONG}" MATCHES ":")
+				SET(SVN_REV "${SVN_REV_LONG}")
+			ENDIF("${SVN_REV_LONG}" MATCHES ":")
+			IF(NOT SVN_REV)
+				SET(SVN_FIND_REV_FAILED TRUE)
+			ENDIF(NOT SVN_REV)
+		ENDIF(NOT SVN_FIND_REV_FAILED)
+		SET(VERSION_LONG "${VERSION}")
+		IF(NOT SVN_FIND_REV_FAILED)
+			STRING(TOLOWER ${SVN_REV} SVN_REV)
+			SET(VERSION_LONG "${VERSION_LONG}-r${SVN_REV}")
+		ENDIF(NOT SVN_FIND_REV_FAILED)
+	ELSE(NEED_SVN_REV)
+		SET(VERSION_LONG "${VERSION}")
+	ENDIF(NEED_SVN_REV)
+
+	MESSAGE(STATUS "Version '${VERSION_LONG}'")
+
+ENDIF(NOT OPTION_AUTOVERSION)
+
+# SVN_REV is used by packagers, so set it to something
+# in case it couldn't be retrieved or OPTION_AUTOVERSION is FALSE
+IF(NOT SVN_REV)
+	SET(SVN_REV "XXXX")
+ENDIF(NOT SVN_REV)
+
+# PROJECT_VERSION_METADATA is used by NSIS packagers
+# its what comes after the '-' sign (if anything)
+# ie: in tag '2.2.2-rc1' PROJECT_VERSION_METADATA should be '-rc1'
+STRING(FIND "${VERSION}" "-" _METADATA_INDEX)
+IF(NOT ${_METADATA_INDEX} EQUAL -1)
+   STRING(SUBSTRING ${VERSION} ${_METADATA_INDEX} -1 PROJECT_VERSION_METADATA)
+ELSE(NOT ${_METADATA_INDEX} EQUAL -1)
+   SET(PROJECT_VERSION_METADATA )
+ENDIF(NOT ${_METADATA_INDEX} EQUAL -1)
+#MESSAGE(STATUS "PROJECT_VERSION_METADATA ${PROJECT_VERSION_METADATA}")
+
+# Generate config.h
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+# Generate DOxygen configuration file
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake/doxygenconfig.in.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/doxygen_config @ONLY)
+
+
+# Fictive = no-output target, for having source files available in IDEs.
+SET(_SOURCES CHANGES.txt COPYING.txt INSTALL.txt README.txt)
+ADD_CUSTOM_TARGET(rootdoc SOURCES ${_SOURCES} data/data/credits.xml)
+
+# Install top tree data files
+SD_INSTALL_FILES(DATA "/"  FILES ${_SOURCES})
+
+# Initialize user settings file management (before any of them is collected).
+SD_SETUP_SETTINGS_VERSION()
+
+# Setup empty GLOBAL lists for robots and modules
+SET_PROPERTY(GLOBAL PROPERTY SD_MODULE_LIST "")
+SET_PROPERTY(GLOBAL PROPERTY SD_CAR_LIST "")
+SET_PROPERTY(GLOBAL PROPERTY SD_TRACK_LIST "")
+SET_PROPERTY(GLOBAL PROPERTY SD_ROBOT_LIST "")
+SET_PROPERTY(GLOBAL PROPERTY SD_OSG_PLUGIN_LIST "")
+SET_PROPERTY(GLOBAL PROPERTY SD_EXE_LIST "")
+
+# Sub-dirs to build ...
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(data)
+ADD_SUBDIRECTORY(cmake)
+
+# After the user settings files have been collected,
+# Update (and then install) version.xml from their respective version.
+SD_UPDATE_SETTINGS_VERSION()
+
+IF(MSVC)
+   INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/doc/faq/faq.html DESTINATION ./doc)
+   INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/doc/userman/how_to_drive.html DESTINATION ./doc)
+   INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc/userman/images/ DESTINATION ./doc/images/)
+ENDIF(MSVC)
+
+
+# Useful for using an installation of SD as a robot development framework without building it.
+# Only do for an in source tree build as INSTALL_SD_CMAKE() doesn't seem to use CMAKE_INSTALL_PREFIX
+IF("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
+   INSTALL_SD_CMAKE()
+ENDIF("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
+
+# Must be the last ADD_SUBDIRECTORY for FIXUP_BUNDLE to work
+ADD_SUBDIRECTORY(packaging)
+
+# Generate a 'make clobber'-like clobber.sh/.bat script in case of an in-source build.
+IF("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
+	SD_GENERATE_CLOBBER_SCRIPT()
+ENDIF("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
+
+# Add an unistall target.
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake" 
+               "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake" IMMEDIATE @ONLY)
+IF(MSVC)
+	SET(_UNINST_TGT_NAME "UNINSTALL")
+ELSE(MSVC)
+	SET(_UNINST_TGT_NAME "uninstall")
+ENDIF(MSVC)
+ADD_CUSTOM_TARGET(${_UNINST_TGT_NAME} "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake" )
+
+IF(OPTION_CHECK_CONTENTS)
+   INCLUDE(cmake/prerelease.cmake)
+ENDIF(OPTION_CHECK_CONTENTS)
+
+IF(OPTION_PACKAGING)
+   INCLUDE(cmake/packagemaker.cmake)
+   IF(MSVC)
+      INCLUDE(cmake/packagemaker-nsis.cmake)
+   ENDIF(MSVC)
+   IF(APPLE)
+      INCLUDE(cmake/packagemaker-dmg.cmake)
+   ENDIF(APPLE)
+ELSE(OPTION_PACKAGING)
+   # Configure CPack.
+   INCLUDE(CPack)
+ENDIF(OPTION_PACKAGING)

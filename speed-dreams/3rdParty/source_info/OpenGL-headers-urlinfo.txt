@@ -1,0 +1,3 @@
+repository='external project URL'
+module='D:/source/3rdParty-devel-sd/patches/openglheaders.zip'
+tag='SHA256=344debe6e65629d70020b6da056255de56c7d4fe48194336ea2cb896fc1b545b'

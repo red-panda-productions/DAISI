@@ -1,0 +1,111 @@
+		FreeSOLID - Interference Detection Library
+		Copyright (C) 1997, 1998  Gino van den Bergen
+
+
+NOTE: FreeSOLID is the LGPL version of SOLID. SOLID is further
+	  developed and licensed commercially by Dtecta. See
+	  www.libsolid.com for terms of licensing SOLID.  
+
+
+
+Introduction
+	
+FreeSOLID is a library for collision detection of three-dimensional objects
+undergoing rigid motion and deformation. FreeSOLID is designed to be used in
+interactive 3D graphics applications, and is especially suited for
+collision detection of objects and worlds described in VRML.
+
+The objects can be modeled as primitives, such as boxes, cones, cylinders,
+and spheres, or as complex shapes composed of polytopes. The placement of
+an object is given either as a sequence of translations, rotations, and
+nonuniform scalings, or as a 4x4 column-major matrix, that represents an
+affine transformation, as used in OpenGL.   
+
+
+Requirements
+
+The library is written in ANSI/ISO C++ and relies heavily on STL. Currently
+it compiles under GNU g++ version 2.8.1 and Visual C++ 5.0. The library has
+a standard C API and can be linked to both C and C++ applications. Note
+that in order to use in C applications, you need to explicitly include the
+libstdc++ library in the linkage.  
+
+For fast intersection tests and distance computations between convex
+polyhedra, FreeSOLID relies on the Qhull library for convex hull computations.
+Qhull is a free software library and is available for most platforms. 
+The Qhull source code can be downloaded from URL: 
+
+	http://www.geom.umn.edu/software/qhull/
+
+Note that a properly operating FreeSOLID library  can be compiled without using
+Qhull. However, it is recommended to incorporate Qhull for a better
+performance, when polyhedra are used.  
+
+
+License
+
+The FreeSOLID library and accompanying C++ classes for 3D geometry are
+released under the terms of the GNU Library General Public License. 
+See the file COPYING.LIB for details. 
+
+
+Installation
+
+In case you have a recent GNU developers environment installed, simply
+typing `make' in the root of the distribution directory will build the
+library, a sample client and documentation.
+
+If you want to use another compiler, you should make the necessary changes
+to the `Make-config' file in the root directory. FreeSolid now autodetects
+the presence of Qhull library when you build using the configure script. 
+The Qhull header files are assumed to be under '$INCLUDE_PATH/qhull/'
+If your Qhull installation is under a non-standard directory. Then you need
+to put all the Qhull header files under a directory named 'qhull'. Then
+you may need to set the env variables CXXFLAGS, CPPFLAGS to point to those
+directories. Under bash if qhull is under the directory $HOME/packages, you type
+
+$ export CPPFLAGS="-I$HOME/packages"
+$ export CXXFLAGS="-I$HOME/packages"
+
+under csh you type
+
+% setenv CPPFLAGS "-I$HOME/packages"
+% setenv CXXFLAGS "-I$HOME/packages"
+
+before doing a ./configure .
+
+The auxiliary C++ classes in `include/3D' may be used for performing 3D
+transformations.  The classes have all their code inlined, so you do not
+need to link a library in order to use them.  
+
+If you've checked out a fresh CVS sandbox, the following steps are
+required to generate a proper 'configure' file.
+
+    aclocal
+    automake -a
+    autoconf
+    autoheader
+
+
+Documentation
+
+The FreeSOLID manual is available as: (i) an Emacs info file, (ii) a DVI file
+(use dvips to print as postscript), and (iii) a set of HTML files.  
+
+The HTML files are also made available on the FreeSOLID web page located at
+
+http://www.win.tue.nl/~gino/solid/
+
+
+Contact Info
+
+Please send remarks, questions and bug reports to gino@dtecta.com
+or write to:
+          Gino van den Bergen
+		  Sterkenstraatje 4
+		  5708 ZC Helmond
+		  The Netherlands
+		  
+
+
+

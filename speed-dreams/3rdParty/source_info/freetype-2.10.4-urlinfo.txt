@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://sourceforge.net/projects/freetype/files/freetype2/2.10.4/ft2104.zip/download'
+tag='SHA256=5c78216d6c5860ef694fde1418d20d69d0ac83ab346c21eb311bd45709e0d93a'

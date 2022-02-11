@@ -1,0 +1,13 @@
+prefix=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty
+exec_prefix=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty
+libdir=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty/lib
+sharedlibdir=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty/lib
+includedir=D:/source/3rdParty-devel-sd/build-vs2019-release/3rdParty/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.11
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

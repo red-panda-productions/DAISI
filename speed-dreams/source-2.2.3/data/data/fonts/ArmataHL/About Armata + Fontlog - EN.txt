@@ -1,0 +1,17 @@
+Armata is a new Sans-Serif Font by Jasper @ Cannot Into Space Fonts.
+
+It is named after the new Russian T-14 Armata Main Battle Tank.
+
+Version History
+
+v0.9.7:
+
+Initial Release.
+
+Includes basic Russian Cyrillic and basic Latin characters, started work on Latin-1 Supplement, Latin Extended A & B, IPA Extensions, Greek, and the rest of the Cyrillic and Cyrillic Supplement sets.
+
+Includes Russian Ruble, Euro, and Ukrainian Hryvnia signs.
+
+413 Characters completed in Unicode BMP.
+
+Only has Hairline weight, plus matching Oblique Italic.
