@@ -11,3 +11,5 @@ ADD_SUBDIRECTORY(main)
 
 ADD_SUBDIRECTORY(tools)
 
+ADD_SUBDIRECTORY(simulatedDrivingAssistance)
+
