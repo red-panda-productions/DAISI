@@ -1,4 +1,9 @@
+# IDE specific files
 .vs/
+CMakeSettings.json
+.idea/
+
+# Build output
 out/
 build/
-CMakeSettings.json
+cmake-build-debug/
