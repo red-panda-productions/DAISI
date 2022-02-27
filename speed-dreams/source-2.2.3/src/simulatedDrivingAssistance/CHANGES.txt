@@ -1,0 +1,8 @@
+
+Changes to Speed Dreams
+
+ Menus
+  *New interventionmenu:
+    interventionmenu.h and .cpp in src/modules/userinterface/legacymenu/mainscreens
+    interventionmenu.xml in data/data/menu
+    added it to src/modules/userinterface/legacymenu/CMakeList.txt
