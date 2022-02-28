@@ -135,6 +135,27 @@
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
 
+	<section name="intervention">
+		<attstr name="type" val="text button"/>
+		<attstr name="show box" val="no"/>
+		<attstr name="text" val="Change intervention"/>
+		<attstr name="h align" val="left"/>
+		<attnum name="x" val="260"/>
+		<attnum name="y" val="162"/>
+		<attnum name="width" val="320"/>
+		<attstr name="font" val="big"/>
+		<attstr name="color" val="0xFFFFFF"/>
+		<attstr name="focused color" val="0xFFFFFF"/>
+		<attstr name="pushed color" val="0xFFFFFF"/>
+		<attnum name="image x" val="-48"/>
+		<attnum name="image y" val="0"/>
+		<attnum name="image width" val="320"/>
+		<attnum name="image height" val="33"/>
+		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
+		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
+		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
+	</section>
+
 	<section name="quit">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
@@ -142,7 +163,7 @@
 		<attstr name="tip" val="Quit Speed Dreams"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="260"/>
-		<attnum name="y" val="162"/>
+		<attnum name="y" val="130"/> <!-- y-val was 162 -->
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>

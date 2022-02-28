@@ -3,6 +3,14 @@ Changes to Speed Dreams
 
  Menus
   *New interventionmenu:
-    interventionmenu.h and .cpp in src/modules/userinterface/legacymenu/mainscreens
-    interventionmenu.xml in data/data/menu
-    added it to src/modules/userinterface/legacymenu/CMakeList.txt
+    Added:
+      interventionmenu.h and .cpp in src/modules/userinterface/legacymenu/mainscreens
+      interventionmenu.xml in data/data/menu
+    Changed:
+      src/modules/userinterface/legacymenu/CMakeList.txt
+        added    interventionmenu.h and .cpp
+      src/modules/userinterface/legacymenu/mainscreens/mainmenu.cpp
+        added    onInterventionMenuActivate()
+        changed  MainMenuInit()
+        included "interventionmenu.h"
+      data/data/menu/mainmenu.xml
