@@ -6,6 +6,7 @@
 
 #include "legacymenu.h"
 #include "InterventionType.h"
+#include "Mediator.h"
 
 #include "interventionmenu.h"
 
@@ -31,10 +32,13 @@ static int InterventionTypeId;
 static void	*ScrHandle = NULL;
 static void	*PrevHandle = NULL;
 
+/* Mediator to handle communication between front-end and back-end */
+Mediator mediator;
+
 /* Load the intervention type from the backend config */
 static void ReadInterventionType(void)
 {
-    // TODO Read current intervention type from config
+    CurInterventionTypeIndex = mediator.GetInterventionType();
 
     GfuiLabelSetText(ScrHandle, InterventionTypeId, InterventionTypes[CurInterventionTypeIndex]);
 }
@@ -43,7 +47,7 @@ static void ReadInterventionType(void)
 /* Save the chosen intervention type into the backend config */
 static void SaveInterventionType(void * /* dummy */)
 {
-    // TODO Change intervention in config here
+    mediator.SetInterventionType(CurInterventionTypeIndex);
 
     /* return to previous screen */
     GfuiScreenActivate(PrevHandle);
