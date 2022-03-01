@@ -9,6 +9,7 @@ public:
 	void RaceStart();
 	void RaceStop();
 	void SetInterventionType(INTERVENTION_TYPE type);
+    INTERVENTION_TYPE GetInterventionType();
 	DriveSituation* Simulate();
 
 private:
