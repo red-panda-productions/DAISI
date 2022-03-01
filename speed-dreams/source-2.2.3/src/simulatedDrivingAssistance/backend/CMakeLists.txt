@@ -7,6 +7,7 @@ SET(_HEADERS CarInfo.h
         EnvironmentInfo.h
         InterventionType.h
         Mediator.h
+        Mediator.cpp
         TrackPosition.h
         PlayerInfo.h)
 

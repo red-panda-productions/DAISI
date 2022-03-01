@@ -9,3 +9,14 @@ void Mediator::SetInterventionType(INTERVENTION_TYPE type)
 {
 
 }
+
+void Mediator::DriveTick() {}
+
+void Mediator::RaceStart() {}
+
+void Mediator::RaceStop() {}
+
+DriveSituation* Mediator::Simulate()
+{
+    return nullptr;
+}
