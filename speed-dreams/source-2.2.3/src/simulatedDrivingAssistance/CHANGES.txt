@@ -9,6 +9,7 @@ Changes to Speed Dreams
     Changed:
       src/modules/userinterface/legacymenu/CMakeList.txt
         added    interventionmenu.h and .cpp
+        added    backend in ADD_SDLIB_LIBRARY
       src/modules/userinterface/legacymenu/mainscreens/mainmenu.cpp
         added    onInterventionMenuActivate()
         changed  MainMenuInit()

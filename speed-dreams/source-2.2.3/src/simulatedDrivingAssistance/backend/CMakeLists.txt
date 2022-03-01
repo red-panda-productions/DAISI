@@ -10,7 +10,7 @@ SET(_HEADERS CarInfo.h
         TrackPosition.h
         PlayerInfo.h)
 
-SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
+SD_ADD_LIBRARY(backend SHARED ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_MSGPACK_PACKAGE(backend)

@@ -108,6 +108,6 @@ SD_ADD_LIBRARY(legacymenu MODULE ${LEGACYMENU_SOURCES} ${LEGACYMENU_HEADERS})
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose) 
 #SET_TARGET_PROPERTIES(legacymenu PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)
 
-ADD_SDLIB_LIBRARY(legacymenu portability tgf tgfclient tgfdata ${NETWORKING_LIB})
+ADD_SDLIB_LIBRARY(legacymenu portability tgf tgfclient tgfdata backend ${NETWORKING_LIB})
 
 SD_INSTALL_FILES(LIB modules/userinterface TARGETS legacymenu)
