@@ -1,8 +1,9 @@
 #include "Mediator.h"
 
+
 INTERVENTION_TYPE Mediator::GetInterventionType()
 {
-    return INTERVENTION_TYPE_NO_ASSISTANCE;
+    return INTERVENTION_TYPE_NO_INTERVENTION;
 }
 
 void Mediator::SetInterventionType(INTERVENTION_TYPE type)
