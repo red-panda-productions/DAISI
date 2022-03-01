@@ -8,7 +8,9 @@ SET(_HEADERS CarInfo.h
         InterventionType.h
         Mediator.h
         TrackPosition.h
-        PlayerInfo.h)
+        PlayerInfo.h
+        SocketBlackBox.h
+        SocketBlackBox.cpp)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
@@ -18,4 +20,3 @@ ADD_MSGPACK_PACKAGE(backend)
 ADD_IPCLIB_PACKAGE(backend)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)
-
