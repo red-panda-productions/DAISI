@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include "DriveSituation.h"
+#include "IDecision.h"
 
 class SocketBlackBox
 {
@@ -29,7 +30,9 @@ public:
      */
 
     void SerializeDriveSituation(std::stringstream& stringstream, DriveSituation& driveSituation);
-    void GetDecisions(DriveSituation& driveSituation); //has to be decision array
+    void DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size);
+
+    IDecision* GetDecisions(DriveSituation& driveSituation); //has to be decision array
 
     std::vector<std::string> m_variablesToSend;
     std::vector<std::string> m_variablesToReceive;
@@ -37,6 +40,6 @@ public:
     using inserterFunction = void (*) (std::vector<std::string>&, DriveSituation&);
     std::unordered_map<std::string, inserterFunction> m_variableConvertAndInsertMap;
 
-    using decisionConvertFunction = void (*) ();
+    using decisionConvertFunction = void (*) (std::string&, IDecision&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
 };
