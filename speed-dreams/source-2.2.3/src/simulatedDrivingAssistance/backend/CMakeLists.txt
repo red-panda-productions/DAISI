@@ -1,13 +1,12 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_SOURCES )
+SET(_SOURCES Mediator.cpp)
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
         DriveSituation.h
         EnvironmentInfo.h
         InterventionType.h
         Mediator.h
-        Mediator.cpp
         TrackPosition.h
         PlayerInfo.h)
 
