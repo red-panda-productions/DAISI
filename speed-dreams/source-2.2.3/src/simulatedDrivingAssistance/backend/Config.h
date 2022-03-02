@@ -16,5 +16,8 @@ public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
     /* TODO: Return IBlackBox */ void GetBlackBox();
     INTERVENTION_TYPE GetInterventionType() const;
+
+    // sets the m_interventionType to p_type
+    // returns correct intervention maker from factory
     InterventionMaker* SetInterventionType(INTERVENTION_TYPE p_type);
 };
