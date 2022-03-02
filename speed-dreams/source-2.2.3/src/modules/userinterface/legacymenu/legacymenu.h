@@ -163,6 +163,9 @@ public:
 
 	//! Activate the main menu.
 	static bool activateMainMenu();
+
+    //! Activate the intervention menu.
+    static bool activateInterventionMenu();
 	
 	//! Direct race startup (race specified in command line args).
 	static bool startRace();

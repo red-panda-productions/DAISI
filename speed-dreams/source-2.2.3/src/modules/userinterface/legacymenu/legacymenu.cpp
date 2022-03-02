@@ -33,6 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
+#include "interventionmenu.h"
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "racescreens.h"
@@ -96,6 +97,9 @@ bool LegacyMenu::backLoad()
     if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
         return false;
 
+    // Pre-load the intervention type select menu
+    InterventionMenuInit(MainMenuInit(SupportsHumanDrivers));
+
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
         return false;
@@ -108,6 +112,11 @@ bool LegacyMenu::backLoad()
 bool LegacyMenu::activateMainMenu()
 {
     return MainMenuRun() == 0;
+}
+
+bool LegacyMenu::activateInterventionMenu()
+{
+    return InterventionMenuRun() == 0;
 }
 
 bool LegacyMenu::startRace()
@@ -168,7 +177,7 @@ bool LegacyMenu::activate()
 	{
         // If not specified, simply open the splash screen, load the menus in the background
         // and finally open the main menu.
-        fnOnSplashClosed = LegacyMenu::activateMainMenu;
+        fnOnSplashClosed = LegacyMenu::activateInterventionMenu;
     }
 
 	// Otherwise, run the selected race.

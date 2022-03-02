@@ -135,6 +135,7 @@
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
 
+		<!--
 	<section name="intervention">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
@@ -155,6 +156,7 @@
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
+		-->
 
 	<section name="quit">
 		<attstr name="type" val="text button"/>
@@ -163,7 +165,7 @@
 		<attstr name="tip" val="Quit Speed Dreams"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="260"/>
-		<attnum name="y" val="130"/> <!-- y-val was 162 -->
+		<attnum name="y" val="162"/> <!-- y-val is 162 without intervention menu, 130 with -->
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
