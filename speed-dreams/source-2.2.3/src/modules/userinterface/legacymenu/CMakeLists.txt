@@ -75,7 +75,7 @@ ELSE(OPTION_CLIENT_SERVER)
    SET(NETWORKING_LIB networking)
 ENDIF(OPTION_CLIENT_SERVER)
 
-ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata ${NETWORKING_INC})
+ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC})
 
 ADD_PLIB_INCLUDEDIR()
 

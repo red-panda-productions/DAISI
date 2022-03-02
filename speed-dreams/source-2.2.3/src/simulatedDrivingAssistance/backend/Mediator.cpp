@@ -3,12 +3,12 @@
 
 INTERVENTION_TYPE Mediator::GetInterventionType()
 {
-    m_decisionMaker.m_config.GetInterventionType();
+    return m_decisionMaker.m_config.GetInterventionType();
 }
 
 void Mediator::SetInterventionType(INTERVENTION_TYPE p_type)
 {
-    m_decisionMaker.m_config.SetInterventionType(p_type);
+    m_decisionMaker.ChangeSettings(p_type);
 }
 
 void Mediator::DriveTick() {}
