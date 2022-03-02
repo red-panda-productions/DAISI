@@ -1,11 +1,25 @@
 #include "InterventionFactory.h"
 #include "InterventionMakerNoIntervention.h"
+#include "InterventionMakerAlwaysIntervene.h"
+#include "InterventionMakerAskFor.h"
+#include "InterventionMakerIndication.h"
+#include "InterventionMakerPerformWhenNeeded.h"
+
 #include <iostream>
 
-void InterventionFactory::CreateInterventionMaker(IInterventionMaker& p_interventionMaker, INTERVENTION_TYPE p_type)
+#define CASE(type, class) case type: { \
+    std::cout << #type << std::endl; \
+    return new class();}
+
+InterventionMaker* InterventionFactory::CreateInterventionMaker(INTERVENTION_TYPE p_type)
 {
-   switch(p_type)
+    switch(p_type)
    {
-       case INTERVENTION_TYPE_NO_INTERVENTION: std::cout << "NO INTERVENTION" << std::endl;
+       CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionMakerAlwaysIntervene)
+       CASE(INTERVENTION_TYPE_ASK_FOR, InterventionMakerAskFor)
+       CASE(INTERVENTION_TYPE_INDICATION, InterventionMakerIndication)
+       CASE(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED, InterventionMakerPerformWhenNeeded)
+       default:
+       CASE(INTERVENTION_TYPE_NO_INTERVENTION, InterventionMakerNoIntervention)
    }
 }
