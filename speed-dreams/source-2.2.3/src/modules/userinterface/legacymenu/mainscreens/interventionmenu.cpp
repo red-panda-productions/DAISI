@@ -6,12 +6,13 @@
 
 #include "legacymenu.h"
 #include "ConfigEnums.h"
+#include "mainmenu.h"
 #include "Mediator.h"
 
 #include "interventionmenu.h"
 
 
-/* Available intervention names and associated values */
+/* Available intervention names and associated values {0,1,2,3,4} */
 static const char *InterventionTypes[] = { "no intervention",
                                            "show intervention",
                                            "ask for intervention",
@@ -29,8 +30,9 @@ static int CurInterventionTypeIndex = 0;
 static int InterventionTypeId;
 
 /* GUI screen handles */
+static void *MenuHandle = 0;
 static void	*ScrHandle = NULL;
-static void	*PrevHandle = NULL;
+static void	*NextHandle = NULL;
 
 /* Mediator to handle communication between front-end and back-end */
 Mediator mediator;
@@ -49,8 +51,8 @@ static void SaveInterventionType(void * /* dummy */)
 {
     mediator.SetInterventionType(CurInterventionTypeIndex);
 
-    /* return to previous screen */
-    GfuiScreenActivate(PrevHandle);
+    /* go to the next screen */
+    GfuiScreenActivate(NextHandle);
 
     return;
 }
@@ -75,15 +77,15 @@ static void onActivate(void * /* dummy */)
 
 /* Menu creation */
 void *
-InterventionMenuInit(void *prevMenu)
+InterventionMenuInit(void* nextMenu)
 {
     /* screen already created */
     if (ScrHandle) {
         return ScrHandle;
     }
-    PrevHandle = prevMenu;
 
     ScrHandle = GfuiScreenCreate((float*)NULL, NULL, onActivate, NULL, (tfuiCallback)NULL, 1);
+    NextHandle = nextMenu;
 
     void *param = GfuiMenuLoad("interventionmenu.xml");
     GfuiMenuCreateStaticControls(ScrHandle, param);
@@ -92,17 +94,33 @@ InterventionMenuInit(void *prevMenu)
     GfuiMenuCreateButtonControl(ScrHandle,param,"interventionrightarrow",(void*)1,ChangeInterventionType);
 
     InterventionTypeId = GfuiMenuCreateLabelControl(ScrHandle,param,"interventionlabel");
-    GfuiMenuCreateButtonControl(ScrHandle,param,"ApplyButton",prevMenu,SaveInterventionType);
-    GfuiMenuCreateButtonControl(ScrHandle,param,"CancelButton",prevMenu,GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(ScrHandle,param,"ApplyButton",ScrHandle,SaveInterventionType);
 
     GfParmReleaseHandle(param);
 
     GfuiAddKey(ScrHandle, GFUIK_RETURN, "Apply", NULL, SaveInterventionType, NULL);
-    GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel", prevMenu, GfuiScreenActivate, NULL);
     GfuiAddKey(ScrHandle, GFUIK_F1, "Help", ScrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(ScrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
     GfuiAddKey(ScrHandle, GFUIK_LEFT, "Previous Skill Level", (void*)-1, ChangeInterventionType, NULL);
     GfuiAddKey(ScrHandle, GFUIK_RIGHT, "Next Skill Level", (void*)+1, ChangeInterventionType, NULL);
 
     return ScrHandle;
+}
+
+/*
+ * Function
+ *	MainMenuRun
+ * Description
+ *	Activate the main menu
+ * Parameters
+ *	none
+ * Returns
+ *	0 ok -1 not ok
+ */
+int
+InterventionMenuRun(void)
+{
+    GfuiScreenActivate(ScrHandle);
+
+    return 0;
 }
