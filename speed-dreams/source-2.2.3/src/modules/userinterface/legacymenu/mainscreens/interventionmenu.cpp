@@ -5,7 +5,7 @@
 #include <tgfclient.h>
 
 #include "legacymenu.h"
-#include "InterventionType.h"
+#include "ConfigEnums.h"
 #include "Mediator.h"
 
 #include "interventionmenu.h"
