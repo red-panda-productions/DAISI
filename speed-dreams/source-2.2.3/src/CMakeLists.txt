@@ -1,5 +1,7 @@
 INCLUDE(../cmake/macros.cmake)
 
+ENABLE_TESTING()
+
 ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(libs)
 
