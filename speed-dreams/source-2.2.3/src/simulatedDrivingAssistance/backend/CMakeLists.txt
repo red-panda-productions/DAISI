@@ -14,7 +14,7 @@ SET(_HEADERS CarInfo.h
         PlayerInfo.h
         Config.h
         InterventionFactory.h
-        IInterventionMaker.h)
+        InterventionMaker.h)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)

@@ -1,7 +1,12 @@
 #pragma once
-#include "IInterventionMaker.h"
 
-class InterventionMakerNoIntervention : IInterventionMaker
+#include <iostream>
+#include "InterventionMaker.h"
+
+class InterventionMakerNoIntervention : public InterventionMaker
 {
-    void MakeCommands() override;
+    void MakeCommands() override
+    {
+        std::cout << "Make no commands" << std::endl;
+    }
 };
