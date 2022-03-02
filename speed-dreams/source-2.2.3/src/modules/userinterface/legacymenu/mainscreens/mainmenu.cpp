@@ -72,11 +72,13 @@ onExitMenuActivate(void * /*dummy*/)
     GfuiScreenActivate(ExitMenuInit(MenuHandle));
 }
 
-static void
-onInterventionMenuActivate(void * /*dummy*/)
-{
+
+//static void
+//onInterventionMenuActivate(void * /*dummy*/)
+/*{
     GfuiScreenActivate(InterventionMenuInit(MenuHandle));
-}
+}*/
+
 
 static void
 onMainMenuActivate(void * /* dummy */)
@@ -124,7 +126,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "intervention", NULL, onInterventionMenuActivate);
+    //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "intervention", NULL, onInterventionMenuActivate);
 
     GfParmReleaseHandle(menuDescHdle);
 

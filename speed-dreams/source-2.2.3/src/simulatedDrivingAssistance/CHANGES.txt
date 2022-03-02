@@ -7,11 +7,17 @@ Changes to Speed Dreams
       interventionmenu.h and .cpp in src/modules/userinterface/legacymenu/mainscreens
       interventionmenu.xml in data/data/menu
     Changed:
+      src/modules/userinterface/legacymenu.h
+        added    activateInterventionMenu()
+      src/modules/userinterface/legacymenu.cpp
+        included "interventionmenu.h"
+        added    activateInterventionMenu()
+        changed  backLoad()
       src/modules/userinterface/legacymenu/CMakeList.txt
         added    interventionmenu.h and .cpp
         added    backend in ADD_SDLIB_LIBRARY
-      src/modules/userinterface/legacymenu/mainscreens/mainmenu.cpp
-        added    onInterventionMenuActivate()
-        changed  MainMenuInit()
-        included "interventionmenu.h"
-      data/data/menu/mainmenu.xml
+      ( src/modules/userinterface/legacymenu/mainscreens/mainmenu.cpp
+          added    onInterventionMenuActivate() (commented out)
+          changed  MainMenuInit()               (commented out)
+          included "interventionmenu.h"         (unused)      )
+      data/data/menu/mainmenu.xml               (commented out)
