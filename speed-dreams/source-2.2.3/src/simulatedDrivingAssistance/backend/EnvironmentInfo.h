@@ -3,8 +3,12 @@
 class EnvironmentInfo
 {
 public:
-	bool Offroad();
-	int TimeOfDay();
-	int Clouds();
-	TrackPosition TrackLocalPosition();
+	bool Offroad(){return false;};
+	int TimeOfDay(){return 0;};
+	int Clouds(){return 0;};
+	TrackPosition TrackLocalPosition()
+    {
+        TrackPosition trackPosition;
+        return trackPosition;
+    }
 };

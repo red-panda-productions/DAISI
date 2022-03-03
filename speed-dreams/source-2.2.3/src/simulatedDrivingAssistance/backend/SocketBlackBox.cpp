@@ -16,10 +16,18 @@
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(dynamic_cast<SteerDecision&>(decision).m_steerAmount = std::stof(string))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(dynamic_cast<BrakeDecision&>(decision).m_brakeAmount = std::stof(string))
 
+#define INSERT_PAIR insert(std::pair<std::string, >)
+
 void SocketBlackBox::Initialize()
 {
+
+
+    inserterFunction f = INSERT_CAR_INFO(Speed());
+    std::pair<std::string, inserterFunction> speedInsert ("Speed", f);
+
+
     //CarInfo functions
-    m_variableConvertAndInsertMap["Speed"] = INSERT_CAR_INFO(Speed());
+    m_variableConvertAndInsertMap.insert(speedInsert);
     m_variableConvertAndInsertMap["AccelCmd"] = INSERT_CAR_INFO(AccelCmd());
     m_variableConvertAndInsertMap["BrakeCmd"] = INSERT_CAR_INFO(BrakeCmd());
     m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_CAR_INFO(ClutchCmd());

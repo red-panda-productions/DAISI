@@ -22,6 +22,7 @@ target_link_libraries(
   unitTestUtilities
   backend
   gtest_main
+  gmock_main
 )
 target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")

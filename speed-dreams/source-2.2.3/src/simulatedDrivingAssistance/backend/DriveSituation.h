@@ -7,7 +7,19 @@
 class DriveSituation
 {
 public:
-	EnvironmentInfo GetEnvironmentInfo();
-	CarInfo GetCarInfo();
-	PlayerInfo GetPlayerInfo();
+	EnvironmentInfo GetEnvironmentInfo()
+    {
+        EnvironmentInfo environmentInfo;
+        return environmentInfo;
+    };
+	CarInfo GetCarInfo()
+    {
+        CarInfo carInfo;
+        return carInfo;
+    };
+	PlayerInfo GetPlayerInfo()
+    {
+        PlayerInfo playerInfo;
+        return playerInfo;
+    };
 };

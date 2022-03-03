@@ -4,8 +4,8 @@
 class TrackPosition
 {
 public:
-	float ToStart();
-	float ToRight();
-	float ToMiddle();
-	float ToLeft();
+	float ToStart(){return 0;};
+	float ToRight(){return 0;};
+	float ToMiddle(){return 0;};
+	float ToLeft(){return 0;};
 };
