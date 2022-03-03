@@ -18,7 +18,8 @@
 
 #define INSERT_PAIR insert(std::pair<std::string, >)
 
-void SocketBlackBox::Initialize()
+template <class DriveSituation>
+void SocketBlackBox<DriveSituation>::Initialize()
 {
 
 
@@ -54,7 +55,8 @@ void SocketBlackBox::Initialize()
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
 }
 
-void SocketBlackBox::SerializeDriveSituation(std::stringstream& stringstream, DriveSituation& driveSituation)
+template <class DriveSituation>
+void SocketBlackBox<DriveSituation>::SerializeDriveSituation(std::stringstream& stringstream, DriveSituation& driveSituation)
 {
     std::vector<std::string> dataToSerialize;
 
@@ -66,7 +68,8 @@ void SocketBlackBox::SerializeDriveSituation(std::stringstream& stringstream, Dr
     msgpack::pack(stringstream, dataToSerialize);
 }
 
-void SocketBlackBox::DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size)
+template <class DriveSituation>
+void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size)
 {
     //unpack
     msgpack::unpacked msg;
@@ -85,7 +88,8 @@ void SocketBlackBox::DeserializeBlackBoxResults(IDecision* decisions, const char
     }
 }
 
-IDecision* SocketBlackBox::GetDecisions(DriveSituation& driveSituation)
+template<class DriveSituation>
+IDecision* SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& driveSituation)
 {
     std::stringstream stringstream;
     SerializeDriveSituation(stringstream, driveSituation);

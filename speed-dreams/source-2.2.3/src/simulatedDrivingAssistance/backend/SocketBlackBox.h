@@ -5,7 +5,7 @@
 #include "DriveSituation.h"
 #include "IDecision.h"
 
-//template <class DriveSituation>
+template <class DriveSituation>
 class SocketBlackBox
 {
 public:
