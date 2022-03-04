@@ -1,9 +1,4 @@
-<!--
- Created by Stefan Hoekzema on 2/26/2022.
--->
-
-
-<!-- Temporary copy of exitmenu.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE params SYSTEM "../tgf/params.dtd">
 
