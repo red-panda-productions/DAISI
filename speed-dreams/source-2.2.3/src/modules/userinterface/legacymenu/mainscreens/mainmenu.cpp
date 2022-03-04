@@ -26,7 +26,7 @@
 #include "exitmenu.h"
 #include "optionsmenu.h"
 #include "creditsmenu.h"
-#include "interventionmenu.h"
+#include "InterventionMenu.h"
 
 
 static void *MenuHandle = 0;
@@ -73,8 +73,7 @@ onExitMenuActivate(void * /*dummy*/)
 }
 
 
-//static void
-//onInterventionMenuActivate(void * /*dummy*/)
+//static void OnInterventionMenuActivate(void * /*dummy*/)
 /*{
     GfuiScreenActivate(InterventionMenuInit(MenuHandle));
 }*/
@@ -126,7 +125,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
-    //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "intervention", NULL, onInterventionMenuActivate);
+    //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "intervention", NULL, OnInterventionMenuActivate);
 
     GfParmReleaseHandle(menuDescHdle);
 

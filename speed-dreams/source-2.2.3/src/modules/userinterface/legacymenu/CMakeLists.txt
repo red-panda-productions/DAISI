@@ -1,9 +1,9 @@
 INCLUDE(../../../../cmake/macros.cmake)
 
 SET(MS mainscreens)
-SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/interventionmenu.cpp
+SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/InterventionMenu.cpp
                         ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp)
-SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/interventionmenu.cpp
+SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/InterventionMenu.cpp
                         ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h)
 
 IF(MSVC)

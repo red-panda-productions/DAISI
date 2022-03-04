@@ -33,7 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-#include "interventionmenu.h"
+#include "InterventionMenu.h"
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "racescreens.h"
@@ -114,7 +114,7 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-bool LegacyMenu::activateInterventionMenu()
+bool LegacyMenu::ActivateInterventionMenu()
 {
     return InterventionMenuRun() == 0;
 }
@@ -176,8 +176,8 @@ bool LegacyMenu::activate()
 	if (strRaceToStart.empty())
 	{
         // If not specified, simply open the splash screen, load the menus in the background
-        // and finally open the main menu.
-        fnOnSplashClosed = LegacyMenu::activateInterventionMenu;
+        // and finally open the intervention menu.
+        fnOnSplashClosed = LegacyMenu::ActivateInterventionMenu;
     }
 
 	// Otherwise, run the selected race.
