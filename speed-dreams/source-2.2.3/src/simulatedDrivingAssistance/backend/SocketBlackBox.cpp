@@ -1,6 +1,6 @@
 #include "SocketBlackBox.h"
-#include "msgpack.hpp"
 #include <string>
+#include <iostream>
 #include "SteerDecision.h"
 #include "BrakeDecision.h"
 
@@ -21,14 +21,8 @@
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
 {
-
-
-    inserterFunction f = INSERT_CAR_INFO(Speed());
-    std::pair<std::string, inserterFunction> speedInsert ("Speed", f);
-
-
     //CarInfo functions
-    m_variableConvertAndInsertMap.insert(speedInsert);
+    m_variableConvertAndInsertMap["Speed"] = INSERT_CAR_INFO(Speed());
     m_variableConvertAndInsertMap["AccelCmd"] = INSERT_CAR_INFO(AccelCmd());
     m_variableConvertAndInsertMap["BrakeCmd"] = INSERT_CAR_INFO(BrakeCmd());
     m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_CAR_INFO(ClutchCmd());
@@ -56,16 +50,21 @@ void SocketBlackBox<DriveSituation>::Initialize()
 }
 
 template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::SerializeDriveSituation(std::stringstream& stringstream, DriveSituation& driveSituation)
+void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation)
 {
     std::vector<std::string> dataToSerialize;
 
-    for (auto i = m_variablesToSend.begin(); i != m_variablesToSend.end(); i++)
-    {
-        m_variableConvertAndInsertMap.at(*i)(dataToSerialize, driveSituation);
+    if (m_variablesToSend.size() == 0) dataToSerialize.push_back("There are no variables to send");
+    else {
+        for (auto i = m_variablesToSend.begin(); i != m_variablesToSend.end(); i++) {
+            try { m_variableConvertAndInsertMap.at(*i)(dataToSerialize, p_driveSituation); }
+            catch (...) {
+                dataToSerialize.push_back("Variable key does not exist");
+            }
+        }
     }
 
-    msgpack::pack(stringstream, dataToSerialize);
+    msgpack::pack(p_sbuffer, dataToSerialize);
 }
 
 template <class DriveSituation>
@@ -94,11 +93,11 @@ IDecision* SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& driveSit
     std::stringstream stringstream;
     SerializeDriveSituation(stringstream, driveSituation);
 
-    const char* dataReceived;
-    std::size_t dataSize;
-
+//    const char* dataReceived;
+//    std::size_t dataSize;
+//
     IDecision* decisions;
-    DeserializeBlackBoxResults(decisions, dataReceived, dataSize);
+//    DeserializeBlackBoxResults(decisions, dataReceived, dataSize);
     return decisions;
 }
 

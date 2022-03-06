@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "DriveSituation.h"
 #include "IDecision.h"
+#include "msgpack.hpp"
 
 template <class DriveSituation>
 class SocketBlackBox
@@ -30,7 +31,7 @@ public:
      * return the decisions
      */
 
-    void SerializeDriveSituation(std::stringstream& stringstream, DriveSituation& driveSituation);
+    void SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);
     void DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size);
 
     IDecision* GetDecisions(DriveSituation& driveSituation); //has to be decision array
