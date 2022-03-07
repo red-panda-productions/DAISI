@@ -16,8 +16,6 @@
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(dynamic_cast<SteerDecision&>(decision).m_steerAmount = std::stof(string))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(dynamic_cast<BrakeDecision&>(decision).m_brakeAmount = std::stof(string))
 
-#define PACK_VECTOR msgpack::pack(p_sbuffer, dataToSerialize)
-
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
 {
@@ -57,7 +55,7 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
     if (m_variablesToSend.size() == 0)
     {
         dataToSerialize.push_back("There are no variables to send");
-        PACK_VECTOR;
+        msgpack::pack(p_sbuffer, dataToSerialize);
         throw std::exception("m_variablesToSend has a size of 0, should be >= 1");
     }
 
@@ -66,12 +64,10 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
         catch (std::exception& e)
         {
             dataToSerialize.push_back("Variable key does not exist");
-            PACK_VECTOR;
-            throw e;
         }
     }
 
-    PACK_VECTOR;
+    msgpack::pack(p_sbuffer, dataToSerialize);
 }
 
 template <class DriveSituation>

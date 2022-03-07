@@ -250,13 +250,20 @@ TEST(MsgpackTests, NonExistingVariableKey)
     DEFINE_DRIVE_MOCK;
     SETUP_SOCKET;
 
-    socketBlackBox.m_variablesToSend = std::vector<std::string>{"NON_EXISTING_VARIABLE"};
+    std::vector<std::string> controlVector{
+            std::to_string(randomSpeed),
+            std::to_string(randomToMiddle),
+            std::to_string(randomOffroad)
+    };
+
+    // should be the same order as control vector
+    socketBlackBox.m_variablesToSend = std::vector<std::string>{"Speed",
+                                                                "NON_EXISTING_VARIABLE",
+                                                                "Offroad"};
 
     msgpack::sbuffer sbuffer;
 
-    ASSERT_THROW(socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation), std::exception);
-
-    //socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
+    socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
 
     msgpack::unpacker unpacker;
     unpacker.reserve_buffer(sbuffer.size());
@@ -269,7 +276,13 @@ TEST(MsgpackTests, NonExistingVariableKey)
     std::vector<std::string> testValues;
     obj.convert(testValues);
 
-    ASSERT_EQ(testValues.at(0), "Variable key does not exist");
+    int i = 0;
+    for (auto it = testValues.begin(); it != testValues.end(); it++)
+    {
+        if (i == 1) ASSERT_EQ(testValues.at(1), "Variable key does not exist");
+        else ASSERT_EQ(*it, controlVector.at(i++));
+    }
+
 }
 
 TEST(MsgpackTests, NoVariableVector)
