@@ -942,6 +942,11 @@ void cGrBoard::grDispCarBoard(const tSituation *s)
 }
 
 
+/// @brief       Displays the engines RPM in a horizontal bar, only used in the Arcade HUD.
+/// @param X     Reference X drawining position 
+/// @param Y     Reference Y drawining position
+/// @param align Alignment of the bar compared to its reference position 
+/// @param bg    Background of the bar
 void cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
 {
   // Green LED
@@ -1156,7 +1161,7 @@ void cGrBoard::grDispLeaderBoard(const tSituation *s)
 }   // grDispLeaderBoard
 
 
-/// @brief Middle dashboard display with speed/gear meters
+/// @brief Middle 'Driver Counters' display with speed/gear meters and Fuel/Damage gauges.
 void cGrBoard::grDispCounterBoard2()
 {
   // RPM
