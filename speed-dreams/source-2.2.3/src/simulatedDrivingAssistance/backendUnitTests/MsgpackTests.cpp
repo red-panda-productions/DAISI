@@ -137,62 +137,63 @@ public:
 
 TEST(MsgpackTests, SerializeAll)
 {
-    RANDOM_VALUE_ASSIGNMENT;
-    DEFINE_DRIVE_MOCK;
-    SETUP_SOCKET;
+    for (int test = 0; test < 100; test++) {
+        RANDOM_VALUE_ASSIGNMENT;
+        DEFINE_DRIVE_MOCK;
+        SETUP_SOCKET;
 
-    std::vector<std::string> controlVector {
-                                std::to_string(randomAccelCmd),
-                                std::to_string(randomBrakeCmd),
-                                std::to_string(randomClutchCmd),
-                                std::to_string(randomSteerCmd),
-                                std::to_string(randomSpeed),
-                                std::to_string(randomTopSpeed),
-                                std::to_string(randomTimeOfDay),
-                                std::to_string(randomClouds),
-                                std::to_string(randomOffroad),
-                                std::to_string(randomToMiddle),
-                                std::to_string(randomToLeft),
-                                std::to_string(randomToRight),
-                                std::to_string(randomToStart),
-                                std::to_string(randomTimeLastSteer)
-                                };
+        std::vector<std::string> controlVector{
+                std::to_string(randomAccelCmd),
+                std::to_string(randomBrakeCmd),
+                std::to_string(randomClutchCmd),
+                std::to_string(randomSteerCmd),
+                std::to_string(randomSpeed),
+                std::to_string(randomTopSpeed),
+                std::to_string(randomTimeOfDay),
+                std::to_string(randomClouds),
+                std::to_string(randomOffroad),
+                std::to_string(randomToMiddle),
+                std::to_string(randomToLeft),
+                std::to_string(randomToRight),
+                std::to_string(randomToStart),
+                std::to_string(randomTimeLastSteer)
+        };
 
-    // should be in the same order as the control vector
-    socketBlackBox.m_variablesToSend = std::vector<std::string>{"AccelCmd",
-                                                                "BrakeCmd",
-                                                                "ClutchCmd",
-                                                                "SteerCmd",
-                                                                "Speed",
-                                                                "TopSpeed",
-                                                                "TimeOfDay",
-                                                                "Clouds",
-                                                                "Offroad",
-                                                                "ToMiddle",
-                                                                "ToLeft",
-                                                                "ToRight",
-                                                                "ToStart",
-                                                                "TimeLastSteer"};
+        // should be in the same order as the control vector
+        socketBlackBox.m_variablesToSend = std::vector<std::string>{"AccelCmd",
+                                                                    "BrakeCmd",
+                                                                    "ClutchCmd",
+                                                                    "SteerCmd",
+                                                                    "Speed",
+                                                                    "TopSpeed",
+                                                                    "TimeOfDay",
+                                                                    "Clouds",
+                                                                    "Offroad",
+                                                                    "ToMiddle",
+                                                                    "ToLeft",
+                                                                    "ToRight",
+                                                                    "ToStart",
+                                                                    "TimeLastSteer"};
 
-    msgpack::sbuffer sbuffer;
-    socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
+        msgpack::sbuffer sbuffer;
+        socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
 
-    msgpack::unpacker unpacker;
-    unpacker.reserve_buffer(sbuffer.size());
-    std::memcpy(unpacker.buffer(), sbuffer.data(), sbuffer.size());
-    unpacker.buffer_consumed(sbuffer.size());
-    msgpack::unpacked result;
-    unpacker.next(result);
-    msgpack::object const& obj = result.get();
+        msgpack::unpacker unpacker;
+        unpacker.reserve_buffer(sbuffer.size());
+        std::memcpy(unpacker.buffer(), sbuffer.data(), sbuffer.size());
+        unpacker.buffer_consumed(sbuffer.size());
+        msgpack::unpacked result;
+        unpacker.next(result);
+        msgpack::object const &obj = result.get();
 
-    std::vector<std::string> testValues;
-    obj.convert(testValues);
+        std::vector<std::string> testValues;
+        obj.convert(testValues);
 
-    int i = 0;
-    for (auto it = testValues.begin(); it != testValues.end(); it++)
-    {
-        //std::cout << *it << " should equal: " << controlVector.at(i) << std::endl;
-        ASSERT_EQ(*it, controlVector.at(i++));
+        int i = 0;
+        for (auto it = testValues.begin(); it != testValues.end(); it++) {
+            //std::cout << *it << " should equal: " << controlVector.at(i) << std::endl;
+            ASSERT_EQ(*it, controlVector.at(i++));
+        }
     }
 }
 
@@ -252,6 +253,9 @@ TEST(MsgpackTests, NonExistingVariableKey)
     socketBlackBox.m_variablesToSend = std::vector<std::string>{"NON_EXISTING_VARIABLE"};
 
     msgpack::sbuffer sbuffer;
+
+    //ASSERT_THROW(socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation), std::exception);
+
     socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
 
     msgpack::unpacker unpacker;
