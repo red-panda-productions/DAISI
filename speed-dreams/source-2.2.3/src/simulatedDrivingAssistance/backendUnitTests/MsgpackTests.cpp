@@ -24,16 +24,16 @@
                                 float randomToLeft = distr(eng);\
                                 float randomToRight = distr(eng);\
                                 float randomToStart = distr(eng);\
-                                float randomTimeLastSteer = distr(eng);
+                                float randomTimeLastSteer = distr(eng)
 
 #define DEFINE_DRIVE_MOCK       DriveSituationMock driveSituation(\
                                         PlayerInfoMock(randomTimeLastSteer),\
                                         CarInfoMock(randomSpeed, randomTopSpeed, randomSteerCmd,randomAccelCmd,randomBrakeCmd,randomClutchCmd),\
                                         EnvironmentInfoMock(randomOffroad,randomTimeOfDay, randomClouds,\
-                                                            TrackPositionMock(randomToStart,randomToRight,randomToMiddle,randomToLeft)));
+                                                            TrackPositionMock(randomToStart,randomToRight,randomToMiddle,randomToLeft)))
 
 #define SETUP_SOCKET            SocketBlackBox<DriveSituationMock> socketBlackBox;\
-                                socketBlackBox.Initialize();
+                                socketBlackBox.Initialize()
 
 class PlayerInfoMock
 {
@@ -248,15 +248,15 @@ TEST(MsgpackTests, NonExistingVariableKey)
 {
     RANDOM_VALUE_ASSIGNMENT;
     DEFINE_DRIVE_MOCK;
-    SETUP_SOCKET
+    SETUP_SOCKET;
 
     socketBlackBox.m_variablesToSend = std::vector<std::string>{"NON_EXISTING_VARIABLE"};
 
     msgpack::sbuffer sbuffer;
 
-    //ASSERT_THROW(socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation), std::exception);
+    ASSERT_THROW(socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation), std::exception);
 
-    socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
+    //socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
 
     msgpack::unpacker unpacker;
     unpacker.reserve_buffer(sbuffer.size());
@@ -276,10 +276,10 @@ TEST(MsgpackTests, NoVariableVector)
 {
     RANDOM_VALUE_ASSIGNMENT;
     DEFINE_DRIVE_MOCK;
-    SETUP_SOCKET
+    SETUP_SOCKET;
 
     msgpack::sbuffer sbuffer;
-    socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
+    ASSERT_THROW(socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation), std::exception);
 
     msgpack::unpacker unpacker;
     unpacker.reserve_buffer(sbuffer.size());

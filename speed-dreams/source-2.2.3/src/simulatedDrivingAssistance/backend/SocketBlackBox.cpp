@@ -16,7 +16,7 @@
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(dynamic_cast<SteerDecision&>(decision).m_steerAmount = std::stof(string))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(dynamic_cast<BrakeDecision&>(decision).m_brakeAmount = std::stof(string))
 
-#define INSERT_PAIR insert(std::pair<std::string, >)
+#define PACK_VECTOR msgpack::pack(p_sbuffer, dataToSerialize)
 
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
@@ -54,17 +54,24 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
 {
     std::vector<std::string> dataToSerialize;
 
-    if (m_variablesToSend.size() == 0) dataToSerialize.push_back("There are no variables to send");
-    else {
-        for (auto i = m_variablesToSend.begin(); i != m_variablesToSend.end(); i++) {
-            try { m_variableConvertAndInsertMap.at(*i)(dataToSerialize, p_driveSituation); }
-            catch (...) {
-                dataToSerialize.push_back("Variable key does not exist");
-            }
+    if (m_variablesToSend.size() == 0)
+    {
+        dataToSerialize.push_back("There are no variables to send");
+        PACK_VECTOR;
+        throw std::exception("m_variablesToSend has a size of 0, should be >= 1");
+    }
+
+    for (auto i = m_variablesToSend.begin(); i != m_variablesToSend.end(); i++) {
+        try { m_variableConvertAndInsertMap.at(*i)(dataToSerialize, p_driveSituation); }
+        catch (std::exception& e)
+        {
+            dataToSerialize.push_back("Variable key does not exist");
+            PACK_VECTOR;
+            throw e;
         }
     }
 
-    msgpack::pack(p_sbuffer, dataToSerialize);
+    PACK_VECTOR;
 }
 
 template <class DriveSituation>
