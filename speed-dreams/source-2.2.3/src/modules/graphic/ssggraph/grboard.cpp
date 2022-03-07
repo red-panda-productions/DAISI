@@ -33,6 +33,14 @@
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
 
+#define ALIGN_CENTER 0
+#define ALIGN_LEFT   1
+#define ALIGN_RIGHT  2
+
+#define LEADERBOARD_SCROLL_TIME       2.0
+#define LEADERBOARD_LINE_SCROLL_RATE  80     // pixels per second
+#define LEADERBOARD_LINE_SCROLL_DELAY 5      // seconds
+
 using std::string;
 
 static const string rgba[4] =
@@ -183,6 +191,7 @@ void cGrBoard::setWidth(int val)
   rightAnchor = (val / 2) + val * boardWidth / 200;
 }
 
+
 /// @brief      Updates one of the board flags, called when one of the defined keybinds is pressed.
 /// @param val  Value corresponding to a specific keybind.
 void cGrBoard::selectBoard(int val)
@@ -293,6 +302,7 @@ void cGrBoard::grDispDebug(const tSituation *s, const cGrFrameInfo* frame)
     }
   }
 }  // grDispDebug
+
 
 /// @brief Displays information about the wheels in the bottom right of the screen.
 /// Information about slipping, temperature, steering, braking, acceleration, etc.
@@ -618,6 +628,7 @@ void cGrBoard::grDispGGraph()
   glEnd();
 }
 
+
 /// @brief          Draws a vertical gauge displaying some information
 /// @param X1       Reference X-coordinate to start drawining from
 /// @param Y1       Reference Y-coordinate to start drawining from
@@ -931,10 +942,6 @@ void cGrBoard::grDispCarBoard(const tSituation *s)
 }
 
 
-#define ALIGN_CENTER  0
-#define ALIGN_LEFT  1
-#define ALIGN_RIGHT 2
-
 void cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
 {
   // Green LED
@@ -1148,6 +1155,7 @@ void cGrBoard::grDispLeaderBoard(const tSituation *s)
   }   // else
 }   // grDispLeaderBoard
 
+
 /// @brief Middle dashboard display with speed/gear meters
 void cGrBoard::grDispCounterBoard2()
 {
@@ -1251,6 +1259,7 @@ void cGrBoard::grDispCounterBoard2()
   glTranslatef(0, -(speedoRise * TOP_ANCHOR / 100), 0);
 }  // grDispCounterBoard2
  
+
 /// @brief Initializes the dashboard by creating a trackmap object.
 void cGrBoard::initBoard(void)
 {
@@ -1258,6 +1267,7 @@ void cGrBoard::initBoard(void)
     trackMap = new cGrTrackMap();
   }
 }
+
 
 /// @brief Shuts down the dashboard by releasing the trackmap object memory.
 void cGrBoard::shutdown(void)
@@ -1269,8 +1279,8 @@ void cGrBoard::shutdown(void)
 
 void cGrBoard::grDispArcade(const tSituation *s)
 {
-#define XM  15  // X margin
-#define YM  10  // Y margin
+    #define XM  15  // X margin
+    #define YM  10  // Y margin
 
   // We are ARCADE, we draw BIIIIG
   int dy = GfuiFontHeight(GFUI_FONT_BIG_C);
@@ -1456,6 +1466,7 @@ bool cGrBoard::grGetSplitTime(const tSituation *s, bool gap_inrace, double &time
   return true;
 }
 
+
 /**
  * This function gives back the information about the remaining laps / time
  *
@@ -1540,7 +1551,6 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 // TODO(?): clean solution for cleanup.
 static ssgSimpleState* cleanup[1024];
 static int nstate = 0;
-
 
 void grInitBoardCar(tCarElt *car)
 {
@@ -1773,7 +1783,7 @@ void grShutdownBoardCar(void)
   nstate = 0;*/
 }
 
-#define LEADERBOARD_SCROLL_TIME 2.0
+
 /**
  * grDispLeaderBoardScroll
  *
@@ -1865,8 +1875,6 @@ void cGrBoard::grDispLeaderBoardScroll(const tSituation *s)
 }   // grDispLeaderBoardScroll
 
 
-#define LEADERBOARD_LINE_SCROLL_RATE 80     // pixels per second
-#define LEADERBOARD_LINE_SCROLL_DELAY 5     // seconds
 /**
  * grDispLeaderBoardScrollLine
  *
