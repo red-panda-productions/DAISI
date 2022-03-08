@@ -4,6 +4,7 @@
 #include <car.h>
 #include <raceman.h>
 #include <humandriver.h>
+#include "Mediator.h"
 
 class Driver {
  public:
