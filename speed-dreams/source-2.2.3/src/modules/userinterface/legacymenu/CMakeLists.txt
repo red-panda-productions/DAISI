@@ -1,6 +1,7 @@
 INCLUDE(../../../../cmake/macros.cmake)
 
 SET(MS mainscreens)
+# SIMULATED DRIVING ASSISTANCE CHANGE: added interventionMenu.h and cpp
 SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/InterventionMenu.cpp
                         ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp)
 SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/InterventionMenu.cpp
@@ -75,6 +76,7 @@ ELSE(OPTION_CLIENT_SERVER)
    SET(NETWORKING_LIB networking)
 ENDIF(OPTION_CLIENT_SERVER)
 
+# SIMULATED DRIVING ASSISTANCE CHANGE: added backend
 ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC})
 
 ADD_PLIB_INCLUDEDIR()
@@ -108,6 +110,7 @@ SD_ADD_LIBRARY(legacymenu MODULE ${LEGACYMENU_SOURCES} ${LEGACYMENU_HEADERS})
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose) 
 #SET_TARGET_PROPERTIES(legacymenu PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)
 
+# SIMULATED DRIVING ASSISTANCE CHANGE: added backend
 ADD_SDLIB_LIBRARY(legacymenu portability tgf tgfclient tgfdata backend ${NETWORKING_LIB})
 
 SD_INSTALL_FILES(LIB modules/userinterface TARGETS legacymenu)

@@ -33,7 +33,9 @@
 #include <racemanagers.h>
 
 #include "splash.h"
+//SIMULATED DRIVING ASSISTANCE CHANGE:
 #include "InterventionMenu.h"
+
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "racescreens.h"
@@ -97,7 +99,7 @@ bool LegacyMenu::backLoad()
     if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
         return false;
 
-    // Pre-load the intervention type select menu
+    // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the intervention type select menu
     InterventionMenuInit(MainMenuInit(SupportsHumanDrivers));
 
     // Pre-load race managers, drivers, tracks, cars stuff.
@@ -114,6 +116,7 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
+// SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
 bool LegacyMenu::ActivateInterventionMenu()
 {
     return InterventionMenuRun() == 0;
@@ -176,7 +179,7 @@ bool LegacyMenu::activate()
 	if (strRaceToStart.empty())
 	{
         // If not specified, simply open the splash screen, load the menus in the background
-        // and finally open the intervention menu.
+        // SIMULATED DRIVING ASSISTANCE CHANGE: and finally open the intervention menu.
         fnOnSplashClosed = LegacyMenu::ActivateInterventionMenu;
     }
 
