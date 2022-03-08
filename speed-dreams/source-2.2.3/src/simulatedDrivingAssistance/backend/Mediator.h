@@ -10,10 +10,13 @@ class Mediator
 public:
 	void DriveTick(tCarElt* p_car, tSituation* p_situation);
 	void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
-	void RaceStop(tCarElt* p_car, tSituation* p_situation);
+	void RaceStop();
 	void SetInterventionType(INTERVENTION_TYPE type);
     INTERVENTION_TYPE GetInterventionType();
 	DriveSituation* Simulate();
+
+    /// @brief Creates a mediator instance if needed and returns it
+    /// @return A mediator instance
     static Mediator* GetInstance();
 
  private:

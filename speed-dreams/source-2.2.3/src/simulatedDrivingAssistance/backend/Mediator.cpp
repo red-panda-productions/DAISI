@@ -1,5 +1,7 @@
 #include "Mediator.h"
 
+static Mediator* s_instance = nullptr;
+
 INTERVENTION_TYPE Mediator::GetInterventionType()
 {
     return INTERVENTION_TYPE_NO_ASSISTANCE;
@@ -22,5 +24,9 @@ DriveSituation* Mediator::Simulate()
 }
 
 Mediator* Mediator::GetInstance() {
-    return nullptr;
+    if(!s_instance) {
+        s_instance = new Mediator();
+    }
+
+    return s_instance;
 }
