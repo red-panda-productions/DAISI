@@ -1,6 +1,5 @@
 #include "SocketBlackBox.h"
 #include <string>
-#include <iostream>
 #include "SteerDecision.h"
 #include "BrakeDecision.h"
 
@@ -47,16 +46,19 @@ void SocketBlackBox<DriveSituation>::Initialize()
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
 }
 
+/// @brief                  Inserts a string of value of variable in vector. Packs this vector to msgpack.
+/// @param p_sbuffer        Buffer to pack data in
+/// @param p_driveSituation Drive situation to serialize
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation)
 {
     std::vector<std::string> dataToSerialize;
 
-    if (m_variablesToSend.size() == 0)
+    if (m_variablesToSend.empty())
     {
         dataToSerialize.push_back("There are no variables to send");
         msgpack::pack(p_sbuffer, dataToSerialize);
-        throw std::exception("m_variablesToSend has a size of 0, should be >= 1");
+        throw std::exception("m_variablesToSend is empty");
     }
 
     for (auto i = m_variablesToSend.begin(); i != m_variablesToSend.end(); i++) {
@@ -70,6 +72,10 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
     msgpack::pack(p_sbuffer, dataToSerialize);
 }
 
+/// @brief              Deserializes received data and makes a decision array from this data
+/// @param decisions    Decision array to put decisions in
+/// @param dataReceived Data received from black box
+/// @param size         Size of received data
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size)
 {
@@ -90,17 +96,21 @@ void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(IDecision* decis
     }
 }
 
+/// @brief Sends serialized drive situation to black box. Deserializes data received by black box.
+///        Makes decisions from received data.
+/// @param driveSituation Drive situation to base decisions off.
+/// @return returns decision array.
 template<class DriveSituation>
 IDecision* SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& driveSituation)
 {
     std::stringstream stringstream;
     SerializeDriveSituation(stringstream, driveSituation);
 
-//    const char* dataReceived;
-//    std::size_t dataSize;
-//
-    IDecision* decisions;
+    return nullptr;
+
+    /*TODO: send and receive data with IPCLib*/
+//    IDecision* decisions;
 //    DeserializeBlackBoxResults(decisions, dataReceived, dataSize);
-    return decisions;
+//    return decisions;
 }
 

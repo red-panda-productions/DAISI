@@ -1,13 +1,11 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include "Utils.h"
 #include "SocketBlackBox.h"
 #include "SocketBlackBox.cpp"
-#include "PlayerInfo.h"
-#include "DriveSituation.h"
+#include "mocks/DriveSituationMock.h"
 #include <random>
 #include <limits>
 
+/// create all variables of drive situation and assign random values
 #define RANDOM_VALUE_ASSIGNMENT std::random_device rd;\
                                 std::default_random_engine eng(rd());\
                                 std::uniform_real_distribution<> distr(-1000 , 1000);\
@@ -26,115 +24,20 @@
                                 float randomToStart = distr(eng);\
                                 float randomTimeLastSteer = distr(eng)
 
+/// create a drive situation mock and insert all variables
 #define DEFINE_DRIVE_MOCK       DriveSituationMock driveSituation(\
                                         PlayerInfoMock(randomTimeLastSteer),\
                                         CarInfoMock(randomSpeed, randomTopSpeed, randomSteerCmd,randomAccelCmd,randomBrakeCmd,randomClutchCmd),\
                                         EnvironmentInfoMock(randomOffroad,randomTimeOfDay, randomClouds,\
                                                             TrackPositionMock(randomToStart,randomToRight,randomToMiddle,randomToLeft)))
 
+/// create a socket black box and initialize the maps.
 #define SETUP_SOCKET            SocketBlackBox<DriveSituationMock> socketBlackBox;\
                                 socketBlackBox.Initialize()
 
-class PlayerInfoMock
-{
-public:
-    PlayerInfoMock(float p_timeLastSteer)
-    {
-        m_timeLastSteer = p_timeLastSteer;
-    }
-
-    float m_timeLastSteer;
-
-    float TimeLastSteer(){return m_timeLastSteer;}
-};
-
-class TrackPositionMock
-{
-public:
-    TrackPositionMock(float p_toStart, float p_toRight, float p_toMiddle, float p_toLeft)
-    {
-        m_toStart = p_toStart;
-        m_toRight = p_toRight;
-        m_toMiddle = p_toMiddle;
-        m_toLeft = p_toLeft;
-    }
-
-    float m_toStart;
-    float m_toRight;
-    float m_toMiddle;
-    float m_toLeft;
-
-    float ToStart(){return m_toStart;};
-    float ToRight(){return m_toRight;};
-    float ToMiddle(){return m_toMiddle;};
-    float ToLeft(){return m_toLeft;};
-};
-
-class EnvironmentInfoMock
-{
-public:
-    EnvironmentInfoMock(bool p_offroad, int p_timeOfDay, int p_clouds,
-                        TrackPositionMock trackPosition) : trackPosition(trackPosition)
-    {
-        m_offroad = p_offroad;
-        m_timeOfDay = p_timeOfDay;
-        m_clouds = p_clouds;
-    }
-
-    bool m_offroad;
-    int m_timeOfDay;
-    int m_clouds;
-    TrackPositionMock trackPosition;
-
-    bool Offroad(){return m_offroad;};
-    int TimeOfDay(){return m_timeOfDay;};
-    int Clouds(){return m_clouds;};
-    TrackPositionMock TrackLocalPosition() {return trackPosition;}
-};
-
-class CarInfoMock
-{
-public:
-    CarInfoMock(float p_speed,float p_topSpeed,float p_steerCmd,float p_accelCmd,float p_brakeCmd,float p_clutchCmd)
-    {
-        m_speed = p_speed;
-        m_topSpeed = p_topSpeed;
-        m_steerCmd = p_steerCmd;
-        m_accelCmd = p_accelCmd;
-        m_brakeCmd = p_brakeCmd;
-        m_clutchCmd = p_clutchCmd;
-    }
-
-    float m_speed;
-    float m_topSpeed;
-    float m_steerCmd;
-    float m_accelCmd;
-    float m_brakeCmd;
-    float m_clutchCmd;
-
-    float Speed(){return m_speed;};
-    float TopSpeed(){return m_topSpeed;};
-    float SteerCmd(){return m_steerCmd;};
-    float AccelCmd(){return m_accelCmd;};
-    float BrakeCmd(){return m_brakeCmd;};
-    float ClutchCmd(){return m_clutchCmd;};
-};
-
-class DriveSituationMock
-{
-public:
-    DriveSituationMock(PlayerInfoMock m_PlayerInfo, CarInfoMock mCarInfo, EnvironmentInfoMock mEnvironmentInfo)
-            : m_playerInfo(m_PlayerInfo), m_carInfo(mCarInfo), m_environmentInfo(mEnvironmentInfo) {};
-
-    PlayerInfoMock m_playerInfo;
-    EnvironmentInfoMock m_environmentInfo;
-    CarInfoMock m_carInfo;
-
-    PlayerInfoMock GetPlayerInfo(){return m_playerInfo;}
-    EnvironmentInfoMock GetEnvironmentInfo(){return m_environmentInfo;};
-    CarInfoMock GetCarInfo(){return m_carInfo;};
-};
-
+/// <summary>
+/// Tests if all variables can be serialized correctly
+/// </summary>
 TEST(MsgpackTests, SerializeAll)
 {
     for (int test = 0; test < 100; test++) {
@@ -197,6 +100,10 @@ TEST(MsgpackTests, SerializeAll)
     }
 }
 
+
+/// <summary>
+/// Tests if serialization also works if not all variables are included.
+/// </summary>
 TEST(MsgpackTests, SerializeSome)
 {
     RANDOM_VALUE_ASSIGNMENT;
@@ -244,6 +151,9 @@ TEST(MsgpackTests, SerializeSome)
     }
 }
 
+/// <summary>
+/// Tests if all variables are correctly serialized, even when a variable that does not exist is tried.
+/// </summary>
 TEST(MsgpackTests, NonExistingVariableKey)
 {
     RANDOM_VALUE_ASSIGNMENT;
@@ -285,7 +195,11 @@ TEST(MsgpackTests, NonExistingVariableKey)
 
 }
 
-TEST(MsgpackTests, NoVariableVector)
+/// <summary>
+/// Tests if an exception is thrown when the variablesToSend vector is empty.
+/// Should also serialize an error message for the black box.
+/// </summary>
+TEST(MsgpackTests, EmptyVariableVector)
 {
     RANDOM_VALUE_ASSIGNMENT;
     DEFINE_DRIVE_MOCK;

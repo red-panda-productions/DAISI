@@ -31,17 +31,20 @@ public:
      * return the decisions
      */
 
+
     void SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);
     void DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size);
 
-    IDecision* GetDecisions(DriveSituation& driveSituation); //has to be decision array
+    IDecision* GetDecisions(DriveSituation& driveSituation);
 
     std::vector<std::string> m_variablesToSend;
     std::vector<std::string> m_variablesToReceive;
 
+    // map with functions that insert correct variable value in vector
     using inserterFunction = void (*) (std::vector<std::string>&, DriveSituation&);
     std::unordered_map<std::string, inserterFunction> m_variableConvertAndInsertMap;
 
+    // map with function that create correct concrete decision
     using decisionConvertFunction = void (*) (std::string&, IDecision&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
 };
