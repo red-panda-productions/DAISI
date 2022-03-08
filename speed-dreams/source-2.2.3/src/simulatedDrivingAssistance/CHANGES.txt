@@ -1,24 +1,36 @@
 
 Changes to Speed Dreams
 
- Menus
-  *New interventionmenu:
-    Added:
-      InterventionMenu.h and .cpp in src/modules/userinterface/legacymenu/mainscreens
-      InterventionMenu.xml in data/data/menu
-    Changed:
-      src/modules/userinterface/legacymenu.h
-        added    ActivateInterventionMenu()
-      src/modules/userinterface/legacymenu.cpp
-        included "InterventionMenu.h"
-        added    ActivateInterventionMenu()
-        changed  backLoad()
-        changed  activate()
-      src/modules/userinterface/legacymenu/CMakeList.txt
-        added    interventionmenu.h and .cpp
-        added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
-      ( src/modules/userinterface/legacymenu/mainscreens/mainmenu.cpp
-          added    OnInterventionMenuActivate() (commented out)
-          changed  MainMenuInit()               (commented out)
-          included "InterventionMenu.h"         (unused)      )
-      data/data/menu/mainmenu.xml               (commented out)
+This file states the changes that are done by us in Speed Dreams.
+If something is changed in Speed Dreams, you need to state:
+• what files has been changed;
+• which functions have been altered, deleted and/or added;
+• which variables have been added, removed and/or changed (e.g. changed from local to global);
+• which libraries and/or other software have been added to specific files or the whole project.
+
+It is ordened by: if a file is added or changed, then if the file is in src or data.
+
+
+Added:
+  src/
+    InterventionMenu.h and .cpp in src/modules/userinterface/legacymenu/mainscreens
+  data/
+    InterventionMenu.xml in data/data/menu
+Changed:
+  src/
+    src/modules/userinterface/legacymenu.h
+      added    ActivateInterventionMenu()
+    src/modules/userinterface/legacymenu.cpp
+      included "InterventionMenu.h"
+      added    ActivateInterventionMenu()
+      changed  backLoad()
+      changed  activate()
+    src/modules/userinterface/legacymenu/CMakeList.txt
+      added    interventionmenu.h and .cpp
+      added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+    src/modules/userinterface/legacymenu/mainscreens/mainmenu.cpp
+      added    OnInterventionMenuActivate() (commented out)
+      changed  MainMenuInit()               (commented out)
+      included "InterventionMenu.h"         (unused)      )
+  data/
+    data/data/menu/mainmenu.xml             (commented out)
