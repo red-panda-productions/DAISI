@@ -1,3 +1,4 @@
+#include <random>
 #include "Utils.h"
 
 bool TestMessageEqual(const char* msg1, const char* msg2, int size)
@@ -23,3 +24,8 @@ void GenerateRandomCharArray(char* dataBuffer, int stringLength)
 	}
 	dataBuffer[stringLength] = '\0';
 }
+//
+//float randomFloat(const float max)
+//{
+//    return 0;//(float)rand()/(float)(RAND_MAX/1) * max;
+//}

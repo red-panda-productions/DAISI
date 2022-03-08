@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(googletest)
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 add_executable(
-  backendUnitTests "MsgpackSerializeTests.cpp")
+  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp")
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities

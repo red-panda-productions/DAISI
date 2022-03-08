@@ -1,7 +1,9 @@
 #include "SocketBlackBox.h"
 #include <string>
+#include <iostream>
 #include "SteerDecision.h"
 #include "BrakeDecision.h"
+#include "../rppUtils/Utils.hpp"
 
 // inserts value from DriveSituation variables in vector
 #define PUSH_BACK_DS(GetInfo) [](std::vector<std::string>& values, DriveSituation& ds){values.push_back(std::to_string(ds.GetInfo));}
@@ -10,10 +12,15 @@
 #define INSERT_TRACK_LOCAL_POSITION(variable) INSERT_ENVIRONMENT_INFO(TrackLocalPosition().variable)
 #define INSERT_PLAYER_INFO(variable) PUSH_BACK_DS(GetPlayerInfo().variable)
 
+#define STRING_TO_FLOAT try { return std::stof(s); } \
+                        catch (std::exception& e) { return NAN; }
+
 // converts abstract decision to concrete decision with correct value
-#define DECISION_LAMBDA(f) [](std::string& string, IDecision& decision) {f;}
-#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(dynamic_cast<SteerDecision&>(decision).m_steerAmount = std::stof(string))
-#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(dynamic_cast<BrakeDecision&>(decision).m_brakeAmount = std::stof(string))
+#define DECISION_LAMBDA(f) [](std::string& string, DecisionTuple& decisionTuple) {f;}
+#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(decisionTuple.steerDecision.m_steerAmount = stringToFloat(string))
+#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(decisionTuple.brakeDecision.m_brakeAmount = stringToFloat(string))
+
+
 
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
@@ -77,22 +84,24 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
 /// @param dataReceived Data received from black box
 /// @param size         Size of received data
 template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size)
+void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(DecisionTuple& p_decisionTuple, const char* p_dataReceived, unsigned int p_size)
 {
     //unpack
     msgpack::unpacked msg;
-    msgpack::unpack(msg, dataReceived, size);
+    msgpack::unpack(msg, p_dataReceived, p_size);
 
     //convert
     msgpack::object obj = msg.get();
     std::vector<std::string> resultVec;
     obj.convert(resultVec);
 
+    if (m_variablesToReceive.empty()) throw std::exception("No variables to receive");
+    if (m_variablesToReceive.size() != resultVec.size())
+        throw std::exception("Number of variables received does not match number of expected variables to receive");
     for (int i = 0; i < m_variablesToReceive.size(); i++)
     {
-        IDecision* decision;
-        m_variableDecisionMap.at(m_variablesToReceive[i])(resultVec.at(i), *decision) ;
-        decisions[i] = *decision;
+        try {m_variableDecisionMap.at(m_variablesToReceive[i])(resultVec.at(i), p_decisionTuple);}
+        catch (std::exception& e) {throw e;}
     }
 }
 

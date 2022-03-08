@@ -5,6 +5,7 @@
 #include "DriveSituation.h"
 #include "IDecision.h"
 #include "msgpack.hpp"
+#include "DecisionTuple.h"
 
 template <class DriveSituation>
 class SocketBlackBox
@@ -33,9 +34,9 @@ public:
 
 
     void SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);
-    void DeserializeBlackBoxResults(IDecision* decisions, const char* dataReceived, unsigned int size);
+    void DeserializeBlackBoxResults(DecisionTuple& p_decisions, const char* p_dataReceived, unsigned int p_size);
 
-    IDecision* GetDecisions(DriveSituation& driveSituation);
+    IDecision* GetDecisions(DriveSituation& p_driveSituation);
 
     std::vector<std::string> m_variablesToSend;
     std::vector<std::string> m_variablesToReceive;
@@ -45,6 +46,6 @@ public:
     std::unordered_map<std::string, inserterFunction> m_variableConvertAndInsertMap;
 
     // map with function that create correct concrete decision
-    using decisionConvertFunction = void (*) (std::string&, IDecision&);
+    using decisionConvertFunction = void (*) (std::string&, DecisionTuple&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
 };
