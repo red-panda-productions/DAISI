@@ -10,13 +10,17 @@ void Mediator::SetInterventionType(INTERVENTION_TYPE type)
 
 }
 
-void Mediator::DriveTick() {}
+void Mediator::DriveTick(tCarElt* p_car, tSituation* p_situation) {}
 
-void Mediator::RaceStart() {}
+void Mediator::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {}
 
-void Mediator::RaceStop() {}
+void Mediator::RaceStop(tCarElt* p_car, tSituation* p_situation) {}
 
 DriveSituation* Mediator::Simulate()
 {
+    return nullptr;
+}
+
+Mediator* Mediator::GetInstance() {
     return nullptr;
 }
