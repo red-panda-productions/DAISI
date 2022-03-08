@@ -1,7 +1,12 @@
 #include "Driver.h"
 
 Driver::Driver(int p_index, const char* p_name) : m_index(p_index), m_humanDriver(p_name) {
+    m_humanDriver.count_drivers();
     m_humanDriver.init_context(p_index);
+    // Pretend like the module is just initializing
+    auto* tempArr = new tModInfo[1];
+    m_humanDriver.initialize(tempArr, nullptr);
+    delete[] tempArr;
 }
 
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
