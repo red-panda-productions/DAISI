@@ -38,7 +38,7 @@
 /// <summary>
 /// Tests if all variables can be serialized correctly
 /// </summary>
-TEST(MsgpackTests, SerializeAll)
+TEST(MsgpackSerializeTests, SerializeAll)
 {
     for (int test = 0; test < 100; test++) {
         RANDOM_VALUE_ASSIGNMENT;
@@ -104,7 +104,7 @@ TEST(MsgpackTests, SerializeAll)
 /// <summary>
 /// Tests if serialization also works if not all variables are included.
 /// </summary>
-TEST(MsgpackTests, SerializeSome)
+TEST(MsgpackSerializeTests, SerializeSome)
 {
     RANDOM_VALUE_ASSIGNMENT;
     DEFINE_DRIVE_MOCK;
@@ -154,7 +154,7 @@ TEST(MsgpackTests, SerializeSome)
 /// <summary>
 /// Tests if all variables are correctly serialized, even when a variable that does not exist is tried.
 /// </summary>
-TEST(MsgpackTests, NonExistingVariableKey)
+TEST(MsgpackSerializeTests, NonExistingVariableKey)
 {
     RANDOM_VALUE_ASSIGNMENT;
     DEFINE_DRIVE_MOCK;
@@ -199,7 +199,7 @@ TEST(MsgpackTests, NonExistingVariableKey)
 /// Tests if an exception is thrown when the variablesToSend vector is empty.
 /// Should also serialize an error message for the black box.
 /// </summary>
-TEST(MsgpackTests, EmptyVariableVector)
+TEST(MsgpackSerializeTests, EmptyVariableVector)
 {
     RANDOM_VALUE_ASSIGNMENT;
     DEFINE_DRIVE_MOCK;
