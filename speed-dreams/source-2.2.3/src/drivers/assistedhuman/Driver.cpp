@@ -42,12 +42,11 @@ int Driver::PitCmd(tCarElt* p_car, tSituation* p_situation) {
 
 void Driver::EndRace(tCarElt* p_car, tSituation* p_situation) {
     m_humanDriver.end_race(m_index, p_car, p_situation);
-
-    Mediator::GetInstance()->RaceStop(p_car, p_situation);
 }
 
 void Driver::Shutdown() {
     m_humanDriver.shutdown(m_index);
+    Mediator::GetInstance()->RaceStop();
 }
 
 void Driver::Terminate() {
