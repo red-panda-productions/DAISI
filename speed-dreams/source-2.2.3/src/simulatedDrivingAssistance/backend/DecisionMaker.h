@@ -1,6 +1,5 @@
 #pragma once
 #include "DriveSituation.h"
-#include "InterventionType.h"
 #include "ConfigEnums.h"
 #include "Config.h"
 #include "InterventionMaker.h"

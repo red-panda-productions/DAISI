@@ -4,6 +4,7 @@ SET(_SOURCES Mediator.cpp
         Config.cpp
         DecisionMaker.cpp
         InterventionFactory.cpp)
+
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
         DriveSituation.h
