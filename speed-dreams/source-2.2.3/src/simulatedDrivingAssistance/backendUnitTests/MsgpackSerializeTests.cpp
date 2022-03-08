@@ -4,6 +4,7 @@
 #include "mocks/DriveSituationMock.h"
 #include <random>
 #include <limits>
+#include "Random.hpp"
 
 /// create all variables of drive situation and assign random values
 #define RANDOM_VALUE_ASSIGNMENT std::random_device rd;\
