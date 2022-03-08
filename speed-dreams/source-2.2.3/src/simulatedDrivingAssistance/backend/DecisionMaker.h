@@ -1,7 +1,6 @@
 #pragma once
 #include "DriveSituation.h"
 #include "InterventionType.h"
-
 class DecisionMaker
 {
 public:
