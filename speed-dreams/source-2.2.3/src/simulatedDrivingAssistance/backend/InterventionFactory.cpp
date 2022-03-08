@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+// THE STD::COUT LINE CAN BE REMOVED AFTER THE DEMO (IF WE DO ONE)
 #define CASE(type, class) case type: { \
     std::cout << #type << std::endl; \
     return new class();}
