@@ -1,6 +1,9 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_SOURCES Mediator.cpp)
+SET(_SOURCES Mediator.cpp
+        SocketBlackBox.cpp
+        SteerDecision.cpp
+        BrakeDecision.cpp)
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
         DriveSituation.h
@@ -10,7 +13,7 @@ SET(_HEADERS CarInfo.h
         TrackPosition.h
         PlayerInfo.h
         SocketBlackBox.h
-        SocketBlackBox.cpp)
+        ../rppUtils/Utils.hpp)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)

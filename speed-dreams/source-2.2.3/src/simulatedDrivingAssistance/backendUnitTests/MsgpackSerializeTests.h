@@ -8,7 +8,7 @@
 /// create all variables of drive situation and assign random values
 #define RANDOM_VALUE_ASSIGNMENT std::random_device rd;\
                                 std::default_random_engine eng(rd());\
-                                std::uniform_real_distribution<> distr(-1000 , 1000);\
+                                std::uniform_real_distribution<float> distr(-1000 , 1000);\
                                 float randomAccelCmd = distr(eng);\
                                 float randomBrakeCmd = distr(eng);\
                                 float randomClutchCmd = distr(eng);\
