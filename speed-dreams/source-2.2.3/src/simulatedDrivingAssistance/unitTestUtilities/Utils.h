@@ -12,33 +12,24 @@
 /// </summary>
 /// <param name="secs"> The timeout parameter </param>
 /// <param name="stmt"> The statement to be executed </param>
-#define ASSERT_DURATION_LE(secs, stmt) { \
+
+/// @brief      Executes a statement, and fails if it takes longer than the secs parameter
+/// @param secs The timeout parameter
+/// @param stmt The statement to be executed
+#define ASSERT_DURATION_LE(p_secs, p_stmt) { \
   std::promise<bool> completed; \
   auto stmt_future = completed.get_future(); \
   std::thread([&](std::promise<bool>& completed) { \
-    stmt; \
+    p_stmt; \
     completed.set_value(true); \
   }, std::ref(completed)).detach(); \
   if(stmt_future.wait_for(std::chrono::seconds(secs)) == std::future_status::timeout) \
-    GTEST_FATAL_FAILURE_("       timed out (> " #secs \
+    GTEST_FATAL_FAILURE_("       timed out (> " #p_secs \
     " seconds). Check code for infinite loops"); \
 }
 
-/// <summary>
-/// Tests if 2 messages are equal to each other
-/// </summary>
-/// <param name="msg1"> The first message </param>
-/// <param name="msg2"> The second message </param>
-/// <param name="size"> The size of the 2 messages </param>
-/// <returns> Whether the test failed or succeeded </return>
-bool TestMessageEqual(const char* msg1, const char* msg2, int size);
+bool TestMessageEqual(const char* p_msg1, const char* p_msg2, int p_size);
 
-
-/// <summary>
-/// Generates a random string for testing
-/// </summary>
-/// <param name="dataBuffer"> The buffer in which the string will be written </param>
-/// <param name="stringLength"> The length of the string (must be strictly smaller than the length of the buffer) </param>
-void GenerateRandomCharArray(char* dataBuffer, int stringLength);
+void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 
 
