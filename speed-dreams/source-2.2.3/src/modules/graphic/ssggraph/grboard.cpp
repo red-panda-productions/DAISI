@@ -1561,8 +1561,8 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 void cGrBoard::grDispIntervention() 
 {
     // Dimensions of the icon on the screen (will be put in XML settings file later)
-    float width = 100;
-    float height = 100;
+    float iconWidth = 100;
+    float iconHeight = 100;
 
     // Duplicate the current matrix and enable opengl settings.
     glPushMatrix();
@@ -1572,7 +1572,7 @@ void cGrBoard::grDispIntervention()
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
-    glTranslatef(1.5 * centerAnchor - 0.5 * width, BOTTOM_ANCHOR, 0);
+    glTranslatef(1.5 * centerAnchor - 0.5 * iconWidth, BOTTOM_ANCHOR, 0);
     if (interventionTexture) {
         glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
     }
@@ -1583,9 +1583,9 @@ void cGrBoard::grDispIntervention()
     glBegin(GL_TRIANGLE_STRIP);
     glColor4f(1.0, 1.0, 1.0, 0.0);
     glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
-    glTexCoord2f(0.0, 1.0); glVertex2f(0, height);
-    glTexCoord2f(1.0, 0.0); glVertex2f(width, 0);
-    glTexCoord2f(1.0, 1.0); glVertex2f(width, height);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0, iconHeight);
+    glTexCoord2f(1.0, 0.0); glVertex2f(iconWidth, 0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(iconWidth, iconHeight);
     glEnd();
 
     // Unbind the texture and pop the translated matrix of the stack.
@@ -1659,21 +1659,25 @@ void grInitBoardCar(tCarElt *car)
 
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
 
-  // Add the data/intervention folder to the searchable filepaths.
+  // Add the data/intervention folder to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
 
-  char buf[1024];
-  snprintf(buf, sizeof(buf), "C:/Users/Larsk/OneDrive/Documenten/Universiteit/UU/Software-Project/simulated-driving-assistance/speed-dreams/source-2.2.3/data/data/intervention/intervention.xml");
+  // Load intervention texture from XML file, for now: UNSAFE with respect to path size (max is 256) 
+  char buf[256];
+  snprintf(buf, sizeof(buf), "%sdata/intervention/intervention.xml", GfDataDir());
   void* xmlHandleIntervention = GfParmReadFile(buf, GFPARM_RMODE_STD);
 
-  const char* param = GfParmGetStr(xmlHandleIntervention, SECT_GROBJECTS, "steer intervention", NULL);
-  interventionTexture = (ssgSimpleState*)grSsgLoadTexState(param);
+  // Search the xml file for the file corresponding to the attribute "steer intervention"
+  // Note that grSsgLoadTexState uses a buffer of 256 internally, so the file should not be bigger than 256x256
+  const char* attr = GfParmGetStr(xmlHandleIntervention, SECT_GROBJECTS, "steer intervention", NULL);
+  interventionTexture = (ssgSimpleState*)grSsgLoadTexState(attr);
+
 
   /* Tachometer --------------------------------------------------------- */
   tgrCarInstrument *curInst = &(carInfo->instrument[0]);
 
   /* Load the Tachometer texture */
-  param = GfParmGetStr(handle, SECT_GROBJECTS,
+  const char* param = GfParmGetStr(handle, SECT_GROBJECTS,
                                     PRM_TACHO_TEX, "rpm8000.png");
 
   curInst->texture = (ssgSimpleState*)grSsgLoadTexState(param);
