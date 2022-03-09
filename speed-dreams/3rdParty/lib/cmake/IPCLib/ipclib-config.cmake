@@ -28,6 +28,6 @@ set_and_check(IPCLIB_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/include")
 set_and_check(IPCLIB_LIB_DIR "${PACKAGE_PREFIX_DIR}/lib")
 set_and_check(IPCLIB_BIN_DIR "${PACKAGE_PREFIX_DIR}/bin")
 
-# add_library(IPCLib INTERFACE IMPORTED)
+add_library(IPCLib INTERFACE IMPORTED)
 
 check_required_components(IPCLib)
