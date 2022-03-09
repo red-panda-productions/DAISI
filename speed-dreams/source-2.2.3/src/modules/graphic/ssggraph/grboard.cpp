@@ -76,6 +76,8 @@ const char strFrontWing[] = "Front wing";
 const char strRearWing[] = "Rear wing";
 const char strPenalty[] = "Next pit type";
 
+ssgSimpleState* interventionTexture;
+
 
 cGrBoard::cGrBoard(int myid) :
     normal_color_(NULL), danger_color_(NULL), ok_color_(NULL),
@@ -1530,6 +1532,9 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
       grDispSplitScreenIndicator();
   }
 
+  // For now: display an intervention every frame.
+  grDispIntervention();
+
   if (arcadeFlag) {
     grDispArcade(s);
   } else {
@@ -1552,10 +1557,47 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
   }
 }
 
+/// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar, move this later)
+void cGrBoard::grDispIntervention() 
+{
+    // Dimensions of the icon on the screen (will be put in XML settings file later)
+    float width = 100;
+    float height = 100;
+
+    // Duplicate the current matrix and enable opengl settings.
+    glPushMatrix();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
+    glTranslatef(1.5 * centerAnchor - 0.5 * width, BOTTOM_ANCHOR, 0);
+    if (interventionTexture) {
+        glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
+    }
+
+    // Draw the texture as a Triangle Strip. 
+    // glTexCoord2f defines point of the texture that you take (0-1).
+    // glVertex2f then defines where to place this on the screen (relative to the current matrix)
+    glBegin(GL_TRIANGLE_STRIP);
+    glColor4f(1.0, 1.0, 1.0, 0.0);
+    glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0, height);
+    glTexCoord2f(1.0, 0.0); glVertex2f(width, 0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(width, height);
+    glEnd();
+
+    // Unbind the texture and pop the translated matrix of the stack.
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
+}
+
 
 // TODO(?): clean solution for cleanup.
 static ssgSimpleState* cleanup[1024];
 static int nstate = 0;
+
 
 void grInitBoardCar(tCarElt *car)
 {
@@ -1615,13 +1657,23 @@ void grInitBoardCar(tCarElt *car)
   if (bMasterModel)
     lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "cars/models/%s;", car->_masterModel);
 
-  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures");
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
+
+  // Add the data/intervention folder to the searchable filepaths.
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
+
+  char buf[1024];
+  snprintf(buf, sizeof(buf), "C:/Users/Larsk/OneDrive/Documenten/Universiteit/UU/Software-Project/simulated-driving-assistance/speed-dreams/source-2.2.3/data/data/intervention/intervention.xml");
+  void* xmlHandleIntervention = GfParmReadFile(buf, GFPARM_RMODE_STD);
+
+  const char* param = GfParmGetStr(xmlHandleIntervention, SECT_GROBJECTS, "steer intervention", NULL);
+  interventionTexture = (ssgSimpleState*)grSsgLoadTexState(param);
 
   /* Tachometer --------------------------------------------------------- */
   tgrCarInstrument *curInst = &(carInfo->instrument[0]);
 
   /* Load the Tachometer texture */
-  const char *param = GfParmGetStr(handle, SECT_GROBJECTS,
+  param = GfParmGetStr(handle, SECT_GROBJECTS,
                                     PRM_TACHO_TEX, "rpm8000.png");
 
   curInst->texture = (ssgSimpleState*)grSsgLoadTexState(param);
