@@ -27,9 +27,6 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added
-#include "InterventionMenu.h"
-
 
 static void *MenuHandle = 0;
 
@@ -73,13 +70,6 @@ onExitMenuActivate(void * /*dummy*/)
 {
     GfuiScreenActivate(ExitMenuInit(MenuHandle));
 }
-
-// SIMULATED DRIVING ASSISTANCE CHANGE : commented out
-//static void OnInterventionMenuActivate(void * /*dummy*/)
-/*{
-    GfuiScreenActivate(InterventionMenuInit(MenuHandle));
-}*/
-
 
 static void
 onMainMenuActivate(void * /* dummy */)
@@ -127,8 +117,6 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
-    //SIMULATED DRIVING ASSISTANCE CHANGE : button for intervention menu.
-    //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "intervention", NULL, OnInterventionMenuActivate);
 
     GfParmReleaseHandle(menuDescHdle);
 

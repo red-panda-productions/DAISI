@@ -33,7 +33,6 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-//SIMULATED DRIVING ASSISTANCE CHANGE:
 #include "InterventionMenu.h"
 
 #include "mainmenu.h"
@@ -117,6 +116,8 @@ bool LegacyMenu::activateMainMenu()
 }
 
 // SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
+/// @brief activates the InterventionMenu
+/// @return true if successful
 bool LegacyMenu::ActivateInterventionMenu()
 {
     return InterventionMenuRun() == 0;
