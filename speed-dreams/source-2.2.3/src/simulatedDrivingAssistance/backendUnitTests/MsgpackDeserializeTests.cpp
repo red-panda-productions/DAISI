@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "Utils.h"
+#include "Random.hpp"
 #include "msgpack.hpp"
 #include "SocketBlackBox.h"
 #include "MsgpackSerializeTests.h"
@@ -8,8 +9,9 @@
 
 TEST(MsgpackDeserializeTests, Deserialize)
 {
-    float controlSteerValue = randomFloat(1000);
-    float controlBrakeValue = randomFloat(1000);
+    Random random;
+    float controlSteerValue = random.NextFloat(1000);
+    float controlBrakeValue = random.NextFloat(1000);
 
     std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
@@ -29,8 +31,9 @@ TEST(MsgpackDeserializeTests, Deserialize)
 
 TEST(MsgpackDeserializeTests, NoVariablesToReceive)
 {
-    float controlSteerValue = randomFloat();
-    float controlBrakeValue = randomFloat();
+    Random random;
+    float controlSteerValue = random.NextFloat(1000);
+    float controlBrakeValue = random.NextFloat(1000);
 
     std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
@@ -45,8 +48,9 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
 
 TEST(MsgpackDeserializeTests, UnparsableData)
 {
+    Random random;
     std::string unparsableString = "This is not a float";
-    float controlBrakeValue = randomFloat();
+    float controlBrakeValue = random.NextFloat();
 
     std::vector<std::string> mockMessageFromBlackBox = {unparsableString, std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
@@ -66,8 +70,9 @@ TEST(MsgpackDeserializeTests, UnparsableData)
 
 TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
 {
+    Random random;
     std::string unparsableString = "This is not a float";
-    float controlBrakeValue = randomFloat();
+    float controlBrakeValue = random.NextFloat();
 
     std::vector<std::string> mockMessageFromBlackBox = {unparsableString, std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
@@ -84,9 +89,10 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
 
 TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
 {
-    float controlSteerValue = randomFloat();
-    float controlBrakeValue = randomFloat();
-    float extraValue = randomFloat();
+    Random random;
+    float controlSteerValue = random.NextFloat();
+    float controlBrakeValue = random.NextFloat();
+    float extraValue = random.NextFloat();
 
     std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue), std::to_string(extraValue)};
     msgpack::sbuffer sbuffer;
@@ -103,7 +109,8 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
 
 TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
 {
-    float controlSteerValue = randomFloat();
+    Random random;
+    float controlSteerValue = random.NextFloat();
 
     std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue)};
     msgpack::sbuffer sbuffer;

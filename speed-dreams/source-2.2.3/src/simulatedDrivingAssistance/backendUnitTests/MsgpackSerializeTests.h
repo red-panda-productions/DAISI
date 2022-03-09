@@ -7,23 +7,21 @@
 #include "Random.hpp"
 
 /// create all variables of drive situation and assign random values
-#define RANDOM_VALUE_ASSIGNMENT std::random_device rd;\
-                                std::default_random_engine eng(rd());\
-                                std::uniform_real_distribution<float> distr(-1000 , 1000);\
-                                float randomAccelCmd = distr(eng);\
-                                float randomBrakeCmd = distr(eng);\
-                                float randomClutchCmd = distr(eng);\
-                                float randomSteerCmd = distr(eng);\
-                                float randomSpeed = distr(eng);\
-                                float randomTopSpeed = distr(eng);\
-                                int randomTimeOfDay = (int)distr(eng);\
-                                int randomClouds = (int)distr(eng);\
-                                bool randomOffroad = std::uniform_real_distribution<>(0,1)(eng) < 0.5f? false : true;\
-                                float randomToMiddle = distr(eng);\
-                                float randomToLeft = distr(eng);\
-                                float randomToRight = distr(eng);\
-                                float randomToStart = distr(eng);\
-                                float randomTimeLastSteer = distr(eng)
+#define RANDOM_VALUE_ASSIGNMENT Random random;\
+                                float randomAccelCmd = random.NextFloat(-1000,1000);\
+                                float randomBrakeCmd = random.NextFloat(-1000,1000);\
+                                float randomClutchCmd = random.NextFloat(-1000,1000);\
+                                float randomSteerCmd = random.NextFloat(-1000,1000);\
+                                float randomSpeed = random.NextFloat(-1000,1000);\
+                                float randomTopSpeed = random.NextFloat(-1000,1000);\
+                                int randomTimeOfDay = random.NextInt(-1000,1000);\
+                                int randomClouds = random.NextInt(-1000,1000);\
+                                bool randomOffroad = random.NextBool();\
+                                float randomToMiddle = random.NextFloat(-1000,1000);\
+                                float randomToLeft = random.NextFloat(-1000,1000);\
+                                float randomToRight = random.NextFloat(-1000,1000);\
+                                float randomToStart = random.NextFloat(-1000,1000);\
+                                float randomTimeLastSteer = random.NextFloat(-1000,1000);
 
 /// create a drive situation mock and insert all variables
 #define DEFINE_DRIVE_MOCK       DriveSituationMock driveSituation(\
