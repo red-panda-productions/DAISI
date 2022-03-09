@@ -8,68 +8,50 @@
 
 class Driver {
  public:
-    /// <summary>
-    /// Initialize the driver with the given track
-    /// </summary>
-    /// <param name="p_index">The driver's index (starting from 1)</param>
-    /// <param name="p_name">The driver's name</param>
+    /// @brief Initialize the driver with the given track 
+    /// @param p_index The driver's index (starting from 1)
+    /// @param p_name The driver's name
     Driver(int p_index, const char* p_name);
 
-    /// <summary>
-    /// Initialize the driver with the given track
-    /// </summary>
-    /// <param name="p_track">The track that is being initialized</param>
-    /// <param name="p_carHandle"></param>
-    /// <param name="p_carParmHandle"></param>
-    /// <param name="p_situation">The current race situation</param>
+    /// @brief Initialize the driver with the given track
+    /// @param p_track The track that is being initialized
+    /// @param p_carHandle 
+    /// @param p_carParmHandle 
+    /// @param p_situation The current race situation
     void InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
 
-    /// <summary>
-    /// Start a new race.
-    /// </summary>
-    /// <param name="p_car">The car the driver controls</param>
-    /// <param name="p_situation">The current race situation</param>
+    /// @brief Start a new race.
+    /// @param p_car The car the driver controls
+    /// @param p_situation The current race situation
     void NewRace(tCarElt* p_car, tSituation* p_situation);
 
-    /// <summary>
-    /// Update the car's controls based on the current race situation.
+    /// @brief Update the car's controls based on the current race situation.
     /// In other words: Drive.
-    /// </summary>
-    /// <param name="p_car">The car the driver controls</param>
-    /// <param name="p_situation">The current race situation</param>
+    /// @param p_car The car the driver controls
+    /// @param p_situation The current race situation
     void Drive(tCarElt* p_car, tSituation* p_situation);
 
-    /// <summary>
-    /// Pause the current race.
-    /// </summary>
-    /// <param name="p_car">The car the driver controls</param>
-    /// <param name="p_situation">The current race situation</param>
+    /// @brief Pause the current race.
+    /// @param p_car The car the driver controls
+    /// @param p_situation The current race situation
     void PauseRace(tCarElt* p_car, tSituation* p_situation);
 
-    /// <summary>
-    /// Resume the current race.
-    /// </summary>
-    /// <param name="p_car">The car the driver controls</param>
-    /// <param name="p_situation">The current race situation</param>
+    /// @brief Resume the current race.
+    /// @param p_car The car the driver controls
+    /// @param p_situation The current race situation
     void ResumeRace(tCarElt* p_car, tSituation* p_situation);
 
     int PitCmd(tCarElt* p_car, tSituation* p_situation);
 
-    /// <summary>
-    /// End the current race.
-    /// </summary>
-    /// <param name="p_car">The car the driver controls</param>
-    /// <param name="p_situation">The current race situation</param>
+    /// @brief End the current race.
+    /// @param p_car The car the driver controls
+    /// @param p_situation The current race situation
     void EndRace(tCarElt* p_car, tSituation* p_situation);
 
-    /// <summary>
-    /// Shutdown the driver.
-    /// </summary>
+    /// @brief Shutdown the driver.
     void Shutdown();
 
-    /// <summary>
-    /// Terminate the driver.
-    /// </summary>
+    /// @brief Terminate the driver.
     void Terminate();
 
  private:
