@@ -5,14 +5,6 @@
 
 /// A big header file that contains functions that can be used in unit tests
 
-
-
-/// <summary>
-/// Executes a statement, and fails if it takes longer than the secs parameter
-/// </summary>
-/// <param name="secs"> The timeout parameter </param>
-/// <param name="stmt"> The statement to be executed </param>
-
 /// @brief      Executes a statement, and fails if it takes longer than the secs parameter
 /// @param secs The timeout parameter
 /// @param stmt The statement to be executed
