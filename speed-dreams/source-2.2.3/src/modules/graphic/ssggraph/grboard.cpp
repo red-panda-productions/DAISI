@@ -1555,6 +1555,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
   if (trackMap) {
       trackMap->display(currCar, s, 0, 0, rightAnchor, TOP_ANCHOR);
   }
+
 }
 
 /// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar, move this later)
@@ -1597,7 +1598,6 @@ void cGrBoard::grDispIntervention()
 // TODO(?): clean solution for cleanup.
 static ssgSimpleState* cleanup[1024];
 static int nstate = 0;
-
 
 void grInitBoardCar(tCarElt *car)
 {
