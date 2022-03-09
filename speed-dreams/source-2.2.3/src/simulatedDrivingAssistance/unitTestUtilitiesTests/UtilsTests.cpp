@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 #include "Utils.h"
 #include <string>
-
+#include <gtest/gtest-spi.h>
 TEST(UtilsTests, MessageEqual)
 {
-	ASSERT_TRUE(TestMessageEqual("hello", "hello", 5));
-	ASSERT_FALSE(TestMessageEqual("hi", "hello", 2));
-	ASSERT_FALSE(TestMessageEqual("hello", "hi", 5));
-	ASSERT_FALSE(TestMessageEqual("hello", "hellO", 5));
+	TestStringEqual("hello", "hello", 5);
+	EXPECT_FATAL_FAILURE(TestStringEqual("hi", "hello", 2),"msg2");
+	EXPECT_FATAL_FAILURE(TestStringEqual("hello", "hi", 5), "msg2");
+	EXPECT_FATAL_FAILURE(TestStringEqual("hello", "hellO", 5), "Characters");
 }
 
 TEST(UtilsTests, RandomCharArray)
@@ -24,10 +24,20 @@ TEST(UtilsTests, RandomCharArray)
 		{
 			equal = equal && buffer[j] == buffer2[j];
 		}
-		ASSERT_TRUE(TestMessageEqual(buffer, buffer2, r) == equal) << i;
+		if(equal)
+		{
+			TestStringEqual(buffer, buffer2, r);
+		}
 		for (int j = 0; j < 256; j++)
 		{
 			buffer2[j] = buffer[j];
 		}
 	}
 }
+
+void Sample(int x, const char* msg)
+{
+	
+}
+
+TEST_CASE(UtilsTests,SampleTest,Sample,(1,"hi"))

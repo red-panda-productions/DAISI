@@ -13,8 +13,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-
-set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 add_executable(
   backendUnitTests "MsgpackTests.cpp")
 target_link_libraries(
