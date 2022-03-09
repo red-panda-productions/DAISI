@@ -4,5 +4,5 @@
 
 TEST(MsgpackTests, Example)
 {
-	ASSERT_DURATION_LE(2, while (true){});
+	//test here
 }

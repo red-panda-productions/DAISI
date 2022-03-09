@@ -31,7 +31,7 @@
 /// <param name="msg2"> The second message </param>
 /// <param name="size"> The size of the 2 messages </param>
 /// <returns> Whether the test failed or succeeded </return>
-inline bool TestMessageEqual(const char* msg1, const char* msg2, int size);
+bool TestMessageEqual(const char* msg1, const char* msg2, int size);
 
 
 /// <summary>
@@ -39,4 +39,6 @@ inline bool TestMessageEqual(const char* msg1, const char* msg2, int size);
 /// </summary>
 /// <param name="dataBuffer"> The buffer in which the string will be written </param>
 /// <param name="stringLength"> The length of the string (must be strictly smaller than the length of the buffer) </param>
-inline void GenerateRandomCharArray(char* dataBuffer, int stringLength);
+void GenerateRandomCharArray(char* dataBuffer, int stringLength);
+
+
