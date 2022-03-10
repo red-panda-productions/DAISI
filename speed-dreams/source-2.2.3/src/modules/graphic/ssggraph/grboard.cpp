@@ -1558,9 +1558,12 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 
 }
 
-/// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar, move this later)
+/// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar)
+/// TODO: make a dedicated function to load all intervention icons from XML into a struct/array
 void cGrBoard::grDispIntervention() 
 {
+    if (!interventionTexture) return;
+
     // Dimensions of the icon on the screen (will be put in XML settings file later)
     float iconWidth = 100;
     float iconHeight = 100;
@@ -1574,10 +1577,8 @@ void cGrBoard::grDispIntervention()
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
     glTranslatef(1.5 * centerAnchor - 0.5 * iconWidth, BOTTOM_ANCHOR, 0);
-    if (interventionTexture) {
-        glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
-    }
-
+    glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
+    
     // Draw the texture as a Triangle Strip. 
     // glTexCoord2f defines point of the texture that you take (0-1).
     // glVertex2f then defines where to place this on the screen (relative to the current matrix)
