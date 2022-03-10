@@ -40,3 +40,6 @@ inline bool TestMessageEqual(const char* msg1, const char* msg2, int size);
 /// <param name="dataBuffer"> The buffer in which the string will be written </param>
 /// <param name="stringLength"> The length of the string (must be strictly smaller than the length of the buffer) </param>
 inline void GenerateRandomCharArray(char* dataBuffer, int stringLength);
+
+/// @brief compares two values. If their difference is lower than the tolerance, return true.
+#define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs(f1-f2), tolerance)

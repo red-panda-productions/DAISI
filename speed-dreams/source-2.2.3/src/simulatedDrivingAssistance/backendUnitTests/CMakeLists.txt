@@ -29,12 +29,13 @@ FetchContent_MakeAvailable(googletest)
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 SD_ADD_EXECUTABLE(
-  backendUnitTests "MsgpackTests.cpp" InterventionTests.cpp)
+  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp" "InterventionTests.cpp")
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities
   backend
   gtest_main
+  gmock_main
 )
 
 ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient)
