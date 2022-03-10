@@ -23,10 +23,11 @@ DriveSituation* Mediator::Simulate()
     return nullptr;
 }
 
-Mediator* Mediator::GetInstance() {
-    if(!s_instance) {
-        s_instance = new Mediator();
-    }
-
+Mediator& Mediator::GetInstance() {
+    static Mediator s_instance;
     return s_instance;
+}
+
+Mediator::Mediator()
+{
 }

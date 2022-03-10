@@ -21,10 +21,16 @@ public:
 
     /// @brief Creates a mediator instance if needed and returns it
     /// @return A mediator instance
-    static Mediator* GetInstance();
+    static Mediator& GetInstance();
+
+	/// @brief Removes copy constructor for singleton behaviour
+	Mediator(Mediator const&) = delete;
+	/// @brief Removes assigment for singleton behaviour
+	void operator=(Mediator const&) = delete;
 
  private:
 	DriveSituation m_situation;
 	DecisionMaker m_decisionMaker;
 
+	Mediator();
 };
