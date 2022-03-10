@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A x86
+      run: cmake -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A Win32
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
