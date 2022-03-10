@@ -12,7 +12,7 @@
 <!--    the Free Software Foundation; either version 2 of the License, or     -->
 <!--    (at your option) any later version.                                   -->
 
-<!DOCTYPE params SYSTEM "../../libs/tgf/params.dtd">
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
 
 <params mode="mw" type="template" name="Player Pref" version="1.6">
 

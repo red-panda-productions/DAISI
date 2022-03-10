@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE params SYSTEM "../../libs/tgf/params.dtd">
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
 
 <params name="assistedhuman" type="param" mode="mw" version="1.0">
 
