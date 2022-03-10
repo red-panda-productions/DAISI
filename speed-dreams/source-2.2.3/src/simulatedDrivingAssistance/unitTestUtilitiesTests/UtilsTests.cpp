@@ -35,9 +35,6 @@ TEST(UtilsTests, RandomCharArray)
 	}
 }
 
-void Sample(int x, const char* msg)
-{
-	
-}
+void Sample(int x, const char* msg) { }
 
 TEST_CASE(UtilsTests,SampleTest,Sample,(1,"hi"))
