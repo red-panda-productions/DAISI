@@ -56,16 +56,27 @@ TEST(FactoryTest, Creation)
     InterventionFactory factory;
 
     // Creates InterventionMakers of different types and casts the resulting InterventionMaker type to
-    // the type it should have made, then it checks if it throws an error.      CURRENTLY NEVER THROWS ERRORS
-    ASSERT_NO_THROW((InterventionMakerNoIntervention*)factory.CreateInterventionMaker(INTERVENTION_TYPE_NO_INTERVENTION));
-    ASSERT_NO_THROW((InterventionMakerIndication*)factory.CreateInterventionMaker(INTERVENTION_TYPE_INDICATION));
-    ASSERT_NO_THROW((InterventionMakerAskFor*)factory.CreateInterventionMaker(INTERVENTION_TYPE_ASK_FOR));
-    ASSERT_NO_THROW((InterventionMakerPerformWhenNeeded*)factory.CreateInterventionMaker(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED));
-    ASSERT_NO_THROW((InterventionMakerAlwaysIntervene*)factory.CreateInterventionMaker(INTERVENTION_TYPE_ALWAYS_INTERVENE));
+    // the type it should have made, then it checks if it throws an error.
+    ASSERT_NE(
+        dynamic_cast<InterventionMakerNoIntervention*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_NO_INTERVENTION))
+        ,nullptr);
+    ASSERT_NE(
+        dynamic_cast<InterventionMakerIndication*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_INDICATION))
+        ,nullptr);
+    ASSERT_NE(
+        dynamic_cast<InterventionMakerAskFor*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_ASK_FOR))
+        ,nullptr);
+    ASSERT_NE(
+        dynamic_cast<InterventionMakerPerformWhenNeeded*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED))
+        ,nullptr);
+    ASSERT_NE(
+        dynamic_cast<InterventionMakerAlwaysIntervene*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_ALWAYS_INTERVENE))
+        ,nullptr);
 }
 // Edge case
 TEST(FactoryTest, Edge)
 {
     InterventionFactory factory;
-    ASSERT_NO_THROW((InterventionMakerNoIntervention*)factory.CreateInterventionMaker(NULL));
+
+    ASSERT_NE(dynamic_cast<InterventionMakerNoIntervention*>(factory.CreateInterventionMaker(6)), nullptr);
 }
