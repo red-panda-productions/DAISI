@@ -3,5 +3,5 @@
 class PlayerInfo
 {
 public:
-	float TimeLastSteer();
+	float TimeLastSteer(){return 0;};
 };

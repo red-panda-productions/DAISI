@@ -1,7 +1,7 @@
 INCLUDE(../../../cmake/macros.cmake)
 
 SET(_SOURCES Utils.cpp)
-SET(_HEADERS Utils.h)
+SET(_HEADERS Utils.h Random.hpp)
 
 SD_ADD_LIBRARY(unitTestUtilities STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(unitTestUtilities PROPERTIES LINKER_LANGUAGE CXX)

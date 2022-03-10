@@ -1,3 +1,4 @@
+#include <random>
 #include "Utils.h"
 
 bool TestMessageEqual(const char* msg1, const char* msg2, int size)
