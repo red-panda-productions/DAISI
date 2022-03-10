@@ -7,10 +7,7 @@
 #include "mocks/DriveSituationMock.h"
 #include "DecisionTuple.h"
 
-
-/// <summary>
-/// Tests if all (currently) existing variables can be deserialized into a decision correctly
-/// </summary>
+/// @brief Tests if all (currently) existing variables can be deserialized into a decision correctly
 TEST(MsgpackDeserializeTests, Deserialize)
 {
     Random random;
@@ -33,9 +30,7 @@ TEST(MsgpackDeserializeTests, Deserialize)
     ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
 }
 
-/// <summary>
-/// Tests if the program throws when there are no variables to receive
-/// </summary>
+/// @brief Tests if the program throws when there are no variables to receive
 TEST(MsgpackDeserializeTests, NoVariablesToReceive)
 {
     Random random;
@@ -53,9 +48,7 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
 }
 
-/// <summary>
-/// Tests if a variable is Not A Number when received data is not parsable to the correct type.
-/// </summary>
+/// @brief Tests if a variable is Not A Number when received data is not parsable to the correct type.
 TEST(MsgpackDeserializeTests, UnparsableData)
 {
     Random random;
@@ -78,9 +71,7 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
 }
 
-/// <summary>
-/// Tests if program throws when if a variable to parse does not exist in the function map.
-/// </summary>
+/// @brief Tests if program throws when if a variable to parse does not exist in the function map.
 TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
 {
     Random random;
@@ -100,9 +91,7 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
 }
 
-/// <summary>
-/// Tests if the program throws when more data has been send than expected.
-/// </summary>
+/// @brief Tests if the program throws when more data has been send than expected.
 TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
 {
     Random random;
@@ -123,9 +112,7 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
 }
 
-/// <summary>
-/// Tests if the program throws when less data has been send than expected.
-/// </summary>
+/// @brief Tests if the program throws when less data has been send than expected.
 TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
 {
     Random random;
