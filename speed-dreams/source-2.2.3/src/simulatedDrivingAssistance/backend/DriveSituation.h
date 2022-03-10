@@ -6,20 +6,22 @@
 
 class DriveSituation
 {
+private:
+    EnvironmentInfo m_environmentInfo;
+    CarInfo m_carInfo;
+    PlayerInfo m_playerInfo;
+
 public:
-	EnvironmentInfo GetEnvironmentInfo()
+	EnvironmentInfo* GetEnvironmentInfo()
     {
-        EnvironmentInfo environmentInfo;
-        return environmentInfo;
+        return &m_environmentInfo;
     };
-	CarInfo GetCarInfo()
+	CarInfo* GetCarInfo()
     {
-        CarInfo carInfo;
-        return carInfo;
+        return &m_carInfo;
     };
-	PlayerInfo GetPlayerInfo()
+	PlayerInfo* GetPlayerInfo()
     {
-        PlayerInfo playerInfo;
-        return playerInfo;
+        return &m_playerInfo;
     };
 };

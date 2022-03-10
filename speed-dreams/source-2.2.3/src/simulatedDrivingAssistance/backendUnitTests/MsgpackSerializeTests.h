@@ -7,32 +7,35 @@
 #include "Random.hpp"
 
 /// create all variables of drive situation and assign random values
-#define RANDOM_VALUE_ASSIGNMENT Random random;\
-                                float randomAccelCmd = random.NextFloat(-1000,1000);\
-                                float randomBrakeCmd = random.NextFloat(-1000,1000);\
-                                float randomClutchCmd = random.NextFloat(-1000,1000);\
-                                float randomSteerCmd = random.NextFloat(-1000,1000);\
-                                float randomSpeed = random.NextFloat(-1000,1000);\
-                                float randomTopSpeed = random.NextFloat(-1000,1000);\
-                                int randomTimeOfDay = random.NextInt(-1000,1000);\
-                                int randomClouds = random.NextInt(-1000,1000);\
-                                bool randomOffroad = random.NextBool();\
-                                float randomToMiddle = random.NextFloat(-1000,1000);\
-                                float randomToLeft = random.NextFloat(-1000,1000);\
-                                float randomToRight = random.NextFloat(-1000,1000);\
-                                float randomToStart = random.NextFloat(-1000,1000);\
-                                float randomTimeLastSteer = random.NextFloat(-1000,1000);
+#define RANDOM_VALUE_ASSIGNMENT \
+    Random random;\
+    float randomAccelCmd = random.NextFloat(-1000,1000);\
+    float randomBrakeCmd = random.NextFloat(-1000,1000);\
+    float randomClutchCmd = random.NextFloat(-1000,1000);\
+    float randomSteerCmd = random.NextFloat(-1000,1000);\
+    float randomSpeed = random.NextFloat(-1000,1000);\
+    float randomTopSpeed = random.NextFloat(-1000,1000);\
+    int randomTimeOfDay = random.NextInt(-1000,1000);\
+    int randomClouds = random.NextInt(-1000,1000);\
+    bool randomOffroad = random.NextBool();\
+    float randomToMiddle = random.NextFloat(-1000,1000);\
+    float randomToLeft = random.NextFloat(-1000,1000);\
+    float randomToRight = random.NextFloat(-1000,1000);\
+    float randomToStart = random.NextFloat(-1000,1000);\
+    float randomTimeLastSteer = random.NextFloat(-1000,1000);
 
 /// create a drive situation mock and insert all variables
-#define DEFINE_DRIVE_MOCK       DriveSituationMock driveSituation(\
-                                        PlayerInfoMock(randomTimeLastSteer),\
-                                        CarInfoMock(randomSpeed, randomTopSpeed, randomSteerCmd,randomAccelCmd,randomBrakeCmd,randomClutchCmd),\
-                                        EnvironmentInfoMock(randomOffroad,randomTimeOfDay, randomClouds,\
-                                                            TrackPositionMock(randomToStart,randomToRight,randomToMiddle,randomToLeft)))
+#define DEFINE_DRIVE_MOCK \
+    DriveSituationMock driveSituation(\
+        PlayerInfoMock(randomTimeLastSteer),\
+        CarInfoMock(randomSpeed, randomTopSpeed, randomSteerCmd,randomAccelCmd,randomBrakeCmd,randomClutchCmd),\
+        EnvironmentInfoMock(randomOffroad,randomTimeOfDay, randomClouds,\
+            TrackPositionMock(randomToStart,randomToRight,randomToMiddle,randomToLeft)))
 
 /// create a socket black box and initialize the maps.
-#define SETUP_SOCKET            SocketBlackBox<DriveSituationMock> socketBlackBox;\
-                                socketBlackBox.Initialize()
+#define SETUP_SOCKET \
+    SocketBlackBox<DriveSituationMock> socketBlackBox;\
+    socketBlackBox.Initialize()
 
 /// <summary>
 /// Tests if all variables can be serialized correctly
@@ -45,37 +48,38 @@ TEST(MsgpackSerializeTests, SerializeAll)
         SETUP_SOCKET;
 
         std::vector<std::string> controlVector{
-                std::to_string(randomAccelCmd),
-                std::to_string(randomBrakeCmd),
-                std::to_string(randomClutchCmd),
-                std::to_string(randomSteerCmd),
-                std::to_string(randomSpeed),
-                std::to_string(randomTopSpeed),
-                std::to_string(randomTimeOfDay),
-                std::to_string(randomClouds),
-                std::to_string(randomOffroad),
-                std::to_string(randomToMiddle),
-                std::to_string(randomToLeft),
-                std::to_string(randomToRight),
-                std::to_string(randomToStart),
-                std::to_string(randomTimeLastSteer)
+            std::to_string(randomAccelCmd),
+            std::to_string(randomBrakeCmd),
+            std::to_string(randomClutchCmd),
+            std::to_string(randomSteerCmd),
+            std::to_string(randomSpeed),
+            std::to_string(randomTopSpeed),
+            std::to_string(randomTimeOfDay),
+            std::to_string(randomClouds),
+            std::to_string(randomOffroad),
+            std::to_string(randomToMiddle),
+            std::to_string(randomToLeft),
+            std::to_string(randomToRight),
+            std::to_string(randomToStart),
+            std::to_string(randomTimeLastSteer)
         };
 
         // should be in the same order as the control vector
-        socketBlackBox.m_variablesToSend = std::vector<std::string>{"AccelCmd",
-                                                                    "BrakeCmd",
-                                                                    "ClutchCmd",
-                                                                    "SteerCmd",
-                                                                    "Speed",
-                                                                    "TopSpeed",
-                                                                    "TimeOfDay",
-                                                                    "Clouds",
-                                                                    "Offroad",
-                                                                    "ToMiddle",
-                                                                    "ToLeft",
-                                                                    "ToRight",
-                                                                    "ToStart",
-                                                                    "TimeLastSteer"};
+        socketBlackBox.m_variablesToSend = std::vector<std::string>{
+            "AccelCmd",
+            "BrakeCmd",
+            "ClutchCmd",
+            "SteerCmd",
+            "Speed",
+            "TopSpeed",
+            "TimeOfDay",
+            "Clouds",
+            "Offroad",
+            "ToMiddle",
+            "ToLeft",
+            "ToRight",
+            "ToStart",
+            "TimeLastSteer"};
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
@@ -110,23 +114,24 @@ TEST(MsgpackSerializeTests, SerializeSome)
     SETUP_SOCKET;
 
     std::vector<std::string> controlVector {
-            std::to_string(randomAccelCmd),
-            std::to_string(randomClutchCmd),
-            std::to_string(randomSpeed),
-            std::to_string(randomTimeOfDay),
-            std::to_string(randomOffroad),
-            std::to_string(randomToLeft),
-            std::to_string(randomTimeLastSteer)
+        std::to_string(randomAccelCmd),
+        std::to_string(randomClutchCmd),
+        std::to_string(randomSpeed),
+        std::to_string(randomTimeOfDay),
+        std::to_string(randomOffroad),
+        std::to_string(randomToLeft),
+        std::to_string(randomTimeLastSteer)
     };
 
     // should be in the same order as the control vector
-    socketBlackBox.m_variablesToSend = std::vector<std::string>{"AccelCmd",
-                                                                "ClutchCmd",
-                                                                "Speed",
-                                                                "TimeOfDay",
-                                                                "Offroad",
-                                                                "ToLeft",
-                                                                "TimeLastSteer"};
+    socketBlackBox.m_variablesToSend = std::vector<std::string>{
+        "AccelCmd",
+        "ClutchCmd",
+        "Speed",
+        "TimeOfDay",
+        "Offroad",
+        "ToLeft",
+        "TimeLastSteer"};
 
     msgpack::sbuffer sbuffer;
     socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
@@ -160,15 +165,16 @@ TEST(MsgpackSerializeTests, NonExistingVariableKey)
     SETUP_SOCKET;
 
     std::vector<std::string> controlVector{
-            std::to_string(randomSpeed),
-            std::to_string(randomToMiddle),
-            std::to_string(randomOffroad)
+        std::to_string(randomSpeed),
+        std::to_string(randomToMiddle),
+        std::to_string(randomOffroad)
     };
 
     // should be the same order as control vector
-    socketBlackBox.m_variablesToSend = std::vector<std::string>{"Speed",
-                                                                "NON_EXISTING_VARIABLE",
-                                                                "Offroad"};
+    socketBlackBox.m_variablesToSend = std::vector<std::string>{
+        "Speed",
+        "NON_EXISTING_VARIABLE",
+        "Offroad"};
 
     msgpack::sbuffer sbuffer;
 
