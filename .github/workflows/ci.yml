@@ -13,6 +13,8 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  CMAKE_C_COMPILER: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.31.31103/bin/Hostx86/x86/cl.exe
+  CMAKE_CXX_COMPILER: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.31.31103/bin/Hostx86/x86/cl.exe
 
   # Enable colour output for GTEST and XML file generation
   GTEST_COLOR: yes
