@@ -17,6 +17,13 @@ static void Shutdown(int p_index);
 /// Since it's technically possible to have more than 1 bot of the same type in a race it needs to be an array.
 static Driver* s_drivers[s_maxBotAmount];
 
+/// @brief Find the driver with the given index and return it. Taking into account that we save drivers 0-based but the index is 1-based
+/// @param p_index The index of the driver to find
+/// @return The driver with the given index
+inline static Driver* GetDriver(int p_index) {
+    return s_drivers[p_index - 1];
+}
+
 #ifdef _WIN32
 /* Must be present under MS Windows */
 BOOL WINAPI DllEntryPoint(HINSTANCE p_hDLL, DWORD p_dwReason, LPVOID p_reserved) {
@@ -45,7 +52,7 @@ static int InitFuncPt(int p_index, void* p_pt) {
     itf->index = p_index;
 
     // Create the driver, speed-dreams counts from 1 so subtract 1 from the index to get the array index.
-    s_drivers[p_index-1] = new Driver(p_index, "assistedhuman");
+    s_drivers[p_index - 1] = new Driver(p_index, "assistedhuman");
 
     return 0;
 }
@@ -91,7 +98,7 @@ extern "C" int moduleInitialize(tModInfo* p_modInfo) {
 /// @brief Terminate the module and all drivers
 /// @return 0 if no error occurs, 1 if an error does occur
 extern "C" int moduleTerminate() {
-    for (const auto &driver : s_drivers) {
+    for (const auto& driver : s_drivers) {
         driver->Terminate();
     }
 
@@ -108,7 +115,7 @@ extern "C" int moduleTerminate() {
 /// @param p_carParmHandle 
 /// @param p_situation The current race situation
 static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
-    s_drivers[p_index-1]->InitTrack(p_track, p_carHandle, p_carParmHandle, p_situation);
+    GetDriver(p_index)->InitTrack(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
 /// @brief Find the driver with the given index and tell it a new race has started.
@@ -116,7 +123,7 @@ static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
-    s_drivers[p_index-1]->NewRace(p_car, p_situation);
+    GetDriver(p_index)->NewRace(p_car, p_situation);
 }
 
 /// @brief Find the driver with the given index and tell it the race is being paused
@@ -124,7 +131,7 @@ static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
-    s_drivers[p_index-1]->PauseRace(p_car, p_situation);
+    GetDriver(p_index)->PauseRace(p_car, p_situation);
 }
 
 /// @brief Find the driver with the given index and tell it the race is being resumed
@@ -132,7 +139,7 @@ static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
-    s_drivers[p_index-1]->ResumeRace(p_car, p_situation);
+    GetDriver(p_index)->ResumeRace(p_car, p_situation);
 }
 
 /// @brief Find the driver with the given index and tell it the race is being ended
@@ -140,7 +147,7 @@ static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
-    s_drivers[p_index-1]->EndRace(p_car, p_situation);
+    GetDriver(p_index)->EndRace(p_car, p_situation);
 }
 
 /// @brief Find the driver with the given index and have it drive the given car
@@ -148,15 +155,15 @@ static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation) {
-    s_drivers[p_index-1]->Drive(p_car, p_situation);
+    GetDriver(p_index)->Drive(p_car, p_situation);
 }
 
 static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation) {
-    return s_drivers[p_index-1]->PitCmd(p_car, p_situation);
+    return GetDriver(p_index)->PitCmd(p_car, p_situation);
 }
 
 /// @brief Shutdown the driver with the given index.
 /// @param p_index The index of the driver
 static void Shutdown(const int p_index) {
-    s_drivers[p_index-1]->Shutdown();
+    GetDriver(p_index)->Shutdown();
 }
