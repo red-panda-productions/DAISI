@@ -37,4 +37,11 @@ TEST(UtilsTests, RandomCharArray)
 
 void Sample(int x, const char* msg) { }
 
-TEST_CASE(UtilsTests,SampleTest,Sample,(1,"hi"))
+TEST_CASE(UtilsTests, SampleTest, Sample, (1, "hi"))
+
+TEST_COMBINATORIAL2(UtilsTests, SampleCombinatorial, Sample, int, ARRAY({ 1,2,3 }), 3, const char*, ARRAY({ "hi","hello" }), 2);
+
+BEGIN_TEST_COMBINATORIAL(UtilsTests, Combinatorial2)
+int arr1[3]{ 0,1,2 };
+const char* arr2[2]{ "hi","hello" };
+END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)

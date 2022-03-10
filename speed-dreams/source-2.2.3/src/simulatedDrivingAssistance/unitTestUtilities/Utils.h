@@ -32,29 +32,50 @@ void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 	}
 
 // combinatorial testing
+#define ARRAY(...) __VA_ARGS__
 
-#define TEST_COMBINATORIAL2(test_suite_name,methodName,arr1,count1,arr2,count2) \
-	TEST(test_suite_name,methodName ## Combinatorial ## count1 ## v ## count2)\
+#define TEST_COMBINATORIAL2(test_suite_name,test_name,methodName,T1,arr1,count1,T2,arr2,count2) \
+	TEST(test_suite_name,test_name)\
 	{\
-	    for(int a = 0; a < count1; a++)\
+		T1 values1[count1] = arr1;\
+		T2 values2[count2] = arr2;\
+		for (int a = 0; a < count1; a++)\
 		{\
-			for(int b = 0; b < count2; b++) \
+			for (int b = 0; b < count2; b++)\
 			{\
-				methodName(arr1[a],arr2[b]);\
+				methodName(values1[a], values2[b]);\
 			}\
-		} \
+		}\
 	}
+
+#define BEGIN_TEST_COMBINATORIAL(test_suite_name,test_name) \
+	TEST(test_suite_name,test_name) \
+	{
+
+#define END_TEST_COMBINATORIAL2(method_name,arrname1,count1,arrname2,count2) \
+		for (int a = 0; a < count1; a++)\
+		{\
+			for (int b = 0; b < count2; b++)\
+			{\
+				method_name(arrname1[a], arrname2[b]);\
+			}\
+		}\
+	}
+
 
 #define TEST_COMBINATORIAL3(test_suite_name,methodName,arr1,count1,arr2,count2,arr3,count3) \
 	TEST(test_suite_name,methodName ## Combinatorial ## count1 ## v ## count2 ## v ## count3)\
 	{\
+		auto values1 = arr1;\
+		auto values2 = arr2;\
+		auto values3 = arr3;\
 	    for(int a = 0; a < count1; a++)\
 		{\
 			for(int b = 0; b < count2; b++) \
 			{\
 				for(int c = 0; c < count3; c++) \
 				{\
-					methodName(arr1[a],arr2[b],arr3[c]);\
+					methodName(values1[a],values2[b],values3[c]);\
 				}\
 			}\
 		} \
