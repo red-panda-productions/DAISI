@@ -17,6 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
+ // SIMULATED DRIVING ASSISTANCE: UPDATED FILE
+
 #include "grboard.h"
 
 #include <plib/ssg.h>
@@ -75,6 +77,8 @@ const char strTireSet[] = "New tires";
 const char strFrontWing[] = "Front wing";
 const char strRearWing[] = "Rear wing";
 const char strPenalty[] = "Next pit type";
+
+ssgSimpleState* interventionTexture;
 
 
 cGrBoard::cGrBoard(int myid) :
@@ -1530,6 +1534,9 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
       grDispSplitScreenIndicator();
   }
 
+  // For now: display an intervention every frame.
+  grDispIntervention();
+
   if (arcadeFlag) {
     grDispArcade(s);
   } else {
@@ -1550,6 +1557,44 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
   if (trackMap) {
       trackMap->display(currCar, s, 0, 0, rightAnchor, TOP_ANCHOR);
   }
+
+}
+
+/// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar)
+/// TODO: make a dedicated function to load all intervention icons from XML into a struct/array
+void cGrBoard::grDispIntervention() 
+{
+    if (!interventionTexture) return;
+
+    // Dimensions of the icon on the screen (will be put in XML settings file later)
+    float iconWidth = 100;
+    float iconHeight = 100;
+
+    // Duplicate the current matrix and enable opengl settings.
+    glPushMatrix();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
+    glTranslatef(1.5 * centerAnchor - 0.5 * iconWidth, BOTTOM_ANCHOR, 0);
+    glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
+    
+    // Draw the texture as a Triangle Strip. 
+    // glTexCoord2f defines point of the texture that you take (0-1).
+    // glVertex2f then defines where to place this on the screen (relative to the current matrix)
+    glBegin(GL_TRIANGLE_STRIP);
+    glColor4f(1.0, 1.0, 1.0, 0.0);
+    glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0, iconHeight);
+    glTexCoord2f(1.0, 0.0); glVertex2f(iconWidth, 0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(iconWidth, iconHeight);
+    glEnd();
+
+    // Unbind the texture and pop the translated matrix of the stack.
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
 }
 
 
@@ -1615,13 +1660,27 @@ void grInitBoardCar(tCarElt *car)
   if (bMasterModel)
     lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "cars/models/%s;", car->_masterModel);
 
-  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures");
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
+
+  // Add the data/intervention folder to the searchable filepaths for filenames.
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
+
+  // Load intervention texture from XML file, for now: UNSAFE with respect to path size (max is 256) 
+  char buf[256];
+  snprintf(buf, sizeof(buf), "%sdata/intervention/intervention.xml", GfDataDir());
+  void* xmlHandleIntervention = GfParmReadFile(buf, GFPARM_RMODE_STD);
+
+  // Search the xml file for the file corresponding to the attribute "steer intervention"
+  // Note that grSsgLoadTexState uses a buffer of 256 internally, so the file should not be bigger than 256x256
+  const char* attr = GfParmGetStr(xmlHandleIntervention, SECT_GROBJECTS, "steer intervention", NULL);
+  interventionTexture = (ssgSimpleState*)grSsgLoadTexState(attr);
+
 
   /* Tachometer --------------------------------------------------------- */
   tgrCarInstrument *curInst = &(carInfo->instrument[0]);
 
   /* Load the Tachometer texture */
-  const char *param = GfParmGetStr(handle, SECT_GROBJECTS,
+  const char* param = GfParmGetStr(handle, SECT_GROBJECTS,
                                     PRM_TACHO_TEX, "rpm8000.png");
 
   curInst->texture = (ssgSimpleState*)grSsgLoadTexState(param);

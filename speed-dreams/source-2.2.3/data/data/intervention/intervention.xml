@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
+<params name="intervention-config" type="template">
+	<section name="Graphic Objects">
+		<attstr name="steer intervention" val="Intervention_Steering_Proto_256.png"/>
+	</section>
+</params>
