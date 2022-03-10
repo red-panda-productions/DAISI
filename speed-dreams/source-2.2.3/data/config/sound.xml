@@ -20,7 +20,7 @@
 		<attnum name="volume" unit="%" val="100"/>
 	</section>
 	<section name="Music Settings">
-		<attstr name="music state" val="enabled"/>
+		<attstr name="music state" val="disabled"/>
 		<attstr name="default music" val="data/music/main.ogg"/>
 		<attnum name="music volume" unit="%" val="100"/>
 	</section>
