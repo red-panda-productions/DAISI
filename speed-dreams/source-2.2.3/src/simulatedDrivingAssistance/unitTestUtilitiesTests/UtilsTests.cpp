@@ -2,6 +2,9 @@
 #include "Utils.h"
 #include <string>
 #include <gtest/gtest-spi.h>
+#include <sstream>
+
+/// @brief Tests if message equal works
 TEST(UtilsTests, MessageEqual)
 {
 	TestStringEqual("hello", "hello", 5);
@@ -10,6 +13,7 @@ TEST(UtilsTests, MessageEqual)
 	EXPECT_FATAL_FAILURE(TestStringEqual("hello", "hellO", 5), "Characters");
 }
 
+/// @brief Tests if Generate random char array works (kind of)
 TEST(UtilsTests, RandomCharArray)
 {
 	char buffer[256] = {0};
@@ -35,10 +39,18 @@ TEST(UtilsTests, RandomCharArray)
 	}
 }
 
-void Sample(int x, const char* msg) { }
+/// @brief		Sample function
+/// @param  x	Sample parameter
+/// @param  msg Sample parameter
+void Sample(int x, const char* msg)
+{
+	SUCCEED() << x << " " << msg;
+}
 
+// example test case
 TEST_CASE(UtilsTests, SampleTest, Sample, (1, "hi"))
 
+// example combinatorial test
 BEGIN_TEST_COMBINATORIAL(UtilsTests, Combinatorial2)
 int arr1[3]{ 0,1,2 };
 const char* arr2[2]{ "hi","hello" };
