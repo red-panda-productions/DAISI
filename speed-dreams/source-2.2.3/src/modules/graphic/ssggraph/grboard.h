@@ -57,7 +57,7 @@ class cGrBoard
  private:
     void grDispDebug(const tSituation *s, const cGrFrameInfo* frame);
     void grDispGGraph();
-    void grDispMisc(bool bCurrentScreen);
+    void grDispSplitScreenIndicator();
     void grDrawGauge(tdble X1, tdble Y1, tdble H, float *clr1,
                         float *clr2, tdble val, const char *title);
     void grDispEngineLeds(int X, int Y, int align, bool bg);

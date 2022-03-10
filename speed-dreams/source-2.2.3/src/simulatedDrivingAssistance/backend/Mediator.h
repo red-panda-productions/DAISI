@@ -1,14 +1,19 @@
 #pragma once
 #include "DriveSituation.h"
-#include "InterventionType.h"
+#include "ConfigEnums.h"
 #include "DecisionMaker.h"
+
 class Mediator
 {
 public:
 	void DriveTick();
 	void RaceStart();
 	void RaceStop();
-	void SetInterventionType(INTERVENTION_TYPE type);
+
+    // calls decision maker to change its intervention setting to p_type
+	void SetInterventionType(INTERVENTION_TYPE p_type);
+
+    //returns the intervention type from the decision maker
     INTERVENTION_TYPE GetInterventionType();
 	DriveSituation* Simulate();
 

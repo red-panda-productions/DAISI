@@ -1,13 +1,14 @@
 #include "Mediator.h"
 
+
 INTERVENTION_TYPE Mediator::GetInterventionType()
 {
-    return INTERVENTION_TYPE_NO_ASSISTANCE;
+    return m_decisionMaker.m_config.GetInterventionType();
 }
 
-void Mediator::SetInterventionType(INTERVENTION_TYPE type)
+void Mediator::SetInterventionType(INTERVENTION_TYPE p_type)
 {
-
+    m_decisionMaker.ChangeSettings(p_type);
 }
 
 void Mediator::DriveTick() {}
