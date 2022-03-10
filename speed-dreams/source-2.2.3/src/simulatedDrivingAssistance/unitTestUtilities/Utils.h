@@ -49,4 +49,5 @@ inline float randomFloat(const float max = 1)
     return (float)rand()/(float)(RAND_MAX/1) * max;
 }
 
+/// @brief compares two values. If their difference is lower than the tolerance, return true.
 #define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs(f1-f2), tolerance)

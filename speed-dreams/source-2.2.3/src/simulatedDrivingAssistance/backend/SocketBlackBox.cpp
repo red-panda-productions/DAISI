@@ -1,27 +1,20 @@
 #include "SocketBlackBox.h"
 #include <string>
-#include <iostream>
-#include "SteerDecision.h"
-#include "BrakeDecision.h"
 #include "../rppUtils/Utils.hpp"
 
 // inserts value from DriveSituation variables in vector
-#define PUSH_BACK_DS(GetInfo) [](std::vector<std::string>& values, DriveSituation& ds){values.push_back(std::to_string(ds.GetInfo));}
-#define INSERT_CAR_INFO(variable) PUSH_BACK_DS(GetCarInfo().variable)
-#define INSERT_ENVIRONMENT_INFO(variable) PUSH_BACK_DS(GetEnvironmentInfo().variable)
-#define INSERT_TRACK_LOCAL_POSITION(variable) INSERT_ENVIRONMENT_INFO(TrackLocalPosition().variable)
-#define INSERT_PLAYER_INFO(variable) PUSH_BACK_DS(GetPlayerInfo().variable)
-
-#define STRING_TO_FLOAT try { return std::stof(s); } \
-                        catch (std::exception& e) { return NAN; }
+#define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, DriveSituation& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
+#define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo().p_variable)
+#define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo().p_variable)
+#define INSERT_TRACK_LOCAL_POSITION(p_variable) INSERT_ENVIRONMENT_INFO(TrackLocalPosition().p_variable)
+#define INSERT_PLAYER_INFO(p_variable) PUSH_BACK_DS(GetPlayerInfo().p_variable)
 
 // converts abstract decision to concrete decision with correct value
-#define DECISION_LAMBDA(f) [](std::string& string, DecisionTuple& decisionTuple) {f;}
-#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(decisionTuple.steerDecision.m_steerAmount = stringToFloat(string))
-#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(decisionTuple.brakeDecision.m_brakeAmount = stringToFloat(string))
+#define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) {p_function;}
+#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.m_steerDecision.m_steerAmount = stringToFloat(p_string))
+#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.m_brakeDecision.m_brakeAmount = stringToFloat(p_string))
 
-
-
+/// @brief Sets keys and values for the functions that retrieve the correct information.
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
 {
@@ -110,16 +103,15 @@ void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(DecisionTuple& p
 /// @param driveSituation Drive situation to base decisions off.
 /// @return returns decision array.
 template<class DriveSituation>
-IDecision* SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& driveSituation)
+DecisionTuple SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituation)
 {
     std::stringstream stringstream;
-    SerializeDriveSituation(stringstream, driveSituation);
+    SerializeDriveSituation(stringstream, p_driveSituation);
 
-    return nullptr;
+    DecisionTuple decisionTuple();
 
     /*TODO: send and receive data with IPCLib*/
-//    IDecision* decisions;
-//    DeserializeBlackBoxResults(decisions, dataReceived, dataSize);
-//    return decisions;
+
+    return decisionTuple();
 }
 

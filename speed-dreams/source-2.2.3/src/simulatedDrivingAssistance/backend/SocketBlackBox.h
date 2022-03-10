@@ -36,7 +36,7 @@ public:
     void SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);
     void DeserializeBlackBoxResults(DecisionTuple& p_decisions, const char* p_dataReceived, unsigned int p_size);
 
-    IDecision* GetDecisions(DriveSituation& p_driveSituation);
+    DecisionTuple GetDecisions(DriveSituation& p_driveSituation);
 
     std::vector<std::string> m_variablesToSend;
     std::vector<std::string> m_variablesToReceive;
