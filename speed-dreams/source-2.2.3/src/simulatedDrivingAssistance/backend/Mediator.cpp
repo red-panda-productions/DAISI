@@ -1,15 +1,15 @@
 #include "Mediator.h"
 
-static Mediator* s_instance = nullptr;
+static Mediator* s_instance = nullptr;\
 
 INTERVENTION_TYPE Mediator::GetInterventionType()
 {
-    return INTERVENTION_TYPE_NO_ASSISTANCE;
+    return m_decisionMaker.m_config.GetInterventionType();
 }
 
-void Mediator::SetInterventionType(INTERVENTION_TYPE type)
+void Mediator::SetInterventionType(INTERVENTION_TYPE p_type)
 {
-
+    m_decisionMaker.ChangeSettings(p_type);
 }
 
 void Mediator::DriveTick(tCarElt* p_car, tSituation* p_situation) {}
