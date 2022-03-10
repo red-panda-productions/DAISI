@@ -1,14 +1,21 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_SOURCES Mediator.cpp)
+SET(_SOURCES Mediator.cpp
+        Config.cpp
+        DecisionMaker.cpp
+        InterventionFactory.cpp)
+
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
         DriveSituation.h
         EnvironmentInfo.h
-        InterventionType.h
+        ConfigEnums.h
         Mediator.h
         TrackPosition.h
-        PlayerInfo.h)
+        PlayerInfo.h
+        Config.h
+        InterventionFactory.h
+        InterventionMaker.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)
