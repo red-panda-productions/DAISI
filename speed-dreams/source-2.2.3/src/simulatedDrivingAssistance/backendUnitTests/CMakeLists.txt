@@ -16,12 +16,13 @@ FetchContent_MakeAvailable(googletest)
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 add_executable(
-  backendUnitTests "MsgpackTests.cpp")
+  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp" "InterventionTests.cpp")
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities
   backend
   gtest_main
+  gmock_main
 )
 target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
