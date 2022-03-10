@@ -19,12 +19,11 @@ INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
 // Test DecisionMaker
     // Nothing to test yet
 
-// Test Mediator
+/// @brief Tests if the Mediator sets and gets the interventionType correctly
 TEST(MediatorTest, GetIntervention)
 {
     Mediator mediator;
 
-    // Test if the Mediator sets and gets the interventionType correctly
     for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
     {
         mediator.SetInterventionType(types[i]);
@@ -32,12 +31,11 @@ TEST(MediatorTest, GetIntervention)
     }
 }
 
-// Test Config
+/// @brief Tests if the Config sets and gets the interventionType correctly
 TEST(ConfigTest, SetGet)
 {
     Config config;
 
-    // Test if the Config sets and gets the interventionType correctly
     for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
     {
         config.SetInterventionType(types[i]);
@@ -45,7 +43,7 @@ TEST(ConfigTest, SetGet)
     }
 }
 
-// Test InterventionFactory
+/// @brief Tests if the Factory creates the the correct InterventionMaker
 TEST(FactoryTest, Creation)
 {
     InterventionMakerNoIntervention noInterventionMaker;
@@ -73,7 +71,8 @@ TEST(FactoryTest, Creation)
         dynamic_cast<InterventionMakerAlwaysIntervene*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_ALWAYS_INTERVENE))
         ,nullptr);
 }
-// Edge case
+
+/// @brief Tests if the Factory creates the InterventionMakerNoIntervention if the input is incorrect
 TEST(FactoryTest, Edge)
 {
     InterventionFactory factory;
