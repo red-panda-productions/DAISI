@@ -24,6 +24,9 @@ void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size);
 
 void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 
+/// @brief compares two values. If their difference is lower than the tolerance, return true.
+#define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs(f1-f2), tolerance)
+
 // test cases, how to use:
 // TEST_CASE(TestSuite,ExampleTest,ExampleFunc,(1,"hi"));
 
@@ -113,3 +116,4 @@ void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 			}\
 		}\
 	}
+

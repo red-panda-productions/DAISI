@@ -163,6 +163,9 @@ public:
 
 	//! Activate the main menu.
 	static bool activateMainMenu();
+
+    //! SIMULATED DRIVING ASSISTANCE CHANGE: Activate the intervention menu.
+    static bool ActivateInterventionMenu();
 	
 	//! Direct race startup (race specified in command line args).
 	static bool startRace();

@@ -19,6 +19,8 @@ SET(_HEADERS Utils.h)
 SD_ADD_LIBRARY(unitTestUtilities STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(unitTestUtilities PROPERTIES LINKER_LANGUAGE CXX)
 
+target_include_directories(backendUnitTests PUBLIC "../rppUtils")
+
 target_link_libraries(
 	unitTestUtilities
 	gtest_main

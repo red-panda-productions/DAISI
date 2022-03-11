@@ -17,6 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
+ // SIMULATED DRIVING ASSISTANCE: UPDATED FILE
+
 #include "grboard.h"
 
 #include <plib/ssg.h>
@@ -32,6 +34,14 @@
 #include "grutil.h"       // grWriteTime
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
+
+#define ALIGN_CENTER 0
+#define ALIGN_LEFT   1
+#define ALIGN_RIGHT  2
+
+#define LEADERBOARD_SCROLL_TIME       2.0
+#define LEADERBOARD_LINE_SCROLL_RATE  80     // pixels per second
+#define LEADERBOARD_LINE_SCROLL_DELAY 5      // seconds
 
 using std::string;
 
@@ -68,6 +78,8 @@ const char strFrontWing[] = "Front wing";
 const char strRearWing[] = "Rear wing";
 const char strPenalty[] = "Next pit type";
 
+ssgSimpleState* interventionTexture;
+
 
 cGrBoard::cGrBoard(int myid) :
     normal_color_(NULL), danger_color_(NULL), ok_color_(NULL),
@@ -103,8 +115,7 @@ cGrBoard::~cGrBoard()
 }
 
 
-void
-cGrBoard::loadDefaults(const tCarElt *curCar)
+void cGrBoard::loadDefaults(const tCarElt *curCar)
 {
   //Load dash colours from graph.xml
   char path[1024];
@@ -139,8 +150,11 @@ cGrBoard::loadDefaults(const tCarElt *curCar)
   boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, 100);
   speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, 0);
 
-  trackMap->setViewMode((int)GfParmGetNum(grHandle, path, GR_ATT_MAP,
-                                NULL, trackMap->getDefaultViewMode()));
+  // check null in case trackMap is disabled in UI.
+  if (trackMap) {
+      trackMap->setViewMode((int)GfParmGetNum(grHandle, path, GR_ATT_MAP,
+          NULL, trackMap->getDefaultViewMode()));
+  }
 
   // Only apply driver preferences when not spanning split screens
   pszSpanSplit = GfParmGetStr(grHandle, GR_SCT_GRAPHIC, GR_ATT_SPANSPLIT, GR_VAL_NO);
@@ -156,8 +170,12 @@ cGrBoard::loadDefaults(const tCarElt *curCar)
     arcadeFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_ARCADE, NULL, arcadeFlag);
     boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, boardWidth);
     speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, speedoRise);
-    trackMap->setViewMode((int)GfParmGetNum(grHandle, path, GR_ATT_MAP,
-                                NULL, trackMap->getViewMode()));
+
+    // check null in case trackMap is disabled in UI.
+    if (trackMap) { 
+        trackMap->setViewMode((int)GfParmGetNum(grHandle, path, GR_ATT_MAP,
+            NULL, trackMap->getViewMode()));
+    }
   }
 
   if (boardWidth < 0 || boardWidth > 100)
@@ -169,8 +187,7 @@ cGrBoard::loadDefaults(const tCarElt *curCar)
 }
 
 
-void
-cGrBoard::setWidth(int val)
+void cGrBoard::setWidth(int val)
 {
   // Setup the margins according to percentage of screen width
   centerAnchor = (val / 2);
@@ -178,8 +195,10 @@ cGrBoard::setWidth(int val)
   rightAnchor = (val / 2) + val * boardWidth / 200;
 }
 
-void
-cGrBoard::selectBoard(int val)
+
+/// @brief      Updates one of the board flags, called when one of the defined keybinds is pressed.
+/// @param val  Value corresponding to a specific keybind.
+void cGrBoard::selectBoard(int val)
 {
   char path[1024];
   snprintf(path, sizeof(path), "%s/%d", GR_SCT_DISPMODE, id);
@@ -231,8 +250,7 @@ cGrBoard::selectBoard(int val)
  * @param s[in]     The current situation
  * @param frame[in] Frame info to display
  */
-void
-cGrBoard::grDispDebug(const tSituation *s, const cGrFrameInfo* frame)
+void cGrBoard::grDispDebug(const tSituation *s, const cGrFrameInfo* frame)
 {
   char buf[BUFSIZE];
   snprintf(buf, sizeof(buf), "FPS: %.1f(%.1f)  ",
@@ -290,8 +308,10 @@ cGrBoard::grDispDebug(const tSituation *s, const cGrFrameInfo* frame)
 }  // grDispDebug
 
 
-void
-cGrBoard::grDispGGraph()
+/// @brief Displays information about the wheels in the bottom right of the screen.
+/// Information about slipping, temperature, steering, braking, acceleration, etc.
+/// Displayed in the bottom - right of the screen.
+void cGrBoard::grDispGGraph()
 {
   // Position the graph
   const tdble X1 = (tdble)(rightAnchor - 100);
@@ -613,8 +633,15 @@ cGrBoard::grDispGGraph()
 }
 
 
-void
-cGrBoard::grDrawGauge(tdble X1, tdble Y1, tdble H,
+/// @brief          Draws a vertical gauge displaying some information
+/// @param X1       Reference X-coordinate to start drawining from
+/// @param Y1       Reference Y-coordinate to start drawining from
+/// @param H        Height of the gauge
+/// @param color1   Color of the information to be drawn 
+/// @param color2   Color of the gauge background
+/// @param val      Value of the information to display
+/// @param title    Name of the information to display
+void cGrBoard::grDrawGauge(tdble X1, tdble Y1, tdble H,
                         float *color1, float *color2,
                         tdble val, const char *title)
 {
@@ -650,13 +677,10 @@ cGrBoard::grDrawGauge(tdble X1, tdble Y1, tdble H,
                     2*(THNSSBG + THNSSFG), GFUI_ALIGN_HC);
 }
 
-void
-cGrBoard::grDispMisc(bool bCurrentScreen)
+
+/// @brief For split-screen gameplay: draws a green square in the bottom right of the focussed screen.
+void cGrBoard::grDispSplitScreenIndicator()
 {
-  if (bCurrentScreen)
-  {
-    // Draw the current screen indicator (only in split screen mode)
-    // (a green-filled square on the bottom right corner of the screen).
     static const float h = 10.0f;
     const float w = h;
 
@@ -670,7 +694,6 @@ cGrBoard::grDispMisc(bool bCurrentScreen)
     glVertex2f(x + w, y + h);
     glVertex2f(x,     y + h);
     glEnd();
-  }
 }
 
 
@@ -683,8 +706,7 @@ cGrBoard::grDispMisc(bool bCurrentScreen)
 // @param car[in] A pointer to the current driver's car
 // @return void
 //
-void
-cGrBoard::grDispCarBoard1(const tSituation *s)
+void cGrBoard::grDispCarBoard1(const tSituation* s)
 {
   char buf[BUFSIZE];
 
@@ -773,8 +795,7 @@ cGrBoard::grDispCarBoard1(const tSituation *s)
 // @param car[in] A pointer to the current driver's car
 // @return void
 //
-void
-cGrBoard::grDispCarBoard2(const tSituation *s)
+void cGrBoard::grDispCarBoard2(const tSituation *s)
 {
   // Font sizes
   int dy = GfuiFontHeight(GFUI_FONT_MEDIUM_C);
@@ -901,8 +922,7 @@ cGrBoard::grDispCarBoard2(const tSituation *s)
 }  // grDispCarBoard2
 
 
-void
-cGrBoard::grDispCarBoard(const tSituation *s)
+void cGrBoard::grDispCarBoard(const tSituation *s)
 {
   switch (boardFlag) {
     case 0:
@@ -926,12 +946,12 @@ cGrBoard::grDispCarBoard(const tSituation *s)
 }
 
 
-#define ALIGN_CENTER  0
-#define ALIGN_LEFT  1
-#define ALIGN_RIGHT 2
-
-void
-cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
+/// @brief       Displays the engines RPM in a horizontal bar, only used in the Arcade HUD.
+/// @param X     Reference X drawining position 
+/// @param Y     Reference Y drawining position
+/// @param align Alignment of the bar compared to its reference position 
+/// @param bg    Background of the bar
+void cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
 {
   // Green LED
   GLfloat ledcolg[2][3] = {
@@ -1027,8 +1047,7 @@ cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
  * If [drawLaps] is on, writes the lap counter on the top of the list.
  * @param s[in] situation provided by the sim
  */
-void
-cGrBoard::grDispLeaderBoard(const tSituation *s)
+void cGrBoard::grDispLeaderBoard(const tSituation *s)
 {
   double time_left;
   if (leaderFlag == 4) {
@@ -1146,8 +1165,8 @@ cGrBoard::grDispLeaderBoard(const tSituation *s)
 }   // grDispLeaderBoard
 
 
-void
-cGrBoard::grDispCounterBoard2()
+/// @brief Middle 'Driver Counters' display with speed/gear meters and Fuel/Damage gauges.
+void cGrBoard::grDispCounterBoard2()
 {
   // RPM
   tgrCarInstrument *curInst = &(grCarInfo[car_->index].instrument[0]);
@@ -1248,10 +1267,10 @@ cGrBoard::grDispCounterBoard2()
 
   glTranslatef(0, -(speedoRise * TOP_ANCHOR / 100), 0);
 }  // grDispCounterBoard2
+ 
 
-
-void
-cGrBoard::initBoard(void)
+/// @brief Initializes the dashboard by creating a trackmap object.
+void cGrBoard::initBoard(void)
 {
   if (!trackMap) {
     trackMap = new cGrTrackMap();
@@ -1259,19 +1278,18 @@ cGrBoard::initBoard(void)
 }
 
 
-void
-cGrBoard::shutdown(void)
+/// @brief Shuts down the dashboard by releasing the trackmap object memory.
+void cGrBoard::shutdown(void)
 {
   delete trackMap;  // 'delete 0' is safe.
   trackMap = NULL;
 }
 
 
-void
-cGrBoard::grDispArcade(const tSituation *s)
+void cGrBoard::grDispArcade(const tSituation *s)
 {
-#define XM  15  // X margin
-#define YM  10  // Y margin
+    #define XM  15  // X margin
+    #define YM  10  // Y margin
 
   // We are ARCADE, we draw BIIIIG
   int dy = GfuiFontHeight(GFUI_FONT_BIG_C);
@@ -1457,6 +1475,7 @@ bool cGrBoard::grGetSplitTime(const tSituation *s, bool gap_inrace, double &time
   return true;
 }
 
+
 /**
  * This function gives back the information about the remaining laps / time
  *
@@ -1502,11 +1521,21 @@ void cGrBoard::grGetLapsTime(const tSituation *s, char* result,
 }
 
 
+/// @brief              Refreshes the HUD, called every frame.
+/// @param s            The current situation
+/// @param frameInfo    Information about the number of passed frames, average fps, etc
+/// @param currCar      The current car that is being driven
+/// @param isCurrScreen Boolean flag whether the displayed screen is the focussed screen.
 void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                             const tCarElt *currCar, bool isCurrScreen)
 {
   car_ = currCar;
-  grDispMisc(isCurrScreen);
+  if (isCurrScreen) {
+      grDispSplitScreenIndicator();
+  }
+
+  // For now: display an intervention every frame.
+  grDispIntervention();
 
   if (arcadeFlag) {
     grDispArcade(s);
@@ -1525,14 +1554,53 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
       grDispDashboard();
   }
 
-  trackMap->display(currCar, s, 0, 0, rightAnchor, TOP_ANCHOR);
+  if (trackMap) {
+      trackMap->display(currCar, s, 0, 0, rightAnchor, TOP_ANCHOR);
+  }
+
+}
+
+/// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar)
+/// TODO: make a dedicated function to load all intervention icons from XML into a struct/array
+void cGrBoard::grDispIntervention() 
+{
+    if (!interventionTexture) return;
+
+    // Dimensions of the icon on the screen (will be put in XML settings file later)
+    float iconWidth = 100;
+    float iconHeight = 100;
+
+    // Duplicate the current matrix and enable opengl settings.
+    glPushMatrix();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
+    glTranslatef(1.5 * centerAnchor - 0.5 * iconWidth, BOTTOM_ANCHOR, 0);
+    glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
+    
+    // Draw the texture as a Triangle Strip. 
+    // glTexCoord2f defines point of the texture that you take (0-1).
+    // glVertex2f then defines where to place this on the screen (relative to the current matrix)
+    glBegin(GL_TRIANGLE_STRIP);
+    glColor4f(1.0, 1.0, 1.0, 0.0);
+    glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0, iconHeight);
+    glTexCoord2f(1.0, 0.0); glVertex2f(iconWidth, 0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(iconWidth, iconHeight);
+    glEnd();
+
+    // Unbind the texture and pop the translated matrix of the stack.
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glPopMatrix();
 }
 
 
 // TODO(?): clean solution for cleanup.
 static ssgSimpleState* cleanup[1024];
 static int nstate = 0;
-
 
 void grInitBoardCar(tCarElt *car)
 {
@@ -1592,13 +1660,27 @@ void grInitBoardCar(tCarElt *car)
   if (bMasterModel)
     lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "cars/models/%s;", car->_masterModel);
 
-  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures");
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
+
+  // Add the data/intervention folder to the searchable filepaths for filenames.
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
+
+  // Load intervention texture from XML file, for now: UNSAFE with respect to path size (max is 256) 
+  char buf[256];
+  snprintf(buf, sizeof(buf), "%sdata/intervention/intervention.xml", GfDataDir());
+  void* xmlHandleIntervention = GfParmReadFile(buf, GFPARM_RMODE_STD);
+
+  // Search the xml file for the file corresponding to the attribute "steer intervention"
+  // Note that grSsgLoadTexState uses a buffer of 256 internally, so the file should not be bigger than 256x256
+  const char* attr = GfParmGetStr(xmlHandleIntervention, SECT_GROBJECTS, "steer intervention", NULL);
+  interventionTexture = (ssgSimpleState*)grSsgLoadTexState(attr);
+
 
   /* Tachometer --------------------------------------------------------- */
   tgrCarInstrument *curInst = &(carInfo->instrument[0]);
 
   /* Load the Tachometer texture */
-  const char *param = GfParmGetStr(handle, SECT_GROBJECTS,
+  const char* param = GfParmGetStr(handle, SECT_GROBJECTS,
                                     PRM_TACHO_TEX, "rpm8000.png");
 
   curInst->texture = (ssgSimpleState*)grSsgLoadTexState(param);
@@ -1765,7 +1847,7 @@ void grShutdownBoardCar(void)
   nstate = 0;*/
 }
 
-#define LEADERBOARD_SCROLL_TIME 2.0
+
 /**
  * grDispLeaderBoardScroll
  *
@@ -1774,8 +1856,7 @@ void grShutdownBoardCar(void)
  *
  * @param s[in] current situation, provided by the sim
 */
-void
-cGrBoard::grDispLeaderBoardScroll(const tSituation *s)
+void cGrBoard::grDispLeaderBoardScroll(const tSituation *s)
 {
   // Scrolling
   if (iTimer == 0 || s->currentTime < iTimer)
@@ -1858,8 +1939,6 @@ cGrBoard::grDispLeaderBoardScroll(const tSituation *s)
 }   // grDispLeaderBoardScroll
 
 
-#define LEADERBOARD_LINE_SCROLL_RATE 80     // pixels per second
-#define LEADERBOARD_LINE_SCROLL_DELAY 5     // seconds
 /**
  * grDispLeaderBoardScrollLine
  *
@@ -1867,8 +1946,7 @@ cGrBoard::grDispLeaderBoardScroll(const tSituation *s)
  *
  * @param s[in] current situation, provided by the sim
  */
-void
-cGrBoard::grDispLeaderBoardScrollLine(const tSituation *s)
+void cGrBoard::grDispLeaderBoardScrollLine(const tSituation *s)
 {
   // At first, get the current time and rebuild the ScrollLine text
   if (iTimer == 0 || s->currentTime < iTimer) {
@@ -1939,8 +2017,7 @@ cGrBoard::grDispLeaderBoardScrollLine(const tSituation *s)
  * @param isLeader
  * @return string
  */
-string
-cGrBoard::grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation* s,
+string cGrBoard::grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation* s,
                                         const bool isLeader) const
 {
   char buf[BUFSIZE];
@@ -2008,8 +2085,7 @@ cGrBoard::grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation* s,
  * either the immediateely changeable parameters,
  * or the desired changes during the next pit stop.
  */
-void
-cGrBoard::grDispDashboard()
+void cGrBoard::grDispDashboard()
 {
   const char *buf1 = NULL;
   char buf2[9], buf3[9];
@@ -2132,6 +2208,7 @@ cGrBoard::grDispDashboard()
    */
 }
 
+
 /**
  * Set up a drawing area to put textual info there.
  *
@@ -2142,8 +2219,7 @@ cGrBoard::grDispDashboard()
  * @param xr X right
  * @param yt Y top
  */
-void
-cGrBoard::grSetupDrawingArea(int xl, int yb, int xr, int yt) const
+void cGrBoard::grSetupDrawingArea(int xl, int yb, int xr, int yt) const
 {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2159,8 +2235,9 @@ cGrBoard::grSetupDrawingArea(int xl, int yb, int xr, int yt) const
 }
 
 
-void
-cGrBoard::grDispIndicators(const bool arcade)
+/// @brief Display ABS/TCS/SPD indicators if the driver is a human.
+/// @param arcade Boolean flag whether the function is called from the arcade function.
+void cGrBoard::grDispIndicators(const bool arcade)
 {
   // Only useful for humans - maybe robots should show that, too?
   if (car_->_driverType == RM_DRV_HUMAN) {
@@ -2184,7 +2261,7 @@ cGrBoard::grDispIndicators(const bool arcade)
 
     int x, y;
     if (arcade) {
-      x = leftAnchor + 15 + 30;                 // constant text left pos.
+      x = leftAnchor + 15 + 30;               // constant text left pos.
       y = BOTTOM_ANCHOR + dy2 * 8 + dy - 2;   // first row top pos.
     } else {
       x = centerAnchor - 200;                 // constant text left pos.
@@ -2194,23 +2271,10 @@ cGrBoard::grDispIndicators(const bool arcade)
     // Display board
     grSetupDrawingArea(x - 5, y + dy + 5, x + dx + 5, y - dy2 * 8 - dy + 5);
 
-    // Display strings (until we are more advanced graphically)
-    if (abs)
-      GfuiDrawString("ABS", emphasized_color_, GFUI_FONT_MEDIUM_C, x, y);    //yellow
-    else
-      GfuiDrawString("ABS", inactive_color_, GFUI_FONT_MEDIUM_C, x, y);  //grey
-    y -= dy;
-
-    if (tcs)
-      GfuiDrawString("TCS", emphasized_color_, GFUI_FONT_MEDIUM_C, x, y);    //yellow
-    else
-      GfuiDrawString("TCS", inactive_color_, GFUI_FONT_MEDIUM_C, x, y);  //grey
-    y -= dy;
-
-    if (spd)
-      GfuiDrawString("SPD", emphasized_color_, GFUI_FONT_MEDIUM_C, x, y);    //yellow
-    else
-      GfuiDrawString("SPD", inactive_color_, GFUI_FONT_MEDIUM_C, x, y);  //grey
+    // Display strings emphasize (yellow) if flag is true, grey otherwise.
+    GfuiDrawString("ABS", abs ? emphasized_color_ : inactive_color_, GFUI_FONT_MEDIUM_C, x, y);
+    GfuiDrawString("TCS", tcs ? emphasized_color_ : inactive_color_, GFUI_FONT_MEDIUM_C, x, y - dy);
+    GfuiDrawString("SPD", spd ? emphasized_color_ : inactive_color_, GFUI_FONT_MEDIUM_C, x, y - 2 * dy);
   }  // if human
 }  // grDispIndicators
 

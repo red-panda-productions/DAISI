@@ -57,7 +57,7 @@ class cGrBoard
  private:
     void grDispDebug(const tSituation *s, const cGrFrameInfo* frame);
     void grDispGGraph();
-    void grDispMisc(bool bCurrentScreen);
+    void grDispSplitScreenIndicator();
     void grDrawGauge(tdble X1, tdble Y1, tdble H, float *clr1,
                         float *clr2, tdble val, const char *title);
     void grDispEngineLeds(int X, int Y, int align, bool bg);
@@ -86,6 +86,8 @@ class cGrBoard
     void grGetLapsTime(const tSituation *s, char* result,
                         char const** label) const;
     void grSetupDrawingArea(int xl, int yb, int xr, int yt) const;
+
+    void grDispIntervention();
 
 private:
     //Dash colour handling
