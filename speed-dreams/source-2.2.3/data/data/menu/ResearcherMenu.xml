@@ -2,11 +2,11 @@
 
 <!DOCTYPE params SYSTEM "../tgf/params.dtd">
 
-<params name="interventionmenu">
+<params name="ResearcherMenu">
 
     <section name="dynamic controls">
 
-        <section name="interventionleftarrow">
+        <section name="InterventionLeftArrow">
             <attstr name="type" val="image button"/>
             <attnum name="width" val="24"/>
             <attnum name="height" val="24"/>
@@ -19,7 +19,7 @@
             <attstr name="pushed image" val="data/img/arrow-left-top-pushed.png"/>
         </section>
 
-        <section name="interventionrightarrow">
+        <section name="InterventionRightArrow">
             <attstr name="type" val="image button"/>
             <attnum name="width" val="24"/>
             <attnum name="height" val="24"/>
@@ -32,7 +32,7 @@
             <attstr name="pushed image" val="data/img/arrow-right-top-pushed.png"/>
         </section>
 
-        <section name="interventionlabel">
+        <section name="InterventionLabel">
             <attstr name="type" val="label"/>
             <attnum name="max len" val="22"/>
             <attstr name="tip" val="Set the type of intervention the driver assistant can make"/>
@@ -44,26 +44,43 @@
             <attstr name="font" val="medium"/>
         </section>
 
-        <section name="CancelButton">
-            <attstr name="type" val="text button"/>
-            <attstr name="show box" val="no"/>
-            <attstr name="text" val="Cancel"/>
-            <attstr name="tip" val="Cancel changes"/>
-            <attstr name="h align" val="left"/>
-            <attnum name="x" val="278"/>
-            <attnum name="y" val="82"/>
-            <attnum name="width" val="120"/>
-            <attstr name="font" val="medium"/>
+        <section name="SteeringCheckbox">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="User input data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="275"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="focused color" val="0xFFFFFF"/>
-            <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-10"/>
-            <attnum name="image y" val="4"/>
-            <attnum name="image width" val="60"/>
-            <attnum name="image height" val="16"/>
-            <attstr name="focused image" val="data/img/button-left-focused.png"/>
-            <attstr name="enabled image" val="data/img/button-left.png"/>
-            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="SpeedCheckbox">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Speed data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="250"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="PositionCheckbox">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Positional data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="225"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
         </section>
 
         <section name="ApplyButton">

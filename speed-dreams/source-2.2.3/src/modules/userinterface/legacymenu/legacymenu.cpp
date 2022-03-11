@@ -33,7 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-#include "InterventionMenu.h"
+#include "ResearcherMenu.h"
 
 #include "mainmenu.h"
 #include "exitmenu.h"
@@ -99,7 +99,7 @@ bool LegacyMenu::backLoad()
         return false;
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the intervention type select menu
-    InterventionMenuInit(MainMenuInit(SupportsHumanDrivers));
+    ResearcherMenuInit(MainMenuInit(SupportsHumanDrivers));
 
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
@@ -118,9 +118,9 @@ bool LegacyMenu::activateMainMenu()
 // SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
 /// @brief activates the InterventionMenu
 /// @return true if successful
-bool LegacyMenu::ActivateInterventionMenu()
+bool LegacyMenu::ActivateResearcherMenu()
 {
-    return InterventionMenuRun() == 0;
+    return ResearcherMenuRun() == 0;
 }
 
 bool LegacyMenu::startRace()
@@ -181,7 +181,7 @@ bool LegacyMenu::activate()
 	{
         // If not specified, simply open the splash screen, load the menus in the background
         // SIMULATED DRIVING ASSISTANCE CHANGE: and finally open the intervention menu.
-        fnOnSplashClosed = LegacyMenu::ActivateInterventionMenu;
+        fnOnSplashClosed = LegacyMenu::ActivateResearcherMenu;
     }
 
 	// Otherwise, run the selected race.

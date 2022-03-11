@@ -2,9 +2,9 @@ INCLUDE(../../../../cmake/macros.cmake)
 
 SET(MS mainscreens)
 # SIMULATED DRIVING ASSISTANCE CHANGE: added interventionMenu.h and cpp
-SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/InterventionMenu.cpp
+SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu.cpp
                         ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp)
-SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/InterventionMenu.cpp
+SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.cpp
                         ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h)
 
 IF(MSVC)
