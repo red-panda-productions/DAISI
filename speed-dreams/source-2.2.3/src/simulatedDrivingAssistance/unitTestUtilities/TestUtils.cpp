@@ -1,5 +1,5 @@
 #include <random>
-#include "Utils.h"
+#include "TestUtils.h"
 #include <gtest/gtest.h>
 
 /// @brief        Tests if 2 messages are equal to each other

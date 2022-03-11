@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
-#include "Random.hpp"
+#include "../rppUtils/Random.hpp"
 #include "msgpack.hpp"
 #include "SocketBlackBox.h"
 #include "MsgpackSerializeTests.h"
