@@ -3,5 +3,8 @@
 class PlayerInfo
 {
 public:
-	float TimeLastSteer(){return 0;};
+    float SteerCmd(){return 0;};
+    float AccelCmd(){return 0;};
+    float BrakeCmd(){return 0;};
+    float ClutchCmd(){return 0;};
 };

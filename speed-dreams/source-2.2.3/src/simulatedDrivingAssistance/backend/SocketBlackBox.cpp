@@ -20,25 +20,27 @@ void SocketBlackBox<DriveSituation>::Initialize()
 {
     //CarInfo functions
     m_variableConvertAndInsertMap["Speed"] = INSERT_CAR_INFO(Speed());
-    m_variableConvertAndInsertMap["AccelCmd"] = INSERT_CAR_INFO(AccelCmd());
-    m_variableConvertAndInsertMap["BrakeCmd"] = INSERT_CAR_INFO(BrakeCmd());
-    m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_CAR_INFO(ClutchCmd());
-    m_variableConvertAndInsertMap["SteerCmd"] = INSERT_CAR_INFO(SteerCmd());
     m_variableConvertAndInsertMap["TopSpeed"] = INSERT_CAR_INFO(TopSpeed());
+    m_variableConvertAndInsertMap["Gear"] = INSERT_CAR_INFO(Gear());
+    m_variableConvertAndInsertMap["Headlights"] = INSERT_CAR_INFO(Headlights());
 
     //EnvironmentInfo functions
     m_variableConvertAndInsertMap["TimeOfDay"] = INSERT_ENVIRONMENT_INFO(TimeOfDay());
     m_variableConvertAndInsertMap["Clouds"] = INSERT_ENVIRONMENT_INFO(Clouds());
-    m_variableConvertAndInsertMap["Offroad"] = INSERT_ENVIRONMENT_INFO(Offroad());
+    m_variableConvertAndInsertMap["Rain"] = INSERT_ENVIRONMENT_INFO(Rain());
 
     //TrackLocalPosition functions
+    m_variableConvertAndInsertMap["Offroad"] = INSERT_TRACK_LOCAL_POSITION(Offroad());
     m_variableConvertAndInsertMap["ToMiddle"] = INSERT_TRACK_LOCAL_POSITION(ToMiddle());
     m_variableConvertAndInsertMap["ToLeft"] = INSERT_TRACK_LOCAL_POSITION(ToLeft());
     m_variableConvertAndInsertMap["ToRight"] = INSERT_TRACK_LOCAL_POSITION(ToRight());
     m_variableConvertAndInsertMap["ToStart"] = INSERT_TRACK_LOCAL_POSITION(ToStart());
 
     //PlayerInfo functions
-    m_variableConvertAndInsertMap["TimeLastSteer"] = INSERT_PLAYER_INFO(TimeLastSteer());
+    m_variableConvertAndInsertMap["AccelCmd"] = INSERT_PLAYER_INFO(AccelCmd());
+    m_variableConvertAndInsertMap["BrakeCmd"] = INSERT_PLAYER_INFO(BrakeCmd());
+    m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_PLAYER_INFO(ClutchCmd());
+    m_variableConvertAndInsertMap["SteerCmd"] = INSERT_PLAYER_INFO(SteerCmd());
 
 
     //Decision functions
