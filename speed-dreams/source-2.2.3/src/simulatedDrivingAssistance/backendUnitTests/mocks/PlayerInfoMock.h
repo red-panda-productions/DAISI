@@ -5,10 +5,10 @@ class PlayerInfoMock
 public:
     PlayerInfoMock(float p_steerCmd, float p_accelCmd, float p_brakeCmd, float p_clutchCmd)
     {
-        float m_steerCmd = p_steerCmd;
-        float m_accelCmd = p_accelCmd;
-        float m_brakeCmd = p_brakeCmd;
-        float m_clutchCmd = p_clutchCmd;
+        m_steerCmd = p_steerCmd;
+        m_accelCmd = p_accelCmd;
+        m_brakeCmd = p_brakeCmd;
+        m_clutchCmd = p_clutchCmd;
     }
 
     float m_steerCmd;

@@ -6,7 +6,7 @@
 #define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, DriveSituation& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
 #define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo().p_variable)
 #define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo().p_variable)
-#define INSERT_TRACK_LOCAL_POSITION(p_variable) INSERT_ENVIRONMENT_INFO(TrackLocalPosition().p_variable)
+#define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo().TrackLocalPosition().p_variable)
 #define INSERT_PLAYER_INFO(p_variable) PUSH_BACK_DS(GetPlayerInfo().p_variable)
 
 // converts abstract decision to concrete decision with correct value

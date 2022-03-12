@@ -81,8 +81,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
             "ToMiddle",
             "ToLeft",
             "ToRight",
-            "ToStart",
-            "TimeLastSteer"};
+            "ToStart"};
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
@@ -133,8 +132,7 @@ TEST(MsgpackSerializeTests, SerializeSome)
         "Speed",
         "TimeOfDay",
         "Offroad",
-        "ToLeft",
-        "TimeLastSteer"};
+        "ToLeft"};
 
     msgpack::sbuffer sbuffer;
     socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
