@@ -14,6 +14,11 @@
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.m_steerDecision.m_steerAmount = stringToFloat(p_string))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.m_brakeDecision.m_brakeAmount = stringToFloat(p_string))
 
+template <class DriveSituation>
+SocketBlackBox<DriveSituation>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip,p_port)
+{
+}
+
 /// @brief Sets keys and values for the functions that retrieve the correct information.
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
@@ -48,6 +53,47 @@ void SocketBlackBox<DriveSituation>::Initialize()
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
 }
 
+
+/// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
+/// @param p_initialDriveSituation  The initial drive situation
+template <class DriveSituation>
+void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSituation)
+{
+    Initialize();
+    // boot client here
+    m_server.AwaitClientConnection();
+    m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
+    if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
+    m_server.SendData("OK", 2);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    msgpack::unpacked msg;
+    msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
+    std::vector<std::string> orderVec;
+    msg->convert(orderVec);
+    int i = 0;
+    if(orderVec[i++] != "dataorder") throw std::exception("Black Box send wrong message: DATAORDER expected");
+    while(i < orderVec.size() && orderVec[i] != "actionorder")
+    {
+        m_variablesToSend.push_back(orderVec[i++]);
+    }
+    if (orderVec[i++] != "actionorder") throw std::exception("Black box send wrong message: ACTIONORDER expected");
+    while (i < orderVec.size() && orderVec[i] != "actionorder")
+    {
+        m_variablesToReceive.push_back(orderVec[i++]);
+    }
+
+    // testing can be done here later
+    msgpack::sbuffer sbuffer;
+    std::string data[1] = { "0" };
+    msgpack::pack(sbuffer, data);
+    m_server.SendData(sbuffer.data(), sbuffer.size());
+
+    sbuffer.clear();
+    SerializeDriveSituation(sbuffer, p_initialDriveSituation);
+    m_server.SendData(sbuffer.data(), sbuffer.size());
+    m_server.ReceiveDataAsync();
+}
+
 /// @brief                  Inserts a string of value of variable in vector. Packs this vector to msgpack.
 /// @param p_sbuffer        Buffer to pack data in
 /// @param p_driveSituation Drive situation to serialize
@@ -79,7 +125,7 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
 /// @param p_dataReceived Data received from black box
 /// @param p_size         Size of received data
 template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(DecisionTuple& p_decisionTuple, const char* p_dataReceived, unsigned int p_size)
+void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple)
 {
     //unpack
     msgpack::unpacked msg;
@@ -105,15 +151,16 @@ void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(DecisionTuple& p
 /// @param p_driveSituation Drive situation to base decisions off.
 /// @return returns decision array.
 template<class DriveSituation>
-DecisionTuple SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituation)
+bool SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions)
 {
-    std::stringstream stringstream;
-    SerializeDriveSituation(stringstream, p_driveSituation);
+    if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
+    msgpack::sbuffer sbuffer;
+    SerializeDriveSituation(sbuffer, p_driveSituation);
+    m_server.SendData(sbuffer.data(), sbuffer.size());
+    m_server.ReceiveDataAsync();
 
-    DecisionTuple decisionTuple();
+    DeserializeBlackBoxResults(p_decisions, m_buffer, SBB_BUFFER_SIZE);
 
-    /*TODO: send and receive data with IPCLib*/
-
-    return decisionTuple();
+    return true;
 }
 

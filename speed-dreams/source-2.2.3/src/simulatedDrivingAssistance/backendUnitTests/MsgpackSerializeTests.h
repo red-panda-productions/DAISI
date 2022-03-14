@@ -5,6 +5,8 @@
 #include <random>
 #include <limits>
 #include "Random.hpp"
+#include <thread>
+
 
 /// create all variables of drive situation and assign random values
 #define RANDOM_VALUE_ASSIGNMENT \
@@ -38,7 +40,7 @@
 /// create a socket black box and initialize the maps.
 #define SETUP_SOCKET \
     SocketBlackBox<DriveSituationMock> socketBlackBox;\
-    socketBlackBox.Initialize()
+    socketBlackBox.Initialize() 
 
 /// <summary>
 /// Tests if all variables can be serialized correctly

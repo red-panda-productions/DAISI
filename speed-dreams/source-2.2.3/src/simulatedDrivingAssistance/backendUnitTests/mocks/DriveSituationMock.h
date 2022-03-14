@@ -3,6 +3,13 @@
 #include "CarInfoMock.h"
 #include "EnvironmentInfoMock.h"
 
+#define CREATE_DRIVE_SITUATION_MOCK \
+	PlayerInfoMock playermock(0,0,0,0); \
+    TrackPositionMock trackpositionmock(false, 0, 0, 0, 0); \
+	CarInfoMock carinfomock(0, 0, 0, 0, trackpositionmock); \
+    EnvironmentInfoMock environmentmock(0, 0, 0); \
+	DriveSituationMock mock(playermock,carinfomock,environmentmock);
+
 class DriveSituationMock
 {
 public:

@@ -7,6 +7,7 @@
 #include "mocks/DriveSituationMock.h"
 #include "DecisionTuple.h"
 
+
 /// @brief Tests if all (currently) existing variables can be deserialized into a decision correctly
 TEST(MsgpackDeserializeTests, Deserialize)
 {
@@ -24,7 +25,7 @@ TEST(MsgpackDeserializeTests, Deserialize)
     socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
 
     DecisionTuple decisionTuple;
-    socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size());
+    socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
     ASSERT_ALMOST_EQ(decisionTuple.m_steerDecision.m_steerAmount, controlSteerValue, 0.000001);
     ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
@@ -45,7 +46,7 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
     socketBlackBox.Initialize();
 
     DecisionTuple decisionTuple;
-    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
+    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
 }
 
 /// @brief Tests if a variable is Not A Number when received data is not parsable to the correct type.
@@ -65,7 +66,7 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
 
     DecisionTuple decisionTuple;
-    socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size());
+    socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
     ASSERT_TRUE(isnan(decisionTuple.m_steerDecision.m_steerAmount));
     ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
@@ -88,7 +89,7 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     socketBlackBox.m_variablesToReceive = {"NON_EXISTING_DECISION_KEY", "Brake"};
 
     DecisionTuple decisionTuple;
-    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
+    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
 }
 
 /// @brief Tests if the program throws when more data has been send than expected.
@@ -109,7 +110,7 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
 
     DecisionTuple decisionTuple;
-    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
+    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
 }
 
 /// @brief Tests if the program throws when less data has been send than expected.
@@ -128,5 +129,5 @@ TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
     socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
 
     DecisionTuple decisionTuple;
-    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(decisionTuple, sbuffer.data(), sbuffer.size()), std::exception);
+    ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
 }

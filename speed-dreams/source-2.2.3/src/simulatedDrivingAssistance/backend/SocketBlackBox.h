@@ -6,18 +6,26 @@
 #include "IDecision.h"
 #include "msgpack.hpp"
 #include "DecisionTuple.h"
+#include "ServerSocket.h"
+
+#define SBB_BUFFER_SIZE 512
 
 template <class DriveSituation>
 class SocketBlackBox
 {
 public:
+
+    SocketBlackBox(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
     /**
      * Initialize a socket black box:
      * connect to the black box
      * register what variables should be shared
      * etc...
      */
+
     void Initialize();
+
+    void Initialize(DriveSituation& p_initialDriveSituation);
     /**
      * Shut down a socket black box:
      * disconnect the black box
@@ -34,9 +42,9 @@ public:
 
 
     void SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);
-    void DeserializeBlackBoxResults(DecisionTuple& p_decisions, const char* p_dataReceived, unsigned int p_size);
+    void DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisions);
 
-    DecisionTuple GetDecisions(DriveSituation& p_driveSituation);
+    bool GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions);
 
     std::vector<std::string> m_variablesToSend;
     std::vector<std::string> m_variablesToReceive;
@@ -48,4 +56,7 @@ public:
     // map with function that create correct concrete decision
     using decisionConvertFunction = void (*) (std::string&, DecisionTuple&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
+
+    ServerSocket m_server;
+    char m_buffer[SBB_BUFFER_SIZE];
 };
