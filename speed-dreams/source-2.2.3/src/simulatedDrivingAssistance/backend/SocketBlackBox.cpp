@@ -14,11 +14,6 @@
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.m_steerDecision.m_steerAmount = stringToFloat(p_string))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.m_brakeDecision.m_brakeAmount = stringToFloat(p_string))
 
-template <class DriveSituation>
-SocketBlackBox<DriveSituation>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip,p_port)
-{
-}
-
 /// @brief Sets keys and values for the functions that retrieve the correct information.
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Initialize()
@@ -57,10 +52,10 @@ void SocketBlackBox<DriveSituation>::Initialize()
 /// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
 /// @param p_initialDriveSituation  The initial drive situation
 template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSituation)
+void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests, int p_amountOfTests)
 {
     Initialize();
-    // boot client here
+    m_server.ConnectAsync();
     m_server.AwaitClientConnection();
     m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
     if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
@@ -71,27 +66,45 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     std::vector<std::string> orderVec;
     msg->convert(orderVec);
     int i = 0;
-    if(orderVec[i++] != "dataorder") throw std::exception("Black Box send wrong message: DATAORDER expected");
-    while(i < orderVec.size() && orderVec[i] != "actionorder")
+    if(orderVec[i++] != "DATAORDER") throw std::exception("Black Box send wrong message: DATAORDER expected");
+    while(i < orderVec.size() && orderVec[i] != "ACTIONORDER")
     {
         m_variablesToSend.push_back(orderVec[i++]);
     }
-    if (orderVec[i++] != "actionorder") throw std::exception("Black box send wrong message: ACTIONORDER expected");
-    while (i < orderVec.size() && orderVec[i] != "actionorder")
+    if (orderVec[i++] != "ACTIONORDER") throw std::exception("Black box send wrong message: ACTIONORDER expected");
+    while (i < orderVec.size() && orderVec[i] != "DATAORDER")
     {
         m_variablesToReceive.push_back(orderVec[i++]);
     }
 
     // testing can be done here later
     msgpack::sbuffer sbuffer;
-    std::string data[1] = { "0" };
+    std::string data[1] = { std::to_string(p_amountOfTests) };
     msgpack::pack(sbuffer, data);
     m_server.SendData(sbuffer.data(), sbuffer.size());
+
+    DecisionTuple decisionTuple;
+    for(int i = 0; i < p_amountOfTests; i++)
+    {
+        sbuffer.clear();
+        SerializeDriveSituation(sbuffer, p_initialDriveSituation);
+        m_server.SendData(sbuffer.data(), sbuffer.size());
+        m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
+        DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
+    }
+
 
     sbuffer.clear();
     SerializeDriveSituation(sbuffer, p_initialDriveSituation);
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();
+}
+
+template <class DriveSituation>
+void SocketBlackBox<DriveSituation>::Shutdown()
+{
+    m_server.SendData("STOP", 4);
+    m_server.CloseServer();
 }
 
 /// @brief                  Inserts a string of value of variable in vector. Packs this vector to msgpack.
@@ -159,7 +172,7 @@ bool SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituati
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();
 
-    DeserializeBlackBoxResults(p_decisions, m_buffer, SBB_BUFFER_SIZE);
+    DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
 
     return true;
 }

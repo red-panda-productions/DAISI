@@ -15,7 +15,10 @@ class SocketBlackBox
 {
 public:
 
-    SocketBlackBox(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
+    SocketBlackBox(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888) : m_server(p_ip, p_port)
+    {
+	    
+    }
     /**
      * Initialize a socket black box:
      * connect to the black box
@@ -25,7 +28,7 @@ public:
 
     void Initialize();
 
-    void Initialize(DriveSituation& p_initialDriveSituation);
+    void Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests = nullptr, int p_amountOfTests = 1);
     /**
      * Shut down a socket black box:
      * disconnect the black box
