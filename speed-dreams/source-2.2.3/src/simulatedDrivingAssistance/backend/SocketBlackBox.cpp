@@ -74,10 +74,10 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
     msgpack::pack(p_sbuffer, dataToSerialize);
 }
 
-/// @brief              Deserializes received data and makes a decision array from this data
-/// @param decisions    Decision array to put decisions in
-/// @param dataReceived Data received from black box
-/// @param size         Size of received data
+/// @brief                Deserializes received data and makes a decision array from this data
+/// @param p_decisions    Decision array to put decisions in
+/// @param p_dataReceived Data received from black box
+/// @param p_size         Size of received data
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(DecisionTuple& p_decisionTuple, const char* p_dataReceived, unsigned int p_size)
 {
@@ -102,7 +102,7 @@ void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(DecisionTuple& p
 
 /// @brief Sends serialized drive situation to black box. Deserializes data received by black box.
 ///        Makes decisions from received data.
-/// @param driveSituation Drive situation to base decisions off.
+/// @param p_driveSituation Drive situation to base decisions off.
 /// @return returns decision array.
 template<class DriveSituation>
 DecisionTuple SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituation)
