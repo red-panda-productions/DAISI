@@ -16,8 +16,8 @@ void Mediator::SetInterventionType(INTERVENTION_TYPE p_type)
 /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
 void Mediator::SetDataCollectionSettings(bool p_dataSetting[])
 {
-
-};
+    m_decisionMaker.m_config.SetDataCollectionSetting(p_dataSetting);
+}
 
 void Mediator::DriveTick(tCarElt* p_car, tSituation* p_situation) {}
 

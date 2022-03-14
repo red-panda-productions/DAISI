@@ -11,30 +11,30 @@ static const char* s_interventionTypes[] = { "no intervention",
                                            "intervene when needed",
                                            "always intervene" };
 static const int s_nrInterventions = sizeof(s_interventionTypes) / sizeof(s_interventionTypes[0]);
-static int s_curInterventionTypeIndex = 0;
+int m_curInterventionTypeIndex = 0;
 
 // GUI label ids
 static int s_interventionTypeId;
 
 // GUI screen handles
-static void *s_scrHandle = NULL;
+static void* s_scrHandle = NULL;
 static void* s_nextHandle = NULL;
 
-static bool* p_boolArr = new bool[2];
+bool* m_boolArr = new bool[5];
 
 /// @brief Loads the intervention type from the backend config
 static void ReadInterventionType()
 {
-    s_curInterventionTypeIndex = Mediator::GetInstance().GetInterventionType();
+    m_curInterventionTypeIndex = Mediator::GetInstance().GetInterventionType();
 
-    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[s_curInterventionTypeIndex]);
+    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[m_curInterventionTypeIndex]);
 }
 
 /// @brief Saves the settings into the backend config
 static void SaveSettings(void* /* dummy */)
 {
-    Mediator::GetInstance().SetInterventionType(s_curInterventionTypeIndex);
-    Mediator::GetInstance().SetDataCollectionSettings(p_boolArr);
+    Mediator::GetInstance().SetInterventionType(m_curInterventionTypeIndex);
+    Mediator::GetInstance().SetDataCollectionSettings(m_boolArr);
 
     /* go to the next screen */
     GfuiScreenActivate(s_nextHandle);
@@ -47,27 +47,44 @@ static void ChangeInterventionType(void* index)
     // delta is 1 if the right arrow has been pressed and -1 if the left arrow has been pressed
     const int delta = ((long)index < 0) ? -1 : 1;
 
-    s_curInterventionTypeIndex = (s_curInterventionTypeIndex + delta + s_nrInterventions) % s_nrInterventions;
+    m_curInterventionTypeIndex = (m_curInterventionTypeIndex + delta + s_nrInterventions) % s_nrInterventions;
 
-    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[s_curInterventionTypeIndex]);
+    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[m_curInterventionTypeIndex]);
 }
 
-/// @brief Enables or disables whether steering data will be stored in the analysis database
-static void ChangeSteeringStorage(tCheckBoxInfo* pInfo)
+/// @brief Enables or disables whether the attributes of the environment will be collected real-time
+/// @param pInfo Information on the checkbox
+static void ChangeDrivingStorage(tCheckBoxInfo* pInfo)
 {
-    p_boolArr[0] = pInfo->bChecked;
+    m_boolArr[0] = pInfo->bChecked;
 }
 
-/// @brief Enables or disables whether data on acceleration, brakes and gears will be stored in the analysis database
-static void ChangeSpeedStorage(tCheckBoxInfo* pInfo)
+/// @brief Enables or disables whether data on the car will be collected real-time
+/// @param pInfo Information on the checkbox
+static void ChangeCarStorage(tCheckBoxInfo* pInfo)
 {
-    p_boolArr[1] = pInfo->bChecked;
+    m_boolArr[1] = pInfo->bChecked;
 }
 
-/// @brief Enables or disables whether positional data will be stored in the analysis database
-static void ChangePositionStorage(tCheckBoxInfo* pInfo)
+/// @brief Enables or disables whether data on the human user will be collected real-time
+/// @param pInfo Information on the checkbox
+static void ChangeHumanStorage(tCheckBoxInfo* pInfo)
 {
-    p_boolArr[2] = pInfo->bChecked;
+    m_boolArr[2] = pInfo->bChecked;
+}
+
+/// @brief Enables or disables whether intervention attributes will be collected real-time
+/// @param pInfo Information on the checkbox
+static void ChangeInterventionStorage(tCheckBoxInfo* pInfo)
+{
+    m_boolArr[3] = pInfo->bChecked;
+}
+
+/// @brief Enables or disables whether decision maker parameters will be collected real-time
+/// @param pInfo Information on the checkbox
+static void ChangeMetaDataStorage(tCheckBoxInfo* pInfo)
+{
+    m_boolArr[4] = pInfo->bChecked;
 }
 
 /// @brief Sets the current interventionType displayed in the options correctly
@@ -75,7 +92,6 @@ static void OnActivate(void* /* dummy */)
 {
     ReadInterventionType();
 }
-
 
 /// @brief Initializes the researcher menu
 /// @param nextMenu The scrHandle of the next menu
@@ -99,10 +115,12 @@ void* ResearcherMenuInit(void* nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle,param,"InterventionRightArrow",(void*)1,ChangeInterventionType);
     s_interventionTypeId = GfuiMenuCreateLabelControl(s_scrHandle,param,"InterventionLabel");
 
-    // Checkboxes for choosing the simulation information to store
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "SteeringCheckbox", NULL, ChangeSteeringStorage);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "SpeedCheckbox", NULL, ChangeSpeedStorage);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "PositionCheckbox", NULL, ChangePositionStorage);
+    // Checkboxes for choosing the simulation information to collect and store in real-time
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox1", NULL, ChangeDrivingStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox2", NULL, ChangeCarStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox3", NULL, ChangeHumanStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox4", NULL, ChangeInterventionStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox5", NULL, ChangeMetaDataStorage);
 
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
