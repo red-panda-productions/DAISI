@@ -49,6 +49,7 @@ public:
 
     bool GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions);
 
+
     std::vector<std::string> m_variablesToSend;
     std::vector<std::string> m_variablesToReceive;
 
@@ -59,6 +60,8 @@ public:
     // map with function that create correct concrete decision
     using decisionConvertFunction = void (*) (std::string&, DecisionTuple&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
+
+private:
 
     ServerSocket m_server;
     char m_buffer[SBB_BUFFER_SIZE];
