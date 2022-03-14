@@ -4,9 +4,8 @@
 #include "mocks/DriveSituationMock.h"
 #include <random>
 #include <limits>
-#include "Random.hpp"
 #include <thread>
-
+#include "../rppUtils/Random.hpp"
 
 /// create all variables of drive situation and assign random values
 #define RANDOM_VALUE_ASSIGNMENT \

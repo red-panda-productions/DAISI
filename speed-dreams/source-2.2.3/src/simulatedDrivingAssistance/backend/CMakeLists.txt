@@ -17,7 +17,7 @@ SET(_HEADERS CarInfo.h
         TrackPosition.h
         PlayerInfo.h
         SocketBlackBox.h
-        ../rppUtils/Utils.hpp
+        ../rppUtils/RppUtils.hpp
         Config.h
         InterventionFactory.h
         InterventionMaker.h)
