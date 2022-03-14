@@ -24,3 +24,13 @@ public:
     EnvironmentInfoMock GetEnvironmentInfo(){return m_environmentInfo;};
     CarInfoMock GetCarInfo(){return m_carInfo;};
 };
+
+/// @brief  A sample drive situation for testing
+DriveSituationMock GetExampleDriveSituation()
+{
+    TrackPositionMock trackpos(true, 0.1, 0.2, 0.3, 0.4);
+    CarInfoMock carinfo(1.1, 1.2, 1, true, trackpos);
+    PlayerInfoMock playerinfo(2.1, 2.2, 2.3, 2.4);
+    EnvironmentInfoMock environmentinfo(3, 4, 5);
+    return { playerinfo, carinfo, environmentinfo };
+}

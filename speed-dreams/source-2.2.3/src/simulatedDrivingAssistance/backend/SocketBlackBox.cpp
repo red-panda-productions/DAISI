@@ -87,7 +87,7 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     for(int i = 0; i < p_amountOfTests; i++)
     {
         sbuffer.clear();
-        SerializeDriveSituation(sbuffer, p_initialDriveSituation);
+        SerializeDriveSituation(sbuffer, p_tests[i]);
         m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
@@ -100,6 +100,7 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     m_server.ReceiveDataAsync();
 }
 
+/// @brief Shuts the black box down
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Shutdown()
 {
