@@ -8,16 +8,10 @@
 struct DecisionTuple
 {
 public:
-    DecisionTuple()
-    {
-        buffer[0] = &m_brakeDecision;
-        buffer[1] = &m_steerDecision;
-    }
+    DecisionTuple();
 
-    IDecision** GetDecisions()
-    {
-        return buffer;
-    }
+    IDecision** GetDecisions();
+
 
     BrakeDecision m_brakeDecision;
     SteerDecision m_steerDecision;
