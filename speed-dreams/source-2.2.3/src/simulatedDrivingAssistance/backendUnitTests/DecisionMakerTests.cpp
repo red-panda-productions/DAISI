@@ -8,6 +8,9 @@
 #include "TestUtils.h"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock>
+
+/// @brief				 Tests if a decision can be made
+/// @param  p_isDecision Whether the black box made a decision
 void DecisionTest(bool p_isDecision)
 {
 	TDecisionMaker decisionMaker;
@@ -28,9 +31,11 @@ void DecisionTest(bool p_isDecision)
 	ASSERT_FALSE(mock->m_decisions == nullptr);
 }
 
-TEST_CASE(DecisionTests,DecisionTestTrue,DecisionTest,(true))
-TEST_CASE(DecisionTests,DecisionTestFalse,DecisionTest,(false))
+TEST_CASE(DecisionMakerTests,DecisionTestTrue,DecisionTest,(true))
+TEST_CASE(DecisionMakerTests,DecisionTestFalse,DecisionTest,(false))
 
+/// @brief					Tests if settings can be changed
+/// @param  p_intervention  The setting that needs to be set
 void ChangeSettingsTest(INTERVENTION_TYPE p_intervention)
 {
 	TDecisionMaker decisionMaker;
@@ -41,8 +46,8 @@ void ChangeSettingsTest(INTERVENTION_TYPE p_intervention)
 	ASSERT_FALSE(mockCheck == NULL);
 }
 
-TEST_CASE(DecisionsTest, ChangeSettingsTestNoIntervention, ChangeSettingsTest, (INTERVENTION_TYPE_NO_INTERVENTION));
-TEST_CASE(DecisionsTest, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_ALWAYS_INTERVENE));
-TEST_CASE(DecisionsTest, ChangeSettingsTestAskFor, ChangeSettingsTest, (INTERVENTION_TYPE_ASK_FOR));
-TEST_CASE(DecisionsTest, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_INDICATION));
-TEST_CASE(DecisionsTest, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_PERFORM_WHEN_NEEDED));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTest, (INTERVENTION_TYPE_NO_INTERVENTION));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_ALWAYS_INTERVENE));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestAskFor, ChangeSettingsTest, (INTERVENTION_TYPE_ASK_FOR));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_INDICATION));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_PERFORM_WHEN_NEEDED));
