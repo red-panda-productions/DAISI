@@ -14,20 +14,13 @@ bool DecisionMaker<BlackBox>::Decide(DriveSituation& p_driveSituation)
     if (!m_blackBox.GetDecisions(p_driveSituation, decision)) return false;
     // perform commands?
 
-    decision.m_steerDecision.GetIndicateCommands();
-    decision.m_steerDecision.GetInterveneCommands();
-
-
-
+    m_interventionExecutor->RunDecision(decision.GetDecisions());
 }
 
 template<typename BlackBox>
 void DecisionMaker<BlackBox>::ChangeSettings(INTERVENTION_TYPE p_type)
 {
-    m_interventionMaker = m_config.SetInterventionType(p_type);
-
-    // this line is for debugging purposes only, should be removed
-    m_interventionMaker->MakeCommands();
+    m_interventionExecutor = m_config.SetInterventionType(p_type);
 }
 
 CREATE_IMPLEMENTATION(SSocketBlackBox)

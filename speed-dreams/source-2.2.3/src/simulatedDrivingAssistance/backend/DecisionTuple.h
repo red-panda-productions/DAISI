@@ -2,12 +2,12 @@
 #include "BrakeDecision.h"
 #include "SteerDecision.h"
 
+
+#define DECISIONS_COUNT 2
+
 struct DecisionTuple
 {
 public:
-    BrakeDecision m_brakeDecision;
-    SteerDecision m_steerDecision;
-
     DecisionTuple()
     {
         buffer[0] = &m_brakeDecision;
@@ -19,6 +19,10 @@ public:
         return buffer;
     }
 
+    BrakeDecision m_brakeDecision;
+    SteerDecision m_steerDecision;
+
 private:
     IDecision* buffer[2];
+    
 };

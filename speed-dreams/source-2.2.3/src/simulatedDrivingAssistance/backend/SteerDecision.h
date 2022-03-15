@@ -6,6 +6,6 @@ class SteerDecision : public IDecision
 public:
     float m_steerAmount;
 
-    void GetIndicateCommands() override;
-    void GetInterveneCommands() override;
+    void RunIndicateCommands() override;
+    void RunInterveneCommands() override;
 };

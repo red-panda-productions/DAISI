@@ -1,11 +1,11 @@
 #include "BrakeDecision.h"
 
-void BrakeDecision::GetIndicateCommands()
+void BrakeDecision::RunIndicateCommands()
 {
 
 }
 
-void BrakeDecision::GetInterveneCommands()
+void BrakeDecision::RunInterveneCommands()
 {
 
 }

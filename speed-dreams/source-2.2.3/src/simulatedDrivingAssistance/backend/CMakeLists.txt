@@ -20,7 +20,12 @@ SET(_HEADERS CarInfo.h
         ../rppUtils/RppUtils.hpp
         Config.h
         InterventionFactory.h
-        InterventionMaker.h)
+        InterventionExecutor.h
+        InterventionExecutorAlwaysIntervene.h
+        InterventionExecutorAskFor.h
+        InterventionExecutorIndication.h
+        InterventionExecutorNoIntervention.h
+        InterventionExecutorAlwaysIntervene.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)

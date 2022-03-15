@@ -1,10 +1,10 @@
 #include "SteerDecision.h"
 
-void SteerDecision::GetIndicateCommands()
+void SteerDecision::RunIndicateCommands()
 {
 
 };
-void SteerDecision::GetInterveneCommands()
+void SteerDecision::RunInterveneCommands()
 {
 
 };

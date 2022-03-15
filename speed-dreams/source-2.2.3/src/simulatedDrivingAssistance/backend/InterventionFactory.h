@@ -1,9 +1,9 @@
 #pragma once
-#include "InterventionMaker.h"
+#include "InterventionExecutor.h"
 #include "ConfigEnums.h"
 
 class InterventionFactory
 {
 public:
-    InterventionMaker* CreateInterventionMaker(INTERVENTION_TYPE p_type);
+    InterventionExecutor* CreateInterventionExecutor(INTERVENTION_TYPE p_type);
 };
