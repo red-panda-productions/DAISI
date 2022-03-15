@@ -1,3 +1,4 @@
+#pragma once
 #include "SocketBlackBox.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"

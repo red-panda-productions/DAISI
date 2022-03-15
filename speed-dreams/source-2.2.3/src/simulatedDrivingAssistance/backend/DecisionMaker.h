@@ -5,7 +5,7 @@
 #include "InterventionExecutor.h"
 #include "SocketBlackBox.h"
 
-template <typename BlackBox>
+template <typename BlackBox, typename Config>
 class DecisionMaker
 {
 public:
@@ -20,4 +20,4 @@ public:
     BlackBox m_blackBox;
 };
 
-#define SDecisionMaker DecisionMaker<SSocketBlackBox> 
+#define SDecisionMaker DecisionMaker<SSocketBlackBox,Config> 

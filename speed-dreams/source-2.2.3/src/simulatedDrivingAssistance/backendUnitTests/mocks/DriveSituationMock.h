@@ -26,7 +26,7 @@ public:
 };
 
 /// @brief  A sample drive situation for testing
-DriveSituationMock GetExampleDriveSituation()
+inline DriveSituationMock GetExampleDriveSituation()
 {
     TrackPositionMock trackpos(true, 0.1, 0.2, 0.3, 0.4);
     CarInfoMock carinfo(1.1, 1.2, 1, true, trackpos);
