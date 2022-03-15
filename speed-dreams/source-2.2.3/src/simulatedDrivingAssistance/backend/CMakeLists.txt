@@ -8,6 +8,8 @@ SET(_SOURCES Mediator.cpp
         DecisionMaker.cpp
         InterventionFactory.cpp
         CarController.cpp
+        DriveSituation.cpp
+        DecisionTuple.cpp
         InterventionExecutorAlwaysIntervene.cpp
         InterventionExecutorAskFor.cpp
         InterventionExecutorIndication.cpp
@@ -23,6 +25,7 @@ SET(_HEADERS CarInfo.h
         TrackPosition.h
         PlayerInfo.h
         SocketBlackBox.h
+        DecisionTuple.h
         ../rppUtils/RppUtils.hpp
         Config.h
         InterventionFactory.h

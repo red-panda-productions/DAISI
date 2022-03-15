@@ -12,16 +12,7 @@ private:
     PlayerInfo m_playerInfo;
 
 public:
-	EnvironmentInfo* GetEnvironmentInfo()
-    {
-        return &m_environmentInfo;
-    };
-	CarInfo* GetCarInfo()
-    {
-        return &m_carInfo;
-    };
-	PlayerInfo* GetPlayerInfo()
-    {
-        return &m_playerInfo;
-    };
+    EnvironmentInfo* GetEnvironmentInfo();
+    CarInfo* GetCarInfo();
+    PlayerInfo* GetPlayerInfo();
 };
