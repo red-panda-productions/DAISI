@@ -4,15 +4,25 @@
 
 // inserts value from DriveSituation variables in vector
 #define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, DriveSituation& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
-#define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo().p_variable)
-#define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo().p_variable)
-#define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo().TrackLocalPosition().p_variable)
-#define INSERT_PLAYER_INFO(p_variable) PUSH_BACK_DS(GetPlayerInfo().p_variable)
+#define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo()->p_variable)
+#define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo()->p_variable)
+#define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo()->TrackLocalPosition()->p_variable)
+#define INSERT_PLAYER_INFO(p_variable) PUSH_BACK_DS(GetPlayerInfo()->p_variable)
 
 // converts abstract decision to concrete decision with correct value
 #define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) {p_function;}
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.m_steerDecision.m_steerAmount = stringToFloat(p_string))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.m_brakeDecision.m_brakeAmount = stringToFloat(p_string))
+
+#define CREATE_IMPLEMENTATION(type) \
+    template void SocketBlackBox<type>::Initialize();\
+	template void SocketBlackBox<type>::Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests, int p_amountOfTests);\
+	template void SocketBlackBox<type>::Shutdown();\
+	template void SocketBlackBox<type>::SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);\
+    template void SocketBlackBox<type>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
+    template bool SocketBlackBox<type>::GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions);
+
+
 
 /// @brief Sets keys and values for the functions that retrieve the correct information.
 template <class DriveSituation>
@@ -178,3 +188,4 @@ bool SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituati
     return true;
 }
 
+CREATE_IMPLEMENTATION(DriveSituation)

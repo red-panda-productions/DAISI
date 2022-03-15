@@ -12,15 +12,18 @@
     std::cout << #type << std::endl; \
     return new class();}
 
+/// @brief			Creates the correct interventionMaker based on the Intervention type
+/// @param  p_type  The interventionType
+/// @return			The InterventionMaker
 InterventionMaker* InterventionFactory::CreateInterventionMaker(INTERVENTION_TYPE p_type)
 {
-    switch(p_type)
-   {
-       CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionMakerAlwaysIntervene)
-       CASE(INTERVENTION_TYPE_ASK_FOR, InterventionMakerAskFor)
-       CASE(INTERVENTION_TYPE_INDICATION, InterventionMakerIndication)
-       CASE(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED, InterventionMakerPerformWhenNeeded)
-       default:
-       CASE(INTERVENTION_TYPE_NO_INTERVENTION, InterventionMakerNoIntervention)
-   }
+	switch(p_type)
+	{
+	   CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionMakerAlwaysIntervene)
+	   CASE(INTERVENTION_TYPE_ASK_FOR, InterventionMakerAskFor)
+	   CASE(INTERVENTION_TYPE_INDICATION, InterventionMakerIndication)
+	   CASE(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED, InterventionMakerPerformWhenNeeded)
+	   default:
+	   CASE(INTERVENTION_TYPE_NO_INTERVENTION, InterventionMakerNoIntervention)
+	}
 }

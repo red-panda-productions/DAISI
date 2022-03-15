@@ -22,7 +22,7 @@ INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
 /// @brief Tests if the Mediator sets and gets the interventionType correctly
 TEST(MediatorTest, GetIntervention)
 {
-    Mediator& mediator = Mediator::GetInstance();
+    SMediator& mediator = SMediator::GetInstance();
 
     for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
     {

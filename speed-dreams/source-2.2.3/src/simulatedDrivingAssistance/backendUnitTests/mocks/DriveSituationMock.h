@@ -20,9 +20,9 @@ public:
     EnvironmentInfoMock m_environmentInfo;
     CarInfoMock m_carInfo;
 
-    PlayerInfoMock GetPlayerInfo(){return m_playerInfo;}
-    EnvironmentInfoMock GetEnvironmentInfo(){return m_environmentInfo;};
-    CarInfoMock GetCarInfo(){return m_carInfo;};
+    PlayerInfoMock* GetPlayerInfo(){return &m_playerInfo;}
+    EnvironmentInfoMock* GetEnvironmentInfo(){return &m_environmentInfo;};
+    CarInfoMock* GetCarInfo(){return &m_carInfo;};
 };
 
 /// @brief  A sample drive situation for testing
