@@ -42,6 +42,16 @@ target_link_libraries(
 
 ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient)
 
+ADD_MSGPACK_PACKAGE(backendUnitTests)
+
+ADD_IPCLIB_PACKAGE(backendUnitTests)
+
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${IPCLIB_BIN_DIR}/IPCLib.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
 SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
 
 target_include_directories(backendUnitTests PUBLIC "../backend")
