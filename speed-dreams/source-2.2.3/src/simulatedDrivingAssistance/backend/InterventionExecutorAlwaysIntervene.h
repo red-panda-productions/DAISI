@@ -5,8 +5,12 @@
 
 class InterventionExecutorAlwaysIntervene : public InterventionExecutor
 {
-    void RunDecision(IDecision** p_decisions) override
+    void RunDecision(IDecision** p_decisions, int p_decisionCount) override
     {
-        std::cout << "Make commands that always intervene" << std::endl;
+        for(int i = 0; i < p_decisionCount; i++)
+        {
+            p_decisions[i]->RunInterveneCommands();
+            p_decisions[i]->RunIndicateCommands();
+        }
     }
 };

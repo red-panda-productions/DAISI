@@ -12,9 +12,9 @@ bool DecisionMaker<BlackBox>::Decide(DriveSituation& p_driveSituation)
 {
     DecisionTuple decision;
     if (!m_blackBox.GetDecisions(p_driveSituation, decision)) return false;
-    // perform commands?
 
-    m_interventionExecutor->RunDecision(decision.GetDecisions());
+    m_interventionExecutor->RunDecision(decision.GetDecisions(),DECISIONS_COUNT);
+    return true;
 }
 
 template<typename BlackBox>

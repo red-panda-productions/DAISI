@@ -17,7 +17,7 @@
 /// @return			The InterventionExecutor
 InterventionExecutor* InterventionFactory::CreateInterventionExecutor(INTERVENTION_TYPE p_type)
 {
-    	switch(p_type)
+	switch(p_type)
 	{
 	   CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionExecutorAlwaysIntervene)
 	   CASE(INTERVENTION_TYPE_ASK_FOR, InterventionExecutorAskFor)

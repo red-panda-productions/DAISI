@@ -1,31 +1,31 @@
 #include "CarController.h"
 
-CarController::SetSteerCmd(float p_steer)
+void CarController::SetSteerCmd(float p_steer)
 {
 	
 }
 
-CarController::SetAccelCmd(float p_accel)
+void CarController::SetAccelCmd(float p_accel)
 {
 	
 }
 
-CarController::SetBrakeCmd(float p_brake)
+void CarController::SetBrakeCmd(float p_brake)
 {
 	
 }
 
-CarController::SetClutchCmd(float p_clutch)
+void CarController::SetClutchCmd(float p_clutch)
 {
 	
 }
 
-CarController::SetLightCmd(bool p_light)
+void CarController::SetLightCmd(bool p_light)
 {
 	
 }
 
-CarController::ShowUI(UI_TYPE p_element)
+void CarController::ShowUI(UI_TYPE p_element)
 {
 	
 }
