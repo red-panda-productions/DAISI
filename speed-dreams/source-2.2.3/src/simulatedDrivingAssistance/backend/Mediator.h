@@ -7,6 +7,8 @@
 #include "CarController.h"
 
 
+/// @brief			      The Main communication between the front- and backend
+/// @tparam DecisionMaker The decisionMaker type
 template<typename DecisionMaker>
 class Mediator
 {
@@ -40,4 +42,5 @@ public:
 	Mediator();
 };
 
+/// @brief The standard type of the mediator
 #define SMediator Mediator<SDecisionMaker>

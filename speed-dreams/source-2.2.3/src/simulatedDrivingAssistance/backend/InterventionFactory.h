@@ -2,6 +2,7 @@
 #include "InterventionExecutor.h"
 #include "ConfigEnums.h"
 
+/// @brief Creates executors according to the config file
 class InterventionFactory
 {
 public:

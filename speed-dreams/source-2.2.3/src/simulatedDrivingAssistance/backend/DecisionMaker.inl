@@ -8,6 +8,9 @@
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,Config>
 
+/// @brief                   Tries to get a decision from the black box
+/// @param  p_driveSituation The current drive situation
+/// @return                  Whether a decision was made
 template <typename SocketBlackBox,typename Config>
 bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
 {
@@ -18,6 +21,8 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
     return true;
 }
 
+/// @brief         Changes the settings of how decisions should be made
+/// @param  p_type The new type of interventions
 template<typename SocketBlackBox,typename Config>
 void TEMP_DECISIONMAKER::ChangeSettings(INTERVENTION_TYPE p_type)
 {

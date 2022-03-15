@@ -6,6 +6,7 @@
 #define UI_TYPE_TURN_RIGHT 2
 #define UI_TYPE_BRAKE 3
 
+/// @brief The car controller of the mediator
 class CarController
 {
 public:
