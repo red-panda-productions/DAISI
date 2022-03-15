@@ -1,9 +1,9 @@
 #include "InterventionFactory.h"
-#include "InterventionMakerNoIntervention.h"
-#include "InterventionMakerAlwaysIntervene.h"
-#include "InterventionMakerAskFor.h"
-#include "InterventionMakerIndication.h"
-#include "InterventionMakerPerformWhenNeeded.h"
+#include "InterventionExecutorNoIntervention.h"
+#include "InterventionExecutorAlwaysIntervene.h"
+#include "InterventionExecutorAskFor.h"
+#include "InterventionExecutorIndication.h"
+#include "InterventionExecutorPerformWhenNeeded.h"
 
 #include <iostream>
 
@@ -12,18 +12,19 @@
     std::cout << #type << std::endl; \
     return new class();}
 
-/// @brief			Creates the correct interventionMaker based on the Intervention type
+/// @brief			Creates the correct interventionExecutor based on the Intervention type
 /// @param  p_type  The interventionType
-/// @return			The InterventionMaker
-InterventionMaker* InterventionFactory::CreateInterventionMaker(INTERVENTION_TYPE p_type)
+/// @return			The InterventionExecutor
+InterventionExecutor* InterventionFactory::CreateInterventionExecutor(INTERVENTION_TYPE p_type)
 {
-	switch(p_type)
+    	switch(p_type)
 	{
-	   CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionMakerAlwaysIntervene)
-	   CASE(INTERVENTION_TYPE_ASK_FOR, InterventionMakerAskFor)
-	   CASE(INTERVENTION_TYPE_INDICATION, InterventionMakerIndication)
-	   CASE(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED, InterventionMakerPerformWhenNeeded)
+	   CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionExecutorAlwaysIntervene)
+	   CASE(INTERVENTION_TYPE_ASK_FOR, InterventionExecutorAskFor)
+	   CASE(INTERVENTION_TYPE_INDICATION, InterventionExecutorIndication)
+	   CASE(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED, InterventionExecutorPerformWhenNeeded)
 	   default:
-	   CASE(INTERVENTION_TYPE_NO_INTERVENTION, InterventionMakerNoIntervention)
+	   CASE(INTERVENTION_TYPE_NO_INTERVENTION, InterventionExecutorNoIntervention)
 	}
 }
+

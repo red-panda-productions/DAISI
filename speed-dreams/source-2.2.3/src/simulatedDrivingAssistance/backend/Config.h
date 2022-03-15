@@ -1,6 +1,6 @@
 #pragma once
 #include "ConfigEnums.h"
-#include "InterventionMaker.h"
+#include "InterventionExecutor.h"
 #include "InterventionFactory.h"
 
 class Config
@@ -18,6 +18,6 @@ public:
     INTERVENTION_TYPE GetInterventionType() const;
 
     // sets the m_interventionType to p_type
-    // returns correct intervention maker from factory
-    InterventionMaker* SetInterventionType(INTERVENTION_TYPE p_type);
+    // returns correct intervention Executor from factory
+    InterventionExecutor* SetInterventionType(INTERVENTION_TYPE p_type);
 };
