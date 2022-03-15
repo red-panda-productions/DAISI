@@ -3,7 +3,6 @@
 #include "CarInfo.h"
 #include "PlayerInfo.h"
 
-
 class DriveSituation
 {
 private:

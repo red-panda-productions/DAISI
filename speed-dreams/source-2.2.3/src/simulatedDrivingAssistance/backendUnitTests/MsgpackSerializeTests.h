@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "SocketBlackBox.h"
-#include "SocketBlackBox.cpp"
+#include "SocketBlackBox.inl"
 #include "mocks/DriveSituationMock.h"
 #include <limits>
 #include "../rppUtils/Random.hpp"
