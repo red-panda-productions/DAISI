@@ -16,6 +16,10 @@ SET(_SOURCES Mediator.cpp
         InterventionExecutorNoIntervention.cpp
         InterventionExecutorPerformWhenNeeded.cpp)
 
+SET(_INLINES Mediator.inl
+        DecisionMaker.inl
+        SocketBlackBox.inl)
+
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
         DriveSituation.h
@@ -40,7 +44,7 @@ SET(_HEADERS CarInfo.h
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)
 
-SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
+SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_MSGPACK_PACKAGE(backend)
