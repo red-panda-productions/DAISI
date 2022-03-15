@@ -4,6 +4,7 @@
 #include "car.h"
 #include "raceman.h"
 #include "DecisionMaker.h"
+#include "CarController.h"
 
 
 template<typename DecisionMaker>
@@ -29,6 +30,8 @@ public:
 	Mediator(Mediator const&) = delete;
 	/// @brief Removes assigment for singleton behaviour
 	void operator=(Mediator const&) = delete;
+
+	CarController CarController;
 
  private:
 	DriveSituation m_situation;

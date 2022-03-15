@@ -5,8 +5,8 @@
 
 class InterventionExecutorNoIntervention : public InterventionExecutor
 {
-    void RunDecision(IDecision** p_decisions) override
+    void RunDecision(IDecision** p_decisions, int p_decisionCount) override
     {
-        std::cout << "Make no commands" << std::endl;
+        // no commands
     }
 };
