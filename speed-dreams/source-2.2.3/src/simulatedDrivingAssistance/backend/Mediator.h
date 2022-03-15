@@ -1,10 +1,12 @@
 #pragma once
 #include "DriveSituation.h"
 #include "ConfigEnums.h"
-#include "DecisionMaker.h"
 #include "car.h"
 #include "raceman.h"
+#include "DecisionMaker.h"
 
+
+template<typename DecisionMaker>
 class Mediator
 {
 public:
@@ -34,3 +36,5 @@ public:
 
 	Mediator();
 };
+
+#define SMediator Mediator<SDecisionMaker>

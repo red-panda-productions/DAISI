@@ -2,11 +2,10 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "DriveSituation.h"
-#include "IDecision.h"
 #include "msgpack.hpp"
 #include "DecisionTuple.h"
 #include "ServerSocket.h"
+#include "DriveSituation.h"
 
 #define SBB_BUFFER_SIZE 512
 
@@ -66,3 +65,5 @@ private:
     ServerSocket m_server;
     char m_buffer[SBB_BUFFER_SIZE];
 };
+
+#define SSocketBlackBox SocketBlackBox<DriveSituation>
