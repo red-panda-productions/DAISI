@@ -7,7 +7,12 @@ SET(_SOURCES Mediator.cpp
         Config.cpp
         DecisionMaker.cpp
         InterventionFactory.cpp
-        CarController.cpp)
+        CarController.cpp
+        InterventionExecutorAlwaysIntervene.cpp
+        InterventionExecutorAskFor.cpp
+        InterventionExecutorIndication.cpp
+        InterventionExecutorNoIntervention.cpp
+        InterventionExecutorPerformWhenNeeded.cpp)
 
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
@@ -26,7 +31,7 @@ SET(_HEADERS CarInfo.h
         InterventionExecutorAskFor.h
         InterventionExecutorIndication.h
         InterventionExecutorNoIntervention.h
-        InterventionExecutorAlwaysIntervene.h
+        InterventionExecutorPerformWhenNeeded.h
         CarController.h)
 
 ADD_INTERFACE_INCLUDEDIR()

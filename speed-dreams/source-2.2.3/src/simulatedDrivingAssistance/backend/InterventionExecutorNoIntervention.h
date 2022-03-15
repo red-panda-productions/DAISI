@@ -5,8 +5,5 @@
 
 class InterventionExecutorNoIntervention : public InterventionExecutor
 {
-    void RunDecision(IDecision** p_decisions, int p_decisionCount) override
-    {
-        // no commands
-    }
+    void RunDecision(IDecision** p_decisions, int p_decisionCount) override;
 };

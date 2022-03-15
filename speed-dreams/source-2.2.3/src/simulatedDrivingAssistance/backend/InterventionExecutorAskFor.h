@@ -5,8 +5,5 @@
 
 class InterventionExecutorAskFor : public InterventionExecutor
 {
-    void RunDecision(IDecision** p_decisions, int p_decisionCount) override
-    {
-        std::cout << "Make commands that ask to be done" << std::endl;
-    }
+    void RunDecision(IDecision** p_decisions, int p_decisionCount) override;
 };
