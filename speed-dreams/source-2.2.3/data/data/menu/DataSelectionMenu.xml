@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE params SYSTEM "../tgf/params.dtd">
+
+<params name="DataSelectionMenu">
+
+    <section name="dynamic controls">
+
+        <!--
+        <section name="InterventionLeftArrow">
+            <attstr name="type" val="image button"/>
+            <attnum name="width" val="24"/>
+            <attnum name="height" val="24"/>
+            <attstr name="tip" val=""/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="318"/>
+            <attstr name="disabled image" val="data/img/arrow-left-top-disabled.png"/>
+            <attstr name="enabled image" val="data/img/arrow-left-top.png"/>
+            <attstr name="focused image" val="data/img/arrow-left-top-focused.png"/>
+            <attstr name="pushed image" val="data/img/arrow-left-top-pushed.png"/>
+        </section>
+
+        <section name="InterventionRightArrow">
+            <attstr name="type" val="image button"/>
+            <attnum name="width" val="24"/>
+            <attnum name="height" val="24"/>
+            <attstr name="tip" val=""/>
+            <attnum name="x" val="480"/>
+            <attnum name="y" val="318"/>
+            <attstr name="disabled image" val="data/img/arrow-right-top-disabled.png"/>
+            <attstr name="enabled image" val="data/img/arrow-right-top.png"/>
+            <attstr name="focused image" val="data/img/arrow-right-top-focused.png"/>
+            <attstr name="pushed image" val="data/img/arrow-right-top-pushed.png"/>
+        </section>
+
+        <section name="InterventionLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="max len" val="22"/>
+            <attstr name="tip" val="Set the type of intervention the driver assistant can make"/>
+            <attnum name="x" val="295"/>
+            <attnum name="y" val="322"/>
+            <attnum name="width" val="160"/>
+            <attstr name="h align" val="center"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+        </section>
+        -->
+
+        <section name="Checkbox1">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Driving data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="275"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="Checkbox2">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Car data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="250"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="Checkbox3">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Human user data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="225"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="Checkbox4">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Intervention data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="200"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="Checkbox5">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Internal meta data"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="175"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="ApplyButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Apply"/>
+            <attstr name="tip" val="Accept and save changes"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="435"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+    </section>
+
+    <section name="static controls">
+
+        <section name="1">
+            <attstr name="type" val="background image"/>
+            <attstr name="image" val="data/img/splash-aiconf.jpg"/> <!-- TODO change background -->
+        </section>
+
+        <section name="2">
+            <attstr name="type" val="static image"/>
+            <attnum name="x" val="-10"/>
+            <attnum name="y" val="335"/>
+            <attnum name="width" val="200"/>
+            <attnum name="height" val="120"/>
+            <attstr name="image" val="data/img/sd-logo.png"/> <!-- TODO maybe remove logo -->
+        </section>
+
+        <section name="3">
+            <attstr name="type" val="static image"/>
+            <attnum name="x" val="212"/>
+            <attnum name="y" val="400"/>
+            <attnum name="width" val="450"/>
+            <attnum name="height" val="20"/>
+            <attstr name="image" val="data/img/head-aiconfig.png"/> <!-- TODO change text-image -->
+        </section>
+
+        <!--
+        <section name="4">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="322"/>
+            <attstr name="text" val="Intervention type:"/>
+            <attstr name="h align" val="right"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="small_t"/>
+        </section>
+        -->
+
+        <section name="5">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="280"/>
+            <attstr name="text" val="Data Collection:"/>
+            <attstr name="h align" val="right"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="small_t"/>
+        </section>
+
+    </section>
+
+</params>

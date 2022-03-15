@@ -30,7 +30,11 @@ FetchContent_MakeAvailable(googletest)
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 SD_ADD_EXECUTABLE(
-  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp" "InterventionTests.cpp")
+        backendUnitTests
+        "MsgpackSerializeTests.h"
+        "MsgpackDeserializeTests.cpp"
+        "InterventionTests.cpp"
+        "ConfigTests.cpp")
 
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn

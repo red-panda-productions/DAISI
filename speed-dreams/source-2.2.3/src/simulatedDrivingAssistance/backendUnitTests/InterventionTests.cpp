@@ -31,26 +31,9 @@ TEST(MediatorTest, GetIntervention)
     }
 }
 
-/// @brief Tests if the Config sets and gets the interventionType correctly
-TEST(ConfigTest, SetGet)
-{
-    Config config;
-
-    for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
-    {
-        config.SetInterventionType(types[i]);
-        ASSERT_EQ(types[i], config.GetInterventionType());
-    }
-}
-
 /// @brief Tests if the Factory creates the the correct InterventionMaker
 TEST(FactoryTest, Creation)
 {
-    InterventionMakerNoIntervention noInterventionMaker;
-    InterventionMakerIndication indicationInterventionMaker;
-    InterventionMakerAskFor askForInterventionMaker;
-    InterventionMakerPerformWhenNeeded whenNeededInterventionMaker;
-    InterventionMakerAlwaysIntervene alwaysInterventionMaker;
     InterventionFactory factory;
 
     // Creates InterventionMakers of different types and casts the resulting InterventionMaker type to

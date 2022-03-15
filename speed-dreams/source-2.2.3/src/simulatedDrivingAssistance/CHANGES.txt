@@ -16,6 +16,8 @@ Added:
     modules/userinterface/legacymenu/mainscreens/
         ResearcherMenu.h
         ResearcherMenu.cpp
+        DataSelectionMenu.h
+        DataSelectionMenu.cpp
   data/
     data/
         intervention/
@@ -32,11 +34,13 @@ Changed:
                   ActivateResearcherMenu()
             legacymenu.cpp
                   included "ResearcherMenu.h"
+                  included "DataSelectionMenu.h"
                   added    ActivateResearcherMenu()
                   changed  backLoad()
                   changed  activate()
             legacymenu/CMakeList.txt
                   added    ResearcherMenu.h and .cpp
+                  added    DataSelectionMenu.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
         graphic/
             ssggraph/

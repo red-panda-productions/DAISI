@@ -34,6 +34,7 @@
 
 #include "splash.h"
 #include "ResearcherMenu.h"
+#include "DataSelectionMenu.h"
 
 #include "mainmenu.h"
 #include "exitmenu.h"
@@ -98,8 +99,8 @@ bool LegacyMenu::backLoad()
     if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
         return false;
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the intervention type select menu
-    ResearcherMenuInit(MainMenuInit(SupportsHumanDrivers));
+    // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu and the Researcher menu
+    ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
 
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
