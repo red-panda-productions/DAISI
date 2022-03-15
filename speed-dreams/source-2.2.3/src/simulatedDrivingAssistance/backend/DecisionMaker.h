@@ -5,19 +5,21 @@
 #include "InterventionExecutor.h"
 #include "SocketBlackBox.h"
 
-template <typename BlackBox, typename Config>
+/// @brief                 A class that can ask the black box to make a decision
+/// @tparam SocketBlackBox The SocketBlackBox type
+/// @tparam Config         The config type
+template <typename SocketBlackBox, typename Config>
 class DecisionMaker
 {
 public:
 	bool Decide(DriveSituation& driveSituation);
 
-    // calls the config to return an intervention Executor based on the p_type
-    // and sets m_interventionMaker to return Executor
 	void ChangeSettings(INTERVENTION_TYPE p_type);
 
     Config m_config;
     InterventionExecutor* m_interventionExecutor;
-    BlackBox m_blackBox;
+    SocketBlackBox m_blackBox;
 };
 
+/// @brief The standard type of the decisionMaker
 #define SDecisionMaker DecisionMaker<SSocketBlackBox,Config> 
