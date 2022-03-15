@@ -3,7 +3,7 @@
 #include "InterventionMaker.h"
 #include "InterventionFactory.h"
 
-class Config
+class SDAConfig
 {
 private:
     INTERVENTION_TYPE m_interventionType;

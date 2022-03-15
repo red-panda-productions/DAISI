@@ -12,7 +12,7 @@
             <attnum name="height" val="24"/>
             <attstr name="tip" val=""/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="318"/>
+            <attnum name="y" val="438"/>
             <attstr name="disabled image" val="data/img/arrow-left-top-disabled.png"/>
             <attstr name="enabled image" val="data/img/arrow-left-top.png"/>
             <attstr name="focused image" val="data/img/arrow-left-top-focused.png"/>
@@ -25,7 +25,7 @@
             <attnum name="height" val="24"/>
             <attstr name="tip" val=""/>
             <attnum name="x" val="480"/>
-            <attnum name="y" val="318"/>
+            <attnum name="y" val="438"/>
             <attstr name="disabled image" val="data/img/arrow-right-top-disabled.png"/>
             <attstr name="enabled image" val="data/img/arrow-right-top.png"/>
             <attstr name="focused image" val="data/img/arrow-right-top-focused.png"/>
@@ -37,7 +37,7 @@
             <attnum name="max len" val="22"/>
             <attstr name="tip" val="Set the type of intervention the driver assistant can make"/>
             <attnum name="x" val="295"/>
-            <attnum name="y" val="322"/>
+            <attnum name="y" val="442"/>
             <attnum name="width" val="160"/>
             <attstr name="h align" val="center"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -150,32 +150,53 @@
         </section>
 
         <section name="3">
-            <attstr name="type" val="static image"/>
-            <attnum name="x" val="212"/>
-            <attnum name="y" val="400"/>
-            <attnum name="width" val="450"/>
-            <attnum name="height" val="20"/>
-            <attstr name="image" val="data/img/head-aiconfig.png"/> <!-- TODO change text-image -->
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="50"/>
+            <attnum name="y" val="300"/>
+            <attstr name="text" val="Task"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium_t"/>
         </section>
 
         <section name="4">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="322"/>
-            <attstr name="text" val="Intervention type:"/>
-            <attstr name="h align" val="right"/>
+            <attnum name="x" val="150"/>
+            <attnum name="y" val="300"/>
+            <attstr name="text" val="Indicator"/>
+            <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
-            <attstr name="font" val="small_t"/>
+            <attstr name="font" val="medium_t"/>
         </section>
 
         <section name="5">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="280"/>
-            <attstr name="text" val="Data Collection:"/>
-            <attstr name="h align" val="right"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="300"/>
+            <attstr name="text" val="Type"/>
+            <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
-            <attstr name="font" val="small_t"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
+        <section name="6">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="350"/>
+            <attnum name="y" val="300"/>
+            <attstr name="text" val="Environment"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
+        <section name="7">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="450"/>
+            <attnum name="y" val="300"/>
+            <attstr name="text" val="Participant Control"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium_t"/>
         </section>
 
     </section>
