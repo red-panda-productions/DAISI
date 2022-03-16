@@ -30,7 +30,7 @@ FetchContent_MakeAvailable(googletest)
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 SD_ADD_EXECUTABLE(
-  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp" "InterventionTests.cpp")
+  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp" "InterventionTests.cpp" "SocketBlackBoxTests.h")
 
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
@@ -41,6 +41,16 @@ target_link_libraries(
 )
 
 ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient)
+
+ADD_MSGPACK_PACKAGE(backendUnitTests)
+
+ADD_IPCLIB_PACKAGE(backendUnitTests)
+
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${IPCLIB_BIN_DIR}/IPCLib.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
 
 SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
 
