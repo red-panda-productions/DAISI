@@ -31,16 +31,22 @@ Changed:
             racesituation.cpp
                 change deltaTime to be constant value
         userinterface/
-            legacymenu.h 
-                ActivateInterventionMenu()
-            legacymenu.cpp
-                  included "InterventionMenu.h"
-                  added    ActivateInterventionMenu()
-                  changed  backLoad()
-                  changed  activate()
-            legacymenu/CMakeList.txt
-                  added    interventionmenu.h and .cpp
-                  added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+            legacymenu/
+                legacymenu.h
+                    ActivateInterventionMenu()
+                legacymenu.cpp
+                      included "InterventionMenu.h"
+                      added    ActivateInterventionMenu()
+                      changed  backLoad()
+                      changed  activate()
+                CMakeList.txt
+                      added    interventionmenu.h and .cpp
+                      added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                racescreens/
+                    racerunningmenus.cpp
+                        removed RmProgressiveTimeModifier implementation and calls
+                    racestopmenu.cpp
+                        removed rmProgressiveTimeModifier.start() call
         graphic/
             ssggraph/
                 grboard.cpp
