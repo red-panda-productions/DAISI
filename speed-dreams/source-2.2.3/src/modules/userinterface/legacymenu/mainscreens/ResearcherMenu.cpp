@@ -38,10 +38,10 @@ static void SaveSettings(void* /* dummy */)
 
 /// @brief Changes the interventionType selected and displayed on screen
 /// @param index The index of the selected interventionType
-static void ChangeInterventionType(void* index)
+static void ChangeInterventionType(void* p_index)
 {
     // Delta is 1 if the right arrow has been pressed and -1 if the left arrow has been pressed
-    const int delta = ((long)index < 0) ? -1 : 1;
+    const int delta = ((long)p_index < 0) ? -1 : 1;
 
     m_curInterventionTypeIndex = (m_curInterventionTypeIndex + delta + s_nrInterventions) % s_nrInterventions;
 
@@ -52,7 +52,7 @@ static void ChangeInterventionType(void* index)
 /// @brief Initializes the researcher menu
 /// @param nextMenu The scrHandle of the next menu
 /// @return The researcherMenu scrHandle
-void* ResearcherMenuInit(void* nextMenu)
+void* ResearcherMenuInit(void* p_nextMenu)
 {
     // Return if screen already created
     if (s_scrHandle) {
@@ -62,7 +62,7 @@ void* ResearcherMenuInit(void* nextMenu)
     // Otherwise, create the screen
     s_scrHandle = GfuiScreenCreate((float*)NULL, NULL, OnActivate,
                                    NULL, (tfuiCallback)NULL, 1);
-    s_nextHandle = nextMenu;
+    s_nextHandle = p_nextMenu;
 
     void *param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);

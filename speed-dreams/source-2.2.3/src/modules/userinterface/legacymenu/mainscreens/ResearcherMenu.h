@@ -2,5 +2,5 @@
 
 static bool ActivateDataSelectionMenu();
 
-extern void *ResearcherMenuInit(void *nextMenu);
+extern void *ResearcherMenuInit(void* p_nextMenu);
 extern int ResearcherMenuRun(void);

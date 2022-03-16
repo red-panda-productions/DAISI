@@ -1,3 +1,3 @@
 #pragma once
 
-extern void *DataSelectionMenuInit(void *prevMenu);
+extern void *DataSelectionMenuInit(void* p_prevMenu);

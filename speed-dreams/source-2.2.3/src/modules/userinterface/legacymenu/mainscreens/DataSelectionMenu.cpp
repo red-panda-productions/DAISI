@@ -10,38 +10,38 @@ bool* m_boolArr = new bool[5];
 
 
 /// @brief Enables or disables whether the attributes of the environment will be collected real-time
-/// @param pInfo Information on the checkbox
-static void ChangeDrivingStorage(tCheckBoxInfo* pInfo)
+/// @param p_info Information on the checkbox
+static void ChangeDrivingStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[0] = pInfo->bChecked;
+    m_boolArr[0] = p_info->bChecked;
 }
 
 /// @brief Enables or disables whether data on the car will be collected real-time
-/// @param pInfo Information on the checkbox
-static void ChangeCarStorage(tCheckBoxInfo* pInfo)
+/// @param p_info Information on the checkbox
+static void ChangeCarStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[1] = pInfo->bChecked;
+    m_boolArr[1] = p_info->bChecked;
 }
 
 /// @brief Enables or disables whether data on the human user will be collected real-time
-/// @param pInfo Information on the checkbox
-static void ChangeHumanStorage(tCheckBoxInfo* pInfo)
+/// @param p_info Information on the checkbox
+static void ChangeHumanStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[2] = pInfo->bChecked;
+    m_boolArr[2] = p_info->bChecked;
 }
 
 /// @brief Enables or disables whether intervention attributes will be collected real-time
-/// @param pInfo Information on the checkbox
-static void ChangeInterventionStorage(tCheckBoxInfo* pInfo)
+/// @param p_info Information on the checkbox
+static void ChangeInterventionStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[3] = pInfo->bChecked;
+    m_boolArr[3] = p_info->bChecked;
 }
 
 /// @brief Enables or disables whether decision maker parameters will be collected real-time
-/// @param pInfo Information on the checkbox
-static void ChangeMetaDataStorage(tCheckBoxInfo* pInfo)
+/// @param p_info Information on the checkbox
+static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[4] = pInfo->bChecked;
+    m_boolArr[4] = p_info->bChecked;
 }
 
 static void OnActivate(void* /* dummy */) { }
@@ -55,7 +55,7 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-void *DataSelectionMenuInit(void* nextMenu)
+void *DataSelectionMenuInit(void* p_nextMenu)
 {
     // Screen already created
     if (s_scrHandle) {
@@ -64,7 +64,7 @@ void *DataSelectionMenuInit(void* nextMenu)
 
     s_scrHandle = GfuiScreenCreate((float*)NULL, NULL, OnActivate,
                                    NULL,(tfuiCallback)NULL, 1);
-    s_nextHandle = nextMenu;
+    s_nextHandle = p_nextMenu;
 
     void *param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
