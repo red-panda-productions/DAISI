@@ -152,5 +152,6 @@ TEST(SocketBlackBoxTests,SocketTest)
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
 	ASSERT_TRUE(buffer[0] == 'S' && buffer[1] == 'T' && buffer[2] == 'O' && buffer[3] == 'P');
 
+	client.SendData("OK", 2);
 	client.Disconnect();
 }

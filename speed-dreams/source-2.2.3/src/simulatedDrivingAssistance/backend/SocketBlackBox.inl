@@ -113,7 +113,10 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Shutdown()
 {
+    m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
     m_server.SendData("STOP", 4);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
     m_server.CloseServer();
 }
 
