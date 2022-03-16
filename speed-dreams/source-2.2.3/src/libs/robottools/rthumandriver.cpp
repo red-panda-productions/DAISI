@@ -58,6 +58,7 @@
 #include <robot.h>
 #include <playerpref.h>
 #include <car.h>
+#include <iostream>
 
 #include "humandriver.h"
 #if SDL_FORCEFEEDBACK
@@ -863,6 +864,7 @@ static void updateKeys(void)
 
     for (idx = 0; idx < (int)HCtx.size(); idx++) {
         if (HCtx[idx]) {
+
             cmd = HCtx[idx]->cmdControl;
             for (i = 0; i < NbCmdControl; i++) {
                 if (cmd[i].type == GFCTRL_TYPE_KEYBOARD) {
@@ -895,6 +897,7 @@ static int onKeyAction(int key, int modifier, int state)
     // Update key state only if the key is assigned to a player command.
     const int nKeyInd = lookUpKeyMap(key);
     if (nKeyInd >= 0)
+
         lastReadKeyState[lookUpKeyMap(key)] = state;
 
     return 0;
@@ -993,7 +996,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         GfOut("Gridbox Initial Gear %d\n", preGear);
     }
 
-
+    std::cout << cmd->name << std::endl;
 
     if ((cmd[CMD_ABS].type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[cmd[CMD_ABS].val])
             || (cmd[CMD_ABS].type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[cmd[CMD_ABS].val])
@@ -1687,7 +1690,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 #endif
 #endif
-
+    std::cout << leftSteer << std::endl;
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 
