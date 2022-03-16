@@ -200,13 +200,15 @@ SET_PROPERTY(GLOBAL PROPERTY SD_EXE_LIST "")
 # Sub-dirs to build ...
 
 IF(BACKEND_ONLY_OPTION)
-MESSAGE(STATUS "RPP: Only building backend")
+	MESSAGE(STATUS "RPP: Only building backend")
 ENDIF(BACKEND_ONLY_OPTION)
+
 ADD_SUBDIRECTORY(src)
+
 IF(NOT BACKEND_ONLY_OPTION)
-MESSAGE(STATUS "RPP: Building all files")
-ADD_SUBDIRECTORY(data)
-ADD_SUBDIRECTORY(cmake)
+	MESSAGE(STATUS "RPP: Building all files")
+	ADD_SUBDIRECTORY(data)
+	ADD_SUBDIRECTORY(cmake)
 ENDIF(NOT BACKEND_ONLY_OPTION)
 # After the user settings files have been collected,
 # Update (and then install) version.xml from their respective version.
