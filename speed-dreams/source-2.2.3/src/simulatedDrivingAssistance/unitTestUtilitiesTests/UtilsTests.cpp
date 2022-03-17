@@ -57,6 +57,7 @@ const char* arr2[2]{ "hi","hello" };
 END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)
 
 
+/// @brief Tries to run a pairwise generator, to see if it fails
 TEST(UtilsTests, PairwiseRun)
 {
 	PairWiseTestGenerator<4> generator;
@@ -67,6 +68,7 @@ TEST(UtilsTests, PairwiseRun)
 	delete testCases;
 }
 
+/// @brief Tries a big test to see if a limit will be reached, currently no limits were found
 TEST(UtilsTests, PairwiseLimitTest)
 {
 	PairWiseTestGenerator<8> generator;
@@ -77,6 +79,10 @@ TEST(UtilsTests, PairwiseLimitTest)
 	delete testCases;
 }
 
+/// @brief			  Checks if a tuple is covered by the test cases
+/// @param  testCases The test cases
+/// @param  tuple	  The tuple
+/// @return			  Whether the tuple is covered
 bool IsTupleCovered(std::vector<TestCaseInfo>* testCases, FeatureTuple& tuple)
 {
 	for(int i = 0; i < testCases->size(); i++)
@@ -89,6 +95,7 @@ bool IsTupleCovered(std::vector<TestCaseInfo>* testCases, FeatureTuple& tuple)
 	return false;
 }
 
+/// @brief Tests if all tuples are covered by the test cases generated from a generator
 TEST(UtilsTests, PairWiseCoverageTest)
 {
 	PairWiseTestGenerator<5> generator;

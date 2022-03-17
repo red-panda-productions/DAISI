@@ -3,6 +3,11 @@
 #include <queue>
 // based on https://github.com/nunit/nunit/blob/b34eba3ac1aa6957157857bddd116256c634afab/src/NUnitFramework/framework/Internal/Builders/PairwiseStrategy.cs
 
+/// @brief Represents coverage of a single value of test function
+///		   parameter, represented as a pair of indices, Dimension and Feature. In
+///		   terms of unit testing, Dimension is the index of the test parameter and
+///		   Feature is the index of the supplied value in that parameter's list of
+///		   sources.
 class FeatureInfo
 {
 public:
@@ -12,6 +17,11 @@ public:
 	FeatureInfo();
 };
 
+/// @brief Represents a combination of features, one per test
+///		   parameter, which should be covered by a test case. In the
+///		   Pairwise strategy, we are only trying to cover pairs of features, so the
+///		   tuples actually may contain only single feature or pair of features, but
+///		   the algorithms itself works with triplets, quadruples and so on
 class FeatureTuple
 {
 public:
@@ -28,6 +38,7 @@ private:
 	int m_count;
 };
 
+/// @brief Represents a single test case covering a list of features
 class TestCaseInfo
 {
 public:
@@ -43,6 +54,9 @@ public:
 	bool IsTupleCovered(FeatureTuple& p_tuple);
 };
 
+/// @brief					  Implements an algorithm which generates a set of test cases
+///							  which covers all pairs of possible values of test function
+/// @tparam m_dimensionsCount The amount of dimensions the generator should use
 template<int m_dimensionsCount>
 class PairWiseTestGenerator
 {

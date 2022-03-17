@@ -15,6 +15,9 @@
 	template int PairWiseTestGenerator<dimensions>::CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature); \
 	template void PairWiseTestGenerator<dimensions>::RemoveTuplesCoveredByTest(TestCaseInfo& p_testCase)
 
+/// @brief				 Creates all of the pair-wise test cases
+/// @param  p_dimensions The info of how many parameters each array has
+/// @return				 The pair-wise test cases
 template<int m_dimensionsCount>
 std::vector<TestCaseInfo>* PairWiseTestGenerator<m_dimensionsCount>::GetTestCases(int* p_dimensions)
 {
@@ -50,6 +53,7 @@ std::vector<TestCaseInfo>* PairWiseTestGenerator<m_dimensionsCount>::GetTestCase
 	return testCases;
 }
 
+/// @brief Creates all tuples that exist between pairs
 template<int m_dimensionsCount>
 void PairWiseTestGenerator<m_dimensionsCount>::CreateAllTuples()
 {
@@ -63,6 +67,10 @@ void PairWiseTestGenerator<m_dimensionsCount>::CreateAllTuples()
 	}
 }
 
+/// @brief					 Creates tuples for one dimension
+/// @param  p_dimension      The dimension of the tuple
+/// @param  p_feature	     The feature of the tuple
+/// @param  p_uncoveredTuple The queue of uncovered tuples
 template<int m_dimensionsCount>
 void PairWiseTestGenerator<m_dimensionsCount>::CreateTuples(int p_dimension, int p_feature, Queue& p_uncoveredTuple)
 {
@@ -83,6 +91,9 @@ void PairWiseTestGenerator<m_dimensionsCount>::CreateTuples(int p_dimension, int
 	}
 }
 
+/// @brief        Returns the next uncovered tuple from m_uncoveredTuples
+/// @param  tuple The returned tuple
+/// @return	      Whether the operation succeeded or failed
 template<int m_dimensionsCount>
 bool PairWiseTestGenerator<m_dimensionsCount>::GetNextTuple(FeatureTuple& tuple)
 {
@@ -100,6 +111,9 @@ bool PairWiseTestGenerator<m_dimensionsCount>::GetNextTuple(FeatureTuple& tuple)
 	return false;
 }
 
+/// @brief			   Creates a test case based on a tuple, it tries 7 times
+/// @param  p_tuple	   The tuple
+/// @param  p_testCase the returned test case
 template<int m_dimensionsCount>
 void PairWiseTestGenerator<m_dimensionsCount>::CreateTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase)
 {
@@ -121,6 +135,9 @@ void PairWiseTestGenerator<m_dimensionsCount>::CreateTestCase(FeatureTuple& p_tu
 	}
 }
 
+/// @brief			   Generates a random test case based on a tuple
+/// @param  p_tuple    The tuple
+/// @param  p_testCase The returned test case
 template<int m_dimensionsCount>
 void PairWiseTestGenerator<m_dimensionsCount>::CreateRandomTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase)
 {
@@ -135,6 +152,10 @@ void PairWiseTestGenerator<m_dimensionsCount>::CreateRandomTestCase(FeatureTuple
 	}
 }
 
+/// @brief			   Tries to maximize the coverage of a test case based on a tuple
+/// @param  p_testCase The test case that needs to be maximized
+/// @param  p_tuple    The tuple
+/// @return			   The coverage amount
 template<int m_dimensionsCount>
 int PairWiseTestGenerator<m_dimensionsCount>::MaximizeCoverage(TestCaseInfo& p_testCase, FeatureTuple& p_tuple)
 {
@@ -164,8 +185,14 @@ int PairWiseTestGenerator<m_dimensionsCount>::MaximizeCoverage(TestCaseInfo& p_t
 			return totalCoverage;
 		}
 	}
+
+	delete[] mutableDimensions;
 }
 
+/// @brief			Returns the mutable dimensions based on a tuple which can be scrambled
+/// @param  p_tuple The tuple
+/// @param  p_count The returned amount of mutable dimensions
+/// @return			The mutable dimensions
 template<int m_dimensionsCount>
 int* PairWiseTestGenerator<m_dimensionsCount>::GetMutableDimensions(FeatureTuple& p_tuple, int& p_count)
 {
@@ -194,6 +221,9 @@ int* PairWiseTestGenerator<m_dimensionsCount>::GetMutableDimensions(FeatureTuple
 	return result->data();
 }
 
+/// @brief				     Randomly scrambles mutable dimensions
+/// @param  p_dimensions	 The mutable dimensions
+/// @param  p_dimensionCount The amount of mutable dimensions
 template<int m_dimensionsCount>
 void PairWiseTestGenerator<m_dimensionsCount>::ScrambleDimensions(int* p_dimensions, int p_dimensionCount)
 {
@@ -206,6 +236,11 @@ void PairWiseTestGenerator<m_dimensionsCount>::ScrambleDimensions(int* p_dimensi
 	}
 }
 
+/// @brief				   Maximizes the coverage of a testcase for a dimension
+/// @param  p_testCase     The test case
+/// @param  p_dimension    The dimension
+/// @param  p_bestCoverage The current best coverage
+/// @return				   The best possible coverage for this dimension
 template<int m_dimensionsCount>
 int PairWiseTestGenerator<m_dimensionsCount>::MaximizeCoverageForDimension(TestCaseInfo& p_testCase, int p_dimension, int p_bestCoverage)
 {
@@ -233,6 +268,11 @@ int PairWiseTestGenerator<m_dimensionsCount>::MaximizeCoverageForDimension(TestC
 	return p_bestCoverage;
 }
 
+/// @brief				Counts the amount of tuples covered by a test case
+/// @param  p_testCase  The test case
+/// @param  p_dimension The dimension
+/// @param  p_feature   The feature
+/// @return             The amount of covered tuples
 template<int m_dimensionsCount>
 int PairWiseTestGenerator<m_dimensionsCount>::CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature)
 {
@@ -248,6 +288,8 @@ int PairWiseTestGenerator<m_dimensionsCount>::CountTuplesCoveredByTest(TestCaseI
 	return result;
 }
 
+/// @brief			   Removes covered tuples from the uncoveredTuples array
+/// @param  p_testCase The new test case
 template<int m_dimensionsCount>
 void PairWiseTestGenerator<m_dimensionsCount>::RemoveTuplesCoveredByTest(TestCaseInfo& p_testCase)
 {

@@ -1,10 +1,16 @@
 #include "PairWiseTestGenerator.h"
 #include "PairWiseTestGenerator.inl"
+
+/// @brief				Constructs a FeatureInfo with a dimension and a feature
+/// @param  p_dimension The dimension
+/// @param  p_feature   The feature
 FeatureInfo::FeatureInfo(int p_dimension, int p_feature)
 {
 	Dimension = p_dimension;
 	Feature = p_feature;
 }
+
+/// @brief Default constructor of a FeatureInfo
 FeatureInfo::FeatureInfo()
 {
 	Dimension = -1;
