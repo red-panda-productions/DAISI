@@ -185,11 +185,13 @@ TEST(SocketBlackBoxTests,SocketTest)
 	client.Disconnect();
 }
 
+/// @brief this black box side should fail
 void FailingBlackBox()
 {
 	ASSERT_THROW(BlackBoxSide(), std::exception);
 }
 
+/// @brief Tests what happens when no order is sent
 TEST(SocketBlackBoxTests, NoOrderSend)
 {
 	SETUP(FailingBlackBox)
@@ -222,6 +224,7 @@ TEST(SocketBlackBoxTests, NoOrderSend)
 	client.SendData(sbuffer.data(), sbuffer.size());
 }
 
+/// @brief Tests what happens when no action order is sent
 TEST(SocketBlackBoxTests, NoActionOrderSend)
 {
 	SETUP(FailingBlackBox)
