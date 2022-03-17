@@ -1,10 +1,15 @@
 #pragma once
 #include "DriveSituation.h"
 #include "ConfigEnums.h"
-#include "DecisionMaker.h"
 #include "car.h"
 #include "raceman.h"
+#include "DecisionMaker.h"
+#include "CarController.h"
 
+
+/// @brief			      The Main communication between the front- and backend
+/// @tparam DecisionMaker The decisionMaker type
+template<typename DecisionMaker>
 class Mediator
 {
 public:
@@ -30,9 +35,14 @@ public:
 	/// @brief Removes assigment for singleton behaviour
 	void operator=(Mediator const&) = delete;
 
+	CarController CarController;
+
  private:
 	DriveSituation m_situation;
 	DecisionMaker m_decisionMaker;
 
 	Mediator();
 };
+
+/// @brief The standard type of the mediator
+#define SMediator Mediator<SDecisionMaker>

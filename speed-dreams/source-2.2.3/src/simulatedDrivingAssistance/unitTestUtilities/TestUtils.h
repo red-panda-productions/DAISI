@@ -20,9 +20,27 @@
     " seconds). Check code for infinite loops"); \
 }
 
-void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size);
+inline void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size)
+{
+	bool len1 = p_size == strlen(p_msg1);
+	ASSERT_TRUE(len1) << "Length of msg1 was not equal to the size: " << strlen(p_msg1) << " != " << p_size;
+	int length = strlen(p_msg2);
+	bool len2 = p_size == length;
+	ASSERT_TRUE(len2) << "Length of msg2 was not equal to the size: " << strlen(p_msg2) << " != " << p_size;
+	for (int i = 0; i < p_size; i++)
+	{
+		ASSERT_TRUE(p_msg1[i] == p_msg2[i]) << "Characters were not the same: " << p_msg1[i] << " != " << p_msg2[i] << " on index " << i;
+	}
+}
 
-void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
+inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
+{
+	for (int i = 0; i < p_stringLength; i++)
+	{
+		p_dataBuffer[i] = static_cast<char>(65 + rand() % 60);
+	}
+	p_dataBuffer[p_stringLength] = '\0';
+}
 
 /// @brief compares two values. If their difference is lower than the tolerance, return true.
 #define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs(f1-f2), tolerance)

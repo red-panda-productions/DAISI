@@ -26,23 +26,28 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-SET(_SOURCES MsgpackDeserializeTests.cpp)
+SET(_SOURCES MsgpackDeserializeTests.cpp
+    InterventionTests.cpp
+    DecisionMakerTests.cpp)
 
-SET(_HEADERS MsgpackSerializeTests.h)
+SET(_HEADERS MsgpackSerializeTests.h
+    SocketBlackBoxTests.h)
 
 SET(_MOCK_SOURCES "")
 
 SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/DriveSituationMock.h
+    mocks/EnvironmentInfoMock.h
+    mocks/InterventionExecutorMock.h
     mocks/PlayerInfoMock.h
-    mocks/TrackPositionMock.h)
+    mocks/SocketBlackBoxMock.h
+    mocks/TrackPositionMock.h
+    mocks/ConfigMock.h)
 
 
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
-SD_ADD_EXECUTABLE(
-  backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
-
+SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities
@@ -69,7 +74,7 @@ target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
 
 include(GoogleTest)
-gtest_discover_tests(backendUnitTests)
+gtest_discover_tests(backendUnitTests PROPERTIES TIMEOUT 600)
 
 IF(WIN32)
     INCLUDE(customthirdparty)

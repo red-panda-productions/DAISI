@@ -6,7 +6,19 @@ SET(_SOURCES Mediator.cpp
         BrakeDecision.cpp
         SDAConfig.cpp
         DecisionMaker.cpp
-        InterventionFactory.cpp)
+        InterventionFactory.cpp
+        CarController.cpp
+        DriveSituation.cpp
+        DecisionTuple.cpp
+        InterventionExecutorAlwaysIntervene.cpp
+        InterventionExecutorAskFor.cpp
+        InterventionExecutorIndication.cpp
+        InterventionExecutorNoIntervention.cpp
+        InterventionExecutorPerformWhenNeeded.cpp)
+
+SET(_INLINES Mediator.inl
+        DecisionMaker.inl
+        SocketBlackBox.inl)
 
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
@@ -17,15 +29,22 @@ SET(_HEADERS CarInfo.h
         TrackPosition.h
         PlayerInfo.h
         SocketBlackBox.h
+        DecisionTuple.h
         ../rppUtils/RppUtils.hpp
         SDAConfig.h
         InterventionFactory.h
-        InterventionMaker.h)
+        InterventionExecutor.h
+        InterventionExecutorAlwaysIntervene.h
+        InterventionExecutorAskFor.h
+        InterventionExecutorIndication.h
+        InterventionExecutorNoIntervention.h
+        InterventionExecutorPerformWhenNeeded.h
+        CarController.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)
 
-SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
+SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_MSGPACK_PACKAGE(backend)
