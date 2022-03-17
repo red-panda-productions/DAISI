@@ -8,3 +8,4 @@ out/
 build/
 cmake-build-debug/
 Testing/
+TestResults/
