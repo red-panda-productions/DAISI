@@ -74,7 +74,7 @@ target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
 
 include(GoogleTest)
-gtest_discover_tests(backendUnitTests PROPERTIES TIMEOUT 600)
+gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
 IF(WIN32)
     INCLUDE(customthirdparty)

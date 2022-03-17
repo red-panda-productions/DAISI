@@ -26,4 +26,4 @@ target_link_libraries(
 target_include_directories(unitTestUtilitiesTests PUBLIC "../unitTestUtilities")
 
 include(GoogleTest)
-gtest_discover_tests(unitTestUtilitiesTests TIMEOUT 600)
+gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)
