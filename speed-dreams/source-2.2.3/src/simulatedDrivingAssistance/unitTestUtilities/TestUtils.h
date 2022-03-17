@@ -3,6 +3,7 @@
 #include <csetjmp> // is needed for ASSERT_DURATION_LE
 #include <csignal>
 #include <gtest/gtest.h>
+#include "PairWiseTestGenerator.h"
 /// A big header file that contains functions that can be used in unit tests
 
 /// @brief      Executes a statement, and fails if it takes longer than the secs parameter
@@ -117,3 +118,63 @@ void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 		}\
 	}
 
+
+template<typename T1, typename T2>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, void(*func)(T1,T2))
+{
+	PairWiseTestGenerator generator;
+	int dimensions[2]{ count1, count2 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions,2);
+
+	for(int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, void(*func)(T1, T2, T3))
+{
+	PairWiseTestGenerator generator;
+	int dimensions[3]{ count1, count2, count3};
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions, 3);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]], input3[Features[2]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, void(*func)(T1, T2, T3, T4))
+{
+	PairWiseTestGenerator generator;
+	int dimensions[4]{ count1, count2, count3, count4 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions, 4);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]], input3[Features[2]], input4[Features[3]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, void(*func)(T1, T2, T3, T4, T5))
+{
+	PairWiseTestGenerator generator;
+	int dimensions[5]{ count1, count2, count3, count4, count5 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions, 5);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]], input3[Features[2]], input4[Features[3]], input5[Features[4]]);
+	}
+}

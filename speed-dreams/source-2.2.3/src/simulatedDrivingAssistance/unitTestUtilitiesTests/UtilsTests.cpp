@@ -55,3 +55,14 @@ BEGIN_TEST_COMBINATORIAL(UtilsTests, Combinatorial2)
 int arr1[3]{ 0,1,2 };
 const char* arr2[2]{ "hi","hello" };
 END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)
+
+
+TEST(UtilsTests, PairwiseRun)
+{
+	PairWiseTestGenerator generator;
+	int dimensions[4]{ 2,3,4,5 };
+	int count = 4;
+	std::vector<TestCaseInfo> testCases = *generator.GetTestCases(dimensions, count);
+
+	SUCCEED();
+}
