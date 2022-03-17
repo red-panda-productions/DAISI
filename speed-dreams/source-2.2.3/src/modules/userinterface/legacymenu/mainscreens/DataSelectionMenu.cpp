@@ -51,7 +51,7 @@ static void OnActivate(void* /* dummy */) { }
 static void SaveSettings(void* /* dummy */)
 {
     // Add the functionality of the function here
-    Mediator::GetInstance().SetDataCollectionSettings(m_boolArr);
+    SMediator::GetInstance().SetDataCollectionSettings(m_boolArr);
 
     // Go back to the main screen
     GfuiScreenActivate(s_nextHandle);

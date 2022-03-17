@@ -18,7 +18,7 @@ public:
     /* TODO: Return IBlackBox */ void GetBlackBox();
     INTERVENTION_TYPE GetInterventionType() const;
 
-    void SetDataCollectionSetting(bool* p_boolArray);
+    void SetDataCollectionSettings(bool* p_boolArray);
     bool* GetDataCollectionSetting() const;
 
     // sets the m_interventionType to p_type

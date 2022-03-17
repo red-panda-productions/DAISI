@@ -32,7 +32,7 @@ void TestBoolArr(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_
 {
     SDAConfig config;
     bool arr[5] = { p_bool1, p_bool2, p_bool3, p_bool4, p_bool5 };
-    config.SetDataCollectionSetting(arr);
+    config.SetDataCollectionSettings(arr);
     ASSERT_EQ(arr, config.GetDataCollectionSetting());
 }
 

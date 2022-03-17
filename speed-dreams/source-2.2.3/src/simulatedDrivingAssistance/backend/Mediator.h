@@ -20,6 +20,8 @@ public:
     // calls decision maker to change its intervention setting to p_type
 	void SetInterventionType(INTERVENTION_TYPE p_type);
 
+    /// @brief               Sets the settings for data collection
+    /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
     void SetDataCollectionSettings(bool* p_dataSetting);
 
     //returns the intervention type from the decision maker

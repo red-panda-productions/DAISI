@@ -8,9 +8,8 @@ typedef unsigned int TASK;
 
 typedef unsigned int INDICATOR;
 
-#define INDICATOR_NO_INDICATOR  0
-#define INDICATOR_AUDITORY      1
-#define INDICATOR_VISUAL        2
+#define INDICATOR_AUDITORY      0
+#define INDICATOR_VISUAL        1
 
 typedef unsigned int INTERVENTION_TYPE;
 
@@ -22,10 +21,9 @@ typedef unsigned int INTERVENTION_TYPE;
 
 typedef unsigned int PARTICIPANT_CONTROL;
 
-#define PARTICIPANT_CONTROL_NO_CONTROL              0
-#define PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF    1
-#define PARTICIPANT_CONTROL_GAS                     2
-#define PARTICIPANT_CONTROL_STEERING                3
+#define PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF    0
+#define PARTICIPANT_CONTROL_GAS                     1
+#define PARTICIPANT_CONTROL_STEERING                2
 
 typedef unsigned int BLACK_BOX_TYPE;
 

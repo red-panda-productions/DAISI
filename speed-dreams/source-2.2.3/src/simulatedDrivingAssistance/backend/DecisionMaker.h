@@ -17,6 +17,7 @@ public:
 	bool Decide(DriveSituation& driveSituation);
 
 	void ChangeSettings(INTERVENTION_TYPE p_type);
+    void SetDataCollectionSettings(bool* p_dataSetting);
 
     InterventionExecutor* m_interventionExecutor;
     SocketBlackBox m_blackBox;
