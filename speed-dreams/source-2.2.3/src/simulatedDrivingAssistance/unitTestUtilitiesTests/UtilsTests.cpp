@@ -56,6 +56,17 @@ int arr1[3]{ 0,1,2 };
 const char* arr2[2]{ "hi","hello" };
 END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)
 
+// example pairwise test
+TEST(UtilsTests, ExamplePairwiseTest)
+{
+	int xs[20];
+	for(int i = 0; i < 20; i++)
+	{
+		xs[i] = i;
+	}
+	const char* msgs[5]{ "bob","alison","carol","daniel","edward" };
+	PairWiseTest(Sample,xs, 20, msgs, 5);
+}
 
 /// @brief Tries to run a pairwise generator, to see if it fails
 TEST(UtilsTests, PairwiseRun)
@@ -118,5 +129,4 @@ TEST(UtilsTests, PairWiseCoverageTest)
 			}
 		}
 	}
-	
 }

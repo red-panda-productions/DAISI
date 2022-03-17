@@ -120,7 +120,7 @@ void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 
 
 template<typename T1, typename T2>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, void(*func)(T1,T2))
+inline void PairWiseTest(void(*func)(T1, T2), T1* input1, int count1, T2* input2, int count2)
 {
 	PairWiseTestGenerator<2> generator;
 	int dimensions[2]{ count1, count2 };
@@ -135,7 +135,7 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, void(*f
 }
 
 template<typename T1, typename T2, typename T3>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, void(*func)(T1, T2, T3))
+inline void PairWiseTest(void(*func)(T1, T2, T3), T1* input1, int count1, T2* input2, int count2, T3* input3, int count3)
 {
 	PairWiseTestGenerator<3> generator;
 	int dimensions[3]{ count1, count2, count3};
@@ -150,7 +150,7 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 }
 
 template<typename T1, typename T2, typename T3, typename T4>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, void(*func)(T1, T2, T3, T4))
+inline void PairWiseTest(void(*func)(T1, T2, T3, T4), T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4)
 {
 	PairWiseTestGenerator<4> generator;
 	int dimensions[4]{ count1, count2, count3, count4 };
@@ -165,7 +165,7 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, void(*func)(T1, T2, T3, T4, T5))
+inline void PairWiseTest(void(*func)(T1, T2, T3, T4, T5), T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5)
 {
 	PairWiseTestGenerator<5> generator;
 	int dimensions[5]{ count1, count2, count3, count4, count5 };
@@ -180,7 +180,7 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, void(*func)(T1, T2, T3, T4, T5, T6))
+inline void PairWiseTest(void(*func)(T1, T2, T3, T4, T5, T6), T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6)
 {
 	PairWiseTestGenerator<6> generator;
 	int dimensions[6]{ count1, count2, count3, count4, count5, count6 };
@@ -195,7 +195,7 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, T7* input7, int count7, void(*func)(T1, T2, T3, T4, T5, T6, T7))
+inline void PairWiseTest(void(*func)(T1, T2, T3, T4, T5, T6, T7), T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, T7* input7, int count7)
 {
 	PairWiseTestGenerator<7> generator;
 	int dimensions[7]{ count1, count2, count3, count4, count5, count6, count7 };
@@ -210,7 +210,7 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 }
 
 template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
-inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, T7* input7, int count7, T8* input8, int count8, void(*func)(T1, T2, T3, T4, T5, T6, T7, T8))
+inline void PairWiseTest(void(*func)(T1, T2, T3, T4, T5, T6, T7, T8), T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, T7* input7, int count7, T8* input8, int count8)
 {
 	PairWiseTestGenerator<8> generator;
 	int dimensions[8]{ count1, count2, count3, count4, count5, count6, count7, count8 };

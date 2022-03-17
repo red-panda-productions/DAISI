@@ -17,34 +17,44 @@ FeatureInfo::FeatureInfo()
 	Feature = -1;
 }
 
+/// @brief Default constructor of a FeatureTuple
 FeatureTuple::FeatureTuple()
 {
 	m_count = 0;
 }
 
-
+/// @brief			  Constructs a FeatureTuple with 1 feature
+/// @param  p_feature The feature
 FeatureTuple::FeatureTuple(FeatureInfo& p_feature)
 {
 	SetTuple(p_feature);
 }
 
-
+/// @brief			   Constructs a FeatureTuple with 2 features
+/// @param  p_feature1 The first feature
+/// @param  p_feature2 The second feature
 FeatureTuple::FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2)
 {
 	SetTuple(p_feature1, p_feature2);
 }
 
-
+/// @brief  Gives back the internal count of this tuple
+/// @return The amount of features in this tuple
 int FeatureTuple::Count()
 {
 	return m_count;
 }
 
+/// @brief			An accessor to access the internal features
+/// @param  p_index The index to access
+/// @return			The feature info at the given index
 FeatureInfo& FeatureTuple::operator[](int p_index)
 {
 	return m_features[p_index];
 }
 
+/// @brief			  Sets the internal data of the tuple
+/// @param  p_feature The feature to set
 void FeatureTuple::SetTuple(FeatureInfo& p_feature)
 {
 	m_features[0].Dimension = p_feature.Dimension;
@@ -52,6 +62,9 @@ void FeatureTuple::SetTuple(FeatureInfo& p_feature)
 	m_count = 1;
 }
 
+/// @brief			   Sets the internal data of the tuple
+/// @param  p_feature1 The first feature to set
+/// @param  p_feature2 The second feature to set
 void FeatureTuple::SetTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2)
 {
 	m_features[0].Dimension = p_feature1.Dimension;
@@ -61,18 +74,23 @@ void FeatureTuple::SetTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2)
 	m_count = 2;
 }
 
+/// @brief			 Constructs a TestCaseInfo with a given length
+/// @param  p_length The length
 TestCaseInfo::TestCaseInfo(int p_length)
 {
 	Features = new int[p_length];
 	Length = p_length;
 }
 
+/// @brief The default constructor of TestCaseInfo
 TestCaseInfo::TestCaseInfo()
 {
 	Features = nullptr;
 	Length = 0;
 }
 
+/// @brief			 Set the internal data of the test info
+/// @param  p_length The length
 void TestCaseInfo::SetTestCaseInfo(int p_length)
 {
 	delete[] Features;
@@ -80,6 +98,9 @@ void TestCaseInfo::SetTestCaseInfo(int p_length)
 	Length = p_length;
 }
 
+/// @brief			Checks if a testCase is covered by a tuple
+/// @param  p_tuple The tuple
+/// @return			Whether the test case is covered
 bool TestCaseInfo::IsTupleCovered(FeatureTuple& p_tuple)
 {
 	for(int i = 0; i < p_tuple.Count(); i++)
