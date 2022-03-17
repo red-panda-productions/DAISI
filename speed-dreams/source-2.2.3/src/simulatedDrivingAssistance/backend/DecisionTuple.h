@@ -17,6 +17,6 @@ public:
     SteerDecision m_steerDecision;
 
 private:
-    IDecision* buffer[2];
+    IDecision* buffer[DECISIONS_COUNT];
     
 };
