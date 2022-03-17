@@ -17,7 +17,7 @@ SET(_SOURCES TestUtils.cpp
 	PairWiseTestGenerator.cpp
 	PairWiseTestGenerator.h)
 
-SET(_INLINES PairWIseTestGenerator.inl)
+SET(_INLINES PairWiseTestGenerator.inl)
 
 SET(_HEADERS TestUtils.h
 			 ../rppUtils/Random.hpp)
