@@ -15,7 +15,6 @@ INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
                                INTERVENTION_TYPE_ASK_FOR,
                                INTERVENTION_TYPE_PERFORM_WHEN_NEEDED,
                                INTERVENTION_TYPE_ALWAYS_INTERVENE };
-
 // Test DecisionMaker
     // Nothing to test yet
 
