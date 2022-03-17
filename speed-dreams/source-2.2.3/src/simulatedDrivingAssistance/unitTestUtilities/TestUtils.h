@@ -122,10 +122,10 @@ void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 template<typename T1, typename T2>
 inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, void(*func)(T1,T2))
 {
-	PairWiseTestGenerator generator;
+	PairWiseTestGenerator<2> generator;
 	int dimensions[2]{ count1, count2 };
 
-	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions,2);
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
 
 	for(int i = 0; i < testCases.size(); i++)
 	{
@@ -137,10 +137,10 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, void(*f
 template<typename T1, typename T2, typename T3>
 inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, void(*func)(T1, T2, T3))
 {
-	PairWiseTestGenerator generator;
+	PairWiseTestGenerator<3> generator;
 	int dimensions[3]{ count1, count2, count3};
 
-	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions, 3);
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
 
 	for (int i = 0; i < testCases.size(); i++)
 	{
@@ -152,10 +152,10 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 template<typename T1, typename T2, typename T3, typename T4>
 inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, void(*func)(T1, T2, T3, T4))
 {
-	PairWiseTestGenerator generator;
+	PairWiseTestGenerator<4> generator;
 	int dimensions[4]{ count1, count2, count3, count4 };
 
-	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions, 4);
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
 
 	for (int i = 0; i < testCases.size(); i++)
 	{
@@ -167,14 +167,59 @@ inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* inp
 template<typename T1, typename T2, typename T3, typename T4, typename T5>
 inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, void(*func)(T1, T2, T3, T4, T5))
 {
-	PairWiseTestGenerator generator;
+	PairWiseTestGenerator<5> generator;
 	int dimensions[5]{ count1, count2, count3, count4, count5 };
 
-	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions, 5);
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
 
 	for (int i = 0; i < testCases.size(); i++)
 	{
 		int* Features = testCases[i].Features;
 		func(input1[Features[0]], input2[Features[1]], input3[Features[2]], input4[Features[3]], input5[Features[4]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, void(*func)(T1, T2, T3, T4, T5, T6))
+{
+	PairWiseTestGenerator<6> generator;
+	int dimensions[6]{ count1, count2, count3, count4, count5, count6 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]], input3[Features[2]], input4[Features[3]], input5[Features[4]], input6[Features[5]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, T7* input7, int count7, void(*func)(T1, T2, T3, T4, T5, T6, T7))
+{
+	PairWiseTestGenerator<7> generator;
+	int dimensions[7]{ count1, count2, count3, count4, count5, count6, count7 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]], input3[Features[2]], input4[Features[3]], input5[Features[4]], input6[Features[5]], input7[Features[6]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+inline void PairWiseTest(T1* input1, int count1, T2* input2, int count2, T3* input3, int count3, T4* input4, int count4, T5* input5, int count5, T6* input6, int count6, T7* input7, int count7, T8* input8, int count8, void(*func)(T1, T2, T3, T4, T5, T6, T7, T8))
+{
+	PairWiseTestGenerator<8> generator;
+	int dimensions[8]{ count1, count2, count3, count4, count5, count6, count7, count8 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]], input3[Features[2]], input4[Features[3]], input5[Features[4]], input6[Features[5]], input7[Features[6]], input8[Features[7]]);
 	}
 }

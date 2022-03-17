@@ -59,10 +59,57 @@ END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)
 
 TEST(UtilsTests, PairwiseRun)
 {
-	PairWiseTestGenerator generator;
+	PairWiseTestGenerator<4> generator;
 	int dimensions[4]{ 2,3,4,5 };
-	int count = 4;
-	std::vector<TestCaseInfo> testCases = *generator.GetTestCases(dimensions, count);
+	std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
 
-	SUCCEED();
+	SUCCEED() << testCases->size();
+	delete testCases;
+}
+
+TEST(UtilsTests, PairwiseLimitTest)
+{
+	PairWiseTestGenerator<8> generator;
+	int dimensions[8]{ 5,5,5,5,5,5,5,5 };
+	std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
+
+	SUCCEED() << testCases->size();
+	delete testCases;
+}
+
+bool IsTupleCovered(std::vector<TestCaseInfo>* testCases, FeatureTuple& tuple)
+{
+	for(int i = 0; i < testCases->size(); i++)
+	{
+		if(testCases->at(i).IsTupleCovered(tuple))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+TEST(UtilsTests, PairWiseCoverageTest)
+{
+	PairWiseTestGenerator<5> generator;
+	int dimensions[5]{ 2,3,4,5,6 };
+	std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
+
+	for(int d1 = 0; d1 < 3; d1++)
+	{
+		for(int d2 = d1 + 1; d2 < 4; d2++)
+		{
+			for(int f1 = 0; f1 < dimensions[d1]; f1++)
+			{
+				for(int f2 = 0; f2 < dimensions[d2]; f2++)
+				{
+					FeatureInfo feature1(d1, f1);
+					FeatureInfo feature2(d2, f2);
+					FeatureTuple tuple(feature1, feature2);
+					ASSERT_TRUE(IsTupleCovered(testCases, tuple));
+				}
+			}
+		}
+	}
+	
 }

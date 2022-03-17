@@ -43,11 +43,11 @@ public:
 	bool IsTupleCovered(FeatureTuple& p_tuple);
 };
 
-
+template<int m_dimensionsCount>
 class PairWiseTestGenerator
 {
 public:
-	std::vector<TestCaseInfo>* GetTestCases(int* p_dimensions, int p_dimensionsCount);
+	std::vector<TestCaseInfo>* GetTestCases(int* p_dimensions);
 
 private:
 	class Queue : public std::queue<FeatureTuple>
@@ -64,9 +64,8 @@ private:
 	};
 
 	Random m_random;
-	int* m_dimensions;
-	int m_dimensionsCount;
-	Queue** m_uncoveredTuples = nullptr;
+	int m_dimensions[m_dimensionsCount] = {0};
+	Queue* m_uncoveredTuples[m_dimensionsCount] = {nullptr};
 
 
 	void CreateAllTuples();
