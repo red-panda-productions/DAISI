@@ -55,3 +55,78 @@ BEGIN_TEST_COMBINATORIAL(UtilsTests, Combinatorial2)
 int arr1[3]{ 0,1,2 };
 const char* arr2[2]{ "hi","hello" };
 END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)
+
+// example pairwise test
+TEST(UtilsTests, ExamplePairwiseTest)
+{
+	int xs[20];
+	for(int i = 0; i < 20; i++)
+	{
+		xs[i] = i;
+	}
+	const char* msgs[5]{ "bob","alison","carol","daniel","edward" };
+	PairWiseTest(Sample,xs, 20, msgs, 5);
+}
+
+/// @brief Tries to run a pairwise generator, to see if it fails
+TEST(UtilsTests, PairwiseRun)
+{
+	PairWiseTestGenerator<4> generator;
+	int dimensions[4]{ 2,3,4,5 };
+	std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
+
+	SUCCEED() << testCases->size();
+	delete testCases;
+}
+
+/// @brief Tries a big test to see if a limit will be reached, currently no limits were found
+TEST(UtilsTests, PairwiseLimitTest)
+{
+	PairWiseTestGenerator<8> generator;
+	int dimensions[8]{ 5,5,5,5,5,5,5,5 };
+	std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
+
+	SUCCEED() << testCases->size();
+	delete testCases;
+}
+
+/// @brief			  Checks if a tuple is covered by the test cases
+/// @param  testCases The test cases
+/// @param  tuple	  The tuple
+/// @return			  Whether the tuple is covered
+bool IsTupleCovered(std::vector<TestCaseInfo>* testCases, FeatureTuple& tuple)
+{
+	for(int i = 0; i < testCases->size(); i++)
+	{
+		if(testCases->at(i).IsTupleCovered(tuple))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/// @brief Tests if all tuples are covered by the test cases generated from a generator
+TEST(UtilsTests, PairWiseCoverageTest)
+{
+	PairWiseTestGenerator<5> generator;
+	int dimensions[5]{ 2,3,4,5,6 };
+	std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
+
+	for(int d1 = 0; d1 < 3; d1++)
+	{
+		for(int d2 = d1 + 1; d2 < 4; d2++)
+		{
+			for(int f1 = 0; f1 < dimensions[d1]; f1++)
+			{
+				for(int f2 = 0; f2 < dimensions[d2]; f2++)
+				{
+					FeatureInfo feature1(d1, f1);
+					FeatureInfo feature2(d2, f2);
+					FeatureTuple tuple(feature1, feature2);
+					ASSERT_TRUE(IsTupleCovered(testCases, tuple));
+				}
+			}
+		}
+	}
+}
