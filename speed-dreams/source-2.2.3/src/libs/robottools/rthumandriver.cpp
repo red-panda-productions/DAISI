@@ -58,11 +58,16 @@
 #include <robot.h>
 #include <playerpref.h>
 #include <car.h>
-#include <iostream>
+
 
 #include "humandriver.h"
 #if SDL_FORCEFEEDBACK
 #include "forcefeedback.h"
+
+#include <iostream>
+#include <Recorder.h>
+Recorder* recorder;
+
 
 
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
@@ -165,6 +170,7 @@ static std::vector<tHumanContext*> HCtx;
 
 static bool speedLimiter = false;
 static tdble speedLimit;
+
 
 typedef struct
 {
@@ -490,6 +496,7 @@ void HumanDriver::terminate()
         ++itDrvName;
     }
     VecNames.clear();
+
 }
 
 
@@ -595,6 +602,7 @@ void HumanDriver::init_track(int index,
  */
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
+    recorder = new Recorder();
     const int idx = index - 1;
 
     // Have to read engine curve
@@ -897,8 +905,9 @@ static int onKeyAction(int key, int modifier, int state)
     // Update key state only if the key is assigned to a player command.
     const int nKeyInd = lookUpKeyMap(key);
     if (nKeyInd >= 0)
-
+    {
         lastReadKeyState[lookUpKeyMap(key)] = state;
+    }
 
     return 0;
 }//onKeyAction
@@ -910,12 +919,12 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 {
     tdble slip;
     tdble ax0;
-    tdble brake;
+    tdble brake = 0;
     tdble clutch;
-    tdble throttle;
+    tdble throttle = 0;
     tdble leftSteer;
-    tdble rightSteer;
-    tdble newGlance;;
+    tdble rightSteer = 0;
+    tdble newGlance;
 #if (BINCTRL_STEERING == JEPZ || BINCTRL_STEERING == JPM)
     tdble sensFrac, speedFrac;
 #endif
@@ -923,6 +932,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     const int idx = index - 1;
     tControlCmd *cmd = HCtx[idx]->cmdControl;
+
 
     if (init_keybd && !GfuiScreenIsActive(0))
     {
@@ -995,8 +1005,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
         GfOut("Gridbox Initial Gear %d\n", preGear);
     }
-
-    std::cout << cmd->name << std::endl;
 
     if ((cmd[CMD_ABS].type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[cmd[CMD_ABS].val])
             || (cmd[CMD_ABS].type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[cmd[CMD_ABS].val])
@@ -1691,6 +1699,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
 #endif
     std::cout << leftSteer << std::endl;
+    float inputs[4] = {throttle, brake, leftSteer, rightSteer};
+    recorder->WriteRecording(inputs);
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 

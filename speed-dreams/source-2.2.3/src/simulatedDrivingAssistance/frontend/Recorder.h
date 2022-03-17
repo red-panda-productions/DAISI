@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <ctime>
+#include <algorithm>
 
 class Recorder
 {
@@ -11,6 +12,6 @@ public:
 	void WriteRecording(float* p_input);
 
 private:
-	std::ofstream m_RecordingFile;
-	std::string m_FileName;
+	std::ofstream m_recordingFile;
+	std::string m_fileName;
 };
