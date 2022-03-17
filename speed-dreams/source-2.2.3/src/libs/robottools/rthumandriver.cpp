@@ -64,9 +64,11 @@
 #if SDL_FORCEFEEDBACK
 #include "forcefeedback.h"
 
+// ASSISTED DRIVING ASSISTANCE: added recorder
 #include <iostream>
 #include <Recorder.h>
 Recorder* recorder;
+#define WANT_RECORD true
 
 
 
@@ -497,6 +499,8 @@ void HumanDriver::terminate()
     }
     VecNames.clear();
 
+
+
 }
 
 
@@ -602,7 +606,11 @@ void HumanDriver::init_track(int index,
  */
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    recorder = new Recorder();
+    // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
+    if (WANT_RECORD)
+    {
+        recorder = new Recorder();
+    }
     const int idx = index - 1;
 
     // Have to read engine curve
@@ -844,6 +852,7 @@ void HumanDriver::end_race(int index, tCarElt* /*car*/, tSituation* /*s*/)
         HCtx[idx]->lastForceFeedbackLevel = 0; // forget force feedback level
     }
 #endif
+
 }
 
 
@@ -923,7 +932,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     tdble clutch;
     tdble throttle = 0;
     tdble leftSteer;
-    tdble rightSteer = 0;
+    tdble rightSteer;
     tdble newGlance;
 #if (BINCTRL_STEERING == JEPZ || BINCTRL_STEERING == JPM)
     tdble sensFrac, speedFrac;
@@ -1698,9 +1707,13 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 #endif
 #endif
-    std::cout << leftSteer << std::endl;
-    float inputs[4] = {throttle, brake, leftSteer, rightSteer};
-    recorder->WriteRecording(inputs);
+    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
+    if (WANT_RECORD)
+    {
+        std::cout << leftSteer << std::endl;
+        float inputs[4] = { throttle, brake, leftSteer, rightSteer };
+        recorder->WriteRecording(inputs);
+    }
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 

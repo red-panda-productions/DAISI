@@ -1,17 +1,16 @@
 #pragma once
-#include <iostream>
 #include <fstream>
-#include <string>
-#include <ctime>
-#include <algorithm>
+
 
 class Recorder
 {
 public:
 	Recorder();
+	~Recorder();
 	void WriteRecording(float* p_input);
 
 private:
 	std::ofstream m_recordingFile;
-	std::string m_fileName;
+	float* m_prevInput;
+	std::clock_t m_startTime;
 };
