@@ -71,8 +71,9 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     {
         m_variablesToSend.push_back(orderVec[i++]);
     }
-    if (orderVec[i++] != "ACTIONORDER") throw std::exception("Black box send wrong message: ACTIONORDER expected");
-    while (i < orderVec.size() && orderVec[i] != "DATAORDER")
+    if (i >= orderVec.size()) throw std::exception("Black box send wrong message: ACTIONORDER expected");
+    i++;
+	while (i < orderVec.size())
     {
         m_variablesToReceive.push_back(orderVec[i++]);
     }
