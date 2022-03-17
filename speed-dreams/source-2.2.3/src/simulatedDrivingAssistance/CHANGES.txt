@@ -3,10 +3,10 @@ Changes to Speed Dreams
 
 This file states the changes that are done by us in Speed Dreams.
 If something is changed in Speed Dreams, you need to state:
-• what files have been changed;
-• which functions have been altered, deleted and/or added;
-• which variables have been added, removed and/or changed (e.g. changed from local to global);
-• which libraries and/or other software have been added to specific files or the whole project.
+ï¿½ what files have been changed;
+ï¿½ which functions have been altered, deleted and/or added;
+ï¿½ which variables have been added, removed and/or changed (e.g. changed from local to global);
+ï¿½ which libraries and/or other software have been added to specific files or the whole project.
 
 It is ordered by: if a file is added or changed, then if the file is in src or data.
 
@@ -26,18 +26,25 @@ Added:
 
 Changed:
   src/
-    src/modules/
+    interfaces/
+        playerpref.h
+            added HM_ADRV_FILE define
+    modules/
         userinterface/
-            legacymenu.h 
-                ActivateInterventionMenu()
-            legacymenu.cpp
-                  included "InterventionMenu.h"
-                  added    ActivateInterventionMenu()
-                  changed  backLoad()
-                  changed  activate()
-            legacymenu/CMakeList.txt
-                  added    interventionmenu.h and .cpp
-                  added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+            legacymenu/
+                legacymenu.h
+                    ActivateInterventionMenu()
+                legacymenu.cpp
+                      included "InterventionMenu.h"
+                      added    ActivateInterventionMenu()
+                      changed  backLoad()
+                      changed  activate()
+                racestopmenu.cpp
+                    RmStopRaceMenu()
+                        changed  AssistedHuman is a human
+                CMakeList.txt
+                      added    interventionmenu.h and .cpp
+                      added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
         graphic/
             ssggraph/
                 grboard.cpp
