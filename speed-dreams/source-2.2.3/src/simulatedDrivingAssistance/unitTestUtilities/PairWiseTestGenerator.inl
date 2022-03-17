@@ -95,7 +95,7 @@ void PairWiseTestGenerator<m_dimensionsCount>::CreateTuples(int p_dimension, int
 /// @param  tuple The returned tuple
 /// @return	      Whether the operation succeeded or failed
 template<int m_dimensionsCount>
-bool PairWiseTestGenerator<m_dimensionsCount>::GetNextTuple(FeatureTuple& tuple)
+bool PairWiseTestGenerator<m_dimensionsCount>::GetNextTuple(FeatureTuple& p_tuple)
 {
 	for (int d = 0; d < m_dimensionsCount; d++)
 	{
@@ -103,7 +103,7 @@ bool PairWiseTestGenerator<m_dimensionsCount>::GetNextTuple(FeatureTuple& tuple)
 		{
 			if (m_uncoveredTuples[d][f].empty()) continue;
 
-			tuple = m_uncoveredTuples[d][f].front();
+			p_tuple = m_uncoveredTuples[d][f].front();
 			m_uncoveredTuples[d][f].pop();
 			return true;
 		}
