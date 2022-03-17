@@ -2,7 +2,6 @@
 #include "SocketBlackBox.h"
 #include "SocketBlackBox.cpp"
 #include "mocks/DriveSituationMock.h"
-#include <random>
 #include <limits>
 #include "../rppUtils/Random.hpp"
 
@@ -22,20 +21,23 @@
     float randomToLeft = random.NextFloat(-1000,1000);\
     float randomToRight = random.NextFloat(-1000,1000);\
     float randomToStart = random.NextFloat(-1000,1000);\
-    float randomTimeLastSteer = random.NextFloat(-1000,1000);
+    float randomTimeLastSteer = random.NextFloat(-1000,1000);\
+    int randomGear = random.NextInt(-1000,1000);\
+    bool randomHeadlights = random.NextBool();\
+    int randomRain = random.NextInt(-1000,1000);
 
 /// create a drive situation mock and insert all variables
 #define DEFINE_DRIVE_MOCK \
     DriveSituationMock driveSituation(\
-        PlayerInfoMock(randomTimeLastSteer),\
-        CarInfoMock(randomSpeed, randomTopSpeed, randomSteerCmd,randomAccelCmd,randomBrakeCmd,randomClutchCmd),\
-        EnvironmentInfoMock(randomOffroad,randomTimeOfDay, randomClouds,\
-            TrackPositionMock(randomToStart,randomToRight,randomToMiddle,randomToLeft)))
+        PlayerInfoMock(randomSteerCmd, randomAccelCmd, randomBrakeCmd, randomClutchCmd),\
+        CarInfoMock(randomSpeed, randomTopSpeed, randomGear, randomHeadlights,          \
+            TrackPositionMock(randomOffroad, randomToStart,randomToRight,randomToMiddle,randomToLeft)), \
+        EnvironmentInfoMock(randomTimeOfDay, randomClouds, randomRain));
 
 /// create a socket black box and initialize the maps.
 #define SETUP_SOCKET \
     SocketBlackBox<DriveSituationMock> socketBlackBox;\
-    socketBlackBox.Initialize()
+    socketBlackBox.Initialize() 
 
 /// <summary>
 /// Tests if all variables can be serialized correctly
@@ -78,8 +80,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
             "ToMiddle",
             "ToLeft",
             "ToRight",
-            "ToStart",
-            "TimeLastSteer"};
+            "ToStart"};
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
@@ -130,8 +131,7 @@ TEST(MsgpackSerializeTests, SerializeSome)
         "Speed",
         "TimeOfDay",
         "Offroad",
-        "ToLeft",
-        "TimeLastSteer"};
+        "ToLeft"};
 
     msgpack::sbuffer sbuffer;
     socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);

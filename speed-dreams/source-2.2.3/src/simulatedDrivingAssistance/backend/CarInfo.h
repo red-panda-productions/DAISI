@@ -2,11 +2,16 @@
 
 class CarInfo
 {
+private:
+    TrackPosition m_trackPosition;
 public:
     float Speed(){return 0;};
 	float TopSpeed(){return 0;};
-	float SteerCmd(){return 0;};
-	float AccelCmd(){return 0;};
-	float BrakeCmd(){return 0;};
-	float ClutchCmd(){return 0;};
+    int Gear(){return 0;};
+    bool Headlights(){return false;};
+
+    TrackPosition* TrackLocalPosition()
+    {
+        return &m_trackPosition;
+    }
 };
