@@ -3,6 +3,9 @@
 class IDecision
 {
 public:
-    virtual void GetIndicateCommands() = 0; //should be [ICommand]
-    virtual void GetInterveneCommands() = 0; //should be [ICommand]
+	/// @brief Can show an indicator
+	virtual void RunIndicateCommands() = 0;
+
+	/// @brief Can intervene the simulation
+	virtual void RunInterveneCommands() = 0; 
 };

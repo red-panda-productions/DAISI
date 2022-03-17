@@ -23,5 +23,5 @@ public:
     float TopSpeed(){return m_topSpeed;};
     int Gear(){return m_gear;};
     bool Headlights(){return m_headlights;};
-    TrackPositionMock TrackLocalPosition() {return trackPosition;}
+    TrackPositionMock* TrackLocalPosition() {return &trackPosition;}
 };

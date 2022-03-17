@@ -2,17 +2,24 @@
 #include "DriveSituation.h"
 #include "ConfigEnums.h"
 #include "Config.h"
-#include "InterventionMaker.h"
+#include "InterventionExecutor.h"
+#include "SocketBlackBox.h"
 
+/// @brief                 A class that can ask the black box to make a decision
+/// @tparam SocketBlackBox The SocketBlackBox type
+/// @tparam Config         The config type
+template <typename SocketBlackBox, typename Config>
 class DecisionMaker
 {
 public:
-    Config m_config;
-    InterventionMaker* m_interventionMaker;
+	bool Decide(DriveSituation& driveSituation);
 
-	/* TODO: Return [Command] */ void Decide(DriveSituation& driveSituation);
-
-    // calls the config to return an intervention maker based on the p_type
-    // and sets m_interventionMaker to return maker
 	void ChangeSettings(INTERVENTION_TYPE p_type);
+
+    Config m_config;
+    InterventionExecutor* m_interventionExecutor;
+    SocketBlackBox m_blackBox;
 };
+
+/// @brief The standard type of the decisionMaker
+#define SDecisionMaker DecisionMaker<SSocketBlackBox,Config> 
