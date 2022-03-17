@@ -13,35 +13,35 @@ bool* m_boolArr = new bool[5];
 /// @param p_info Information on the checkbox
 static void ChangeDrivingStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[0] = p_info->bChecked;
+    m_boolArr[DATA_TO_STORE_DRIVING_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the car will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeCarStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[1] = p_info->bChecked;
+    m_boolArr[DATA_TO_STORE_CAR_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the human user will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeHumanStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[2] = p_info->bChecked;
+    m_boolArr[DATA_TO_STORE_HUMAN_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether intervention attributes will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeInterventionStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[3] = p_info->bChecked;
+    m_boolArr[DATA_TO_STORE_INTERVENTION_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether decision maker parameters will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[4] = p_info->bChecked;
+    m_boolArr[DATA_TO_STORE_META_DATA] = p_info->bChecked;
 }
 
 /// @brief Function to call when screen is activated

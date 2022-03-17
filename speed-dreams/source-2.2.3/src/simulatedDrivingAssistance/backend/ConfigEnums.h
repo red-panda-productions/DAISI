@@ -1,5 +1,17 @@
 #pragma once
 
+typedef unsigned int TASK;
+
+#define TASK_NO_TASK        0
+#define TASK_LANE_KEEPING   1
+#define TASK_SPEED_CONTROL  2
+
+typedef unsigned int INDICATOR;
+
+#define INDICATOR_NO_INDICATOR  0
+#define INDICATOR_AUDITORY      1
+#define INDICATOR_VISUAL        2
+
 typedef unsigned int INTERVENTION_TYPE;
 
 #define INTERVENTION_TYPE_NO_INTERVENTION       0
@@ -7,6 +19,13 @@ typedef unsigned int INTERVENTION_TYPE;
 #define INTERVENTION_TYPE_ASK_FOR               2
 #define INTERVENTION_TYPE_PERFORM_WHEN_NEEDED   3
 #define INTERVENTION_TYPE_ALWAYS_INTERVENE      4
+
+typedef unsigned int PARTICIPANT_CONTROL;
+
+#define PARTICIPANT_CONTROL_NO_CONTROL              0
+#define PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF    1
+#define PARTICIPANT_CONTROL_GAS                     2
+#define PARTICIPANT_CONTROL_STEERING                3
 
 typedef unsigned int BLACK_BOX_TYPE;
 
@@ -16,3 +35,11 @@ typedef unsigned int DATA_STORAGE_TYPE;
 
 #define DATA_STORAGE_TYPE_SOCKET    0
 #define DATA_STORAGE_TYPE_SQL       1
+
+typedef unsigned int DATA_TO_STORE;
+
+#define DATA_TO_STORE_DRIVING_DATA
+#define DATA_TO_STORE_CAR_DATA
+#define DATA_TO_STORE_HUMAN_DATA
+#define DATA_TO_STORE_INTERVENTION_DATA
+#define DATA_TO_STORE_META_DATA
