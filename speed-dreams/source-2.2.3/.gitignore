@@ -6,5 +6,5 @@ CMakeSettings.json
 # Build output
 out/
 build/
-cmake-build-debug/
+cmake-build-*/
 Testing/
