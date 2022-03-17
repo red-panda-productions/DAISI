@@ -47,9 +47,7 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
 
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
-SD_ADD_EXECUTABLE(
-  backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
-
+SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities

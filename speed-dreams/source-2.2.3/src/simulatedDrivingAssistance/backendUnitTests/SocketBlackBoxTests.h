@@ -6,6 +6,19 @@
 #include "ClientSocket.h"
 #define TEST_BUFFER_SIZE 512
 
+#define SETUP(method_name) \
+	std::thread t = std::thread(method_name); \
+	t.detach();\
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));\
+	ClientSocket client;\
+	client.SendData("AI ACTIVE", 9);\
+	char buffer[TEST_BUFFER_SIZE];\
+	client.AwaitData(buffer, TEST_BUFFER_SIZE);\
+	ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
+
+
+
+
 /// @brief The black box side of the test, as these tests have to run in parallel
 void BlackBoxSide()
 {
@@ -13,13 +26,23 @@ void BlackBoxSide()
 	CREATE_DRIVE_SITUATION_MOCK;
 	DriveSituationMock exampleSituation = GetExampleDriveSituation();
 	DriveSituationMock situations[2] {mock,exampleSituation};
+
+	/// intializes the black box with 2 tests
 	bb.Initialize(mock,situations,2);
 	DecisionTuple decisions;
+
+	// no decision should be made yet
 	ASSERT_FALSE(bb.GetDecisions(mock, decisions));
 	std::this_thread::sleep_for(std::chrono::milliseconds(30));
+
+	// awaited the client so a decision should be here
 	ASSERT_TRUE(bb.GetDecisions(exampleSituation, decisions));
+
+	// check the result
 	ASSERT_ALMOST_EQ(decisions.m_steerDecision.m_steerAmount,1.0f,0.1f);
 	ASSERT_ALMOST_EQ(decisions.m_brakeDecision.m_brakeAmount,2.0f,0.1f);
+
+	// shut the server down
 	bb.Shutdown();
 }
 
@@ -49,16 +72,8 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation,DriveSituatio
 /// @brief Tests an entire run of the framework
 TEST(SocketBlackBoxTests,SocketTest)
 {
-	std::thread t = std::thread(BlackBoxSide);
-	t.detach();
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	ClientSocket client;
-	client.SendData("AI ACTIVE", 9);
-
-	char buffer[TEST_BUFFER_SIZE];
-
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);
-	ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
+	// creates a connection between the black box and a client
+	SETUP(BlackBoxSide)
 
 	std::vector<std::string> order = {
 		"DATAORDER",
@@ -83,9 +98,12 @@ TEST(SocketBlackBoxTests,SocketTest)
 		"Brake"
 	};
 
+	// sends required and sending data of client
 	msgpack::sbuffer sbuffer;
 	msgpack::pack(sbuffer, order);
 	client.SendData(sbuffer.data(), sbuffer.size());
+
+	// receives amount of tests
 	client.AwaitData(buffer, TEST_BUFFER_SIZE); 
 	msgpack::unpacked msg;
 	msgpack::unpack(msg, buffer, TEST_BUFFER_SIZE);
@@ -106,6 +124,7 @@ TEST(SocketBlackBoxTests,SocketTest)
 	CREATE_DRIVE_SITUATION_MOCK;
 	TestDriveSituation(driveSituation,mock);
 
+	// send back result of test 1
 	std::vector<std::string> action{
 		"1.0000",
 		"2.0000"
@@ -121,9 +140,11 @@ TEST(SocketBlackBoxTests,SocketTest)
 	std::vector<std::string> driveSituation2;
 	msg3->convert(driveSituation2);
 
+	// test if the drivesituation is expected
 	DriveSituationMock exampleSituation = GetExampleDriveSituation();
 	TestDriveSituation(driveSituation2, exampleSituation);
 
+	// send back result of test 2
 	client.SendData(sbuffer.data(), sbuffer.size());
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -135,7 +156,10 @@ TEST(SocketBlackBoxTests,SocketTest)
 	std::vector<std::string> driveSituation3;
 	msg4->convert(driveSituation3);
 
+	// tests if the drive situation is expected
 	TestDriveSituation(driveSituation3, mock);
+
+	// send back result of initial drive situation
 	client.SendData(sbuffer.data(), sbuffer.size());
 
 
@@ -146,12 +170,87 @@ TEST(SocketBlackBoxTests,SocketTest)
 	std::vector<std::string> driveSituation4;
 	msg5->convert(driveSituation4);
 
+	// tests if the drive situation is expected
 	TestDriveSituation(driveSituation4, exampleSituation);
 	client.SendData(sbuffer.data(), sbuffer.size());
 
+	// gets a stop command
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
 	ASSERT_TRUE(buffer[0] == 'S' && buffer[1] == 'T' && buffer[2] == 'O' && buffer[3] == 'P');
 
+	// return to break connection
 	client.SendData("OK", 2);
 	client.Disconnect();
+}
+
+/// @brief this black box side should fail
+void FailingBlackBox()
+{
+	ASSERT_THROW(BlackBoxSide(), std::exception);
+}
+
+/// @brief Tests what happens when no order is sent
+TEST(SocketBlackBoxTests, NoOrderSend)
+{
+	SETUP(FailingBlackBox)
+
+	std::vector<std::string> order = {
+		"Speed",
+		"TopSpeed",
+		"Gear",
+		"Headlights",
+		"SteerCmd",
+		"AccelCmd",
+		"BrakeCmd",
+		"ClutchCmd",
+		"Offroad",
+		"ToMiddle",
+		"ToLeft",
+		"ToRight",
+		"ToStart",
+		"TimeOfDay",
+		"Clouds",
+		"Rain",
+		"ACTIONORDER",
+		"Steer",
+		"Brake"
+	};
+
+	// sends required and sending data of client
+	msgpack::sbuffer sbuffer;
+	msgpack::pack(sbuffer, order);
+	client.SendData(sbuffer.data(), sbuffer.size());
+}
+
+/// @brief Tests what happens when no action order is sent
+TEST(SocketBlackBoxTests, NoActionOrderSend)
+{
+	SETUP(FailingBlackBox)
+
+	std::vector<std::string> order = {
+		"DATAORDER",
+		"Speed",
+		"TopSpeed",
+		"Gear",
+		"Headlights",
+		"SteerCmd",
+		"AccelCmd",
+		"BrakeCmd",
+		"ClutchCmd",
+		"Offroad",
+		"ToMiddle",
+		"ToLeft",
+		"ToRight",
+		"ToStart",
+		"TimeOfDay",
+		"Clouds",
+		"Rain",
+		"Steer",
+		"Brake"
+	};
+
+	// sends required and sending data of client
+	msgpack::sbuffer sbuffer;
+	msgpack::pack(sbuffer, order);
+	client.SendData(sbuffer.data(), sbuffer.size());
 }

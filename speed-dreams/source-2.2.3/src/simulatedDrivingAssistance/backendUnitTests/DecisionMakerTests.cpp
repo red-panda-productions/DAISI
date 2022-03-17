@@ -51,3 +51,4 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsT
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestAskFor, ChangeSettingsTest, (INTERVENTION_TYPE_ASK_FOR));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_INDICATION));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_PERFORM_WHEN_NEEDED));
+TEST_CASE(DecisionMakerTests, EdgeCaseTest, ChangeSettingsTest, (-1));
