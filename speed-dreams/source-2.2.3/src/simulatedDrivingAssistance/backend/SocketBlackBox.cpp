@@ -105,6 +105,8 @@ template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Shutdown()
 {
     m_server.SendData("STOP", 4);
+    m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // wait for client to disconnect
     m_server.CloseServer();
 }
 

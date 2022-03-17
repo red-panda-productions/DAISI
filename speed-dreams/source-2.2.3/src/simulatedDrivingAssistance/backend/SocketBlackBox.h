@@ -28,7 +28,7 @@ public:
 
     void Initialize();
 
-    void Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests = nullptr, int p_amountOfTests = 1);
+    void Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests = nullptr, int p_amountOfTests = 0);
     /**
      * Shut down a socket black box:
      * disconnect the black box
