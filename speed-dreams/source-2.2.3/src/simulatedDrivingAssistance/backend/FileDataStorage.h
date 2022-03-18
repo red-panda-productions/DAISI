@@ -1,8 +1,8 @@
 #pragma once
 
 #include <fstream>
-#include "DriveSituation.h"
 
+template <class DriveSituation>
 class FileDataStorage {
  private:
     bool* m_saveSettings;
@@ -11,6 +11,8 @@ class FileDataStorage {
     explicit FileDataStorage(bool* p_saveSettings);
     void Initialise(const std::string& p_fileName, const std::string& p_userId);
     void Shutdown();
-    void Save(DriveSituation* p_situation, int p_timestamp);
+    void Save(DriveSituation& p_situation, int p_timestamp);
 };
+
+#define SFileDataStorage FileDataStorage<DriveSituation>
 
