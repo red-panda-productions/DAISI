@@ -27,18 +27,22 @@ template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
     DriveSituation currentSituation(
-        EnvironmentInfo(0, 0, 0),
+        m_environment,
         CarInfo(
-            TrackPosition(false, 0, 0, 0, 0),
-            0, 0, 0, false),
-        PlayerInfo(0, 0, 0, 0));
+            TrackPosition(false, p_car->pub.trkPos.toStart, p_car->pub.trkPos.toRight, p_car->pub.trkPos.toMiddle, p_car->pub.trkPos.toLeft),
+            p_car->pub.speed, p_car->race.topSpeed, p_car->priv.gear, false),
+        PlayerInfo(p_car->ctrl.steer, p_car->ctrl.accelCmd, p_car->ctrl.brakeCmd, p_car->ctrl.clutchCmd));
 
     m_decisionMaker.Decide(currentSituation);
-
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {}
+void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+{
+    m_environment.SetTimeOfDay(p_track->local.timeofday);
+    m_environment.SetClouds(p_track->local.clouds);
+    m_environment.SetRain(p_track->local.rain);
+}
 
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop() {}

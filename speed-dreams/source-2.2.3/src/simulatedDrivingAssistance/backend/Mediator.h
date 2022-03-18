@@ -44,6 +44,8 @@ public:
 	DecisionMaker m_decisionMaker;
 
 	static Mediator<DecisionMaker>* m_instance;
+
+	EnvironmentInfo m_environment = EnvironmentInfo(0, 0, 0);
 };
 
 SMediator* SMediator::m_instance = nullptr;
