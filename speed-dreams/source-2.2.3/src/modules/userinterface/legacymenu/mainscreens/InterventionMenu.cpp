@@ -23,7 +23,7 @@ static void	*s_nextHandle = NULL;
 /// @brief Loads the intervention type from the backend config
 static void ReadInterventionType(void)
 {
-    s_curInterventionTypeIndex = SMediator::GetInstance().GetInterventionType();
+    s_curInterventionTypeIndex = SMediator::GetInstance()->GetInterventionType();
 
     GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[s_curInterventionTypeIndex]);
 }
@@ -31,7 +31,7 @@ static void ReadInterventionType(void)
 /// @brief Saves the chosen intervention type into the backend config
 static void SaveInterventionType(void * /* dummy */)
 {
-    SMediator::GetInstance().SetInterventionType(s_curInterventionTypeIndex);
+    SMediator::GetInstance()->SetInterventionType(s_curInterventionTypeIndex);
 
     /* go to the next screen */
     GfuiScreenActivate(s_nextHandle);

@@ -4,6 +4,7 @@
 #include "ConfigEnums.h"
 #include "InterventionFactory.h"
 #include "Mediator.h"
+#include "MediatorDistributor.h"
 #include "InterventionExecutorAlwaysIntervene.h"
 #include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
@@ -21,12 +22,15 @@ INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
 /// @brief Tests if the Mediator sets and gets the interventionType correctly
 TEST(MediatorTest, GetIntervention)
 {
-    SMediator& mediator = SMediator::GetInstance();
+    SMediatorDistributor distributor;
+    distributor.Run();
+    std::this_thread::sleep_for(std::chrono::milliseconds(40));
+    SMediator* mediator = SMediator::GetInstance();
 
     for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
     {
-        mediator.SetInterventionType(types[i]);
-        ASSERT_EQ(types[i], mediator.GetInterventionType());
+        mediator->SetInterventionType(types[i]);
+        ASSERT_EQ(types[i], mediator->GetInterventionType());
     }
 }
 

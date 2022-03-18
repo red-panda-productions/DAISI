@@ -17,6 +17,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "MediatorDistributor.h"
+#include <thread>
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -116,6 +119,12 @@ main(int argc, char *argv[])
 	// For hunting of corrupted memory blocks comment the following line
 	//GfMemoryManagerSetup(4); // Add 4 bytes per block
 #else
+
+	SMediatorDistributor distributor;
+	distributor.Run();
+	std::this_thread::sleep_for(std::chrono::milliseconds(400));
+	
+
 	// Use local variables ...
 	IUserInterface* piUserItf = 0;
 	GfModule* pmodUserItf = NULL;
