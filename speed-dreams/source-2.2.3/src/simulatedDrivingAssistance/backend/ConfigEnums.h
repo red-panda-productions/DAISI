@@ -25,7 +25,7 @@ typedef unsigned int ParticipantControl;
 #define PARTICIPANT_CONTROL_GAS                     1
 #define PARTICIPANT_CONTROL_STEERING                2
 
-typedef unsigned int BLACK_BOX_TYPE;
+typedef unsigned int BlackBoxType;
 
 #define BLACK_BOX_TYPE_SOCKET   0
 
