@@ -34,7 +34,7 @@ typedef unsigned int DATA_STORAGE_TYPE;
 #define DATA_STORAGE_TYPE_SOCKET    0
 #define DATA_STORAGE_TYPE_SQL       1
 
-typedef unsigned int DATA_TO_STORE;
+typedef unsigned int DataToStore;
 
 #define DATA_TO_STORE_DRIVING_DATA      0
 #define DATA_TO_STORE_CAR_DATA          1
