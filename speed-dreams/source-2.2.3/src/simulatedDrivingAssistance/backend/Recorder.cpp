@@ -3,9 +3,6 @@
 #include <sstream>
 #include <iostream>
 
-#define IMPOSSIBLE_USERINPUT = 2.0f
-std::string fileName;
-
 /**
 * @brief Constructor of Recording, 
 * creates a file with the current date and time,
@@ -21,13 +18,13 @@ Recorder::Recorder()
 	std::stringstream buffer;
 	buffer << std::put_time(&tm, "%Y%m%d-%H%M%S");
 
-	fileName = "..\\src\\simulatedDrivingAssistance\\data\\userRecordings\\Record"+ buffer.str() + ".txt";
+	std:: string fileName = "..\\src\\simulatedDrivingAssistance\\data\\userRecordings\\Record"+ buffer.str() + ".txt";
 	m_recordingFile.open(fileName, std::ios::binary | std::ios::app);
 	m_startTime = clock();
 
 	for (int i = 0; i < PARAMETERS; i++)
 	{
-		m_prevInput[i] = IMPOSSIBLE_USERINPUT;
+		m_prevInput[i] = 2.0f; // 2.0f is impossible user input
 	}
 
 }

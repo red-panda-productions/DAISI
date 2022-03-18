@@ -26,6 +26,15 @@ Added:
 
 Changed:
   src/
+      libs/
+        robottools/
+            
+            rtHumanDriver.cpp
+                included Recorder.h
+                included ConfigEnums.h
+                changed new_race()
+                changed common_drive()
+
     src/modules/
         userinterface/
             legacymenu.h 

@@ -66,7 +66,6 @@
 
 // ASSISTED DRIVING ASSISTANCE: added recorder
 // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
-#include <iostream>
 #include <Recorder.h>
 #include <ConfigEnums.h>
 Recorder* recorder;
@@ -1711,7 +1710,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #if RECORD_SESSION == 1
-        std::cout << leftSteer << std::endl;
         float inputs[4] = { car->_accelCmd , car->_brakeCmd, leftSteer, rightSteer };
         recorder->WriteRecording(inputs);
 #endif
