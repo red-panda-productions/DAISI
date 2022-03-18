@@ -11,7 +11,7 @@ private:
     DATA_STORAGE_TYPE m_dataStorageType;
     bool* m_dataCollectionSetting;
 
-    InterventionFactory interventionFactory;
+    InterventionFactory m_interventionFactory;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
