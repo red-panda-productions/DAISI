@@ -11,13 +11,13 @@ static void* s_scrHandle = NULL;
 static void* s_nextHandle = NULL;
 
 // Task
-TASK m_task = TASK_NO_TASK;
+Task m_task = TASK_NO_TASK;
 
 // Indicators
 bool* m_indicators = new bool[2];
 
 // InterventionType
-INTERVENTION_TYPE m_interventionType;
+InterventionType m_interventionType;
 
 // Environment
 Track track;
@@ -44,7 +44,7 @@ static void OnActivate(void* /* dummy */)
     m_indicators = indicators;
 
     // Set standard interventionType
-    m_interventionType = INTERVENTION_TYPE_NO_INTERVENTION;
+    m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
 
     // Set standard player control settings
     bool pControl[] = {false, true, true};
@@ -111,7 +111,7 @@ static void SelectTypeNoSignals(tCheckBoxInfo* p_info)
 {
     if (p_info->bChecked)
     {
-        m_interventionType = INTERVENTION_TYPE_NO_INTERVENTION;
+        m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
     }
 }
 /// @brief        Sets the interventionType to only signals
@@ -120,7 +120,7 @@ static void SelectTypeOnlySignals(tCheckBoxInfo* p_info)
 {
     if (p_info->bChecked)
     {
-        m_interventionType = INTERVENTION_TYPE_INDICATION;
+        m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
     }
 }
 /// @brief        Sets the interventionType to shared control
@@ -129,7 +129,7 @@ static void SelectTypeSharedControl(tCheckBoxInfo* p_info)
 {
     if (p_info->bChecked)
     {
-        m_interventionType = INTERVENTION_TYPE_PERFORM_WHEN_NEEDED;
+        m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
     }
 }
 /// @brief        Sets the interventionType to complete takeover
@@ -138,7 +138,7 @@ static void SelectTypeCompleteTakeover(tCheckBoxInfo* p_info)
 {
     if (p_info->bChecked)
     {
-        m_interventionType = INTERVENTION_TYPE_ALWAYS_INTERVENE;
+        m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
     }
 }
 /// @brief        Sets the environment to highway

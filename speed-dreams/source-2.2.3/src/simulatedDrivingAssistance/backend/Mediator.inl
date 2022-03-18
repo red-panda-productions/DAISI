@@ -2,8 +2,8 @@
 #include "Mediator.h"
 
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
-    template INTERVENTION_TYPE Mediator<type>::GetInterventionType(); \
-	template void Mediator<type>::SetTask(TASK p_task);\
+    template InterventionType Mediator<type>::GetInterventionType(); \
+	template void Mediator<type>::SetTask(Task p_task);\
 	template void Mediator<type>::SetIndicatorSettings(bool* p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
@@ -17,7 +17,6 @@
 	template Mediator<type>::Mediator();
 
 template<typename DecisionMaker>
-
 void Mediator<DecisionMaker>::SetTask(Task p_task) {}
 
 template<typename DecisionMaker>
@@ -25,7 +24,7 @@ void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators) {}
 
 template<typename DecisionMaker>
 InterventionType Mediator<DecisionMaker>::GetInterventionType(){
-    return m_decisionMaker.m_config.GetInterventionType();
+    return m_decisionMaker.Config.GetInterventionType();
 }
 
 template<typename DecisionMaker>

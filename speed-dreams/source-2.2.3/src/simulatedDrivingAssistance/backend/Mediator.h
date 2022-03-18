@@ -29,8 +29,8 @@ public:
     /// @param p_type The InterventionType
     void SetInterventionType(InterventionType p_type);
 
-    /// @brief           Sets the maximum simulationTime to p_maxTime
-    /// @param p_maxTime The userID
+    /// @brief           Sets the maximum simulation time to p_maxTime
+    /// @param p_maxTime The maximum simulation time
     void SetMaxTime(int p_maxTime);
 
     /// @brief          Sets the userID to p_userID
