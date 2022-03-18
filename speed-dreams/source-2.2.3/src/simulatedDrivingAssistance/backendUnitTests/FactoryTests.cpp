@@ -1,37 +1,15 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
-#include "ConfigEnums.h"
 #include "InterventionFactory.h"
-#include "Mediator.h"
-#include "InterventionExecutorAlwaysIntervene.h"
 #include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include "InterventionExecutorNoIntervention.h"
+#include "InterventionExecutorAlwaysIntervene.h"
 
-InterventionType interventionTypesMediator[5] = {INTERVENTION_TYPE_NO_SIGNALS,
-                                                 INTERVENTION_TYPE_ONLY_SIGNALS,
-                                                 INTERVENTION_TYPE_ASK_FOR,
-                                                 INTERVENTION_TYPE_SHARED_CONTROL,
-                                                 INTERVENTION_TYPE_COMPLETE_TAKEOVER };
-
-// Test DecisionMaker
-    // Nothing to test yet
-
-/// @brief Tests if the Mediator sets and gets the interventionType correctly
-TEST(MediatorTest, GetIntervention)
-{
-    SMediator& mediator = SMediator::GetInstance();
-
-    for (int i = 0; i <= (sizeof(interventionTypesMediator)/sizeof(*interventionTypesMediator)); i++)
-    {
-        mediator.SetInterventionType(interventionTypesMediator[i]);
-        ASSERT_EQ(interventionTypesMediator[i], mediator.GetInterventionType());
-    }
-}
 
 /// @brief Tests if the Factory creates the the correct InterventionExecutor
-TEST(FactoryTest, Creation)
+TEST(FactoryTests, Creation)
 {
     InterventionFactory factory;
 
@@ -45,7 +23,7 @@ TEST(FactoryTest, Creation)
         ,nullptr);
     ASSERT_NE(
         dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR))
-        ,nullptr);
+    ,nullptr);
     ASSERT_NE(
         dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL))
         ,nullptr);
@@ -55,7 +33,7 @@ TEST(FactoryTest, Creation)
 }
 
 /// @brief Tests if the Factory creates the InterventionExecutorNoIntervention if the input is incorrect
-TEST(FactoryTest, Edge)
+TEST(FactoryTests, Edge)
 {
     InterventionFactory factory;
 

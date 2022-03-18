@@ -1,21 +1,10 @@
 #include <tgfclient.h>
+#include <random>
+#include <iostream>
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 
-/*
-// Available intervention names and associated values {0,1,2,3,4}
-static const char* s_interventionTypes[] = { "no intervention",
-                                           "show intervention",
-                                           "ask for intervention",
-                                           "intervene when needed",
-                                           "always intervene" };
-static const int s_nrInterventions = sizeof(s_interventionTypes) / sizeof(s_interventionTypes[0]);
-int m_curInterventionTypeIndex = 0;
-
-// GUI label ids
-static int s_interventionTypeId;
- */
 
 // GUI screen handles
 static void* s_scrHandle = NULL;
@@ -54,7 +43,7 @@ static void OnActivate(void* /* dummy */)
     bool indicators[] = {false, false};
     m_indicators = indicators;
 
-    // Set standard interventioType
+    // Set standard interventionType
     m_interventionType = INTERVENTION_TYPE_NO_INTERVENTION;
 
     // Set standard player control settings
@@ -66,21 +55,17 @@ static void OnActivate(void* /* dummy */)
     sprintf(buf, "%d", m_maxTime);
     GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
 
-    // TODO: Random default userID using random_device
+    // Create random userID
+    std::random_device rd;
+    static std::default_random_engine generator(rd());
+    std::uniform_int_distribution<int> distribution(1, 999999999);
+    std::sprintf(buf, "%d", distribution(generator));
+
+    // Set default userID
+    m_userID = buf;
+    GfuiEditboxSetString(s_scrHandle, m_userIDId, buf);
 }
 
-/*
-/// @brief Changes the interventionType selected and displayed on screen
-/// @param index The index of the selected interventionType
-static void ChangeInterventionType(void* p_index)
-{
-    // Delta is 1 if the right arrow has been pressed and -1 if the left arrow has been pressed
-    const int delta = ((long)p_index < 0) ? -1 : 1;
-
-    m_curInterventionTypeIndex = (m_curInterventionTypeIndex + delta + s_nrInterventions) % s_nrInterventions;
-
-    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[m_curInterventionTypeIndex]);
-}*/
 
 /// @brief        Sets the task to lane keeping
 /// @param p_info Information on the checkbox
@@ -208,14 +193,18 @@ static void SetUserID(void*)
 
 
 
-/// @brief Saves the settings into the backend config
+/// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
-    // TODO: Set userID (char*)
-    // TODO: Set Max Time (int)
-    // TODO: Set Task (Black-Box)
-    // TODO: Set Indicator (bool*)
-    // TODO: Set InterventionType (INTERVENTIONTYPE)
+    // Save settings to backend config
+    SMediator& mediator = SMediator::GetInstance();
+    mediator.SetTask(m_task);
+    mediator.SetIndicatorSettings(m_indicators);
+    mediator.SetInterventionType(m_interventionType);
+    mediator.SetMaxTime(m_maxTime);
+    mediator.SetUserID(m_userID);
+
+    // Save settings to frontend settings
     // TODO: Set Environment (Track)
     // TODO: Set Participant control (bool*)
 
@@ -232,7 +221,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     if (s_scrHandle) {
         return s_scrHandle;
     }
-
     // Otherwise, create the screen
     s_scrHandle = GfuiScreenCreate((float*)NULL, NULL, OnActivate,
                                    NULL, (tfuiCallback)NULL, 1);
@@ -240,13 +228,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
-
-    /*
-    // InterventionType controls: arrow buttons, label hover-ability
-    GfuiMenuCreateButtonControl(s_scrHandle,param,"InterventionLeftArrow",(void*)-1,ChangeInterventionType);
-    GfuiMenuCreateButtonControl(s_scrHandle,param,"InterventionRightArrow",(void*)1,ChangeInterventionType);
-    s_interventionTypeId = GfuiMenuCreateLabelControl(s_scrHandle,param,"InterventionLabel");
-    */
 
     // Task checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTask1", NULL, SelectLaneKeeping);
@@ -283,10 +264,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
-    /*
-    GfuiAddKey(s_scrHandle, GFUIK_LEFT, "Previous Intervention Type", (void*)-1, ChangeInterventionType, NULL);
-    GfuiAddKey(s_scrHandle, GFUIK_RIGHT, "Next Intervention Type", (void*)+1, ChangeInterventionType, NULL);
-    */
 
     return s_scrHandle;
 }
