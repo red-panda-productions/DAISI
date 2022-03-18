@@ -11,6 +11,6 @@ class FileDataStorage {
     explicit FileDataStorage(bool* p_saveSettings);
     void Initialise(const std::string& p_fileName, const std::string& p_userId);
     void Shutdown();
-    void Save(DriveSituation* p_situation);
+    void Save(DriveSituation* p_situation, int p_timestamp);
 };
 
