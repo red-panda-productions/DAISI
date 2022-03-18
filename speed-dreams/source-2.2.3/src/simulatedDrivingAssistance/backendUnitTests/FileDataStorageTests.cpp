@@ -4,13 +4,13 @@
 
 TEST(FileStorageTest, NoStorageTimestampZero)
 {
-    // Initialise class
+    // Initialise class, read+write no values
     bool params[5] = {false, false, false, false, false};
     FileDataStorage fileDataStorage = FileDataStorage(params);
 
     // Write a file with user id, save timestamp 0, and shut down
     fileDataStorage.Initialise("testDataStorage.txt", "player1");
-    fileDataStorage.Save(nullptr, 0);
+    fileDataStorage.Save(nullptr, 0); // Use nullpointer to drive situation as no values should be read
     fileDataStorage.Shutdown();
 
     // Read the written file
