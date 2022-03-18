@@ -24,7 +24,9 @@ Added:
             CMakeLists.txt
             Intervention_Steering_Proto_256.png
             intervention.xml
-        menu/ResearcherMenu.xml
+        menu/
+            ResearcherMenu.xml
+            DataSelectionMenu.xml
 
 Changed:
   src/
