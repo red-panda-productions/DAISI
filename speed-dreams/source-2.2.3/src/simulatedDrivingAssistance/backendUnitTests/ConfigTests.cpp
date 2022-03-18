@@ -4,11 +4,11 @@
 #include "ConfigEnums.h"
 
 
-INTERVENTION_TYPE interventionTypesConfig[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
-                                                 INTERVENTION_TYPE_INDICATION,
-                                                 INTERVENTION_TYPE_ASK_FOR,
-                                                 INTERVENTION_TYPE_PERFORM_WHEN_NEEDED,
-                                                 INTERVENTION_TYPE_ALWAYS_INTERVENE };
+InterventionType interventionTypesConfig[5] = {INTERVENTION_TYPE_NO_SIGNALS,
+                                               INTERVENTION_TYPE_ONLY_SIGNALS,
+                                               INTERVENTION_TYPE_ASK_FOR,
+                                               INTERVENTION_TYPE_SHARED_CONTROL,
+                                               INTERVENTION_TYPE_COMPLETE_TAKEOVER };
 
 /// @brief Tests if the SDAConfig sets and gets the interventionType correctly
 TEST(ConfigTest, InterventionType)

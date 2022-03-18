@@ -11,13 +11,13 @@ typedef unsigned int Indicator;
 #define INDICATOR_AUDITORY      0
 #define INDICATOR_VISUAL        1
 
-typedef unsigned int INTERVENTION_TYPE;
+typedef unsigned int InterventionType;
 
-#define INTERVENTION_TYPE_NO_INTERVENTION       0
-#define INTERVENTION_TYPE_INDICATION            1
-#define INTERVENTION_TYPE_ASK_FOR               2
-#define INTERVENTION_TYPE_PERFORM_WHEN_NEEDED   3
-#define INTERVENTION_TYPE_ALWAYS_INTERVENE      4
+#define INTERVENTION_TYPE_NO_SIGNALS         0
+#define INTERVENTION_TYPE_ONLY_SIGNALS       1
+#define INTERVENTION_TYPE_ASK_FOR            2
+#define INTERVENTION_TYPE_SHARED_CONTROL     3
+#define INTERVENTION_TYPE_COMPLETE_TAKEOVER  4
 
 typedef unsigned int ParticipantControl;
 

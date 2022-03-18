@@ -41,7 +41,7 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
     // Do not let the human control the car when the AI is in control
-    if (SMediator::GetInstance().GetInterventionType() != INTERVENTION_TYPE_ALWAYS_INTERVENE) {
+    if (SMediator::GetInstance().GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER) {
         m_humanDriver.drive_at(m_index, p_car, p_situation);
     }
 

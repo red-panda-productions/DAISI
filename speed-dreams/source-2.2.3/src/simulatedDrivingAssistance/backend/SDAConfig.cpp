@@ -4,15 +4,15 @@
 /// @brief        Sets the m_interventionType to p_type
 /// @param p_type The interventionType to create
 /// @return       The intervention maker created in the factory
-InterventionExecutor* SDAConfig::SetInterventionType(INTERVENTION_TYPE p_type)
+InterventionExecutor* SDAConfig::SetInterventionType(InterventionType p_type)
 {
     m_interventionType = p_type;
-    return interventionFactory.CreateInterventionExecutor(p_type);
+    return m_interventionFactory.CreateInterventionExecutor(p_type);
 }
 
 /// @brief  Returns the interventionType from the SDAConfig
 /// @return The interventionType
-INTERVENTION_TYPE SDAConfig::GetInterventionType() const
+InterventionType SDAConfig::GetInterventionType() const
 {
     return m_interventionType;
 }

@@ -9,11 +9,11 @@
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include "InterventionExecutorNoIntervention.h"
 
-INTERVENTION_TYPE interventionTypesMediator[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
-                                                   INTERVENTION_TYPE_INDICATION,
-                                                   INTERVENTION_TYPE_ASK_FOR,
-                                                   INTERVENTION_TYPE_PERFORM_WHEN_NEEDED,
-                                                   INTERVENTION_TYPE_ALWAYS_INTERVENE };
+InterventionType interventionTypesMediator[5] = {INTERVENTION_TYPE_NO_SIGNALS,
+                                                 INTERVENTION_TYPE_ONLY_SIGNALS,
+                                                 INTERVENTION_TYPE_ASK_FOR,
+                                                 INTERVENTION_TYPE_SHARED_CONTROL,
+                                                 INTERVENTION_TYPE_COMPLETE_TAKEOVER };
 
 // Test DecisionMaker
     // Nothing to test yet
@@ -38,19 +38,19 @@ TEST(FactoryTest, Creation)
     // Creates InterventionExecutors of different types and casts the resulting InterventionExecutor type to
     // the type it should have made, then it checks if it throws an error.
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_INTERVENTION))
+        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_SIGNALS))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_INDICATION))
+        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ONLY_SIGNALS))
         ,nullptr);
     ASSERT_NE(
         dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED))
+        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ALWAYS_INTERVENE))
+        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_COMPLETE_TAKEOVER))
         ,nullptr);
 }
 
