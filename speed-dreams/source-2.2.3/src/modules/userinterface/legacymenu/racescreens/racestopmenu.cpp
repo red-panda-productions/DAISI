@@ -93,9 +93,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // Back to the race screen in next display loop.
     LegacyMenu::self().activateGameScreen();
 
-    // Launch the "slow resume race" manager if non-blind mode.
-    if ((!rmPreRacePause) &&  (LmRaceEngine().outData()->_displayMode == RM_DISP_MODE_NORMAL))
-        rmProgressiveTimeModifier.start();
+    // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
 }
 
 static void	*pvBackToRaceHookHandle = 0;

@@ -6,6 +6,6 @@ class BrakeDecision : public IDecision
 public:
     float m_brakeAmount;
 
-    void GetIndicateCommands() override;
-    void GetInterveneCommands() override;
+    void RunIndicateCommands() override;
+    void RunInterveneCommands() override;
 };

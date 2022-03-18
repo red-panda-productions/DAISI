@@ -26,12 +26,28 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+SET(_SOURCES MsgpackDeserializeTests.cpp
+    InterventionTests.cpp
+    DecisionMakerTests.cpp)
+
+SET(_HEADERS MsgpackSerializeTests.h
+    SocketBlackBoxTests.h)
+
+SET(_MOCK_SOURCES "")
+
+SET(_MOCK_HEADERS mocks/CarInfoMock.h
+    mocks/DriveSituationMock.h
+    mocks/EnvironmentInfoMock.h
+    mocks/InterventionExecutorMock.h
+    mocks/PlayerInfoMock.h
+    mocks/SocketBlackBoxMock.h
+    mocks/TrackPositionMock.h
+    mocks/ConfigMock.h)
+
 
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
-SD_ADD_EXECUTABLE(
-  backendUnitTests "MsgpackSerializeTests.h" "MsgpackDeserializeTests.cpp" "InterventionTests.cpp")
-
+SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities
@@ -42,13 +58,23 @@ target_link_libraries(
 
 ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient)
 
+ADD_MSGPACK_PACKAGE(backendUnitTests)
+
+ADD_IPCLIB_PACKAGE(backendUnitTests)
+
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${IPCLIB_BIN_DIR}/IPCLib.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
 SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
 
 target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
 
 include(GoogleTest)
-gtest_discover_tests(backendUnitTests)
+gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
 IF(WIN32)
     INCLUDE(customthirdparty)

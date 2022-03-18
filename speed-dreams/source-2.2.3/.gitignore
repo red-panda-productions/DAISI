@@ -7,3 +7,5 @@ CMakeSettings.json
 out/
 build/
 cmake-build-debug/
+Testing/
+TestResults/
