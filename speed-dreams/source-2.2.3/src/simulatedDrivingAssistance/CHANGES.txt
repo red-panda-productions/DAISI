@@ -3,10 +3,10 @@ Changes to Speed Dreams
 
 This file states the changes that are done by us in Speed Dreams.
 If something is changed in Speed Dreams, you need to state:
-• what files have been changed;
-• which functions have been altered, deleted and/or added;
-• which variables have been added, removed and/or changed (e.g. changed from local to global);
-• which libraries and/or other software have been added to specific files or the whole project.
+â€¢ what files have been changed;
+â€¢ which functions have been altered, deleted and/or added;
+â€¢ which variables have been added, removed and/or changed (e.g. changed from local to global);
+â€¢ which libraries and/or other software have been added to specific files or the whole project.
 
 It is ordered by: if a file is added or changed, then if the file is in src or data.
 
@@ -29,6 +29,9 @@ Added:
 Changed:
   src/
     src/modules/
+        racing/standardgame
+            racesituation.cpp
+                change deltaTime to be constant value
         userinterface/
             legacymenu.h 
                   ActivateResearcherMenu()
@@ -42,6 +45,11 @@ Changed:
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                racescreens/
+                    racerunningmenus.cpp
+                        removed RmProgressiveTimeModifier implementation and calls
+                    racestopmenu.cpp
+                        removed rmProgressiveTimeModifier.start() call
         graphic/
             ssggraph/
                 grboard.cpp
