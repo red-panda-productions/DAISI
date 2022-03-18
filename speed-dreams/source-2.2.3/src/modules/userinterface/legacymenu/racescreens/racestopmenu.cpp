@@ -340,6 +340,7 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
     return QuitHdle[nButtons-1];
 }
 
+// SIMULATED DRIVING ASSISTANCE: Assisted driver is also a human
 void
 RmStopRaceMenu()
 {
@@ -354,15 +355,20 @@ RmStopRaceMenu()
     int j;
     void *grHandle;
     void *hdHandle;
+    void *ahdHandle;
     char buf[100];
     const char *cur_name;
-    const char *test_name;
+    const char *human_test_name;
+    const char *assisted_test_name;
 
     sprintf(buf, "%s%s", GfLocalDir(), GR_PARAM_FILE);
     grHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
 
     sprintf(buf, "%s%s", GfLocalDir(), HM_DRV_FILE);
     hdHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
+
+    sprintf(buf, "%s%s", GfLocalDir(), HM_ADRV_FILE);
+    ahdHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
 #endif
 
     // Mute sound.
@@ -404,11 +410,12 @@ RmStopRaceMenu()
     // Attempt to find a human driver
     for (j=0; ; j++) {
         snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j+1);
-        test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
+        human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
+        assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
 
-        if (strlen(test_name) == 0) break;
+        if (strlen(human_test_name) == 0 && strlen(assisted_test_name) == 0) break;
 
-        if (strcmp(cur_name, test_name) == 0) {
+        if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0) {
             GfLogInfo("Matching human driver found, setting index to %d.\n", j+1);
             curPlayerIdx = j+1;
 

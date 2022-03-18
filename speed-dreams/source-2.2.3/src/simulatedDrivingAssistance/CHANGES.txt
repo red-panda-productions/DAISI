@@ -30,7 +30,10 @@ Added:
 
 Changed:
   src/
-    src/modules/
+    interfaces/
+        playerpref.h
+            added HM_ADRV_FILE define
+    modules/
         racing/standardgame
             racesituation.cpp
                 change deltaTime to be constant value
@@ -43,6 +46,9 @@ Changed:
                   added    ActivateResearcherMenu()
                   changed  backLoad()
                   changed  activate()
+            racestopmenu.cpp
+                RmStopRaceMenu()
+                    changed  AssistedHuman is a human
             legacymenu/CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
