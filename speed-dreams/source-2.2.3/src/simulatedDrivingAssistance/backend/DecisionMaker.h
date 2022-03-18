@@ -12,7 +12,7 @@ template <typename SocketBlackBox, typename SDAConfig>
 class DecisionMaker
 {
 public:
-    SDAConfig m_config;
+    SDAConfig Config;
 
 	bool Decide(DriveSituation& driveSituation);
 
