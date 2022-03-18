@@ -10,6 +10,7 @@ SET(_SOURCES Mediator.cpp
         CarController.cpp
         DriveSituation.cpp
         DecisionTuple.cpp
+        FileDataStorage.cpp
         InterventionExecutorAlwaysIntervene.cpp
         InterventionExecutorAskFor.cpp
         InterventionExecutorIndication.cpp
@@ -24,6 +25,7 @@ SET(_HEADERS CarInfo.h
         DecisionMaker.h
         DriveSituation.h
         EnvironmentInfo.h
+        FileDataStorage.h
         ConfigEnums.h
         Mediator.h
         TrackPosition.h
