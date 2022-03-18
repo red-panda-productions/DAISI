@@ -13,7 +13,7 @@ bool* m_boolArr = new bool[5];
 /// @param p_info Information on the checkbox
 static void ChangeDrivingStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[DATA_TO_STORE_DRIVING_DATA] = p_info->bChecked;
+    m_boolArr[DATA_TO_STORE_ENVIRONMENT_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the car will be collected real-time
