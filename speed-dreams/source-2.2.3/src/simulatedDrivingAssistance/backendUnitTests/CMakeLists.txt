@@ -42,7 +42,8 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/PlayerInfoMock.h
     mocks/SocketBlackBoxMock.h
     mocks/TrackPositionMock.h
-    mocks/ConfigMock.h)
+    mocks/ConfigMock.h
+    mocks/DecisionMakerMock.h)
 
 
 

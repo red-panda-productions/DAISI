@@ -4,14 +4,17 @@
 #include "ConfigEnums.h"
 #include "InterventionFactory.h"
 #include "Mediator.h"
-#include "MediatorDistributor.h"
+#include "mocks/DecisionMakerMock.h"
+#include "PointerDistributor.h"
 #include "InterventionExecutorAlwaysIntervene.h"
 #include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include "InterventionExecutorNoIntervention.h"
 
-INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
+#define INTERVENTION_TYPE_AMOUNT 5
+
+INTERVENTION_TYPE types[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_INTERVENTION,
                                INTERVENTION_TYPE_INDICATION,
                                INTERVENTION_TYPE_ASK_FOR,
                                INTERVENTION_TYPE_PERFORM_WHEN_NEEDED,
@@ -19,18 +22,28 @@ INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
 // Test DecisionMaker
     // Nothing to test yet
 
-/// @brief Tests if the Mediator sets and gets the interventionType correctly
-TEST(MediatorTest, GetIntervention)
+
+TEST(MediatorTest, GetDistributedMediator)
 {
     SMediatorDistributor distributor;
     distributor.Run();
-    std::this_thread::sleep_for(std::chrono::milliseconds(40));
-    SMediator* mediator = SMediator::GetInstance();
 
-    for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
+    std::this_thread::sleep_for(std::chrono::milliseconds(400)); // also specified in main
+
+    SMediator* mediator1 = SMediator::GetInstance();
+    SMediator* mediator2 = SMediator::GetInstance();
+    ASSERT_EQ(mediator1, mediator2);
+}
+
+/// @brief Tests if the Mediator sets and gets the interventionType correctly
+TEST(MediatorTest, GetIntervention)
+{
+    SMediator mediator;
+
+    for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
-        mediator->SetInterventionType(types[i]);
-        ASSERT_EQ(types[i], mediator->GetInterventionType());
+        mediator.SetInterventionType(types[i]);
+        ASSERT_EQ(types[i], mediator.GetInterventionType());
     }
 }
 
@@ -39,7 +52,7 @@ TEST(ConfigTest, SetGet)
 {
     Config config;
 
-    for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
+    for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
         config.SetInterventionType(types[i]);
         ASSERT_EQ(types[i], config.GetInterventionType());

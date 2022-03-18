@@ -19,12 +19,12 @@ SET(_SOURCES Mediator.cpp
         TrackPosition.cpp
         CarInfo.cpp
         PlayerInfo.cpp
-        MediatorDistributor.cpp)
+        PointerDistributor.cpp)
 
 SET(_INLINES Mediator.inl
         DecisionMaker.inl
         SocketBlackBox.inl
-        MediatorDistributor.inl)
+        PointerDistributor.inl)
 
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
@@ -46,7 +46,7 @@ SET(_HEADERS CarInfo.h
         InterventionExecutorNoIntervention.h
         InterventionExecutorPerformWhenNeeded.h
         CarController.h
-        MediatorDistributor.h)
+        PointerDistributor.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)

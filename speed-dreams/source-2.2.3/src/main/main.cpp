@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "MediatorDistributor.h"
+#include "PointerDistributor.h"
 #include <thread>
 
 #include <string>
