@@ -6,7 +6,7 @@
 
     <section name="dynamic controls">
 
-        <section name="Checkbox1">
+        <section name="CheckboxDrivingData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Driving data"/>
             <attstr name="tip" val="Enable/Disable setting"/>
@@ -19,7 +19,7 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="Checkbox2">
+        <section name="CheckboxCarData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Car data"/>
             <attstr name="tip" val="Enable/Disable setting"/>
@@ -32,7 +32,7 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="Checkbox3">
+        <section name="CheckboxUserData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Human user data"/>
             <attstr name="tip" val="Enable/Disable setting"/>
@@ -45,7 +45,7 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="Checkbox4">
+        <section name="CheckboxInterventionData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Intervention data"/>
             <attstr name="tip" val="Enable/Disable setting"/>
@@ -58,7 +58,7 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="Checkbox5">
+        <section name="CheckboxMetaData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Internal meta data"/>
             <attstr name="tip" val="Enable/Disable setting"/>

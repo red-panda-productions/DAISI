@@ -78,11 +78,11 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",s_scrHandle, SaveSettings);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox1", NULL, ChangeDrivingStorage);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox2", NULL, ChangeCarStorage);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox3", NULL, ChangeHumanStorage);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox4", NULL, ChangeInterventionStorage);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "Checkbox5", NULL, ChangeMetaDataStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxDrivingData", NULL, ChangeDrivingStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxCarData", NULL, ChangeCarStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxUserData", NULL, ChangeHumanStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxInterventionData", NULL, ChangeInterventionStorage);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxMetaData", NULL, ChangeMetaDataStorage);
 
     GfParmReleaseHandle(param);
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
