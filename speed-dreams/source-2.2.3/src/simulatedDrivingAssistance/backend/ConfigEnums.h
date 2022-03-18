@@ -19,7 +19,7 @@ typedef unsigned int INTERVENTION_TYPE;
 #define INTERVENTION_TYPE_PERFORM_WHEN_NEEDED   3
 #define INTERVENTION_TYPE_ALWAYS_INTERVENE      4
 
-typedef unsigned int PARTICIPANT_CONTROL;
+typedef unsigned int ParticipantControl;
 
 #define PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF    0
 #define PARTICIPANT_CONTROL_GAS                     1
