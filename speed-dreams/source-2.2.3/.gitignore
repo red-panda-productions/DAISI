@@ -7,5 +7,10 @@ CMakeSettings.json
 out/
 build/
 cmake-build-debug/
+
+# Test output
 Testing/
 TestResults/
+
+# Singletons folder
+data/Singletons/*

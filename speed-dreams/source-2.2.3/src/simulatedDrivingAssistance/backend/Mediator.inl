@@ -1,6 +1,6 @@
 #pragma once
 #include "Mediator.h"
-#include "ClientSocket.h"
+#include <fstream>
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template INTERVENTION_TYPE Mediator<type>::GetInterventionType(); \
 	template void Mediator<type>::SetInterventionType(INTERVENTION_TYPE p_type);\
@@ -46,6 +46,7 @@ void Mediator<DecisionMaker>::RaceStop() {}
 template<typename DecisionMaker>
 DriveSituation* Mediator<DecisionMaker>::Simulate()
 {
+    
     return nullptr; 
 }
 
@@ -53,11 +54,11 @@ template<typename DecisionMaker>
 Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance() {
     if(m_instance == nullptr)
     {
-        ClientSocket client(L"127.0.0.1",8889);
-        char data[64];
-        client.AwaitData(data, 64);
-        const std::string pointer(data);
-        int pointerValue = stoi(pointer,0,16);
+        std::string pointerName("00000000");
+        std::ifstream file("Singletons/Mediator");
+        getline(file, pointerName);
+        file.close();
+        int pointerValue = stoi(pointerName, 0, 16);
         m_instance = (Mediator<DecisionMaker>*)pointerValue;
     }
     return m_instance;

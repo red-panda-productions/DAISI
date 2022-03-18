@@ -12,6 +12,9 @@
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include "InterventionExecutorNoIntervention.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #define INTERVENTION_TYPE_AMOUNT 5
 
 INTERVENTION_TYPE types[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_INTERVENTION,
@@ -25,14 +28,28 @@ INTERVENTION_TYPE types[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_INTER
 
 TEST(MediatorTest, GetDistributedMediator)
 {
+    // set up singleton folder for tests
+    struct stat info;
+    char directory[256];
+    getcwd(directory,256);
+    std::string workingDirecotory(directory);
+    workingDirecotory += "\\Singletons";
+    const char* wd = workingDirecotory.c_str();
+    int err = stat(wd, &info);
+    if(err != 0)
+    {
+        err = _mkdir(wd);
+        ASSERT_TRUE(err == 0);
+    }
+
     SMediatorDistributor distributor;
-    distributor.Run();
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(400)); // also specified in main
-
+    distributor.Distribute("Singletons/Mediator");
     SMediator* mediator1 = SMediator::GetInstance();
     SMediator* mediator2 = SMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
+    ASSERT_EQ(mediator1, &distributor.Obj);
+    ASSERT_EQ(mediator2, &distributor.Obj);
+    
 }
 
 /// @brief Tests if the Mediator sets and gets the interventionType correctly

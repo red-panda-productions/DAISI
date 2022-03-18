@@ -120,9 +120,7 @@ main(int argc, char *argv[])
 	//GfMemoryManagerSetup(4); // Add 4 bytes per block
 #else
 
-	SMediatorDistributor distributor;
-	distributor.Run();
-	std::this_thread::sleep_for(std::chrono::milliseconds(400));
+
 	
 
 	// Use local variables ...
@@ -183,6 +181,9 @@ main(int argc, char *argv[])
 				   pApp->name().c_str(), GfDataDir(), strerror(errno));
 		return 1;
 	}
+
+	SMediatorDistributor distributor;
+	distributor.Distribute("Singletons/Mediator");
 
 	// Update user settings files from installed ones.
     pApp->updateUserSettings();
