@@ -26,7 +26,10 @@ Added:
 
 Changed:
   src/
-    src/modules/
+    interfaces/
+        playerpref.h
+            added HM_ADRV_FILE define
+    modules/
         racing/standardgame
             racesituation.cpp
                 change deltaTime to be constant value
@@ -39,6 +42,9 @@ Changed:
                       added    ActivateInterventionMenu()
                       changed  backLoad()
                       changed  activate()
+                racestopmenu.cpp
+                    RmStopRaceMenu()
+                        changed  AssistedHuman is a human
                 CMakeList.txt
                       added    interventionmenu.h and .cpp
                       added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
