@@ -16,3 +16,8 @@ typedef unsigned int DATA_STORAGE_TYPE;
 
 #define DATA_STORAGE_TYPE_SOCKET    0
 #define DATA_STORAGE_TYPE_SQL       1
+
+#define RECORD_SESSION 1
+#ifndef RECORD_SESSION
+#define RECORD_SESSION 0
+#endif

@@ -6,7 +6,8 @@ SET(_SOURCES Mediator.cpp
         BrakeDecision.cpp
         Config.cpp
         DecisionMaker.cpp
-        InterventionFactory.cpp)
+        InterventionFactory.cpp
+        Recorder.cpp)
 
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
@@ -20,7 +21,8 @@ SET(_HEADERS CarInfo.h
         ../rppUtils/RppUtils.hpp
         Config.h
         InterventionFactory.h
-        InterventionMaker.h)
+        InterventionMaker.h
+        Recorder.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)

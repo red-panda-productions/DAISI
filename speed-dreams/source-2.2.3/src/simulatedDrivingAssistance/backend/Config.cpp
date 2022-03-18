@@ -10,3 +10,4 @@ INTERVENTION_TYPE Config::GetInterventionType() const
 {
     return m_interventionType;
 }
+

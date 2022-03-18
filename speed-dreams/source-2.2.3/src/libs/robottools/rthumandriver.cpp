@@ -65,10 +65,11 @@
 #include "forcefeedback.h"
 
 // ASSISTED DRIVING ASSISTANCE: added recorder
+// To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #include <iostream>
 #include <Recorder.h>
+#include <ConfigEnums.h>
 Recorder* recorder;
-#define WANT_RECORD true
 
 
 
@@ -607,10 +608,10 @@ void HumanDriver::init_track(int index,
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
-    if (WANT_RECORD)
-    {
-        recorder = new Recorder();
-    }
+    // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+#if RECORD_SESSION == 1
+    recorder = new Recorder();
+#endif
     const int idx = index - 1;
 
     // Have to read engine curve
@@ -928,9 +929,9 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 {
     tdble slip;
     tdble ax0;
-    tdble brake = 0;
+    tdble brake;
     tdble clutch;
-    tdble throttle = 0;
+    tdble throttle;
     tdble leftSteer;
     tdble rightSteer;
     tdble newGlance;
@@ -1708,12 +1709,12 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
 #endif
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
-    if (WANT_RECORD)
-    {
+    // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+#if RECORD_SESSION == 1
         std::cout << leftSteer << std::endl;
-        float inputs[4] = { throttle, brake, leftSteer, rightSteer };
+        float inputs[4] = { car->_accelCmd , car->_brakeCmd, leftSteer, rightSteer };
         recorder->WriteRecording(inputs);
-    }
+#endif
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 

@@ -12,6 +12,8 @@ private:
 
     InterventionFactory interventionFactory;
 
+    bool m_wantRecord = false;
+
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
     /* TODO: Return IBlackBox */ void GetBlackBox();
@@ -20,4 +22,5 @@ public:
     // sets the m_interventionType to p_type
     // returns correct intervention maker from factory
     InterventionMaker* SetInterventionType(INTERVENTION_TYPE p_type);
+
 };
