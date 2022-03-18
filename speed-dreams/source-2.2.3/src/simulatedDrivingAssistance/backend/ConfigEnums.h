@@ -29,7 +29,7 @@ typedef unsigned int BlackBoxType;
 
 #define BLACK_BOX_TYPE_SOCKET   0
 
-typedef unsigned int DATA_STORAGE_TYPE;
+typedef unsigned int DataStorageType;
 
 #define DATA_STORAGE_TYPE_SOCKET    0
 #define DATA_STORAGE_TYPE_SQL       1
