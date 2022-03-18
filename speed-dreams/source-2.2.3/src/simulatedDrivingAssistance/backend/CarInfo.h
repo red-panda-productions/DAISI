@@ -4,7 +4,7 @@
 class CarInfo
 {
 public:
-    CarInfo(TrackPosition& p_position, float p_speed, float p_topSpeed, int p_gear, bool p_headlights);
+    CarInfo(TrackPosition p_position, float p_speed, float p_topSpeed, int p_gear, bool p_headlights);
 
     float Speed();
     float TopSpeed();

@@ -26,7 +26,15 @@ void Mediator<DecisionMaker>::SetInterventionType(INTERVENTION_TYPE p_type)
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
-    
+    DriveSituation currentSituation(
+        EnvironmentInfo(0, 0, 0),
+        CarInfo(
+            TrackPosition(false, 0, 0, 0, 0),
+            0, 0, 0, false),
+        PlayerInfo(0, 0, 0, 0));
+
+    m_decisionMaker.Decide(currentSituation);
+
 }
 
 template<typename DecisionMaker>

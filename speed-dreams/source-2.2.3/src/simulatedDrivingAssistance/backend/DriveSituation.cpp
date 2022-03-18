@@ -9,7 +9,7 @@ DriveSituation::DriveSituation() :
 {
 }
 
-DriveSituation::DriveSituation(EnvironmentInfo& p_environmentInfo, CarInfo& p_carInfo, PlayerInfo& p_playerInfo) :
+DriveSituation::DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo) :
 	m_environmentInfo(p_environmentInfo),
 	m_carInfo(p_carInfo),
 	m_playerInfo(p_playerInfo)

@@ -1,6 +1,6 @@
 #include "CarInfo.h"
 
-CarInfo::CarInfo(TrackPosition& p_position, float p_speed, float p_topSpeed, int p_gear, bool p_headlights) : m_trackPosition(p_position)
+CarInfo::CarInfo(TrackPosition p_position, float p_speed, float p_topSpeed, int p_gear, bool p_headlights) : m_trackPosition(p_position)
 {
 	m_speed = p_speed;
 	m_topSpeed = p_topSpeed;
