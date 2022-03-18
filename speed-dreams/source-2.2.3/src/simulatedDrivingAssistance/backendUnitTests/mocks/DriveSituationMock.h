@@ -20,13 +20,13 @@ public:
     EnvironmentInfoMock m_environmentInfo;
     CarInfoMock m_carInfo;
 
-    PlayerInfoMock GetPlayerInfo(){return m_playerInfo;}
-    EnvironmentInfoMock GetEnvironmentInfo(){return m_environmentInfo;};
-    CarInfoMock GetCarInfo(){return m_carInfo;};
+    PlayerInfoMock* GetPlayerInfo(){return &m_playerInfo;}
+    EnvironmentInfoMock* GetEnvironmentInfo(){return &m_environmentInfo;};
+    CarInfoMock* GetCarInfo(){return &m_carInfo;};
 };
 
 /// @brief  A sample drive situation for testing
-DriveSituationMock GetExampleDriveSituation()
+inline DriveSituationMock GetExampleDriveSituation()
 {
     TrackPositionMock trackpos(true, 0.1, 0.2, 0.3, 0.4);
     CarInfoMock carinfo(1.1, 1.2, 1, true, trackpos);
