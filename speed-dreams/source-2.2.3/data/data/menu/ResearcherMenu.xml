@@ -6,6 +6,7 @@
 
     <section name="dynamic controls">
 
+        <!--
         <section name="InterventionLeftArrow">
             <attstr name="type" val="image button"/>
             <attnum name="width" val="24"/>
@@ -43,72 +44,194 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="medium"/>
         </section>
+        -->
 
-        <section name="Checkbox1">
+        <!-- Checkboxes for selecting a Task -->
+        <section name="CheckboxTask1">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Driving data"/>
+            <attstr name="text" val="Lane keeping"/>
             <attstr name="tip" val="Enable/Disable setting"/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="275"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="checked" val="yes"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
         </section>
 
-        <section name="Checkbox2">
+        <section name="CheckboxTask2">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Car data"/>
+            <attstr name="text" val="Speed control"/>
             <attstr name="tip" val="Enable/Disable setting"/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="250"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="checked" val="yes"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
         </section>
 
-        <section name="Checkbox3">
+        <!-- Checkboxes for selecting how to indicate an intervention -->
+        <section name="CheckboxIndicator1">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Human user data"/>
+            <attstr name="text" val="Auditory"/>
             <attstr name="tip" val="Enable/Disable setting"/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="225"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="checked" val="yes"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
         </section>
 
-        <section name="Checkbox4">
+        <section name="CheckboxIndicator2">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Intervention data"/>
+            <attstr name="text" val="Visual"/>
             <attstr name="tip" val="Enable/Disable setting"/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="200"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="checked" val="yes"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
         </section>
 
-        <section name="Checkbox5">
+        <!-- Checkboxes for selecting the type of intervention -->
+        <section name="CheckboxType1">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Internal meta data"/>
+            <attstr name="text" val="No signals"/>
             <attstr name="tip" val="Enable/Disable setting"/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="175"/>
+            <attnum name="x" val="260"/>
+            <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="medium"/>
+            <attstr name="font" val="small_t"/>
             <attstr name="checked" val="yes"/>
         </section>
 
+        <section name="CheckboxType2">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Only signals"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="260"/>
+            <attnum name="y" val="340"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
+        </section>
+
+        <section name="CheckboxType3">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Shared control"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="260"/>
+            <attnum name="y" val="310"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
+        </section>
+
+        <section name="CheckboxType4">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Complete takeover"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="260"/>
+            <attnum name="y" val="280"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
+        </section>
+
+        <!-- Checkboxes for selecting the environment -->
+        <section name="CheckboxEnvironment1">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Highway"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="380"/>
+            <attnum name="y" val="370"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <!-- Checkboxes for selecting what a participant can control -->
+        <section name="CheckboxPControl1">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Interventions on/off"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="370"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
+        </section>
+
+        <section name="CheckboxPControl2">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Gas"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="340"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="CheckboxPControl3">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Steering"/>
+            <attstr name="tip" val="Enable/Disable setting"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="310"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <!-- Input field for max time -->
+        <section name="MaxTimeEdit">
+            <attstr name="type" val="edit box"/>
+            <attnum name="max len" val="16"/>
+            <attstr name="tip" val="Set the maximum simulation time"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="180"/>
+            <attnum name="width" val="50"/>
+            <attstr name="h align" val="center"/>
+            <attstr name="font" val="medium"/>
+        </section>
+
+        <!-- Input field for userID -->
+        <section name="UserIdEdit">
+            <attstr name="type" val="edit box"/>
+            <attnum name="max len" val="32"/>
+            <attstr name="tip" val="Give the user an ID"/>
+            <attnum name="x" val="70"/>
+            <attnum name="y" val="150"/>
+            <attnum name="width" val="150"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium"/>
+        </section>
+
+        <!-- Apply button -->
         <section name="ApplyButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
@@ -141,19 +264,20 @@
         </section>
 
         <section name="2">
-            <attstr name="type" val="static image"/>
-            <attnum name="x" val="-10"/>
-            <attnum name="y" val="335"/>
-            <attnum name="width" val="200"/>
-            <attnum name="height" val="120"/>
-            <attstr name="image" val="data/img/sd-logo.png"/> <!-- TODO maybe remove logo -->
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Task"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium_t"/>
         </section>
 
         <section name="3">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="50"/>
-            <attnum name="y" val="300"/>
-            <attstr name="text" val="Task"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Indicator"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
@@ -161,9 +285,9 @@
 
         <section name="4">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="150"/>
-            <attnum name="y" val="300"/>
-            <attstr name="text" val="Indicator"/>
+            <attnum name="x" val="260"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Type"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
@@ -171,9 +295,9 @@
 
         <section name="5">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="300"/>
-            <attstr name="text" val="Type"/>
+            <attnum name="x" val="380"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Environment"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
@@ -181,9 +305,9 @@
 
         <section name="6">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="350"/>
-            <attnum name="y" val="300"/>
-            <attstr name="text" val="Environment"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Participant Control"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
@@ -191,9 +315,19 @@
 
         <section name="7">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="450"/>
-            <attnum name="y" val="300"/>
-            <attstr name="text" val="Participant Control"/>
+            <attnum name="x" val="80"/>
+            <attnum name="y" val="180"/>
+            <attstr name="text" val="Max Time"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
+        <section name="8">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="150"/>
+            <attstr name="text" val="User ID"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>

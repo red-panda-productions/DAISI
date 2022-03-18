@@ -3,6 +3,7 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 
+/*
 // Available intervention names and associated values {0,1,2,3,4}
 static const char* s_interventionTypes[] = { "no intervention",
                                            "show intervention",
@@ -14,28 +15,61 @@ int m_curInterventionTypeIndex = 0;
 
 // GUI label ids
 static int s_interventionTypeId;
+ */
 
 // GUI screen handles
 static void* s_scrHandle = NULL;
 static void* s_nextHandle = NULL;
 
-/// @brief Loads the intervention type from the backend config
+// Task
+TASK m_task = TASK_NO_TASK;
+
+// Indicators
+bool* m_indicators = new bool[2];
+
+// InterventionType
+INTERVENTION_TYPE m_interventionType;
+
+// Environment
+Track track;
+
+// Participant control
+bool* m_pControl = new bool[3];
+
+// Max time
+int m_maxTime = 10.0f;
+int m_maxTimeId;
+
+// User ID
+char* m_userID;
+int m_userIDId;
+
+/// @brief Sets the defaults values
 static void OnActivate(void* /* dummy */)
 {
-    m_curInterventionTypeIndex = SMediator::GetInstance().GetInterventionType();
+    // Set standard Task
+    m_task = TASK_NO_TASK;
 
-    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[m_curInterventionTypeIndex]);
+    // Set standard indicators
+    bool indicators[] = {false, false};
+    m_indicators = indicators;
+
+    // Set standard interventioType
+    m_interventionType = INTERVENTION_TYPE_NO_INTERVENTION;
+
+    // Set standard player control settings
+    bool pControl[] = {false, true, true};
+    m_pControl = pControl;
+
+    // Set standard max time
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
+
+    // TODO: Random default userID using random_device
 }
 
-/// @brief Saves the settings into the backend config
-static void SaveSettings(void* /* dummy */)
-{
-    SMediator::GetInstance().SetInterventionType(m_curInterventionTypeIndex);
-
-    // Go to the next screen
-    GfuiScreenActivate(s_nextHandle);
-}
-
+/*
 /// @brief Changes the interventionType selected and displayed on screen
 /// @param index The index of the selected interventionType
 static void ChangeInterventionType(void* p_index)
@@ -46,12 +80,152 @@ static void ChangeInterventionType(void* p_index)
     m_curInterventionTypeIndex = (m_curInterventionTypeIndex + delta + s_nrInterventions) % s_nrInterventions;
 
     GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[m_curInterventionTypeIndex]);
+}*/
+
+/// @brief        Sets the task to lane keeping
+/// @param p_info Information on the checkbox
+static void SelectLaneKeeping(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        m_task = TASK_LANE_KEEPING;
+    }
+    else if (m_task = TASK_LANE_KEEPING)
+    {
+        m_task = TASK_NO_TASK;
+    }
+}
+/// @brief        Sets the task to speed control
+/// @param p_info Information on the checkbox
+static void SelectSpeedControl(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        m_task = TASK_SPEED_CONTROL;
+    }
+    else if (m_task = TASK_LANE_KEEPING)
+    {
+        m_task = TASK_NO_TASK;
+    }
+}
+/// @brief        Enables/disables the auditory indication for interventions
+/// @param p_info Information on the checkbox
+static void SelectAuditory(tCheckBoxInfo* p_info)
+{
+    m_indicators[INDICATOR_AUDITORY] = p_info->bChecked;
+}
+/// @brief        Enables/disables the visual indication for interventions
+/// @param p_info Information on the checkbox
+static void SelectVisual(tCheckBoxInfo* p_info)
+{
+    m_indicators[INDICATOR_VISUAL] = p_info->bChecked;
+}
+/// @brief        Sets the interventionType to no signals
+/// @param p_info Information on the checkbox
+static void SelectTypeNoSignals(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        m_interventionType = INTERVENTION_TYPE_NO_INTERVENTION;
+    }
+}
+/// @brief        Sets the interventionType to only signals
+/// @param p_info Information on the checkbox
+static void SelectTypeOnlySignals(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        m_interventionType = INTERVENTION_TYPE_INDICATION;
+    }
+}
+/// @brief        Sets the interventionType to shared control
+/// @param p_info Information on the checkbox
+static void SelectTypeSharedControl(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        m_interventionType = INTERVENTION_TYPE_PERFORM_WHEN_NEEDED;
+    }
+}
+/// @brief        Sets the interventionType to complete takeover
+/// @param p_info Information on the checkbox
+static void SelectTypeCompleteTakeover(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        m_interventionType = INTERVENTION_TYPE_ALWAYS_INTERVENE;
+    }
+}
+/// @brief        Sets the environment to highway
+/// @param p_info Information on the checkbox
+static void SelectEnvironmentHighway(tCheckBoxInfo* p_info)
+{
+    if (p_info->bChecked)
+    {
+        // TODO: move track selection from SD somewhere to here?
+    }
+}
+/// @brief        Enables/disables the possibility for participants to enable/disable interventions
+/// @param p_info Information on the checkbox
+static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
+{
+    m_pControl[PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF] = p_info->bChecked;
+}
+/// @brief        Enables/disables the possibility for participants to control gas
+/// @param p_info Information on the checkbox
+static void SelectControlGas(tCheckBoxInfo* p_info)
+{
+    m_pControl[PARTICIPANT_CONTROL_GAS] = p_info->bChecked;
+}
+/// @brief        Enables/disables the possibility for participants to control steering
+/// @param p_info Information on the checkbox
+static void SelectControlSteering(tCheckBoxInfo* p_info)
+{
+    m_pControl[PARTICIPANT_CONTROL_STEERING] = p_info->bChecked;
+}
+
+/// @brief Handle input in the max time textbox
+static void SetMaxTime(void*)
+{
+    char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeId);
+    sscanf(val, "%d", &m_maxTime);
+    if (m_maxTime > 1440.0f)
+        m_maxTime = 1440.0f;
+    else if (m_maxTime < 0.0f)
+        m_maxTime = 0.0f;
+
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
+}
+
+/// @brief Handle input in the UserID textbox
+static void SetUserID(void*)
+{
+    char* m_userID = GfuiEditboxGetString(s_scrHandle, m_userIDId);
+    GfuiEditboxSetString(s_scrHandle, m_userIDId, m_userID);
 }
 
 
-/// @brief Initializes the researcher menu
-/// @param nextMenu The scrHandle of the next menu
-/// @return The researcherMenu scrHandle
+
+/// @brief Saves the settings into the backend config
+static void SaveSettings(void* /* dummy */)
+{
+    // TODO: Set userID (char*)
+    // TODO: Set Max Time (int)
+    // TODO: Set Task (Black-Box)
+    // TODO: Set Indicator (bool*)
+    // TODO: Set InterventionType (INTERVENTIONTYPE)
+    // TODO: Set Environment (Track)
+    // TODO: Set Participant control (bool*)
+
+    // Go to the next screen
+    GfuiScreenActivate(s_nextHandle);
+}
+
+/// @brief            Initializes the researcher menu
+/// @param p_nextMenu The scrHandle of the next menu
+/// @return           The researcherMenu scrHandle
 void* ResearcherMenuInit(void* p_nextMenu)
 {
     // Return if screen already created
@@ -64,13 +238,41 @@ void* ResearcherMenuInit(void* p_nextMenu)
                                    NULL, (tfuiCallback)NULL, 1);
     s_nextHandle = p_nextMenu;
 
-    void *param = GfuiMenuLoad("ResearcherMenu.xml");
+    void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
+    /*
     // InterventionType controls: arrow buttons, label hover-ability
     GfuiMenuCreateButtonControl(s_scrHandle,param,"InterventionLeftArrow",(void*)-1,ChangeInterventionType);
     GfuiMenuCreateButtonControl(s_scrHandle,param,"InterventionRightArrow",(void*)1,ChangeInterventionType);
     s_interventionTypeId = GfuiMenuCreateLabelControl(s_scrHandle,param,"InterventionLabel");
+    */
+
+    // Task checkboxes controls
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTask1", NULL, SelectLaneKeeping);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTask2", NULL, SelectSpeedControl);
+
+    // Indicator checkboxes controls
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicator1", NULL, SelectAuditory);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicator2", NULL, SelectVisual);
+
+    // Types checkboxes controls
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType1", NULL, SelectTypeNoSignals);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType2", NULL, SelectTypeOnlySignals);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType3", NULL, SelectTypeSharedControl);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType4", NULL, SelectTypeCompleteTakeover);
+
+    // Environment checkboxes controls
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxEnvironment1", NULL, SelectEnvironmentHighway);
+
+    // Participant-Control checkboxes controls
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControl1", NULL, SelectControlInterventionOnOff);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControl2", NULL, SelectControlGas);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControl3", NULL, SelectControlSteering);
+
+    // Textbox controls
+    m_maxTimeId = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
+    m_userIDId  = GfuiMenuCreateEditControl(s_scrHandle, param, "UserIdEdit", NULL, NULL, SetUserID);
 
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
@@ -81,13 +283,15 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
+    /*
     GfuiAddKey(s_scrHandle, GFUIK_LEFT, "Previous Intervention Type", (void*)-1, ChangeInterventionType, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_RIGHT, "Next Intervention Type", (void*)+1, ChangeInterventionType, NULL);
+    */
 
     return s_scrHandle;
 }
 
-/// @brief Activates the researcher menu screen
+/// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
 int ResearcherMenuRun(void)
 {
