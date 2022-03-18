@@ -36,7 +36,6 @@ public:
 	CarController CarController;
 
  private:
-	DriveSituation m_situation;
 	DecisionMaker m_decisionMaker;
 
 	Mediator();

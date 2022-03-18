@@ -24,7 +24,10 @@ void Mediator<DecisionMaker>::SetInterventionType(INTERVENTION_TYPE p_type)
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation) {}
+void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
+{
+    
+}
 
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {}
@@ -47,4 +50,5 @@ Mediator<DecisionMaker>& Mediator<DecisionMaker>::GetInstance() {
 template<typename DecisionMaker>
 Mediator<DecisionMaker>::Mediator()
 {
+
 }

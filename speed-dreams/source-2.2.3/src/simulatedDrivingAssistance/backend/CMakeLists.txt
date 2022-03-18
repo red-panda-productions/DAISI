@@ -14,7 +14,11 @@ SET(_SOURCES Mediator.cpp
         InterventionExecutorAskFor.cpp
         InterventionExecutorIndication.cpp
         InterventionExecutorNoIntervention.cpp
-        InterventionExecutorPerformWhenNeeded.cpp)
+        InterventionExecutorPerformWhenNeeded.cpp
+        EnvironmentInfo.cpp
+        TrackPosition.cpp
+        CarInfo.cpp
+        PlayerInfo.cpp)
 
 SET(_INLINES Mediator.inl
         DecisionMaker.inl
