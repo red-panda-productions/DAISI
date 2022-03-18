@@ -27,13 +27,11 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 SET(_SOURCES MsgpackDeserializeTests.cpp
-    InterventionTests.cpp
-    DecisionMakerTests.cpp
-        ConfigTests.cpp
         InterventionTests.cpp
         DecisionMakerTests.cpp
-        SQLDatabaseStorageTests.cpp
+        FileDataStorageTests.cpp
         ConfigTests.cpp
+        SQLDatabaseStorageTests.cpp
         FileDataStorageTests.cpp)
 
 SET(_HEADERS MsgpackSerializeTests.h
