@@ -6,7 +6,7 @@ typedef unsigned int Task;
 #define TASK_LANE_KEEPING   1
 #define TASK_SPEED_CONTROL  2
 
-typedef unsigned int INDICATOR;
+typedef unsigned int Indicator;
 
 #define INDICATOR_AUDITORY      0
 #define INDICATOR_VISUAL        1
