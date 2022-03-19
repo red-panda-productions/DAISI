@@ -40,7 +40,9 @@ Recorder::Recorder()
 
 Recorder::~Recorder()
 {
+
 	m_recordingFile.close();
+	delete m_prevInput;
 }
 
 ///
