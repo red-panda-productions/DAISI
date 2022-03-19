@@ -59,7 +59,7 @@ static void OnActivate(void* /* dummy */)
     std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution<int> distribution(1, 999999999);
-    std::sprintf(buf, "%d", distribution(generator));
+    sprintf(buf, "%d", distribution(generator));
 
     // Set default userID
     m_userID = buf;
