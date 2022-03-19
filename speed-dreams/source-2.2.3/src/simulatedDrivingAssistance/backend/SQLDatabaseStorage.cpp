@@ -65,7 +65,7 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName){
 
 void SQLDatabaseStorage::StoreData(const std::string p_filePath)
 {
-    std::string SimulationDataPath("source-2.2.3\\SimulationData\\");
+    std::string SimulationDataPath("data\\SimulationData\\");
     if (!FindFileDirectory(SimulationDataPath, p_filePath)) throw std::exception("Cannot find SimulationData directory");
 
     std::ifstream input(SimulationDataPath + p_filePath);
