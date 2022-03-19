@@ -15,16 +15,16 @@
 /// @brief			Creates the correct interventionExecutor based on the Intervention type
 /// @param  p_type  The interventionType
 /// @return			The InterventionExecutor
-InterventionExecutor* InterventionFactory::CreateInterventionExecutor(INTERVENTION_TYPE p_type)
+InterventionExecutor* InterventionFactory::CreateInterventionExecutor(InterventionType p_type)
 {
 	switch(p_type)
 	{
-	   CASE(INTERVENTION_TYPE_ALWAYS_INTERVENE, InterventionExecutorAlwaysIntervene)
+	   CASE(INTERVENTION_TYPE_COMPLETE_TAKEOVER, InterventionExecutorAlwaysIntervene)
 	   CASE(INTERVENTION_TYPE_ASK_FOR, InterventionExecutorAskFor)
-	   CASE(INTERVENTION_TYPE_INDICATION, InterventionExecutorIndication)
-	   CASE(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED, InterventionExecutorPerformWhenNeeded)
+	   CASE(INTERVENTION_TYPE_ONLY_SIGNALS, InterventionExecutorIndication)
+	   CASE(INTERVENTION_TYPE_SHARED_CONTROL, InterventionExecutorPerformWhenNeeded)
 	   default:
-	   CASE(INTERVENTION_TYPE_NO_INTERVENTION, InterventionExecutorNoIntervention)
+	   CASE(INTERVENTION_TYPE_NO_SIGNALS, InterventionExecutorNoIntervention)
 	}
 }
 

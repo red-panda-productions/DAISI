@@ -4,7 +4,7 @@ SET(_SOURCES Mediator.cpp
         SocketBlackBox.cpp
         SteerDecision.cpp
         BrakeDecision.cpp
-        Config.cpp
+        SDAConfig.cpp
         DecisionMaker.cpp
         InterventionFactory.cpp
         CarController.cpp
@@ -35,7 +35,7 @@ SET(_HEADERS CarInfo.h
         SocketBlackBox.h
         DecisionTuple.h
         ../rppUtils/RppUtils.hpp
-        Config.h
+        SDAConfig.h
         InterventionFactory.h
         InterventionExecutor.h
         InterventionExecutorAlwaysIntervene.h

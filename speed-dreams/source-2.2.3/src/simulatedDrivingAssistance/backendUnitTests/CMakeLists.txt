@@ -28,7 +28,8 @@ FetchContent_MakeAvailable(googletest)
 
 SET(_SOURCES MsgpackDeserializeTests.cpp
     InterventionTests.cpp
-    DecisionMakerTests.cpp)
+    DecisionMakerTests.cpp
+        ConfigTests.cpp)
 
 SET(_HEADERS MsgpackSerializeTests.h
     SocketBlackBoxTests.h)

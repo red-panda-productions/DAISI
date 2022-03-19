@@ -9,12 +9,11 @@ public:
 		return Decision;
 	}
 
-	void ChangeSettings(INTERVENTION_TYPE p_type)
+	void ChangeSettings(InterventionType p_type)
 	{
 		Type = p_type;
 	}
 
-
-	INTERVENTION_TYPE Type;
+    InterventionType Type;
 	bool Decision;
 };

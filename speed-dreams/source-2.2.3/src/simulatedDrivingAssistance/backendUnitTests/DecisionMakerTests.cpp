@@ -14,7 +14,7 @@
 void DecisionTest(bool p_isDecision)
 {
 	TDecisionMaker decisionMaker;
-	decisionMaker.ChangeSettings(INTERVENTION_TYPE_ALWAYS_INTERVENE);
+	decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
 	DriveSituation driveSituation;
 	
 	decisionMaker.m_blackBox.IsDecision = p_isDecision;
@@ -36,19 +36,18 @@ TEST_CASE(DecisionMakerTests,DecisionTestFalse,DecisionTest,(false))
 
 /// @brief					Tests if settings can be changed
 /// @param  p_intervention  The setting that needs to be set
-void ChangeSettingsTest(INTERVENTION_TYPE p_intervention)
+void ChangeSettingsTest(InterventionType p_intervention)
 {
 	TDecisionMaker decisionMaker;
 	decisionMaker.ChangeSettings(p_intervention);
-	ASSERT_EQ(decisionMaker.m_config.GetInterventionType(), p_intervention);
+	ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
 	InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.m_interventionExecutor);
 	ASSERT_FALSE(mockCheck == NULL);
 }
 
-TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTest, (INTERVENTION_TYPE_NO_INTERVENTION));
-TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_ALWAYS_INTERVENE));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTest, (INTERVENTION_TYPE_NO_SIGNALS));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestAskFor, ChangeSettingsTest, (INTERVENTION_TYPE_ASK_FOR));
-TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_INDICATION));
-TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_PERFORM_WHEN_NEEDED));
-TEST_CASE(DecisionMakerTests, EdgeCaseTest, ChangeSettingsTest, (-1));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));

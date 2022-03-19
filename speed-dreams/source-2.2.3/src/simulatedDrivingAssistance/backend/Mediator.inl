@@ -4,8 +4,9 @@
 #include <portability.h>
 
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
-    template INTERVENTION_TYPE Mediator<type>::GetInterventionType(); \
-	template void Mediator<type>::SetInterventionType(INTERVENTION_TYPE p_type);\
+    template InterventionType Mediator<type>::GetInterventionType(); \
+	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
+	template void Mediator<type>::SetDataCollectionSettings(bool* p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
 	template void Mediator<type>::RaceStop();\
@@ -14,15 +15,21 @@
 	template Mediator<type>::Mediator();
 
 template<typename DecisionMaker>
-INTERVENTION_TYPE Mediator<DecisionMaker>::GetInterventionType()
+InterventionType Mediator<DecisionMaker>::GetInterventionType()
 {
-    return m_decisionMaker.m_config.GetInterventionType();
+    return m_decisionMaker.Config.GetInterventionType();
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetInterventionType(INTERVENTION_TYPE p_type)
+void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type)
 {
     m_decisionMaker.ChangeSettings(p_type);
+}
+
+template<typename DecisionMaker>
+void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
+{
+    m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
 
 template<typename DecisionMaker>
