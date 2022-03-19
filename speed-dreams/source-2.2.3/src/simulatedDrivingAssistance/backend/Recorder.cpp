@@ -15,19 +15,21 @@
 ///
 Recorder::Recorder()
 {
-	// create directory
+	// create directory if it doesn't exist
 	std::string dirName = "..\\test_data\\user_recordings";
-	if(!GfDirExists(dirName.c_str()))
+	if(!GfDirExists(dirName.c_str())) 
+	{
 		GfDirCreate(dirName.c_str());
-	// get current date and time
+	}
+	
+	// create and open new recording file with current timestamp
 	std::time_t t = std::time(nullptr);
 	std::tm tm = *std::localtime(&t);
 	std::stringstream buffer;
 	buffer << std::put_time(&tm, "%Y%m%d-%H%M%S");
-	// create file
 	std::string fileName = dirName + "\\Record" + buffer.str() + ".txt";
 	m_recordingFile.open(fileName, std::ios::binary | std::ios::app);
-	// start clock
+
 	m_startTime = clock();
 
 	// initialize previous input with impossible values
