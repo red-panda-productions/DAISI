@@ -5,7 +5,7 @@
 #include "../rppUtils/RppUtils.hpp"
 
 #define GET_CREATED_DATABASE_PATH \
-    std::string SimulationDataPath("data\\SimulationData\\");\
+    std::string SimulationDataPath("SimulationData\\");\
     ASSERT_TRUE(FindFileDirectory(SimulationDataPath, p_fileName));\
     std::ifstream inputFile(SimulationDataPath + p_fileName);\
     std::string reading;\
