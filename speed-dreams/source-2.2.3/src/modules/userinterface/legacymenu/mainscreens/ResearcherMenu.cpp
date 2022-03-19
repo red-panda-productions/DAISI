@@ -197,12 +197,12 @@ static void SetUserID(void*)
 static void SaveSettings(void* /* dummy */)
 {
     // Save settings to backend config
-    SMediator& mediator = SMediator::GetInstance();
-    mediator.SetTask(m_task);
-    mediator.SetIndicatorSettings(m_indicators);
-    mediator.SetInterventionType(m_interventionType);
-    mediator.SetMaxTime(m_maxTime);
-    mediator.SetUserID(m_userID);
+    SMediator* mediator = SMediator::GetInstance();
+    mediator->SetTask(m_task);
+    mediator->SetIndicatorSettings(m_indicators);
+    mediator->SetInterventionType(m_interventionType);
+    mediator->SetMaxTime(m_maxTime);
+    mediator->SetUserID(m_userID);
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)

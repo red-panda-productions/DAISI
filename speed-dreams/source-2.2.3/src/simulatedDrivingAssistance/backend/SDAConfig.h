@@ -9,10 +9,10 @@ private:
     InterventionType m_interventionType;
     BlackBoxType m_blackBoxType;
     DataToStore m_dataStorageType;
-    Task m_task;
+    Task  m_task;
     bool* m_dataCollectionSetting;
     bool* m_indicatorSetting;
-    int m_maxSimulationTime;
+    int   m_maxSimulationTime;
     char* m_userID;
 
     InterventionFactory m_interventionFactory;
