@@ -19,10 +19,14 @@
 	template Mediator<type>::Mediator();
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetTask(Task p_task) {}
+void Mediator<DecisionMaker>::SetTask(Task p_task) {
+    m_decisionMaker.Config.SetTask(p_task);
+}
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators) {}
+void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators) {
+    m_decisionMaker.Config.SetIndicatorSettings(p_indicators);
+}
 
 template<typename DecisionMaker>
 InterventionType Mediator<DecisionMaker>::GetInterventionType(){
@@ -35,10 +39,14 @@ void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type){
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime) {}
+void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime) {
+    m_decisionMaker.Config.SetMaxTime(p_maxTime);
+}
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetUserID(char* p_userID) {}
+void Mediator<DecisionMaker>::SetUserID(char* p_userID) {
+    m_decisionMaker.Config.SetUserID(p_userID);
+}
 
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting){
