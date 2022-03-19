@@ -1,6 +1,8 @@
 #pragma once
 #include "Mediator.h"
 #include <fstream>
+#include <portability.h>
+
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template INTERVENTION_TYPE Mediator<type>::GetInterventionType(); \
 	template void Mediator<type>::SetInterventionType(INTERVENTION_TYPE p_type);\
@@ -58,6 +60,25 @@ template<typename DecisionMaker>
 Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance() {
     if(m_instance == nullptr)
     {
+        // check if Mediator file exists
+        struct stat info;
+        char workingDir[256];
+        getcwd(workingDir,256);
+        std::string workingDirectory(workingDir);
+        workingDirectory += "\\Singletons\\Mediator";
+        const char* filepath = workingDirectory.c_str();
+        int err = stat(filepath, &info);
+        if(err == -1)
+        {
+            // file does not exist create pointer
+            m_instance = new Mediator();
+            std::ofstream file("Singletons/Mediator");
+            file << m_instance;
+            file.close();
+            return m_instance;
+        }
+
+        // file exists read pointer
         std::string pointerName("00000000");
         std::ifstream file("Singletons/Mediator");
         getline(file, pointerName);
