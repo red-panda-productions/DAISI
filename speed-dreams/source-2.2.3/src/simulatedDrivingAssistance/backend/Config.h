@@ -6,9 +6,9 @@
 class Config
 {
 private:
-    INTERVENTION_TYPE m_interventionType;
-    BLACK_BOX_TYPE m_blackBoxType;
-    DATA_STORAGE_TYPE m_dataStorageType;
+    INTERVENTION_TYPE m_interventionType = 0;
+    BLACK_BOX_TYPE m_blackBoxType = 0;
+    DATA_STORAGE_TYPE m_dataStorageType = 0;
 
     InterventionFactory interventionFactory;
 

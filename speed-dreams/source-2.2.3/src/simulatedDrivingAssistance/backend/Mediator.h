@@ -7,6 +7,9 @@
 #include "CarController.h"
 
 
+/// @brief The standard type of the mediator
+#define SMediator Mediator<SDecisionMaker>
+
 /// @brief			      The Main communication between the front- and backend
 /// @tparam DecisionMaker The decisionMaker type
 template<typename DecisionMaker>
@@ -26,7 +29,7 @@ public:
 
     /// @brief Creates a mediator instance if needed and returns it
     /// @return A mediator instance
-    static Mediator& GetInstance();
+    static Mediator* GetInstance();
 
 	/// @brief Removes copy constructor for singleton behaviour
 	Mediator(Mediator const&) = delete;
@@ -35,12 +38,14 @@ public:
 
 	CarController CarController;
 
+	Mediator();
+
  private:
-	DriveSituation m_situation;
 	DecisionMaker m_decisionMaker;
 
-	Mediator();
+	static Mediator<DecisionMaker>* m_instance;
+
+	EnvironmentInfo m_environment = EnvironmentInfo(0, 0, 0);
 };
 
-/// @brief The standard type of the mediator
-#define SMediator Mediator<SDecisionMaker>
+SMediator* SMediator::m_instance = nullptr;

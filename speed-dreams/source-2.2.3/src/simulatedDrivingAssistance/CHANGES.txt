@@ -26,6 +26,8 @@ Added:
 
 Changed:
   src/
+    main/
+        main.cpp
     interfaces/
         playerpref.h
             added HM_ADRV_FILE define
@@ -62,6 +64,7 @@ Changed:
                     added   member interventionTexture
                 grboard.h
                     added grDispIntervention() 
+
 
 
   data/
