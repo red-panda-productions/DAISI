@@ -4,7 +4,14 @@
 /// @param p_task The blackbox task to use
 void SDAConfig::SetTask(Task p_task)
 {
-    // TODO: Somehow make sure a blackbox task gets selected.
+    m_task = p_task;
+}
+
+/// @brief  Gets the BlackBox task that is being used
+/// @return The blackbox task
+Task SDAConfig::GetTask() const
+{
+    return m_task;
 }
 
 /// @brief              Sets the settings for indication of interventions
@@ -12,6 +19,13 @@ void SDAConfig::SetTask(Task p_task)
 void SDAConfig::SetIndicatorSettings(bool* p_indicators)
 {
     m_indicatorSetting = p_indicators;
+}
+
+/// @brief  Gets the indicator settings
+/// @return An array of indicators to use
+bool* SDAConfig::GetIndicatorSettings() const
+{
+    return m_indicatorSetting;
 }
 
 /// @brief        Sets the m_interventionType to p_type
@@ -23,7 +37,7 @@ InterventionExecutor* SDAConfig::SetInterventionType(InterventionType p_type)
     return m_interventionFactory.CreateInterventionExecutor(p_type);
 }
 
-/// @brief  Returns the interventionType
+/// @brief  Gets the interventionType
 /// @return The interventionType
 InterventionType SDAConfig::GetInterventionType() const
 {
@@ -37,11 +51,23 @@ void SDAConfig::SetMaxTime(int p_maxTime)
     m_maxSimulationTime = p_maxTime;
 }
 
+/// @brief  Gets the maximum simulation time
+/// @return The max simulation time
+int SDAConfig::GetMaxTime() const
+{
+    return m_maxSimulationTime;
+}
+
 /// @brief          Sets the userID to p_userID
 /// @param p_userID The userID
 void SDAConfig::SetUserID(char* p_userID)
 {
     m_userID = p_userID;
+}
+
+char* SDAConfig::GetUserID() const
+{
+    return m_userID;
 }
 
 /// @brief             Sets the settings for what data should be collected from the simulation
