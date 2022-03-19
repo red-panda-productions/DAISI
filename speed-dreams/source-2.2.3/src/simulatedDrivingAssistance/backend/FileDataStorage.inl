@@ -2,7 +2,7 @@
 #include <string>
 #include "ConfigEnums.h"
 
-#define CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(type);\
+#define CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(type)\
     template void FileDataStorage<type>::Initialise(const std::string& p_fileName, const std::string& p_userId);\
     template void FileDataStorage<type>::Shutdown();\
     template void FileDataStorage<type>::Save(DriveSituation& p_situation, int p_timestamp);

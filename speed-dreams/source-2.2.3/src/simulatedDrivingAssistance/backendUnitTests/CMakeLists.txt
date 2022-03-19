@@ -33,7 +33,7 @@ SET(_SOURCES MsgpackDeserializeTests.cpp
 
 SET(_HEADERS MsgpackSerializeTests.h
     SocketBlackBoxTests.h
-        FileDataStorageTests.h)
+    FileDataStorageTests.h)
 
 SET(_MOCK_SOURCES "")
 
