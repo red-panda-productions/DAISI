@@ -14,7 +14,6 @@ public:
 		Type = p_type;
 	}
 
-
     InterventionType Type;
 	bool Decision;
 };

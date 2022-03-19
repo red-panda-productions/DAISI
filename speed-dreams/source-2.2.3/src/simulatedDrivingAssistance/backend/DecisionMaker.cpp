@@ -2,3 +2,4 @@
 #include "DecisionMaker.inl"
 
 CREATE_DECISION_MAKER_IMPLEMENTATION(SSocketBlackBox,SDAConfig)
+
