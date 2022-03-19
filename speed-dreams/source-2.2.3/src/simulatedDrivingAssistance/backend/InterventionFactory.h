@@ -6,5 +6,5 @@
 class InterventionFactory
 {
 public:
-    InterventionExecutor* CreateInterventionExecutor(INTERVENTION_TYPE p_type);
+    InterventionExecutor* CreateInterventionExecutor(InterventionType p_type);
 };

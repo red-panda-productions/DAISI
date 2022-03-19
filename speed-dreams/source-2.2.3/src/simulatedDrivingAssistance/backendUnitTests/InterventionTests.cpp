@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
-#include "Config.h"
 #include "ConfigEnums.h"
 #include "InterventionFactory.h"
 #include "Mediator.h"
@@ -16,11 +15,12 @@
 
 #define INTERVENTION_TYPE_AMOUNT 5
 
-INTERVENTION_TYPE types[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_INTERVENTION,
-                               INTERVENTION_TYPE_INDICATION,
-                               INTERVENTION_TYPE_ASK_FOR,
-                               INTERVENTION_TYPE_PERFORM_WHEN_NEEDED,
-                               INTERVENTION_TYPE_ALWAYS_INTERVENE };
+InterventionType typesMediator[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_SIGNALS,
+                                                             INTERVENTION_TYPE_ONLY_SIGNALS,
+                                                             INTERVENTION_TYPE_ASK_FOR,
+                                                             INTERVENTION_TYPE_ASK_FOR,
+                                                             INTERVENTION_TYPE_COMPLETE_TAKEOVER };
+
 // Test DecisionMaker
     // Nothing to test yet
 
@@ -54,49 +54,32 @@ TEST(MediatorTest, GetIntervention)
 
     for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
-        mediator.SetInterventionType(types[i]);
-        ASSERT_EQ(types[i], mediator.GetInterventionType());
-    }
-}
-
-/// @brief Tests if the Config sets and gets the interventionType correctly
-TEST(ConfigTest, SetGet)
-{
-    Config config;
-
-    for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
-    {
-        config.SetInterventionType(types[i]);
-        ASSERT_EQ(types[i], config.GetInterventionType());
+        mediator.SetInterventionType(typesMediator[i]);
+        ASSERT_EQ(typesMediator[i], mediator.GetInterventionType());
     }
 }
 
 /// @brief Tests if the Factory creates the the correct InterventionExecutor
 TEST(FactoryTest, Creation)
 {
-    InterventionExecutorNoIntervention noInterventionExecutor;
-    InterventionExecutorIndication indicationInterventionExecutor;
-    InterventionExecutorAskFor askForInterventionExecutor;
-    InterventionExecutorPerformWhenNeeded whenNeededInterventionExecutor;
-    InterventionExecutorAlwaysIntervene alwaysInterventionExecutor;
     InterventionFactory factory;
 
     // Creates InterventionExecutors of different types and casts the resulting InterventionExecutor type to
     // the type it should have made, then it checks if it throws an error.
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_INTERVENTION))
+        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_SIGNALS))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_INDICATION))
+        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ONLY_SIGNALS))
         ,nullptr);
     ASSERT_NE(
         dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED))
+        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ALWAYS_INTERVENE))
+        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_COMPLETE_TAKEOVER))
         ,nullptr);
 }
 

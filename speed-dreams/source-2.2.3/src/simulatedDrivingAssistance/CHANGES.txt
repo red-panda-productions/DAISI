@@ -14,15 +14,19 @@ It is ordered by: if a file is added or changed, then if the file is in src or d
 Added:
   src/
     modules/userinterface/legacymenu/mainscreens/
-        InterventionMenu.h 
-        InterventionMenu.cpp
+        ResearcherMenu.h
+        ResearcherMenu.cpp
+        DataSelectionMenu.h
+        DataSelectionMenu.cpp
   data/
     data/
         intervention/
             CMakeLists.txt
             Intervention_Steering_Proto_256.png
             intervention.xml
-        menu/interventionMenu.xml
+        menu/
+            ResearcherMenu.xml
+            DataSelectionMenu.xml
 
 Changed:
   src/
@@ -36,20 +40,21 @@ Changed:
             racesituation.cpp
                 change deltaTime to be constant value
         userinterface/
-            legacymenu/
-                legacymenu.h
-                    ActivateInterventionMenu()
-                legacymenu.cpp
-                      included "InterventionMenu.h"
-                      added    ActivateInterventionMenu()
-                      changed  backLoad()
-                      changed  activate()
-                racestopmenu.cpp
-                    RmStopRaceMenu()
-                        changed  AssistedHuman is a human
-                CMakeList.txt
-                      added    interventionmenu.h and .cpp
-                      added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+            legacymenu.h 
+                  ActivateResearcherMenu()
+            legacymenu.cpp
+                  included "ResearcherMenu.h"
+                  included "DataSelectionMenu.h"
+                  added    ActivateResearcherMenu()
+                  changed  backLoad()
+                  changed  activate()
+            racestopmenu.cpp
+                RmStopRaceMenu()
+                    changed  AssistedHuman is a human
+            legacymenu/CMakeList.txt
+                  added    ResearcherMenu.h and .cpp
+                  added    DataSelectionMenu.h and .cpp
+                  added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                 racescreens/
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls

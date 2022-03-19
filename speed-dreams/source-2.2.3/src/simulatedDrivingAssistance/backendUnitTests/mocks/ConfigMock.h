@@ -4,16 +4,16 @@
 class ConfigMock
 {
 private:
-	INTERVENTION_TYPE m_interventionType;
+	InterventionType m_interventionType;
 	InterventionExecutorMock m_interventionExecutor;
 public:
-	InterventionExecutor* SetInterventionType(INTERVENTION_TYPE p_intervention)
+	InterventionExecutor* SetInterventionType(InterventionType p_intervention)
 	{
 		m_interventionType = p_intervention;
 		return &m_interventionExecutor;
 	}
 
-	INTERVENTION_TYPE GetInterventionType()
+	InterventionType GetInterventionType()
 	{
 		return m_interventionType;
 	}
