@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include "../../libs/portability/portability.h"
+#include <iostream>
 
 inline float stringToFloat(std::string s)
 {
@@ -28,6 +29,8 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
         char filePath[256];
         strcpy(filePath, directoryPath);
         strcat(filePath, p_fileToFind.c_str());
+
+        std::cout << "current path: " << filePath << std::endl;
 
         if (stat(filePath, &info) == 0)
         {
