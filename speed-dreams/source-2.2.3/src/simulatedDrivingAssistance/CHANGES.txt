@@ -26,7 +26,9 @@ Added:
 
 Changed:
   src/
-    src/modules/
+    main/
+        main.cpp
+    modules/
         userinterface/
             legacymenu.h 
                 ActivateInterventionMenu()
@@ -47,6 +49,7 @@ Changed:
                     added   member interventionTexture
                 grboard.h
                     added grDispIntervention() 
+
 
 
   data/
