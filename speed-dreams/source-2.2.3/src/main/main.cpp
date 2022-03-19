@@ -17,6 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
+
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -39,6 +41,10 @@
 #include <raceman.h> // RACE_ENG_CFG 
 #include <iraceengine.h>
 #include <iuserinterface.h>
+
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+
 
 // If defined in tgf.h:
 // Use new Memory Manager ...
@@ -116,6 +122,10 @@ main(int argc, char *argv[])
 	// For hunting of corrupted memory blocks comment the following line
 	//GfMemoryManagerSetup(4); // Add 4 bytes per block
 #else
+
+
+	
+
 	// Use local variables ...
 	IUserInterface* piUserItf = 0;
 	GfModule* pmodUserItf = NULL;
@@ -172,6 +182,36 @@ main(int argc, char *argv[])
 	{
 		GfLogError("Could not start %s : failed to cd to the datadir '%s' (%s)\n",
 				   pApp->name().c_str(), GfDataDir(), strerror(errno));
+		return 1;
+	}
+
+
+	//filesystem was implemented in c++17, so we only have the experimental one
+	std::error_code errorCode;
+	std::experimental::filesystem::remove_all("Singletons",errorCode);
+	if(errorCode.value() != 0)
+	{
+		std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
+		return 1;
+	}
+
+	// set up singleton folder
+	struct stat info;
+	char directory[256];
+	getcwd(directory, 256);
+	std::string workingDirecotory(directory);
+	workingDirecotory += "\\Singletons";
+	const char* wd = workingDirecotory.c_str();
+	int err = stat(wd, &info);
+	if (err != 0 && err != -1)
+	{
+		std::cerr << "Could not delete Singletons folder" << std::endl;
+		return 1;
+	}
+	err = _mkdir(wd);
+	if (err != 0)
+	{
+		std::cerr << "Could not create singletons folder" << std::endl;
 		return 1;
 	}
 

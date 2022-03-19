@@ -53,7 +53,7 @@ typedef int (*tfRmRunState) (struct RmInfo *);
 #define RM_ERROR	        0x2000000
 
 
-#define RCM_MAX_DT_SIMU		0.002
+#define RCM_MAX_DT_SIMU		0.006
 #define RCM_MAX_DT_ROBOTS	0.02
 #define RCM_MAX_DT_FRAME	0.05
 

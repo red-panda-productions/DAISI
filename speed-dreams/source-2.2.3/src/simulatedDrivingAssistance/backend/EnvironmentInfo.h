@@ -1,16 +1,16 @@
 #pragma once
-#include "TrackPosition.h"
 class EnvironmentInfo
 {
-private:
-    TrackPosition m_trackPosition;
 public:
-	bool Offroad(){return false;};
-	int TimeOfDay(){return 0;};
-	int Clouds(){return 0;};
-
-	TrackPosition* TrackLocalPosition()
-    {
-        return &m_trackPosition;
-    }
+	EnvironmentInfo(int p_timeOfDay, int p_clouds, int p_rain);
+	int TimeOfDay();
+	int Clouds();
+	int Rain();
+	void SetTimeOfDay(int p_timeOfDay);
+	void SetClouds(int p_clouds);
+	void SetRain(int p_rain);
+private:
+	int m_timeOfDay;
+	int m_clouds;
+	int m_rain;
 };

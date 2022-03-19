@@ -1,9 +1,5 @@
 #include "DecisionMaker.h"
+#include "DecisionMaker.inl"
 
-void DecisionMaker::ChangeSettings(INTERVENTION_TYPE p_type)
-{
-    m_interventionMaker = m_config.SetInterventionType(p_type);
+CREATE_DECISION_MAKER_IMPLEMENTATION(SSocketBlackBox,SDAConfig)
 
-    // this line is for debugging purposes only, should be removed
-    m_interventionMaker->MakeCommands();
-}

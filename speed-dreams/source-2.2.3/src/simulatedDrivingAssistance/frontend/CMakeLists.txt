@@ -1,10 +1,8 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-MESSAGE(STATUS "BANANEN")
+SET(_SOURCES Recorder.cpp)
 
-SET(_SOURCES Stub.cpp)
-
-SET(_HEADERS Stub.h)
+SET(_HEADERS Recorder.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)

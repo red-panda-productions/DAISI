@@ -4,21 +4,18 @@
 class EnvironmentInfoMock
 {
 public:
-    EnvironmentInfoMock(bool p_offroad, int p_timeOfDay, int p_clouds,
-                        TrackPositionMock trackPosition) : trackPosition(trackPosition)
+    EnvironmentInfoMock(int p_timeOfDay, int p_clouds, int p_rain)
     {
-        m_offroad = p_offroad;
         m_timeOfDay = p_timeOfDay;
         m_clouds = p_clouds;
+        m_rain = p_rain;
     }
 
-    bool m_offroad;
     int m_timeOfDay;
     int m_clouds;
-    TrackPositionMock trackPosition;
+    int m_rain;
 
-    bool Offroad(){return m_offroad;};
     int TimeOfDay(){return m_timeOfDay;};
     int Clouds(){return m_clouds;};
-    TrackPositionMock TrackLocalPosition() {return trackPosition;}
+    int Rain(){return m_rain;};
 };
