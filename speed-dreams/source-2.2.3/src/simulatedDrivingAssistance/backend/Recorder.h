@@ -6,13 +6,12 @@ class Recorder
 {
 
 public:
+
 	Recorder();
 	~Recorder();
 	void WriteRecording(float* p_input);
 
-	void WriteInputToFile(float* p_input);
-
-	void CheckSameInput(bool& isSame, float* p_input);
+	bool CheckSameInput(float* p_input);
 
 private:
 	std::ofstream m_recordingFile;

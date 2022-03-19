@@ -66,9 +66,11 @@
 
 // ASSISTED DRIVING ASSISTANCE: added recorder
 // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
-#include <Recorder.h>
 #include <ConfigEnums.h>
+#ifdef RECORD_SESSION
+#include <Recorder.h>
 Recorder* recorder;
+#endif
 
 
 
@@ -277,6 +279,9 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
  */
 void HumanDriver::shutdown(const int index)
 {
+#ifdef RECORD_SESSION
+    delete recorder;
+#endif
     int idx = index - 1;
 
     free(VecNames[idx]);
@@ -501,6 +506,8 @@ void HumanDriver::terminate()
 
 
 
+
+
 }
 
 
@@ -608,7 +615,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
-#if RECORD_SESSION == 1
+#ifdef RECORD_SESSION
     recorder = new Recorder();
 #endif
     const int idx = index - 1;
@@ -1709,7 +1716,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
-#if RECORD_SESSION == 1
+#ifdef RECORD_SESSION
         float inputs[4] = { car->_accelCmd , car->_brakeCmd, leftSteer, rightSteer };
         recorder->WriteRecording(inputs);
 #endif

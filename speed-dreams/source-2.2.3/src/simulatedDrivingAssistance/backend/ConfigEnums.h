@@ -42,7 +42,4 @@ typedef unsigned int DataToStore;
 #define DATA_TO_STORE_INTERVENTION_DATA 3
 #define DATA_TO_STORE_META_DATA         4
 
-//#define RECORD_SESSION 1
-#ifndef RECORD_SESSION
-#define RECORD_SESSION 0
-#endif
+//#define RECORD_SESSION 
