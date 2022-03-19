@@ -14,7 +14,11 @@ SET(_SOURCES Mediator.cpp
         InterventionExecutorAskFor.cpp
         InterventionExecutorIndication.cpp
         InterventionExecutorNoIntervention.cpp
-        InterventionExecutorPerformWhenNeeded.cpp)
+        InterventionExecutorPerformWhenNeeded.cpp
+        EnvironmentInfo.cpp
+        TrackPosition.cpp
+        CarInfo.cpp
+        PlayerInfo.cpp)
 
 SET(_INLINES Mediator.inl
         DecisionMaker.inl
@@ -42,7 +46,7 @@ SET(_HEADERS CarInfo.h
         CarController.h)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math)
+ADD_SDLIB_INCLUDEDIR(tgf math portability)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)

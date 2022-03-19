@@ -24,7 +24,7 @@ Driver::Driver(int p_index, const char* p_name) : m_index(p_index), m_humanDrive
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
     m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
 
-    SMediator::GetInstance().RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
+    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
 /// @brief Start a new race.
@@ -41,11 +41,11 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
     // Do not let the human control the car when the AI is in control
-    if (SMediator::GetInstance().GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER) {
+    if (SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER) {
         m_humanDriver.drive_at(m_index, p_car, p_situation);
     }
 
-    SMediator::GetInstance().DriveTick(p_car, p_situation);
+    SMediator::GetInstance()->DriveTick(p_car, p_situation);
 }
 
 /// @brief Pause the current race.
@@ -81,7 +81,7 @@ void Driver::EndRace(tCarElt* p_car, tSituation* p_situation) {
 /// Also tell the mediator the race has ended.
 void Driver::Shutdown() {
     m_humanDriver.shutdown(m_index);
-    SMediator::GetInstance().RaceStop();
+    SMediator::GetInstance()->RaceStop();
 }
 
 /// @brief Terminate the driver.

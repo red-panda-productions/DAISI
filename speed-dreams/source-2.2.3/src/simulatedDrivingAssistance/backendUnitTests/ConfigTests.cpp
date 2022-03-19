@@ -3,22 +3,23 @@
 #include "SDAConfig.h"
 #include "ConfigEnums.h"
 
+#define INTERVENTION_TYPE_AMOUNT 5
 
-InterventionType interventionTypesConfig[5] = {INTERVENTION_TYPE_NO_SIGNALS,
-                                               INTERVENTION_TYPE_ONLY_SIGNALS,
-                                               INTERVENTION_TYPE_ASK_FOR,
-                                               INTERVENTION_TYPE_SHARED_CONTROL,
-                                               INTERVENTION_TYPE_COMPLETE_TAKEOVER };
+InterventionType typesConfig[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_SIGNALS,
+                                                           INTERVENTION_TYPE_ONLY_SIGNALS,
+                                                           INTERVENTION_TYPE_ASK_FOR,
+                                                           INTERVENTION_TYPE_ASK_FOR,
+                                                           INTERVENTION_TYPE_COMPLETE_TAKEOVER };
 
 /// @brief Tests if the SDAConfig sets and gets the interventionType correctly
 TEST(ConfigTest, InterventionType)
 {
     SDAConfig config;
 
-    for (int i = 0; i <= (sizeof(interventionTypesConfig)/sizeof(*interventionTypesConfig)); i++)
+    for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
-        config.SetInterventionType(interventionTypesConfig[i]);
-        ASSERT_EQ(interventionTypesConfig[i], config.GetInterventionType());
+        config.SetInterventionType(typesConfig[i]);
+        ASSERT_EQ(typesConfig[i], config.GetInterventionType());
     }
 }
 

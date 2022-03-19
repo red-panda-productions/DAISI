@@ -22,15 +22,14 @@ static void* s_nextHandle = NULL;
 /// @brief Loads the intervention type from the backend config
 static void OnActivate(void* /* dummy */)
 {
-    m_curInterventionTypeIndex = SMediator::GetInstance().GetInterventionType();
-
-    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[m_curInterventionTypeIndex]);
+    // This whole thing will be deleted in another branch, so for now magic nr 0
+    GfuiLabelSetText(s_scrHandle, s_interventionTypeId, s_interventionTypes[0]);
 }
 
 /// @brief Saves the settings into the backend config
 static void SaveSettings(void* /* dummy */)
 {
-    SMediator::GetInstance().SetInterventionType(m_curInterventionTypeIndex);
+    SMediator::GetInstance()->SetInterventionType(m_curInterventionTypeIndex);
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
