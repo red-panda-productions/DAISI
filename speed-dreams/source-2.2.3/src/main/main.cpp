@@ -42,7 +42,6 @@
 #include <iraceengine.h>
 #include <iuserinterface.h>
 
-#include "PointerDistributor.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 

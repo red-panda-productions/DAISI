@@ -5,7 +5,6 @@
 #include "InterventionFactory.h"
 #include "Mediator.h"
 #include "mocks/DecisionMakerMock.h"
-#include "PointerDistributor.h"
 #include "InterventionExecutorAlwaysIntervene.h"
 #include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
@@ -42,13 +41,9 @@ TEST(MediatorTest, GetDistributedMediator)
         ASSERT_TRUE(err == 0);
     }
 
-    SMediatorDistributor distributor;
-    distributor.Distribute("Singletons/Mediator");
     SMediator* mediator1 = SMediator::GetInstance();
     SMediator* mediator2 = SMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
-    ASSERT_EQ(mediator1, &distributor.Obj);
-    ASSERT_EQ(mediator2, &distributor.Obj);
     
 }
 
