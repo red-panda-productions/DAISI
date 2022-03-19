@@ -1,4 +1,3 @@
-#pragma once
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "FileDataStorage.h"
@@ -9,11 +8,11 @@
 
 #define TEST_FILE_PATH "testDataStorage.txt"
 
-TEST(FileStorageTest, NoStorageTimestampZero)
+TEST(FileDataStorageTests, NoStorageTimestampZero)
 {
     // Initialise class, read+write no values
     bool params[5] = {false, false, false, false, false};
-    FileDataStorage<DriveSituationMock> fileDataStorage {params};
+    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(params);
     CREATE_DRIVE_SITUATION_MOCK;
 
     // Write a file with user id, save timestamp 0, and shut down
@@ -114,6 +113,6 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
 }
 
 // TODO: do combinatorial/pairwise/whatever testing instead
-TEST(FileDataStorage, TestDataStorageSingle) {
+TEST(FileDataStorageTests, TestDataStorageSingle) {
     TestDataStorage(true, true, true, true, true);
 }
