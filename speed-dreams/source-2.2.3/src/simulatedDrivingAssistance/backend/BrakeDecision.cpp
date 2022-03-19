@@ -1,11 +1,13 @@
 #include "BrakeDecision.h"
-
-void BrakeDecision::GetIndicateCommands()
+#include "Mediator.h"
+void BrakeDecision::RunIndicateCommands()
 {
+	if (m_brakeAmount < 0.5f) return;
 
+	SMediator::GetInstance()->CarController.ShowUI(UI_TYPE_BRAKE);
 }
 
-void BrakeDecision::GetInterveneCommands()
+void BrakeDecision::RunInterveneCommands()
 {
 
 }

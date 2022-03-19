@@ -143,101 +143,102 @@ MACRO(CHECK_LIBRARIES)
 	# PLib.
 	CHECK_PLIB_LIBRARIES()
 
-	# OpenAL
-	Find_Package(OpenAL)
+	IF(NOT BACKEND_ONLY_OPTION)
+		# OpenAL
+		Find_Package(OpenAL)
 
-	IF(OPENAL_FOUND)
-		SET(HAVE_LIBOPENAL 1)
-		MESSAGE(STATUS "Looking for library OpenAL - found")
-	ELSE(OPENAL_FOUND)
-		MESSAGE(STATUS "Looking for library OpenAL - NOT found")
-	ENDIF(OPENAL_FOUND)
+		IF(OPENAL_FOUND)
+			SET(HAVE_LIBOPENAL 1)
+			MESSAGE(STATUS "Looking for library OpenAL - found")
+		ELSE(OPENAL_FOUND)
+			MESSAGE(STATUS "Looking for library OpenAL - NOT found")
+		ENDIF(OPENAL_FOUND)
 
-	# Ogg
-	Find_Package(OGG)
-	IF(OGG_FOUND)
-		SET(HAVE_LIBOGG 1)
-		MESSAGE(STATUS "Looking for library Ogg - found")
-	ELSE(OGG_FOUND)
-		MESSAGE(STATUS "Looking for library Ogg - NOT found")
-	ENDIF(OGG_FOUND)
+		# Ogg
+		Find_Package(OGG)
+		IF(OGG_FOUND)
+			SET(HAVE_LIBOGG 1)
+			MESSAGE(STATUS "Looking for library Ogg - found")
+		ELSE(OGG_FOUND)
+			MESSAGE(STATUS "Looking for library Ogg - NOT found")
+		ENDIF(OGG_FOUND)
 
-	# Vorbis
-	Find_Package(VORBIS)
-	IF(VORBIS_FOUND)
-		SET(HAVE_LIBVORBIS 1)
-		MESSAGE(STATUS "Looking for library Vorbis - found")
-	ELSE(VORBIS_FOUND)
-		MESSAGE(STATUS "Looking for library Vorbis - NOT found")
-	ENDIF(VORBIS_FOUND)
+		# Vorbis
+		Find_Package(VORBIS)
+		IF(VORBIS_FOUND)
+			SET(HAVE_LIBVORBIS 1)
+			MESSAGE(STATUS "Looking for library Vorbis - found")
+		ELSE(VORBIS_FOUND)
+			MESSAGE(STATUS "Looking for library Vorbis - NOT found")
+		ENDIF(VORBIS_FOUND)
 
-	# VorbisFile
-	Find_Package(VORBISFILE)
-	IF(VORBISFILE_FOUND)
-		SET(HAVE_LIBVORBISFILE 1)
-		MESSAGE(STATUS "Looking for library VorbisFile - found")
-	ELSE(VORBISFILE_FOUND)
-		MESSAGE(STATUS "Looking for library VorbisFile - NOT found")
-	ENDIF(VORBISFILE_FOUND)
+		# VorbisFile
+		Find_Package(VORBISFILE)
+		IF(VORBISFILE_FOUND)
+			SET(HAVE_LIBVORBISFILE 1)
+			MESSAGE(STATUS "Looking for library VorbisFile - found")
+		ELSE(VORBISFILE_FOUND)
+			MESSAGE(STATUS "Looking for library VorbisFile - NOT found")
+		ENDIF(VORBISFILE_FOUND)
 
-	# ENet
-	Find_Package(ENET)
+		# ENet
+		Find_Package(ENET)
 
-	IF(ENET_FOUND)
-		SET(HAVE_LIBENET 1)
-		MESSAGE(STATUS "Looking for library ENet - found")
-	ELSE(ENET_FOUND)
-		MESSAGE(STATUS "Looking for library ENet - NOT found")
-	ENDIF(ENET_FOUND)
+		IF(ENET_FOUND)
+			SET(HAVE_LIBENET 1)
+			MESSAGE(STATUS "Looking for library ENet - found")
+		ELSE(ENET_FOUND)
+			MESSAGE(STATUS "Looking for library ENet - NOT found")
+		ENDIF(ENET_FOUND)
 
-	# OpenGL
-	Find_Package(OpenGL)
+		# OpenGL
+		Find_Package(OpenGL)
 
-	IF(OPENGL_FOUND)
-		SET(HAVE_LIBGL 1)
-		MESSAGE(STATUS "Looking for library OpenGL - found")
-	ELSE(OPENGL_FOUND)
-		MESSAGE(STATUS "Looking for library OpenGL - NOT found")
-	ENDIF(OPENGL_FOUND)
+		IF(OPENGL_FOUND)
+			SET(HAVE_LIBGL 1)
+			MESSAGE(STATUS "Looking for library OpenGL - found")
+		ELSE(OPENGL_FOUND)
+			MESSAGE(STATUS "Looking for library OpenGL - NOT found")
+		ENDIF(OPENGL_FOUND)
 
-	IF(OPENGL_GLU_FOUND)
-		SET(HAVE_LIBGLU 1)
-		MESSAGE(STATUS "Looking for library OpenGL/GLU - found")
-	ELSE(OPENGL_GLU_FOUND)
-		MESSAGE(STATUS "Looking for library OpenGL/GLU - NOT found")
-	ENDIF(OPENGL_GLU_FOUND)
+		IF(OPENGL_GLU_FOUND)
+			SET(HAVE_LIBGLU 1)
+			MESSAGE(STATUS "Looking for library OpenGL/GLU - found")
+		ELSE(OPENGL_GLU_FOUND)
+			MESSAGE(STATUS "Looking for library OpenGL/GLU - NOT found")
+		ENDIF(OPENGL_GLU_FOUND)
 
-	# ZLIB
-	FIND_Package(ZLIB)
+		# ZLIB
+		FIND_Package(ZLIB)
 
-	IF(ZLIB_FOUND)
-		SET(HAVE_LIBZ 1)
-		MESSAGE(STATUS "Looking for library Zlib - found")
-	ELSE(ZLIB_FOUND)
-		MESSAGE(STATUS "Looking for library Zlib - NOT found")
-	ENDIF(ZLIB_FOUND)
+		IF(ZLIB_FOUND)
+			SET(HAVE_LIBZ 1)
+			MESSAGE(STATUS "Looking for library Zlib - found")
+		ELSE(ZLIB_FOUND)
+			MESSAGE(STATUS "Looking for library Zlib - NOT found")
+		ENDIF(ZLIB_FOUND)
 
-	# PNG
-	Find_Package(PNG)
+		# PNG
+		Find_Package(PNG)
 
-	IF(PNG_FOUND)
-		SET(HAVE_LIBPNG 1)
-		MESSAGE(STATUS "Looking for library PNG - found")
-	ELSE(PNG_FOUND)
-		MESSAGE(STATUS "Looking for library PNG - NOT found")
-	ENDIF(PNG_FOUND)
+		IF(PNG_FOUND)
+			SET(HAVE_LIBPNG 1)
+			MESSAGE(STATUS "Looking for library PNG - found")
+		ELSE(PNG_FOUND)
+			MESSAGE(STATUS "Looking for library PNG - NOT found")
+		ENDIF(PNG_FOUND)
 
-	# JPEG
-	Find_Package(JPEG)
+		# JPEG
+		Find_Package(JPEG)
 
-	IF(JPEG_FOUND)
-		SET(HAVE_LIBJPEG 1)
-		MESSAGE(STATUS "Looking for library JPEG - found")
-	ELSE(JPEG_FOUND)
-		MESSAGE(STATUS "Looking for library JPEG - NOT found")
-	ENDIF(JPEG_FOUND)
+		IF(JPEG_FOUND)
+			SET(HAVE_LIBJPEG 1)
+			MESSAGE(STATUS "Looking for library JPEG - found")
+		ELSE(JPEG_FOUND)
+			MESSAGE(STATUS "Looking for library JPEG - NOT found")
+		ENDIF(JPEG_FOUND)
 
-
+	ENDIF(NOT BACKEND_ONLY_OPTION)
 	
 	# SDL2
 	IF(OPTION_SDL2)
@@ -264,34 +265,38 @@ MACRO(CHECK_LIBRARIES)
 		ENDIF(SDL_FOUND)
 		ENDIF(OPTION_SDL2)
 
-	IF(OPTION_WEBSERVER)
-		# CURL
-		Find_Package(CURL)
+	IF(NOT BACKEND_ONLY_OPTION)
 
-		IF(CURL_FOUND)
-			SET(HAVE_CURL 1)
-			MESSAGE(STATUS "Looking for library CURL - found")
-		ELSE(CURL_FOUND)
-			MESSAGE(STATUS "Looking for library CURL - NOT found")
-		ENDIF(CURL_FOUND)
-	ENDIF(OPTION_WEBSERVER)
+		IF(OPTION_WEBSERVER)
+			# CURL
+			Find_Package(CURL)
+
+			IF(CURL_FOUND)
+				SET(HAVE_CURL 1)
+				MESSAGE(STATUS "Looking for library CURL - found")
+			ELSE(CURL_FOUND)
+				MESSAGE(STATUS "Looking for library CURL - NOT found")
+			ENDIF(CURL_FOUND)
+		ENDIF(OPTION_WEBSERVER)
 
 	
-	# OSG
-	IF(OPTION_OSGGRAPH)
+		# OSG
+		IF(OPTION_OSGGRAPH)
 	
-		IF(NOT OPENSCENEGRAPH_FOUND)
-			Find_Package(OpenSceneGraph 3.4.0 REQUIRED osgDB osgViewer osgGA osgUtil osgFX osgParticle osgShadow osgText)
-		ENDIF()
+			IF(NOT OPENSCENEGRAPH_FOUND)
+				Find_Package(OpenSceneGraph 3.4.0 REQUIRED osgDB osgViewer osgGA osgUtil osgFX osgParticle osgShadow osgText)
+			ENDIF()
 
-		IF(OPENSCENEGRAPH_FOUND)
-			SET(HAVE_LIBOPENSCENEGRAPH 1)
-			MESSAGE(STATUS "Looking for library OpenScenGraph - found")
-		ELSE(OPENSCENEGRAPH_FOUND)
-			MESSAGE(STATUS "Looking for library OpenScenGraph - NOT found")
-		ENDIF(OPENSCENEGRAPH_FOUND)
+			IF(OPENSCENEGRAPH_FOUND)
+				SET(HAVE_LIBOPENSCENEGRAPH 1)
+				MESSAGE(STATUS "Looking for library OpenScenGraph - found")
+			ELSE(OPENSCENEGRAPH_FOUND)
+				MESSAGE(STATUS "Looking for library OpenScenGraph - NOT found")
+			ENDIF(OPENSCENEGRAPH_FOUND)
 		
-	ENDIF(OPTION_OSGGRAPH)
+		ENDIF(OPTION_OSGGRAPH)
+
+	ENDIF(NOT BACKEND_ONLY_OPTION)
 
 	# Expat
 	IF(OPTION_3RDPARTY_EXPAT)
@@ -307,20 +312,23 @@ MACRO(CHECK_LIBRARIES)
 		
 	ENDIF(OPTION_3RDPARTY_EXPAT)
 
-	# SOLID
-	IF(OPTION_3RDPARTY_SOLID)
+	IF(NOT BACKEND_ONLY_OPTION)
+
+		# SOLID
+		IF(OPTION_3RDPARTY_SOLID)
 	
-		Find_Package(SOLID)
+			Find_Package(SOLID)
 
-		IF(SOLID_FOUND)
-			SET(HAVE_LIBSOLID 1)
-			MESSAGE(STATUS "Looking for library Solid - found")
-		ELSE(SOLID_FOUND)
-			MESSAGE(STATUS "Looking for library Solid - NOT found")
-		ENDIF(SOLID_FOUND)
+			IF(SOLID_FOUND)
+				SET(HAVE_LIBSOLID 1)
+				MESSAGE(STATUS "Looking for library Solid - found")
+			ELSE(SOLID_FOUND)
+				MESSAGE(STATUS "Looking for library Solid - NOT found")
+			ENDIF(SOLID_FOUND)
 		
-	ENDIF(OPTION_3RDPARTY_SOLID)
+		ENDIF(OPTION_3RDPARTY_SOLID)
 
+	ENDIF(NOT BACKEND_ONLY_OPTION)
 	# SQLITE3
 	IF(OPTION_3RDPARTY_SQLITE3)
 	

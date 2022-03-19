@@ -1,8 +1,8 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_SOURCES )
+SET(_SOURCES Recorder.cpp)
 
-SET(_HEADERS )
+SET(_HEADERS Recorder.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math)

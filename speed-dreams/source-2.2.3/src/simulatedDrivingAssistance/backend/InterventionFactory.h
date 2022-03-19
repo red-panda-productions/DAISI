@@ -1,10 +1,10 @@
 #pragma once
-#include "InterventionMaker.h"
+#include "InterventionExecutor.h"
 #include "ConfigEnums.h"
 
+/// @brief Creates executors according to the config file
 class InterventionFactory
 {
 public:
-    // returns the correct intervention maker based on p_type
-    InterventionMaker* CreateInterventionMaker(INTERVENTION_TYPE p_type);
+    InterventionExecutor* CreateInterventionExecutor(INTERVENTION_TYPE p_type);
 };

@@ -23,6 +23,8 @@
     @version	$Id: racerunningmenus.cpp 6084 2015-08-21 00:07:15Z beaglejoe $
 */
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
+
 #include <cstdlib>
 #include <cstdio>
 #include <cctype>
@@ -60,97 +62,6 @@ static double FPSLimMaxRate = 0;
 static double FPSLimLastTime = 0;
 
 #endif
-
-/**************************************************************************
- * "Slow resume race" manager (from Race Stop menu)
- */
-const double RmProgressiveTimeModifier::_sfTimeMultiplier = 4;
-const double RmProgressiveTimeModifier::_sfDelay = 1;
-const double RmProgressiveTimeModifier::_sfTimeLapse = 2;
-
-RmProgressiveTimeModifier rmProgressiveTimeModifier;
-
-RmProgressiveTimeModifier::RmProgressiveTimeModifier()
-{
-	reset();
-}
-
-void RmProgressiveTimeModifier::reset()
-{
-	_bExecRunning = false;
-	_fExecStartTime = 0;
-	_fWholeTimeLapse = 0;
-	_fOldTimeMultiplier = _sfTimeMultiplier;
-	_fResetterTimeMultiplier = 1;
-}
-
-void RmProgressiveTimeModifier::start()
-{
-	// First, reset to the initial time multiplier if already running.
-	if (_bExecRunning)
-		LmRaceEngine().accelerateTime(1 / _fResetterTimeMultiplier);
-	
-	// Initially apply the whole simulation-time change.
-	LmRaceEngine().accelerateTime(_sfTimeMultiplier);
-	
-	// Log the activation time.
-	_fExecStartTime = GfTimeClock();
-
-	// Initialize manager state.
-	_fWholeTimeLapse = _sfDelay + _sfTimeLapse;
-	_fOldTimeMultiplier = _fResetterTimeMultiplier = _sfTimeMultiplier;
-	
-	// Enable the manager.
-	_bExecRunning = true;
-}
-
-void RmProgressiveTimeModifier::execute()
-{
-	if (_bExecRunning)
-	{
-		// Get current time.
-		const double fExecCurrentTime = GfTimeClock();
-		
-		// Calculate the difference from start time to current time :
-		// how long have run the manger until now ?
-		double fExecTimeDifference = fExecCurrentTime - _fExecStartTime;
-		
-		// We wait until we reached the delay time.
-		if (fExecTimeDifference > _sfDelay)
-		{
-			// We should be sure that we dont set a speed higher than the 1.0 one ;
-			// this can happen if the execTimeDifference is higther that the timeLapse.
-			if (fExecTimeDifference > _fWholeTimeLapse)
-				fExecTimeDifference = _fWholeTimeLapse;
-
-			// Factor to restore normal game speed.
-			const double fResetter = 1 / _fOldTimeMultiplier;
-
-			// Factor to apply the new acceleration.
-			const double fNewMult =
-				1 + _sfTimeMultiplier * ((_fWholeTimeLapse - fExecTimeDifference) / _fWholeTimeLapse);
-
-			// Apply the simulation-time changes.
-			LmRaceEngine().accelerateTime(fResetter * fNewMult);
-
-			// Remember the integrated-since-start applied acceleration.
-			_fResetterTimeMultiplier *= fResetter * fNewMult;
-
-			// Remember the new applied acceleration.
-			_fOldTimeMultiplier = fNewMult;
-		}
-		
-		// if the timeLapse is reached we should not run next time.
-		if (fExecTimeDifference >= _fWholeTimeLapse)
-			terminate();
-	}
-}
-
-void RmProgressiveTimeModifier::terminate()
-{
-	// Seems we have done our work. Lets keep quiet until next time start() is called.
-	reset();
-}
 
 /***************************************************************************/
 static void
@@ -320,12 +231,6 @@ rmRedisplay()
 	}
 	
 #endif
-	
-	// Exec the "slow resume race" manager, if needed.
-	if (!rmPreRacePause)
-	{
-		rmProgressiveTimeModifier.execute();
-	}
 
 	// Redraw the graphics part of the GUI if requested.
 	const bool bUpdateGraphics =
@@ -429,10 +334,6 @@ rmRacePause(void * /* vboard */)
 		
 		// Show again the hidden message label.
 		GfuiVisibilitySet(rmScreenHandle, rmMsgId, GFUI_VISIBLE);
-
-		// Launch the "slow resume race" manager if non-blind mode.
-		if (LmRaceEngine().outData()->_displayMode == RM_DISP_MODE_NORMAL)
-			rmProgressiveTimeModifier.start();
     }
 	else
 	{
@@ -599,10 +500,6 @@ RmScreenInit()
 	rmRacePaused = false;
 	rmPreRacePause = false;
 
-	// Re-initialize the progressive time modifier,
-	// in case the race was exited while it was running.
-	rmProgressiveTimeModifier.reset();
-	
 	// Initialize the movie capture system.
 	rmInitMovieCapture();
 	

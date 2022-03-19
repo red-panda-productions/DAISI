@@ -1,0 +1,48 @@
+name: CI Backend Pipeline Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allow manually triggering from the actions tab
+  workflow_dispatch:
+
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+  # Enable colour output for GTEST and XML file generation
+  GTEST_COLOR: yes
+  GTEST_OUTPUT: xml:test-results/
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic anda should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure CMake
+      run: cmake -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A Win32 -DBACKEND_ONLY_OPTION=TRUE
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build .
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      run: ctest -V
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: test_results_xml
+        path: ${{runner.workspace}}/build/IPCTests/test-results/**/*.xml
+      

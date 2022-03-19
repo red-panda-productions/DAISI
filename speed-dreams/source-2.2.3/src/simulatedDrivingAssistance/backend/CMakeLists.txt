@@ -7,7 +7,23 @@ SET(_SOURCES Mediator.cpp
         Config.cpp
         DecisionMaker.cpp
         InterventionFactory.cpp
-        SQLDatabaseStorage.cpp)
+        SQLDatabaseStorage.cpp
+        CarController.cpp
+        DriveSituation.cpp
+        DecisionTuple.cpp
+        InterventionExecutorAlwaysIntervene.cpp
+        InterventionExecutorAskFor.cpp
+        InterventionExecutorIndication.cpp
+        InterventionExecutorNoIntervention.cpp
+        InterventionExecutorPerformWhenNeeded.cpp
+        EnvironmentInfo.cpp
+        TrackPosition.cpp
+        CarInfo.cpp
+        PlayerInfo.cpp)
+
+SET(_INLINES Mediator.inl
+        DecisionMaker.inl
+        SocketBlackBox.inl)
 
 SET(_HEADERS CarInfo.h
         DecisionMaker.h
@@ -18,18 +34,25 @@ SET(_HEADERS CarInfo.h
         TrackPosition.h
         PlayerInfo.h
         SocketBlackBox.h
+        DecisionTuple.h
         ../rppUtils/RppUtils.hpp
         Config.h
         InterventionFactory.h
-        InterventionMaker.h
         IDataStorage.h
-        SQLDatabaseStorage.h)
+        SQLDatabaseStorage.h
+        InterventionExecutor.h
+        InterventionExecutorAlwaysIntervene.h
+        InterventionExecutorAskFor.h
+        InterventionExecutorIndication.h
+        InterventionExecutorNoIntervention.h
+        InterventionExecutorPerformWhenNeeded.h
+        CarController.h)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math)
+ADD_SDLIB_INCLUDEDIR(tgf math portability)
 ADD_SQLITE3_INCLUDEDIR()
 
-SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS})
+SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_MSGPACK_PACKAGE(backend)

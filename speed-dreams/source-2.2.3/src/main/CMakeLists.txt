@@ -10,7 +10,7 @@ IF(MSVC)
 ENDIF(MSVC)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient tgfdata math portability)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient tgfdata math portability backend)
 
 IF(OPTION_SDL2)
 	ADD_SDL2_INCLUDEDIR()
@@ -35,7 +35,7 @@ ENDIF(MSVC)
 
 SD_ADD_EXECUTABLE(${_TARGET_NAME} ${_SOURCES})
 
-ADD_SDLIB_LIBRARY(${_TARGET_NAME} portability tgf tgfclient tgfdata)
+ADD_SDLIB_LIBRARY(${_TARGET_NAME} portability tgf tgfclient tgfdata backend)
 
 # Needed when using the "MinGW Makefiles" CMake generator (but not with the "MSYS Makefiles" one !)
 IF(MINGW)

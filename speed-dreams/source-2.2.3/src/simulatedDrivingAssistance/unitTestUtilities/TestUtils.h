@@ -3,6 +3,7 @@
 #include <csetjmp> // is needed for ASSERT_DURATION_LE
 #include <csignal>
 #include <gtest/gtest.h>
+#include "PairWiseTestGenerator.h"
 /// A big header file that contains functions that can be used in unit tests
 
 /// @brief      Executes a statement, and fails if it takes longer than the secs parameter
@@ -20,9 +21,27 @@
     " seconds). Check code for infinite loops"); \
 }
 
-void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size);
+inline void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size)
+{
+	bool len1 = p_size == strlen(p_msg1);
+	ASSERT_TRUE(len1) << "Length of msg1 was not equal to the size: " << strlen(p_msg1) << " != " << p_size;
+	int length = strlen(p_msg2);
+	bool len2 = p_size == length;
+	ASSERT_TRUE(len2) << "Length of msg2 was not equal to the size: " << strlen(p_msg2) << " != " << p_size;
+	for (int i = 0; i < p_size; i++)
+	{
+		ASSERT_TRUE(p_msg1[i] == p_msg2[i]) << "Characters were not the same: " << p_msg1[i] << " != " << p_msg2[i] << " on index " << i;
+	}
+}
 
-void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
+inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
+{
+	for (int i = 0; i < p_stringLength; i++)
+	{
+		p_dataBuffer[i] = static_cast<char>(65 + rand() % 60);
+	}
+	p_dataBuffer[p_stringLength] = '\0';
+}
 
 /// @brief compares two values. If their difference is lower than the tolerance, return true.
 #define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs(f1-f2), tolerance)
@@ -117,3 +136,108 @@ void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength);
 		}\
 	}
 
+
+template<typename T1, typename T2>
+inline void PairWiseTest(void(*func)(T1, T2), T1* input1, int count1, T2* input2, int count2)
+{
+	PairWiseTestGenerator<2> generator;
+	int dimensions[2]{ count1, count2 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for(int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		func(input1[Features[0]], input2[Features[1]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3>
+inline void PairWiseTest(void(*p_func)(T1, T2, T3), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3)
+{
+	PairWiseTestGenerator<3> generator;
+	int dimensions[3]{ p_count1, p_count2, p_count3};
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4>
+inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4)
+{
+	PairWiseTestGenerator<4> generator;
+	int dimensions[4]{ p_count1, p_count2, p_count3, p_count4 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]], p_input4[Features[3]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5>
+inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5)
+{
+	PairWiseTestGenerator<5> generator;
+	int dimensions[5]{ p_count1, p_count2, p_count3, p_count4, p_count5 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]], p_input4[Features[3]], p_input5[Features[4]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
+inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5, T6* p_input6, int p_count6)
+{
+	PairWiseTestGenerator<6> generator;
+	int dimensions[6]{ p_count1, p_count2, p_count3, p_count4, p_count5, p_count6 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]], p_input4[Features[3]], p_input5[Features[4]], p_input6[Features[5]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6, T7), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5, T6* p_input6, int p_count6, T7* p_input7, int p_count7)
+{
+	PairWiseTestGenerator<7> generator;
+	int dimensions[7]{ p_count1, p_count2, p_count3, p_count4, p_count5, p_count6, p_count7 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]], p_input4[Features[3]], p_input5[Features[4]], p_input6[Features[5]], p_input7[Features[6]]);
+	}
+}
+
+template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6, T7, T8), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5, T6* p_input6, int p_count6, T7* p_input7, int p_count7, T8* p_input8, int p_count8)
+{
+	PairWiseTestGenerator<8> generator;
+	int dimensions[8]{ p_count1, p_count2, p_count3, p_count4, p_count5, p_count6, p_count7, p_count8 };
+
+	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
+
+	for (int i = 0; i < testCases.size(); i++)
+	{
+		int* Features = testCases[i].Features;
+		p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]], p_input4[Features[3]], p_input5[Features[4]], p_input6[Features[5]], p_input7[Features[6]], p_input8[Features[7]]);
+	}
+}

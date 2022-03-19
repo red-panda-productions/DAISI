@@ -4,27 +4,55 @@
 #include "ConfigEnums.h"
 #include "InterventionFactory.h"
 #include "Mediator.h"
-#include "InterventionMakerAlwaysIntervene.h"
-#include "InterventionMakerAskFor.h"
-#include "InterventionMakerIndication.h"
-#include "InterventionMakerPerformWhenNeeded.h"
-#include "InterventionMakerNoIntervention.h"
+#include "mocks/DecisionMakerMock.h"
+#include "InterventionExecutorAlwaysIntervene.h"
+#include "InterventionExecutorAskFor.h"
+#include "InterventionExecutorIndication.h"
+#include "InterventionExecutorPerformWhenNeeded.h"
+#include "InterventionExecutorNoIntervention.h"
 
-INTERVENTION_TYPE types[5] = { INTERVENTION_TYPE_NO_INTERVENTION,
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#define INTERVENTION_TYPE_AMOUNT 5
+
+INTERVENTION_TYPE types[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_INTERVENTION,
                                INTERVENTION_TYPE_INDICATION,
                                INTERVENTION_TYPE_ASK_FOR,
                                INTERVENTION_TYPE_PERFORM_WHEN_NEEDED,
                                INTERVENTION_TYPE_ALWAYS_INTERVENE };
-
 // Test DecisionMaker
     // Nothing to test yet
+
+
+TEST(MediatorTest, GetDistributedMediator)
+{
+    // set up singleton folder for tests
+    struct stat info;
+    char directory[256];
+    getcwd(directory,256);
+    std::string workingDirecotory(directory);
+    workingDirecotory += "\\Singletons";
+    const char* wd = workingDirecotory.c_str();
+    int err = stat(wd, &info);
+    if(err != 0)
+    {
+        err = _mkdir(wd);
+        ASSERT_TRUE(err == 0);
+    }
+
+    SMediator* mediator1 = SMediator::GetInstance();
+    SMediator* mediator2 = SMediator::GetInstance();
+    ASSERT_EQ(mediator1, mediator2);
+    
+}
 
 /// @brief Tests if the Mediator sets and gets the interventionType correctly
 TEST(MediatorTest, GetIntervention)
 {
-    Mediator& mediator = Mediator::GetInstance();
+    SMediator mediator;
 
-    for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
+    for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
         mediator.SetInterventionType(types[i]);
         ASSERT_EQ(types[i], mediator.GetInterventionType());
@@ -36,46 +64,46 @@ TEST(ConfigTest, SetGet)
 {
     Config config;
 
-    for (int i = 0; i <= (sizeof(types)/sizeof(*types)); i++)
+    for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
         config.SetInterventionType(types[i]);
         ASSERT_EQ(types[i], config.GetInterventionType());
     }
 }
 
-/// @brief Tests if the Factory creates the the correct InterventionMaker
+/// @brief Tests if the Factory creates the the correct InterventionExecutor
 TEST(FactoryTest, Creation)
 {
-    InterventionMakerNoIntervention noInterventionMaker;
-    InterventionMakerIndication indicationInterventionMaker;
-    InterventionMakerAskFor askForInterventionMaker;
-    InterventionMakerPerformWhenNeeded whenNeededInterventionMaker;
-    InterventionMakerAlwaysIntervene alwaysInterventionMaker;
+    InterventionExecutorNoIntervention noInterventionExecutor;
+    InterventionExecutorIndication indicationInterventionExecutor;
+    InterventionExecutorAskFor askForInterventionExecutor;
+    InterventionExecutorPerformWhenNeeded whenNeededInterventionExecutor;
+    InterventionExecutorAlwaysIntervene alwaysInterventionExecutor;
     InterventionFactory factory;
 
-    // Creates InterventionMakers of different types and casts the resulting InterventionMaker type to
+    // Creates InterventionExecutors of different types and casts the resulting InterventionExecutor type to
     // the type it should have made, then it checks if it throws an error.
     ASSERT_NE(
-        dynamic_cast<InterventionMakerNoIntervention*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_NO_INTERVENTION))
+        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_INTERVENTION))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionMakerIndication*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_INDICATION))
+        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_INDICATION))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionMakerAskFor*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_ASK_FOR))
+        dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionMakerPerformWhenNeeded*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED))
+        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_PERFORM_WHEN_NEEDED))
         ,nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionMakerAlwaysIntervene*>(factory.CreateInterventionMaker(INTERVENTION_TYPE_ALWAYS_INTERVENE))
+        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ALWAYS_INTERVENE))
         ,nullptr);
 }
 
-/// @brief Tests if the Factory creates the InterventionMakerNoIntervention if the input is incorrect
+/// @brief Tests if the Factory creates the InterventionExecutorNoIntervention if the input is incorrect
 TEST(FactoryTest, Edge)
 {
     InterventionFactory factory;
 
-    ASSERT_NE(dynamic_cast<InterventionMakerNoIntervention*>(factory.CreateInterventionMaker(6)), nullptr);
+    ASSERT_NE(dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(6)), nullptr);
 }

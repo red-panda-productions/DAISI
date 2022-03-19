@@ -27,6 +27,8 @@
 #define _PLAYERPREF_H_
 
 #define HM_DRV_FILE  		"drivers/human/human.xml"
+// SIMULATED DRIVING ASSISTANCE: Add Assisted Driver define
+#define HM_ADRV_FILE  		"drivers/assistedhuman/assistedhuman.xml"
 #define HM_PREF_FILE		"drivers/human/preferences.xml"
 
 #define	HM_SECT_JSPREF		"joystick"
