@@ -2,9 +2,7 @@
 #include "SQLDatabaseStorage.h"
 #include "sqlite3.h"
 #include <string>
-#include <fstream>
 #include <sstream>
-#include <filesystem>
 #include "../rppUtils/RppUtils.hpp"
 
 #define DATABASE_THROW(db, error)                     \
@@ -67,9 +65,6 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName){
 
 void SQLDatabaseStorage::StoreData(const std::string p_filePath)
 {
-    std::string absoluteFilePath;
-    auto path = std::experimental::filesystem::absolute("SimulationData/" + p_filePath);
-
     std::string SimulationDataPath("SimulationData/");
     if (!FindFileDirectory(SimulationDataPath, "CMakeLists.txt")) throw std::exception("Cannot find SimulationData directory");
 
