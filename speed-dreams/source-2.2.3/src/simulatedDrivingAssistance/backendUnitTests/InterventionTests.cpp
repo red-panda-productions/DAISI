@@ -55,12 +55,12 @@ TEST(MediatorTest, GetDistributedMediator)
 /// @brief Tests if the Mediator sets and gets the interventionType correctly
 TEST(MediatorTest, GetIntervention)
 {
-    SMediator mediator;
+    SMediator* mediator = SMediator::GetInstance();
 
     for (int i = 0; i < INTERVENTION_TYPE_AMOUNT; i++)
     {
-        mediator.SetInterventionType(typesMediator[i]);
-        ASSERT_EQ(typesMediator[i], mediator.GetInterventionType());
+        mediator->SetInterventionType(typesMediator[i]);
+        ASSERT_EQ(typesMediator[i], mediator->GetInterventionType());
     }
 }
 

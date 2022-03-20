@@ -31,6 +31,7 @@ public:
     InterventionType GetInterventionType();
 	DriveSituation* Simulate();
 
+
     /// @brief Creates a mediator instance if needed and returns it
     /// @return A mediator instance
     static Mediator* GetInstance();
@@ -42,12 +43,11 @@ public:
 
 	CarController CarController;
 
-	Mediator();
-
  private:
-	DecisionMaker m_decisionMaker;
+    Mediator();
+    static Mediator<DecisionMaker>* m_instance;
 
-	static Mediator<DecisionMaker>* m_instance;
+    DecisionMaker m_decisionMaker;
 
 	EnvironmentInfo m_environment = EnvironmentInfo(0, 0, 0);
 };
