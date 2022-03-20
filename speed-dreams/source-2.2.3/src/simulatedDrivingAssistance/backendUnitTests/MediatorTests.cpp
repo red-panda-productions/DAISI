@@ -5,6 +5,8 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
 
 TEST(MediatorTest, GetDistributedMediator)
 {
@@ -31,6 +33,10 @@ TEST(MediatorTest, GetDistributedMediator)
 /// @param p_interventionType The interventionType that needs to be set
 void InterventionTest(InterventionType p_interventionType)
 {
+    // delete singletons
+    std::error_code errorCode;
+    std::experimental::filesystem::remove_all("Singletons",errorCode);
+
     // set up singleton folder for tests
     struct stat info;
     char directory[256];
