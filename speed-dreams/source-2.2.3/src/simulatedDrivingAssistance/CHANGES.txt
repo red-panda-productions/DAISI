@@ -76,3 +76,6 @@ Changed:
     data/CMakeLists.txt
         added intervention folder
         
+  cmake/
+    checks.cmake
+        changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
