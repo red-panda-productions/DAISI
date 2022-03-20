@@ -9,12 +9,11 @@ public:
 
 	Recorder();
 	~Recorder();
-	void WriteRecording(float* p_input);
+	void WriteRecording(float* p_input, double currentTime);
 
 	bool CheckSameInput(float* p_input);
 
 private:
 	std::ofstream m_recordingFile;
 	float m_prevInput[PARAMETERS];
-	std::clock_t m_startTime;
 };

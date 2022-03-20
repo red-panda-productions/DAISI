@@ -8,7 +8,6 @@
 /// @brief Constructor of Recording, 
 /// creates a file with the current date and time,
 /// opens file in binary and appending mode
-/// records the start time of creation,
 /// initializes the previous input with 2's since user input is between -1 an 1.
 /// also creates a folder for the files
 /// @author Sjoerd Schilder
@@ -27,8 +26,6 @@ Recorder::Recorder()
 	// create file
 	std::string fileName = dirName + "\\Record" + buffer.str() + ".txt";
 	m_recordingFile.open(fileName, std::ios::binary | std::ios::app);
-	// start clock
-	m_startTime = clock();
 
 	// initialize previous input with impossible values
 	for (int i = 0; i < PARAMETERS; i++)
@@ -40,27 +37,23 @@ Recorder::Recorder()
 
 Recorder::~Recorder()
 {
-
 	m_recordingFile.close();
-	delete m_prevInput;
 }
 
 ///
 /// @brief Writes a float* to the m_recordingFile, 
-/// with the clock counting since construction of the recorder.
+/// with the current time of the simulation.
 /// Only writes to the file if the input is different then the previous input.
 /// @preconditions p_input must be PARAMETERS long (in this case 4)
 /// @param p_input array of size PARAMETERS
 /// @return void
 /// @author Sjoerd Schilder
 ///
-void Recorder::WriteRecording(float* p_input)
+void Recorder::WriteRecording(float* p_input, double currentTime)
 {
 	// doesnt write if the input is the same as the previous time
 	if (CheckSameInput(p_input)) return;
-	clock_t clck;
-	clck = clock() - m_startTime;
-	m_recordingFile << (float)clck << " ";
+	m_recordingFile << currentTime << " ";
 	for (int i = 0; i < PARAMETERS; i++)
 	{
 		// update previous input
