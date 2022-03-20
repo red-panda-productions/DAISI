@@ -9,5 +9,5 @@ void BrakeDecision::RunIndicateCommands()
 
 void BrakeDecision::RunInterveneCommands()
 {
-
+	SMediator::GetInstance()->CarController.SetBrakeCmd(m_brakeAmount);
 }

@@ -7,8 +7,8 @@ class SocketBlackBoxMock
 public:
 	SocketBlackBoxMock()
 	{
-		Decisions.m_steerDecision.m_steerAmount = 20;
-		Decisions.m_brakeDecision.m_brakeAmount = 40;
+		Decisions.SetSteer(20);
+		Decisions.SetBrake(40);
 	}
 
 	bool GetDecisions(DriveSituation& driveSituation, DecisionTuple& p_decisions)

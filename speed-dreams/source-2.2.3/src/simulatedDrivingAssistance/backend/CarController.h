@@ -1,5 +1,5 @@
 #pragma once
-
+#include "car.h"
 #define UI_TYPE int
 #define UI_TYPE_NONE 0
 #define UI_TYPE_TURN_LEFT 1
@@ -10,15 +10,19 @@
 class CarController
 {
 public:
-	void SetSteerCmd(float p_steer);
+	void SetSteerCmd(float p_steer) const;
 
-	void SetAccelCmd(float p_accel);
+	void SetAccelCmd(float p_accel) const;
 
-	void SetBrakeCmd(float p_brake);
+	void SetBrakeCmd(float p_brake) const;
 
-	void SetClutchCmd(float p_clutch);
+	void SetClutchCmd(float p_clutch) const;
 
-	void SetLightCmd(bool p_light);
+	void SetLightCmd(bool p_light) const;
 
-	void ShowUI(UI_TYPE p_element);
+	void ShowUI(UI_TYPE p_element) const;
+
+	void SetCar(tCarElt* p_car);
+private:
+	tCarElt* m_car = nullptr;
 };

@@ -14,7 +14,9 @@ class DecisionMaker
 public:
     SDAConfig Config;
 
-	bool Decide(DriveSituation& driveSituation);
+    void Initialize(DriveSituation& p_initialSituation, DriveSituation* p_testSituations = nullptr, int p_testAmount = 0);
+
+	bool Decide(DriveSituation& p_driveSituation);
 
 	void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(bool* p_dataSetting);

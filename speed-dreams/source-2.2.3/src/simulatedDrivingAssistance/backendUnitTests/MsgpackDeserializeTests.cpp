@@ -26,8 +26,8 @@ TEST(MsgpackDeserializeTests, Deserialize)
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_ALMOST_EQ(decisionTuple.m_steerDecision.m_steerAmount, controlSteerValue, 0.000001);
-    ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
+    ASSERT_ALMOST_EQ(decisionTuple.GetSteer(), controlSteerValue, 0.000001);
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, 0.000001);
 }
 
 /// @brief Tests if the program throws when there are no variables to receive
@@ -67,8 +67,8 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_TRUE(isnan(decisionTuple.m_steerDecision.m_steerAmount));
-    ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
+    ASSERT_TRUE(isnan(decisionTuple.GetSteer()));
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, 0.000001);
 }
 
 /// @brief Tests if program throws when if a variable to parse does not exist in the function map.

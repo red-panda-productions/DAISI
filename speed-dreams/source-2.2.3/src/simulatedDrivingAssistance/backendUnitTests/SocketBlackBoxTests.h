@@ -39,8 +39,8 @@ void BlackBoxSide()
 	ASSERT_TRUE(bb.GetDecisions(exampleSituation, decisions));
 
 	// check the result
-	ASSERT_ALMOST_EQ(decisions.m_steerDecision.m_steerAmount,1.0f,0.1f);
-	ASSERT_ALMOST_EQ(decisions.m_brakeDecision.m_brakeAmount,2.0f,0.1f);
+	ASSERT_ALMOST_EQ(decisions.GetSteer(), 1.0f, 0.1f);
+	ASSERT_ALMOST_EQ(decisions.GetBrake(), 2.0f, 0.1f);
 
 	// shut the server down
 	bb.Shutdown();

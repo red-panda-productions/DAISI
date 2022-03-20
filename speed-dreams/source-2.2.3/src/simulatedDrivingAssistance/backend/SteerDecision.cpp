@@ -14,5 +14,5 @@ void SteerDecision::RunIndicateCommands()
 };
 void SteerDecision::RunInterveneCommands()
 {
-
+	SMediator::GetInstance()->CarController.SetSteerCmd(m_steerAmount);
 };
