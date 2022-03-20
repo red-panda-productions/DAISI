@@ -38,7 +38,7 @@ IF(NOT APPLE AND NOT HAIKU)
 ENDIF(NOT APPLE AND NOT HAIKU)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools)
+ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend)
 
 ADD_PLIB_INCLUDEDIR()
 
@@ -86,6 +86,6 @@ ENDIF(OPTION_SDL2)
 
 ADD_OPENGL_LIBRARY(ssggraph)
 
-ADD_SDLIB_LIBRARY(ssggraph portability tgf tgfclient robottools)
+ADD_SDLIB_LIBRARY(ssggraph portability tgf tgfclient robottools frontend)
 
 SD_INSTALL_FILES(LIB modules/graphic TARGETS ssggraph)

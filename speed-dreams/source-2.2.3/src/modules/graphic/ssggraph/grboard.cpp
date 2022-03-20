@@ -35,6 +35,8 @@
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
 
+#include "InterventionConfig.h"
+
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2
