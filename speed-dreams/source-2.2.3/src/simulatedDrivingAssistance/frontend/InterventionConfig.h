@@ -27,8 +27,8 @@ typedef struct TextureData
     tScreenPosition Position;
 
     TextureData() = default;
-    TextureData(const char* name, ssgSimpleState* tex, tScreenPosition pos)
-        : Name(name) , Texture(tex) , Position(pos) { }
+    TextureData(const char* p_name, ssgSimpleState* p_tex, tScreenPosition p_pos)
+        : Name(p_name) , Texture(p_tex) , Position(p_pos) { }
 } tTextureData;
 
 
