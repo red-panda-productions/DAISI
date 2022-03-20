@@ -36,7 +36,7 @@ typedef unsigned int DataStorageType;
 
 typedef unsigned int DataToStore;
 
-#define DATA_TO_STORE_DRIVING_DATA      0
+#define DATA_TO_STORE_ENVIRONMENT_DATA  0
 #define DATA_TO_STORE_CAR_DATA          1
 #define DATA_TO_STORE_HUMAN_DATA        2
 #define DATA_TO_STORE_INTERVENTION_DATA 3
