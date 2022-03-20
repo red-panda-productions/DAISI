@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 project(backendUnitTests)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -51,6 +51,7 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
 
 
 
+
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
@@ -61,7 +62,7 @@ target_link_libraries(
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient)
+ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 

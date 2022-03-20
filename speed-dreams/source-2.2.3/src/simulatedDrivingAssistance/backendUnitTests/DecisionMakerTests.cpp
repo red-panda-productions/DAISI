@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include "Mediator.h"
+#include "Mediator.inl"
 #include "DecisionMaker.h"
 #include "DecisionMaker.inl"
 #include "mocks/SocketBlackBoxMock.h"
@@ -7,7 +9,12 @@
 #include "DriveSituation.h"
 #include "TestUtils.h"
 
+
+
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock>
+
+CREATE_MEDIATOR_IMPLEMENTATION(TDecisionMaker)
+Mediator<TDecisionMaker>* Mediator<TDecisionMaker>::m_instance = nullptr;
 
 /// @brief				 Tests if a decision can be made
 /// @param  p_isDecision Whether the black box made a decision

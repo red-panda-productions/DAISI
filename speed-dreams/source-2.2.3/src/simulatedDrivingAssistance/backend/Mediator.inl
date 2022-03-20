@@ -36,7 +36,6 @@ template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
     CarController.SetCar(p_car);
-
     DriveSituation currentSituation(
         m_environment,
         CarInfo(

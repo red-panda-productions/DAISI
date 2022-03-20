@@ -17,4 +17,14 @@ public:
 	{
 		return m_interventionType;
 	}
+
+	void SetDataCollectionSettings(bool* p_boolArray)
+	{
+		
+	}
+
+	bool* GetDataCollectionSetting() const
+	{
+		return nullptr;
+	}
 };

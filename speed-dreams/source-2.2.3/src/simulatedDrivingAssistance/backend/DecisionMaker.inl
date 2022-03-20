@@ -1,6 +1,7 @@
 #pragma once
 #include "DecisionMaker.h"
 #include "DecisionTuple.h"
+#include "Mediator.h"
 
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
     template void DecisionMaker<type1,type2>::Initialize(DriveSituation& p_initialSituation,DriveSituation* p_testSituations, int p_testAmount);\
@@ -26,6 +27,7 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
     DecisionTuple decision;
     if (!m_blackBox.GetDecisions(p_driveSituation, decision)) return false;
 
+    Mediator<DecisionMaker<SocketBlackBox, SDAConfig>>::GetInstance()->CarController.ShowUI(INTERVENTION_ACTION_NONE);
     int decisionCount = 0;
     IDecision** decisions = decision.GetActiveDecisions(decisionCount);
     m_interventionExecutor->RunDecision(decisions, decisionCount);
