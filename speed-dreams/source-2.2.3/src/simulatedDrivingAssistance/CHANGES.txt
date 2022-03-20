@@ -22,8 +22,8 @@ Added:
     data/
         intervention/
             CMakeLists.txt
-            Intervention_Steering_Proto_256.png
             intervention.xml
+            Multiple intervention texture PNGs
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
@@ -74,12 +74,13 @@ Changed:
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
         graphic/
-            ssggraph
+            ssggraph/
+                CMakeLists.txt added connection to frontend module
                 grboard.cpp
                     added   grDispIntervention()
+                    added   LoadInterventionTextures()
                     changed grInitBoardCar() 
                     changed refreshBoard()
-                    added   member interventionTexture
                 grboard.h
                     added grDispIntervention() 
 

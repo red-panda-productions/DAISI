@@ -19,6 +19,13 @@ typedef unsigned int InterventionType;
 #define INTERVENTION_TYPE_SHARED_CONTROL     3
 #define INTERVENTION_TYPE_COMPLETE_TAKEOVER  4
 
+typedef unsigned int InterventionAction;
+
+#define INTERVENTION_ACTION_NONE        0
+#define INTERVENTION_ACTION_TURN_LEFT   1
+#define INTERVENTION_ACTION_TURN_RIGHT  2
+#define INTERVENTION_ACTION_BRAKE       3
+
 typedef unsigned int ParticipantControl;
 
 #define PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF    0
