@@ -3,7 +3,8 @@ INCLUDE(../../../cmake/macros.cmake)
 #PROJECT(robottools)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(portability tgf math tgfclient)
+# SIMULATED DRIVING ASSISTANCE: added backend and frontend
+ADD_SDLIB_INCLUDEDIR(portability tgf math tgfclient backend frontend)
 
 IF(OPTION_SDL2)
 	ADD_SDL2_INCLUDEDIR()
@@ -39,7 +40,8 @@ SD_ADD_LIBRARY(robottools SHARED ${ROBOTTOOLS_SOURCES} ${ROBOTTOOLS_HEADERS})
 
 ADD_PLIB_LIBRARY(robottools sg ul)
 
-ADD_SDLIB_LIBRARY(robottools portability tgf tgfclient)
+# SIMULATED DRIVING ASSISTANCE: added backend and frontend
+ADD_SDLIB_LIBRARY(robottools portability tgf tgfclient backend frontend)
 
 IF(WIN32)
 	SD_INSTALL_FILES(BIN TARGETS robottools)

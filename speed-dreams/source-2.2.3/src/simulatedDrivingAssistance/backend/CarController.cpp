@@ -27,7 +27,7 @@ void CarController::SetLightCmd(bool p_light) const
 
 /// @brief			  Shows an element on the UI
 /// @param  p_element The element that should be shown
-void CarController::ShowUI(UI_TYPE p_element) const
+void CarController::ShowUI(InterventionAction p_element) const
 {
 	
 }

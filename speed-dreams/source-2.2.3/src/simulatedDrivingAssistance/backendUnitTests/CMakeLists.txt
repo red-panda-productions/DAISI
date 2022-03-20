@@ -29,7 +29,10 @@ FetchContent_MakeAvailable(googletest)
 SET(_SOURCES MsgpackDeserializeTests.cpp
     InterventionTests.cpp
     DecisionMakerTests.cpp
-        ConfigTests.cpp)
+        ConfigTests.cpp
+        FileDataStorageTests.cpp
+        SQLDatabaseStorageTests.cpp
+        )
 
 SET(_HEADERS MsgpackSerializeTests.h
     SocketBlackBoxTests.h)
@@ -70,7 +73,10 @@ ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
         "${IPCLIB_BIN_DIR}/IPCLib.dll"
         "${CMAKE_CURRENT_BINARY_DIR}")
 
+
 SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
+
+FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")

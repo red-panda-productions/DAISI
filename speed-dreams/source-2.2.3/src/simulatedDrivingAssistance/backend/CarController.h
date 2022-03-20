@@ -1,11 +1,6 @@
 #pragma once
+#include "ConfigEnums.h"
 #include "car.h"
-#define UI_TYPE int
-#define UI_TYPE_NONE 0
-#define UI_TYPE_TURN_LEFT 1
-#define UI_TYPE_TURN_RIGHT 2
-#define UI_TYPE_BRAKE 3
-
 /// @brief The car controller of the mediator
 class CarController
 {
@@ -20,7 +15,7 @@ public:
 
 	void SetLightCmd(bool p_light) const;
 
-	void ShowUI(UI_TYPE p_element) const;
+	void ShowUI(InterventionAction p_element) const;
 
 	void SetCar(tCarElt* p_car);
 private:
