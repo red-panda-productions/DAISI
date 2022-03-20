@@ -6,51 +6,11 @@
 
     <section name="dynamic controls">
 
-        <!--
-        <section name="InterventionLeftArrow">
-            <attstr name="type" val="image button"/>
-            <attnum name="width" val="24"/>
-            <attnum name="height" val="24"/>
-            <attstr name="tip" val=""/>
-            <attnum name="x" val="250"/>
-            <attnum name="y" val="438"/>
-            <attstr name="disabled image" val="data/img/arrow-left-top-disabled.png"/>
-            <attstr name="enabled image" val="data/img/arrow-left-top.png"/>
-            <attstr name="focused image" val="data/img/arrow-left-top-focused.png"/>
-            <attstr name="pushed image" val="data/img/arrow-left-top-pushed.png"/>
-        </section>
-
-        <section name="InterventionRightArrow">
-            <attstr name="type" val="image button"/>
-            <attnum name="width" val="24"/>
-            <attnum name="height" val="24"/>
-            <attstr name="tip" val=""/>
-            <attnum name="x" val="480"/>
-            <attnum name="y" val="438"/>
-            <attstr name="disabled image" val="data/img/arrow-right-top-disabled.png"/>
-            <attstr name="enabled image" val="data/img/arrow-right-top.png"/>
-            <attstr name="focused image" val="data/img/arrow-right-top-focused.png"/>
-            <attstr name="pushed image" val="data/img/arrow-right-top-pushed.png"/>
-        </section>
-
-        <section name="InterventionLabel">
-            <attstr name="type" val="label"/>
-            <attnum name="max len" val="22"/>
-            <attstr name="tip" val="Set the type of intervention the driver assistant can make"/>
-            <attnum name="x" val="295"/>
-            <attnum name="y" val="442"/>
-            <attnum name="width" val="160"/>
-            <attstr name="h align" val="center"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="medium"/>
-        </section>
-        -->
-
         <!-- Checkboxes for selecting a Task -->
-        <section name="CheckboxTask1">
+        <section name="CheckboxTaskLaneKeeping">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Lane keeping"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Select the Lane Keeping task"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -60,10 +20,10 @@
             <attstr name="checked" val="no"/>
         </section>
 
-        <section name="CheckboxTask2">
+        <section name="CheckboxTaskSpeedControl">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Speed control"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Select the Speed Control task"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
@@ -74,10 +34,10 @@
         </section>
 
         <!-- Checkboxes for selecting how to indicate an intervention -->
-        <section name="CheckboxIndicator1">
+        <section name="CheckboxIndicatorAuditory">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Auditory"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Enable/Disable Auditory indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -87,10 +47,10 @@
             <attstr name="checked" val="no"/>
         </section>
 
-        <section name="CheckboxIndicator2">
+        <section name="CheckboxIndicatorVisual">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Visual"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Enable/Disable Visual indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
@@ -101,10 +61,10 @@
         </section>
 
         <!-- Checkboxes for selecting the type of intervention -->
-        <section name="CheckboxType1">
+        <section name="CheckboxTypeNoSignals">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="No signals"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Set it so that the AI does not do anything"/>
             <attnum name="x" val="260"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -114,10 +74,10 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="CheckboxType2">
+        <section name="CheckboxTypeOnlySignals">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Only signals"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Set it so that the AI only shows signals as intervention"/>
             <attnum name="x" val="260"/>
             <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
@@ -127,10 +87,10 @@
             <attstr name="checked" val="no"/>
         </section>
 
-        <section name="CheckboxType3">
+        <section name="CheckboxTypeSharedControl">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Shared control"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Set it so that the AI helps with controlling the car"/>
             <attnum name="x" val="260"/>
             <attnum name="y" val="310"/>
             <attnum name="image width" val="20"/>
@@ -140,10 +100,10 @@
             <attstr name="checked" val="no"/>
         </section>
 
-        <section name="CheckboxType4">
+        <section name="CheckboxTypeCompleteTakeover">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Complete takeover"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Set it so that the AI has complete control over the car"/>
             <attnum name="x" val="260"/>
             <attnum name="y" val="280"/>
             <attnum name="image width" val="20"/>
@@ -154,7 +114,7 @@
         </section>
 
         <!-- Checkboxes for selecting the environment -->
-        <section name="CheckboxEnvironment1">
+        <section name="CheckboxEnvironmentHighway">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Highway"/>
             <attstr name="tip" val="Enable/Disable setting"/>
@@ -168,10 +128,10 @@
         </section>
 
         <!-- Checkboxes for selecting what a participant can control -->
-        <section name="CheckboxPControl1">
+        <section name="CheckboxPControlInterventionToggle">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Interventions on/off"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Enable/Disable the possibility for the user to enable/disable AI intervention"/>
             <attnum name="x" val="500"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -181,10 +141,10 @@
             <attstr name="checked" val="no"/>
         </section>
 
-        <section name="CheckboxPControl2">
+        <section name="CheckboxPControlGas">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Gas"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Enable/Disable the possibility for the user to control gas"/>
             <attnum name="x" val="500"/>
             <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
@@ -194,10 +154,10 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="CheckboxPControl3">
+        <section name="CheckboxPControlSteering">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Steering"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Enable/Disable the possibility for the user to control steering"/>
             <attnum name="x" val="500"/>
             <attnum name="y" val="310"/>
             <attnum name="image width" val="20"/>

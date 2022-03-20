@@ -88,7 +88,7 @@ static void SelectSpeedControl(tCheckBoxInfo* p_info)
     {
         m_task = TASK_SPEED_CONTROL;
     }
-    else if (m_task = TASK_LANE_KEEPING)
+    else if (m_task = TASK_SPEED_CONTROL)
     {
         m_task = TASK_NO_TASK;
     }
@@ -230,26 +230,26 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // Task checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTask1", NULL, SelectLaneKeeping);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTask2", NULL, SelectSpeedControl);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskLaneKeeping", NULL, SelectLaneKeeping);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskSpeedControl", NULL, SelectSpeedControl);
 
     // Indicator checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicator1", NULL, SelectAuditory);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicator2", NULL, SelectVisual);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAuditory);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectVisual);
 
     // Types checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType1", NULL, SelectTypeNoSignals);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType2", NULL, SelectTypeOnlySignals);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType3", NULL, SelectTypeSharedControl);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxType4", NULL, SelectTypeCompleteTakeover);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeNoSignals", NULL, SelectTypeNoSignals);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeOnlySignals", NULL, SelectTypeOnlySignals);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeSharedControl", NULL, SelectTypeSharedControl);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeCompleteTakeover", NULL, SelectTypeCompleteTakeover);
 
     // Environment checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxEnvironment1", NULL, SelectEnvironmentHighway);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxEnvironmentHighway", NULL, SelectEnvironmentHighway);
 
     // Participant-Control checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControl1", NULL, SelectControlInterventionOnOff);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControl2", NULL, SelectControlGas);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControl3", NULL, SelectControlSteering);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlInterventionToggle", NULL, SelectControlInterventionOnOff);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlGas", NULL, SelectControlGas);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlSteering", NULL, SelectControlSteering);
 
     // Textbox controls
     m_maxTimeId = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
