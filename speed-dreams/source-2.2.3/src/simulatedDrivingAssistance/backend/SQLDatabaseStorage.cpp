@@ -5,24 +5,7 @@
 #include <sstream>
 #include "../rppUtils/RppUtils.hpp"
 
-#define DATABASE_THROW(db, error)                     \
-    if (rc)                                           \
-    {                                                 \
-        std::string errorString(error);               \
-        sqlite3_close(db);                            \
-        remove(databasePath.c_str());\
-        if (zErrMsg != nullptr)                       \
-        {                                             \
-            std::string s(zErrMsg);                   \
-            errorString +=                            \
-                "\n\tReturned with error: "           \
-                + s;                                  \
-        }                                             \
-        errorString += "\n";                          \
-        sqlite3_free(zErrMsg);                        \
-        input.close();                                \
-        throw std::runtime_error(errorString.c_str());\
-    };
+#define DATABASE_THROW(error) CheckForDatabaseError(rc, database, (std::string &) error, databasePath, zErrMsg, input);
 
 SQLDatabaseStorage::SQLDatabaseStorage()
 {
@@ -53,6 +36,26 @@ SQLDatabaseStorage::SQLDatabaseStorage()
     // AI decision data
     m_headerTypes["SteerDecision"] = "SteerDecision float NOT NULL";
     m_headerTypes["BrakeDecision"] = "BrakeDecision float NOT NULL";
+}
+
+void CheckForDatabaseError(int p_sqliteExec, sqlite3*& p_db, std::string& p_error, const std::string& p_databasePath, char* p_zErrMsg, std::ifstream& p_inputFile)
+{
+    if (p_sqliteExec)
+    {
+        sqlite3_close(p_db);
+        remove(p_databasePath.c_str());
+        if (p_zErrMsg != nullptr)
+        {
+            std::string s(p_zErrMsg);
+            p_error +=
+                "\n\tReturned with error: "
+                + s;
+        }
+        p_error += "\n";
+        sqlite3_free(p_zErrMsg);
+        p_inputFile.close();
+        throw std::exception(p_error.c_str());
+    }
 }
 
 /// @brief Creates SQL query that will create a database table
@@ -185,9 +188,11 @@ void SQLDatabaseStorage::StoreData(const std::string p_filePath)
 
     std::string databasePath;
 
+    //int p_sqliteExec, sqlite3*& p_db, std::string& p_error, const std::string& p_databasePath, char* p_zErrMsg, std::ifstream& p_inputFile
+
     // open database
     int rc = OpenDatabase(database, databasePath, SimulationDataPath, tableName);
-    DATABASE_THROW(database, "Could not open database");
+    DATABASE_THROW("Could not open database")
 
     int variableAmount;
     std::string headers;
@@ -195,12 +200,12 @@ void SQLDatabaseStorage::StoreData(const std::string p_filePath)
     // create table in database
     CreateTableSQL(input,reading,tableName,sqlStream,m_headerTypes, variableAmount, headers);
     rc = sqlite3_exec(database, sqlStream.str().c_str(), nullptr, nullptr, &zErrMsg);
-    DATABASE_THROW(database, "Could not create table.")
+    DATABASE_THROW("Could not create table.")
 
     // insert data in table
     InsertDataSQL(input, reading, tableName, sqlStream, variableAmount, headers);
     rc = sqlite3_exec(database, sqlStream.str().c_str(), nullptr, nullptr, &zErrMsg);
-    DATABASE_THROW(database, "Could not insert items.")
+    DATABASE_THROW("Could not insert items.")
 
     input.close();
 
