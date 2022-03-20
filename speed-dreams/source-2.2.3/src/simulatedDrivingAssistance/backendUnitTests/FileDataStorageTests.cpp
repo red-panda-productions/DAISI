@@ -1,13 +1,17 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "FileDataStorage.h"
+#include "FileDataStorage.inl"
 #include "mocks/EnvironmentInfoMock.h"
 #include "mocks/CarInfoMock.h"
 #include "mocks/PlayerInfoMock.h"
 #include "mocks/DriveSituationMock.h"
 
+CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(DriveSituationMock)
+
 #define TEST_FILE_PATH "testDataStorage.txt"
 
+// Run a single test on the data storage system, containing no data except for the driver's name and the zero timestamp.
 TEST(FileDataStorageTests, NoStorageTimestampZero)
 {
     // Initialise class, read+write no values
@@ -30,6 +34,13 @@ TEST(FileDataStorageTests, NoStorageTimestampZero)
     ASSERT_EQ(fileContents, "player1\n0\n");
 }
 
+/// @brief Test the data storage system over 5 timesteps with certain modules enabled.
+/// Data used will be randomly generated.
+/// @param p_storeEnv Whether to save environment data
+/// @param p_storeCar Whether to save car data
+/// @param p_storePlayer Whether to save player control data
+/// @param p_storeIntervention Whether to save intervention data
+/// @param p_storeMeta Whether to save metadata
 void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool p_storeIntervention, bool p_storeMeta) {
     Random random;
     bool params[5] = {p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
@@ -47,10 +58,10 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
         expected << "TimeOfDay\nClouds\nRain\n";
     }
     if (p_storeCar) {
-        expected << "Speed\nGear\nHeadlights\nOffroad";
+        expected << "Speed\nGear\nHeadlights\nOffroad\n";
     }
     if (p_storePlayer) {
-        expected << "AccelCmd\nBrakeCmd\nClutchCmd\nSteerCmd";
+        expected << "AccelCmd\nBrakeCmd\nClutchCmd\nSteerCmd\n";
     }
     if (p_storeIntervention) { /*TODO add intervention headers*/ }
     if (p_storeMeta) { /*TODO add metadata headers*/ }
@@ -99,20 +110,21 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
         }
         if (p_storeIntervention) { /*TODO add intervention headers*/ }
         if (p_storeMeta) { /*TODO add metadata headers*/ }
-
-        fileDataStorage.Shutdown();
-
-        // Read the written file
-        std::ifstream reader(TEST_FILE_PATH);
-        std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-        reader.close();
-
-        // Check contents
-        ASSERT_EQ(fileContents, expected.str());
     }
+
+    fileDataStorage.Shutdown();
+
+    // Read the written file
+    std::ifstream reader(TEST_FILE_PATH);
+    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
+    reader.close();
+
+    // Check contents
+    ASSERT_EQ(fileContents, expected.str());
 }
 
-// TODO: do combinatorial/pairwise/whatever testing instead
+/// Run the @link #TestDataStorage(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
 TEST(FileDataStorageTests, TestDataStorageSingle) {
-    TestDataStorage(true, true, true, true, true);
+    bool booleans[2]{true, false};
+    PairWiseTest(TestDataStorage, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
 }

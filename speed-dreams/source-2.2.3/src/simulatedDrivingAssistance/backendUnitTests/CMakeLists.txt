@@ -29,11 +29,11 @@ FetchContent_MakeAvailable(googletest)
 SET(_SOURCES MsgpackDeserializeTests.cpp
     InterventionTests.cpp
     DecisionMakerTests.cpp
-        ConfigTests.cpp)
+        ConfigTests.cpp
+        FileDataStorageTests.cpp)
 
 SET(_HEADERS MsgpackSerializeTests.h
-    SocketBlackBoxTests.h
-    FileDataStorageTests.h)
+    SocketBlackBoxTests.h)
 
 SET(_MOCK_SOURCES "")
 
