@@ -7,6 +7,7 @@ SET(_SOURCES Mediator.cpp
         SDAConfig.cpp
         DecisionMaker.cpp
         InterventionFactory.cpp
+        SQLDatabaseStorage.cpp
         CarController.cpp
         DriveSituation.cpp
         DecisionTuple.cpp
@@ -37,6 +38,8 @@ SET(_HEADERS CarInfo.h
         ../rppUtils/RppUtils.hpp
         SDAConfig.h
         InterventionFactory.h
+        IDataStorage.h
+        SQLDatabaseStorage.h
         InterventionExecutor.h
         InterventionExecutorAlwaysIntervene.h
         InterventionExecutorAskFor.h
@@ -47,6 +50,7 @@ SET(_HEADERS CarInfo.h
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability)
+ADD_SQLITE3_INCLUDEDIR()
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
@@ -54,5 +58,7 @@ SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 ADD_MSGPACK_PACKAGE(backend)
 
 ADD_IPCLIB_PACKAGE(backend)
+
+ADD_SQLITE3_LIBRARY(backend)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)

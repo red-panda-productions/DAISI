@@ -29,7 +29,8 @@ FetchContent_MakeAvailable(googletest)
 SET(_SOURCES MsgpackDeserializeTests.cpp
     InterventionTests.cpp
     DecisionMakerTests.cpp
-        ConfigTests.cpp)
+    SQLDatabaseStorageTests.cpp
+    ConfigTests.cpp)
 
 SET(_HEADERS MsgpackSerializeTests.h
     SocketBlackBoxTests.h)
@@ -45,8 +46,6 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/TrackPositionMock.h
     mocks/ConfigMock.h
     mocks/DecisionMakerMock.h)
-
-
 
 set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
@@ -70,7 +69,10 @@ ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
         "${IPCLIB_BIN_DIR}/IPCLib.dll"
         "${CMAKE_CURRENT_BINARY_DIR}")
 
+
 SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
+
+FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 target_include_directories(backendUnitTests PUBLIC "../backend")
 target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
