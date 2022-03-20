@@ -1,6 +1,7 @@
 #include <fstream>
 #include <string>
 #include <portability.h>
+#include <stdexcept>
 
 #include "InterventionConfig.h"
 
@@ -16,6 +17,10 @@ void InterventionConfig::SetTextures(tTextureData* p_textures)
 
 tTextureData InterventionConfig::GetCurrentInterventionTexture() 
 {
+    if (m_currentAction >= sizeof(m_textures))
+    {
+        throw std::out_of_range("Intervention index (Enum) is out-of-bounds of textures array");
+    }
     return m_textures[m_currentAction];
 }
 

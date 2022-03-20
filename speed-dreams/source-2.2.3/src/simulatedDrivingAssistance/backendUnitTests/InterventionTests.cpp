@@ -17,22 +17,25 @@
 
 #define INTERVENTION_TYPE_AMOUNT 5
 
-// Needs to be called before getting a singleton instance.
-#define SETUP_SINGLETONS_FOLDER                                         \
-    std::error_code errorCode;                                          \
-    std::experimental::filesystem::remove_all("Singletons", errorCode); \
-    struct stat info;                                                   \
-    char directory[256];                                                \
-    getcwd(directory, 256);                                             \
-    std::string workingDirecotory(directory);                           \
-    workingDirecotory += "\\Singletons";                                \
-    const char* wd = workingDirecotory.c_str();                         \
-    int err = stat(wd, &info);                                          \
-    if (err != 0)                                                       \
-    {                                                                   \
-        err = _mkdir(wd);                                               \
-        ASSERT_TRUE(err == 0);                                          \
+/// @brief Makes sure there is an empty singletons folder to be used by Singleton classes.
+///        Needs to be called once at the start of a method with any GetInstance() calls.
+inline void SetupSingletonsFolder()
+{
+    std::error_code errorCode;
+    std::experimental::filesystem::remove_all("Singletons", errorCode);
+    struct stat info;
+    char directory[256];
+    getcwd(directory, 256);
+    std::string workingDirecotory(directory);
+    workingDirecotory += "\\Singletons";
+    const char* wd = workingDirecotory.c_str();
+    int err = stat(wd, &info);
+    if (err != 0)
+    {
+        err = _mkdir(wd);
+        ASSERT_TRUE(err == 0);
     }
+}
 
 InterventionType typesMediator[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_NO_SIGNALS,
                                                              INTERVENTION_TYPE_ONLY_SIGNALS,
@@ -46,7 +49,7 @@ InterventionType typesMediator[INTERVENTION_TYPE_AMOUNT] = { INTERVENTION_TYPE_N
 
 TEST(MediatorTest, GetDistributedMediator)
 {
-    SETUP_SINGLETONS_FOLDER
+    SetupSingletonsFolder();
 
     SMediator* mediator1 = SMediator::GetInstance();
     SMediator* mediator2 = SMediator::GetInstance();
@@ -57,7 +60,7 @@ TEST(MediatorTest, GetDistributedMediator)
 /// @brief Tests if the Mediator sets and gets the interventionType correctly
 TEST(MediatorTest, GetIntervention)
 {
-    SETUP_SINGLETONS_FOLDER
+    SetupSingletonsFolder();
 
     SMediator* mediator = SMediator::GetInstance();
 
