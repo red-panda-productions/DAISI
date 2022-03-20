@@ -55,14 +55,115 @@ SQLDatabaseStorage::SQLDatabaseStorage()
     m_headerTypes["BrakeDecision"] = "BrakeDecision float NOT NULL";
 }
 
-// Create a callback function
-int callback(void *NotUsed, int argc, char **argv, char **azColName){
+/// @brief Creates SQL query that will create a database table
+/// @param p_inputFile data file to read from
+/// @param p_reading current data read from file
+/// @param p_tableName name of table to create
+/// @param p_sqlStream string stream that collects all sql statements
+/// @param p_headerTypes map that sets the correct type for each header name
+/// @param p_variableAmount how many variables the table has
+/// @param p_headers header names
+void CreateTableSQL(
+        std::ifstream& p_inputFile,
+        std::string& p_reading,
+        const std::string& p_tableName,
+        std::stringstream& p_sqlStream,
+        const std::unordered_map<std::string,std::string>& p_headerTypes,
+        int& p_variableAmount,
+        std::string& p_headers)
+{
+    std::stringstream headersStream;
 
+    p_sqlStream.clear();
+    p_sqlStream.str("");
 
-    // Return successful
-    return 0;
+    p_sqlStream << "CREATE TABLE " << p_tableName << " (TimeStamp int NOT NULL PRIMARY KEY, ";
+
+    p_inputFile >> p_reading;
+
+    if (p_reading == "START") throw std::exception("Variable names were not given");
+
+    // starts at one because of timestamp
+    int variableAmount = 1;
+
+    while (true)
+    {
+        variableAmount++;
+        headersStream << p_reading;
+        try
+        {
+            p_sqlStream << p_headerTypes.at(p_reading);
+        }
+        catch (const std::exception& e) {throw std::exception("Variable does not exist in map");}
+        p_inputFile >> p_reading;
+        if (p_inputFile.eof()) throw std::exception("Reached End Of File prematurely. Missing START?");
+        if (p_reading == "START") break;
+        headersStream << ", ";
+        p_sqlStream << ", ";
+    }
+
+    p_sqlStream << ");";
+
+    p_variableAmount = variableAmount;
+    p_headers = headersStream.str();
 }
 
+/// @brief Puts SQL Insert statements in sqlStream.
+/// @params Same as CreateTableSQL
+void InsertDataSQL(
+        std::ifstream& p_inputFile,
+        std::string& p_reading,
+        const std::string& p_tableName,
+        std::stringstream& p_sqlStream,
+        const int p_variableAmount,
+        const std::string& p_headers)
+{
+    p_sqlStream.clear();
+    p_sqlStream.str("");
+
+    while (true)
+    {
+        p_sqlStream
+                << "INSERT INTO "
+                << p_tableName
+                << " (TimeStamp, "
+                << p_headers
+                << ") VALUES (";
+
+        for (int i = 0; i < p_variableAmount; i++)
+        {
+            p_inputFile >> p_reading;
+            p_sqlStream << "'" << p_reading << "'";
+            if (i >= p_variableAmount - 1) break;
+            p_sqlStream << ", ";
+        }
+
+        p_sqlStream << ");";
+
+        if (p_inputFile.eof()) break;
+    }
+}
+
+/// @brief Creates and open a database if it doesn't exist already
+/// @param database pointer where the database will be stored
+/// @param p_databasePath path to the database
+/// @param p_simulationDataPath path to the simulation data folder
+/// @param p_tableName name of the table that will be created
+/// @return integer with information on successfulness of opening the database
+int OpenDatabase(sqlite3*& database, std::string& p_databasePath, const std::string& p_simulationDataPath, const std::string& p_tableName)
+{
+    const std::string databaseFileName = p_tableName + "_database.sqlite3";
+    p_databasePath =  p_simulationDataPath + databaseFileName;
+
+    std::ifstream databaseFile(p_databasePath);
+    if (databaseFile.good()) throw std::runtime_error("A file with the name " + databaseFileName + " already exists");
+
+    // open database
+    return sqlite3_open(p_databasePath.c_str(), &database);
+}
+
+/// @brief Creates a database and stores data from input file into a table
+/// @param p_filePath path and name of input file (from SimulationData\)
 void SQLDatabaseStorage::StoreData(const std::string p_filePath)
 {
     std::string SimulationDataPath("SimulationData\\");
@@ -73,86 +174,36 @@ void SQLDatabaseStorage::StoreData(const std::string p_filePath)
     if (!input.good()) throw std::exception("Cannot find/open input file");
 
     std::string reading;
-    std::stringstream headers;
     std::stringstream sqlStream;
 
+    // read first string: ID of participant
     input >> reading;
-
     const std::string tableName = "Simulation_" + reading;
-
-    sqlStream << "CREATE TABLE " << tableName << " (TimeStamp int NOT NULL PRIMARY KEY, ";
-
-    input >> reading;
-
-    if (reading == "START") throw std::exception("Variable names were not given");
-
-    // starts at one because of timestamp
-    int variableAmount = 1;
-
-    while (true)
-    {
-        variableAmount++;
-        headers << reading;
-        try
-        {
-            sqlStream << m_headerTypes.at(reading);
-        }
-        catch (const std::exception& e) {throw std::exception("Variable does not exist in map");}
-        input >> reading;
-        if (input.eof()) throw std::exception("Reached End Of File prematurely. Missing START?");
-        if (reading == "START") break;
-        headers << ", ";
-        sqlStream << ", ";
-    }
-
-    sqlStream << ");";
 
     sqlite3* database;
     char* zErrMsg = nullptr;
 
-    const std::string databaseFileName = tableName + "_database.sqlite3";
-    const std::string databasePath =  SimulationDataPath + databaseFileName;
-
-    std::ifstream databaseFile(databasePath);
-    if (databaseFile.good()) throw std::runtime_error("A file with the name " + databaseFileName + " already exists");
+    std::string databasePath;
 
     // open database
-    int rc = sqlite3_open(databasePath.c_str(), &database);
-    DATABASE_THROW(database, "Could not open database")
+    int rc = OpenDatabase(database, databasePath, SimulationDataPath, tableName);
+    DATABASE_THROW(database, "Could not open database");
 
-    // create table
-    rc = sqlite3_exec(database,sqlStream.str().c_str(), callback, 0, &zErrMsg);
+    int variableAmount;
+    std::string headers;
+
+    // create table in database
+    CreateTableSQL(input,reading,tableName,sqlStream,m_headerTypes, variableAmount, headers);
+    rc = sqlite3_exec(database, sqlStream.str().c_str(), nullptr, nullptr, &zErrMsg);
     DATABASE_THROW(database, "Could not create table.")
 
-    sqlStream.clear();
-    sqlStream.str("");
-
-    while (true)
-    {
-        sqlStream
-            << "INSERT INTO "
-            << tableName
-            << " (TimeStamp, "
-            << headers.str()
-            << ") VALUES (";
-
-        for (int i = 0; i < variableAmount; i++)
-        {
-            input >> reading;
-            sqlStream << "'" << reading << "'";
-            if (i >= variableAmount - 1) break;
-            sqlStream << ", ";
-        }
-
-        sqlStream << ");";
-
-        if (input.eof()) break;
-    }
-
-    rc = sqlite3_exec(database, sqlStream.str().c_str(), callback, 0, &zErrMsg);
+    // insert data in table
+    InsertDataSQL(input, reading, tableName, sqlStream, variableAmount, headers);
+    rc = sqlite3_exec(database, sqlStream.str().c_str(), nullptr, nullptr, &zErrMsg);
     DATABASE_THROW(database, "Could not insert items.")
 
     input.close();
+
     // avoid memory leak
     sqlite3_free(zErrMsg);
 
