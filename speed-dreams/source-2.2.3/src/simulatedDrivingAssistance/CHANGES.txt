@@ -30,6 +30,19 @@ Added:
 
 Changed:
   src/
+      libs/
+        robottools/
+            rtHumanDriver.cpp
+                included Recorder.h
+                included ConfigEnums.h
+                changed new_race()
+                changed common_drive()
+            CMakeLists.txt
+                changed frontend added to ADD_SDLIB_INCLUDEDIR
+                changed backend added to ADD_SDLIB_INCLUDEDIR
+                changed frontend added to ADD_SDLIB_LIBRARY
+                changed backend added to ADD_SDLIB_LIBRARY
+
     main/
         main.cpp
     interfaces/
@@ -61,7 +74,7 @@ Changed:
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
         graphic/
-            ssggraph/
+            ssggraph
                 grboard.cpp
                     added   grDispIntervention()
                     changed grInitBoardCar() 

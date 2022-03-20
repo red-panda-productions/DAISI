@@ -19,7 +19,8 @@ SET(_SOURCES Mediator.cpp
         EnvironmentInfo.cpp
         TrackPosition.cpp
         CarInfo.cpp
-        PlayerInfo.cpp)
+        PlayerInfo.cpp
+        Recorder.cpp)
 
 SET(_INLINES Mediator.inl
         DecisionMaker.inl
@@ -46,7 +47,8 @@ SET(_HEADERS CarInfo.h
         InterventionExecutorIndication.h
         InterventionExecutorNoIntervention.h
         InterventionExecutorPerformWhenNeeded.h
-        CarController.h)
+        CarController.h
+        Recorder.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability)
