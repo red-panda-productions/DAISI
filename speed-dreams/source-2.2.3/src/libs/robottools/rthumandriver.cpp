@@ -59,9 +59,19 @@
 #include <playerpref.h>
 #include <car.h>
 
+
 #include "humandriver.h"
 #if SDL_FORCEFEEDBACK
 #include "forcefeedback.h"
+
+// ASSISTED DRIVING ASSISTANCE: added recorder
+// To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+#include <ConfigEnums.h>
+#ifdef RECORD_SESSION
+#include <Recorder.h>
+Recorder* recorder;
+#endif
+
 
 
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
@@ -164,6 +174,7 @@ static std::vector<tHumanContext*> HCtx;
 
 static bool speedLimiter = false;
 static tdble speedLimit;
+
 
 typedef struct
 {
@@ -268,6 +279,9 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
  */
 void HumanDriver::shutdown(const int index)
 {
+#ifdef RECORD_SESSION
+    delete recorder;
+#endif
     int idx = index - 1;
 
     free(VecNames[idx]);
@@ -489,6 +503,11 @@ void HumanDriver::terminate()
         ++itDrvName;
     }
     VecNames.clear();
+
+
+
+
+
 }
 
 
@@ -594,6 +613,11 @@ void HumanDriver::init_track(int index,
  */
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
+    // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
+    // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+#ifdef RECORD_SESSION
+    recorder = new Recorder();
+#endif
     const int idx = index - 1;
 
     // Have to read engine curve
@@ -835,6 +859,7 @@ void HumanDriver::end_race(int index, tCarElt* /*car*/, tSituation* /*s*/)
         HCtx[idx]->lastForceFeedbackLevel = 0; // forget force feedback level
     }
 #endif
+
 }
 
 
@@ -863,6 +888,7 @@ static void updateKeys(void)
 
     for (idx = 0; idx < (int)HCtx.size(); idx++) {
         if (HCtx[idx]) {
+
             cmd = HCtx[idx]->cmdControl;
             for (i = 0; i < NbCmdControl; i++) {
                 if (cmd[i].type == GFCTRL_TYPE_KEYBOARD) {
@@ -895,7 +921,9 @@ static int onKeyAction(int key, int modifier, int state)
     // Update key state only if the key is assigned to a player command.
     const int nKeyInd = lookUpKeyMap(key);
     if (nKeyInd >= 0)
+    {
         lastReadKeyState[lookUpKeyMap(key)] = state;
+    }
 
     return 0;
 }//onKeyAction
@@ -912,7 +940,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     tdble throttle;
     tdble leftSteer;
     tdble rightSteer;
-    tdble newGlance;;
+    tdble newGlance;
 #if (BINCTRL_STEERING == JEPZ || BINCTRL_STEERING == JPM)
     tdble sensFrac, speedFrac;
 #endif
@@ -920,6 +948,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     const int idx = index - 1;
     tControlCmd *cmd = HCtx[idx]->cmdControl;
+
 
     if (init_keybd && !GfuiScreenIsActive(0))
     {
@@ -992,8 +1021,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
         GfOut("Gridbox Initial Gear %d\n", preGear);
     }
-
-
 
     if ((cmd[CMD_ABS].type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[cmd[CMD_ABS].val])
             || (cmd[CMD_ABS].type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[cmd[CMD_ABS].val])
@@ -1687,7 +1714,12 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 #endif
 #endif
-
+    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
+    // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+#ifdef RECORD_SESSION
+        float inputs[4] = { car->_accelCmd , car->_brakeCmd, leftSteer, rightSteer };
+        recorder->WriteRecording(inputs, s -> currentTime);
+#endif
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 

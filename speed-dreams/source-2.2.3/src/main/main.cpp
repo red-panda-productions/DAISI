@@ -42,8 +42,8 @@
 #include <iraceengine.h>
 #include <iuserinterface.h>
 
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
+#include "../rppUtils/RppUtils.hpp"
+
 
 
 // If defined in tgf.h:
@@ -185,35 +185,9 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
+    // SIMULATED DRIVING ASSISTANCE: Setup folder to support multi-module singletons
+    if (!SetupSingletonsFolder()) return 1;
 
-	//filesystem was implemented in c++17, so we only have the experimental one
-	std::error_code errorCode;
-	std::experimental::filesystem::remove_all("Singletons",errorCode);
-	if(errorCode.value() != 0)
-	{
-		std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
-		return 1;
-	}
-
-	// set up singleton folder
-	struct stat info;
-	char directory[256];
-	getcwd(directory, 256);
-	std::string workingDirecotory(directory);
-	workingDirecotory += "\\Singletons";
-	const char* wd = workingDirecotory.c_str();
-	int err = stat(wd, &info);
-	if (err != 0 && err != -1)
-	{
-		std::cerr << "Could not delete Singletons folder" << std::endl;
-		return 1;
-	}
-	err = _mkdir(wd);
-	if (err != 0)
-	{
-		std::cerr << "Could not create singletons folder" << std::endl;
-		return 1;
-	}
 
 	// Update user settings files from installed ones.
     pApp->updateUserSettings();

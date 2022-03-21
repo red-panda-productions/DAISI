@@ -85,7 +85,8 @@ DriveSituation* Mediator<DecisionMaker>::Simulate()
 }
 
 template<typename DecisionMaker>
-Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance() {
+Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance() 
+{
     if(m_instance == nullptr)
     {
         // check if Mediator file exists

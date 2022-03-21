@@ -35,6 +35,8 @@
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
 
+#include "InterventionConfig.h"
+
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2
@@ -77,8 +79,6 @@ const char strTireSet[] = "New tires";
 const char strFrontWing[] = "Front wing";
 const char strRearWing[] = "Rear wing";
 const char strPenalty[] = "Next pit type";
-
-ssgSimpleState* interventionTexture;
 
 
 cGrBoard::cGrBoard(int myid) :
@@ -1560,11 +1560,11 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 
 }
 
-/// @brief Displays the texture stored in interventionTexture (which is loaded in grInitBoardCar)
-/// TODO: make a dedicated function to load all intervention icons from XML into a struct/array
+/// @brief Displays the currently active intervention in InterventionConfig
 void cGrBoard::grDispIntervention() 
 {
-    if (!interventionTexture) return;
+    tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
+    if (!textureData.Texture) return;
 
     // Dimensions of the icon on the screen (will be put in XML settings file later)
     float iconWidth = 100;
@@ -1578,8 +1578,11 @@ void cGrBoard::grDispIntervention()
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
-    glTranslatef(1.5 * centerAnchor - 0.5 * iconWidth, BOTTOM_ANCHOR, 0);
-    glBindTexture(GL_TEXTURE_2D, interventionTexture->getTextureHandle());
+    glTranslatef(
+        1.5 * centerAnchor - 0.5 * iconWidth + textureData.Position.X,
+        BOTTOM_ANCHOR + 10 + textureData.Position.Y,
+        0);
+    glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
     
     // Draw the texture as a Triangle Strip. 
     // glTexCoord2f defines point of the texture that you take (0-1).
@@ -1595,6 +1598,36 @@ void cGrBoard::grDispIntervention()
     // Unbind the texture and pop the translated matrix of the stack.
     glBindTexture(GL_TEXTURE_2D, 0);
     glPopMatrix();
+}
+
+/// @brief Loads the intervention textures from XML into the InterventionConfig singleton class.
+///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
+void LoadInterventionTextures()
+{
+    // Load intervention texture from XML file (unchecked max path size: 256)
+    char path[256];
+    snprintf(path, sizeof(path), INTERVENTION_DATA_DIR_FORMAT, GfDataDir());
+    void* xmlHandle = GfParmReadFile(path, GFPARM_RMODE_STD);
+
+    snprintf(path, sizeof(path), PRM_SECT_INTERVENTIONS);
+    int interventionCount = GfParmGetEltNb(xmlHandle, path);
+
+    tTextureData* textures = new TextureData[interventionCount];
+    for (int i = 0; i < interventionCount; i++)
+    {
+        snprintf(path, sizeof(path), "%s/%d", PRM_SECT_INTERVENTIONS, i);
+        const char* name = GfParmGetStr(xmlHandle, path, PRM_ATTR_NAME, "");
+        const char* tex = GfParmGetStr(xmlHandle, path, PRM_ATTR_TEXTURE, "");
+        int xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
+        int yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
+
+        // IMPORTANT: The texture should not be bigger than 256x256 due to buffer sizes.
+        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(tex);
+
+        textures[i] = TextureData(name, texture, { xPos, yPos });
+    }
+
+    InterventionConfig::GetInstance()->SetTextures(textures);
 }
 
 
@@ -1662,18 +1695,11 @@ void grInitBoardCar(tCarElt *car)
 
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
 
+
   // Add the data/intervention folder to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
 
-  // Load intervention texture from XML file, for now: UNSAFE with respect to path size (max is 256) 
-  char buf[256];
-  snprintf(buf, sizeof(buf), "%sdata/intervention/intervention.xml", GfDataDir());
-  void* xmlHandleIntervention = GfParmReadFile(buf, GFPARM_RMODE_STD);
-
-  // Search the xml file for the file corresponding to the attribute "steer intervention"
-  // Note that grSsgLoadTexState uses a buffer of 256 internally, so the file should not be bigger than 256x256
-  const char* attr = GfParmGetStr(xmlHandleIntervention, SECT_GROBJECTS, "steer intervention", NULL);
-  interventionTexture = (ssgSimpleState*)grSsgLoadTexState(attr);
+  LoadInterventionTextures();
 
 
   /* Tachometer --------------------------------------------------------- */
