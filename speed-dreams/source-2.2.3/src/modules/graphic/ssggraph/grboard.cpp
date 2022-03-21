@@ -27,6 +27,7 @@
 
 #include <algorithm>        // remove
 #include <sstream>
+#include <vector>
 
 #include "grmain.h"       // grWinX, grHandle, grMaxDamage
 #include "grtrackmap.h"   // cGrTrackMap
@@ -1612,7 +1613,7 @@ void LoadInterventionTextures()
     snprintf(path, sizeof(path), PRM_SECT_INTERVENTIONS);
     int interventionCount = GfParmGetEltNb(xmlHandle, path);
 
-    tTextureData* textures = new TextureData[interventionCount];
+    std::vector<tTextureData> textures(interventionCount);
     for (int i = 0; i < interventionCount; i++)
     {
         snprintf(path, sizeof(path), "%s/%d", PRM_SECT_INTERVENTIONS, i);

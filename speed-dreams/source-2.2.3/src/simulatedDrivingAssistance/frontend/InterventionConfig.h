@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <plib/ssg.h>
 #include "ConfigEnums.h"
 
@@ -43,7 +44,7 @@ public:
     /// @brief              Sets the textures that are used by the HUD
     /// @param p_textures   An array containing the texture data, 
     ///                     indexed by the InterventionAction type in ConfigEnums.h
-    void SetTextures(tTextureData* p_textures);
+    void SetTextures(std::vector<tTextureData> p_textures);
 
     /// @brief  Retrieves the texture belonging to the current intervention action
     /// @return The texture data
@@ -65,5 +66,5 @@ private:
     static InterventionConfig* m_instance;
 
     InterventionAction m_currentAction;
-    tTextureData* m_textures;
+    std::vector<tTextureData> m_textures;
 };

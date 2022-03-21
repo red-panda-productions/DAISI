@@ -10,14 +10,14 @@ void InterventionConfig::SetInterventionAction(InterventionAction p_action)
     m_currentAction = p_action;
 }
 
-void InterventionConfig::SetTextures(tTextureData* p_textures) 
+void InterventionConfig::SetTextures(std::vector<tTextureData> p_textures) 
 {
     m_textures = p_textures;
 }
 
 tTextureData InterventionConfig::GetCurrentInterventionTexture() 
 {
-    if (m_currentAction >= sizeof(m_textures))
+    if (m_currentAction >= m_textures.size())
     {
         throw std::out_of_range("Intervention index (Enum) is out-of-bounds of textures array");
     }
