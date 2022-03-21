@@ -75,8 +75,9 @@ static void SelectLaneKeeping(tCheckBoxInfo* p_info)
     {
         m_task = TASK_LANE_KEEPING;
     }
-    else if (m_task = TASK_LANE_KEEPING)
+    else if (m_task == TASK_LANE_KEEPING)
     {
+        // this is temporary, TODO: Make it so that only one checkbox can be selected at once
         m_task = TASK_NO_TASK;
     }
 }
@@ -88,8 +89,9 @@ static void SelectSpeedControl(tCheckBoxInfo* p_info)
     {
         m_task = TASK_SPEED_CONTROL;
     }
-    else if (m_task = TASK_SPEED_CONTROL)
+    else if (m_task == TASK_SPEED_CONTROL)
     {
+        // this is temporary, TODO: Make it so that only one checkbox can be selected at once
         m_task = TASK_NO_TASK;
     }
 }
