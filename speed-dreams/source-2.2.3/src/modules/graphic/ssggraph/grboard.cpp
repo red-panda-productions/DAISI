@@ -1604,16 +1604,12 @@ void cGrBoard::grDispIntervention()
 ///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
 void LoadInterventionTextures()
 {
-    // Load intervention texture from XML file (unchecked max path size: 256)
+    InterventionConfig* instance = InterventionConfig::GetInstance();
+    tTextureData* textures = new TextureData[instance->GetInterventionCount()];
+
     char path[256];
-    snprintf(path, sizeof(path), INTERVENTION_DATA_DIR_FORMAT, GfDataDir());
-    void* xmlHandle = GfParmReadFile(path, GFPARM_RMODE_STD);
-
-    snprintf(path, sizeof(path), PRM_SECT_INTERVENTIONS);
-    int interventionCount = GfParmGetEltNb(xmlHandle, path);
-
-    tTextureData* textures = new TextureData[interventionCount];
-    for (int i = 0; i < interventionCount; i++)
+    void* xmlHandle = InterventionConfig::GetInstance()->GetXmlHandle();
+    for (int i = 0; i < instance->GetInterventionCount(); i++)
     {
         snprintf(path, sizeof(path), "%s/%d", PRM_SECT_INTERVENTIONS, i);
         const char* name = GfParmGetStr(xmlHandle, path, PRM_ATTR_NAME, "");

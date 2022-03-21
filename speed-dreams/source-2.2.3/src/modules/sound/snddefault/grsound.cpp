@@ -26,6 +26,7 @@
 #include "PlibSoundInterface.h"
 #endif
 #include "CarSoundData.h"
+#include "InterventionConfig.h"
 
 static int soundInitialized = 0;
 
@@ -152,6 +153,10 @@ void grInitSound(tSituation* s, int ncars)
 
 	sound_interface->setNCars(ncars);
 	soundInitialized = 1;
+
+    for (const auto &item : InterventionConfig::GetInstance()->GetSounds()) {
+        sound_interface->setInterventionSound(item.first, item.second);
+    }
 
 	// Must happen after all static non-shared have been allocated. 
 	sound_interface->initSharedSourcePool();

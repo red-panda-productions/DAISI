@@ -21,6 +21,7 @@
 
 #include "OpenalSound.h"
 #include "OpenalSoundInterface.h"
+#include "InterventionConfig.h"
 
 
 /// Define this to use the OpenAL Doppler.
@@ -256,6 +257,28 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
 		car_src[id].update();
 		engpri[id].a = car_src[id].a;
 	}
+
+    for (const auto &item : intervention_sounds) {
+        Sound* sound = item.second;
+        sgVec3 p, u;
+        car_sound_data[0]->getCarPosition(p);
+        car_sound_data[0]->getCarSpeed(u);
+        sound->setSource(p, u);
+        sound->setReferenceDistance(1.0f);
+        sound->setVolume(1.0f);
+        sound->setPitch(1.0f);
+
+        sound->update();
+    }
+
+    for (const auto &action : InterventionConfig::GetInstance()->GetEnabledSounds()) {
+        Sound* sound = intervention_sounds[action];
+
+        if(!sound->isPlaying()) {
+            GfLogWarning("Started playing: %d\n", action);
+            sound->start();
+        }
+    }
 
 	qsort((void*) engpri, n_cars, sizeof(SoundPri), &sortSndPriority);
 

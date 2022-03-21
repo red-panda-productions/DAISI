@@ -20,7 +20,7 @@ ENDIF(NOT OPTION_USE_MACPORTS)
 SET(_OTHER_SOURCES ) 
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools)
+ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend)
 ADD_PLIB_INCLUDEDIR()
 
 IF(OPTION_SDL2)
@@ -66,7 +66,7 @@ ELSE(OPTION_SDL2)
 	ADD_SDL_LIBRARY(snddefault)
 ENDIF(OPTION_SDL2)
 
-ADD_SDLIB_LIBRARY(snddefault portability tgf tgfclient robottools)
+ADD_SDLIB_LIBRARY(snddefault portability tgf tgfclient robottools frontend)
 
 IF(OPENAL_FOUND)
     TARGET_LINK_LIBRARIES(snddefault ${OPENAL_LIBRARY})

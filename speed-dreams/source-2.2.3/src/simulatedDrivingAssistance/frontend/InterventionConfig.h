@@ -2,6 +2,7 @@
 
 #include <plib/ssg.h>
 #include "ConfigEnums.h"
+#include <unordered_map>
 
 // Location of the intervention XML file, with respect to the root data directory.
 #define INTERVENTION_DATA_DIR_FORMAT "%sdata/intervention/intervention.xml"
@@ -36,6 +37,11 @@ class InterventionConfig
 {
 public:
 
+    /// @brief Initialize the intervention configuration.
+    void Initialize();
+
+    void* GetXmlHandle();
+
     /// @brief          Sets the current active intervention action
     /// @param p_action The intervention to set as current active action
     void SetInterventionAction(InterventionAction p_action);
@@ -49,6 +55,15 @@ public:
     /// @return The texture data
     tTextureData GetCurrentInterventionTexture();
 
+    /// @brief  Retrieves the sound locations belonging to the possible intervention actions
+    /// @return A map going from InterventionAction => sound location, possibly nullptr
+    std::unordered_map<InterventionAction, const char*> GetSounds();
+
+    /// @brief  Retrieves the intervention actions that should be playing a sound effect.
+    /// @return A vector containing the intervention actions that should play a sound effect.
+    std::vector<InterventionAction> GetEnabledSounds();
+
+    unsigned int GetInterventionCount();
 
     /// @brief  Returns an the existing InterventionConfig, or creates the initial one if it doesn't exist yet.
     /// @return The InterventionConfig instance
@@ -60,10 +75,11 @@ public:
     /// @brief Removes assigment for singleton behaviour
     void operator=(InterventionConfig const&) = delete;
 
-private:
+ private:
     InterventionConfig() = default;
     static InterventionConfig* m_instance;
 
+    unsigned int m_interventionCount = 0;
     InterventionAction m_currentAction;
     tTextureData* m_textures;
 };
