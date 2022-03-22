@@ -3,12 +3,12 @@
 
 void BrakeDecision::RunIndicateCommands()
 {
-	if (m_brakeAmount < 0.5f) return;
+	if (m_brakeAmount < 0.2f) return;
 
 	SMediator::GetInstance()->CarController.ShowUI(INTERVENTION_ACTION_BRAKE);
 }
 
 void BrakeDecision::RunInterveneCommands()
 {
-
+	SMediator::GetInstance()->CarController.SetBrakeCmd(m_brakeAmount);
 }

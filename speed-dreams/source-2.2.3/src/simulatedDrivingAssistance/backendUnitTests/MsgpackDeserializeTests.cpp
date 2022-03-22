@@ -14,20 +14,20 @@ TEST(MsgpackDeserializeTests, Deserialize)
     float controlSteerValue = random.NextFloat(1000);
     float controlBrakeValue = random.NextFloat(1000);
 
-    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue)};
+    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue), std::to_string(controlBrakeValue) };
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
+    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_ALMOST_EQ(decisionTuple.m_steerDecision.m_steerAmount, controlSteerValue, 0.000001);
-    ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
+    ASSERT_ALMOST_EQ(decisionTuple.GetSteer(), controlSteerValue, 0.000001);
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, 0.000001);
 }
 
 /// @brief Tests if the program throws when there are no variables to receive
@@ -37,7 +37,7 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
     float controlSteerValue = random.NextFloat(1000);
     float controlBrakeValue = random.NextFloat(1000);
 
-    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue)};
+    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue), std::to_string(controlBrakeValue) };
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
@@ -55,20 +55,20 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     std::string unparsableString = "This is not a float";
     float controlBrakeValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = {unparsableString, std::to_string(controlBrakeValue)};
+    std::vector<std::string> mockMessageFromBlackBox = { unparsableString, std::to_string(controlBrakeValue) };
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
+    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_TRUE(isnan(decisionTuple.m_steerDecision.m_steerAmount));
-    ASSERT_ALMOST_EQ(decisionTuple.m_brakeDecision.m_brakeAmount, controlBrakeValue, 0.000001);
+    ASSERT_TRUE(isnan(decisionTuple.GetSteer()));
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, 0.000001);
 }
 
 /// @brief Tests if program throws when if a variable to parse does not exist in the function map.
@@ -78,14 +78,14 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     std::string unparsableString = "This is not a float";
     float controlBrakeValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = {unparsableString, std::to_string(controlBrakeValue)};
+    std::vector<std::string> mockMessageFromBlackBox = { unparsableString, std::to_string(controlBrakeValue) };
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = {"NON_EXISTING_DECISION_KEY", "Brake"};
+    socketBlackBox.m_variablesToReceive = { "NON_EXISTING_DECISION_KEY", "Brake" };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -99,14 +99,14 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     float controlBrakeValue = random.NextFloat();
     float extraValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue), std::to_string(extraValue)};
+    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue), std::to_string(controlBrakeValue), std::to_string(extraValue) };
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
+    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -118,14 +118,14 @@ TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
     Random random;
     float controlSteerValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue)};
+    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue) };
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = {"Steer", "Brake"};
+    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);

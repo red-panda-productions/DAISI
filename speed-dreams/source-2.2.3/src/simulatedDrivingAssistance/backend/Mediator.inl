@@ -29,12 +29,12 @@ void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators) {
 }
 
 template<typename DecisionMaker>
-InterventionType Mediator<DecisionMaker>::GetInterventionType(){
+InterventionType Mediator<DecisionMaker>::GetInterventionType() {
     return m_decisionMaker.Config.GetInterventionType();
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type){
+void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type) {
     m_decisionMaker.ChangeSettings(p_type);
 }
 
@@ -49,18 +49,19 @@ void Mediator<DecisionMaker>::SetUserID(char* p_userID) {
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting){
+void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting) {
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
 
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
+    CarController.SetCar(p_car);
     DriveSituation currentSituation(
         m_environment,
         CarInfo(
-            TrackPosition(false, p_car->pub.trkPos.toStart, p_car->pub.trkPos.toRight, p_car->pub.trkPos.toMiddle, p_car->pub.trkPos.toLeft),
-            p_car->pub.speed, p_car->race.topSpeed, p_car->priv.gear, false),
+            TrackPosition(false, p_car->pub.trkPos.toStart, p_car->pub.trkPos.toLeft, p_car->pub.trkPos.toMiddle, p_car->pub.trkPos.toRight),
+            p_car->pub.DynGC.vel.x * 3.6f, p_car->race.topSpeed, p_car->priv.gear, false),
         PlayerInfo(p_car->ctrl.steer, p_car->ctrl.accelCmd, p_car->ctrl.brakeCmd, p_car->ctrl.clutchCmd));
 
     m_decisionMaker.Decide(currentSituation);
@@ -72,6 +73,16 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     m_environment.SetTimeOfDay(p_track->local.timeofday);
     m_environment.SetClouds(p_track->local.clouds);
     m_environment.SetRain(p_track->local.rain);
+
+    DriveSituation currentSituation(
+        m_environment,
+        CarInfo(
+            TrackPosition(false, 0, 0, 0, 0),
+            0, 0, 0, false),
+        PlayerInfo(0, 0, 0, 0));
+
+
+    m_decisionMaker.Initialize(currentSituation);
 }
 
 template<typename DecisionMaker>
@@ -80,24 +91,23 @@ void Mediator<DecisionMaker>::RaceStop() {}
 template<typename DecisionMaker>
 DriveSituation* Mediator<DecisionMaker>::Simulate()
 {
-    
-    return nullptr; 
+    return nullptr;
 }
 
 template<typename DecisionMaker>
-Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance() 
+Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 {
-    if(m_instance == nullptr)
+    if (m_instance == nullptr)
     {
         // check if Mediator file exists
         struct stat info;
         char workingDir[256];
-        getcwd(workingDir,256);
+        getcwd(workingDir, 256);
         std::string workingDirectory(workingDir);
         workingDirectory += "\\Singletons\\Mediator";
         const char* filepath = workingDirectory.c_str();
         int err = stat(filepath, &info);
-        if(err == -1)
+        if (err == -1)
         {
             // file does not exist create pointer
             m_instance = new Mediator();
