@@ -27,8 +27,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 SET(_SOURCES MsgpackDeserializeTests.cpp
-    InterventionTests.cpp
-    DecisionMakerTests.cpp
+        MediatorTests.cpp
+        FactoryTests.cpp
+        DecisionMakerTests.cpp
         ConfigTests.cpp
         FileDataStorageTests.cpp
         SQLDatabaseStorageTests.cpp
