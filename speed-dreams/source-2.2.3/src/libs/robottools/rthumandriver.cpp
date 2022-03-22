@@ -616,7 +616,8 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #ifdef RECORD_SESSION
-    recorder = new Recorder();
+    int paramAmount = 4;
+    recorder = new Recorder("user_recordings", "userRecording", paramAmount);
 #endif
     const int idx = index - 1;
 
