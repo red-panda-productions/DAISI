@@ -52,6 +52,20 @@ Changed:
         racing/standardgame
             racesituation.cpp
                 change deltaTime to be constant value
+        sound/snddefault/
+            CMakeLists.txt
+                added frontend
+            grsound.cpp
+                added intervention sound initialization
+            OpenalSound.cpp
+                added check for playing state
+            OpenalSoundInterface.cpp
+                added update and starting of intervention sounds
+            SoundInterface.cpp
+                added setInterventionSound()
+            SoundInterface.h
+                added setInterventionSound()
+                added intervention_sounds map
         userinterface/
             legacymenu.h 
                   ActivateResearcherMenu()

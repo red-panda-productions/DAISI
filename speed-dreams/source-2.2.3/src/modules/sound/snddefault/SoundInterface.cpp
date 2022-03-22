@@ -209,6 +209,13 @@ void SoundInterface::setGearChangeSound (const char* sound_name)
 	gear_change_sound = sound;
 }
 
+// SIMULATED DRIVING ASSISTANCE: Added setInterventionSound()
+void SoundInterface::setInterventionSound(InterventionAction p_soundEvent, const char* p_soundSource, int p_flags,
+                                          bool p_loop, bool p_staticPool) {
+    Sound* sound = addSample (p_soundSource, p_flags, p_loop, p_staticPool);
+    intervention_sounds[p_soundEvent] = sound;
+}
+
 float SoundInterface::getGlobalGain() const
 { 
 	return silent ? 0 : global_gain; 
