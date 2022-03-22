@@ -317,6 +317,16 @@ void OpenalSound::pause()
 
 void OpenalSound::update ()
 {
+    // SIMULATED DRIVING ASSISTANCE: Add check for playing state
+    ALint state;
+    alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+    if(state == AL_PLAYING) {
+        playing = true;
+    } else {
+        playing = false;
+    }
+
     static const ALfloat zero_velocity[3] = {0.0f, 0.0f, 0.0f};
 	if (static_pool) {
 		if (is_enabled) {
