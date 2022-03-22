@@ -62,7 +62,7 @@ target_link_libraries(
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient math portability)
+ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 
