@@ -273,6 +273,7 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
     }
 
     for (const auto &action : InterventionConfig::GetInstance()->GetEnabledSounds()) {
+        if(intervention_sounds.find(action) == intervention_sounds.end()) continue;
         Sound* sound = intervention_sounds[action];
 
         if(!sound->isPlaying()) {
