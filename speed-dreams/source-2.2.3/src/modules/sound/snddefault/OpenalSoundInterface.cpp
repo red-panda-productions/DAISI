@@ -22,6 +22,7 @@
 #include "OpenalSound.h"
 #include "OpenalSoundInterface.h"
 #include "InterventionConfig.h"
+#include "Mediator.h"
 
 
 /// Define this to use the OpenAL Doppler.
@@ -213,6 +214,34 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 	sound_list.push_back(sound);
 	return sound;
 }
+
+// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+void updateInterventionSounds(CarSoundData** car_sound_data, std::unordered_map<InterventionAction, Sound*> intervention_sounds) {
+    if(!SMediator::GetInstance()->GetIndicatorSetting(INDICATOR_AUDITORY)) return;
+
+    for (const auto &item : intervention_sounds) {
+        Sound* sound = item.second;
+        sgVec3 p, u;
+        car_sound_data[0]->getCarPosition(p);
+        car_sound_data[0]->getCarSpeed(u);
+        sound->setSource(p, u);
+        sound->setReferenceDistance(1.0f);
+        sound->setVolume(1.0f);
+        sound->setPitch(1.0f);
+
+        sound->update();
+    }
+
+    for (const auto &action : InterventionConfig::GetInstance()->GetEnabledSounds()) {
+        if(intervention_sounds.find(action) == intervention_sounds.end()) continue;
+        Sound* sound = intervention_sounds[action];
+
+        if(!sound->isPlaying()) {
+            GfLogWarning("Started playing: %d\n", action);
+            sound->start();
+        }
+    }
+}
 	
 void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgVec3 p_obs, sgVec3 u_obs, sgVec3 c_obs, sgVec3 a_obs)
 {
@@ -259,28 +288,7 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
 	}
 
     // SIMULATED DRIVING ASSISTANCE: Update intervention sounds
-    for (const auto &item : intervention_sounds) {
-        Sound* sound = item.second;
-        sgVec3 p, u;
-        car_sound_data[0]->getCarPosition(p);
-        car_sound_data[0]->getCarSpeed(u);
-        sound->setSource(p, u);
-        sound->setReferenceDistance(1.0f);
-        sound->setVolume(1.0f);
-        sound->setPitch(1.0f);
-
-        sound->update();
-    }
-
-    for (const auto &action : InterventionConfig::GetInstance()->GetEnabledSounds()) {
-        if(intervention_sounds.find(action) == intervention_sounds.end()) continue;
-        Sound* sound = intervention_sounds[action];
-
-        if(!sound->isPlaying()) {
-            GfLogWarning("Started playing: %d\n", action);
-            sound->start();
-        }
-    }
+    updateInterventionSounds(car_sound_data, intervention_sounds);
 
 	qsort((void*) engpri, n_cars, sizeof(SoundPri), &sortSndPriority);
 

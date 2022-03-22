@@ -21,7 +21,7 @@ SET(_OTHER_SOURCES )
 
 ADD_INTERFACE_INCLUDEDIR()
 # SIMULATED DRIVING ASSISTANCE: Add frontend
-ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend)
+ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend backend)
 ADD_PLIB_INCLUDEDIR()
 
 IF(OPTION_SDL2)
@@ -67,7 +67,7 @@ ELSE(OPTION_SDL2)
 	ADD_SDL_LIBRARY(snddefault)
 ENDIF(OPTION_SDL2)
 
-ADD_SDLIB_LIBRARY(snddefault portability tgf tgfclient robottools frontend)
+ADD_SDLIB_LIBRARY(snddefault portability tgf tgfclient robottools frontend backend)
 
 IF(OPENAL_FOUND)
     TARGET_LINK_LIBRARIES(snddefault ${OPENAL_LIBRARY})

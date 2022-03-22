@@ -14,7 +14,7 @@ static void* s_nextHandle = NULL;
 Task m_task = TASK_NO_TASK;
 
 // Indicators
-bool* m_indicators = new bool[2];
+bool m_indicators[2] = {false, false};
 
 // InterventionType
 InterventionType m_interventionType;
@@ -23,14 +23,14 @@ InterventionType m_interventionType;
 Track track;
 
 // Participant control
-bool* m_pControl = new bool[3];
+bool m_pControl[3] = {false, true, true};
 
 // Max time
 int m_maxTime = 10.0f;
 int m_maxTimeId;
 
 // User ID
-char* m_userID;
+char m_userID[32];
 int m_userIDId;
 
 /// @brief Sets the defaults values
@@ -39,16 +39,8 @@ static void OnActivate(void* /* dummy */)
     // Set standard Task
     m_task = TASK_NO_TASK;
 
-    // Set standard indicators
-    bool indicators[] = {false, false};
-    m_indicators = indicators;
-
     // Set standard interventionType
     m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-
-    // Set standard player control settings
-    bool pControl[] = {false, true, true};
-    m_pControl = pControl;
 
     // Set standard max time
     char buf[32];
@@ -59,11 +51,9 @@ static void OnActivate(void* /* dummy */)
     std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution<int> distribution(1, 999999999);
-    sprintf(buf, "%d", distribution(generator));
+    sprintf(m_userID, "%d", distribution(generator));
 
-    // Set default userID
-    m_userID = buf;
-    GfuiEditboxSetString(s_scrHandle, m_userIDId, buf);
+    GfuiEditboxSetString(s_scrHandle, m_userIDId, m_userID);
 }
 
 

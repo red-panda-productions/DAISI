@@ -44,6 +44,8 @@ public:
     /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
     void SetDataCollectionSettings(bool* p_dataSetting);
 
+    bool GetIndicatorSetting(Indicator p_indicator);
+
     //returns the intervention type from the decision maker
     InterventionType GetInterventionType();
 	DriveSituation* Simulate();

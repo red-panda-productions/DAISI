@@ -5,6 +5,7 @@
 
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template InterventionType Mediator<type>::GetInterventionType(); \
+    template bool Mediator<type>::GetIndicatorSetting(Indicator p_indicator); \
 	template void Mediator<type>::SetTask(Task p_task);\
 	template void Mediator<type>::SetIndicatorSettings(bool* p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
@@ -21,6 +22,11 @@
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::SetTask(Task p_task) {
     m_decisionMaker.Config.SetTask(p_task);
+}
+
+template<typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetIndicatorSetting(Indicator p_indicator) {
+    return m_decisionMaker.Config.GetIndicatorSettings()[p_indicator];
 }
 
 template<typename DecisionMaker>
