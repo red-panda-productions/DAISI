@@ -189,7 +189,7 @@ static void SetMaxTime(void*)
 /// @brief Handle input in the UserID textbox
 static void SetUserID(void*)
 {
-    char* m_userID = GfuiEditboxGetString(s_scrHandle, m_userIDId);
+    m_userID = GfuiEditboxGetString(s_scrHandle, m_userIDId);
     GfuiEditboxSetString(s_scrHandle, m_userIDId, m_userID);
 }
 
@@ -198,13 +198,18 @@ static void SetUserID(void*)
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
-    // Save settings to backend config
+    // Save settings to the SDAConfig
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetTask(m_task);
     mediator->SetIndicatorSettings(m_indicators);
     mediator->SetInterventionType(m_interventionType);
     mediator->SetMaxTime(m_maxTime);
-    mediator->SetUserID(m_userID);
+
+    // Save the encrypted userID in the SDAConfig
+    char buf[32];
+    size_t userID_encrypted = std::hash<std::string>{}(m_userID);
+    sprintf(buf, "%d", userID_encrypted);
+    mediator->SetUserID(buf);
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
