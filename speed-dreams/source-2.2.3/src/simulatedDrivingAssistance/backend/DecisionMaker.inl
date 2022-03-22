@@ -27,7 +27,6 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
     DecisionTuple decision;
     if (!m_blackBox.GetDecisions(p_driveSituation, decision)) return false;
 
-    Mediator<DecisionMaker<SocketBlackBox, SDAConfig>>::GetInstance()->CarController.ShowUI(INTERVENTION_ACTION_NONE);
     int decisionCount = 0;
     IDecision** decisions = decision.GetActiveDecisions(decisionCount);
     m_interventionExecutor->RunDecision(decisions, decisionCount);
