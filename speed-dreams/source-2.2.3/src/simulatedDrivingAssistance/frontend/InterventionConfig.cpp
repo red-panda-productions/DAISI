@@ -6,12 +6,29 @@
 
 #include "InterventionConfig.h"
 
+void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sounds, void* p_xmlHandle, unsigned int p_interventionCount) {
+    char path[256];
+    for (int i = 0; i < p_interventionCount; i++)
+    {
+        snprintf(path, sizeof(path), "%s/%d/%s", PRM_SECT_INTERVENTIONS, i, PRM_SECT_SOUND);
+        if(!GfParmExistsSection(p_xmlHandle, path)) continue;
+
+        const char* src = GfParmGetStr(p_xmlHandle, path, PRM_ATTR_SRC, "");
+        char* soundPath = new char[256];
+        snprintf(soundPath, 256, SOUNDS_DIR_FORMAT, GfDataDir(), src);
+
+        p_sounds[i] = soundPath;
+    }
+}
+
 void InterventionConfig::Initialize() {
     void* xmlHandle = GetXmlHandle();
 
     char interventionPath[256];
     snprintf(interventionPath, sizeof(interventionPath), PRM_SECT_INTERVENTIONS);
     m_interventionCount = GfParmGetEltNb(xmlHandle, interventionPath);
+
+    InitializeSounds(m_sounds, xmlHandle, m_interventionCount);
 }
 
 void* InterventionConfig::GetXmlHandle() {
@@ -41,12 +58,9 @@ tTextureData InterventionConfig::GetCurrentInterventionTexture()
 }
 
 std::unordered_map<InterventionAction, const char*> InterventionConfig::GetSounds() {
-    return {
-        {INTERVENTION_ACTION_TURN_LEFT, "data/sound/interventions/left.wav"},
-        {INTERVENTION_ACTION_TURN_RIGHT, "data/sound/interventions/right.wav"},
-        {INTERVENTION_ACTION_BRAKE, "data/sound/interventions/break.wav"}
-    };
+    return m_sounds;
 }
+
 std::vector<InterventionAction> InterventionConfig::GetEnabledSounds() {
     return { m_currentAction };
 }

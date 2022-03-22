@@ -237,7 +237,6 @@ void updateInterventionSounds(CarSoundData** car_sound_data, std::unordered_map<
         Sound* sound = intervention_sounds[action];
 
         if(!sound->isPlaying()) {
-            GfLogWarning("Started playing: %d\n", action);
             sound->start();
         }
     }

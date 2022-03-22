@@ -6,13 +6,16 @@
 
 // Location of the intervention XML file, with respect to the root data directory.
 #define INTERVENTION_DATA_DIR_FORMAT "%sdata/intervention/intervention.xml"
+#define SOUNDS_DIR_FORMAT "%sdata/intervention/sound/%s"
 
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS  "Interventions"
+#define PRM_SECT_SOUND          "sound"
 #define PRM_ATTR_NAME           "name"
 #define PRM_ATTR_TEXTURE        "texture"
 #define PRM_ATTR_XPOS           "xpos"
 #define PRM_ATTR_YPOS           "ypos"
+#define PRM_ATTR_SRC            "source"
 
 
 typedef struct ScreenPosition 
@@ -82,4 +85,5 @@ public:
     unsigned int m_interventionCount = 0;
     InterventionAction m_currentAction;
     tTextureData* m_textures;
+    std::unordered_map<InterventionAction, const char*> m_sounds;
 };
