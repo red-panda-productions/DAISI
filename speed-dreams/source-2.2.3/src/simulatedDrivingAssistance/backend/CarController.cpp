@@ -3,7 +3,7 @@
 
 void CarController::SetSteerCmd(float p_steer) const
 {
-	m_car->ctrl.steer = p_steer;
+	m_car->ctrl.steer += p_steer;
 }
 
 void CarController::SetAccelCmd(float p_accel) const
