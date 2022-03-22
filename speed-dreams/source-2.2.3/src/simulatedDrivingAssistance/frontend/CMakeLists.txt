@@ -1,10 +1,8 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_SOURCES Recorder.cpp
-			 InterventionConfig.cpp )
+SET(_SOURCES InterventionConfig.cpp )
 
-SET(_HEADERS Recorder.h
-			 InterventionConfig.h )
+SET(_HEADERS InterventionConfig.h )
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability)
