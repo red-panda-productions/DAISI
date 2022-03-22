@@ -57,14 +57,11 @@ set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 add_executable(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
-  unitTestUtilities
-  backend
-  frontend
   gtest_main
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability)
+ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend frontend unitTestUtilities)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 
@@ -77,7 +74,7 @@ ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
         "${CMAKE_CURRENT_BINARY_DIR}")
 
 
-#SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
+SD_INSTALL_FILES(BIN simulatedDrivingAssistance/backendUnitTests TARGETS backendUnitTests)
 
 FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
