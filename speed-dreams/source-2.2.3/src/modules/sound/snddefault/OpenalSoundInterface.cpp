@@ -258,6 +258,7 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
 		engpri[id].a = car_src[id].a;
 	}
 
+    // SIMULATED DRIVING ASSISTANCE: Update intervention sounds
     for (const auto &item : intervention_sounds) {
         Sound* sound = item.second;
         sgVec3 p, u;

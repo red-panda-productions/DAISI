@@ -317,6 +317,7 @@ void OpenalSound::pause()
 
 void OpenalSound::update ()
 {
+    // SIMULATED DRIVING ASSISTANCE: Add check for playing state
     ALint state;
     alGetSourcei(source, AL_SOURCE_STATE, &state);
 
