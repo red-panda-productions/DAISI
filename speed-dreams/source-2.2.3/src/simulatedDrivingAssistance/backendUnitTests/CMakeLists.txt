@@ -59,6 +59,7 @@ target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   unitTestUtilities
   backend
+  frontend
   gtest_main
   gmock_main
 )
