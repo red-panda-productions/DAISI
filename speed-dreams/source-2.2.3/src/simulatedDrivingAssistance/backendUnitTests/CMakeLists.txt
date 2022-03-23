@@ -71,10 +71,12 @@ ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${IPCLIB_BIN_DIR}/IPCLib.dll"
-        "${CMAKE_BINARY_DIR}/bin")
+#ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#        "${IPCLIB_BIN_DIR}/IPCLib.dll"
+#        "${CMAKE_BINARY_DIR}/bin")
+
+FILE(COPY "${IPCLIB_BIN_DIR}/IPCLib.dll" DESTINATION "${CMAKE_BINARY_DIR}/bin")
 
 #SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
 
