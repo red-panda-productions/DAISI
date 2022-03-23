@@ -1,7 +1,9 @@
 #pragma once
 #include "IDataStorage.h"
+#include <string>
 #include <unordered_map>
 
+/// @brief A class that can store data to a SQL database
 class SQLDatabaseStorage : IDataStorage
 {
 public:

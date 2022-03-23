@@ -15,11 +15,7 @@ template <class DriveSituation>
 class SocketBlackBox
 {
 public:
-
-    SocketBlackBox(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888) : m_server(p_ip, p_port)
-    {
-
-    }
+    SocketBlackBox(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
 
     void Initialize();
 
@@ -33,8 +29,11 @@ public:
 
     bool GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions);
 
-    std::vector<std::string> m_variablesToSend;
-    std::vector<std::string> m_variablesToReceive;
+    std::vector<std::string> VariablesToSend;
+    std::vector<std::string> VariablesToReceive;
+
+private:
+    
 
     // map with functions that insert correct variable value in vector
     using inserterFunction = void (*) (std::vector<std::string>&, DriveSituation&);
@@ -43,8 +42,6 @@ public:
     // map with function that create correct concrete decision
     using decisionConvertFunction = void (*) (std::string&, DecisionTuple&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
-
-private:
 
     ServerSocket m_server;
     char m_buffer[SBB_BUFFER_SIZE];

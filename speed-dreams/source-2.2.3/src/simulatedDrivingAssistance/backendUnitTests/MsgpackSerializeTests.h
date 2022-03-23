@@ -68,7 +68,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
         };
 
         // should be in the same order as the control vector
-        socketBlackBox.m_variablesToSend = std::vector<std::string>{
+        socketBlackBox.VariablesToSend = std::vector<std::string>{
             "AccelCmd",
             "BrakeCmd",
             "ClutchCmd",
@@ -126,7 +126,7 @@ TEST(MsgpackSerializeTests, SerializeSome)
     };
 
     // should be in the same order as the control vector
-    socketBlackBox.m_variablesToSend = std::vector<std::string>{
+    socketBlackBox.VariablesToSend = std::vector<std::string>{
         "AccelCmd",
         "ClutchCmd",
         "Speed",
@@ -172,7 +172,7 @@ TEST(MsgpackSerializeTests, NonExistingVariableKey)
     };
 
     // should be the same order as control vector
-    socketBlackBox.m_variablesToSend = std::vector<std::string>{
+    socketBlackBox.VariablesToSend = std::vector<std::string>{
         "Speed",
         "NON_EXISTING_VARIABLE",
         "Offroad"};

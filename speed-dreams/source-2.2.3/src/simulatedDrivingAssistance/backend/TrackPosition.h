@@ -1,6 +1,6 @@
 #pragma once
 
-
+/// @brief A class that represents all data that can be gathered from the track position
 class TrackPosition
 {
 public:

@@ -1,6 +1,11 @@
 #include "TrackPosition.h"
 
-
+/// @brief			   Constructs the track position
+/// @param  p_offroad  Whether the car is offroad
+/// @param  p_toStart  The distance to the start
+/// @param  p_toRight  The distance to the right of the track
+/// @param  p_toMiddle The distance to the middle of the track
+/// @param  p_toLeft   The distance to the left of the track
 TrackPosition::TrackPosition(bool p_offroad, float p_toStart, float p_toRight, float p_toMiddle, float p_toLeft)
 {
 	m_offroad = p_offroad;

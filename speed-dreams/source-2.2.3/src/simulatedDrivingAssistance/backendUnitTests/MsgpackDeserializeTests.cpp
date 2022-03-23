@@ -21,7 +21,7 @@ TEST(MsgpackDeserializeTests, Deserialize)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.VariablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
@@ -62,7 +62,7 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.VariablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
@@ -85,7 +85,7 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "NON_EXISTING_DECISION_KEY", "Brake" };
+    socketBlackBox.VariablesToReceive = { "NON_EXISTING_DECISION_KEY", "Brake" };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -106,7 +106,7 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.VariablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -125,7 +125,7 @@ TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.VariablesToReceive = { "Steer", "Brake" };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
