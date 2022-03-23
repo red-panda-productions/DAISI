@@ -6,7 +6,6 @@
 #include "DecisionMaker.h"
 #include "CarController.h"
 
-
 /// @brief The standard type of the mediator
 #define SMediator Mediator<SDecisionMaker>
 
@@ -20,37 +19,22 @@ public:
 	void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
 	void RaceStop();
 
-    /// @brief        Sets the task in SDAConfig to p_task
-    /// @param p_task The Task
 	void SetTask(Task p_task);
 
-    /// @brief              Sets the settings for indication of interventions
-    /// @param p_indicators The Indicator settings
     void SetIndicatorSettings(bool* p_indicators);
 
-    /// @brief        Sets the settings for interventionType to p_type
-    /// @param p_type The InterventionType
     void SetInterventionType(InterventionType p_type);
 
-    /// @brief           Sets the maximum simulation time to p_maxTime
-    /// @param p_maxTime The maximum simulation time
     void SetMaxTime(int p_maxTime);
 
-    /// @brief          Sets the userID to p_userID
-    /// @param p_userID The userID
     void SetUserID(char* p_userID);
 
-    /// @brief               Sets the settings for data collection
-    /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
     void SetDataCollectionSettings(bool* p_dataSetting);
 
-    //returns the intervention type from the decision maker
     InterventionType GetInterventionType();
+
 	DriveSituation* Simulate();
 
-
-    /// @brief Creates a mediator instance if needed and returns it
-    /// @return A mediator instance
     static Mediator* GetInstance();
 
 	/// @brief Removes copy constructor for singleton behaviour

@@ -1,6 +1,4 @@
 #pragma once
-
-#include <iostream>
 #include "InterventionExecutor.h"
 
 /// @brief Always intervenes the simulation

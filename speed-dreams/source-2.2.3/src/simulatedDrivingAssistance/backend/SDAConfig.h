@@ -6,14 +6,14 @@
 class SDAConfig
 {
 private:
-    InterventionType m_interventionType;
-    BlackBoxType m_blackBoxType;
-    DataToStore m_dataStorageType;
-    Task  m_task;
-    bool* m_dataCollectionSetting;
-    bool* m_indicatorSetting;
-    int   m_maxSimulationTime;
-    char* m_userID;
+    InterventionType m_interventionType = 0;
+    BlackBoxType m_blackBoxType = 0;
+    DataToStore m_dataStorageType = 0;
+    Task  m_task = 0;
+    bool* m_dataCollectionSetting = nullptr;
+    bool* m_indicatorSetting = nullptr;
+    int   m_maxSimulationTime = 0;
+    char* m_userID = nullptr;
 
     InterventionFactory m_interventionFactory;
 
@@ -22,7 +22,7 @@ public:
     /* TODO: Return IBlackBox */ void GetBlackBox();
     InterventionType GetInterventionType() const;
 
-    void  SetDataCollectionSettings(bool* p_boolArray);
+    void  SetDataCollectionSettings(bool* p_dataSetting);
     bool* GetDataCollectionSetting() const;
 
     void  SetTask(Task p_task);
@@ -34,7 +34,5 @@ public:
     void  SetUserID(char* p_userID);
     char* GetUserID() const;
 
-    // sets the m_interventionType to p_type
-    // returns correct intervention Executor from factory
     InterventionExecutor* SetInterventionType(InterventionType p_type);
 };

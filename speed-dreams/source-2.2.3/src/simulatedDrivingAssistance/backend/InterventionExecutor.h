@@ -1,5 +1,7 @@
 #pragma once
 #include "IDecision.h"
+
+/// @brief A class that can execute actions based on decisions
 class InterventionExecutor
 {
 public:

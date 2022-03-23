@@ -1,6 +1,4 @@
 #pragma once
-
-#include <iostream>
 #include "InterventionExecutor.h"
 
 /// @brief Only intervenes if it is necessary to intervene

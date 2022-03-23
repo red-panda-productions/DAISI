@@ -4,14 +4,11 @@
 #include <iostream>
 #include <tgf.h>
 
-///
 /// @brief Constructor of Recording, 
 /// creates a file with the current date and time,
 /// opens file in binary and appending mode
 /// initializes the previous input with 2's since user input is between -1 an 1.
 /// also creates a folder for the files
-/// @author Sjoerd Schilder
-///
 Recorder::Recorder()
 {
 	// create directory if it doesn't exist
@@ -42,15 +39,10 @@ Recorder::~Recorder()
 	m_recordingFile.close();
 }
 
-///
-/// @brief Writes a float* to the m_recordingFile, 
-/// with the current time of the simulation.
-/// Only writes to the file if the input is different then the previous input.
-/// @preconditions p_input must be PARAMETERS long (in this case 4)
+/// @brief		   Writes a float* to the m_recordingFile, 
+///				   with the current time of the simulation.
+///				   Only writes to the file if the input is different then the previous input.
 /// @param p_input array of size PARAMETERS
-/// @return void
-/// @author Sjoerd Schilder
-///
 void Recorder::WriteRecording(float* p_input, double currentTime)
 {
 	// doesnt write if the input is the same as the previous time
@@ -67,13 +59,10 @@ void Recorder::WriteRecording(float* p_input, double currentTime)
 }
 
 ///
-/// @brief Checks if the input is the same as the previous input
-/// @preconditions p_input must be PARAMETERS long (in this case 4)
-/// @param isSame boolean ref that becomes false if the input is differrent
+/// @brief		   Checks if the input is the same as the previous input
+/// @param isSame  boolean ref that becomes false if the input is different
 /// @param p_input array of size PARAMETERS
-/// @return void
-/// @author Sjoerd Schilder
-///
+/// @return		   if an input was changed
 bool Recorder::CheckSameInput(float* p_input)
 {
 	for (int i = 0; i < PARAMETERS; i++)

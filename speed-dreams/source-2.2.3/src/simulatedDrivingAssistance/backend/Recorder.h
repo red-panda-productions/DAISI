@@ -2,6 +2,7 @@
 #include <fstream>
 #define PARAMETERS 4 // steerCmd, accelCmd, brakeCmd, clutchCmd.
 
+/// @brief A class that can record the input of a player for integration tests
 class Recorder
 {
 

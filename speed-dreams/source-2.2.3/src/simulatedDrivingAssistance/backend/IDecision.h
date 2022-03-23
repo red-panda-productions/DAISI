@@ -1,5 +1,6 @@
 #pragma once
 
+/// @brief An interface for a decision that can be made by an AI
 class IDecision
 {
 public:

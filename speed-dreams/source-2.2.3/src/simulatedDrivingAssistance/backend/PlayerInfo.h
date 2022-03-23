@@ -1,5 +1,6 @@
 #pragma once
 
+/// @brief Represents all data that can be gathered from the player
 class PlayerInfo
 {
 public:

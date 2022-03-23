@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include "InterventionExecutor.h"
 
 /// @brief Asks the participant if it may intervene
