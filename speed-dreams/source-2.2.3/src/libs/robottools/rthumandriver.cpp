@@ -1719,7 +1719,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #ifdef RECORD_SESSION
         float inputs[4] = { car->_accelCmd , car->_brakeCmd, leftSteer, rightSteer };
-        recorder->WriteRecording(inputs, s -> currentTime);
+        recorder->WriteRecording(inputs, s -> currentTime, true);
 #endif
     HCtx[idx]->lap = car->_laps;
 }//common_drive

@@ -55,10 +55,10 @@ Recorder::~Recorder()
 ///	@param p_currentTime the current time of the simulation
 /// @author Sjoerd Schilder
 ///
-void Recorder::WriteRecording(const float* p_input, const double p_currentTime)
+void Recorder::WriteRecording(const float* p_input, const double p_currentTime, const bool p_compression)
 {
 	// doesn't write if the input is the same as the previous time
-	if (CheckSameInput(p_input)) return;
+	if (p_compression && CheckSameInput(p_input)) return;
 	m_recordingFile << p_currentTime << " ";
 	for (int i = 0; i < m_paramAmount; i++)
 	{
