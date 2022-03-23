@@ -80,7 +80,8 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
         CarInfo(
             TrackPosition(false, 0, 0, 0, 0),
             0, 0, 0, false),
-        PlayerInfo(0, 0, 0, 0));
+        PlayerInfo(0, 0, 0, 0),
+        0);
 
 
     m_decisionMaker.Initialize(currentSituation);
