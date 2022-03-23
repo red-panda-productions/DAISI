@@ -7,13 +7,15 @@ class DriveSituation
 {
 public:
     DriveSituation();
-    DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo);
+    DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo, double p_currentTime);
     EnvironmentInfo* GetEnvironmentInfo();
     CarInfo* GetCarInfo();
     PlayerInfo* GetPlayerInfo();
+    double GetTime();
 
 private:
     EnvironmentInfo m_environmentInfo;
     CarInfo m_carInfo;
     PlayerInfo m_playerInfo;
+    double m_currentTime;
 };
