@@ -6,6 +6,11 @@
 #include "SocketBlackBoxTests.h"
 #include "DecisionTuple.h"
 
+#define STEER "Steer"
+#define BRAKE "Brake"
+#define NON_EXISTING_DECISION_KEY "NON_EXISTING_DECISION_KEY"
+
+#define TOLERANCE 0.0001
 
 /// @brief Tests if all (currently) existing variables can be deserialized into a decision correctly
 TEST(MsgpackDeserializeTests, Deserialize)
@@ -21,13 +26,13 @@ TEST(MsgpackDeserializeTests, Deserialize)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.m_variablesToReceive = { STEER, BRAKE };
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_ALMOST_EQ(decisionTuple.GetSteer(), controlSteerValue, 0.000001);
-    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, 0.000001);
+    ASSERT_ALMOST_EQ(decisionTuple.GetSteer(), controlSteerValue, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, TOLERANCE);
 }
 
 /// @brief Tests if the program throws when there are no variables to receive
@@ -62,7 +67,7 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.m_variablesToReceive = { STEER, BRAKE };
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
@@ -85,7 +90,7 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "NON_EXISTING_DECISION_KEY", "Brake" };
+    socketBlackBox.m_variablesToReceive = { NON_EXISTING_DECISION_KEY, BRAKE };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -106,7 +111,7 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.m_variablesToReceive = { STEER, BRAKE };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -125,7 +130,7 @@ TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
     SocketBlackBox<DriveSituationMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.m_variablesToReceive = { "Steer", "Brake" };
+    socketBlackBox.m_variablesToReceive = { STEER, BRAKE };
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
