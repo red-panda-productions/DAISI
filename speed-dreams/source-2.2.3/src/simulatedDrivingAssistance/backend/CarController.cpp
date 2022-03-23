@@ -1,5 +1,5 @@
 #include "CarController.h"
-#include "InterventionConfig.h"
+//#include "InterventionConfig.h"
 
 void CarController::SetSteerCmd(float p_steer) const
 {
@@ -30,7 +30,7 @@ void CarController::SetLightCmd(bool p_light) const
 /// @param  p_element The element that should be shown
 void CarController::ShowUI(InterventionAction p_element) const
 {
-	InterventionConfig::GetInstance()->SetInterventionAction(p_element);
+	//InterventionConfig::GetInstance()->SetInterventionAction(p_element);
 }
 
 void CarController::SetCar(tCarElt* p_car)

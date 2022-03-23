@@ -12,7 +12,9 @@ ADD_SQLITE3_INCLUDEDIR()
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(backend frontend)
+target_link_libraries(backend frontend)
+
+ADD_SDLIB_LIBRARY(backend tgf portability)
 
 ADD_MSGPACK_PACKAGE(backend)
 
