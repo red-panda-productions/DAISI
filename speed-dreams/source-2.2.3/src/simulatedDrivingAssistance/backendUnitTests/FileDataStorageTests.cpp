@@ -83,11 +83,12 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
         float brakeCmd = random.NextFloat();
         float clutchCmd = random.NextFloat();
         float steerCmd = random.NextFloat();
+        float currentTime = random.NextFloat();
         EnvironmentInfoMock envInfo(timeOfDay, clouds, rain);
         TrackPositionMock trackPos(offroad, toStart, toRight, toMiddle, toLeft);
         CarInfoMock carInfo(speed, topSpeed, gear, headlights, trackPos);
         PlayerInfoMock playerInfo(steerCmd, accelCmd, brakeCmd, clutchCmd);
-        DriveSituationMock driveSit(playerInfo, carInfo, envInfo);
+        DriveSituationMock driveSit(playerInfo, carInfo, envInfo, currentTime);
 
         fileDataStorage.Save(driveSit, i);
         expected << std::to_string(i) << "\n";

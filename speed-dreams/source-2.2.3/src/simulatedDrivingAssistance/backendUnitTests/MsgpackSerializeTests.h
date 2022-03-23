@@ -21,10 +21,10 @@
     float randomToLeft = random.NextFloat(-1000,1000);\
     float randomToRight = random.NextFloat(-1000,1000);\
     float randomToStart = random.NextFloat(-1000,1000);\
-    float randomTimeLastSteer = random.NextFloat(-1000,1000);\
     int randomGear = random.NextInt(-1000,1000);\
     bool randomHeadlights = random.NextBool();\
-    int randomRain = random.NextInt(-1000,1000);
+    int randomRain = random.NextInt(-1000,1000);\
+    float randomCurrentTime = random.NextFloat(-1000, 1000);
 
 /// create a drive situation mock and insert all variables
 #define DEFINE_DRIVE_MOCK \
@@ -32,7 +32,8 @@
         PlayerInfoMock(randomSteerCmd, randomAccelCmd, randomBrakeCmd, randomClutchCmd),\
         CarInfoMock(randomSpeed, randomTopSpeed, randomGear, randomHeadlights,          \
             TrackPositionMock(randomOffroad, randomToStart,randomToRight,randomToMiddle,randomToLeft)), \
-        EnvironmentInfoMock(randomTimeOfDay, randomClouds, randomRain));
+        EnvironmentInfoMock(randomTimeOfDay, randomClouds, randomRain),                 \
+        randomCurrentTime);
 
 /// create a socket black box and initialize the maps.
 #define SETUP_SOCKET \
@@ -63,7 +64,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
             std::to_string(randomToLeft),
             std::to_string(randomToRight),
             std::to_string(randomToStart),
-            std::to_string(randomTimeLastSteer)
+            std::to_string(randomCurrentTime)
         };
 
         // should be in the same order as the control vector
@@ -80,7 +81,8 @@ TEST(MsgpackSerializeTests, SerializeAll)
             "ToMiddle",
             "ToLeft",
             "ToRight",
-            "ToStart"};
+            "ToStart",
+            "CurrentTime"};
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);
@@ -120,8 +122,7 @@ TEST(MsgpackSerializeTests, SerializeSome)
         std::to_string(randomSpeed),
         std::to_string(randomTimeOfDay),
         std::to_string(randomOffroad),
-        std::to_string(randomToLeft),
-        std::to_string(randomTimeLastSteer)
+        std::to_string(randomToLeft)
     };
 
     // should be in the same order as the control vector
