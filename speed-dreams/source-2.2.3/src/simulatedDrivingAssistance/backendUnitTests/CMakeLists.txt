@@ -100,8 +100,3 @@ FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
-
-#IF(WIN32)
-#    INCLUDE(customthirdparty)
-#    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
-#ENDIF(WIN32)

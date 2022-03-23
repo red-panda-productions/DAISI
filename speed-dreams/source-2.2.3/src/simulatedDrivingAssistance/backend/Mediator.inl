@@ -31,42 +31,48 @@ void Mediator<DecisionMaker>::SetTask(Task p_task)
 /// @brief              Sets the settings for indication of interventions
 /// @param p_indicators The Indicator settings
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators) {
+void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators)
+{
     m_decisionMaker.Config.SetIndicatorSettings(p_indicators);
 }
 
 /// @brief  Gets the intervention type from the decision maker
 /// @return The intervention type from the decision maker
 template<typename DecisionMaker>
-InterventionType Mediator<DecisionMaker>::GetInterventionType() {
+InterventionType Mediator<DecisionMaker>::GetInterventionType()
+{
     return m_decisionMaker.Config.GetInterventionType();
 }
 
 /// @brief        Sets the settings for interventionType to p_type
 /// @param p_type The InterventionType
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type) {
+void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type)
+{
     m_decisionMaker.ChangeSettings(p_type);
 }
 
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime) {
+void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime)
+{
     m_decisionMaker.Config.SetMaxTime(p_maxTime);
 }
 
 /// @brief          Sets the userID to p_userID
 /// @param p_userID The userID
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetUserID(char* p_userID) {
+void Mediator<DecisionMaker>::SetUserID(char* p_userID)
+{
     m_decisionMaker.Config.SetUserID(p_userID);
 }
 
 /// @brief               Sets the settings for data collection
 /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting) {
+void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
+{
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
 

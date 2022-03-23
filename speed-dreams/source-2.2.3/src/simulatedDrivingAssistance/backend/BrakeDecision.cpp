@@ -1,9 +1,11 @@
 #include "BrakeDecision.h"
 #include "Mediator.h"
+#define BRAKE_THRESHOLD 0.2f
+
 
 void BrakeDecision::RunIndicateCommands()
 {
-	if (m_brakeAmount < 0.2f) return;
+	if (m_brakeAmount < BRAKE_THRESHOLD) return;
 
 	SMediator::GetInstance()->CarController.ShowUI(INTERVENTION_ACTION_BRAKE);
 }
