@@ -20,7 +20,7 @@ bool* m_indicators = new bool[2];
 InterventionType m_interventionType;
 
 // Environment
-Track track;
+Track m_track;
 
 // Participant control
 bool* m_pControl = new bool[3];
