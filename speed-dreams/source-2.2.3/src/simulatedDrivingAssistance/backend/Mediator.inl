@@ -9,7 +9,7 @@
 	template void Mediator<type>::SetIndicatorSettings(bool* p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
-	template void Mediator<type>::SetUserID(char* p_userID);\
+	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(bool* p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
@@ -44,8 +44,8 @@ void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime) {
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetUserID(char* p_userID) {
-    m_decisionMaker.Config.SetUserID(p_userID);
+void Mediator<DecisionMaker>::SetUserId(char* p_userId) {
+    m_decisionMaker.Config.SetUserId(p_userId);
 }
 
 template<typename DecisionMaker>
