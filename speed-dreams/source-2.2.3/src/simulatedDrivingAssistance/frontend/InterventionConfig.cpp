@@ -6,6 +6,7 @@
 
 #include "InterventionConfig.h"
 
+/// @brief Initialize the intervention configuration.
 void InterventionConfig::Initialize() {
     void* xmlHandle = GetXmlHandle();
 
@@ -21,16 +22,23 @@ void* InterventionConfig::GetXmlHandle() {
     return GfParmReadFile(path, GFPARM_RMODE_STD);
 }
 
+/// @brief          Sets the current active intervention action
+/// @param p_action The intervention to set as current active action
 void InterventionConfig::SetInterventionAction(InterventionAction p_action) 
 {
     m_currentAction = p_action;
 }
 
+/// @brief              Sets the textures that are used by the HUD
+/// @param p_textures   An array containing the texture data, 
+///                     indexed by the InterventionAction type in ConfigEnums.h
 void InterventionConfig::SetTextures(tTextureData* p_textures) 
 {
     m_textures = p_textures;
 }
 
+/// @brief  Retrieves the texture belonging to the current intervention action
+/// @return The texture data
 tTextureData InterventionConfig::GetCurrentInterventionTexture() 
 {
     if (m_currentAction >= m_interventionCount)
@@ -40,6 +48,8 @@ tTextureData InterventionConfig::GetCurrentInterventionTexture()
     return m_textures[m_currentAction];
 }
 
+/// @brief  Retrieves the sound locations belonging to the possible intervention actions
+/// @return A map going from InterventionAction => sound location, possibly nullptr
 std::unordered_map<InterventionAction, const char*> InterventionConfig::GetSounds() {
     return {
         {INTERVENTION_ACTION_TURN_LEFT, "data/sound/interventions/left.wav"},
@@ -47,14 +57,21 @@ std::unordered_map<InterventionAction, const char*> InterventionConfig::GetSound
         {INTERVENTION_ACTION_BRAKE, "data/sound/interventions/break.wav"}
     };
 }
+
+/// @brief  Retrieves the intervention actions that should be playing a sound effect.
+/// @return A vector containing the intervention actions that should play a sound effect.
 std::vector<InterventionAction> InterventionConfig::GetEnabledSounds() {
     return { m_currentAction };
 }
 
+/// @brief  Gets the amount of interventions
+/// @return The amount of interventions
 unsigned int InterventionConfig::GetInterventionCount() {
     return m_interventionCount;
 }
 
+/// @brief  Returns an the existing InterventionConfig, or creates the initial one if it doesn't exist yet.
+/// @return The InterventionConfig instance
 InterventionConfig* InterventionConfig::GetInstance() 
 {
     if (m_instance == nullptr)
