@@ -1,6 +1,5 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-project(backendUnitTests)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
@@ -51,10 +50,10 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/DecisionMakerMock.h)
 
 
-SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
+ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
+
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
-  frontend
   gtest_main
   gmock_main
 )
@@ -65,14 +64,44 @@ ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${IPCLIB_BIN_DIR}/IPCLib.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/tgf.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/tgfclient.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/portability.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/SDL2.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/libexpat.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
 SD_INSTALL_FILES(BIN simulatedDrivingAssistance/backendUnitTests TARGETS backendUnitTests)
 
-FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_BINARY_DIR}/bin")
+FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
-IF(WIN32)
-    INCLUDE(customthirdparty)
-    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
-ENDIF(WIN32)
+#IF(WIN32)
+#    INCLUDE(customthirdparty)
+#    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+#ENDIF(WIN32)
