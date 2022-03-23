@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 project(backendUnitTests)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend unitTestUtilities)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -50,7 +50,8 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/ConfigMock.h
     mocks/DecisionMakerMock.h)
 
-add_executable(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
+
+SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
   frontend
@@ -58,29 +59,20 @@ target_link_libraries(
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend unitTestUtilities)
+ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend frontend unitTestUtilities)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
+SD_INSTALL_FILES(BIN simulatedDrivingAssistance/backendUnitTests TARGETS backendUnitTests)
 
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${IPCLIB_BIN_DIR}/IPCLib.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
-
-
-#SD_INSTALL_FILES(BIN simulatedDrivingAssistance/backendUnitTests TARGETS backendUnitTests)
-
-FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-
-target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
+FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_BINARY_DIR}/bin")
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
-#IF(WIN32)
-#    INCLUDE(customthirdparty)
-#    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
-#ENDIF(WIN32)
+IF(WIN32)
+    INCLUDE(customthirdparty)
+    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+ENDIF(WIN32)

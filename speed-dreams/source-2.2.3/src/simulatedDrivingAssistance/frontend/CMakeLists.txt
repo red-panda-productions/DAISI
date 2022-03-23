@@ -7,12 +7,11 @@ SET(_HEADERS InterventionConfig.h )
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability)
 
-SD_ADD_LIBRARY(frontend STATIC ${_SOURCES} ${_HEADERS})
-SET_TARGET_PROPERTIES(frontend PROPERTIES LINKER_LANGUAGE CXX)
+add_library(frontend STATIC ${_SOURCES} ${_HEADERS})
 
 ADD_SDLIB_LIBRARY(frontend tgf portability)
 
 ADD_PLIB_LIBRARY(frontend)
 ADD_PLIB_INCLUDEDIR()
 
-SD_INSTALL_FILES(LIB simulatedDrivingAssistance/frontend TARGETS frontend)
+#SD_INSTALL_FILES(LIB simulatedDrivingAssistance/frontend TARGETS frontend)
