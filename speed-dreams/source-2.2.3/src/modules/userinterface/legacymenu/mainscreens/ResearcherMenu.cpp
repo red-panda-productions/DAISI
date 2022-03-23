@@ -26,7 +26,7 @@ bool m_pControl[3] = {false, true, true};
 
 // Max time
 int m_maxTime = 10.0f;
-int m_maxTimeId;
+int m_maxTimeControl;
 
 // User ID
 char m_userId[32];
@@ -44,7 +44,7 @@ static void OnActivate(void* /* dummy */)
     // Set standard max time
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 
     // Create random userId
     std::random_device rd;
@@ -164,7 +164,7 @@ static void SelectControlSteering(tCheckBoxInfo* p_info)
 /// @brief Handle input in the max time textbox
 static void SetMaxTime(void*)
 {
-    char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeId);
+    char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeControl);
     sscanf(val, "%d", &m_maxTime);
     if (m_maxTime > 1440.0f)
         m_maxTime = 1440.0f;
@@ -173,7 +173,7 @@ static void SetMaxTime(void*)
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 }
 
 /// @brief Handle input in the userId textbox
@@ -248,7 +248,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlSteering", NULL, SelectControlSteering);
 
     // Textbox controls
-    m_maxTimeId = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
+    m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
     m_userIdControl  = GfuiMenuCreateEditControl(s_scrHandle, param, "UserIdEdit", NULL, NULL, SetUserId);
 
     // ApplyButton control
