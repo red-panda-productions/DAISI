@@ -58,16 +58,18 @@ int SDAConfig::GetMaxTime() const
     return m_maxSimulationTime;
 }
 
-/// @brief          Sets the userID to p_userID
-/// @param p_userID The userID
-void SDAConfig::SetUserID(char* p_userID)
+/// @brief          Sets the userId to p_userId
+/// @param p_userID The userId
+void SDAConfig::SetUserId(char* p_userId)
 {
-    m_userID = p_userID;
+    m_userId = p_userId;
 }
 
-char* SDAConfig::GetUserID() const
+/// @brief  Gets the userId
+/// @return The userId
+char* SDAConfig::GetUserId() const
 {
-    return m_userID;
+    return m_userId;
 }
 
 /// @brief             Sets the settings for what data should be collected from the simulation

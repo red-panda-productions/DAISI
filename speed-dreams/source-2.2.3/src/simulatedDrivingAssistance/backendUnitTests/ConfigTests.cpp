@@ -78,8 +78,8 @@ TEST(ConfigTests, UserIDTest)
     {
         int userID = random.NextInt();
         sprintf(buf, "%d", userID);
-        config.SetUserID(buf);
-        ASSERT_EQ(buf, config.GetUserID());
+        config.SetUserId(buf);
+        ASSERT_EQ(buf, config.GetUserId());
     }
 }
 

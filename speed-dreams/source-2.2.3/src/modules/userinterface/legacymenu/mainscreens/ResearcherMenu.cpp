@@ -1,6 +1,5 @@
 #include <tgfclient.h>
 #include <random>
-#include <iostream>
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -14,24 +13,24 @@ static void* s_nextHandle = NULL;
 Task m_task = TASK_NO_TASK;
 
 // Indicators
-bool* m_indicators = new bool[2];
+bool m_indicators[2] = {false, false};
 
 // InterventionType
 InterventionType m_interventionType;
 
 // Environment
-Track track;
+Track m_track;
 
 // Participant control
-bool* m_pControl = new bool[3];
+bool m_pControl[3] = {false, true, true};
 
 // Max time
 int m_maxTime = 10.0f;
 int m_maxTimeId;
 
 // User ID
-char* m_userID;
-int m_userIDId;
+char m_userId[32];
+int  m_userIdControl;
 
 /// @brief Sets the defaults values
 static void OnActivate(void* /* dummy */)
@@ -39,31 +38,22 @@ static void OnActivate(void* /* dummy */)
     // Set standard Task
     m_task = TASK_NO_TASK;
 
-    // Set standard indicators
-    bool indicators[] = {false, false};
-    m_indicators = indicators;
-
     // Set standard interventionType
     m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-
-    // Set standard player control settings
-    bool pControl[] = {false, true, true};
-    m_pControl = pControl;
 
     // Set standard max time
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
     GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
 
-    // Create random userID
+    // Create random userId
     std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution<int> distribution(1, 999999999);
-    sprintf(buf, "%d", distribution(generator));
+    sprintf(m_userId, "%d", distribution(generator));
 
-    // Set default userID
-    m_userID = buf;
-    GfuiEditboxSetString(s_scrHandle, m_userIDId, buf);
+    // Set default userId
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
 
@@ -186,10 +176,10 @@ static void SetMaxTime(void*)
     GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
 }
 
-/// @brief Handle input in the UserID textbox
+/// @brief Handle input in the userId textbox
 static void SetUserId(void*)
 {
-    m_userId = GfuiEditboxGetString(s_scrHandle, m_userIdControl);
+    strcpy(m_userId, GfuiEditboxGetString(s_scrHandle, m_userIdControl));
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
@@ -205,11 +195,10 @@ static void SaveSettings(void* /* dummy */)
     mediator->SetInterventionType(m_interventionType);
     mediator->SetMaxTime(m_maxTime);
 
-    // Save the encrypted userID in the SDAConfig
-    char buf[32];
-    size_t encryptedUserId= std::hash<std::string>{}(m_userId);
-    sprintf(buf, "%d", encryptedUserId);
-    mediator->SetUserID(buf);
+    // Save the encrypted userId in the SDAConfig
+    size_t encryptedUserId = std::hash<std::string>{}(m_userId);
+    sprintf(m_userId, "%zu", encryptedUserId);
+    mediator->SetUserId(m_userId);
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
@@ -260,7 +249,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Textbox controls
     m_maxTimeId = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
-    m_userIDId  = GfuiMenuCreateEditControl(s_scrHandle, param, "UserIdEdit", NULL, NULL, SetUserID);
+    m_userIdControl  = GfuiMenuCreateEditControl(s_scrHandle, param, "UserIdEdit", NULL, NULL, SetUserId);
 
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);

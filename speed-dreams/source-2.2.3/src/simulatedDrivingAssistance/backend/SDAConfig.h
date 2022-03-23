@@ -13,7 +13,7 @@ private:
     bool* m_dataCollectionSetting;
     bool* m_indicatorSetting;
     int   m_maxSimulationTime;
-    char* m_userID;
+    char* m_userId;
 
     InterventionFactory m_interventionFactory;
 
@@ -31,8 +31,8 @@ public:
     bool* GetIndicatorSettings() const;
     void  SetMaxTime(int p_maxTime);
     int   GetMaxTime() const;
-    void  SetUserID(char* p_userID);
-    char* GetUserID() const;
+    void  SetUserId(char* p_userId);
+    char* GetUserId() const;
 
     // sets the m_interventionType to p_type
     // returns correct intervention Executor from factory

@@ -36,9 +36,9 @@ public:
     /// @param p_maxTime The maximum simulation time
     void SetMaxTime(int p_maxTime);
 
-    /// @brief          Sets the userID to p_userID
-    /// @param p_userID The userID
-    void SetUserID(char* p_userID);
+    /// @brief          Sets the userId to p_userId
+    /// @param p_userId The userId
+    void SetUserId(char* p_userId);
 
     /// @brief               Sets the settings for data collection
     /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
