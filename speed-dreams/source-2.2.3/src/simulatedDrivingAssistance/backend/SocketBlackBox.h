@@ -33,8 +33,6 @@ public:
     std::vector<std::string> VariablesToReceive;
 
 private:
-    
-
     // map with functions that insert correct variable value in vector
     using inserterFunction = void (*) (std::vector<std::string>&, DriveSituation&);
     std::unordered_map<std::string, inserterFunction> m_variableConvertAndInsertMap;

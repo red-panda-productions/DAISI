@@ -4,6 +4,7 @@
 #include "SQLDatabaseStorage.h"
 #include "../rppUtils/RppUtils.hpp"
 
+/// @brief Creates a database
 #define GET_CREATED_DATABASE_PATH \
     std::string SimulationDataPath("SimulationData\\");\
     ASSERT_TRUE(FindFileDirectory(SimulationDataPath, p_fileName));\
@@ -15,8 +16,9 @@
     inputFile >> reading;\
     const std::string databasePath = SimulationDataPath + "Simulation_" + reading + "_database.sqlite3";
 
-
-void FailToCreateDatabase(std::string p_fileName)
+/// @brief             Tests a database creation fail
+/// @param  p_fileName The filename
+void FailToCreateDatabase(const std::string& p_fileName)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
 
@@ -25,7 +27,9 @@ void FailToCreateDatabase(std::string p_fileName)
     ASSERT_FALSE(databaseFile.good());
 }
 
-void CreateCorrectDatabase(std::string p_fileName)
+/// @brief             Tests a correct creation of a database
+/// @param  p_fileName The filename
+void CreateCorrectDatabase(const std::string& p_fileName)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
 

@@ -8,6 +8,7 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+/// @brief Test if the distribution of the mediator works
 TEST(MediatorTest, GetDistributedMediator)
 {
     // delete singletons
