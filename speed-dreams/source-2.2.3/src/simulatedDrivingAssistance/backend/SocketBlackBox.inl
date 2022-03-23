@@ -20,8 +20,8 @@
 
 // converts abstract decision to concrete decision with correct value
 #define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) {p_function;}
-#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.m_steerDecision.m_steerAmount = stringToFloat(p_string))
-#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.m_brakeDecision.m_brakeAmount = stringToFloat(p_string))
+#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
+#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
 
 /// @brief Sets keys and values for the functions that retrieve the correct information.
 template <class DriveSituation>
@@ -115,7 +115,7 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
 template <class DriveSituation>
 void SocketBlackBox<DriveSituation>::Shutdown()
 {
-    m_server.AwaitData(m_buffer,SBB_BUFFER_SIZE);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     m_server.SendData("STOP", 4);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
