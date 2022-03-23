@@ -5,6 +5,9 @@
 #include <thread>
 #include "ClientSocket.h"
 #define TEST_BUFFER_SIZE 512
+#define TOLERANCE 0.1f
+#define STEER_VALUE 1.0f
+#define BRAKE_VALUE 2.0f
 
 #define SETUP(method_name) \
 	std::thread t = std::thread(method_name); \
@@ -25,10 +28,10 @@ void BlackBoxSide()
 	SocketBlackBox<DriveSituationMock> bb;
 	CREATE_DRIVE_SITUATION_MOCK;
 	DriveSituationMock exampleSituation = GetExampleDriveSituation();
-	DriveSituationMock situations[2] {mock,exampleSituation};
+	DriveSituationMock situations[2]{ mock,exampleSituation };
 
 	/// intializes the black box with 2 tests
-	bb.Initialize(mock,situations,2);
+	bb.Initialize(mock, situations, 2);
 	DecisionTuple decisions;
 
 	// no decision should be made yet
@@ -39,8 +42,8 @@ void BlackBoxSide()
 	ASSERT_TRUE(bb.GetDecisions(exampleSituation, decisions));
 
 	// check the result
-	ASSERT_ALMOST_EQ(decisions.m_steerDecision.m_steerAmount,1.0f,0.1f);
-	ASSERT_ALMOST_EQ(decisions.m_brakeDecision.m_brakeAmount,2.0f,0.1f);
+	ASSERT_ALMOST_EQ(decisions.GetSteer(), STEER_VALUE, TOLERANCE);
+	ASSERT_ALMOST_EQ(decisions.GetBrake(), BRAKE_VALUE, TOLERANCE);
 
 	// shut the server down
 	bb.Shutdown();
@@ -49,53 +52,53 @@ void BlackBoxSide()
 /// @brief					 Tests if the parsed drivesituation is the same as the target
 /// @param  p_driveSituation Parsed drive situation
 /// @param  p_target		 The target
-void TestDriveSituation(std::vector<std::string>& p_driveSituation,DriveSituationMock p_target)
+void TestDriveSituation(std::vector<std::string>& p_driveSituation, DriveSituationMock p_target)
 {
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[0]), p_target.GetCarInfo()->Speed(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[1]), p_target.GetCarInfo()->TopSpeed(),0.01);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[0]), p_target.GetCarInfo()->Speed(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[1]), p_target.GetCarInfo()->TopSpeed(), TOLERANCE);
 	ASSERT_EQ(stoi(p_driveSituation[2]), p_target.GetCarInfo()->Gear());
 	ASSERT_EQ(stoi(p_driveSituation[3]), p_target.GetCarInfo()->Headlights() ? 1 : 0);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[4]), p_target.GetPlayerInfo()->SteerCmd(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[5]), p_target.GetPlayerInfo()->AccelCmd(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[6]), p_target.GetPlayerInfo()->BrakeCmd(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[7]), p_target.GetPlayerInfo()->ClutchCmd(),0.01);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[4]), p_target.GetPlayerInfo()->SteerCmd(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[5]), p_target.GetPlayerInfo()->AccelCmd(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[6]), p_target.GetPlayerInfo()->BrakeCmd(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[7]), p_target.GetPlayerInfo()->ClutchCmd(), TOLERANCE);
 	ASSERT_EQ(stoi(p_driveSituation[8]), p_target.GetCarInfo()->trackPosition.Offroad() ? 1 : 0);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[9]), p_target.GetCarInfo()->trackPosition.ToMiddle(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[10]), p_target.GetCarInfo()->trackPosition.ToLeft(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[11]), p_target.GetCarInfo()->trackPosition.ToRight(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[12]), p_target.GetCarInfo()->trackPosition.ToStart(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[13]), p_target.GetEnvironmentInfo()->TimeOfDay(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[14]), p_target.GetEnvironmentInfo()->Clouds(),0.01);
-	ASSERT_ALMOST_EQ(stof(p_driveSituation[15]), p_target.GetEnvironmentInfo()->Rain(),0.01);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[9]), p_target.GetCarInfo()->trackPosition.ToMiddle(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[10]), p_target.GetCarInfo()->trackPosition.ToLeft(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[11]), p_target.GetCarInfo()->trackPosition.ToRight(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[12]), p_target.GetCarInfo()->trackPosition.ToStart(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[13]), p_target.GetEnvironmentInfo()->TimeOfDay(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[14]), p_target.GetEnvironmentInfo()->Clouds(), TOLERANCE);
+	ASSERT_ALMOST_EQ(stof(p_driveSituation[15]), p_target.GetEnvironmentInfo()->Rain(), TOLERANCE);
 }
 
 /// @brief Tests an entire run of the framework
-TEST(SocketBlackBoxTests,SocketTest)
+TEST(SocketBlackBoxTests, SocketTest)
 {
 	// creates a connection between the black box and a client
 	SETUP(BlackBoxSide)
 
-	std::vector<std::string> order = {
-		"DATAORDER",
-		"Speed",
-		"TopSpeed",
-		"Gear",
-		"Headlights",
-		"SteerCmd",
-		"AccelCmd",
-		"BrakeCmd",
-		"ClutchCmd",
-		"Offroad",
-		"ToMiddle",
-		"ToLeft",
-		"ToRight",
-		"ToStart",
-		"TimeOfDay",
-		"Clouds",
-		"Rain",
-		"ACTIONORDER",
-		"Steer",
-		"Brake"
+		std::vector<std::string> order = {
+			"DATAORDER",
+			"Speed",
+			"TopSpeed",
+			"Gear",
+			"Headlights",
+			"SteerCmd",
+			"AccelCmd",
+			"BrakeCmd",
+			"ClutchCmd",
+			"Offroad",
+			"ToMiddle",
+			"ToLeft",
+			"ToRight",
+			"ToStart",
+			"TimeOfDay",
+			"Clouds",
+			"Rain",
+			"ACTIONORDER",
+			"Steer",
+			"Brake"
 	};
 
 	// sends required and sending data of client
@@ -104,7 +107,7 @@ TEST(SocketBlackBoxTests,SocketTest)
 	client.SendData(sbuffer.data(), sbuffer.size());
 
 	// receives amount of tests
-	client.AwaitData(buffer, TEST_BUFFER_SIZE); 
+	client.AwaitData(buffer, TEST_BUFFER_SIZE);
 	msgpack::unpacked msg;
 	msgpack::unpack(msg, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> amountOfTests;
@@ -112,7 +115,7 @@ TEST(SocketBlackBoxTests,SocketTest)
 	ASSERT_TRUE(amountOfTests.size() == 1);
 	ASSERT_TRUE(stoi(amountOfTests[0]) == 2); // 2 tests
 
-	
+
 
 	// test 1
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
@@ -122,12 +125,12 @@ TEST(SocketBlackBoxTests,SocketTest)
 	msg2->convert(driveSituation);
 
 	CREATE_DRIVE_SITUATION_MOCK;
-	TestDriveSituation(driveSituation,mock);
+	TestDriveSituation(driveSituation, mock);
 
 	// send back result of test 1
 	std::vector<std::string> action{
-		"1.0000",
-		"2.0000"
+		std::to_string(STEER_VALUE),
+		std::to_string(BRAKE_VALUE)
 	};
 	sbuffer.clear();
 	msgpack::pack(sbuffer, action);
@@ -194,26 +197,26 @@ TEST(SocketBlackBoxTests, NoOrderSend)
 {
 	SETUP(FailingBlackBox)
 
-	std::vector<std::string> order = {
-		"Speed",
-		"TopSpeed",
-		"Gear",
-		"Headlights",
-		"SteerCmd",
-		"AccelCmd",
-		"BrakeCmd",
-		"ClutchCmd",
-		"Offroad",
-		"ToMiddle",
-		"ToLeft",
-		"ToRight",
-		"ToStart",
-		"TimeOfDay",
-		"Clouds",
-		"Rain",
-		"ACTIONORDER",
-		"Steer",
-		"Brake"
+		std::vector<std::string> order = {
+			"Speed",
+			"TopSpeed",
+			"Gear",
+			"Headlights",
+			"SteerCmd",
+			"AccelCmd",
+			"BrakeCmd",
+			"ClutchCmd",
+			"Offroad",
+			"ToMiddle",
+			"ToLeft",
+			"ToRight",
+			"ToStart",
+			"TimeOfDay",
+			"Clouds",
+			"Rain",
+			"ACTIONORDER",
+			"Steer",
+			"Brake"
 	};
 
 	// sends required and sending data of client
@@ -227,26 +230,26 @@ TEST(SocketBlackBoxTests, NoActionOrderSend)
 {
 	SETUP(FailingBlackBox)
 
-	std::vector<std::string> order = {
-		"DATAORDER",
-		"Speed",
-		"TopSpeed",
-		"Gear",
-		"Headlights",
-		"SteerCmd",
-		"AccelCmd",
-		"BrakeCmd",
-		"ClutchCmd",
-		"Offroad",
-		"ToMiddle",
-		"ToLeft",
-		"ToRight",
-		"ToStart",
-		"TimeOfDay",
-		"Clouds",
-		"Rain",
-		"Steer",
-		"Brake"
+		std::vector<std::string> order = {
+			"DATAORDER",
+			"Speed",
+			"TopSpeed",
+			"Gear",
+			"Headlights",
+			"SteerCmd",
+			"AccelCmd",
+			"BrakeCmd",
+			"ClutchCmd",
+			"Offroad",
+			"ToMiddle",
+			"ToLeft",
+			"ToRight",
+			"ToStart",
+			"TimeOfDay",
+			"Clouds",
+			"Rain",
+			"Steer",
+			"Brake"
 	};
 
 	// sends required and sending data of client
