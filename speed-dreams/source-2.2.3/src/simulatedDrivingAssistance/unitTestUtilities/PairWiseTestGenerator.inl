@@ -1,6 +1,7 @@
 #pragma once
 #include "PairWiseTestGenerator.h"
 
+/// @brief Creates an implementation of a pairwise test generator
 #define CREATE_PAIR_WISE_TEST_GENERATOR_IMPLEMENTATION(dimensions) \
 	template std::vector<TestCaseInfo>* PairWiseTestGenerator<dimensions>::GetTestCases(int* p_dimensions);\
 	template void PairWiseTestGenerator<dimensions>::CreateAllTuples(); \
@@ -8,11 +9,11 @@
 	template bool PairWiseTestGenerator<dimensions>::GetNextTuple(FeatureTuple& tuple); \
 	template void PairWiseTestGenerator<dimensions>::CreateTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase); \
 	template void PairWiseTestGenerator<dimensions>::CreateRandomTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase); \
-	template int PairWiseTestGenerator<dimensions>::MaximizeCoverage(TestCaseInfo& p_testCase, FeatureTuple& p_tuple); \
+	template int  PairWiseTestGenerator<dimensions>::MaximizeCoverage(TestCaseInfo& p_testCase, FeatureTuple& p_tuple); \
 	template int* PairWiseTestGenerator<dimensions>::GetMutableDimensions(FeatureTuple& p_tuple, int& p_count); \
 	template void PairWiseTestGenerator<dimensions>::ScrambleDimensions(int* p_dimensions, int p_dimensionCount); \
-	template int PairWiseTestGenerator<dimensions>::MaximizeCoverageForDimension(TestCaseInfo& p_testCase, int p_dimension, int p_bestCoverage); \
-	template int PairWiseTestGenerator<dimensions>::CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature); \
+	template int  PairWiseTestGenerator<dimensions>::MaximizeCoverageForDimension(TestCaseInfo& p_testCase, int p_dimension, int p_bestCoverage); \
+	template int  PairWiseTestGenerator<dimensions>::CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature); \
 	template void PairWiseTestGenerator<dimensions>::RemoveTuplesCoveredByTest(TestCaseInfo& p_testCase)
 
 /// @brief				 Creates all of the pair-wise test cases

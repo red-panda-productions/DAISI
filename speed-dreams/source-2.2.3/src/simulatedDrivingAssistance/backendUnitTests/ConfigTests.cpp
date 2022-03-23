@@ -3,7 +3,6 @@
 #include "SDAConfig.h"
 #include "ConfigEnums.h"
 #include "../rppUtils/Random.hpp"
-
 #define INTERVENTION_TYPE_AMOUNT 5
 
 
