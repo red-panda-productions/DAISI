@@ -51,12 +51,13 @@ void SocketBlackBox<DriveSituation>::Initialize()
     m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_PLAYER_INFO(ClutchCmd());
     m_variableConvertAndInsertMap["SteerCmd"] = INSERT_PLAYER_INFO(SteerCmd());
 
+    m_variableConvertAndInsertMap["CurrentTime"] = PUSH_BACK_DS(GetTime());
+
 
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
 }
-
 
 /// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
 /// @param p_initialDriveSituation  The initial drive situation
