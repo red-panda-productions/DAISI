@@ -189,8 +189,8 @@ static void SetMaxTime(void*)
 /// @brief Handle input in the UserID textbox
 static void SetUserId(void*)
 {
-    m_userID = GfuiEditboxGetString(s_scrHandle, m_userIDId);
-    GfuiEditboxSetString(s_scrHandle, m_userIDId, m_userID);
+    m_userId = GfuiEditboxGetString(s_scrHandle, m_userIdControl);
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
 
