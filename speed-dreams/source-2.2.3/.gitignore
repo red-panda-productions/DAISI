@@ -14,3 +14,6 @@ TestResults/
 
 # Singletons folder
 data/Singletons/*
+
+# Settings for resharper
+Folder.DotSettings
