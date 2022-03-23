@@ -53,11 +53,13 @@ Recorder::~Recorder()
 /// @preconditions p_input must be PARAMETERS long (in this case 4)
 /// @param p_input array of size PARAMETERS
 ///	@param p_currentTime the current time of the simulation
+///	@param p_compression boolean value if compression is done
 /// @author Sjoerd Schilder
 ///
 void Recorder::WriteRecording(const float* p_input, const double p_currentTime, const bool p_compression)
 {
 	// doesn't write if the input is the same as the previous time
+	// if p_compression is true
 	if (p_compression && CheckSameInput(p_input)) return;
 	m_recordingFile << p_currentTime << " ";
 	for (int i = 0; i < m_paramAmount; i++)
