@@ -5,6 +5,10 @@
 #include <tgf.h>
 #include "InterventionConfig.h"
 
+/// @brief Initialize the intervention sound map. Note that this just gets which interventions use which sounds and does not create the sounds yet.
+/// @param p_sounds The map in which to store the sounds
+/// @param p_xmlHandle The handle to the xml config file to read from
+/// @param p_interventionCount The amount of interventions
 void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sounds, void* p_xmlHandle, unsigned int p_interventionCount) {
     char path[256];
     for (int i = 0; i < p_interventionCount; i++)
@@ -80,7 +84,7 @@ std::vector<InterventionAction> InterventionConfig::GetEnabledSounds() {
 
 /// @brief  Gets the amount of interventions
 /// @return The amount of interventions
-unsigned int InterventionConfig::GetInterventionCount() {
+unsigned int InterventionConfig::GetInterventionCount() const {
     return m_interventionCount;
 }
 

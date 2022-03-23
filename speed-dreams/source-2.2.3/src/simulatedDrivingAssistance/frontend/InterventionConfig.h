@@ -53,7 +53,7 @@ public:
 
     std::vector<InterventionAction> GetEnabledSounds();
 
-    unsigned int GetInterventionCount();
+    unsigned int GetInterventionCount() const;
 
     static InterventionConfig* GetInstance();
 

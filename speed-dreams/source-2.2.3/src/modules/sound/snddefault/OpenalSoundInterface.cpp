@@ -215,15 +215,18 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 	return sound;
 }
 
-// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
-void updateInterventionSounds(CarSoundData** car_sound_data, std::unordered_map<InterventionAction, Sound*> intervention_sounds) {
+/// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+/// @brief Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
+/// @param p_carSoundData Data related to the car, like position data.
+/// @param p_interventionSounds The registered sounds
+void UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
     if(!SMediator::GetInstance()->GetIndicatorSetting(INDICATOR_AUDITORY)) return;
 
-    for (const auto &item : intervention_sounds) {
+    for (const auto &item : p_interventionSounds) {
         Sound* sound = item.second;
         sgVec3 p, u;
-        car_sound_data[0]->getCarPosition(p);
-        car_sound_data[0]->getCarSpeed(u);
+        p_carSoundData[0]->getCarPosition(p);
+        p_carSoundData[0]->getCarSpeed(u);
         sound->setSource(p, u);
         sound->setReferenceDistance(1.0f);
         sound->setVolume(1.0f);
@@ -233,8 +236,8 @@ void updateInterventionSounds(CarSoundData** car_sound_data, std::unordered_map<
     }
 
     for (const auto &action : InterventionConfig::GetInstance()->GetEnabledSounds()) {
-        if(intervention_sounds.find(action) == intervention_sounds.end()) continue;
-        Sound* sound = intervention_sounds[action];
+        if(p_interventionSounds.find(action) == p_interventionSounds.end()) continue;
+        Sound* sound = p_interventionSounds[action];
 
         if(!sound->isPlaying()) {
             sound->start();
@@ -287,7 +290,7 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
 	}
 
     // SIMULATED DRIVING ASSISTANCE: Update intervention sounds
-    updateInterventionSounds(car_sound_data, intervention_sounds);
+    UpdateInterventionSounds(car_sound_data, intervention_sounds);
 
 	qsort((void*) engpri, n_cars, sizeof(SoundPri), &sortSndPriority);
 

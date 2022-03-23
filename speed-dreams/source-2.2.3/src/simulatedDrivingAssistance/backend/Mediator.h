@@ -44,6 +44,9 @@ public:
     /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
     void SetDataCollectionSettings(bool* p_dataSetting);
 
+    /// @brief             Gets the setting for the given indicator
+    /// @param p_indicator Indicator whose setting to get
+    /// @return true if the indicator is enabled, false when disabled
     bool GetIndicatorSetting(Indicator p_indicator);
 
     //returns the intervention type from the decision maker
