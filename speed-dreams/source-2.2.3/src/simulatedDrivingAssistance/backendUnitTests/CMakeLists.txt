@@ -1,11 +1,8 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-project(backendUnitTests)
 
-ADD_EXPAT_INCLUDEDIR()
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDL2_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend unitTestUtilities)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -53,34 +50,53 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/DecisionMakerMock.h)
 
 
-SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
+ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 
 target_link_libraries(
-  backendUnitTests 
-  frontend
+  backendUnitTests #moet het zelfde zijn
   gtest_main
   gmock_main
 )
-ADD_SDL2_LIBRARY(backendUnitTests)
 
-ADD_EXPAT_LIBRARY(backendUnitTests)
-
-ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend unitTestUtilities)
+ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend frontend unitTestUtilities)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
-#ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#        "${IPCLIB_BIN_DIR}/IPCLib.dll"
-#        "${CMAKE_BINARY_DIR}/bin")
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${IPCLIB_BIN_DIR}/IPCLib.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
 
-FILE(COPY "${IPCLIB_BIN_DIR}/IPCLib.dll" DESTINATION "${CMAKE_BINARY_DIR}/bin")
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/tgf.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
 
-#SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/tgfclient.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
 
-FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_BINARY_DIR}/bin")
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/portability.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/SDL2.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/libexpat.dll"
+        "${CMAKE_CURRENT_BINARY_DIR}")
+
+SD_INSTALL_FILES(BIN simulatedDrivingAssistance/backendUnitTests TARGETS backendUnitTests)
+
+FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
