@@ -207,8 +207,8 @@ static void SaveSettings(void* /* dummy */)
 
     // Save the encrypted userID in the SDAConfig
     char buf[32];
-    size_t userID_encrypted = std::hash<std::string>{}(m_userID);
-    sprintf(buf, "%d", userID_encrypted);
+    size_t encryptedUserId= std::hash<std::string>{}(m_userId);
+    sprintf(buf, "%d", encryptedUserId);
     mediator->SetUserID(buf);
 
     // Save settings to frontend settings
