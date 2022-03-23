@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 project(backendUnitTests)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend unitTestUtilities)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -51,18 +51,15 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/DecisionMakerMock.h)
 
 
-
-set_tests_properties(${Tests} PROPERTIES TIMEOUT 2)
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 target_link_libraries(
-  backendUnitTests #moet het zelfde zijn
-  unitTestUtilities
-  backend
+  backendUnitTests 
+  frontend
   gtest_main
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability)
+ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend unitTestUtilities)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 
@@ -75,17 +72,14 @@ ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
         "${CMAKE_CURRENT_BINARY_DIR}")
 
 
-SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
+#SD_INSTALL_FILES(BIN TARGETS backendUnitTests)
 
 FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-
-target_include_directories(backendUnitTests PUBLIC "../backend")
-target_include_directories(backendUnitTests PUBLIC "../unitTestUtilities")
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
-IF(WIN32)
-    INCLUDE(customthirdparty)
-    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
-ENDIF(WIN32)
+#IF(WIN32)
+#    INCLUDE(customthirdparty)
+#    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+#ENDIF(WIN32)
