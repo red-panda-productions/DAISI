@@ -20,7 +20,7 @@ bool m_indicators[2] = {false, false};
 InterventionType m_interventionType;
 
 // Environment
-Track track;
+Track m_track;
 
 // Participant control
 bool m_pControl[3] = {false, true, true};

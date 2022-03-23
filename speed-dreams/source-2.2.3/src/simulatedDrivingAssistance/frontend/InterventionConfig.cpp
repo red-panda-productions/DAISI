@@ -3,7 +3,6 @@
 #include <portability.h>
 #include <stdexcept>
 #include <tgf.h>
-
 #include "InterventionConfig.h"
 
 void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sounds, void* p_xmlHandle, unsigned int p_interventionCount) {
@@ -21,6 +20,7 @@ void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sou
     }
 }
 
+/// @brief Initialize the intervention configuration.
 void InterventionConfig::Initialize() {
     void* xmlHandle = GetXmlHandle();
 
@@ -31,6 +31,8 @@ void InterventionConfig::Initialize() {
     InitializeSounds(m_sounds, xmlHandle, m_interventionCount);
 }
 
+/// @brief  Get the XML file for the intervention configuration
+/// @return An XML handle for the intervention configuration
 void* InterventionConfig::GetXmlHandle() {
     // Load intervention texture from XML file (unchecked max path size: 256)
     char* path = new char[256];
@@ -38,16 +40,23 @@ void* InterventionConfig::GetXmlHandle() {
     return GfParmReadFile(path, GFPARM_RMODE_STD);
 }
 
+/// @brief          Sets the current active intervention action
+/// @param p_action The intervention to set as current active action
 void InterventionConfig::SetInterventionAction(InterventionAction p_action) 
 {
     m_currentAction = p_action;
 }
 
+/// @brief              Sets the textures that are used by the HUD
+/// @param p_textures   An array containing the texture data, 
+///                     indexed by the InterventionAction type in ConfigEnums.h
 void InterventionConfig::SetTextures(tTextureData* p_textures) 
 {
     m_textures = p_textures;
 }
 
+/// @brief  Retrieves the texture belonging to the current intervention action
+/// @return The texture data
 tTextureData InterventionConfig::GetCurrentInterventionTexture() 
 {
     if (m_currentAction >= m_interventionCount)
@@ -57,18 +66,26 @@ tTextureData InterventionConfig::GetCurrentInterventionTexture()
     return m_textures[m_currentAction];
 }
 
+/// @brief  Retrieves the sound locations belonging to the possible intervention actions
+/// @return A map going from InterventionAction => sound location, possibly nullptr
 std::unordered_map<InterventionAction, const char*> InterventionConfig::GetSounds() {
     return m_sounds;
 }
 
+/// @brief  Retrieves the intervention actions that should be playing a sound effect.
+/// @return A vector containing the intervention actions that should play a sound effect.
 std::vector<InterventionAction> InterventionConfig::GetEnabledSounds() {
     return { m_currentAction };
 }
 
+/// @brief  Gets the amount of interventions
+/// @return The amount of interventions
 unsigned int InterventionConfig::GetInterventionCount() {
     return m_interventionCount;
 }
 
+/// @brief  Returns an the existing InterventionConfig, or creates the initial one if it doesn't exist yet.
+/// @return The InterventionConfig instance
 InterventionConfig* InterventionConfig::GetInstance() 
 {
     if (m_instance == nullptr)
