@@ -3,6 +3,7 @@
 #include "DecisionTuple.h"
 #include "Mediator.h"
 
+/// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
     template void DecisionMaker<type1,type2>::Initialize(DriveSituation& p_initialSituation,DriveSituation* p_testSituations, int p_testAmount);\
     template bool DecisionMaker<type1,type2>::Decide(DriveSituation& p_driveSituation);\
@@ -11,6 +12,10 @@
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
 
+/// @brief                     Initializes the decision maker
+/// @param  p_initialSituation The initial situation
+/// @param  p_testSituations   The test situations
+/// @param  p_testAmount       The amount of tests
 template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(DriveSituation& p_initialSituation,
     DriveSituation* p_testSituations, int p_testAmount)

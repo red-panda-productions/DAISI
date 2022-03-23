@@ -10,27 +10,27 @@ TrackPosition::TrackPosition(bool p_offroad, float p_toStart, float p_toRight, f
 	m_toLeft = p_toLeft;
 }
 
-bool TrackPosition::Offroad()
+bool TrackPosition::Offroad() const
 {
 	return m_offroad;
 }
 
-float TrackPosition::ToStart()
+float TrackPosition::ToStart() const
 {
 	return m_toStart;
 }
 
-float TrackPosition::ToRight()
+float TrackPosition::ToRight() const
 {
 	return m_toRight;
 }
 
-float TrackPosition::ToMiddle()
+float TrackPosition::ToMiddle() const
 {
 	return m_toMiddle;
 }
 
-float TrackPosition::ToLeft()
+float TrackPosition::ToLeft() const
 {
 	return m_toLeft;
 }

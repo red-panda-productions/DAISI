@@ -1,6 +1,7 @@
 #pragma once
 #include "ConfigEnums.h"
 #include "car.h"
+
 /// @brief The car controller of the mediator
 class CarController
 {

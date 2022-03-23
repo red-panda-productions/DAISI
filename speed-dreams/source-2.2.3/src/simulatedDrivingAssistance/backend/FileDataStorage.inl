@@ -33,7 +33,7 @@ void WriteEnvironmentData(std::ostream& p_outputStream, EnvironmentInfo& p_envIn
 }
 /// @brief Write headers for the car data in the same order as actual data will be written
 /// @param p_outputStream stream to write headers to
-void WriteCarHeaders(std::ostream& p_outputStream) {
+inline void WriteCarHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "Speed");
     WRITE_STRING_LIT(p_outputStream, "Gear");
     WRITE_STRING_LIT(p_outputStream, "Headlights");
@@ -52,7 +52,7 @@ void WriteCarData(std::ostream& p_outputStream, CarInfo& p_carInfo) {
 }
 /// @brief Write headers for the player data in the same order as actual data will be written
 /// @param p_outputStream stream to write headers to
-void WritePlayerHeaders(std::ostream& p_outputStream) {
+inline void WritePlayerHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "AccelCmd");
     WRITE_STRING_LIT(p_outputStream, "BrakeCmd");
     WRITE_STRING_LIT(p_outputStream, "ClutchCmd");
@@ -119,4 +119,7 @@ void FileDataStorage<DriveSituation>::Save(DriveSituation& p_situation, int p_ti
 }
 
 template<class DriveSituation>
-FileDataStorage<DriveSituation>::FileDataStorage(bool* p_saveSettings):m_saveSettings(p_saveSettings) {}
+FileDataStorage<DriveSituation>::FileDataStorage(bool* p_saveSettings):m_saveSettings(p_saveSettings)
+{
+	
+}
