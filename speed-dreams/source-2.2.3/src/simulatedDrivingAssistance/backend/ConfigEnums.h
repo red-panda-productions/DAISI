@@ -7,7 +7,7 @@ typedef unsigned int Task;
 #define TASK_LANE_KEEPING   1
 #define TASK_SPEED_CONTROL  2
 
-/// @brief The different indicators that can be shown
+/// @brief The different ways a user can be indicated about an intervention
 typedef unsigned int Indicator;
 
 #define INDICATOR_AUDITORY      0

@@ -16,7 +16,7 @@ public:
 
 	void SetLightCmd(bool p_light) const;
 
-	void ShowUI(InterventionAction p_element) const;
+	void ShowIntervention(InterventionAction p_element) const;
 
 	void SetCar(tCarElt* p_car);
 private:

@@ -38,12 +38,12 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
     return true;
 }
 
-/// @brief         Changes the settings of how decisions should be made
-/// @param  p_type The new type of interventions
+/// @brief                Changes the settings of how decisions should be made
+/// @param  p_dataSetting The new type of interventions
 template<typename SocketBlackBox, typename SDAConfig>
-void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_type)
+void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
-    m_interventionExecutor = Config.SetInterventionType(p_type);
+    m_interventionExecutor = Config.SetInterventionType(p_dataSetting);
 }
 
 /// @brief         Changes the settings of how decisions should be made
