@@ -1,6 +1,5 @@
 #pragma once
 #include <fstream>
-#define PARAMETERS 4 // steerCmd, accelCmd, brakeCmd, clutchCmd.
 
 class Recorder
 {
@@ -15,6 +14,6 @@ public:
 
 private:
 	std::ofstream m_recordingFile;
-	float m_prevInput[PARAMETERS];
+	float* m_prevInput;
 	int m_paramAmount;
 };
