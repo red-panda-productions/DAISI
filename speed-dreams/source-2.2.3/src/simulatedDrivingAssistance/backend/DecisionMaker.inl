@@ -12,6 +12,12 @@
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
 
+//template <typename SocketBlackBox, typename SDAConfig>
+//DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
+//{
+//    delete m_recorder;
+//}
+
 /// @brief                     Initializes the decision maker
 /// @param  p_initialSituation The initial situation
 /// @param  p_testSituations   The test situations
@@ -20,6 +26,7 @@ template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(DriveSituation& p_initialSituation,
     DriveSituation* p_testSituations, int p_testAmount)
 {
+    m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
     m_blackBox.Initialize(p_initialSituation, p_testSituations, p_testAmount);
 }
 
@@ -34,7 +41,12 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
 
     int decisionCount = 0;
     IDecision** decisions = decision.GetActiveDecisions(decisionCount);
+
     m_interventionExecutor->RunDecision(decisions, decisionCount);
+
+    const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
+    m_recorder->WriteRecording(decisionValues, p_driveSituation.GetTime(), false);
+
     return true;
 }
 

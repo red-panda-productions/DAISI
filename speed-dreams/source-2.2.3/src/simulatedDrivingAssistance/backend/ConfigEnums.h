@@ -58,4 +58,4 @@ typedef unsigned int DataToStore;
 #define DATA_TO_STORE_META_DATA         4
 
 // for recording a session
-//#define RECORD_SESSION
+#define RECORD_SESSION
