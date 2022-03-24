@@ -21,6 +21,10 @@
     " seconds). Check code for infinite loops"); \
 }
 
+/// @brief		   Tests if 2 strings are equal
+/// @param  p_msg1 The first message
+/// @param  p_msg2 The second message
+/// @param  p_size The expected size of both messages
 inline void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size)
 {
 	bool len1 = p_size == strlen(p_msg1);
@@ -34,6 +38,9 @@ inline void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size)
 	}
 }
 
+/// @brief				   Generates a random char array
+/// @param  p_dataBuffer   The buffer for the array
+/// @param  p_stringLength The length of the random array
 inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
 {
 	for (int i = 0; i < p_stringLength; i++)
@@ -167,22 +174,23 @@ inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
 		}\
 	}
 
-
+/// @brief A pairwise test for 2 arrays
 template<typename T1, typename T2>
-inline void PairWiseTest(void(*func)(T1, T2), T1* input1, int count1, T2* input2, int count2)
+inline void PairWiseTest(void(*func)(T1, T2), T1* p_input1, int p_count1, T2* p_input2, int p_count2)
 {
 	PairWiseTestGenerator<2> generator;
-	int dimensions[2]{ count1, count2 };
+	int dimensions[2]{ p_count1, p_count2 };
 
 	std::vector<TestCaseInfo>& testCases = *generator.GetTestCases(dimensions);
 
 	for(int i = 0; i < testCases.size(); i++)
 	{
 		int* Features = testCases[i].Features;
-		func(input1[Features[0]], input2[Features[1]]);
+		func(p_input1[Features[0]], p_input2[Features[1]]);
 	}
 }
 
+/// @brief A pairwise test for 3 arrays
 template<typename T1, typename T2, typename T3>
 inline void PairWiseTest(void(*p_func)(T1, T2, T3), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3)
 {
@@ -198,6 +206,7 @@ inline void PairWiseTest(void(*p_func)(T1, T2, T3), T1* p_input1, int p_count1, 
 	}
 }
 
+/// @brief A pairwise test for 4 arrays
 template<typename T1, typename T2, typename T3, typename T4>
 inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4)
 {
@@ -213,6 +222,7 @@ inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4), T1* p_input1, int p_coun
 	}
 }
 
+/// @brief A pairwise test for 5 arrays
 template<typename T1, typename T2, typename T3, typename T4, typename T5>
 inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5)
 {
@@ -228,6 +238,7 @@ inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5), T1* p_input1, int p_
 	}
 }
 
+/// @brief A pairwise test for 6 arrays
 template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
 inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5, T6* p_input6, int p_count6)
 {
@@ -243,6 +254,7 @@ inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6), T1* p_input1, in
 	}
 }
 
+/// @brief A pairwise test for 7 arrays
 template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
 inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6, T7), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5, T6* p_input6, int p_count6, T7* p_input7, int p_count7)
 {
@@ -258,6 +270,7 @@ inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6, T7), T1* p_input1
 	}
 }
 
+/// @brief A pairwise test for 8 arrays
 template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
 inline void PairWiseTest(void(*p_func)(T1, T2, T3, T4, T5, T6, T7, T8), T1* p_input1, int p_count1, T2* p_input2, int p_count2, T3* p_input3, int p_count3, T4* p_input4, int p_count4, T5* p_input5, int p_count5, T6* p_input6, int p_count6, T7* p_input7, int p_count7, T8* p_input8, int p_count8)
 {

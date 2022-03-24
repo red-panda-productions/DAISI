@@ -9,6 +9,8 @@
 #define STEER_VALUE 1.0f
 #define BRAKE_VALUE 2.0f
 
+/// @brief				Sets up the connection between the AI and the test
+/// @param  method_name The method that needs to be tested
 #define SETUP(method_name) \
 	std::thread t = std::thread(method_name); \
 	t.detach();\
@@ -18,9 +20,6 @@
 	char buffer[TEST_BUFFER_SIZE];\
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);\
 	ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
-
-
-
 
 /// @brief The black box side of the test, as these tests have to run in parallel
 void BlackBoxSide()

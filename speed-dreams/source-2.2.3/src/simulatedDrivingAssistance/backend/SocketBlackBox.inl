@@ -4,6 +4,7 @@
 #include "../rppUtils/RppUtils.hpp"
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(type) \
+	template SocketBlackBox<type>::SocketBlackBox<type>(PCWSTR p_ip, int p_port);\
     template void SocketBlackBox<type>::Initialize();\
 	template void SocketBlackBox<type>::Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests, int p_amountOfTests);\
 	template void SocketBlackBox<type>::Shutdown();\
@@ -22,6 +23,12 @@
 #define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) {p_function;}
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
+
+template <class DriveSituation>
+SocketBlackBox<DriveSituation>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip, p_port)
+{
+
+}
 
 /// @brief Sets keys and values for the functions that retrieve the correct information.
 template <class DriveSituation>
@@ -79,13 +86,13 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     if (orderVec[i++] != "DATAORDER") throw std::exception("Black Box send wrong message: DATAORDER expected");
     while (i < orderVec.size() && orderVec[i] != "ACTIONORDER")
     {
-        m_variablesToSend.push_back(orderVec[i++]);
+        VariablesToSend.push_back(orderVec[i++]);
     }
     if (i >= orderVec.size()) throw std::exception("Black box send wrong message: ACTIONORDER expected");
     i++;
     while (i < orderVec.size())
     {
-        m_variablesToReceive.push_back(orderVec[i++]);
+        VariablesToReceive.push_back(orderVec[i++]);
     }
 
     // testing can be done here later
@@ -130,14 +137,14 @@ void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p
 {
     std::vector<std::string> dataToSerialize;
 
-    if (m_variablesToSend.empty())
+    if (VariablesToSend.empty())
     {
         dataToSerialize.push_back("There are no variables to send");
         msgpack::pack(p_sbuffer, dataToSerialize);
-        throw std::exception("m_variablesToSend is empty");
+        throw std::exception("VariablesToSend is empty");
     }
 
-    for (auto i = m_variablesToSend.begin(); i != m_variablesToSend.end(); i++) {
+    for (auto i = VariablesToSend.begin(); i != VariablesToSend.end(); i++) {
         try { m_variableConvertAndInsertMap.at(*i)(dataToSerialize, p_driveSituation); }
         catch (std::exception& e)
         {
@@ -164,12 +171,12 @@ void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(const char* p_da
     std::vector<std::string> resultVec;
     obj.convert(resultVec);
 
-    if (m_variablesToReceive.empty()) throw std::exception("No variables to receive");
-    if (m_variablesToReceive.size() != resultVec.size())
+    if (VariablesToReceive.empty()) throw std::exception("No variables to receive");
+    if (VariablesToReceive.size() != resultVec.size())
         throw std::exception("Number of variables received does not match number of expected variables to receive");
-    for (int i = 0; i < m_variablesToReceive.size(); i++)
+    for (int i = 0; i < VariablesToReceive.size(); i++)
     {
-        try { m_variableDecisionMap.at(m_variablesToReceive[i])(resultVec.at(i), p_decisionTuple); }
+        try { m_variableDecisionMap.at(VariablesToReceive[i])(resultVec.at(i), p_decisionTuple); }
         catch (std::exception& e) { throw e; }
     }
 }

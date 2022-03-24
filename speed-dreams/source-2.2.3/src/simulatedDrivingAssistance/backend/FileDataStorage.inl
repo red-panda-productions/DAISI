@@ -2,6 +2,7 @@
 #include <string>
 #include "ConfigEnums.h"
 
+/// @brief Creates an implementation of file data storage
 #define CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(type)\
     template void FileDataStorage<type>::Initialise(const std::string& p_fileName, const std::string& p_userId);\
     template void FileDataStorage<type>::Shutdown();\
@@ -33,7 +34,7 @@ void WriteEnvironmentData(std::ostream& p_outputStream, EnvironmentInfo& p_envIn
 }
 /// @brief Write headers for the car data in the same order as actual data will be written
 /// @param p_outputStream stream to write headers to
-void WriteCarHeaders(std::ostream& p_outputStream) {
+inline void WriteCarHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "Speed");
     WRITE_STRING_LIT(p_outputStream, "Gear");
     WRITE_STRING_LIT(p_outputStream, "Headlights");
@@ -52,7 +53,7 @@ void WriteCarData(std::ostream& p_outputStream, CarInfo& p_carInfo) {
 }
 /// @brief Write headers for the player data in the same order as actual data will be written
 /// @param p_outputStream stream to write headers to
-void WritePlayerHeaders(std::ostream& p_outputStream) {
+inline void WritePlayerHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "AccelCmd");
     WRITE_STRING_LIT(p_outputStream, "BrakeCmd");
     WRITE_STRING_LIT(p_outputStream, "ClutchCmd");
@@ -70,6 +71,10 @@ void WritePlayerData(std::ostream& p_outputStream, PlayerInfo& p_playerInfo) {
     WRITE_VAR(p_outputStream, p_playerInfo.SteerCmd());
 }
 
+/// @brief Initialise the file data storage.
+/// End result: a file is created at the given filepath, and initial data is written to the file.
+/// @param p_fileName Path of the file to save.
+/// @param p_userId User ID of the current player.
 template<class DriveSituation>
 void FileDataStorage<DriveSituation>::Initialise(const std::string& p_fileName, const std::string& p_userId) {
     m_outputStream.open(p_fileName);
@@ -92,11 +97,15 @@ void FileDataStorage<DriveSituation>::Initialise(const std::string& p_fileName, 
     }
 }
 
+/// @brief Shutdown the file data storage.
+/// End result: any possible final data is written and the file is released.
 template<class DriveSituation>
 void FileDataStorage<DriveSituation>::Shutdown() {
     m_outputStream.close();
 }
-
+/// @brief Writes information about the current driving situation to the current file based on settings.
+/// @param p_situation The current driving situation to write data about.
+/// @param p_timestamp The current timestamp of the situation.
 template<class DriveSituation>
 void FileDataStorage<DriveSituation>::Save(DriveSituation& p_situation, int p_timestamp) {
     WRITE_VAR(m_outputStream, p_timestamp);
@@ -118,5 +127,10 @@ void FileDataStorage<DriveSituation>::Save(DriveSituation& p_situation, int p_ti
     }
 }
 
+/// @brief Initialise the temporary data storage
+/// @param p_saveSettings Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
 template<class DriveSituation>
-FileDataStorage<DriveSituation>::FileDataStorage(bool* p_saveSettings):m_saveSettings(p_saveSettings) {}
+FileDataStorage<DriveSituation>::FileDataStorage(bool* p_saveSettings) :m_saveSettings(p_saveSettings)
+{
+
+};

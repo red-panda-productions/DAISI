@@ -7,12 +7,19 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-inline float stringToFloat(std::string s)
+/// @brief      Converts a string to float, and NAN if not possible
+/// @param  p_s The string
+/// @return     The float
+inline float stringToFloat(std::string p_s)
 {
-    try { return std::stof(s); }
+    try { return std::stof(p_s); }
     catch (std::exception& e) { return NAN; }
 }
 
+/// @brief                    Finds a file in a directory
+/// @param  p_knownPathToFile The known path to the file
+/// @param  p_fileToFind      The filename
+/// @return                   Whether it was found or not
 inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string& p_fileToFind)
 {
     char cwd[256];

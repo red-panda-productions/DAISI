@@ -5,8 +5,11 @@
 #include <sstream>
 #include "../rppUtils/RppUtils.hpp"
 
+/// @brief        Checks if the database threw an error
+/// @param  error The error that needs to be checked
 #define DATABASE_THROW(error) CheckForDatabaseError(rc, database, (std::string &) error, databasePath, zErrMsg, input);
 
+/// @brief The constructor of the SQL database storage
 SQLDatabaseStorage::SQLDatabaseStorage()
 {
     // player info data
@@ -38,6 +41,13 @@ SQLDatabaseStorage::SQLDatabaseStorage()
     m_headerTypes["BrakeDecision"] = "BrakeDecision float NOT NULL";
 }
 
+/// @brief                  Checks if the database threw an error
+/// @param  p_sqliteExec    The execute 
+/// @param  p_db            The database
+/// @param  p_error         The error message
+/// @param  p_databasePath  The path of the database
+/// @param  p_zErrMsg       The error message
+/// @param  p_inputFile     The input file
 void CheckForDatabaseError(int p_sqliteExec, sqlite3*& p_db, std::string& p_error, const std::string& p_databasePath, char* p_zErrMsg, std::ifstream& p_inputFile)
 {
     if (p_sqliteExec)
@@ -58,14 +68,14 @@ void CheckForDatabaseError(int p_sqliteExec, sqlite3*& p_db, std::string& p_erro
     }
 }
 
-/// @brief Creates SQL query that will create a database table
-/// @param p_inputFile data file to read from
-/// @param p_reading current data read from file
-/// @param p_tableName name of table to create
-/// @param p_sqlStream string stream that collects all sql statements
-/// @param p_headerTypes map that sets the correct type for each header name
+/// @brief                  Creates SQL query that will create a database table
+/// @param p_inputFile      data file to read from
+/// @param p_reading        current data read from file
+/// @param p_tableName      name of table to create
+/// @param p_sqlStream      string stream that collects all sql statements
+/// @param p_headerTypes    map that sets the correct type for each header name
 /// @param p_variableAmount how many variables the table has
-/// @param p_headers header names
+/// @param p_headers        header names
 void CreateTableSQL(
         std::ifstream& p_inputFile,
         std::string& p_reading,
@@ -111,8 +121,13 @@ void CreateTableSQL(
     p_headers = headersStream.str();
 }
 
-/// @brief Puts SQL Insert statements in sqlStream.
-/// @params Same as CreateTableSQL
+/// @brief                  Puts SQL Insert statements in sqlStream.
+/// @param p_inputFile      The input file
+/// @param p_reading        The reading string
+/// @param p_tableName      The table name
+/// @param p_sqlStream      The sql stream
+/// @param p_variableAmount The amount of variables
+/// @param p_headers        The headers
 void InsertDataSQL(
         std::ifstream& p_inputFile,
         std::string& p_reading,
@@ -147,13 +162,13 @@ void InsertDataSQL(
     }
 }
 
-/// @brief Creates and open a database if it doesn't exist already
-/// @param database pointer where the database will be stored
-/// @param p_databasePath path to the database
+/// @brief                      Creates and open a database if it does not exist already
+/// @param p_database           pointer where the database will be stored
+/// @param p_databasePath       path to the database
 /// @param p_simulationDataPath path to the simulation data folder
-/// @param p_tableName name of the table that will be created
-/// @return integer with information on successfulness of opening the database
-int OpenDatabase(sqlite3*& database, std::string& p_databasePath, const std::string& p_simulationDataPath, const std::string& p_tableName)
+/// @param p_tableName          name of the table that will be created
+/// @return                     integer with information on success of opening the database
+int OpenDatabase(sqlite3*& p_database, std::string& p_databasePath, const std::string& p_simulationDataPath, const std::string& p_tableName)
 {
     const std::string databaseFileName = p_tableName + "_database.sqlite3";
     p_databasePath =  p_simulationDataPath + databaseFileName;
@@ -162,7 +177,7 @@ int OpenDatabase(sqlite3*& database, std::string& p_databasePath, const std::str
     if (databaseFile.good()) throw std::runtime_error("A file with the name " + databaseFileName + " already exists");
 
     // open database
-    return sqlite3_open(p_databasePath.c_str(), &database);
+    return sqlite3_open(p_databasePath.c_str(), &p_database);
 }
 
 /// @brief Creates a database and stores data from input file into a table
@@ -187,8 +202,6 @@ void SQLDatabaseStorage::StoreData(const std::string p_filePath)
     char* zErrMsg = nullptr;
 
     std::string databasePath;
-
-    //int p_sqliteExec, sqlite3*& p_db, std::string& p_error, const std::string& p_databasePath, char* p_zErrMsg, std::ifstream& p_inputFile
 
     // open database
     int rc = OpenDatabase(database, databasePath, SimulationDataPath, tableName);

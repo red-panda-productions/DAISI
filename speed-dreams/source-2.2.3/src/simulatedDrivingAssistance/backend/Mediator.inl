@@ -2,7 +2,9 @@
 #include "Mediator.h"
 #include <fstream>
 #include <portability.h>
+#include <SDL2/SDL_main.h>
 
+/// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template InterventionType Mediator<type>::GetInterventionType(); \
     template bool Mediator<type>::GetIndicatorSetting(Indicator p_indicator); \
@@ -19,44 +21,70 @@
     template Mediator<type>* Mediator<type>::GetInstance(); \
 	template Mediator<type>::Mediator();
 
+
+/// @brief        Sets the task in SDAConfig to p_task
+/// @param p_task The Task
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetTask(Task p_task) {
+void Mediator<DecisionMaker>::SetTask(Task p_task)
+{
     m_decisionMaker.Config.SetTask(p_task);
 }
 
+/// @brief              Sets the settings for indication of interventions
+/// @param p_indicators The Indicator settings
 template<typename DecisionMaker>
-bool Mediator<DecisionMaker>::GetIndicatorSetting(Indicator p_indicator) {
-    return m_decisionMaker.Config.GetIndicatorSettings()[p_indicator];
-}
-
-template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators) {
+void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators)
+{
     m_decisionMaker.Config.SetIndicatorSettings(p_indicators);
 }
 
+/// @brief  Gets the intervention type from the decision maker
+/// @return The intervention type from the decision maker
 template<typename DecisionMaker>
-InterventionType Mediator<DecisionMaker>::GetInterventionType() {
+InterventionType Mediator<DecisionMaker>::GetInterventionType()
+{
     return m_decisionMaker.Config.GetInterventionType();
 }
 
+/// @brief        Sets the settings for interventionType to p_type
+/// @param p_type The InterventionType
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type) {
+void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type)
+{
     m_decisionMaker.ChangeSettings(p_type);
 }
 
+/// @brief           Sets the maximum simulation time to p_maxTime
+/// @param p_maxTime The maximum simulation time
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime) {
+void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime)
+{
     m_decisionMaker.Config.SetMaxTime(p_maxTime);
 }
 
+/// @brief          Sets the userID to p_userID
+/// @param p_userID The userID
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetUserId(char* p_userId) {
+void Mediator<DecisionMaker>::SetUserId(char* p_userId)
+{
     m_decisionMaker.Config.SetUserId(p_userId);
 }
 
+/// @brief               Sets the settings for data collection
+/// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting) {
+void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
+{
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
+}
+
+/// @brief             Gets the setting for the given indicator
+/// @param p_indicator Indicator whose setting to get
+/// @return true if the indicator is enabled, false when disabled
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetIndicatorSetting(Indicator p_indicator)
+{
+    return m_decisionMaker.Config.GetIndicatorSettings()[p_indicator];
 }
 
 template<typename DecisionMaker>
@@ -102,6 +130,8 @@ DriveSituation* Mediator<DecisionMaker>::Simulate()
     return nullptr;
 }
 
+/// @brief Creates a mediator instance if needed and returns it
+/// @return A mediator instance
 template<typename DecisionMaker>
 Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 {

@@ -1,24 +1,23 @@
 #pragma once
 #include "BrakeDecision.h"
 #include "SteerDecision.h"
-
-
 #define DECISIONS_COUNT 2
 
+/// @brief A tuple that contains all decisions that can be made by an AI
 struct DecisionTuple
 {
 public:
     DecisionTuple();
 
-    IDecision** GetActiveDecisions(int& count);
+    IDecision** GetActiveDecisions(int& p_count);
 
     void SetBrake(float p_brakeValue);
 
     void SetSteer(float p_steerValue);
 
-    float GetBrake();
+    float GetBrake() const;
 
-    float GetSteer();
+    float GetSteer() const;
 
 
 private:

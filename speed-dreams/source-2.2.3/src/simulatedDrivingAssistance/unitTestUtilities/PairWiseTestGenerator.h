@@ -103,6 +103,4 @@ private:
 	int CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature);
 
 	void RemoveTuplesCoveredByTest(TestCaseInfo& p_testCase);
-
-
 };

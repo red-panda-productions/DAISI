@@ -3,7 +3,6 @@
 #include <sstream>
 #include <tgf.h>
 
-///
 /// @brief					Constructor of Recording, 
 ///							creates a file with the current date and time,
 ///							opens file in binary and appending mode
@@ -13,8 +12,6 @@
 ///	@param p_fileName		the name of the file placed in the directory,
 ///							the current date will be added to this name
 ///	@param p_paramAmount	the amount of parameters that you want to save per line.
-/// @author Sjoerd Schilder
-///
 Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, const int p_paramAmount)
 {
 	// create directory if it doesn't exist
@@ -48,7 +45,6 @@ Recorder::~Recorder()
 	m_recordingFile.close();
 }
 
-///
 /// @brief					Writes a float array to the m_recordingFile, 
 ///							with the current time of the simulation.
 ///							Can do compression if p_compression is true,
@@ -57,8 +53,6 @@ Recorder::~Recorder()
 /// @param p_input			array of size m_parameterAmount
 ///	@param p_currentTime	the current time of the simulation
 ///	@param p_compression	boolean value if compression is done
-/// @author Sjoerd Schilder
-///
 void Recorder::WriteRecording(const float* p_input, const double p_currentTime, const bool p_compression)
 {
 	// doesn't write if the input is the same as the previous time
@@ -75,11 +69,8 @@ void Recorder::WriteRecording(const float* p_input, const double p_currentTime, 
 	m_recordingFile << std::endl;
 }
 
-///
 /// @brief				Checks if the input is the same as the previous input
 /// @param p_input		array of size m_paramAmount
-/// @author Sjoerd Schilder
-///
 bool Recorder::CheckSameInput(const float* p_input) const
 {
 	for (int i = 0; i < m_paramAmount; i++)

@@ -4,7 +4,6 @@
 #include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
 #include "InterventionExecutorPerformWhenNeeded.h"
-
 #include <iostream>
 
 // THE STD::COUT LINE CAN BE REMOVED AFTER THE DEMO (IF WE DO ONE)

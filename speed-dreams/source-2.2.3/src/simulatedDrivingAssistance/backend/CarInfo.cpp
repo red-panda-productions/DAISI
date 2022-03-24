@@ -1,5 +1,11 @@
 #include "CarInfo.h"
 
+/// @brief			     Constructs all info of the car
+/// @param  p_position   The position
+/// @param  p_speed		 The speed
+/// @param  p_topSpeed	 The topSpeed
+/// @param  p_gear       The gear
+/// @param  p_headlights The lights
 CarInfo::CarInfo(TrackPosition p_position, float p_speed, float p_topSpeed, int p_gear, bool p_headlights) : m_trackPosition(p_position)
 {
 	m_speed = p_speed;
@@ -8,27 +14,37 @@ CarInfo::CarInfo(TrackPosition p_position, float p_speed, float p_topSpeed, int 
 	m_headlights = p_headlights;
 }
 
-float CarInfo::Speed()
+/// @brief  Gets the speed of the car
+/// @return The speed of the car
+float CarInfo::Speed() const
 {
 	return m_speed;
 }
 
-float CarInfo::TopSpeed()
+/// @brief  Gets the top speed of the car
+/// @return The top speed of the car
+float CarInfo::TopSpeed() const
 {
 	return m_topSpeed;
 }
 
-int CarInfo::Gear()
+/// @brief  Gets the gear of the car
+/// @return The gear of the car
+int CarInfo::Gear() const
 {
 	return m_gear;
 }
 
-bool CarInfo::Headlights()
+/// @brief  Gets the lights of the car
+/// @return The lights of the car
+bool CarInfo::Headlights() const 
 {
 	return m_headlights;
 }
 
-TrackPosition* CarInfo::TrackLocalPosition()
+/// @brief  Gets the local position of the car
+/// @return The local position of the car
+const TrackPosition* CarInfo::TrackLocalPosition() const 
 {
     return &m_trackPosition;
 }
