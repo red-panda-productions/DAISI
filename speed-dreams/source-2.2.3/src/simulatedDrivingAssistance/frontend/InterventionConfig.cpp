@@ -5,6 +5,25 @@
 #include <tgf.h>
 #include "InterventionConfig.h"
 
+/// @brief Initialize the intervention sound map. Note that this just gets which interventions use which sounds and does not create the sounds yet.
+/// @param p_sounds The map in which to store the sounds
+/// @param p_xmlHandle The handle to the xml config file to read from
+/// @param p_interventionCount The amount of interventions
+void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sounds, void* p_xmlHandle, unsigned int p_interventionCount) {
+    char path[256];
+    for (int i = 0; i < p_interventionCount; i++)
+    {
+        snprintf(path, sizeof(path), "%s/%d/%s", PRM_SECT_INTERVENTIONS, i, PRM_SECT_SOUND);
+        if(!GfParmExistsSection(p_xmlHandle, path)) continue;
+
+        const char* src = GfParmGetStr(p_xmlHandle, path, PRM_ATTR_SRC, "");
+        char* soundPath = new char[256];
+        snprintf(soundPath, 256, SOUNDS_DIR_FORMAT, GfDataDir(), src);
+
+        p_sounds[i] = soundPath;
+    }
+}
+
 /// @brief Initialize the intervention configuration.
 void InterventionConfig::Initialize() {
     void* xmlHandle = GetXmlHandle();
@@ -12,6 +31,8 @@ void InterventionConfig::Initialize() {
     char interventionPath[256];
     snprintf(interventionPath, sizeof(interventionPath), PRM_SECT_INTERVENTIONS);
     m_interventionCount = GfParmGetEltNb(xmlHandle, interventionPath);
+
+    InitializeSounds(m_sounds, xmlHandle, m_interventionCount);
 }
 
 /// @brief  Get the XML file for the intervention configuration
@@ -52,11 +73,7 @@ tTextureData InterventionConfig::GetCurrentInterventionTexture()
 /// @brief  Retrieves the sound locations belonging to the possible intervention actions
 /// @return A map going from InterventionAction => sound location, possibly nullptr
 std::unordered_map<InterventionAction, const char*> InterventionConfig::GetSounds() {
-    return {
-        {INTERVENTION_ACTION_TURN_LEFT, "data/sound/interventions/left.wav"},
-        {INTERVENTION_ACTION_TURN_RIGHT, "data/sound/interventions/right.wav"},
-        {INTERVENTION_ACTION_BRAKE, "data/sound/interventions/break.wav"}
-    };
+    return m_sounds;
 }
 
 /// @brief  Retrieves the intervention actions that should be playing a sound effect.
@@ -67,7 +84,7 @@ std::vector<InterventionAction> InterventionConfig::GetEnabledSounds() {
 
 /// @brief  Gets the amount of interventions
 /// @return The amount of interventions
-unsigned int InterventionConfig::GetInterventionCount() {
+unsigned int InterventionConfig::GetInterventionCount() const {
     return m_interventionCount;
 }
 

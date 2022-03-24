@@ -1,6 +1,5 @@
 #pragma once
 #include <fstream>
-#define PARAMETERS 4 // steerCmd, accelCmd, brakeCmd, clutchCmd.
 
 /// @brief A class that can record the input of a player for integration tests
 class Recorder
@@ -8,13 +7,14 @@ class Recorder
 
 public:
 
-	Recorder();
+	Recorder(const std::string& p_dirName, const std::string& p_fileName, int p_paramAmount);
 	~Recorder();
-	void WriteRecording(float* p_input, double currentTime);
+	void WriteRecording(const float* p_input, const double p_currentTime, const bool p_compression);
 
-	bool CheckSameInput(float* p_input);
+	bool CheckSameInput(const float* p_input) const;
 
 private:
 	std::ofstream m_recordingFile;
-	float m_prevInput[PARAMETERS];
+	float* m_prevInput;
+	int m_paramAmount;
 };

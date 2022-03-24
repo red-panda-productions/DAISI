@@ -1,6 +1,5 @@
 #include <tgfclient.h>
 #include <random>
-#include <iostream>
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -14,7 +13,7 @@ static void* s_nextHandle = NULL;
 Task m_task = TASK_NO_TASK;
 
 // Indicators
-bool* m_indicators = new bool[2];
+bool m_indicators[2] = {false, false};
 
 // InterventionType
 InterventionType m_interventionType;
@@ -23,15 +22,15 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-bool* m_pControl = new bool[3];
+bool m_pControl[3] = {false, true, true};
 
 // Max time
 int m_maxTime = 10.0f;
-int m_maxTimeId;
+int m_maxTimeControl;
 
 // User ID
-char* m_userID;
-int m_userIDId;
+char m_userId[32];
+int  m_userIdControl;
 
 /// @brief Sets the defaults values
 static void OnActivate(void* /* dummy */)
@@ -39,31 +38,22 @@ static void OnActivate(void* /* dummy */)
     // Set standard Task
     m_task = TASK_NO_TASK;
 
-    // Set standard indicators
-    bool indicators[] = {false, false};
-    m_indicators = indicators;
-
     // Set standard interventionType
     m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-
-    // Set standard player control settings
-    bool pControl[] = {false, true, true};
-    m_pControl = pControl;
 
     // Set standard max time
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 
-    // Create random userID
+    // Create random userId
     std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution<int> distribution(1, 999999999);
-    sprintf(buf, "%d", distribution(generator));
+    sprintf(m_userId, "%d", distribution(generator));
 
-    // Set default userID
-    m_userID = buf;
-    GfuiEditboxSetString(s_scrHandle, m_userIDId, buf);
+    // Set default userId
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
 
@@ -174,7 +164,7 @@ static void SelectControlSteering(tCheckBoxInfo* p_info)
 /// @brief Handle input in the max time textbox
 static void SetMaxTime(void*)
 {
-    char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeId);
+    char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeControl);
     sscanf(val, "%d", &m_maxTime);
     if (m_maxTime > 1440.0f)
         m_maxTime = 1440.0f;
@@ -183,14 +173,14 @@ static void SetMaxTime(void*)
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeId, buf);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 }
 
-/// @brief Handle input in the UserID textbox
-static void SetUserID(void*)
+/// @brief Handle input in the userId textbox
+static void SetUserId(void*)
 {
-    char* m_userID = GfuiEditboxGetString(s_scrHandle, m_userIDId);
-    GfuiEditboxSetString(s_scrHandle, m_userIDId, m_userID);
+    strcpy(m_userId, GfuiEditboxGetString(s_scrHandle, m_userIdControl));
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
 
@@ -198,13 +188,17 @@ static void SetUserID(void*)
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
-    // Save settings to backend config
+    // Save settings to the SDAConfig
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetTask(m_task);
     mediator->SetIndicatorSettings(m_indicators);
     mediator->SetInterventionType(m_interventionType);
     mediator->SetMaxTime(m_maxTime);
-    mediator->SetUserID(m_userID);
+
+    // Save the encrypted userId in the SDAConfig
+    size_t encryptedUserId = std::hash<std::string>{}(m_userId);
+    sprintf(m_userId, "%zu", encryptedUserId);
+    mediator->SetUserId(m_userId);
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
@@ -254,8 +248,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlSteering", NULL, SelectControlSteering);
 
     // Textbox controls
-    m_maxTimeId = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
-    m_userIDId  = GfuiMenuCreateEditControl(s_scrHandle, param, "UserIdEdit", NULL, NULL, SetUserID);
+    m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
+    m_userIdControl  = GfuiMenuCreateEditControl(s_scrHandle, param, "UserIdEdit", NULL, NULL, SetUserId);
 
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);

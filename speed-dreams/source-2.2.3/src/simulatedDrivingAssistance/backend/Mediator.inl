@@ -2,15 +2,17 @@
 #include "Mediator.h"
 #include <fstream>
 #include <portability.h>
+#include <SDL2/SDL_main.h>
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template InterventionType Mediator<type>::GetInterventionType(); \
+    template bool Mediator<type>::GetIndicatorSetting(Indicator p_indicator); \
 	template void Mediator<type>::SetTask(Task p_task);\
 	template void Mediator<type>::SetIndicatorSettings(bool* p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
-	template void Mediator<type>::SetUserID(char* p_userID);\
+	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(bool* p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
@@ -63,9 +65,9 @@ void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime)
 /// @brief          Sets the userID to p_userID
 /// @param p_userID The userID
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetUserID(char* p_userID)
+void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 {
-    m_decisionMaker.Config.SetUserID(p_userID);
+    m_decisionMaker.Config.SetUserId(p_userId);
 }
 
 /// @brief               Sets the settings for data collection
@@ -74,6 +76,15 @@ template<typename DecisionMaker>
 void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
 {
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
+}
+
+/// @brief             Gets the setting for the given indicator
+/// @param p_indicator Indicator whose setting to get
+/// @return true if the indicator is enabled, false when disabled
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetIndicatorSetting(Indicator p_indicator)
+{
+    return m_decisionMaker.Config.GetIndicatorSettings()[p_indicator];
 }
 
 template<typename DecisionMaker>

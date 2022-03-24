@@ -27,9 +27,11 @@ public:
 
     void SetMaxTime(int p_maxTime);
 
-    void SetUserID(char* p_userID);
+    void SetUserId(char* p_userId);
 
     void SetDataCollectionSettings(bool* p_dataSetting);
+
+    bool GetIndicatorSetting(Indicator p_indicator);
 
     InterventionType GetInterventionType();
 

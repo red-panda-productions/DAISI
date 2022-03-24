@@ -13,8 +13,7 @@ private:
     bool* m_dataCollectionSetting = nullptr;
     bool* m_indicatorSetting = nullptr;
     int   m_maxSimulationTime = 0;
-    char* m_userID = nullptr;
-
+    char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
 
 public:
@@ -31,8 +30,8 @@ public:
     bool* GetIndicatorSettings() const;
     void  SetMaxTime(int p_maxTime);
     int   GetMaxTime() const;
-    void  SetUserID(char* p_userID);
-    char* GetUserID() const;
+    void  SetUserId(char* p_userId);
+    char* GetUserId() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
 };

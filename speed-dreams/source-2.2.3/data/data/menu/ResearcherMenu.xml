@@ -179,7 +179,7 @@
             <attstr name="font" val="medium"/>
         </section>
 
-        <!-- Input field for userID -->
+        <!-- Input field for userId -->
         <section name="UserIdEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>

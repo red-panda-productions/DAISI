@@ -94,8 +94,6 @@ ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
         "${CMAKE_BINARY_DIR}/bin/libexpat.dll"
         "${CMAKE_CURRENT_BINARY_DIR}")
 
-SD_INSTALL_FILES(BIN simulatedDrivingAssistance/backendUnitTests TARGETS backendUnitTests)
-
 FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(GoogleTest)
