@@ -44,6 +44,7 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, 
 
 Recorder::~Recorder()
 {
+	delete[] m_prevInput;
 	m_recordingFile.close();
 }
 
