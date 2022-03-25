@@ -6,7 +6,7 @@
 
 
 // GUI screen handles
-static void* s_scrHandle = NULL;
+static void* s_scrHandle  = NULL;
 static void* s_nextHandle = NULL;
 
 // Task
@@ -33,29 +33,7 @@ char m_userId[32];
 int  m_userIdControl;
 
 /// @brief Sets the defaults values
-static void OnActivate(void* /* dummy */)
-{
-    // Set standard Task
-    m_task = TASK_NO_TASK;
-
-    // Set standard interventionType
-    m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-
-    // Set standard max time
-    char buf[32];
-    sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
-
-    // Create random userId
-    std::random_device rd;
-    static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<int> distribution(1, 999999999);
-    sprintf(m_userId, "%d", distribution(generator));
-
-    // Set default userId
-    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
-}
-
+static void OnActivate(void* /* dummy */) { }
 
 /// @brief        Sets the task to lane keeping
 /// @param p_info Information on the checkbox
@@ -233,7 +211,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAuditory);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectVisual);
 
-    // Types checkboxes controls
+    // InterventionType checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeNoSignals", NULL, SelectTypeNoSignals);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeOnlySignals", NULL, SelectTypeOnlySignals);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeSharedControl", NULL, SelectTypeSharedControl);
@@ -260,6 +238,26 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
+
+    // Set standard Task
+    m_task = TASK_NO_TASK;
+
+    // Set standard interventionType
+    m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
+
+    // Set standard max time
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
+
+    // Create random userId
+    std::random_device rd;
+    static std::default_random_engine generator(rd());
+    std::uniform_int_distribution<int> distribution(1, 999999999);
+    sprintf(m_userId, "%d", distribution(generator));
+
+    // Set default userId
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 
     return s_scrHandle;
 }

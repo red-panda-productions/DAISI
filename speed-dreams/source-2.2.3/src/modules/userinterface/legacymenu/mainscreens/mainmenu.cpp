@@ -26,6 +26,7 @@
 #include "exitmenu.h"
 #include "optionsmenu.h"
 #include "creditsmenu.h"
+#include "DataSelectionMenu.h"
 
 
 static void *MenuHandle = 0;
@@ -57,6 +58,13 @@ static void
 onOptionsMenuActivate(void * /* dummy */)
 {
     GfuiScreenActivate(OptionsMenuInit(MenuHandle));
+}
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
+/// @brief Activates the dataSelectionMenu screen
+static void GoBack(void* /* dummy */)
+{
+    GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
 }
 
 static void
@@ -117,6 +125,9 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
+
+    // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", NULL, GoBack);
 
     GfParmReleaseHandle(menuDescHdle);
 

@@ -2,46 +2,49 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DataSelectionMenu.h"
+#include "ResearcherMenu.h"
 
-static void* s_scrHandle  = NULL;
-static void* s_nextHandle = NULL;
+static void* s_scrHandle  = nullptr;
+static void* s_prevHandle = nullptr;
+static void* s_nextHandle = nullptr;
 
-bool* m_boolArr = new bool[5];
+// Data to store
+bool m_dataToStore[5] = {true, true, true, true, true};
 
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeDrivingStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[DATA_TO_STORE_ENVIRONMENT_DATA] = p_info->bChecked;
+    m_dataToStore[DATA_TO_STORE_ENVIRONMENT_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the car will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeCarStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[DATA_TO_STORE_CAR_DATA] = p_info->bChecked;
+    m_dataToStore[DATA_TO_STORE_CAR_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the human user will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeHumanStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[DATA_TO_STORE_HUMAN_DATA] = p_info->bChecked;
+    m_dataToStore[DATA_TO_STORE_HUMAN_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether intervention attributes will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeInterventionStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[DATA_TO_STORE_INTERVENTION_DATA] = p_info->bChecked;
+    m_dataToStore[DATA_TO_STORE_INTERVENTION_DATA] = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether decision maker parameters will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
 {
-    m_boolArr[DATA_TO_STORE_META_DATA] = p_info->bChecked;
+    m_dataToStore[DATA_TO_STORE_META_DATA] = p_info->bChecked;
 }
 
 /// @brief Function to call when screen is activated
@@ -51,10 +54,17 @@ static void OnActivate(void* /* dummy */) { }
 static void SaveSettings(void* /* dummy */)
 {
     // Add the functionality of the function here
-    SMediator::GetInstance()->SetDataCollectionSettings(m_boolArr);
+    SMediator::GetInstance()->SetDataCollectionSettings(m_dataToStore);
 
-    // Go back to the main screen
+    // Go to the main screen
     GfuiScreenActivate(s_nextHandle);
+}
+
+/// @brief Activates the researchMenu screen
+static void GoBack(void* /* dummy */)
+{
+    // Go back to the main screen
+    GfuiScreenActivate(ResearcherMenuInit(s_scrHandle));
 }
 
 /// @brief            Initializes the data selection menu
@@ -74,8 +84,9 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     void *param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // ApplyButton control
+    // ApplyButton and Back-button controls
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",s_scrHandle, SaveSettings);
+    GfuiMenuCreateButtonControl(s_scrHandle,param,"BackButton",s_prevHandle,GoBack);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxDrivingData", NULL, ChangeDrivingStorage);
@@ -86,6 +97,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
 
     GfParmReleaseHandle(param);
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
+    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GfuiScreenActivate, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
 
