@@ -6,8 +6,8 @@
 
 
 // GUI screen handles
-static void* s_scrHandle  = NULL;
-static void* s_nextHandle = NULL;
+static void* s_scrHandle  = nullptr;
+static void* s_nextHandle = nullptr;
 
 // Task
 Task m_task = TASK_NO_TASK;
