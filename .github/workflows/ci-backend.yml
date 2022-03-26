@@ -18,6 +18,8 @@ env:
   GTEST_COLOR: yes
   GTEST_OUTPUT: xml:test-results/
 
+  CCACHE_LOGFILE: D:\a\speed-dreams\speed-dreams\ccache.log
+
 jobs:
   build:
     # The CMake configure and build commands are platform agnostic anda should work equally well on Windows or Mac.
@@ -28,16 +30,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - name: debug
+      shell: bash
+      run: ccache --version
+
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A Win32 -DBACKEND_ONLY_OPTION=TRUE
+      shell: bash
+      run: cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A Win32 -DBACKEND_ONLY_OPTION=TRUE
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
+      shell: bash
       run: cmake --build .
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
       run: ctest -V
+
+    - name: Upload log
+      uses: actions/upload-artifact@v2
+      with:
+        name: ccache.log
+        path: D:\a\speed-dreams\speed-dreams\ccache.log
 
     - name: Upload test results
       uses: actions/upload-artifact@v2
