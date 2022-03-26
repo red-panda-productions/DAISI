@@ -33,8 +33,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+    - uses: ilammy/msvc-dev-cmd@v1
 
     - name: debug
       shell: bash
