@@ -39,7 +39,7 @@ jobs:
 
     - name: Configure CMake
       shell: bash
-      run: cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A Win32 -DBACKEND_ONLY_OPTION=TRUE
+      run: cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -T host=x86 -A Win32 -DBACKEND_ONLY_OPTION=TRUE
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
