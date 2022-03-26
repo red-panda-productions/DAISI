@@ -48,7 +48,7 @@ jobs:
     - name: Build
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: cmake --build .
+      run: cmake --build . --config Release
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
