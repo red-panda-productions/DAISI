@@ -5,6 +5,7 @@
 #include "InterventionExecutor.h"
 #include "SocketBlackBox.h"
 #include "Recorder.h"
+#include "ConfigEnums.h"
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
@@ -28,7 +29,9 @@ public:
     SocketBlackBox m_blackBox;
 
 private:
+#ifdef BB_RECORD_SESSION
     Recorder* m_recorder;
+#endif
 };
 
 

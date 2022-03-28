@@ -59,3 +59,4 @@ typedef unsigned int DataToStore;
 
 // for recording a session
 #define RECORD_SESSION
+#define BB_RECORD_SESSION
