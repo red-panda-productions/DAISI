@@ -210,7 +210,7 @@ void OpenalSoundInterface::setNCars(int n_cars)
 Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool loop, bool static_pool)
 {
 	Sound* sound = new OpenalSound(filename, this, flags, loop, static_pool);
-    sound->setVolume(1.0f); // Will be automatically scaled down by the global gain.
+    sound->setVolume(getInterventionVolume()); // Will be automatically scaled down by the global gain.
 	sound_list.push_back(sound);
 	return sound;
 }

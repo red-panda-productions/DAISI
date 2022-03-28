@@ -60,6 +60,11 @@ static int MusicStateId;
 static float MusicVolumeValue = 100.0f;
 static int MusicVolumeValueId;
 
+// SIMULATED DRIVING ASSISTANCE
+// Auditory interventions volume
+static float InterventionVolumeValue = 100.0f;
+static int InterventionVolumeControl;
+
 // gui screen handles.
 static void *scrHandle = NULL;
 static void *prevHandle = NULL;
@@ -118,8 +123,22 @@ static void readSoundCfg(void)
 		MusicVolumeValue = 0.0f;
 	}
 
-		sprintf(buf, "%g", MusicVolumeValue);
+	sprintf(buf, "%g", MusicVolumeValue);
 	GfuiEditboxSetString(scrHandle, MusicVolumeValueId, buf);
+
+    // SIMULATED DRIVING ASSISTANCE
+    // Auditory interventions volume
+    InterventionVolumeValue = GfParmGetNum(paramHandle, SND_SCT_INTERVENTION, SND_ATT_SOUND_VOLUME, "%", 100.0f);
+    if (InterventionVolumeValue > 100.0f)
+    {
+        InterventionVolumeValue = 100.0f;
+    }
+    else if (InterventionVolumeValue < 0.0f)
+    {
+        InterventionVolumeValue = 0.0f;
+    }
+    sprintf(buf, "%g", InterventionVolumeValue);
+    GfuiEditboxSetString(scrHandle, InterventionVolumeControl, buf);
 
 	GfParmReleaseHandle(paramHandle);
 }
@@ -138,6 +157,9 @@ static void saveSoundOption(void *)
 	GfParmSetNum(paramHandle, SND_SCT_SOUND, SND_ATT_SOUND_VOLUME, "%", VolumeValue);
 	GfParmSetStr(paramHandle, SND_SCT_MUSIC, SND_ATT_MUSIC_STATE, musicStateList[curMusicState]);
 	GfParmSetNum(paramHandle, SND_SCT_MUSIC, SND_ATT_MUSIC_VOLUME, "%", MusicVolumeValue);
+
+    // SIMULATED DRIVING ASSISTANCE
+    GfParmSetNum(paramHandle, SND_SCT_INTERVENTION, SND_ATT_SOUND_VOLUME, "%", InterventionVolumeValue);
 
 	GfParmWriteFile(NULL, paramHandle, "sound");
 	GfParmReleaseHandle(paramHandle);
@@ -199,6 +221,29 @@ static void changeMusicVolume(void * )
     GfuiEditboxSetString(scrHandle, MusicVolumeValueId, buf);
 }
 
+
+static void ChangeInterventionVolume(void*)
+{
+    // Get volume from text box, clamped between 0% and 100%
+    char* volume = GfuiEditboxGetString(scrHandle, InterventionVolumeControl);
+    sscanf(volume, "%g", &InterventionVolumeValue);
+    if (InterventionVolumeValue > 100.0f)
+    {
+        InterventionVolumeValue = 100.0f;
+    }
+    else if (InterventionVolumeValue < 0.0f)
+    {
+        InterventionVolumeValue = 0.0f;
+    }
+
+    // Write the new (clamped) value to the text box.
+    char buf[32];
+    sprintf(buf, "%g", InterventionVolumeValue);
+    GfuiEditboxSetString(scrHandle, InterventionVolumeControl, buf);
+}
+
+
+
 static void onActivate(void * /* dummy */)
 {
 	readSoundCfg();
@@ -236,6 +281,9 @@ void* SoundMenuInit(void *prevMenu)
 
 	MusicVolumeValueId = GfuiMenuCreateEditControl(scrHandle,param,"musicvolumeedit",NULL,NULL,changeMusicVolume);
 
+	// SIMULATED DRIVING ASSISTANCE
+	InterventionVolumeControl = GfuiMenuCreateEditControl(scrHandle, param, "intervention-volume-edit", NULL, NULL, ChangeInterventionVolume);
+
 	GfParmReleaseHandle(param);
     
 	GfuiAddKey(scrHandle, GFUIK_RETURN, "Apply", NULL, saveSoundOption, NULL);
@@ -246,4 +294,10 @@ void* SoundMenuInit(void *prevMenu)
 	GfuiAddKey(scrHandle, GFUIK_RIGHT, "Next Option in list", (void*)1, changeSoundState, NULL);
 
 	return scrHandle;
+}
+
+// SIMULATED DRIVING ASSISTANCE: add helper function
+float clamp(float x, float lower, float upper)
+{
+    return std::min(upper, std::max(x, lower));
 }
