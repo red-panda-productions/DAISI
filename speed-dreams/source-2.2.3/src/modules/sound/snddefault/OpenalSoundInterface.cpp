@@ -210,7 +210,7 @@ void OpenalSoundInterface::setNCars(int n_cars)
 Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool loop, bool static_pool)
 {
 	Sound* sound = new OpenalSound(filename, this, flags, loop, static_pool);
-    sound->setVolume(getInterventionVolume()); // Will be automatically scaled down by the global gain.
+    sound->setVolume(1.0f); // Will be automatically scaled down by the global gain.
 	sound_list.push_back(sound);
 	return sound;
 }
@@ -219,7 +219,7 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 /// @brief Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
 /// @param p_interventionSounds The registered sounds
-void UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
+void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
     if(!SMediator::GetInstance()->GetIndicatorSetting(INDICATOR_AUDITORY)) return;
 
     for (const auto &item : p_interventionSounds) {
@@ -229,8 +229,8 @@ void UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<
         p_carSoundData[0]->getCarSpeed(u);
         sound->setSource(p, u);
         sound->setReferenceDistance(1.0f);
-        sound->setVolume(1.0f);
         sound->setPitch(1.0f);
+        sound->setVolume(GetInterventionVolume());
 
         sound->update();
     }

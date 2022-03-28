@@ -155,8 +155,8 @@ class SoundInterface {
 	virtual void setGlobalGain(float g);
 
     // SIMULATED DRIVING ASSISTANCE: add getter and setter for intervention volume
-    float getInterventionVolume() const;
-    void setInterventionVolume(float v);
+    float GetInterventionVolume() const;
+    void SetInterventionVolume(float p_volume);
 
 	virtual void mute(bool bOn = true);
 

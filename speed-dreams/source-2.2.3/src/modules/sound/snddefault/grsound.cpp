@@ -159,7 +159,7 @@ void grInitSound(tSituation* s, int ncars)
 	soundInitialized = 1;
 
     // SIMULATED DRIVING ASSISTANCE: Added intervention sound initialization
-    sound_interface->setInterventionVolume(interventionVolume);
+    sound_interface->SetInterventionVolume(interventionVolume / 100.0f);
     for (const auto &item : InterventionConfig::GetInstance()->GetSounds()) {
         sound_interface->setInterventionSound(item.first, item.second);
     }

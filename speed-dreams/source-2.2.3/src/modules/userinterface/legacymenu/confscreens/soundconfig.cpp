@@ -221,7 +221,7 @@ static void changeMusicVolume(void * )
     GfuiEditboxSetString(scrHandle, MusicVolumeValueId, buf);
 }
 
-
+/// @brief Reads the value from the textbox, clamps it stores it as member and writes the value back.
 static void ChangeInterventionVolume(void*)
 {
     // Get volume from text box, clamped between 0% and 100%

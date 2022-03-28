@@ -221,16 +221,16 @@ void SoundInterface::setInterventionSound(InterventionAction p_soundEvent, const
 
 /// @brief  Retrieves the volume of the intervention sounds
 /// @return The volume
-float SoundInterface::getInterventionVolume() const
+float SoundInterface::GetInterventionVolume() const
 {
     return silent ? 0 : InterventionVolume;
 }
 
 /// @brief        Sets and clamps the volume of the interventions
 /// @param volume The raw volume to set
-void SoundInterface::setInterventionVolume(float volume)
+void SoundInterface::SetInterventionVolume(float volume)
 {
-    InterventionVolume = clamp(volume, 0.0f, 100.0f);
+    InterventionVolume = clamp(volume, 0.0f, 1.0f);
 }
 
 float SoundInterface::getGlobalGain() const
