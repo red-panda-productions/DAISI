@@ -1,5 +1,6 @@
 #include <tgfclient.h>
 #include <random>
+#include <iostream>
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -56,6 +57,10 @@ static void OnActivate(void* /* dummy */)
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
+static void TestRadio(tRadioButtonsInfo* p_info)
+{
+    m_task = p_info->selected;
+}
 
 /// @brief        Sets the task to lane keeping
 /// @param p_info Information on the checkbox
@@ -204,6 +209,8 @@ static void SaveSettings(void* /* dummy */)
     // TODO: Set Environment (Track)
     // TODO: Set Participant control (bool*)
 
+    std::cout << m_task << std::endl;
+
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
 }
@@ -225,9 +232,11 @@ void* ResearcherMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
+    GfuiMenuCreateRadioButtonsControl(s_scrHandle, param, "TaskRadioButtons", NULL, TestRadio);
+
     // Task checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskLaneKeeping", NULL, SelectLaneKeeping);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskSpeedControl", NULL, SelectSpeedControl);
+    //GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskLaneKeeping", NULL, SelectLaneKeeping);
+    //GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskSpeedControl", NULL, SelectSpeedControl);
 
     // Indicator checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAuditory);

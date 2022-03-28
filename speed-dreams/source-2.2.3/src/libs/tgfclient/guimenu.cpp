@@ -865,6 +865,77 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
     return id;
 }
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonsControl
+/// @brief            Creates the controls for radio buttons
+/// @param p_hscr     The menu screen handle
+/// @param p_hparm    The menu information
+/// @param p_pszName  The xml sector name
+/// @param p_userData The p_userData
+/// @param p_onChange Function to call when a radio button is clicked
+/// @return           The radio buttons object id
+int GfuiMenuCreateRadioButtonsControl(void* p_hscr, void* p_hparm, const char* p_pszName, void* p_userData, tfuiRadioButtonsCallback p_onChange)
+{
+    std::string strControlPath(GFMNU_SECT_DYNAMIC_CONTROLS"/");
+    strControlPath += p_pszName;
+
+    const std::string strType = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TYPE, "");
+    if (strType != GFMNU_TYPE_RADIO_BUTTONS)
+    {
+        GfLogError("Failed to create control '%s' : section not found or not an '%s' \n",
+                   p_pszName, GFMNU_TYPE_RADIO_BUTTONS);
+        return -1;
+    }
+
+    int id = -1;
+
+    const int x = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_X, NULL, 0.0);
+    const int y = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_Y, NULL, 0.0);
+
+    std::string strFontName = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_FONT, "");
+    const int font = gfuiMenuGetFontId(strFontName.c_str());
+
+    const char* pszText = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TEXT, "");
+
+    int imagewidth =
+        (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_WIDTH, NULL, 0.0);
+    if (imagewidth <= 0)
+        imagewidth = 30; // TODO: Get default from screen.xml
+
+    int imageheight =
+        (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_HEIGHT, NULL, 0.0);
+    if (imageheight <= 0)
+        imageheight = 30; // TODO: Get default from screen.xml
+
+    int selected = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED, NULL, 0.0);
+
+    const char* pszTip = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TIP, "");
+
+    void* userDataOnFocus = 0;
+    tfuiCallback onFocus = 0;
+    tfuiCallback onFocusLost = 0;
+    if (strlen(pszTip) > 0)
+    {
+        tMenuCallbackInfo* cbInfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
+        cbInfo->screen = p_hscr;
+        cbInfo->labelId = GfuiTipCreate(p_hscr, pszTip, strlen(pszTip));
+        GfuiVisibilitySet(p_hscr, cbInfo->labelId, GFUI_INVISIBLE);
+
+        userDataOnFocus = (void*)cbInfo;
+        onFocus = onFocusShowTip;
+        onFocusLost = onFocusLostHideTip;
+    }
+
+    id = GfuiRadioButtonsCreate(p_hscr, font, x, y, imagewidth, imageheight,
+                                pszText, selected, p_userData, p_onChange,
+                                userDataOnFocus, onFocus, onFocusLost);
+
+    GfuiColor c = getControlColor(p_hparm, p_pszName, GFMNU_ATTR_COLOR);
+    if (c.alpha)
+        GfuiCheckboxSetTextColor(p_hscr, id, c);
+
+    return id;
+}
+
 
 int
 GfuiMenuCreateProgressbarControl(void* hscr, void* hparm, const char* pszName)

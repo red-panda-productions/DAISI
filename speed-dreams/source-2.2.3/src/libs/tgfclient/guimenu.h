@@ -55,6 +55,10 @@ extern bool gfuiMenuGetBoolean(const char* pszValue, bool bDefault = false);
 #define GFMNU_TYPE_SCROLL_LIST "scroll list"
 #define GFMNU_TYPE_PROGRESS_BAR "progress bar"
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: added radio buttons type and attribute selected
+#define GFMNU_TYPE_RADIO_BUTTONS "radio buttons"
+#define GFMNU_ATTR_SELECTED "selected"
+
 #define GFMNU_ATTR_TEXT "text"
 #define GFMNU_ATTR_TIP "tip"
 #define GFMNU_ATTR_MAX_LEN "max len"

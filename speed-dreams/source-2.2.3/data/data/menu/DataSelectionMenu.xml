@@ -120,7 +120,7 @@
             <attstr name="image" val="data/img/head-aiconfig.png"/> <!-- TODO change text-image -->
         </section>
 
-        <section name="5">
+        <section name="4">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="280"/>

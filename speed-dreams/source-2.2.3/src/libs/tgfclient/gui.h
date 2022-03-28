@@ -230,6 +230,20 @@ typedef struct
     tfuiCheckboxCallback onChange;
 } tGfuiCheckbox;
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added radio buttons type
+/// @brief Radio Button type
+typedef struct
+{
+    int labelId;              /**< The UI element id */
+    void* scr;                /**< The screen the button is on */
+    tRadioButtonsInfo* pInfo; /**< Radio button information */
+
+    GfuiColor fgColor[3];     /**< Color */
+    int buttonId[8];          /**< A checked and unchecked id for every radio button */
+
+    tfuiRadioButtonsCallback onChange; /**< Function to call when a radio button is clicked */
+} tGfuiRadioButtons;
+
 typedef struct
 {
     void *scr;
@@ -277,6 +291,8 @@ typedef struct GfuiObject
         tGfuiImage	image;
         tGfuiCombobox combobox;
         tGfuiCheckbox checkbox;
+        /* SIMULATED DRIVING ASSISTANCE CHANGE: added radio buttons */
+        tGfuiRadioButtons radiobuttons;
         tGfuiProgressbar progressbar;
     } u;
     struct GfuiObject	*next;
@@ -386,6 +402,8 @@ extern void gfuiDrawGrButton(tGfuiObject *obj);
 extern void gfuiDrawScrollist(tGfuiObject *obj);
 extern void gfuiDrawEditbox(tGfuiObject *obj);
 extern void gfuiDrawProgressbar(tGfuiObject *obj);
+// SIMULATED DRIVING ASSISTANCE CHANGE: added GfuiDrawRadioButtons
+extern void GfuiDrawRadioButtons(tGfuiObject* p_obj);
 
 extern void gfuiLabelSetText(tGfuiLabel *label, const char *text);
 extern void gfuiLabelSetColor(tGfuiLabel *label, const float *color);
@@ -414,6 +432,8 @@ extern void gfuiReleaseEditbox(tGfuiObject *curObject);
 extern void gfuiReleaseCombobox(tGfuiObject *obj);
 extern void gfuiReleaseCheckbox(tGfuiObject *obj);
 extern void gfuiReleaseProgressbar(tGfuiObject *obj);
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiReleaseRadioButtons
+extern void GfuiReleaseRadioButtons(tGfuiObject* p_obj);
 
 extern void gfuiLoadFonts(void);
 extern void gfuiFreeFonts(void);

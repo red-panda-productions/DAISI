@@ -13,6 +13,8 @@ It is ordered by: if a file is added or changed, then if the file is in src or d
 
 Added:
   src/
+    libs/tgfclient/
+        GuiRadioButtons.cpp
     modules/userinterface/legacymenu/mainscreens/
         ResearcherMenu.h
         ResearcherMenu.cpp
@@ -42,6 +44,26 @@ Changed:
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
+        tgfclient/
+            gui.h
+                added   tGfuiRadioButtons
+                added   GfuiDrawRadioButtons
+                added   GfuiReleaseRadioButtons
+                changed GfuiObject
+            guimenu.cpp
+                added   GfuiMenuCreateRadioButtonsControl
+            guimenu.h
+                added   GFMNU_TYPE_RADIO_BUTTONS
+                added   GFMNU_ATTR_SELECTED
+            tgfclient.h
+                added   GFUI_RADIOBUTTONS
+                added   RadioButtonsInfo
+                added   tfuiRadioButtonsCallback
+                added   GfuiRadioButtonsCreate
+                added   GfuiRadioButtonsSetSelected
+                added   GfuiRadioButtonsSetText
+                added   GfuiRadioButtonsSetTextColor
+                added   GfuiMenuCreateRadioButtonsControl
 
     main/
         main.cpp

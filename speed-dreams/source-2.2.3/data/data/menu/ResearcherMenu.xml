@@ -7,19 +7,20 @@
     <section name="dynamic controls">
 
         <!-- Checkboxes for selecting a Task -->
-        <section name="CheckboxTaskLaneKeeping">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Lane keeping"/>
-            <attstr name="tip" val="Select the Lane Keeping task"/>
+        <section name="TaskRadioButtons">
+            <attstr name="type" val="radio buttons"/>
+            <attstr name="text" val="Radio1"/>
+            <attstr name="tip" val="Testing radio buttons"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
+            <attstr name="selected" val="0"/>
         </section>
 
+        <!--
         <section name="CheckboxTaskSpeedControl">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Speed control"/>
@@ -32,6 +33,7 @@
             <attstr name="font" val="small_t"/>
             <attstr name="checked" val="no"/>
         </section>
+        -->
 
         <!-- Checkboxes for selecting how to indicate an intervention -->
         <section name="CheckboxIndicatorAuditory">
@@ -247,7 +249,7 @@
             <attstr name="type" val="label"/>
             <attnum name="x" val="260"/>
             <attnum name="y" val="400"/>
-            <attstr name="text" val="Type"/>
+            <attstr name="text" val="Intervention Type"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
