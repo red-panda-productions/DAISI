@@ -62,7 +62,7 @@ static int MusicVolumeValueId;
 
 // SIMULATED DRIVING ASSISTANCE
 // Auditory interventions volume
-static float InterventionVolumeValue = 100.0f;
+static float InterventionVolumeValue = 20.0f;
 static int InterventionVolumeControl;
 
 // gui screen handles.
