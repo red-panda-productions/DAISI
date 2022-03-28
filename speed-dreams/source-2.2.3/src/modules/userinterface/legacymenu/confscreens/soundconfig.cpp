@@ -295,9 +295,3 @@ void* SoundMenuInit(void *prevMenu)
 
 	return scrHandle;
 }
-
-// SIMULATED DRIVING ASSISTANCE: add helper function
-float clamp(float x, float lower, float upper)
-{
-    return std::min(upper, std::max(x, lower));
-}

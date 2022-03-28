@@ -162,7 +162,7 @@ class SoundInterface {
 
 private:
     // SIMULATED DRIVING ASSISTANCE: add helper function
-    float clamp(float volume, float low, float high);
+    float Clamp(float volume, float low, float high);
 };
 
 

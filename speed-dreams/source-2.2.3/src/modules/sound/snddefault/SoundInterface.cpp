@@ -230,7 +230,7 @@ float SoundInterface::GetInterventionVolume() const
 /// @param volume The raw volume to set
 void SoundInterface::SetInterventionVolume(float volume)
 {
-    InterventionVolume = clamp(volume, 0.0f, 1.0f);
+    InterventionVolume = Clamp(volume, 0.0f, 1.0f);
 }
 
 float SoundInterface::getGlobalGain() const
@@ -262,7 +262,7 @@ void SoundInterface::mute(bool bOn)
 /// @param low  The lower bound
 /// @param high The upper bound
 /// @return     The clamped number
-float SoundInterface::clamp(float n, float low, float high)
+float SoundInterface::Clamp(float n, float low, float high)
 {
     return std::max(low, std::min(n, high));
 }
