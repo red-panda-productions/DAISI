@@ -72,7 +72,7 @@ Changed:
                 added setInterventionSound()
                 added SetInterventionVolume()
                 added GetInterventionVolume()
-                added InterventionVolume member to init
+                changed SoundInterface(): added InterventionVolume member init
                 added Clamp() helper function
             SoundInterface.h
                 added setInterventionSound()
@@ -105,6 +105,7 @@ Changed:
                 confscreens/soundconfig.cpp
                     added ChangeInterventionVolume()
                     added logic to create new controls for intervention volume and store their data
+                    changed readSoundCfg()
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module

@@ -219,6 +219,7 @@ void SoundInterface::setInterventionSound(InterventionAction p_soundEvent, const
     intervention_sounds[p_soundEvent] = sound;
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief  Retrieves the volume of the intervention sounds
 /// @return The volume
 float SoundInterface::GetInterventionVolume() const
@@ -226,6 +227,7 @@ float SoundInterface::GetInterventionVolume() const
     return silent ? 0 : InterventionVolume;
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief        Sets and clamps the volume of the interventions
 /// @param volume The raw volume to set
 void SoundInterface::SetInterventionVolume(float volume)
@@ -257,6 +259,7 @@ void SoundInterface::mute(bool bOn)
 	GfLogInfo("Sound %s\n", silent ? "paused" : "restored");
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief      Clamps a number to the given range
 /// @param n    The number
 /// @param low  The lower bound

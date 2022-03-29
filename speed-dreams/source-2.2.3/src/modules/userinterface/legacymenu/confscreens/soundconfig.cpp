@@ -221,6 +221,7 @@ static void changeMusicVolume(void * )
     GfuiEditboxSetString(scrHandle, MusicVolumeValueId, buf);
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief Reads the value from the textbox, clamps it stores it as member and writes the value back.
 static void ChangeInterventionVolume(void*)
 {

@@ -271,7 +271,7 @@
     <section name="8">
         <attstr name="type" val="label"/>
         <attnum name="x" val="20"/>
-        <attnum name="y" val="200"/>
+        <attnum name="y" val="203"/>
         <attstr name="text" val="Intervention volume:"/>
         <attstr name="tip" val="Setup your auditory intervention volume (%)"/>
         <attstr name="h align" val="right"/>
