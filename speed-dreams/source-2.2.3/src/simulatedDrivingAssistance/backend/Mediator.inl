@@ -95,7 +95,7 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
         m_environment,
         CarInfo(
             TrackPosition(false, p_car->pub.trkPos.toStart, p_car->pub.trkPos.toRight, p_car->pub.trkPos.toMiddle, p_car->pub.trkPos.toLeft),
-            p_car->pub.speed, p_car->race.topSpeed, p_car->priv.gear, false),
+            p_car->pub.DynGC.vel.x * 3.6f /* convert to km/h */, p_car->race.topSpeed, p_car->priv.gear, false),
         PlayerInfo(p_car->ctrl.steer, p_car->ctrl.accelCmd, p_car->ctrl.brakeCmd, p_car->ctrl.clutchCmd),
         p_situation->currentTime);
 
