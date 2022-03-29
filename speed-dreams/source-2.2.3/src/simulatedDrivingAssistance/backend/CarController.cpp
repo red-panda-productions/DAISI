@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "CarController.h"
 #include "InterventionConfig.h"
 
