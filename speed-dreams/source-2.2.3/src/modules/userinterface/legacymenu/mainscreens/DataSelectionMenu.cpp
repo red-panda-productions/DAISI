@@ -60,7 +60,7 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Activates the researchMenu screen
+/// @brief Returns to the researcher menu screen
 static void GoBack(void* /* dummy */)
 {
     // Go back to the main screen
