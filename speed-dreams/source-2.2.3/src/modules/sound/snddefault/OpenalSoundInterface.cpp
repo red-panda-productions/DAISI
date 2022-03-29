@@ -220,7 +220,7 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 /// @param p_carSoundData Data related to the car, like position data.
 /// @param p_interventionSounds The registered sounds
 void UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
-    if(!SMediator::GetInstance()->GetIndicatorSetting(INDICATOR_AUDITORY)) return;
+    if(!SMediator::GetInstance()->GetIndicatorSettings().Auditory) return;
 
     for (const auto &item : p_interventionSounds) {
         Sound* sound = item.second;

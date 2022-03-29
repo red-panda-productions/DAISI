@@ -13,7 +13,7 @@ static void* s_nextHandle = nullptr;
 Task m_task = TASK_NO_TASK;
 
 // Indicators
-bool m_indicators[2] = {false, false};
+tIndicator m_indicators = {false, false};
 
 // InterventionType
 InterventionType m_interventionType;
@@ -22,7 +22,7 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-bool m_pControl[3] = {false, true, true};
+tParticipantControl m_pControl = {false, true, true};
 
 // Max time
 int m_maxTime = 10.0f;
@@ -67,13 +67,13 @@ static void SelectSpeedControl(tCheckBoxInfo* p_info)
 /// @param p_info Information on the checkbox
 static void SelectAuditory(tCheckBoxInfo* p_info)
 {
-    m_indicators[INDICATOR_AUDITORY] = p_info->bChecked;
+    m_indicators.Auditory = p_info->bChecked;
 }
 /// @brief        Enables/disables the visual indication for interventions
 /// @param p_info Information on the checkbox
 static void SelectVisual(tCheckBoxInfo* p_info)
 {
-    m_indicators[INDICATOR_VISUAL] = p_info->bChecked;
+    m_indicators.Visual = p_info->bChecked;
 }
 /// @brief        Sets the interventionType to no signals
 /// @param p_info Information on the checkbox
@@ -124,19 +124,19 @@ static void SelectEnvironmentHighway(tCheckBoxInfo* p_info)
 /// @param p_info Information on the checkbox
 static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
 {
-    m_pControl[PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF] = p_info->bChecked;
+    m_pControl.ControlInterventionToggle = p_info->bChecked;
 }
 /// @brief        Enables/disables the possibility for participants to control gas
 /// @param p_info Information on the checkbox
 static void SelectControlGas(tCheckBoxInfo* p_info)
 {
-    m_pControl[PARTICIPANT_CONTROL_GAS] = p_info->bChecked;
+    m_pControl.ControlGas = p_info->bChecked;
 }
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
 static void SelectControlSteering(tCheckBoxInfo* p_info)
 {
-    m_pControl[PARTICIPANT_CONTROL_STEERING] = p_info->bChecked;
+    m_pControl.ControlSteering = p_info->bChecked;
 }
 
 /// @brief Handle input in the max time textbox
@@ -180,7 +180,7 @@ static void SaveSettings(void* /* dummy */)
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
-    // TODO: Set Participant control (bool*)
+    // TODO: Set Participant control (tParticipantControl)
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);

@@ -9,42 +9,42 @@ static void* s_prevHandle = nullptr;
 static void* s_nextHandle = nullptr;
 
 // Data to store
-bool m_dataToStore[5] = {true, true, true, true, true};
+tDataToStore m_dataToStore;
 
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeDrivingStorage(tCheckBoxInfo* p_info)
 {
-    m_dataToStore[DATA_TO_STORE_ENVIRONMENT_DATA] = p_info->bChecked;
+    m_dataToStore.EnvironmentData = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the car will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeCarStorage(tCheckBoxInfo* p_info)
 {
-    m_dataToStore[DATA_TO_STORE_CAR_DATA] = p_info->bChecked;
+    m_dataToStore.CarData = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether data on the human user will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeHumanStorage(tCheckBoxInfo* p_info)
 {
-    m_dataToStore[DATA_TO_STORE_HUMAN_DATA] = p_info->bChecked;
+    m_dataToStore.HumanData = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether intervention attributes will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeInterventionStorage(tCheckBoxInfo* p_info)
 {
-    m_dataToStore[DATA_TO_STORE_INTERVENTION_DATA] = p_info->bChecked;
+    m_dataToStore.InterventionData = p_info->bChecked;
 }
 
 /// @brief        Enables or disables whether decision maker parameters will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
 {
-    m_dataToStore[DATA_TO_STORE_META_DATA] = p_info->bChecked;
+    m_dataToStore.MetaData = p_info->bChecked;
 }
 
 /// @brief Function to call when screen is activated
