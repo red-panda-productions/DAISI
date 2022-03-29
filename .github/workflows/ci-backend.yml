@@ -18,8 +18,6 @@ env:
   GTEST_COLOR: yes
   GTEST_OUTPUT: xml:test-results/
 
-  CCACHE_LOGFILE: D:\a\speed-dreams\speed-dreams\ccache.log
-
 jobs:
   build:
     # The CMake configure and build commands are platform agnostic anda should work equally well on Windows or Mac.
@@ -49,12 +47,6 @@ jobs:
     - name: Test
       working-directory: ${{runner.workspace}}/build
       run: ctest -V
-
-    - name: Upload log
-      uses: actions/upload-artifact@v2
-      with:
-        name: ccache.log
-        path: D:\a\speed-dreams\speed-dreams\ccache.log
 
     - name: Upload test results
       uses: actions/upload-artifact@v2
