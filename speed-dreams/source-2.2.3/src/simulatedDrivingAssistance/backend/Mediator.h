@@ -53,6 +53,8 @@ public:
     DecisionMaker m_decisionMaker;
 
 	EnvironmentInfo m_environment = EnvironmentInfo(0, 0, 0);
+
+	unsigned long m_tickCount = 0;
 };
 
 SMediator* SMediator::m_instance = nullptr;

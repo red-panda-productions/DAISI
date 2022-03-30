@@ -8,15 +8,15 @@ class DriveSituation
 {
 public:
     DriveSituation();
-    DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo, double p_currentTime);
+    DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo, unsigned long p_tickCount);
     const EnvironmentInfo* GetEnvironmentInfo() const;
     const CarInfo* GetCarInfo() const;
     const PlayerInfo* GetPlayerInfo() const;
-    double GetTime() const;
+    unsigned long GetTickCount() const;
 
 private:
     EnvironmentInfo m_environmentInfo;
     CarInfo m_carInfo;
     PlayerInfo m_playerInfo;
-    double m_currentTime;
+    unsigned long m_tickCount;
 };

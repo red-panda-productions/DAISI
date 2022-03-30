@@ -24,7 +24,7 @@
     int randomGear = random.NextInt(-1000,1000);\
     bool randomHeadlights = random.NextBool();\
     int randomRain = random.NextInt(-1000,1000);\
-    float randomCurrentTime = random.NextFloat(-1000, 1000);
+    unsigned long randomTickCount = random.NextUInt();
 
 /// create a drive situation mock and insert all variables
 #define DEFINE_DRIVE_MOCK \
@@ -33,7 +33,7 @@
         CarInfoMock(randomSpeed, randomTopSpeed, randomGear, randomHeadlights,          \
             TrackPositionMock(randomOffroad, randomToStart,randomToRight,randomToMiddle,randomToLeft)), \
         EnvironmentInfoMock(randomTimeOfDay, randomClouds, randomRain),                 \
-        randomCurrentTime);
+        randomTickCount);
 
 /// create a socket black box and initialize the maps.
 #define SETUP_SOCKET \
@@ -64,7 +64,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
             std::to_string(randomToLeft),
             std::to_string(randomToRight),
             std::to_string(randomToStart),
-            std::to_string(randomCurrentTime)
+            std::to_string(randomTickCount)
         };
 
         // should be in the same order as the control vector
@@ -82,7 +82,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
             "ToLeft",
             "ToRight",
             "ToStart",
-            "CurrentTime"};
+            "TickCount"};
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeDriveSituation(sbuffer, driveSituation);

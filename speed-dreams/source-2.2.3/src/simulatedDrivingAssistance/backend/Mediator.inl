@@ -97,9 +97,10 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
             TrackPosition(false, p_car->pub.trkPos.toStart, p_car->pub.trkPos.toRight, p_car->pub.trkPos.toMiddle, p_car->pub.trkPos.toLeft),
             p_car->pub.speed, p_car->race.topSpeed, p_car->priv.gear, false),
         PlayerInfo(p_car->ctrl.steer, p_car->ctrl.accelCmd, p_car->ctrl.brakeCmd, p_car->ctrl.clutchCmd),
-        p_situation->currentTime);
+        m_tickCount);
 
     m_decisionMaker.Decide(currentSituation);
+    m_tickCount++; // doing this at the end of the function means we start from tick 0
 }
 
 template<typename DecisionMaker>

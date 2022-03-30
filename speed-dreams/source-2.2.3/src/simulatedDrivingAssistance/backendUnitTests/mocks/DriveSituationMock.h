@@ -13,18 +13,18 @@
 class DriveSituationMock
 {
 public:
-    DriveSituationMock(PlayerInfoMock m_PlayerInfo, CarInfoMock mCarInfo, EnvironmentInfoMock mEnvironmentInfo, double mCurrentTime)
-            : m_playerInfo(m_PlayerInfo), m_carInfo(mCarInfo), m_environmentInfo(mEnvironmentInfo), m_currentTime(mCurrentTime) {};
+    DriveSituationMock(PlayerInfoMock m_PlayerInfo, CarInfoMock mCarInfo, EnvironmentInfoMock mEnvironmentInfo, unsigned long mTickCount)
+            : m_playerInfo(m_PlayerInfo), m_carInfo(mCarInfo), m_environmentInfo(mEnvironmentInfo), m_tickCount(mTickCount) {};
 
     PlayerInfoMock m_playerInfo;
     EnvironmentInfoMock m_environmentInfo;
     CarInfoMock m_carInfo;
-    double m_currentTime;
+    unsigned long m_tickCount;
 
     PlayerInfoMock* GetPlayerInfo(){return &m_playerInfo;}
     EnvironmentInfoMock* GetEnvironmentInfo(){return &m_environmentInfo;};
     CarInfoMock* GetCarInfo(){return &m_carInfo;};
-    double GetTime(){return m_currentTime;};
+    unsigned long GetTickCount(){return m_tickCount;};
 };
 
 /// @brief  A sample drive situation for testing
@@ -34,5 +34,5 @@ inline DriveSituationMock GetExampleDriveSituation()
     CarInfoMock carinfo(1.1, 1.2, 1, true, trackpos);
     PlayerInfoMock playerinfo(2.1, 2.2, 2.3, 2.4);
     EnvironmentInfoMock environmentinfo(3, 4, 5);
-    return { playerinfo, carinfo, environmentinfo, 69.0 };
+    return { playerinfo, carinfo, environmentinfo, 69 };
 }

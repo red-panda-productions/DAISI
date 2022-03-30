@@ -48,7 +48,7 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
 
     const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
 #ifdef BB_RECORD_SESSION
-    m_recorder->WriteRecording(decisionValues, p_driveSituation.GetTime(), false);
+    m_recorder->WriteRecording(decisionValues, p_driveSituation.GetTickCount(), false);
 #endif
 
     return true;

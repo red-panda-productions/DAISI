@@ -58,7 +58,7 @@ void SocketBlackBox<DriveSituation>::Initialize()
     m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_PLAYER_INFO(ClutchCmd());
     m_variableConvertAndInsertMap["SteerCmd"] = INSERT_PLAYER_INFO(SteerCmd());
 
-    m_variableConvertAndInsertMap["CurrentTime"] = PUSH_BACK_DS(GetTime());
+    m_variableConvertAndInsertMap["TickCount"] = PUSH_BACK_DS(GetTickCount());
 
 
     //Decision functions

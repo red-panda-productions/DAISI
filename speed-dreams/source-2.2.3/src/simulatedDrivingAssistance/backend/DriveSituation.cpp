@@ -7,7 +7,7 @@ DriveSituation::DriveSituation() :
 		TrackPosition(0,0,0,0,0)
 		,0,0,0,false),
 	m_playerInfo(0,0,0,0),
-    m_currentTime(0)
+    m_tickCount(0)
 {
 }
 
@@ -16,11 +16,11 @@ DriveSituation::DriveSituation() :
 /// @param  p_carInfo		  The info of the car
 /// @param  p_playerInfo      The info of the player
 /// @param  p_currentTime     The current time of the game
-DriveSituation::DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo, double p_currentTime) :
+DriveSituation::DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo, unsigned long p_tickCount) :
 	m_environmentInfo(p_environmentInfo),
 	m_carInfo(p_carInfo),
 	m_playerInfo(p_playerInfo),
-    m_currentTime(p_currentTime)
+    m_tickCount(p_tickCount)
 {
 }
 
@@ -47,7 +47,7 @@ const PlayerInfo* DriveSituation::GetPlayerInfo() const
 
 /// @brief  Gets the current time
 /// @return The current time
-double DriveSituation::GetTime() const
+unsigned long DriveSituation::GetTickCount() const
 {
-    return m_currentTime;
+    return m_tickCount;
 }
