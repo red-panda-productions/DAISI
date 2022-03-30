@@ -97,7 +97,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
 
     GfParmReleaseHandle(param);
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
-    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GfuiScreenActivate, NULL);
+    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
 
