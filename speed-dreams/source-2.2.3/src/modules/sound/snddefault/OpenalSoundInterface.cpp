@@ -219,7 +219,7 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 /// @brief Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
 /// @param p_interventionSounds The registered sounds
-void UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
+void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
     if(!SMediator::GetInstance()->GetIndicatorSettings().Auditory) return;
 
     for (const auto &item : p_interventionSounds) {
