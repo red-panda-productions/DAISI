@@ -41,7 +41,7 @@ bool TEMP_DECISIONMAKER::Decide(DriveSituation& p_driveSituation)
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
-#ifdef BB_RECORD_SESSION
+#if defined(BB_RECORD_SESSION) && !defined(TEST)
     const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
     m_recorder->WriteRecording(decisionValues, p_driveSituation.GetTickCount(), false);
 #endif
@@ -68,5 +68,7 @@ void TEMP_DECISIONMAKER::SetDataCollectionSettings(bool* p_dataSetting)
 template<typename SocketBlackBox, typename SDAConfig>
 DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 {
+#ifndef TEST
     delete m_recorder;
+#endif
 }

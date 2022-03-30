@@ -1,13 +1,11 @@
 #pragma once
-#include "DriveSituation.h"
-#include "ConfigEnums.h"
-#include "Recorder"
+#include "../../backend/DriveSituation.h"
+#include "../../backend/ConfigEnums.h"
+#include "../../backend/Recorder.h"
 
 class DecisionMakerMock
 {
 public:
-	//~DecisionMaker() {};
-
 	bool Decide(DriveSituation& driveSituation)
 	{
 		return Decision;
@@ -20,4 +18,6 @@ public:
 
     InterventionType Type;
 	bool Decision;
+
+    ~DecisionMakerMock() {};
 };

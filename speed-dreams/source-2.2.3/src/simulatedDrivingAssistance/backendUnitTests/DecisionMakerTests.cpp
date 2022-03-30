@@ -6,6 +6,7 @@
 #include "mocks/ConfigMock.h"
 #include "DriveSituation.h"
 #include "TestUtils.h"
+#include "Recorder.h"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock>
 
