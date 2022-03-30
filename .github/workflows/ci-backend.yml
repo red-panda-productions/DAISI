@@ -28,12 +28,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}}/speed-dreams/source-2.2.3 -B ${{runner.workspace}}/build -T host=x86 -A Win32 -DBACKEND_ONLY_OPTION=TRUE
+      shell: bash
+      run: cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DBACKEND_ONLY_OPTION=TRUE -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
+      shell: bash
+      run: cmake --build . --config Release
 
     - name: Test
       working-directory: ${{runner.workspace}}/build

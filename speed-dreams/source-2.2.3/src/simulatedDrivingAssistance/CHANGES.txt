@@ -48,6 +48,8 @@ Changed:
     interfaces/
         playerpref.h
             added HM_ADRV_FILE define
+        sound.h
+            added intervention sound volume xml parameter 
     modules/
         racing/standardgame
             racesituation.cpp
@@ -58,16 +60,27 @@ Changed:
                 added backend
             grsound.cpp
                 added intervention sound initialization
+                added intervention sound volume setting
             OpenalSound.cpp
                 added check for playing state
+            OpenalSoundInterface.cpp
+                added UpdateInterventionSounds()
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
                 added update and starting of intervention sounds
             SoundInterface.cpp
                 added setInterventionSound()
+                added SetInterventionVolume()
+                added GetInterventionVolume()
+                changed SoundInterface(): added InterventionVolume member init
+                added Clamp() helper function
             SoundInterface.h
                 added setInterventionSound()
                 added intervention_sounds map
+                added SetInterventionVolume()
+                added GetInterventionVolume()
+                added InterventionVolume member
+                added Clamp() helper function
         userinterface/
             legacymenu.h 
                 ActivateResearcherMenu()
@@ -94,6 +107,10 @@ Changed:
                         removed RmProgressiveTimeModifier implementation and calls
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
+                confscreens/soundconfig.cpp
+                    added ChangeInterventionVolume()
+                    added logic to create new controls for intervention volume and store their data
+                    changed readSoundCfg()
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module
@@ -103,16 +120,18 @@ Changed:
                     changed grInitBoardCar() 
                     changed refreshBoard()
                 grboard.h
-                    added grDispIntervention() 
-
+                    added grDispIntervention()  
 
 
   data/
     data/
         CMakeLists.txt
             added intervention folder
-        menu/mainmenu.xml
-            added a back button
+        menu/
+            mainmenu.xml
+                added a back button
+            soundconfigmenu.xml
+                added controls for intervention sound volume
         
   cmake/
     checks.cmake

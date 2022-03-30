@@ -229,8 +229,8 @@ void UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<
         p_carSoundData[0]->getCarSpeed(u);
         sound->setSource(p, u);
         sound->setReferenceDistance(1.0f);
-        sound->setVolume(1.0f);
         sound->setPitch(1.0f);
+        sound->setVolume(GetInterventionVolume());
 
         sound->update();
     }
