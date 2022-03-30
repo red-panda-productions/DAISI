@@ -30,7 +30,7 @@ Added:
 
 Changed:
   src/
-      libs/
+    libs/
         robottools/
             rtHumanDriver.cpp
                 included Recorder.h
@@ -83,20 +83,25 @@ Changed:
                 added Clamp() helper function
         userinterface/
             legacymenu.h 
-                  ActivateResearcherMenu()
+                ActivateResearcherMenu()
             legacymenu.cpp
-                  included "ResearcherMenu.h"
-                  included "DataSelectionMenu.h"
-                  added    ActivateResearcherMenu()
-                  changed  backLoad()
-                  changed  activate()
+                included "ResearcherMenu.h"
+                included "DataSelectionMenu.h"
+                added    ActivateResearcherMenu()
+                changed  backLoad()
+                changed  activate()
             racestopmenu.cpp
                 RmStopRaceMenu()
                     changed  AssistedHuman is a human
-            legacymenu/CMakeList.txt
-                  added    ResearcherMenu.h and .cpp
-                  added    DataSelectionMenu.h and .cpp
-                  added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+            legacymenu/
+                CMakeList.txt
+                    added    ResearcherMenu.h and .cpp
+                    added    DataSelectionMenu.h and .cpp
+                    added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                mainscreens/mainmenu.cpp
+                    included "DataSelectionMenu.h"
+                    added    GoBack()
+                    changed  MainMenuInit()
                 racescreens/
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
@@ -122,8 +127,11 @@ Changed:
     data/
         CMakeLists.txt
             added intervention folder
-        menu/soundconfigmenu.xml
-            added controls for intervention sound volume
+        menu/
+            mainmenu.xml
+                added a back button
+            soundconfigmenu.xml
+                added controls for intervention sound volume
         
   cmake/
     checks.cmake

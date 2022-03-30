@@ -42,9 +42,11 @@ TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
 void IndicatorTest(bool p_bool1, bool p_bool2)
 {
     SDAConfig config;
-    bool arr[2] = { p_bool1, p_bool2 };
+    tIndicator arr = { p_bool1, p_bool2 };
     config.SetIndicatorSettings(arr);
-    ASSERT_EQ(arr, config.GetIndicatorSettings());
+    tIndicator indicator = config.GetIndicatorSettings();
+    ASSERT_EQ(arr.Auditory, indicator.Auditory);
+    ASSERT_EQ(arr.Visual, indicator.Visual);
 }
 
 /// @brief Tests the SDAConfig IndicatorSetting for every possible boolean combination
@@ -91,9 +93,14 @@ TEST(ConfigTests, UserIDTest)
 void TestBoolArr(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_bool5)
 {
     SDAConfig config;
-    bool arr[5] = { p_bool1, p_bool2, p_bool3, p_bool4, p_bool5 };
+    tDataToStore arr = { p_bool1, p_bool2, p_bool3, p_bool4, p_bool5 };
     config.SetDataCollectionSettings(arr);
-    ASSERT_EQ(arr, config.GetDataCollectionSetting());
+    tDataToStore dataToStore = config.GetDataCollectionSetting();
+    ASSERT_EQ(arr.EnvironmentData, dataToStore.EnvironmentData);
+    ASSERT_EQ(arr.CarData, dataToStore.CarData);
+    ASSERT_EQ(arr.HumanData, dataToStore.HumanData);
+    ASSERT_EQ(arr.InterventionData, dataToStore.InterventionData);
+    ASSERT_EQ(arr.MetaData, dataToStore.MetaData);
 }
 
 /// @brief Tests the SDAConfig DataCollectionSetting for every possible boolean combination

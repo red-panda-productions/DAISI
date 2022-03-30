@@ -15,8 +15,8 @@ CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(DriveSituationMock)
 TEST(FileDataStorageTests, NoStorageTimestampZero)
 {
     // Initialise class, read+write no values
-    bool params[5] = {false, false, false, false, false};
-    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(params);
+    DataToStore params = {false, false, false, false, false};
+    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(&params);
     CREATE_DRIVE_SITUATION_MOCK;
 
     // Write a file with user id, save timestamp 0, and shut down
@@ -43,8 +43,8 @@ TEST(FileDataStorageTests, NoStorageTimestampZero)
 /// @param p_storeMeta Whether to save metadata
 void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool p_storeIntervention, bool p_storeMeta) {
     Random random;
-    bool params[5] = {p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
-    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(params);
+    tDataToStore params = {p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta};
+    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(&params);
     CREATE_DRIVE_SITUATION_MOCK;
 
     // Create a string to save all intended random data to
