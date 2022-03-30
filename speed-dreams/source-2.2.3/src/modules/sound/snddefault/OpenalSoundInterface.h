@@ -73,6 +73,11 @@ class OpenalSoundInterface : public SoundInterface
 	virtual SharedSourcePool* getSourcePool(void);
 	
 	virtual void mute(bool bOn = true);
+
+private:
+    // SIMULATED DRIVING ASSISTANCE
+    void UpdateInterventionSounds(CarSoundData** p_carSoundData, 
+        std::unordered_map<InterventionAction, Sound*>& p_interventionSounds);
 };
 
 struct sharedSource {

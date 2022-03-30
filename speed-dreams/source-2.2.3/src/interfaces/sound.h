@@ -33,6 +33,9 @@
 
 #define SND_SCT_MUSIC                 "Music Settings"
 
+// SIMULATED DRIVING ASSISTANCE
+#define SND_SCT_INTERVENTION          "Auditory Intervention Settings"
+
 //#define MM_ATT_SOUND_ENABLE             "enable"
 //#define MM_VAL_SOUND_ENABLED            "enabled"
 //#define MM_VAL_SOUND_DISABLED           "disabled"
