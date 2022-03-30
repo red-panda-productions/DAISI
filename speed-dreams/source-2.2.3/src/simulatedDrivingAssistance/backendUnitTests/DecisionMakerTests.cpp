@@ -17,7 +17,7 @@ void DecisionTest(bool p_isDecision)
 	decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
 	DriveSituation driveSituation;
 	
-	decisionMaker.m_blackBox.IsDecision = p_isDecision;
+	decisionMaker.BlackBox.IsDecision = p_isDecision;
 
 	if(!p_isDecision)
 	{
@@ -25,7 +25,7 @@ void DecisionTest(bool p_isDecision)
 		return;
 	}
 	ASSERT_TRUE(decisionMaker.Decide(driveSituation));
-	InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.m_interventionExecutor);
+	InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
 	ASSERT_FALSE(mock == NULL);
 	ASSERT_EQ(mock->m_decisionCount, DECISIONS_COUNT);
 	ASSERT_FALSE(mock->m_decisions == nullptr);
@@ -42,7 +42,7 @@ void ChangeSettingsTest(InterventionType p_intervention)
 	decisionMaker.ChangeSettings(p_intervention);
 	ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
-	InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.m_interventionExecutor);
+	InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
 	ASSERT_FALSE(mockCheck == NULL);
 }
 

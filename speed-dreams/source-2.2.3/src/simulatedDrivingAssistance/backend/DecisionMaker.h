@@ -14,8 +14,6 @@ template <typename SocketBlackBox, typename SDAConfig>
 class DecisionMaker
 {
 public:
-    //~DecisionMaker();
-
     SDAConfig Config;
 
     void Initialize(DriveSituation& p_initialSituation, DriveSituation* p_testSituations = nullptr, int p_testAmount = 0);
@@ -25,8 +23,10 @@ public:
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(bool* p_dataSetting);
 
-    InterventionExecutor* m_interventionExecutor;
-    SocketBlackBox m_blackBox;
+    InterventionExecutor* InterventionExecutor;
+    SocketBlackBox BlackBox;
+
+    ~DecisionMaker();
 
 private:
 #ifdef BB_RECORD_SESSION
