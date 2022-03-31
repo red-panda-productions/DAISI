@@ -36,7 +36,6 @@ class cGrBoard
 
     int debugFlag;
     int counterFlag;
-    int arcadeFlag;
     int boardWidth;
     int leftAnchor;
     int centerAnchor;
@@ -48,19 +47,8 @@ class cGrBoard
     void grDispSplitScreenIndicator();
     void grDrawGauge(tdble X1, tdble Y1, tdble H, float *clr1,
                         float *clr2, tdble val, const char *title);
-    void grDispEngineLeds(int X, int Y, int align, bool bg);
-
-    void grDispIndicators(const bool arcade);
 
     void grDispCounterBoard2();
-
-    void grDispArcade(const tSituation *s);
-
-    bool grGetSplitTime(const tSituation *s, bool gap_inrace,
-                        double &time, int *laps_different, float **color);
-    void grGetLapsTime(const tSituation *s, char* result,
-                        char const** label) const;
-    void grSetupDrawingArea(int xl, int yb, int xr, int yt) const;
 
     void grDispIntervention();
 
@@ -74,7 +62,6 @@ private:
     float *emphasized_color_;
     float *ahead_color_;
     float *behind_color_;
-    float *arcade_color_;
     float *background_color_;
 
     void ReadDashColor(void *hdle, const std::string &color_name, float **color);

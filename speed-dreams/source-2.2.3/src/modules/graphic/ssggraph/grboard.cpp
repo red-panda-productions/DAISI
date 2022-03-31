@@ -60,8 +60,7 @@ static const int BUFSIZE = 256;
 cGrBoard::cGrBoard(int myid) :
     normal_color_(NULL), danger_color_(NULL), ok_color_(NULL),
     error_color_(NULL), inactive_color_(NULL), emphasized_color_(NULL),
-    ahead_color_(NULL), behind_color_(NULL), arcade_color_(NULL),
-    background_color_(NULL)
+    ahead_color_(NULL), behind_color_(NULL), background_color_(NULL)
 {
   id = myid;
 }
@@ -77,7 +76,6 @@ cGrBoard::~cGrBoard()
   delete [] emphasized_color_;
   delete [] ahead_color_;
   delete [] behind_color_;
-  delete [] arcade_color_;
   delete [] background_color_;
 }
 
@@ -98,7 +96,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
   ReadDashColor(hdle, GFSCR_ELT_EMPHASIZEDCLR,  &emphasized_color_);
   ReadDashColor(hdle, GFSCR_ELT_AHEADCLR,       &ahead_color_);
   ReadDashColor(hdle, GFSCR_ELT_BEHINDCLR,      &behind_color_);
-  ReadDashColor(hdle, GFSCR_ELT_ARCADECLR,      &arcade_color_);
   ReadDashColor(hdle, GFSCR_ELT_BACKGROUNDCLR,  &background_color_);
 
   GfParmReleaseHandle(hdle);
@@ -108,7 +105,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
 
   debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, 1);
   counterFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, 1);
-  arcadeFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_ARCADE, NULL, 0);
   boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, 100);
   speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, 0);
 
@@ -118,7 +114,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
     snprintf(path, sizeof(path), "%s/%s", GR_SCT_DISPMODE, curCar->_name);
     debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, debugFlag);
     counterFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, counterFlag);
-    arcadeFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_ARCADE, NULL, arcadeFlag);
     boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, boardWidth);
     speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, speedoRise);
   }
@@ -156,10 +151,6 @@ void cGrBoard::selectBoard(int val)
     case 3:
       debugFlag = (debugFlag + 1) % NB_DEBUG;
       GfParmSetNum(grHandle, path, GR_ATT_DEBUG, (char*)NULL, (tdble)debugFlag);
-      break;
-    case 5:
-      arcadeFlag = 1 - arcadeFlag;
-      GfParmSetNum(grHandle, path, GR_ATT_ARCADE, (char*)NULL, (tdble)arcadeFlag);
       break;
   }
   GfParmWriteFile(NULL, grHandle, "graph");
@@ -300,100 +291,6 @@ void cGrBoard::grDispSplitScreenIndicator()
     glEnd();
 }
 
-/// @brief       Displays the engines RPM in a horizontal bar, only used in the Arcade HUD.
-/// @param X     Reference X drawining position 
-/// @param Y     Reference Y drawining position
-/// @param align Alignment of the bar compared to its reference position 
-/// @param bg    Background of the bar
-void cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
-{
-  // Green LED
-  GLfloat ledcolg[2][3] = {
-    {0.0, 0.2, 0.0},
-    {0.0, 1.0, 0.0}
-  };
-
-  // Red LED
-  GLfloat ledcolr[2][3] = {
-    {0.2, 0.0, 0.0},
-    {1.0, 0.0, 0.0}
-  };
-
-  int ledNb     = 20;
-  int ledHeight = 10;
-  int ledWidth  = 5;
-  int ledSpace  = 2;
-  int ledRed    = (int)((car_->_enginerpmRedLine * 0.9 / car_->_enginerpmMax) * (tdble)ledNb);
-  int ledLit    = (int)((car_->_enginerpm / car_->_enginerpmMax) * (tdble)ledNb);
-
-  int x;
-  switch (align) {
-    case ALIGN_CENTER:
-      x = X - ((ledNb * ledWidth) + (ledNb - 1) * ledSpace) / 2;
-      break;
-    case ALIGN_LEFT:
-      x = X;
-      break;
-    case ALIGN_RIGHT:
-      x = X - ((ledNb * ledWidth) + (ledNb - 1) * ledSpace);
-      break;
-    default:
-      x = X - ((ledNb * ledWidth) + (ledNb - 1) * ledSpace) / 2;
-      break;
-  }
-
-  int y = Y;
-  glBegin(GL_QUADS);
-
-  // Draw background?
-  if (bg) {
-    glColor3f(0.1, 0.1, 0.1);
-    glVertex2f(x - ledSpace, y + ledHeight + ledSpace);
-    glVertex2f(x + ledNb * (ledWidth+ ledSpace), y + ledHeight + ledSpace);
-    glVertex2f(x + ledNb * (ledWidth+ ledSpace), BOTTOM_ANCHOR);
-    glVertex2f(x - ledSpace, BOTTOM_ANCHOR);
-  }
-
-  const int xref = x;
-  glColor3fv(ledcolg[0]);
-  for (int i = 0; i < ledRed; ++i) {
-    glVertex2f(x, y);
-    glVertex2f(x + ledWidth, y);
-    glVertex2f(x + ledWidth, y + ledHeight);
-    glVertex2f(x, y + ledHeight);
-    x += ledWidth + ledSpace;
-  }
-
-  glColor3fv(ledcolr[0]);
-  for (int i = ledRed; i < ledNb; ++i) {
-    glVertex2f(x, y);
-    glVertex2f(x + ledWidth, y);
-    glVertex2f(x + ledWidth, y + ledHeight);
-    glVertex2f(x, y + ledHeight);
-    x += ledWidth + ledSpace;
-  }
-  x = xref;
-
-#define DD  1
-  glColor3fv(ledcolg[1]);
-  for (int i = 0; i < ledNb; ++i) {
-    if (i == ledRed) {
-      glColor3fv(ledcolr[1]);
-    }
-    if (i <= ledLit) {
-      glVertex2f(x + DD, y + DD);
-      glVertex2f(x + ledWidth - DD, y + DD);
-      glVertex2f(x + ledWidth - DD, y + ledHeight - DD);
-      glVertex2f(x + DD, y + ledHeight - DD);
-      x += ledWidth + ledSpace;
-    } else {
-      break;
-    }
-  }
-  glEnd();
-}  // grDispEngineLeds
-
-
 /// @brief Middle 'Driver Counters' display with speed/gear meters and Fuel/Damage gauges.
 void cGrBoard::grDispCounterBoard2()
 {
@@ -511,242 +408,6 @@ void cGrBoard::shutdown(void)
 
 }
 
-
-void cGrBoard::grDispArcade(const tSituation *s)
-{
-    #define XM  15  // X margin
-    #define YM  10  // Y margin
-
-  // We are ARCADE, we draw BIIIIG
-  int dy = GfuiFontHeight(GFUI_FONT_BIG_C);
-  const int dxc = 100;
-
-  const int x = leftAnchor + XM;
-  const int x2 = x + 50;
-  const int width = rightAnchor - leftAnchor - 2 * XM;
-  int y = TOP_ANCHOR - YM - dy;
-
-  // Display driver name and race position
-  char buf[BUFSIZE];
-  snprintf(buf, sizeof(buf), "%d/%d", car_->_pos, s->_ncars);
-  GfuiDrawString(buf, arcade_color_, GFUI_FONT_BIG_C, x, y);
-
-  dy = GfuiFontHeight(GFUI_FONT_LARGE_C);
-  y -= dy;
-
-  // Display current lap time
-  GfuiDrawString("Time:", arcade_color_, GFUI_FONT_LARGE_C, x, y);
-  grWriteTime(arcade_color_, GFUI_FONT_LARGE_C, x2, y, dxc,
-                car_->_curLapTime, 0);
-  y -= dy;
-
-  // Display best lap time
-  GfuiDrawString("Best:", arcade_color_, GFUI_FONT_LARGE_C, x, y);
-  grWriteTime(arcade_color_, GFUI_FONT_LARGE_C, x2, y, dxc,
-                car_->_bestLapTime, 0);
-
-  y = TOP_ANCHOR - YM - dy;
-  grGetLapsTime (s, buf, NULL);
-  GfuiDrawString(buf, arcade_color_, GFUI_FONT_LARGE_C, x, y,
-                width, GFUI_ALIGN_HR);
-
-  // Display driver name
-  snprintf(buf, sizeof(buf), "%s", car_->_sname);
-  GfuiDrawString(buf, arcade_color_, GFUI_FONT_LARGE_C, x, y,
-                width, GFUI_ALIGN_HC);
-
-  // Draw fuel/damage gauges
-  float *color = (car_->_fuel < 5.0) ? danger_color_ : emphasized_color_;   //red/yellow
-  grDrawGauge(leftAnchor + XM, BOTTOM_ANCHOR + 25, 100, color,
-                background_color_, car_->_fuel / car_->_tank, "F");
-  grDrawGauge(leftAnchor + XM + 15, BOTTOM_ANCHOR + 25, 100, danger_color_, //red
-                background_color_, (tdble)(car_->_dammage) / grMaxDammage, "D");
-
-  // Display ABS/TCS/SPD indicators
-  grDispIndicators(true);
-
-  // Display speed and gear
-  dy = GfuiFontHeight(GFUI_FONT_LARGE_C);
-  y = YM + dy;
-  snprintf(buf, sizeof(buf), "%3d km/h", abs((int)(car_->_speed_x * 3.6)));
-  GfuiDrawString(buf, arcade_color_, GFUI_FONT_BIG_C, x, y,
-                width, GFUI_ALIGN_HR);
-  y = YM;
-  if (car_->_gear <= 0)
-    snprintf(buf, sizeof(buf), "%s", car_->_gear == 0 ? "N" : "R");
-  else
-    snprintf(buf, sizeof(buf), "%d", car_->_gear);
-  GfuiDrawString(buf, arcade_color_, GFUI_FONT_LARGE_C, x, y,
-                width, GFUI_ALIGN_HR);
-
-  // Display engine LED scale
-  grDispEngineLeds(rightAnchor - XM, YM + dy + GfuiFontHeight (GFUI_FONT_BIG_C),
-                ALIGN_RIGHT, false);
-}  // grDispArcade
-
-
-/**
- * This function calculates if the split time must be displayed, and if so what the
- * split time is.
- *
- * @param s[in] A pointer to the current situation
- * @param gap_inrace[in] True if it must display the gap during races, false if compares the current lap with the personal best lap
- * @param time[out] The split difference time
- * @param laps_different[out] Contains the number of laps behind / for at the split point
- * @param color[out] The colour which can be used to display the split time
- * @return true if there is a split time to be displayed, false otherwise
- */
-bool cGrBoard::grGetSplitTime(const tSituation *s, bool gap_inrace, double &time,
-                                int *laps_different, float **color)
-{
-  tdble curSplit;
-  tdble bestSplit;
-  tdble bestSessionSplit;
-  const tCarElt *ocar = car_;
-  const tCarElt *fcar = car_;
-  int sign = 1;
-  int laps;
-
-  if (laps_different)
-    *laps_different = 0;
-
-  if (s->_raceType != RM_TYPE_RACE || s->_ncars == 1) {
-    if (car_->_currentSector == 0)
-      return false;
-
-    curSplit = car_->_curSplitTime[car_->_currentSector - 1];
-    bestSplit = car_->_bestSplitTime[car_->_currentSector - 1];
-
-    if (car_->_curLapTime - curSplit > 5.0f)
-      return false; /* Only display split for five seconds */
-
-    if (s->_ncars > 1) {
-      bestSessionSplit = s->cars[0]->_bestSplitTime[car_->_currentSector - 1];
-
-      if (bestSessionSplit <= 0.0f)
-        return false;
-
-      time = curSplit - bestSessionSplit;
-      if (time < 0.0f)
-        *color = error_color_;  //pink
-      else if (curSplit < bestSplit)
-        *color = ok_color_;     //green
-      else
-        *color = normal_color_; //white
-    } else {
-      if (bestSplit < 0.0f)
-        return false;
-
-      time = curSplit - bestSplit;
-
-      if (time < 0.0f)
-        *color = ok_color_; //green
-      else
-        *color = normal_color_; //white
-    }
-  } else if (gap_inrace) {
-    if (car_->_pos == 1) {
-      fcar = s->cars[1];
-      sign = -1;
-    }
-
-    ocar = s->cars[fcar->_pos-2];
-
-    if (fcar->_currentSector == 0)
-      return false;
-
-    curSplit = fcar->_curSplitTime[fcar->_currentSector - 1];
-    bestSplit = ocar->_curSplitTime[fcar->_currentSector - 1];
-
-    if (fcar->_curLapTime - curSplit > 5.0f)
-      return false;
-
-    laps = ocar->_laps - fcar->_laps;
-    if (ocar->_currentSector < fcar->_currentSector
-        || (ocar->_currentSector == fcar->_currentSector
-            && fcar->_curTime + curSplit < ocar->_curTime + bestSplit))
-      --laps;
-
-    if (!laps_different && laps != 0)
-      return false;
-
-    if (laps_different)
-      *laps_different = sign * laps;
-
-    time = ocar->_curTime + bestSplit - (fcar->_curTime + curSplit);
-    if (sign < 0)
-      time *= -1.0f;
-
-    *color = normal_color_; //white
-  } else {
-    if (car_->_currentSector == 0)
-      return false;
-
-    curSplit = car_->_curSplitTime[car_->_currentSector - 1];
-    bestSplit = car_->_bestSplitTime[car_->_currentSector - 1];
-
-    if (bestSplit < 0.0f)
-      return false;
-
-    if (car_->_curLapTime - curSplit > 5.0f)
-      return false;
-
-    time = curSplit - bestSplit;
-    if (time < 0.0f)
-      *color = ok_color_;    //green
-    else
-      *color = normal_color_;   //white
-  }
-
-  return true;
-}
-
-
-/**
- * This function gives back the information about the remaining laps / time
- *
- * @param s[in] The current situation
- * @param car[in] The current car
- * @param result[out] An already existing string of len BUFSIZE which will contain the text
- * @param label[out] The label (Lap: or Time: ) If zero, then the label is added to @p result.
- */
-void cGrBoard::grGetLapsTime(const tSituation *s, char* result,
-                                char const **label) const
-{
-  bool time = true;
-  double cur_left;
-  char const *loc_label;
-
-  // Don't show time data if race haven't started yet or is already finished
-  if (s->_totTime < 0.0f
-        || (s->_totTime < s->currentTime && s->_extraLaps > 0))
-    time = false;
-
-  if (label) {
-    *label = time ? "Time: " : "Lap: ";
-    loc_label = "";
-  } else {
-    loc_label = time ? "Time: " : "Lap: ";
-  }
-
-  // Show only lap counts before start or after race
-  if (!time) {
-    snprintf(result, BUFSIZE, "%s%d/%d", loc_label, car_->_laps, s->_totLaps);
-  } else {
-    cur_left = s->_totTime - s->currentTime;
-    if (s->currentTime < 0.0f)
-      cur_left = s->_totTime;
-    if (cur_left < 0.0f)
-      cur_left = 0.0f;
-
-    snprintf(result, BUFSIZE, "%s%d:%02d:%02d", loc_label,
-                (int)floor(cur_left / 3600.0f),
-                (int)floor(cur_left / 60.0f) % 60,
-                (int)floor(cur_left) % 60);
-  }
-}
-
-
 /// @brief              Refreshes the HUD, called every frame.
 /// @param s            The current situation
 /// @param frameInfo    Information about the number of passed frames, average fps, etc
@@ -755,22 +416,19 @@ void cGrBoard::grGetLapsTime(const tSituation *s, char* result,
 void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                             const tCarElt *currCar, bool isCurrScreen)
 {
-  car_ = currCar;
-  if (isCurrScreen) {
-      grDispSplitScreenIndicator();
-  }
+    car_ = currCar;
+    if (isCurrScreen) {
+        grDispSplitScreenIndicator();
+    }
 
-  // For now: display an intervention every frame.
-  grDispIntervention();
+    // For now: display an intervention every frame.
+    grDispIntervention();
 
-  if (arcadeFlag) {
-    grDispArcade(s);
-  } else {
+ 
     if (debugFlag)
-      grDispDebug(s, frameInfo);
+        grDispDebug(s, frameInfo);
     if (counterFlag)
-      grDispCounterBoard2();
-  }
+        grDispCounterBoard2();
 }
 
 /// @brief Displays the currently active intervention in InterventionConfig
@@ -1082,76 +740,6 @@ void grShutdownBoardCar(void)
   nstate = 0;*/
 }
 
-/**
- * Set up a drawing area to put textual info there.
- *
- * Draws a dark quadrangle on the given coords.
- *
- * @param xl X left
- * @param yb Y bottom
- * @param xr X right
- * @param yt Y top
- */
-void cGrBoard::grSetupDrawingArea(int xl, int yb, int xr, int yt) const
-{
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glBegin(GL_QUADS);
-  // darkblue to fit the menu style: 0a162f
-  glColor4f(0.039, 0.086, 0.184, 0.8);
-  glVertex2f(xl, yb);
-  glVertex2f(xr, yb);
-  glVertex2f(xr, yt);
-  glVertex2f(xl, yt);
-  glEnd();
-  glDisable(GL_BLEND);
-}
-
-
-/// @brief Display ABS/TCS/SPD indicators if the driver is a human.
-/// @param arcade Boolean flag whether the function is called from the arcade function.
-void cGrBoard::grDispIndicators(const bool arcade)
-{
-  // Only useful for humans - maybe robots should show that, too?
-  if (car_->_driverType == RM_DRV_HUMAN) {
-    bool abs = false;   // Show ABS indicator?
-    bool tcs = false;   // Show TCS indicator?
-    bool spd = false;   // Show speed limiter indicator?
-
-    // Parse control messages if they include ABS / TCS / SPD
-    for (int i = 0; i < 4; i++) {
-      if (car_->ctrl.msg[i]) {
-        abs = abs || strstr(car_->ctrl.msg[i], "ABS");
-        tcs = tcs || strstr(car_->ctrl.msg[i], "TCS");
-        spd = spd || strstr(car_->ctrl.msg[i], "Speed Limiter On");
-      }
-    }
-
-    // Setup drawing area
-    int dy = GfuiFontHeight(GFUI_FONT_MEDIUM_C);
-    int dy2 = GfuiFontHeight(GFUI_FONT_SMALL_C);
-    int dx = GfuiFontWidth(GFUI_FONT_MEDIUM_C, "SPD");
-
-    int x, y;
-    if (arcade) {
-      x = leftAnchor + 15 + 30;               // constant text left pos.
-      y = BOTTOM_ANCHOR + dy2 * 8 + dy - 2;   // first row top pos.
-    } else {
-      x = centerAnchor - 200;                 // constant text left pos.
-      y = BOTTOM_ANCHOR + dy2 * 8 + dy + 5;   // first row top pos.
-    }
-
-    // Display board
-    grSetupDrawingArea(x - 5, y + dy + 5, x + dx + 5, y - dy2 * 8 - dy + 5);
-
-    // Display strings emphasize (yellow) if flag is true, grey otherwise.
-    GfuiDrawString("ABS", abs ? emphasized_color_ : inactive_color_, GFUI_FONT_MEDIUM_C, x, y);
-    GfuiDrawString("TCS", tcs ? emphasized_color_ : inactive_color_, GFUI_FONT_MEDIUM_C, x, y - dy);
-    GfuiDrawString("SPD", spd ? emphasized_color_ : inactive_color_, GFUI_FONT_MEDIUM_C, x, y - 2 * dy);
-  }  // if human
-}  // grDispIndicators
-
-
 void cGrBoard::ReadDashColor(void *hdle, const string &color_name, float **color) {
   char buf[1024];
   snprintf(buf, sizeof(buf), "%s/%s/%s",
@@ -1162,4 +750,3 @@ void cGrBoard::ReadDashColor(void *hdle, const string &color_name, float **color
     (*color)[i] = GfParmGetNum(hdle, buf, rgba[i].c_str(), NULL, 1.0);
   }
 }
-
