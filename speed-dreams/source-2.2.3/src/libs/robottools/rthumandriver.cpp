@@ -280,10 +280,13 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
  */
 void HumanDriver::shutdown(const int index)
 {
+    // SIMULATED DRIVING ASSISTANCE: DELETE RECORDER 
 #ifdef RECORD_SESSION
     delete recorder;
 #endif
-    int idx = index - 1;
+
+
+	int idx = index - 1;
 
     free(VecNames[idx]);
     VecNames[idx] = 0;
@@ -948,12 +951,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
     int scrw, scrh, dummy;
 
-#ifdef RECORD_SESSION
-    float userAccel;
-    float userBrake;
-    float userSteerLeft;
-    float userSteerRight;
-#endif
+
 
     const int idx = index - 1;
     tControlCmd *cmd = HCtx[idx]->cmdControl;
@@ -1158,10 +1156,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             if (leftSteer < 0.0) leftSteer = 0.0;
         }
 #endif
-
-#ifdef RECORD_SESSION
-        userSteerLeft = HCtx[idx]->prevLeftSteer;
-#endif
+        
         HCtx[idx]->prevLeftSteer = leftSteer;
         break;
     default:
@@ -1555,9 +1550,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
                 car->_brakeCmd =
                     MIN(car->_brakeCmd, HCtx[idx]->pbrake + inc_rate*d_brake/fabs(d_brake));
         }
-#ifdef RECORD_SESSION
-        userBrake = HCtx[idx]->pbrake;
-#endif
+
         HCtx[idx]->pbrake = car->_brakeCmd;
     }
 
@@ -1593,9 +1586,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         car->_accelCmd = MAX(car->_accelCmd, 0.0);
     }
 
-#ifdef RECORD_SESSION
-    userAccel = HCtx[idx]->paccel;
-#endif
     HCtx[idx]->paccel = car->_accelCmd;
 
     if (HCtx[idx]->autoReverseEngaged) {
