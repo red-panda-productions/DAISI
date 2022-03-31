@@ -88,7 +88,6 @@ cGrBoard::cGrBoard(int myid) :
     background_color_(NULL)
 {
   id = myid;
-  trackMap = NULL;
 
   // Scrolling leaderboard variables
   iStart = 0;
@@ -99,9 +98,6 @@ cGrBoard::cGrBoard(int myid) :
 
 cGrBoard::~cGrBoard()
 {
-  delete trackMap;
-  trackMap = 0;
-
   delete [] normal_color_;
   delete [] danger_color_;
   delete [] ok_color_;
@@ -150,12 +146,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
   boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, 100);
   speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, 0);
 
-  // check null in case trackMap is disabled in UI.
-  if (trackMap) {
-      trackMap->setViewMode((int)GfParmGetNum(grHandle, path, GR_ATT_MAP,
-          NULL, trackMap->getDefaultViewMode()));
-  }
-
   // Only apply driver preferences when not spanning split screens
   pszSpanSplit = GfParmGetStr(grHandle, GR_SCT_GRAPHIC, GR_ATT_SPANSPLIT, GR_VAL_NO);
   if (strcmp(pszSpanSplit, GR_VAL_YES) && curCar->_driverType == RM_DRV_HUMAN) {
@@ -170,12 +160,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
     arcadeFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_ARCADE, NULL, arcadeFlag);
     boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, boardWidth);
     speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, speedoRise);
-
-    // check null in case trackMap is disabled in UI.
-    if (trackMap) { 
-        trackMap->setViewMode((int)GfParmGetNum(grHandle, path, GR_ATT_MAP,
-            NULL, trackMap->getViewMode()));
-    }
   }
 
   if (boardWidth < 0 || boardWidth > 100)
@@ -1272,17 +1256,14 @@ void cGrBoard::grDispCounterBoard2()
 /// @brief Initializes the dashboard by creating a trackmap object.
 void cGrBoard::initBoard(void)
 {
-  if (!trackMap) {
-    trackMap = new cGrTrackMap();
-  }
+
 }
 
 
 /// @brief Shuts down the dashboard by releasing the trackmap object memory.
 void cGrBoard::shutdown(void)
 {
-  delete trackMap;  // 'delete 0' is safe.
-  trackMap = NULL;
+
 }
 
 
@@ -1553,11 +1534,6 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
     if (dashboardFlag)
       grDispDashboard();
   }
-
-  if (trackMap) {
-      trackMap->display(currCar, s, 0, 0, rightAnchor, TOP_ANCHOR);
-  }
-
 }
 
 /// @brief Displays the currently active intervention in InterventionConfig

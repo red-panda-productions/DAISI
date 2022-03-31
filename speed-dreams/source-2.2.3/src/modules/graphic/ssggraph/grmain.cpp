@@ -452,12 +452,6 @@ grSelectBoard(void *vp)
 }
 
 static void
-grSelectTrackMap(void * /* vp */)
-{
-    grGetCurrentScreen()->selectTrackMap();
-}
-
-static void
 grPrevCar(void * /* dummy */)
 {
     // For SpanSplit ensure screens change together
@@ -558,7 +552,6 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
     GfuiAddKey(screen, ')',            "UnSplit Screen", (void*)GR_SPLIT_REM, grSplitScreen, NULL);
     GfuiAddKey(screen, '_',            "Split Screen Arrangement", (void*)GR_SPLIT_ARR, grSplitScreen, NULL);
     GfuiAddKey(screen, GFUIK_TAB,      "Next (split) Screen", (void*)GR_NEXT_SCREEN, grChangeScreen, NULL);
-    GfuiAddKey(screen, 'm',            "Track Maps",          (void*)0, grSelectTrackMap, NULL);
 
     GfLogInfo("Current screen is #%d (out of %d)\n", nCurrentScreenIndex, grNbActiveScreens);
 

@@ -23,7 +23,6 @@
 #include <car.h>        // tCarElt
 #include <raceman.h>    // tSituation
 
-class cGrTrackMap;
 class cGrFrameInfo;
 
 #include <string>
@@ -78,8 +77,6 @@ class cGrBoard
     void grDispArcade(const tSituation *s);
     std::string grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation *s,
                                             const bool isLeader) const;
-    // Track overview object
-    cGrTrackMap *trackMap;
 
     bool grGetSplitTime(const tSituation *s, bool gap_inrace,
                         double &time, int *laps_different, float **color);
@@ -112,7 +109,6 @@ private:
     void shutdown(void);
     void selectBoard(int brd);
     void setWidth(int width);
-    inline cGrTrackMap *getTrackMap() { return trackMap; }
 
     void refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                         const tCarElt *currCar, bool isCurrScreen);
