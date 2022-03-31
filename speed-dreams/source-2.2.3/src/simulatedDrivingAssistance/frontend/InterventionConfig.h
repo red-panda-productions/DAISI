@@ -17,7 +17,7 @@
 #define PRM_ATTR_XPOS           "xpos"
 #define PRM_ATTR_YPOS           "ypos"
 #define PRM_ATTR_SRC            "source"
-#define PRM_ATTR_TXT            "txt"
+#define PRM_ATTR_CONTENT        "content"
 
 static std::unordered_map<InterventionAction, const char*> s_actionEnumParamMap = {
     { INTERVENTION_ACTION_NONE,       "none"        },

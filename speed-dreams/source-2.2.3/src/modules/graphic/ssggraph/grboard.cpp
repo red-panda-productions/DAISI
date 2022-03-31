@@ -1630,7 +1630,7 @@ void LoadInterventionData()
 
         // Texts
         snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumParamMap[i], PRM_SECT_TEXT);
-        const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_TXT, "");
+        const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_CONTENT, "");
         xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
         yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
 
