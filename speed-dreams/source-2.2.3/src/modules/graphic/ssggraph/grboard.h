@@ -37,7 +37,6 @@ class cGrBoard
     int boardFlag;
     int debugFlag;
     int counterFlag;
-    int GFlag;
     int dashboardFlag;
     int arcadeFlag;
     int boardWidth;
@@ -48,7 +47,6 @@ class cGrBoard
 
  private:
     void grDispDebug(const tSituation *s, const cGrFrameInfo* frame);
-    void grDispGGraph();
     void grDispSplitScreenIndicator();
     void grDrawGauge(tdble X1, tdble Y1, tdble H, float *clr1,
                         float *clr2, tdble val, const char *title);

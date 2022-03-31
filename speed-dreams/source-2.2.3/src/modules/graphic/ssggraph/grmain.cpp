@@ -537,7 +537,6 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
 
     GfuiAddKey(screen, '6',            "Dashboard",         (void*)6, grSelectBoard, NULL);
     GfuiAddKey(screen, '5',            "Debug Info",        (void*)3, grSelectBoard, NULL);
-    GfuiAddKey(screen, '4',            "G/Cmd Graph",       (void*)4, grSelectBoard, NULL);
     GfuiAddKey(screen, '2',            "Driver Counters",   (void*)1, grSelectBoard, NULL);
     GfuiAddKey(screen, '1',            "Driver Board",      (void*)0, grSelectBoard, NULL);
     GfuiAddKey(screen, '9',            "Mirror",            (void*)0, grSwitchMirror, NULL);
