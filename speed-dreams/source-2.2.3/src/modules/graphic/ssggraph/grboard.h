@@ -34,10 +34,8 @@ class cGrBoard
     int id;     // Board Id
     const tCarElt* car_;
 
-    int boardFlag;
     int debugFlag;
     int counterFlag;
-    int dashboardFlag;
     int arcadeFlag;
     int boardWidth;
     int leftAnchor;
@@ -52,15 +50,9 @@ class cGrBoard
                         float *clr2, tdble val, const char *title);
     void grDispEngineLeds(int X, int Y, int align, bool bg);
 
-    void grDispCarBoard(const tSituation *s);
-    void grDispCarBoard1(const tSituation *s);
-    void grDispCarBoard2(const tSituation *s);
-
     void grDispIndicators(const bool arcade);
 
     void grDispCounterBoard2();
-    
-    void grDispDashboard();
 
     void grDispArcade(const tSituation *s);
 

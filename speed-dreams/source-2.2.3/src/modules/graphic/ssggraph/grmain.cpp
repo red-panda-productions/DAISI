@@ -535,10 +535,8 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
     GfuiAddKey(screen, GFUIK_F10,      "Helicopter Views",  (void*)8, grSelectCamera, NULL);
     GfuiAddKey(screen, GFUIK_F11,      "TV Director View",  (void*)9, grSelectCamera, NULL);
 
-    GfuiAddKey(screen, '6',            "Dashboard",         (void*)6, grSelectBoard, NULL);
     GfuiAddKey(screen, '5',            "Debug Info",        (void*)3, grSelectBoard, NULL);
     GfuiAddKey(screen, '2',            "Driver Counters",   (void*)1, grSelectBoard, NULL);
-    GfuiAddKey(screen, '1',            "Driver Board",      (void*)0, grSelectBoard, NULL);
     GfuiAddKey(screen, '9',            "Mirror",            (void*)0, grSwitchMirror, NULL);
     GfuiAddKey(screen, '0',            "Arcade Board",      (void*)5, grSelectBoard, NULL);
     GfuiAddKey(screen, '+', GFUIM_CTRL, "Zoom In",           (void*)GR_ZOOM_IN,	 grSetZoom, NULL);
