@@ -45,8 +45,8 @@ const PlayerInfo* DriveSituation::GetPlayerInfo() const
     return &m_playerInfo;
 }
 
-/// @brief  Gets the current time
-/// @return The current time
+/// @brief  Gets the current time in ticks
+/// @return The current time in ticks
 unsigned long DriveSituation::GetTickCount() const
 {
     return m_tickCount;
