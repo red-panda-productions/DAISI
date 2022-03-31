@@ -1,90 +1,169 @@
+#include <humandriver.h>
+#include <iostream>
 #include "Driver.h"
-#include "Mediator.h"
-#include "ConfigEnums.h"
 
-/// @brief Initialize the driver with the given track
-/// Make sure the human driver is initialized and ready to drive.
-/// @param p_index The driver's index (starting from 1)
-/// @param p_name The driver's name
-Driver::Driver(int p_index, const char* p_name) : m_index(p_index), m_humanDriver(p_name) {
-    m_humanDriver.count_drivers();
-    m_humanDriver.init_context(p_index);
-    // Pretend like the module is just initializing
-    auto* tempArr = new tModInfo[1];
-    m_humanDriver.initialize(tempArr, nullptr);
-    delete[] tempArr;
+static const int s_maxBotAmount = 1;
+
+static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
+static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation);
+static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation);
+static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation);
+static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation);
+static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation);
+static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation);
+static void Shutdown(int p_index);
+
+/// @brief All the assisted human drivers.
+/// Since it's technically possible to have more than 1 bot of the same type in a race it needs to be an array.
+static Driver* s_drivers[s_maxBotAmount];
+
+/// @brief Find the driver with the given index and return it. Taking into account that we save drivers 0-based but the index is 1-based
+/// @param p_index The index of the driver to find
+/// @return The driver with the given index
+inline static Driver* GetDriver(int p_index) {
+    return s_drivers[p_index - 1];
 }
 
-/// @brief Initialize the driver with the given track.
-/// Also notify the mediator that the race starts.
-/// @param p_track The track that is being initialized
-/// @param p_carHandle
-/// @param p_carParmHandle
-/// @param p_situation The current race situation
-void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
-    m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
+#ifdef _WIN32
+/* Must be present under MS Windows */
+BOOL WINAPI DllEntryPoint(HINSTANCE p_hDLL, DWORD p_dwReason, LPVOID p_reserved) {
+    return TRUE;
+}
+#endif
 
-    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
+/// @brief Tell speed-dreams which of our functions to call.
+/// Also create the driver.
+/// @param p_index The index of the driver to create
+/// @param p_pt The pointer to the tRobotItf which will have its fields set to pointers to our functions
+/// @return 0 if no error occurs, 1 if an error does occur
+static int InitFuncPt(int p_index, void* p_pt) {
+    auto* itf = (tRobotItf*)p_pt;
+
+    itf->rbNewTrack = InitTrack;
+
+    itf->rbNewRace = NewRace;
+    itf->rbPauseRace = PauseRace;
+    itf->rbResumeRace = ResumeRace;
+    itf->rbEndRace = EndRace;
+
+    itf->rbDrive = Drive;
+    itf->rbShutdown = Shutdown;
+    itf->rbPitCmd = PitCmd;
+    itf->index = p_index;
+
+    // Create the driver, speed-dreams counts from 1 so subtract 1 from the index to get the array index.
+    s_drivers[p_index - 1] = new Driver(p_index, "replaydriver");
+
+    return 0;
 }
 
-/// @brief Start a new race.
-/// @param p_car The car the driver controls
-/// @param p_situation The current race situation
-void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
-    m_humanDriver.new_race(m_index, p_car, p_situation);
+// These functions need camelCase instead of UpperCamelCase to link to external functions.
+#ifdef __CLION_IDE__
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCInconsistentNamingInspection"
+#endif
+
+/// @brief First function of the module called at load time :
+///  - the caller gives the module some information about its run-time environment
+///  - the module gives the caller some information about what he needs
+///
+/// There is only 1 interface here (the human driving the car), but this could technically be multiple.
+/// @param p_welcomeIn Information about the run-time environment
+/// @param p_welcomeOut Set information about the module on this object
+/// @return 0 if no error occurs, 1 if an error does occur
+extern "C" int moduleWelcome(const tModWelcomeIn * p_welcomeIn, tModWelcomeOut * p_welcomeOut) {
+    p_welcomeOut->maxNbItf = 1;
+
+    return 0;
 }
 
-/// @brief Update the car's controls based on the current race situation.
-/// In other words: Drive.
-/// Ask the human driver for input and ask the mediator for controls.
-/// @param p_car The car the driver controls
-/// @param p_situation The current race situation
-void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
-    // Do not let the human control the car when the AI is in control
-    if (SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER) {
-        m_humanDriver.drive_at(m_index, p_car, p_situation);
+/// @brief Initialize the module, set the following parameters:
+///  - Module Name
+///  - Module description
+///  - pointer to the function pointer initialize function
+///  - Module index
+///  - Module framework version
+/// @param p_modInfo Pointer to the array of modInfos to populate
+/// @return 0 if no error occurs, 1 if an error does occur
+extern "C" int moduleInitialize(tModInfo * p_modInfo) {
+    p_modInfo->name = "replay driver";
+    p_modInfo->desc = "replay driver";
+    p_modInfo->fctInit = InitFuncPt;
+    p_modInfo->index = 1;
+    p_modInfo->gfId = 0;
+
+    return 0;
+}
+
+/// @brief Terminate the module and all drivers
+/// @return 0 if no error occurs, 1 if an error does occur
+extern "C" int moduleTerminate() {
+    for (const auto& driver : s_drivers) {
+        driver->Terminate();
     }
 
-    SMediator::GetInstance()->DriveTick(p_car, p_situation);
+    return 0;
+}
+#ifdef __CLION_IDE__
+#pragma clang diagnostic pop
+#endif
+
+/// @brief Find the driver with the given index and initialize it with the given track.
+/// @param p_index The index of the driver to initialize
+/// @param p_track The track that is being initialized
+/// @param p_carHandle 
+/// @param p_carParmHandle 
+/// @param p_situation The current race situation
+static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
+    GetDriver(p_index)->InitTrack(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
-/// @brief Pause the current race.
+/// @brief Find the driver with the given index and tell it a new race has started.
+/// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::PauseRace(tCarElt* p_car, tSituation* p_situation) {
-    m_humanDriver.pause_race(m_index, p_car, p_situation);
+static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+    GetDriver(p_index)->NewRace(p_car, p_situation);
 }
 
-/// @brief Resume the current race.
+/// @brief Find the driver with the given index and tell it the race is being paused
+/// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::ResumeRace(tCarElt* p_car, tSituation* p_situation) {
-    m_humanDriver.resume_race(m_index, p_car, p_situation);
+static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+    GetDriver(p_index)->PauseRace(p_car, p_situation);
 }
 
-/// @brief Called when a pit stop starts
+/// @brief Find the driver with the given index and tell it the race is being resumed
+/// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-/// @return The pit stop command either ROB_PIT_IM or ROB_PIT_MENU
-int Driver::PitCmd(tCarElt* p_car, tSituation* p_situation) {
-    return m_humanDriver.pit_cmd(m_index, p_car, p_situation);
+static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+    GetDriver(p_index)->ResumeRace(p_car, p_situation);
 }
 
-/// @brief End the current race.
+/// @brief Find the driver with the given index and tell it the race is being ended
+/// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::EndRace(tCarElt* p_car, tSituation* p_situation) {
-    m_humanDriver.end_race(m_index, p_car, p_situation);
+static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+    GetDriver(p_index)->EndRace(p_car, p_situation);
 }
 
-/// @brief Shutdown the driver.
-/// Also tell the mediator the race has ended.
-void Driver::Shutdown() {
-    m_humanDriver.shutdown(m_index);
-    SMediator::GetInstance()->RaceStop();
+/// @brief Find the driver with the given index and have it drive the given car
+/// @param p_index The index of the driver
+/// @param p_car The car the driver controls
+/// @param p_situation The current race situation
+static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation) {
+    GetDriver(p_index)->Drive(p_car, p_situation);
 }
 
-/// @brief Terminate the driver.
-void Driver::Terminate() {
-    m_humanDriver.terminate();
+static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation) {
+    return GetDriver(p_index)->PitCmd(p_car, p_situation);
+}
+
+/// @brief Shutdown the driver with the given index.
+/// @param p_index The index of the driver
+static void Shutdown(const int p_index) {
+    GetDriver(p_index)->Shutdown();
 }
