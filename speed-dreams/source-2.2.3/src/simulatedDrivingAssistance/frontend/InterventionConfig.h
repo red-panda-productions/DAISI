@@ -12,10 +12,12 @@
 #define PRM_SECT_INTERVENTIONS  "Interventions"
 #define PRM_SECT_TEXTURE        "texture"
 #define PRM_SECT_SOUND          "sound"
+#define PRM_SECT_TEXT           "text"
 
 #define PRM_ATTR_XPOS           "xpos"
 #define PRM_ATTR_YPOS           "ypos"
 #define PRM_ATTR_SRC            "source"
+#define PRM_ATTR_TXT            "txt"
 
 static std::unordered_map<InterventionAction, const char*> s_actionEnumParamMap = {
     { INTERVENTION_ACTION_NONE,       "none"        },
@@ -41,6 +43,13 @@ typedef struct TextureData
         : Texture(p_tex) , Position(p_pos) { }
 } tTextureData;
 
+/// @brief Stores data for text
+typedef struct TextData
+{
+    const char*     Text;
+    tScreenPosition Position;
+} tTextData;
+
 /// @brief Represents the configuration of interventions
 class InterventionConfig 
 {
@@ -54,6 +63,10 @@ public:
     void SetTextures(tTextureData* p_textures);
 
     tTextureData GetCurrentInterventionTexture();
+
+    void SetTexts(tTextData* p_texts);
+
+    tTextData GetCurrentInterventionText();
 
     std::unordered_map<InterventionAction, const char*> GetSounds();
 
@@ -76,5 +89,6 @@ public:
     unsigned int m_interventionCount = 0;
     InterventionAction m_currentAction;
     tTextureData* m_textures;
+    tTextData* m_texts;
     std::unordered_map<InterventionAction, const char*> m_sounds;
 };
