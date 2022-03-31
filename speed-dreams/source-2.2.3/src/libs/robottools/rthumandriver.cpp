@@ -70,8 +70,7 @@
 #ifdef RECORD_SESSION
 #include <Recorder.h>
 Recorder* recorder;
-// SIMULATED DRIVING ASSISTANCE
-const int m_paramAmount = 3;
+const int paramAmount = 3;
 #endif
 
 
