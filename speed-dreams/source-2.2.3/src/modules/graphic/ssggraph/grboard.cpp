@@ -1611,16 +1611,15 @@ void LoadInterventionTextures()
     void* xmlHandle = InterventionConfig::GetInstance()->GetXmlHandle();
     for (int i = 0; i < instance->GetInterventionCount(); i++)
     {
-        snprintf(path, sizeof(path), "%s/%s", PRM_SECT_INTERVENTIONS, s_EnumParamMap[i]);
-        const char* name = GfParmGetStr(xmlHandle, path, PRM_ATTR_NAME, "");
-        const char* tex = GfParmGetStr(xmlHandle, path, PRM_ATTR_TEXTURE, "");
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumParamMap[i], PRM_SECT_TEXTURE);
+        const char* source = GfParmGetStr(xmlHandle, path, PRM_ATTR_SRC, "");
         int xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
         int yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
 
         // IMPORTANT: The texture should not be bigger than 256x256 due to buffer sizes.
-        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(tex);
+        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(source);
 
-        textures[i] = TextureData(name, texture, { xPos, yPos });
+        textures[i] = TextureData(texture, { xPos, yPos });
     }
 
     InterventionConfig::GetInstance()->SetTextures(textures);

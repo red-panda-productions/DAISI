@@ -4,23 +4,24 @@
 #include "ConfigEnums.h"
 #include <unordered_map>
 
-// Location of the intervention XML file, with respect to the root data directory.
-#define INTERVENTION_DATA_DIR_FORMAT "%sdata/intervention/intervention.xml"
-#define SOUNDS_DIR_FORMAT "%sdata/intervention/sound/%s"
+// Location of the config.xml file with respect to the root data directory.
+#define CONFIG_XML_DIR_FORMAT "%sdata/intervention/config.xml"
+#define SOUNDS_DIR_FORMAT     "%sdata/intervention/sound/%s"
 
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS  "Interventions"
+#define PRM_SECT_TEXTURE        "texture"
 #define PRM_SECT_SOUND          "sound"
-#define PRM_ATTR_TEXTURE        "texture"
+
 #define PRM_ATTR_XPOS           "xpos"
 #define PRM_ATTR_YPOS           "ypos"
 #define PRM_ATTR_SRC            "source"
 
-static std::unordered_map<InterventionAction, const char*> s_EnumParamMap = {
-        { INTERVENTION_ACTION_NONE,       "none"        },
-        { INTERVENTION_ACTION_TURN_LEFT,  "steer left"  },
-        { INTERVENTION_ACTION_TURN_RIGHT, "steer right" },
-        { INTERVENTION_ACTION_BRAKE,      "brake"       }
+static std::unordered_map<InterventionAction, const char*> s_actionEnumParamMap = {
+    { INTERVENTION_ACTION_NONE,       "none"        },
+    { INTERVENTION_ACTION_TURN_LEFT,  "steer left"  },
+    { INTERVENTION_ACTION_TURN_RIGHT, "steer right" },
+    { INTERVENTION_ACTION_BRAKE,      "brake"       }
 };
 
 /// @brief Represents a position on screen
@@ -32,13 +33,12 @@ typedef struct ScreenPosition
 /// @brief Stores all data of a texture
 typedef struct TextureData 
 {
-    const char* Name;
     ssgSimpleState* Texture;
     tScreenPosition Position;
 
     TextureData() = default;
-    TextureData(const char* p_name, ssgSimpleState* p_tex, tScreenPosition p_pos)
-        : Name(p_name) , Texture(p_tex) , Position(p_pos) { }
+    TextureData(ssgSimpleState* p_tex, tScreenPosition p_pos)
+        : Texture(p_tex) , Position(p_pos) { }
 } tTextureData;
 
 /// @brief Represents the configuration of interventions

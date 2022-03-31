@@ -13,7 +13,7 @@ void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sou
     char path[256];
     for (int i = 0; i < p_interventionCount; i++)
     {
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_EnumParamMap[i], PRM_SECT_SOUND);
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumParamMap[i], PRM_SECT_SOUND);
         if(!GfParmExistsSection(p_xmlHandle, path)) continue;
 
         const char* src = GfParmGetStr(p_xmlHandle, path, PRM_ATTR_SRC, "");
@@ -40,7 +40,7 @@ void InterventionConfig::Initialize() {
 void* InterventionConfig::GetXmlHandle() {
     // Load intervention texture from XML file (unchecked max path size: 256)
     char* path = new char[256];
-    snprintf(path, 256, INTERVENTION_DATA_DIR_FORMAT, GfDataDir());
+    snprintf(path, 256, CONFIG_XML_DIR_FORMAT, GfDataDir());
     return GfParmReadFile(path, GFPARM_RMODE_STD);
 }
 
