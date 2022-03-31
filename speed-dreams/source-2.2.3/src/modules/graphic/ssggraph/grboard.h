@@ -35,9 +35,7 @@ class cGrBoard
     const tCarElt* car_;
 
     int boardFlag;
-    int leaderFlag;
     int debugFlag;
-    int leaderNb;
     int counterFlag;
     int GFlag;
     int dashboardFlag;
@@ -47,11 +45,6 @@ class cGrBoard
     int centerAnchor;
     int rightAnchor;
     int speedoRise;
-    // Scrolling leaderboard variables
-    int iStart;
-    double iTimer;
-    int iStringStart;
-    std::string st;     // This is the line we will display in the top
 
  private:
     void grDispDebug(const tSituation *s, const cGrFrameInfo* frame);
@@ -67,16 +60,11 @@ class cGrBoard
 
     void grDispIndicators(const bool arcade);
 
-    void grDispLeaderBoard(const tSituation *s);
     void grDispCounterBoard2();
-    void grDispLeaderBoardScroll(const tSituation *s);
-    void grDispLeaderBoardScrollLine(const tSituation *s);
     
     void grDispDashboard();
 
     void grDispArcade(const tSituation *s);
-    std::string grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation *s,
-                                            const bool isLeader) const;
 
     bool grGetSplitTime(const tSituation *s, bool gap_inrace,
                         double &time, int *laps_different, float **color);

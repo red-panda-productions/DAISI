@@ -41,17 +41,12 @@
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2
 
-#define LEADERBOARD_SCROLL_TIME       2.0
-#define LEADERBOARD_LINE_SCROLL_RATE  80     // pixels per second
-#define LEADERBOARD_LINE_SCROLL_DELAY 5      // seconds
-
 using std::string;
 
 static const string rgba[4] =
     { GFSCR_ATTR_RED, GFSCR_ATTR_GREEN, GFSCR_ATTR_BLUE, GFSCR_ATTR_ALPHA };
 
 static const int NB_BOARDS = 3;
-static const int NB_LBOARDS = 5;    // # of leaderboard states
 static const int NB_GFLAG = 3;
 static const int NB_DEBUG = 4;
 
@@ -88,11 +83,6 @@ cGrBoard::cGrBoard(int myid) :
     background_color_(NULL)
 {
   id = myid;
-
-  // Scrolling leaderboard variables
-  iStart = 0;
-  iTimer = 0.0;
-  iStringStart = 0;
 }
 
 
@@ -137,8 +127,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
 
   debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, 1);
   boardFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARD, NULL, 2);
-  leaderFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_LEADER, NULL, 1);
-  leaderNb  = (int)GfParmGetNum(grHandle, path, GR_ATT_NBLEADER, NULL, 10);
   counterFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, 1);
   GFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_GGRAPH, NULL, 2);
   dashboardFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DASHBOARD, NULL, 1);
@@ -152,8 +140,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
     snprintf(path, sizeof(path), "%s/%s", GR_SCT_DISPMODE, curCar->_name);
     debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, debugFlag);
     boardFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARD, NULL, boardFlag);
-    leaderFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_LEADER, NULL, leaderFlag);
-    leaderNb  = (int)GfParmGetNum(grHandle, path, GR_ATT_NBLEADER, NULL, leaderNb);
     counterFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, counterFlag);
     GFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_GGRAPH, NULL, GFlag);
     dashboardFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DASHBOARD, NULL, dashboardFlag);
@@ -195,10 +181,6 @@ void cGrBoard::selectBoard(int val)
     case 1:
       counterFlag = (counterFlag + 1) % NB_BOARDS;
       GfParmSetNum(grHandle, path, GR_ATT_COUNTER, (char*)NULL, (tdble)counterFlag);
-      break;
-    case 2:
-      leaderFlag = (leaderFlag + 1) % NB_LBOARDS;
-      GfParmSetNum(grHandle, path, GR_ATT_LEADER, (char*)NULL, (tdble)leaderFlag);
       break;
     case 3:
       debugFlag = (debugFlag + 1) % NB_DEBUG;
@@ -1024,131 +1006,6 @@ void cGrBoard::grDispEngineLeds(int X, int Y, int align, bool bg)
 }  // grDispEngineLeds
 
 
-/**
- * grDispLeaderBoard
- *
- * Displays the leader board (in the lower left corner of the screen)
- * If [drawLaps] is on, writes the lap counter on the top of the list.
- * @param s[in] situation provided by the sim
- */
-void cGrBoard::grDispLeaderBoard(const tSituation *s)
-{
-  double time_left;
-  if (leaderFlag == 4) {
-    // Scrolling line in the top of the screen
-    grDispLeaderBoardScrollLine(s);
-  } else if (leaderFlag == 3 && leaderNb < s->_ncars) {
-    // This mode is only reasonable if there are more drivers
-    // than the leaderboard can display at once.
-    // Scrolling results in the top left corner
-    grDispLeaderBoardScroll(s);
-  } else {
-    // Static leaderboard
-    char buf[BUFSIZE];
-
-    int current = 0;  // Position of the currently displayed car
-    for (int i = 0; i < s->_ncars; ++i) {
-      if (car_ == s->cars[i]) {
-        current = i;
-        break;
-      }
-    }   // for i
-
-    // Coords, limits
-    const int x = leftAnchor + 10;
-    const int x2 = x + 100;
-    const int dxc = 60;
-    const int xr = x2 + dxc;
-
-    const int dy = GfuiFontHeight(GFUI_FONT_SMALL_C);
-    //Max # of lines to display (# of cars in race or max 10 by default)
-    const int maxLines = MIN(leaderNb, s->_ncars);
-    // Display # of laps on top of the list?
-    const int drawLaps = MIN(1, leaderFlag - 1);
-
-    int y = TOP_ANCHOR - 10;
-    int y2 = y - 5 - dy * (maxLines + drawLaps);
-
-    grSetupDrawingArea(x, y, xr + 5, y2);
-    y = y2;
-
-    // Display current car in last line (ie is its position >= 10)?
-    bool drawCurrent = (current >= maxLines) ? true : false;
-
-    // The board is built from bottom up:
-    // driver position #10/current is drawn first,
-    // then from #9 onto #1, then the text 'Laps' if drawLaps requires.
-    for (int j = maxLines; j > 0; --j) {
-      int i;  // index of driver to be displayed
-      if (drawCurrent) {
-        i = current;
-        drawCurrent = 0;
-      } else {
-        i = j - 1;
-      }  // if drawCurrent
-
-      // Set colour of the drivers to that
-      // defined in the drivers' XML file.
-      // Current driver is yellow.
-      float *color = (i == current)
-        ? emphasized_color_ : grCarInfo[s->cars[i]->index].iconColor;    //yellow?
-
-      if (i == current)
-        color = emphasized_color_;
-      else if (i < current)
-        color = ahead_color_;
-      else
-        color = normal_color_;
-
-      // Driver position + short name
-      snprintf(buf, sizeof(buf), "%3d: %s", i + 1, s->cars[i]->_sname);
-      GfuiDrawString(buf, color, GFUI_FONT_SMALL_C, x, y);
-
-      // Display driver time / time behind leader / laps behind leader
-      string sEntry = grGenerateLeaderBoardEntry(s->cars[i], s, (i == 0));
-      if (s->cars[i]->_state & RM_CAR_STATE_DNF
-        || s->cars[i]->_state & RM_CAR_STATE_PIT) {
-        // driver DNF or in pit, show 'out' in red
-        color = danger_color_;
-      }
-      GfuiDrawString(sEntry.c_str(), color, GFUI_FONT_SMALL_C, x2, y, dxc,
-                        GFUI_ALIGN_HR);
-
-      y += dy;  // 'Line feed'
-    }   // for j
-
-    // Write 'Lap X/Y' on top of the leader board
-    if (drawLaps) {
-      if (s->_raceType == RM_TYPE_RACE) {
-        if (s->_totTime > s->currentTime) {
-          GfuiDrawString(" Laps:", emphasized_color_, GFUI_FONT_SMALL_C, x, y);
-          snprintf(buf, sizeof(buf), "%d", MAX(s->cars[0]->_laps-1, 0));
-        } else {
-          GfuiDrawString(" Lap:", emphasized_color_, GFUI_FONT_SMALL_C, x, y);  //yellow
-          snprintf(buf, sizeof(buf), "%d / %d", s->cars[0]->_laps, s->_totLaps);
-        }
-        GfuiDrawString(buf, emphasized_color_, GFUI_FONT_SMALL_C, x2, y, dxc,
-                        GFUI_ALIGN_HR);
-      } else {
-        if (s->_totTime > 0.0f) {
-          time_left = MAX(MIN(s->_totTime, s->_totTime - s->currentTime), 0);
-          GfuiDrawString(" Time left:", emphasized_color_, GFUI_FONT_SMALL_C, x, y);
-          snprintf(buf, sizeof(buf), "%d:%02d:%02d",
-                    (int)floor(time_left / 3600.0f),
-                    (int)floor(time_left/60.0f) % 60,
-                    (int)floor(time_left) % 60);
-        } else {
-          GfuiDrawString(" Lap:", emphasized_color_, GFUI_FONT_SMALL_C, x, y);
-          snprintf(buf, sizeof(buf), "%d / %d", s->cars[0]->_laps, s->_totLaps);
-        }
-        GfuiDrawString(buf, emphasized_color_, GFUI_FONT_SMALL_C, x2, y, dxc,
-                        GFUI_ALIGN_HR);
-      }
-    }   // if drawLaps
-  }   // else
-}   // grDispLeaderBoard
-
-
 /// @brief Middle 'Driver Counters' display with speed/gear meters and Fuel/Damage gauges.
 void cGrBoard::grDispCounterBoard2()
 {
@@ -1527,8 +1384,6 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
       grDispGGraph();
     if (boardFlag)
       grDispCarBoard(s);
-    if (leaderFlag)
-      grDispLeaderBoard(s);
     if (counterFlag)
       grDispCounterBoard2();
     if (dashboardFlag)
@@ -1844,239 +1699,6 @@ void grShutdownBoardCar(void)
   }
   nstate = 0;*/
 }
-
-
-/**
- * grDispLeaderBoardScroll
- *
- * Displays the leaderboard in a vertical scrolled fashion,
- * if there are more than 10 names to display.
- *
- * @param s[in] current situation, provided by the sim
-*/
-void cGrBoard::grDispLeaderBoardScroll(const tSituation *s)
-{
-  // Scrolling
-  if (iTimer == 0 || s->currentTime < iTimer)
-    iTimer = s->currentTime;
-  if (s->currentTime >= iTimer + LEADERBOARD_SCROLL_TIME) {
-    iTimer = s->currentTime;
-    ++iStart;
-    // Limit: number of cars + one separator line
-    iStart = iStart % (s->_ncars + 1);
-  }
-
-  int current = 0;  // Position of the currently displayed car
-  for (int i = 0; i < s->_ncars; ++i) {
-    if (car_ == s->cars[i]) {
-      current = i;
-      break;
-    }
-  }  // for i
-
-  // Coords, limits
-  const int x = leftAnchor + 10;
-  const int x2 = x + 100;
-  static const int dxc = 60;
-
-  const int dy = GfuiFontHeight(GFUI_FONT_SMALL_C);
-  // Max # of lines to display (# of cars in race or max 10 by default)
-  const int maxLines = MIN(leaderNb, s->_ncars);
-  int y = TOP_ANCHOR - 10;
-  int y2 = y - 5 - dy * (maxLines + 1);
-
-  grSetupDrawingArea(x, y, x2 + dxc + 5, y2);
-  y = y2;
-
-  // The board is built from bottom up:
-  // driver position #10/current is drawn first,
-  // then from #9 onto #1, then the text 'Laps' if drawLaps requires.
-  char buf[BUFSIZE];
-  float *color;
-  for (int j = maxLines - 1; j >= 0; j--) {
-    int i = j + iStart;  // index of driver to be displayed
-
-    if (i == s->_ncars) {
-      // print empty line after last car
-    } else {
-      i = i % (s->_ncars + 1);
-
-      // Set colour of the drivers to that
-      // defined in the drivers' XML file.
-      // Current driver is 'emphasized' colour (yellow...)
-      color = (i == current)
-        ? emphasized_color_ : grCarInfo[s->cars[i]->index].iconColor;
-
-      // Driver position + short name
-      snprintf(buf, sizeof(buf), "%3d: %s", i + 1, s->cars[i]->_sname);
-      GfuiDrawString(buf, color, GFUI_FONT_SMALL_C, x, y);
-
-      // Display driver time / time behind leader / laps behind leader
-      string sEntry = grGenerateLeaderBoardEntry(s->cars[i], s, (i == 0));
-      if (s->cars[i]->_state & RM_CAR_STATE_DNF
-        || s->cars[i]->_state & RM_CAR_STATE_PIT) {
-        // driver DNF or in pit, show 'out' in red
-        color = danger_color_;  // red
-      }
-      GfuiDrawString(sEntry.c_str(), color, GFUI_FONT_SMALL_C, x2, y, dxc,
-                        GFUI_ALIGN_HR);
-    }   // else i
-    y += dy;  // 'Line feed'
-  }  // for j
-
-  // Write 'Lap X/Y' on top of the leader board
-  color = normal_color_;    //white
-  if (s->currentTime < s->_totTime) {
-    GfuiDrawString(" Laps:", color, GFUI_FONT_SMALL_C, x, y); //white
-    snprintf(buf, sizeof(buf), "%d", s->cars[0]->_laps);
-  } else {
-    GfuiDrawString(" Lap:", color, GFUI_FONT_SMALL_C, x, y);  //white
-    snprintf(buf, sizeof(buf), "%d / %d", s->cars[0]->_laps, s->_totLaps);
-  }
-  GfuiDrawString(buf, color, GFUI_FONT_SMALL_C, x2, y, dxc, GFUI_ALIGN_HR);   //white
-}   // grDispLeaderBoardScroll
-
-
-/**
- * grDispLeaderBoardScrollLine
- *
- * Scrolls the leaderboard on the bottom line, as seen on TV broadcasts.
- *
- * @param s[in] current situation, provided by the sim
- */
-void cGrBoard::grDispLeaderBoardScrollLine(const tSituation *s)
-{
-  // At first, get the current time and rebuild the ScrollLine text
-  if (iTimer == 0 || s->currentTime < iTimer) {
-    iTimer = s->currentTime;
-    st.clear();
-    /*!The roster holds the driver's position, name and difference
-     * *at the time* the leader starts a new lap.
-     * So it can happen it is somewhat mixed up, it will settle down
-     * in the next lap.
-    */
-
-    std::ostringstream osRoster;
-    // Add the track name as separator, embedded with 3 spaces each side.
-    osRoster << "   " << grTrack->name << "   ";
-    // Add # of laps
-    osRoster << "Lap " << s->cars[0]->race.laps << " | ";
-    for (int i = 0; i < s->_ncars; i++) {
-      // Driver position + name
-      osRoster.width(3);
-      osRoster << (i + 1);
-      osRoster << ": " << s->cars[i]->_cname;
-
-      // Display driver time / time behind leader / laps behind leader
-      string sEntry = grGenerateLeaderBoardEntry(s->cars[i], s, (i == 0));
-
-      // get rid of leading spaces
-      size_t iCut = sEntry.find_first_not_of(' ');
-      if (iCut != string::npos && iCut != 0) {
-        sEntry = sEntry.substr(iCut - 1);
-      }  // if iCut
-      // Add to roster, then separate it from next one
-      osRoster << sEntry << "   ";
-    }   // for i
-
-    st.assign(osRoster.str());
-  }
-
-  int offset = (s->currentTime - iTimer - LEADERBOARD_LINE_SCROLL_DELAY)
-                * LEADERBOARD_LINE_SCROLL_RATE;
-  if (offset < 0)
-    offset = 0;
-
-  int dy = GfuiFontHeight(GFUI_FONT_MEDIUM_C);
-  int dx = GfuiFontWidth(GFUI_FONT_SMALL_C, "W") * st.size();
-
-  // Set up drawing area
-  grSetupDrawingArea(leftAnchor, TOP_ANCHOR, rightAnchor, TOP_ANCHOR - dy);
-
-  // Check if scrolling is completed
-  if (offset > dx + 5)
-    iTimer = 0;
-  else
-    // Display the line
-    GfuiDrawString(st.c_str(), normal_color_, GFUI_FONT_MEDIUM_C, //white
-                    leftAnchor + 5 - offset, TOP_ANCHOR - dy);
-}   // grDispLeaderBoardScrollLine
-
-
-/**
- * name: grGenerateLeaderBoardEntry
- *
- * Generates one leaderboard entry,
- * this time only the time behind/laps behind part.
- * Optimally it would make up the whole string that can be shown
- * in the line, but colour handling and positioning
- * is not available then.
- *
- * @param isLeader
- * @return string
- */
-string cGrBoard::grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation* s,
-                                        const bool isLeader) const
-{
-  char buf[BUFSIZE];
-
-  // Display driver time / time behind leader / laps behind leader
-  if (car->_state & RM_CAR_STATE_DNF)  {
-    snprintf(buf, sizeof(buf), "       out");
-    return buf;
-  }
-
-  if (car->_state & RM_CAR_STATE_PIT) {
-    snprintf(buf, sizeof(buf), "       PIT");
-    return buf;
-  }
-
-  // This is the leader, put out his time
-  if (isLeader) {
-    if (car->_bestLapTime == 0) {
-      snprintf(buf, sizeof(buf), "       --:---");
-    } else {
-      if (s->_raceType == RM_TYPE_RACE || s->_ncars <= 1)
-        grWriteTimeBuf(buf, car->_curTime, 0);
-      else
-        grWriteTimeBuf(buf, car->_bestLapTime, 0);
-    }
-    return buf;
-  }
-
-  // This is not the leader
-  int lapsBehindLeader = car->_lapsBehindLeader;
-
-  if (car->_laps < s->cars[0]->_laps - 1) {
-    // need to do a little math as
-    // car->_lapsBehindLeader is only updated at finish line
-    lapsBehindLeader = s->cars[0]->_laps - car->_laps;
-
-    if (s->cars[0]->_distFromStartLine < car->_distFromStartLine)
-      lapsBehindLeader--;
-  }
-
-  switch (lapsBehindLeader) {
-    case 0:  // Driver in same lap as leader or on first lap
-      if (car->_bestLapTime == 0 || car->_laps < s->cars[0]->_laps) {
-        snprintf(buf, sizeof(buf), "       --:---");
-      } else {
-        grWriteTimeBuf(buf, car->_timeBehindLeader, 1);
-      }
-      break;
-
-    case 1:  // 1 lap behind leader
-      snprintf(buf, sizeof(buf), "+%3d Lap", lapsBehindLeader);
-      break;
-
-    default:  // N laps behind leader
-      snprintf(buf, sizeof(buf), "+%3d Laps", lapsBehindLeader);
-      break;
-  }
-
-  return buf;
-}
-
 
 /**
  * Display the dashboard,
