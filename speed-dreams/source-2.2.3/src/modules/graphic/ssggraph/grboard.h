@@ -56,12 +56,7 @@ private:
     //Dash colour handling
     float *normal_color_;
     float *danger_color_;
-    float *ok_color_;
-    float *error_color_;
-    float *inactive_color_;
     float *emphasized_color_;
-    float *ahead_color_;
-    float *behind_color_;
     float *background_color_;
 
     void ReadDashColor(void *hdle, const std::string &color_name, float **color);

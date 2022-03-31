@@ -57,10 +57,8 @@ static const int DEFAULT_WIDTH = 800;
 
 static const int BUFSIZE = 256;
 
-cGrBoard::cGrBoard(int myid) :
-    normal_color_(NULL), danger_color_(NULL), ok_color_(NULL),
-    error_color_(NULL), inactive_color_(NULL), emphasized_color_(NULL),
-    ahead_color_(NULL), behind_color_(NULL), background_color_(NULL)
+cGrBoard::cGrBoard(int myid) : 
+    normal_color_(NULL), danger_color_(NULL), emphasized_color_(NULL), background_color_(NULL)
 {
   id = myid;
 }
@@ -70,12 +68,7 @@ cGrBoard::~cGrBoard()
 {
   delete [] normal_color_;
   delete [] danger_color_;
-  delete [] ok_color_;
-  delete [] error_color_;
-  delete [] inactive_color_;
   delete [] emphasized_color_;
-  delete [] ahead_color_;
-  delete [] behind_color_;
   delete [] background_color_;
 }
 
@@ -90,12 +83,7 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
 
   ReadDashColor(hdle, GFSCR_ELT_NORMALCLR,      &normal_color_);
   ReadDashColor(hdle, GFSCR_ELT_DANGERCLR,      &danger_color_);
-  ReadDashColor(hdle, GFSCR_ELT_OKCLR,          &ok_color_);
-  ReadDashColor(hdle, GFSCR_ELT_ERRORCLR,       &error_color_);
-  ReadDashColor(hdle, GFSCR_ELT_INACTIVECLR,    &inactive_color_);
   ReadDashColor(hdle, GFSCR_ELT_EMPHASIZEDCLR,  &emphasized_color_);
-  ReadDashColor(hdle, GFSCR_ELT_AHEADCLR,       &ahead_color_);
-  ReadDashColor(hdle, GFSCR_ELT_BEHINDCLR,      &behind_color_);
   ReadDashColor(hdle, GFSCR_ELT_BACKGROUNDCLR,  &background_color_);
 
   GfParmReleaseHandle(hdle);
