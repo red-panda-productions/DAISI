@@ -62,11 +62,6 @@ void swap32(unsigned int *p, unsigned int size)
 #endif
 #endif
 
-GfuiFontClass* GetFont(int p_fontId)
-{
-    return gfuiFont[p_fontId];
-}
-
 void gfuiFreeFonts(void)
 {
 	GfuiFontClass* font;
