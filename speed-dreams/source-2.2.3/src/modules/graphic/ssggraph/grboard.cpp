@@ -1611,7 +1611,7 @@ void LoadInterventionTextures()
     void* xmlHandle = InterventionConfig::GetInstance()->GetXmlHandle();
     for (int i = 0; i < instance->GetInterventionCount(); i++)
     {
-        snprintf(path, sizeof(path), "%s/%d", PRM_SECT_INTERVENTIONS, i);
+        snprintf(path, sizeof(path), "%s/%s", PRM_SECT_INTERVENTIONS, s_EnumParamMap[i]);
         const char* name = GfParmGetStr(xmlHandle, path, PRM_ATTR_NAME, "");
         const char* tex = GfParmGetStr(xmlHandle, path, PRM_ATTR_TEXTURE, "");
         int xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);

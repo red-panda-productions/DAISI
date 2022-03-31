@@ -11,11 +11,17 @@
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS  "Interventions"
 #define PRM_SECT_SOUND          "sound"
-#define PRM_ATTR_NAME           "name"
 #define PRM_ATTR_TEXTURE        "texture"
 #define PRM_ATTR_XPOS           "xpos"
 #define PRM_ATTR_YPOS           "ypos"
 #define PRM_ATTR_SRC            "source"
+
+static std::unordered_map<InterventionAction, const char*> s_EnumParamMap = {
+        { INTERVENTION_ACTION_NONE,       "none"        },
+        { INTERVENTION_ACTION_TURN_LEFT,  "steer left"  },
+        { INTERVENTION_ACTION_TURN_RIGHT, "steer right" },
+        { INTERVENTION_ACTION_BRAKE,      "brake"       }
+};
 
 /// @brief Represents a position on screen
 typedef struct ScreenPosition 
