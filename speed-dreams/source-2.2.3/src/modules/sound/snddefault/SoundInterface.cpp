@@ -87,6 +87,9 @@ SoundInterface::SoundInterface(float sampling_rate, int n_channels)
 	
 	global_gain = 1.0f;
 	silent = false;
+
+    // SIMULATED DRIVING ASSISTANCE
+    InterventionVolume = 1.0f;
 }
 
 void SoundInterface::sortSingleQueue (CarSoundData** car_sound_data, QueueSoundMap* smap, int n_cars)
@@ -216,6 +219,22 @@ void SoundInterface::setInterventionSound(InterventionAction p_soundEvent, const
     intervention_sounds[p_soundEvent] = sound;
 }
 
+// SIMULATED DRIVING ASSISTANCE
+/// @brief  Retrieves the volume of the intervention sounds
+/// @return The volume
+float SoundInterface::GetInterventionVolume() const
+{
+    return silent ? 0 : InterventionVolume;
+}
+
+// SIMULATED DRIVING ASSISTANCE
+/// @brief        Sets and clamps the volume of the interventions
+/// @param volume The raw volume to set
+void SoundInterface::SetInterventionVolume(float volume)
+{
+    InterventionVolume = Clamp(volume, 0.0f, 1.0f);
+}
+
 float SoundInterface::getGlobalGain() const
 { 
 	return silent ? 0 : global_gain; 
@@ -238,4 +257,15 @@ void SoundInterface::mute(bool bOn)
 	silent = bOn;
 	
 	GfLogInfo("Sound %s\n", silent ? "paused" : "restored");
+}
+
+// SIMULATED DRIVING ASSISTANCE
+/// @brief      Clamps a number to the given range
+/// @param n    The number
+/// @param low  The lower bound
+/// @param high The upper bound
+/// @return     The clamped number
+float SoundInterface::Clamp(float n, float low, float high)
+{
+    return std::max(low, std::min(n, high));
 }

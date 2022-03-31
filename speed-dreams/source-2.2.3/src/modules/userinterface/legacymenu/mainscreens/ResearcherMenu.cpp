@@ -6,14 +6,14 @@
 
 
 // GUI screen handles
-static void* s_scrHandle = NULL;
-static void* s_nextHandle = NULL;
+static void* s_scrHandle  = nullptr;
+static void* s_nextHandle = nullptr;
 
 // Task
 Task m_task = TASK_NO_TASK;
 
 // Indicators
-bool m_indicators[2] = {false, false};
+tIndicator m_indicators = {false, false};
 
 // InterventionType
 InterventionType m_interventionType;
@@ -22,7 +22,7 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-bool m_pControl[3] = {false, true, true};
+tParticipantControl m_pControl = {false, true, true};
 
 // Max time
 int m_maxTime = 10.0f;
@@ -33,29 +33,7 @@ char m_userId[32];
 int  m_userIdControl;
 
 /// @brief Sets the defaults values
-static void OnActivate(void* /* dummy */)
-{
-    // Set standard Task
-    m_task = TASK_NO_TASK;
-
-    // Set standard interventionType
-    m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-
-    // Set standard max time
-    char buf[32];
-    sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
-
-    // Create random userId
-    std::random_device rd;
-    static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<int> distribution(1, 999999999);
-    sprintf(m_userId, "%d", distribution(generator));
-
-    // Set default userId
-    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
-}
-
+static void OnActivate(void* /* dummy */) { }
 
 /// @brief        Sets the task to lane keeping
 /// @param p_info Information on the checkbox
@@ -89,13 +67,13 @@ static void SelectSpeedControl(tCheckBoxInfo* p_info)
 /// @param p_info Information on the checkbox
 static void SelectAuditory(tCheckBoxInfo* p_info)
 {
-    m_indicators[INDICATOR_AUDITORY] = p_info->bChecked;
+    m_indicators.Auditory = p_info->bChecked;
 }
 /// @brief        Enables/disables the visual indication for interventions
 /// @param p_info Information on the checkbox
 static void SelectVisual(tCheckBoxInfo* p_info)
 {
-    m_indicators[INDICATOR_VISUAL] = p_info->bChecked;
+    m_indicators.Visual = p_info->bChecked;
 }
 /// @brief        Sets the interventionType to no signals
 /// @param p_info Information on the checkbox
@@ -146,19 +124,19 @@ static void SelectEnvironmentHighway(tCheckBoxInfo* p_info)
 /// @param p_info Information on the checkbox
 static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
 {
-    m_pControl[PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF] = p_info->bChecked;
+    m_pControl.ControlInterventionToggle = p_info->bChecked;
 }
 /// @brief        Enables/disables the possibility for participants to control gas
 /// @param p_info Information on the checkbox
 static void SelectControlGas(tCheckBoxInfo* p_info)
 {
-    m_pControl[PARTICIPANT_CONTROL_GAS] = p_info->bChecked;
+    m_pControl.ControlGas = p_info->bChecked;
 }
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
 static void SelectControlSteering(tCheckBoxInfo* p_info)
 {
-    m_pControl[PARTICIPANT_CONTROL_STEERING] = p_info->bChecked;
+    m_pControl.ControlSteering = p_info->bChecked;
 }
 
 /// @brief Handle input in the max time textbox
@@ -202,7 +180,7 @@ static void SaveSettings(void* /* dummy */)
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
-    // TODO: Set Participant control (bool*)
+    // TODO: Set Participant control (tParticipantControl)
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
@@ -233,7 +211,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAuditory);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectVisual);
 
-    // Types checkboxes controls
+    // InterventionType checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeNoSignals", NULL, SelectTypeNoSignals);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeOnlySignals", NULL, SelectTypeOnlySignals);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeSharedControl", NULL, SelectTypeSharedControl);
@@ -260,6 +238,26 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
+
+    // Set standard Task
+    m_task = TASK_NO_TASK;
+
+    // Set standard interventionType
+    m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
+
+    // Set standard max time
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
+
+    // Create random userId
+    std::random_device rd;
+    static std::default_random_engine generator(rd());
+    std::uniform_int_distribution<int> distribution(1, 999999999);
+    sprintf(m_userId, "%d", distribution(generator));
+
+    // Set default userId
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 
     return s_scrHandle;
 }

@@ -10,7 +10,7 @@
     template void DecisionMaker<type1,type2>::Initialize(DriveSituation& p_initialSituation,DriveSituation* p_testSituations, int p_testAmount);\
     template bool DecisionMaker<type1,type2>::Decide(DriveSituation& p_driveSituation);\
     template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
-    template void DecisionMaker<type1,type2>::SetDataCollectionSettings(bool* p_dataSetting);\
+    template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
@@ -60,7 +60,7 @@ void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 /// @brief         Changes the settings of how decisions should be made
 /// @param  p_type The new type of interventions
 template<typename SocketBlackBox, typename SDAConfig>
-void TEMP_DECISIONMAKER::SetDataCollectionSettings(bool* p_dataSetting)
+void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     Config.SetDataCollectionSettings(p_dataSetting);
 }
