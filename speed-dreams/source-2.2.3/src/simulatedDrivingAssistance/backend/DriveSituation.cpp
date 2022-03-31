@@ -15,7 +15,7 @@ DriveSituation::DriveSituation() :
 /// @param  p_environmentInfo The info of the environment
 /// @param  p_carInfo		  The info of the car
 /// @param  p_playerInfo      The info of the player
-/// @param  p_currentTime     The current time of the game
+/// @param  p_tickCount       The current time of the game in ticks
 DriveSituation::DriveSituation(EnvironmentInfo p_environmentInfo, CarInfo p_carInfo, PlayerInfo p_playerInfo, unsigned long p_tickCount) :
 	m_environmentInfo(p_environmentInfo),
 	m_carInfo(p_carInfo),
