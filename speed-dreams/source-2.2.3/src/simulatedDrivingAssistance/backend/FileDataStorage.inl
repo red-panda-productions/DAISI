@@ -23,14 +23,14 @@ void WriteEnvironmentHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "Rain");
 }
 /// @brief Write data about the current environment to the file.
-/// @tparam EnvironmentInfo Type of Environment Info to use, should contain the proper definitions.
+/// @tparam BlackBoxData Type of Environment Info to use, should contain the proper definitions.
 /// @param p_outputStream The stream to write data to.
-/// @param p_envInfo The current environment information.
-template<class EnvironmentInfo>
-void WriteEnvironmentData(std::ostream& p_outputStream, EnvironmentInfo& p_envInfo) {
-    WRITE_VAR(p_outputStream, p_envInfo.TimeOfDay());
-    WRITE_VAR(p_outputStream, p_envInfo.Clouds());
-    WRITE_VAR(p_outputStream, p_envInfo.Rain());
+/// @param p_data          The current data information.
+template<class BlackBoxData>
+void WriteEnvironmentData(std::ostream& p_outputStream, BlackBoxData& p_data) {
+    WRITE_VAR(p_outputStream, 0); // are set in the track not in the black box data
+    WRITE_VAR(p_outputStream, 0);
+    WRITE_VAR(p_outputStream, 0);
 }
 /// @brief Write headers for the car data in the same order as actual data will be written
 /// @param p_outputStream stream to write headers to
@@ -41,15 +41,15 @@ inline void WriteCarHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "Offroad");
 }
 /// @brief Write data about the current car status to the file.
-/// @tparam CarInfo Type of Car Info to use, should contain the proper definitions.
+/// @tparam BlackBoxData Type of Car Info to use, should contain the proper definitions.
 /// @param p_outputStream The stream to write data to.
-/// @param p_carInfo The current car status information.
-template<class CarInfo>
-void WriteCarData(std::ostream& p_outputStream, CarInfo& p_carInfo) {
-    WRITE_VAR(p_outputStream, p_carInfo.Speed());
-    WRITE_VAR(p_outputStream, p_carInfo.Gear());
-    WRITE_VAR(p_outputStream, p_carInfo.Headlights());
-    WRITE_VAR(p_outputStream, p_carInfo.TrackLocalPosition()->Offroad());
+/// @param p_data The current car status information.
+template<class BlackBoxData>
+void WriteCarData(std::ostream& p_outputStream, BlackBoxData& p_data) {
+    WRITE_VAR(p_outputStream, p_data.Car.pub.DynGC.vel.x * 3.6f);
+    WRITE_VAR(p_outputStream, p_data.Car.priv.gear);
+    WRITE_VAR(p_outputStream, false);
+    WRITE_VAR(p_outputStream, false);
 }
 /// @brief Write headers for the player data in the same order as actual data will be written
 /// @param p_outputStream stream to write headers to
@@ -60,23 +60,23 @@ inline void WritePlayerHeaders(std::ostream& p_outputStream) {
     WRITE_STRING_LIT(p_outputStream, "SteerCmd");
 }
 /// @brief Write data about the current player control status to the file.
-/// @tparam PlayerInfo Type of Player Info to use, should contain the proper definitions.
+/// @tparam BlackBoxData Type of Player Info to use, should contain the proper definitions.
 /// @param p_outputStream The stream to write data to.
-/// @param p_playerInfo The current player control information.
-template<class PlayerInfo>
-void WritePlayerData(std::ostream& p_outputStream, PlayerInfo& p_playerInfo) {
-    WRITE_VAR(p_outputStream, p_playerInfo.AccelCmd());
-    WRITE_VAR(p_outputStream, p_playerInfo.BrakeCmd());
-    WRITE_VAR(p_outputStream, p_playerInfo.ClutchCmd());
-    WRITE_VAR(p_outputStream, p_playerInfo.SteerCmd());
+/// @param p_data         The current player control information.
+template<class BlackBoxData>
+void WritePlayerData(std::ostream& p_outputStream, BlackBoxData& p_data) {
+    WRITE_VAR(p_outputStream, p_data.Car.ctrl.accelCmd);
+    WRITE_VAR(p_outputStream, p_data.Car.ctrl.brakeCmd);
+    WRITE_VAR(p_outputStream, p_data.Car.ctrl.clutchCmd);
+    WRITE_VAR(p_outputStream, p_data.Car.ctrl.steer);
 }
 
 /// @brief Initialise the file data storage.
 /// End result: a file is created at the given filepath, and initial data is written to the file.
 /// @param p_fileName Path of the file to save.
 /// @param p_userId User ID of the current player.
-template<class DriveSituation>
-void FileDataStorage<DriveSituation>::Initialise(const std::string& p_fileName, const std::string& p_userId) {
+template<class BlackBoxData>
+void FileDataStorage<BlackBoxData>::Initialise(const std::string& p_fileName, const std::string& p_userId) {
     m_outputStream.open(p_fileName);
     WRITE_STRING_VAR(m_outputStream, p_userId);
 
@@ -99,25 +99,25 @@ void FileDataStorage<DriveSituation>::Initialise(const std::string& p_fileName, 
 
 /// @brief Shutdown the file data storage.
 /// End result: any possible final data is written and the file is released.
-template<class DriveSituation>
-void FileDataStorage<DriveSituation>::Shutdown() {
+template<class BlackBoxData>
+void FileDataStorage<BlackBoxData>::Shutdown() {
     m_outputStream.close();
 }
 /// @brief Writes information about the current driving situation to the current file based on settings.
-/// @param p_situation The current driving situation to write data about.
+/// @param p_data The current driving situation to write data about.
 /// @param p_timestamp The current timestamp of the situation.
-template<class DriveSituation>
-void FileDataStorage<DriveSituation>::Save(DriveSituation& p_situation, int p_timestamp) {
+template<class BlackBoxData>
+void FileDataStorage<BlackBoxData>::Save(BlackBoxData& p_data, int p_timestamp) {
     WRITE_VAR(m_outputStream, p_timestamp);
 
     if (m_saveSettings[DATA_TO_STORE_ENVIRONMENT_DATA]) {
-        WriteEnvironmentData(m_outputStream, *p_situation.GetEnvironmentInfo());
+        WriteEnvironmentData(m_outputStream, p_data);
     }
     if (m_saveSettings[DATA_TO_STORE_CAR_DATA]) {
-        WriteCarData(m_outputStream, *p_situation.GetCarInfo());
+        WriteCarData(m_outputStream, p_data);
     }
     if (m_saveSettings[DATA_TO_STORE_HUMAN_DATA]) {
-        WritePlayerData(m_outputStream, *p_situation.GetPlayerInfo());
+        WritePlayerData(m_outputStream, p_data);
     }
     if (m_saveSettings[DATA_TO_STORE_INTERVENTION_DATA]) {
         // TODO: write intervention data here

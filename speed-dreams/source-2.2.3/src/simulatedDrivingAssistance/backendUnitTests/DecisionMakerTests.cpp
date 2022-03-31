@@ -4,8 +4,9 @@
 #include "mocks/SocketBlackBoxMock.h"
 #include "mocks/InterventionExecutorMock.h"
 #include "mocks/ConfigMock.h"
-#include "DriveSituation.h"
 #include "TestUtils.h"
+#include "car.h"
+#include "raceman.h"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock>
 
@@ -15,16 +16,18 @@ void DecisionTest(bool p_isDecision)
 {
 	TDecisionMaker decisionMaker;
 	decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
-	DriveSituation driveSituation;
+	
+	tCarElt car; // need data
+	tSituation situation;
 	
 	decisionMaker.m_blackBox.IsDecision = p_isDecision;
 
 	if(!p_isDecision)
 	{
-		ASSERT_FALSE(decisionMaker.Decide(driveSituation));
+		ASSERT_FALSE(decisionMaker.Decide(&car,&situation,0));
 		return;
 	}
-	ASSERT_TRUE(decisionMaker.Decide(driveSituation));
+	ASSERT_TRUE(decisionMaker.Decide(&car, &situation, 0));
 	InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.m_interventionExecutor);
 	ASSERT_FALSE(mock == NULL);
 	ASSERT_EQ(mock->m_decisionCount, DECISIONS_COUNT);
