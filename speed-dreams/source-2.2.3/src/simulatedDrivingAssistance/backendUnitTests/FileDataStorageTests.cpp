@@ -12,8 +12,9 @@ CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(BlackBoxDataMock)
 TEST(FileDataStorageTests, NoStorageTimestampZero)
 {
     // Initialise class, read+write no values
-    bool params[5] = {false, false, false, false, false};
-    FileDataStorage<BlackBoxDataMock> fileDataStorage = FileDataStorage<BlackBoxDataMock>(params);
+    DataToStore params = {false, false, false, false, false};
+    FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
+
 
     // Write a file with user id, save timestamp 0, and shut down
     fileDataStorage.Initialise(TEST_FILE_PATH, "player1");
@@ -40,8 +41,8 @@ TEST(FileDataStorageTests, NoStorageTimestampZero)
 /// @param p_storeMeta Whether to save metadata
 void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool p_storeIntervention, bool p_storeMeta) {
     Random random;
-    bool params[5] = {p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
-    FileDataStorage<BlackBoxDataMock> fileDataStorage = FileDataStorage<BlackBoxDataMock>(params);
+    tDataToStore params = { p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
+    FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
 
     // Create a string to save all intended random data to
     std::stringstream expected;

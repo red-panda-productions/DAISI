@@ -19,7 +19,7 @@ public:
     bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);
 
     void ChangeSettings(InterventionType p_type);
-    void SetDataCollectionSettings(bool* p_dataSetting);
+    void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
     InterventionExecutor* m_interventionExecutor;
     SocketBlackBox m_blackBox;

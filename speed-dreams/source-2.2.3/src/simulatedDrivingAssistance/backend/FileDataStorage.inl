@@ -80,19 +80,19 @@ void FileDataStorage<BlackBoxData>::Initialise(const std::string& p_fileName, co
     m_outputStream.open(p_fileName);
     WRITE_STRING_VAR(m_outputStream, p_userId);
 
-    if (m_saveSettings[DATA_TO_STORE_ENVIRONMENT_DATA]) {
+    if (m_saveSettings->EnvironmentData) {
         WriteEnvironmentHeaders(m_outputStream);
     }
-    if (m_saveSettings[DATA_TO_STORE_CAR_DATA]) {
+    if (m_saveSettings->CarData) {
         WriteCarHeaders(m_outputStream);
     }
-    if (m_saveSettings[DATA_TO_STORE_HUMAN_DATA]) {
+    if (m_saveSettings->HumanData) {
         WritePlayerHeaders(m_outputStream);
     }
-    if (m_saveSettings[DATA_TO_STORE_INTERVENTION_DATA]) {
+    if (m_saveSettings->InterventionData) {
         // TODO: write intervention headers here
     }
-    if (m_saveSettings[DATA_TO_STORE_META_DATA]) {
+    if (m_saveSettings->MetaData) {
         // TODO: write metadata headers here
     }
 }
@@ -110,19 +110,20 @@ template<class BlackBoxData>
 void FileDataStorage<BlackBoxData>::Save(BlackBoxData& p_data, int p_timestamp) {
     WRITE_VAR(m_outputStream, p_timestamp);
 
-    if (m_saveSettings[DATA_TO_STORE_ENVIRONMENT_DATA]) {
+    if (m_saveSettings->EnvironmentData) {
         WriteEnvironmentData(m_outputStream, p_data);
     }
-    if (m_saveSettings[DATA_TO_STORE_CAR_DATA]) {
+    if (m_saveSettings->CarData) {
         WriteCarData(m_outputStream, p_data);
     }
-    if (m_saveSettings[DATA_TO_STORE_HUMAN_DATA]) {
+    if (m_saveSettings->HumanData) {
         WritePlayerData(m_outputStream, p_data);
+
     }
-    if (m_saveSettings[DATA_TO_STORE_INTERVENTION_DATA]) {
+    if (m_saveSettings->InterventionData) {
         // TODO: write intervention data here
     }
-    if (m_saveSettings[DATA_TO_STORE_META_DATA]) {
+    if (m_saveSettings->MetaData) {
         // TODO: write metadata data here
     }
 }
@@ -130,7 +131,7 @@ void FileDataStorage<BlackBoxData>::Save(BlackBoxData& p_data, int p_timestamp) 
 /// @brief Initialise the temporary data storage
 /// @param p_saveSettings Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
 template<class DriveSituation>
-FileDataStorage<DriveSituation>::FileDataStorage(bool* p_saveSettings) :m_saveSettings(p_saveSettings)
+FileDataStorage<DriveSituation>::FileDataStorage(tDataToStore* p_saveSettings) :m_saveSettings(p_saveSettings)
 {
 
 };

@@ -7,13 +7,13 @@
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template InterventionType Mediator<type>::GetInterventionType(); \
-    template bool Mediator<type>::GetIndicatorSetting(Indicator p_indicator); \
+    template tIndicator Mediator<type>::GetIndicatorSettings(); \
 	template void Mediator<type>::SetTask(Task p_task);\
-	template void Mediator<type>::SetIndicatorSettings(bool* p_indicators);\
+	template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
 	template void Mediator<type>::SetUserId(char* p_userId);\
-	template void Mediator<type>::SetDataCollectionSettings(bool* p_dataSetting);\
+	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
 	template void Mediator<type>::RaceStop();\
@@ -32,7 +32,7 @@ void Mediator<DecisionMaker>::SetTask(Task p_task)
 /// @brief              Sets the settings for indication of interventions
 /// @param p_indicators The Indicator settings
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators)
+void Mediator<DecisionMaker>::SetIndicatorSettings(tIndicator p_indicators)
 {
     m_decisionMaker.Config.SetIndicatorSettings(p_indicators);
 }
@@ -72,7 +72,7 @@ void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 /// @brief               Sets the settings for data collection
 /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
+void Mediator<DecisionMaker>::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
@@ -81,9 +81,9 @@ void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
 /// @param p_indicator Indicator whose setting to get
 /// @return true if the indicator is enabled, false when disabled
 template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::GetIndicatorSetting(Indicator p_indicator)
+tIndicator Mediator<DecisionMaker>::GetIndicatorSettings()
 {
-    return m_decisionMaker.Config.GetIndicatorSettings()[p_indicator];
+    return m_decisionMaker.Config.GetIndicatorSettings();
 }
 
 template<typename DecisionMaker>
