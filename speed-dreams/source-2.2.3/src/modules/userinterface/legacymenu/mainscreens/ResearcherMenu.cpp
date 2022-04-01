@@ -3,6 +3,11 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
 
 
 // GUI screen handles
@@ -177,6 +182,43 @@ static void SaveSettings(void* /* dummy */)
     size_t encryptedUserId = std::hash<std::string>{}(m_userId);
     sprintf(m_userId, "%zu", encryptedUserId);
     mediator->SetUserId(m_userId);
+
+    // Save settings to disk
+    ofstream researcherSettings("researcherSetting.txt");
+
+    // Write to the file
+    researcherSettings << "taskSetting = ";
+    researcherSettings << m_task;
+    researcherSettings << "\nAudioIndicator = ";
+    researcherSettings << m_indicators.Auditory;
+    researcherSettings << "\nVisualIndicator = ";
+    researcherSettings << m_indicators.Visual;
+    researcherSettings << "\nInterventionSettings = ";
+    researcherSettings << m_interventionType;
+    researcherSettings << "\nTrack = ";
+    //researcherSettings << m_track.name;
+    researcherSettings << "\nControlGas = ";
+    researcherSettings << m_pControl.ControlGas;
+    researcherSettings << "\nControlInterventionToggle = ";
+    researcherSettings << m_pControl.ControlInterventionToggle;
+    researcherSettings << "\nControlSteering = ";
+    researcherSettings << m_pControl.ControlSteering;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Close the file
+    researcherSettings.close();
 
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
