@@ -46,8 +46,8 @@ inline void WriteCarHeaders(std::ostream& p_outputStream) {
 /// @param p_data The current car status information.
 template<class BlackBoxData>
 void WriteCarData(std::ostream& p_outputStream, BlackBoxData& p_data) {
-    WRITE_VAR(p_outputStream, p_data.Car.pub.DynGC.vel.x * 3.6f);
-    WRITE_VAR(p_outputStream, p_data.Car.priv.gear);
+    WRITE_VAR(p_outputStream, p_data.Car._speed_x * 3.6f);
+    WRITE_VAR(p_outputStream, p_data.Car._gear);
     WRITE_VAR(p_outputStream, false);
     WRITE_VAR(p_outputStream, false);
 }
