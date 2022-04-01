@@ -97,7 +97,7 @@ void SocketBlackBox<BlackBoxData>::Shutdown()
     m_server.CloseServer();
 }
 
-/// @brief                  Inserts a string of value of variable in vector. Packs this vector to msgpack.
+/// @brief                  Inserts a string of value of a pointer into a msgpack message
 /// @param p_sbuffer        Buffer to pack data in
 /// @param p_BlackBoxData Drive situation to serialize
 template <class BlackBoxData>
