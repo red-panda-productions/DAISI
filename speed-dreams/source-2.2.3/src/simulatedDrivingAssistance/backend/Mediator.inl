@@ -98,7 +98,8 @@ template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     m_track = p_track;
-    m_decisionMaker.Initialize(p_situation->cars[0],p_situation);
+    tCarElt car;
+    m_decisionMaker.Initialize(&car, p_situation);
 }
 
 template<typename DecisionMaker>
