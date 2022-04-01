@@ -1597,33 +1597,50 @@ void cGrBoard::grDispIntervention()
 
     // Unbind the texture and pop the translated matrix of the stack.
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
+    GfuiDrawString(textData.Text, normal_color_, GFUI_FONT_LARGE_C, textData.Position.X, textData.Position.Y);
+
     glPopMatrix();
 }
 
-/// @brief Loads the intervention textures from XML into the InterventionConfig singleton class.
+/// @brief Loads the intervention textures and texts from XML into the InterventionConfig singleton class.
 ///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
-void LoadInterventionTextures()
+void LoadInterventionData()
 {
-    InterventionConfig* instance = InterventionConfig::GetInstance();
-    tTextureData* textures = new TextureData[instance->GetInterventionCount()];
+    InterventionConfig* config = InterventionConfig::GetInstance();
+    unsigned int interventionCnt = config->GetInterventionCount();
+
+    tTextureData* textures = new TextureData[interventionCnt];
+    tTextData* texts = new TextData[interventionCnt];
 
     char path[256];
-    void* xmlHandle = InterventionConfig::GetInstance()->GetXmlHandle();
-    for (int i = 0; i < instance->GetInterventionCount(); i++)
+    void* xmlHandle = config->GetXmlHandle();
+    for (int i = 0; i < interventionCnt; i++)
     {
-        snprintf(path, sizeof(path), "%s/%d", PRM_SECT_INTERVENTIONS, i);
-        const char* name = GfParmGetStr(xmlHandle, path, PRM_ATTR_NAME, "");
-        const char* tex = GfParmGetStr(xmlHandle, path, PRM_ATTR_TEXTURE, "");
-        int xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
-        int yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
+        int xPos, yPos;
+
+        // Textures
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
+        const char* source = GfParmGetStr(xmlHandle, path, PRM_ATTR_SRC, "");
+        xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
+        yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
 
         // IMPORTANT: The texture should not be bigger than 256x256 due to buffer sizes.
-        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(tex);
+        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(source);
+        textures[i] = TextureData(texture, { xPos, yPos });
 
-        textures[i] = TextureData(name, texture, { xPos, yPos });
+        // Texts
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
+        const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_CONTENT, "");
+        xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
+        yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
+
+        texts[i] = { txt, { xPos, yPos } };
     }
 
-    InterventionConfig::GetInstance()->SetTextures(textures);
+    config->SetTextures(textures);
+    config->SetTexts(texts);
 }
 
 
@@ -1695,7 +1712,7 @@ void grInitBoardCar(tCarElt *car)
   // Add the data/intervention folder to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
 
-  LoadInterventionTextures();
+  LoadInterventionData();
 
 
   /* Tachometer --------------------------------------------------------- */
