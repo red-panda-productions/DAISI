@@ -31,6 +31,8 @@ typedef unsigned int InterventionAction;
 #define INTERVENTION_ACTION_TURN_RIGHT  2
 #define INTERVENTION_ACTION_BRAKE       3
 
+#define NUM_INTERVENTION_ACTION         4
+
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl
 {
