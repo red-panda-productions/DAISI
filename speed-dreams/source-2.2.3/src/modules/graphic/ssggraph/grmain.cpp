@@ -729,7 +729,6 @@ shutdownCars(void)
 
     if (grNbCars)
     {
-        grShutdownBoardCar();
         grShutdownSkidmarks();
         grShutdownSmoke();
         grShutdownCarlight();
