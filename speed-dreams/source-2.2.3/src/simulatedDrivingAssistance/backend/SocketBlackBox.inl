@@ -34,6 +34,7 @@ SocketBlackBox<BlackBoxData>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server
 template <class BlackBoxData>
 void SocketBlackBox<BlackBoxData>::Initialize()
 {
+    m_server.Initialize();
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;

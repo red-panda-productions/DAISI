@@ -16,6 +16,7 @@
 	t.detach();\
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));\
 	ClientSocket client;\
+	client.Initialize();\
 	client.SendData("AI ACTIVE", 9);\
 	char buffer[TEST_BUFFER_SIZE];\
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);\
