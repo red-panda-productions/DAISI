@@ -65,10 +65,10 @@ inline void WritePlayerHeaders(std::ostream& p_outputStream) {
 /// @param p_data         The current player control information.
 template<class BlackBoxData>
 void WritePlayerData(std::ostream& p_outputStream, BlackBoxData& p_data) {
-    WRITE_VAR(p_outputStream, p_data.Car.ctrl.accelCmd);
-    WRITE_VAR(p_outputStream, p_data.Car.ctrl.brakeCmd);
-    WRITE_VAR(p_outputStream, p_data.Car.ctrl.clutchCmd);
-    WRITE_VAR(p_outputStream, p_data.Car.ctrl.steer);
+    WRITE_VAR(p_outputStream, p_data.Car._accelCmd);
+    WRITE_VAR(p_outputStream, p_data.Car._brakeCmd);
+    WRITE_VAR(p_outputStream, p_data.Car._clutchCmd);
+    WRITE_VAR(p_outputStream, p_data.Car._steerCmd);
 }
 
 /// @brief Initialise the file data storage.
