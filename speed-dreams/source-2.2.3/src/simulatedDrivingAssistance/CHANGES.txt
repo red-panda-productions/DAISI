@@ -115,12 +115,13 @@ Changed:
             ssggraph/
                 CMakeLists.txt added connection to frontend module
                 grboard.cpp
-                    added   grDispIntervention()
+                    added   DispIntervention()
                     added   LoadInterventionTextures()
                     changed grInitBoardCar() 
                     changed refreshBoard()
+
                 grboard.h
-                    added grDispIntervention()  
+                    added   DispIntervention()  
 
 
   data/

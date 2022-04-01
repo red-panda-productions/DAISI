@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
- // SIMULATED DRIVING ASSISTANCE: UPDATED FILE
+// SIMULATED DRIVING ASSISTANCE: removed functions of unused hud elements (see sda/CHANGES.TXT)
 
 #include "grboard.h"
 
@@ -410,7 +410,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
     }
 
     // For now: display an intervention every frame.
-    grDispIntervention();
+    DispIntervention();
 
  
     if (debugFlag)
@@ -419,8 +419,9 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
         grDispCounterBoard2();
 }
 
+// SIMULATED DIRIVING ASSISTANCE
 /// @brief Displays the currently active intervention in InterventionConfig
-void cGrBoard::grDispIntervention() 
+void cGrBoard::DispIntervention() 
 {
     tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
     if (!textureData.Texture) return;
@@ -463,6 +464,7 @@ void cGrBoard::grDispIntervention()
     glPopMatrix();
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief Loads the intervention textures and texts from XML into the InterventionConfig singleton class.
 ///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
 void LoadInterventionData()
