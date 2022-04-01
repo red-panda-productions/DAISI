@@ -19,11 +19,8 @@
 #define PRM_ATTR_SRC            "source"
 #define PRM_ATTR_CONTENT        "content"
 
-static std::unordered_map<InterventionAction, const char*> s_actionEnumParamMap = {
-    { INTERVENTION_ACTION_NONE,       "none"        },
-    { INTERVENTION_ACTION_TURN_LEFT,  "steer left"  },
-    { INTERVENTION_ACTION_TURN_RIGHT, "steer right" },
-    { INTERVENTION_ACTION_BRAKE,      "brake"       }
+static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
+    "none", "steer left", "steer right", "brake"
 };
 
 /// @brief Represents a position on screen

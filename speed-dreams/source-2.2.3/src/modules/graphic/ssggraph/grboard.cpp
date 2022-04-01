@@ -1609,17 +1609,19 @@ void cGrBoard::grDispIntervention()
 void LoadInterventionData()
 {
     InterventionConfig* config = InterventionConfig::GetInstance();
-    tTextureData* textures = new TextureData[config->GetInterventionCount()];
-    tTextData* texts = new TextData[config->GetInterventionCount()];
+    unsigned int interventionCnt = config->GetInterventionCount();
+
+    tTextureData* textures = new TextureData[interventionCnt];
+    tTextData* texts = new TextData[interventionCnt];
 
     char path[256];
     void* xmlHandle = config->GetXmlHandle();
-    for (int i = 0; i < config->GetInterventionCount(); i++)
+    for (int i = 0; i < interventionCnt; i++)
     {
         int xPos, yPos;
 
         // Textures
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumParamMap[i], PRM_SECT_TEXTURE);
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
         const char* source = GfParmGetStr(xmlHandle, path, PRM_ATTR_SRC, "");
         xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
         yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
@@ -1629,7 +1631,7 @@ void LoadInterventionData()
         textures[i] = TextureData(texture, { xPos, yPos });
 
         // Texts
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumParamMap[i], PRM_SECT_TEXT);
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
         const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_CONTENT, "");
         xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
         yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
