@@ -486,10 +486,6 @@ void LoadInterventionTextures()
 }
 
 
-// TODO(?): clean solution for cleanup.
-static ssgSimpleState* cleanup[1024];
-static int nstate = 0;
-
 void grInitBoardCar(tCarElt *car)
 {
   static const int nMaxTexPathSize = 4096;
@@ -568,9 +564,6 @@ void grInitBoardCar(tCarElt *car)
   if (curInst->texture == 0)
     curInst->texture = (ssgSimpleState*)grSsgLoadTexState("rpm8000.rgb");
 
-  cleanup[nstate] = curInst->texture;
-  nstate++;
-
   /* Load the instrument placement */
   tdble xSz = GfParmGetNum(handle, SECT_GROBJECTS, PRM_TACHO_XSZ, (char*)NULL, 128);
   tdble ySz = GfParmGetNum(handle, SECT_GROBJECTS, PRM_TACHO_YSZ, (char*)NULL, 128);
@@ -645,9 +638,6 @@ void grInitBoardCar(tCarElt *car)
 
   free(grFilePath);
 
-  cleanup[nstate] = curInst->texture;
-  nstate++;
-
   /* Load the instrument placement */
   xSz = GfParmGetNum(handle, SECT_GROBJECTS, PRM_SPEEDO_XSZ, (char*)NULL, 128);
   ySz = GfParmGetNum(handle, SECT_GROBJECTS, PRM_SPEEDO_YSZ, (char*)NULL, 128);
@@ -712,21 +702,6 @@ void grInitBoardCar(tCarElt *car)
   glEnd();
   glEndList();
 }   // grInitBoardCar
-
-
-void grShutdownBoardCar(void)
-{
-  /*int i;
-  for (i = 0; i < nstate; i++) {
-    printf("%d\n", i);
-    if (cleanup[i]->getRef() > 0) {
-      ssgDeRefDelete(cleanup[i]);
-    } else {
-      delete cleanup[i];
-    }
-  }
-  nstate = 0;*/
-}
 
 void cGrBoard::ReadDashColor(void *hdle, const string &color_name, float **color) {
   char buf[1024];
