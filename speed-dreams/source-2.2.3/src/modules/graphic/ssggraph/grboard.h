@@ -50,7 +50,7 @@ class cGrBoard
 
     void grDispCounterBoard2();
 
-    void grDispIntervention();
+    void DispIntervention();
 
 private:
     //Dash colour handling
