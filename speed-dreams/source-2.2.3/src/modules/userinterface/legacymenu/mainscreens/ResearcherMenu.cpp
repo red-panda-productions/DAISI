@@ -1,6 +1,6 @@
+#include <guimenu.h>
 #include <tgfclient.h>
 #include <random>
-#include "guimenu.h"
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -173,48 +173,47 @@ static void SaveSettingsToDisk() {
     char buf[512];
     sprintf(buf, "%s%s", GfDataDir(), strPath.c_str());
     void* param = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
-    
 
-    GfParmSetStr(param, "CheckboxTaskLaneKeeping", "checked", "no");
-    GfParmSetStr(param, "CheckboxTaskSpeedControl", "checked", "no");
+    GfParmSetStr(param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "no");
+    GfParmSetStr(param, "dynamic controls/CheckboxTaskSpeedControl", "checked", "no");
     switch (m_task)
     {
         case 1:
-            GfParmSetStr(param, "CheckboxTaskLaneKeeping", "checked", "yes");
+            GfParmSetStr(param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "yes");
             break;
         case 2:
-            GfParmSetStr(param, "CheckboxTaskSpeedControl", "checked", "yes");
+            GfParmSetStr(param, "dynamic controls/CheckboxTaskSpeedControl", "checked", "yes");
             break;
     }
     const char* audioSetting = m_indicators.Auditory ? "yes" : "no";
     GfParmSetStr(param, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
     const char* visualSetting = m_indicators.Visual ? "yes" : "no";
     GfParmSetStr(param, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
-    GfParmSetStr(param, "CheckboxTypeNoSignals", "checked", "no");
-    GfParmSetStr(param, "CheckboxTypeOnlySignals", "checked", "no");
-    GfParmSetStr(param, "CheckboxTypeSharedControl", "checked", "no");
-    GfParmSetStr(param, "CheckboxTypeCompleteTakeover", "checked", "no");
-    switch (m_task)
+    GfParmSetStr(param, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
+    GfParmSetStr(param, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
+    GfParmSetStr(param, "dynamic controls/CheckboxTypeSharedControl", "checked", "no");
+    GfParmSetStr(param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "no");
+    switch (m_interventionType)
     {
         case 0:
-            GfParmSetStr(param, "CheckboxTypeNoSignals", "checked", "yes");
+            GfParmSetStr(param, "dynamic controls/CheckboxTypeNoSignals", "checked", "yes");
             break;
         case 1:
-            GfParmSetStr(param, "CheckboxTypeOnlySignals", "checked", "yes");
+            GfParmSetStr(param, "dynamic controls/CheckboxTypeOnlySignals", "checked", "yes");
             break;
         case 3:
-            GfParmSetStr(param, "CheckboxTypeSharedControl", "checked", "yes");
+            GfParmSetStr(param, "dynamic controls/CheckboxTypeSharedControl", "checked", "yes");
             break;
         case 4:
-            GfParmSetStr(param, "CheckboxTypeCompleteTakeover", "checked", "yes");
+            GfParmSetStr(param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "yes");
             break;
     }
     const char* controlGas = m_pControl.ControlGas ? "yes" : "no";
-    GfParmSetStr(param, "CheckboxPControlGas", "checked", controlGas);
+    GfParmSetStr(param, "dynamic controls/CheckboxPControlGas", "checked", controlGas);
     const char* interventionToggle = m_pControl.ControlInterventionToggle ? "yes" : "no";
-    GfParmSetStr(param, "CheckboxPControlInterventionToggle", "checked", interventionToggle);
+    GfParmSetStr(param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", interventionToggle);
     const char* controlSteering = m_pControl.ControlSteering ? "yes" : "no";
-    GfParmSetStr(param, "CheckboxPControlSteering", "checked", controlSteering);
+    GfParmSetStr(param, "dynamic controls/CheckboxPControlSteering", "checked", controlSteering);
 
     GfParmWriteFile(NULL, param, "ResearcherMenu");
 }
@@ -242,19 +241,26 @@ static void SaveSettings(void* /* dummy */)
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
 }
+bool yesOrNoToBool(string str) {
+    if (str == "yes") {
+        return true;
+    }
+    if (str == "no") {
+        return false;
+    }
+}
 
-
-void initializeSettings(void* param) {
-    bool checkboxTaskLaneKeeping = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL));
-    bool checkboxTaskSpeedControl = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL));
-    bool CheckboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL));
-    bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL));
-    bool checkboxTypeNoSignals = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL));
-    bool CheckboxTypeOnlySignals = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL));
-    bool checkboxTypeSharedControl = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL));
-    bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxPControlGas", "checked", NULL));
-    bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL));
-    bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxPControlSteering", "checked", NULL));
+void initializeSettings(void* p_param) {
+    bool checkboxTaskLaneKeeping = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL));
+    bool checkboxTaskSpeedControl = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL));
+    bool CheckboxIndicatorAuditory = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL));
+    bool checkboxIndicatorVisual = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL));
+    bool checkboxTypeNoSignals = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL));
+    bool CheckboxTypeOnlySignals = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL));
+    bool checkboxTypeSharedControl = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL));
+    bool checkboxPControlGas = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL));
+    bool checkboxInterventionToggle = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL));
+    bool checkboxPControlSteering = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL));
     
     if (!checkboxTaskLaneKeeping) {
         m_task = checkboxTaskSpeedControl ? TASK_SPEED_CONTROL : TASK_NO_TASK;
@@ -281,13 +287,6 @@ void initializeSettings(void* param) {
         return;
     }
     m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
-
-
-
-
-
-
-
 }
 
 /// @brief            Initializes the researcher menu
@@ -343,18 +342,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
-
-    //if (exists_test("researcherSettings.txt"))
-    //{
-    //    initializeSettingsFromFile();
-    //    return s_scrHandle;
-    //}
-
-    // Set standard Task
-    m_task = TASK_NO_TASK;
-
-    // Set standard interventionType
-    m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
 
     // Set standard max time
     char buf[32];
