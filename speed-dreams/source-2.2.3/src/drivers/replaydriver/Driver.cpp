@@ -1,12 +1,13 @@
 #include "Driver.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
+#include <tgf.h>
 
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
 /// @param p_index The driver's index (starting from 1)
 /// @param p_name The driver's name
-Driver::Driver(int p_index, const char* p_name) : m_index(p_index), m_humanDriver(p_name) {
+Driver::Driver(int p_index, const char* p_name) : m_index(p_index) {
     //m_humanDriver.count_drivers();
     //m_humanDriver.init_context(p_index);
     // Pretend like the module is just initializing
@@ -32,6 +33,8 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     //m_humanDriver.new_race(m_index, p_car, p_situation);
+    m_replayFile.open("../test_data/user_recordings/userRecording");
+    m_replayFile >> m_inputTime;
 }
 
 /// @brief Update the car's controls based on the current race situation.
@@ -39,13 +42,31 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
 /// Ask the human driver for input and ask the mediator for controls.
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
-    // Do not let the human control the car when the AI is in control
-    if (SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER) {
-        //m_humanDriver.drive_at(m_index, p_car, p_situation);
-    }
+void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
+{
 
-    SMediator::GetInstance()->DriveTick(p_car, p_situation);
+    if(std::stod(m_inputTime) ==  p_situation -> currentTime)
+    {
+        std::string accelString;
+        m_replayFile >> accelString;
+        float accel = std::stof(accelString);
+        std::string brakeString;
+        m_replayFile >> brakeString;
+        float brake = std::stof(brakeString);
+        std::string steerString;
+        m_replayFile >> steerString;
+        float steer = std::stof(steerString);
+        p_car->_accelCmd = accel;
+        p_car->_brakeCmd = brake;
+        p_car->_steerCmd = steer;
+        m_replayFile >> m_inputTime;
+        if (m_replayFile.eof())
+        {
+            PauseRace(p_car, p_situation);
+        }
+
+    }
+    return;
 }
 
 /// @brief Pause the current race.

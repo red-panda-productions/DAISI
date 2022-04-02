@@ -3,7 +3,9 @@
 #include <track.h>
 #include <car.h>
 #include <raceman.h>
-#include <humandriver.h>
+#include <fstream>
+#include <string>
+
 
 class Driver {
 public:
@@ -21,6 +23,7 @@ public:
 private:
     // The driver's index
     int m_index;
-    // The human driver controller
-    HumanDriver m_humanDriver;
+    std::ifstream m_replayFile;
+	std::string m_inputTime;
+
 };

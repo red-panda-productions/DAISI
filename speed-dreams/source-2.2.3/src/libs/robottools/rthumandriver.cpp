@@ -68,11 +68,12 @@
 #include <ConfigEnums.h>
 #include "Mediator.h"
 
-#define PARAM_AMOUNT 3
+#define PARAM_AMOUNT 4
 tParticipantControl m_pControl;
 
 #include <Recorder.h>
 Recorder* recorder;
+
 
 
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
