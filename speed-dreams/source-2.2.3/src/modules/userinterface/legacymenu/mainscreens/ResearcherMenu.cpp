@@ -1,5 +1,6 @@
 #include <tgfclient.h>
 #include <random>
+#include "guimenu.h"
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -209,39 +210,13 @@ static void SaveSettingsToDisk() {
             break;
     }
     const char* controlGas = m_pControl.ControlGas ? "yes" : "no";
-    GfParmSetStr(param, "CheckboxPControlInterventionToggle", "checked", controlGas);
+    GfParmSetStr(param, "CheckboxPControlGas", "checked", controlGas);
     const char* interventionToggle = m_pControl.ControlInterventionToggle ? "yes" : "no";
     GfParmSetStr(param, "CheckboxPControlInterventionToggle", "checked", interventionToggle);
     const char* controlSteering = m_pControl.ControlSteering ? "yes" : "no";
     GfParmSetStr(param, "CheckboxPControlSteering", "checked", controlSteering);
 
-
-    //GfParmSetStr(param, "MaxTimeEdit", "default value", "10");
     GfParmWriteFile(NULL, param, "ResearcherMenu");
-
-
-    //ofstream researcherSettings("researcherSettings.txt");
-
-    //// Write to the file
-    //researcherSettings << "taskSetting = ";
-    //researcherSettings << m_task;
-    //researcherSettings << "\nAudioIndicator = ";
-    //researcherSettings << m_indicators.Auditory;
-    //researcherSettings << "\nVisualIndicator = ";
-    //researcherSettings << m_indicators.Visual;
-    //researcherSettings << "\nInterventionSettings = ";
-    //researcherSettings << m_interventionType;
-    //researcherSettings << "\nTrack = ";
-    ////researcherSettings << m_track.name;
-    //researcherSettings << "\nControlGas = ";
-    //researcherSettings << m_pControl.ControlGas;
-    //researcherSettings << "\nControlInterventionToggle = ";
-    //researcherSettings << m_pControl.ControlInterventionToggle;
-    //researcherSettings << "\nControlSteering = ";
-    //researcherSettings << m_pControl.ControlSteering;
-
-    //// Close the file
-    //researcherSettings.close();
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -269,17 +244,50 @@ static void SaveSettings(void* /* dummy */)
 }
 
 
+void initializeSettings(void* param) {
+    bool checkboxTaskLaneKeeping = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL));
+    bool checkboxTaskSpeedControl = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL));
+    bool CheckboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL));
+    bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL));
+    bool checkboxTypeNoSignals = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL));
+    bool CheckboxTypeOnlySignals = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL));
+    bool checkboxTypeSharedControl = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL));
+    bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxPControlGas", "checked", NULL));
+    bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL));
+    bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(param, "dynamic controls/CheckboxPControlSteering", "checked", NULL));
+    
+    if (!checkboxTaskLaneKeeping) {
+        m_task = checkboxTaskSpeedControl ? TASK_SPEED_CONTROL : TASK_NO_TASK;
+    }
+    else {
+        m_task = TASK_LANE_KEEPING;
+    }
 
-void initializeSettingsFromFile() {
-    fstream researcherSettings;
-    researcherSettings.open("researcherSettings.txt", ios::in);
-    string researcherSettingsString;
-    while (getline(researcherSettings, researcherSettingsString)) {}
-}
+    m_indicators.Auditory = CheckboxIndicatorAuditory;
+    m_indicators.Visual = checkboxIndicatorVisual;
+    m_pControl.ControlGas = checkboxPControlGas;
+    m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
+    m_pControl.ControlSteering = checkboxPControlSteering;
+    if (checkboxTypeNoSignals) {
+        m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
+        return;
+    }
+    if (CheckboxTypeOnlySignals) {
+        m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
+        return;
+    }
+    if (checkboxTypeSharedControl) {
+        m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
+        return;
+    }
+    m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
 
-inline bool exists_test(const std::string& name) {
-    struct stat buffer;
-    return (stat(name.c_str(), &buffer) == 0);
+
+
+
+
+
+
 }
 
 /// @brief            Initializes the researcher menu
@@ -297,6 +305,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     s_nextHandle = p_nextMenu;
 
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
+    initializeSettings(param);
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // Task checkboxes controls
