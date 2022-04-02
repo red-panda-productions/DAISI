@@ -1,4 +1,3 @@
-#include <guimenu.h>
 #include <tgfclient.h>
 #include <random>
 #include "legacymenu.h"
@@ -258,29 +257,19 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Converts the xml booleans into useable booleans
-bool yesOrNoToBool(string str) {
-    if (str == "yes") {
-        return true;
-    }
-    if (str == "no") {
-        return false;
-    }
-}
-
 /// @brief Inializes the menu setting from the ResearcherMenu.xml file
 void initializeSettings(void* p_param) {
     // Retrieve all setting variables from the xml file
-    bool checkboxTaskLaneKeeping = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL));
-    bool checkboxTaskSpeedControl = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL));
-    bool CheckboxIndicatorAuditory = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL));
-    bool checkboxIndicatorVisual = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL));
-    bool checkboxTypeNoSignals = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL));
-    bool CheckboxTypeOnlySignals = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL));
-    bool checkboxTypeSharedControl = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL));
-    bool checkboxPControlGas = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL));
-    bool checkboxInterventionToggle = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL));
-    bool checkboxPControlSteering = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL));
+    bool checkboxTaskLaneKeeping = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), false);
+    bool checkboxTaskSpeedControl = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL), false);
+    bool CheckboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL), false);
+    bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL), false);
+    bool checkboxTypeNoSignals = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL), false);
+    bool CheckboxTypeOnlySignals = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL), false);
+    bool checkboxTypeSharedControl = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL), false);
+    bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL), false);
+    bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL), false);
+    bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL), false);
 
     // Set the max time setting from the xml file
     m_maxTime = atoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
