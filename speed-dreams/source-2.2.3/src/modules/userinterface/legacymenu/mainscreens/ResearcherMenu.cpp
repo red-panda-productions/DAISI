@@ -166,7 +166,83 @@ static void SetUserId(void*)
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
+static void SaveSettingsToDisk() {
 
+    std::string strPath("data/menu/ResearcherMenu.xml");
+    char buf[512];
+    sprintf(buf, "%s%s", GfDataDir(), strPath.c_str());
+    void* param = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    
+
+    GfParmSetStr(param, "CheckboxTaskLaneKeeping", "checked", "no");
+    GfParmSetStr(param, "CheckboxTaskSpeedControl", "checked", "no");
+    switch (m_task)
+    {
+        case 1:
+            GfParmSetStr(param, "CheckboxTaskLaneKeeping", "checked", "yes");
+            break;
+        case 2:
+            GfParmSetStr(param, "CheckboxTaskSpeedControl", "checked", "yes");
+            break;
+    }
+    const char* audioSetting = m_indicators.Auditory ? "yes" : "no";
+    GfParmSetStr(param, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
+    const char* visualSetting = m_indicators.Visual ? "yes" : "no";
+    GfParmSetStr(param, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
+    GfParmSetStr(param, "CheckboxTypeNoSignals", "checked", "no");
+    GfParmSetStr(param, "CheckboxTypeOnlySignals", "checked", "no");
+    GfParmSetStr(param, "CheckboxTypeSharedControl", "checked", "no");
+    GfParmSetStr(param, "CheckboxTypeCompleteTakeover", "checked", "no");
+    switch (m_task)
+    {
+        case 0:
+            GfParmSetStr(param, "CheckboxTypeNoSignals", "checked", "yes");
+            break;
+        case 1:
+            GfParmSetStr(param, "CheckboxTypeOnlySignals", "checked", "yes");
+            break;
+        case 3:
+            GfParmSetStr(param, "CheckboxTypeSharedControl", "checked", "yes");
+            break;
+        case 4:
+            GfParmSetStr(param, "CheckboxTypeCompleteTakeover", "checked", "yes");
+            break;
+    }
+    const char* controlGas = m_pControl.ControlGas ? "yes" : "no";
+    GfParmSetStr(param, "CheckboxPControlInterventionToggle", "checked", controlGas);
+    const char* interventionToggle = m_pControl.ControlInterventionToggle ? "yes" : "no";
+    GfParmSetStr(param, "CheckboxPControlInterventionToggle", "checked", interventionToggle);
+    const char* controlSteering = m_pControl.ControlSteering ? "yes" : "no";
+    GfParmSetStr(param, "CheckboxPControlSteering", "checked", controlSteering);
+
+
+    //GfParmSetStr(param, "MaxTimeEdit", "default value", "10");
+    GfParmWriteFile(NULL, param, "ResearcherMenu");
+
+
+    //ofstream researcherSettings("researcherSettings.txt");
+
+    //// Write to the file
+    //researcherSettings << "taskSetting = ";
+    //researcherSettings << m_task;
+    //researcherSettings << "\nAudioIndicator = ";
+    //researcherSettings << m_indicators.Auditory;
+    //researcherSettings << "\nVisualIndicator = ";
+    //researcherSettings << m_indicators.Visual;
+    //researcherSettings << "\nInterventionSettings = ";
+    //researcherSettings << m_interventionType;
+    //researcherSettings << "\nTrack = ";
+    ////researcherSettings << m_track.name;
+    //researcherSettings << "\nControlGas = ";
+    //researcherSettings << m_pControl.ControlGas;
+    //researcherSettings << "\nControlInterventionToggle = ";
+    //researcherSettings << m_pControl.ControlInterventionToggle;
+    //researcherSettings << "\nControlSteering = ";
+    //researcherSettings << m_pControl.ControlSteering;
+
+    //// Close the file
+    //researcherSettings.close();
+}
 
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
@@ -183,49 +259,27 @@ static void SaveSettings(void* /* dummy */)
     sprintf(m_userId, "%zu", encryptedUserId);
     mediator->SetUserId(m_userId);
 
-    // Save settings to disk
-    ofstream researcherSettings("researcherSetting.txt");
-
-    // Write to the file
-    researcherSettings << "taskSetting = ";
-    researcherSettings << m_task;
-    researcherSettings << "\nAudioIndicator = ";
-    researcherSettings << m_indicators.Auditory;
-    researcherSettings << "\nVisualIndicator = ";
-    researcherSettings << m_indicators.Visual;
-    researcherSettings << "\nInterventionSettings = ";
-    researcherSettings << m_interventionType;
-    researcherSettings << "\nTrack = ";
-    //researcherSettings << m_track.name;
-    researcherSettings << "\nControlGas = ";
-    researcherSettings << m_pControl.ControlGas;
-    researcherSettings << "\nControlInterventionToggle = ";
-    researcherSettings << m_pControl.ControlInterventionToggle;
-    researcherSettings << "\nControlSteering = ";
-    researcherSettings << m_pControl.ControlSteering;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Close the file
-    researcherSettings.close();
-
+    SaveSettingsToDisk();
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
     // TODO: Set Participant control (tParticipantControl)
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
+}
+
+
+
+void initializeSettingsFromFile() {
+    fstream researcherSettings;
+    researcherSettings.open("researcherSettings.txt", ios::in);
+    string researcherSettingsString;
+    while (getline(researcherSettings, researcherSettingsString)) {}
+}
+
+inline bool exists_test(const std::string& name) {
+    struct stat buffer;
+    return (stat(name.c_str(), &buffer) == 0);
 }
 
 /// @brief            Initializes the researcher menu
@@ -281,6 +335,12 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
 
+    //if (exists_test("researcherSettings.txt"))
+    //{
+    //    initializeSettingsFromFile();
+    //    return s_scrHandle;
+    //}
+
     // Set standard Task
     m_task = TASK_NO_TASK;
 
@@ -303,6 +363,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     return s_scrHandle;
 }
+
+
 
 /// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
