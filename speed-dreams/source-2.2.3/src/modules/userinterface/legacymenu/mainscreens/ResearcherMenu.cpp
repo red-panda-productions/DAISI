@@ -172,50 +172,55 @@ static void SaveSettingsToDisk() {
     std::string strPath("data/menu/ResearcherMenu.xml");
     char buf[512];
     sprintf(buf, "%s%s", GfDataDir(), strPath.c_str());
-    void* param = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    void* readParam = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
-    GfParmSetStr(param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "no");
-    GfParmSetStr(param, "dynamic controls/CheckboxTaskSpeedControl", "checked", "no");
+    GfParmSetStr(readParam, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "no");
+    GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "no");
     switch (m_task)
     {
         case 1:
-            GfParmSetStr(param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "yes");
+            GfParmSetStr(readParam, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "yes");
             break;
         case 2:
-            GfParmSetStr(param, "dynamic controls/CheckboxTaskSpeedControl", "checked", "yes");
+            GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "yes");
             break;
     }
     const char* audioSetting = m_indicators.Auditory ? "yes" : "no";
-    GfParmSetStr(param, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
+    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
     const char* visualSetting = m_indicators.Visual ? "yes" : "no";
-    GfParmSetStr(param, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
-    GfParmSetStr(param, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
-    GfParmSetStr(param, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
-    GfParmSetStr(param, "dynamic controls/CheckboxTypeSharedControl", "checked", "no");
-    GfParmSetStr(param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "no");
+    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
+    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
+    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
+    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeSharedControl", "checked", "no");
+    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "no");
     switch (m_interventionType)
     {
         case 0:
-            GfParmSetStr(param, "dynamic controls/CheckboxTypeNoSignals", "checked", "yes");
+            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "yes");
             break;
         case 1:
-            GfParmSetStr(param, "dynamic controls/CheckboxTypeOnlySignals", "checked", "yes");
+            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "yes");
             break;
         case 3:
-            GfParmSetStr(param, "dynamic controls/CheckboxTypeSharedControl", "checked", "yes");
+            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeSharedControl", "checked", "yes");
             break;
         case 4:
-            GfParmSetStr(param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "yes");
+            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "yes");
             break;
     }
     const char* controlGas = m_pControl.ControlGas ? "yes" : "no";
-    GfParmSetStr(param, "dynamic controls/CheckboxPControlGas", "checked", controlGas);
+    GfParmSetStr(readParam, "dynamic controls/CheckboxPControlGas", "checked", controlGas);
     const char* interventionToggle = m_pControl.ControlInterventionToggle ? "yes" : "no";
-    GfParmSetStr(param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", interventionToggle);
+    GfParmSetStr(readParam, "dynamic controls/CheckboxPControlInterventionToggle", "checked", interventionToggle);
     const char* controlSteering = m_pControl.ControlSteering ? "yes" : "no";
-    GfParmSetStr(param, "dynamic controls/CheckboxPControlSteering", "checked", controlSteering);
+    GfParmSetStr(readParam, "dynamic controls/CheckboxPControlSteering", "checked", controlSteering);
+    char buf2[32];
+    sprintf(buf2, "%d", m_maxTime);
+    GfParmSetStr(readParam, "dynamic controls/MaxTimeEdit", "default value", buf2);
 
-    GfParmWriteFile(NULL, param, "ResearcherMenu");
+
+
+    GfParmWriteFile(NULL, readParam, "ResearcherMenu");
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -261,6 +266,7 @@ void initializeSettings(void* p_param) {
     bool checkboxPControlGas = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL));
     bool checkboxInterventionToggle = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL));
     bool checkboxPControlSteering = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL));
+    m_maxTime = atoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
     
     if (!checkboxTaskLaneKeeping) {
         m_task = checkboxTaskSpeedControl ? TASK_SPEED_CONTROL : TASK_NO_TASK;
