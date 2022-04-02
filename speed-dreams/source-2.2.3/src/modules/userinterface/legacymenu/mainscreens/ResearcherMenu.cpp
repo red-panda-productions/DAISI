@@ -1,5 +1,7 @@
 #include <tgfclient.h>
 #include <random>
+#include <forcefeedback.h>
+
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -22,7 +24,10 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-tParticipantControl m_pControl = {false, true, true};
+tParticipantControl m_pControl = {false, true, true, true};
+
+// Force feedback manager
+extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 // Max time
 int m_maxTime = 10.0f;
@@ -138,6 +143,12 @@ static void SelectControlSteering(tCheckBoxInfo* p_info)
 {
     m_pControl.ControlSteering = p_info->bChecked;
 }
+/// @brief        Enables/disables the possibility for participants to control steering
+/// @param p_info Information on the checkbox
+static void SelectForceFeedback(tCheckBoxInfo* p_info)
+{
+    m_pControl.ForceFeedback = p_info->bChecked;
+}
 
 /// @brief Handle input in the max time textbox
 static void SetMaxTime(void*)
@@ -182,6 +193,10 @@ static void SaveSettings(void* /* dummy */)
     // TODO: Set Environment (Track)
     // TODO: Set Participant control (tParticipantControl)
 
+    // Enable/Disable force feedback in the force feedback manager
+    forceFeedback.effectsConfig["globalEffect"]["enabled"] = m_pControl.ForceFeedback;
+    forceFeedback.saveConfiguration();
+
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
 }
@@ -224,6 +239,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlInterventionToggle", NULL, SelectControlInterventionOnOff);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlGas", NULL, SelectControlGas);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlSteering", NULL, SelectControlSteering);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxForceFeedback", NULL, SelectForceFeedback);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
