@@ -167,7 +167,6 @@ static void SetUserId(void*)
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
-/// @brief Saves the settings into the ResearcherMenu.xml file
 static void SaveSettingsToDisk() {
     // Open file parameter
     std::string strPath("data/menu/ResearcherMenu.xml");
@@ -175,7 +174,7 @@ static void SaveSettingsToDisk() {
     sprintf(buf, "%s%s", GfDataDir(), strPath.c_str());
     void* readParam = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
-    // Save task settings to xml file
+    // Save task settings to xml
     GfParmSetStr(readParam, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "no");
     GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "no");
     switch (m_task)
@@ -188,12 +187,9 @@ static void SaveSettingsToDisk() {
             break;
     }
 
-    // Save indicator settings to xml file
     const char* audioSetting = m_indicators.Auditory ? "yes" : "no";
     GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
     const char* visualSetting = m_indicators.Visual ? "yes" : "no";
-
-    // Save intervention type settings to xml file
     GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
@@ -214,8 +210,6 @@ static void SaveSettingsToDisk() {
             GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "yes");
             break;
     }
-
-    // Save participant control settings to xml file
     const char* controlGas = m_pControl.ControlGas ? "yes" : "no";
     GfParmSetStr(readParam, "dynamic controls/CheckboxPControlGas", "checked", controlGas);
     const char* interventionToggle = m_pControl.ControlInterventionToggle ? "yes" : "no";
@@ -223,12 +217,12 @@ static void SaveSettingsToDisk() {
     const char* controlSteering = m_pControl.ControlSteering ? "yes" : "no";
     GfParmSetStr(readParam, "dynamic controls/CheckboxPControlSteering", "checked", controlSteering);
 
-    // Save max time to xml file
     char buf2[32];
     sprintf(buf2, "%d", m_maxTime);
     GfParmSetStr(readParam, "dynamic controls/MaxTimeEdit", "default value", buf2);
 
-    // Write all the above queued changed to xml file
+
+
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
 }
 
@@ -249,7 +243,6 @@ static void SaveSettings(void* /* dummy */)
 
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
-
     // Save settings to frontend settings
     // TODO: Set Environment (Track)
     // TODO: Set Participant control (tParticipantControl)
@@ -268,9 +261,7 @@ bool yesOrNoToBool(string str) {
     }
 }
 
-/// @brief Inializes the menu setting from the ResearcherMenu.xml file
 void initializeSettings(void* p_param) {
-    // Retrieve all setting variables from the xml file
     bool checkboxTaskLaneKeeping = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL));
     bool checkboxTaskSpeedControl = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL));
     bool CheckboxIndicatorAuditory = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL));
@@ -281,12 +272,8 @@ void initializeSettings(void* p_param) {
     bool checkboxPControlGas = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL));
     bool checkboxInterventionToggle = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL));
     bool checkboxPControlSteering = yesOrNoToBool(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL));
-
-    // Set the max time setting from the xml file
     m_maxTime = atoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
     
-
-    // Set the Task settings from the xml file
     if (!checkboxTaskLaneKeeping) {
         m_task = checkboxTaskSpeedControl ? TASK_SPEED_CONTROL : TASK_NO_TASK;
     }
@@ -294,16 +281,11 @@ void initializeSettings(void* p_param) {
         m_task = TASK_LANE_KEEPING;
     }
 
-    // Set the indicator settings from the xml file
     m_indicators.Auditory = CheckboxIndicatorAuditory;
     m_indicators.Visual = checkboxIndicatorVisual;
-
-    // Set the indicator settings from the xml file
     m_pControl.ControlGas = checkboxPControlGas;
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
     m_pControl.ControlSteering = checkboxPControlSteering;
-
-    //Set the participant control settings from the xml file 
     if (checkboxTypeNoSignals) {
         m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
         return;
