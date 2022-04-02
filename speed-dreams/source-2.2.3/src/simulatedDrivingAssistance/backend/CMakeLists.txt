@@ -4,11 +4,8 @@ INCLUDE(../../../cmake/macros.cmake)
 SET(_SOURCES 
 	BrakeDecision.cpp
 	CarController.cpp
-	CarInfo.cpp
 	DecisionMaker.cpp
 	DecisionTuple.cpp
-	DriveSituation.cpp
-	EnvironmentInfo.cpp
 	FileDataStorage.cpp
 	InterventionExecutorAlwaysIntervene.cpp
 	InterventionExecutorAskFor.cpp
@@ -17,13 +14,11 @@ SET(_SOURCES
 	InterventionExecutorPerformWhenNeeded.cpp
 	InterventionFactory.cpp
 	Mediator.cpp
-	PlayerInfo.cpp
 	Recorder.cpp
 	SDAConfig.cpp
 	SocketBlackBox.cpp
 	SQLDatabaseStorage.cpp
 	SteerDecision.cpp
-	TrackPosition.cpp
 	BlackBoxData.cpp
 )
 
@@ -36,12 +31,9 @@ SET(_INLINES
 SET(_HEADERS 
 	BrakeDecision.h
 	CarController.h
-	CarInfo.h
 	ConfigEnums.h
 	DecisionMaker.h
 	DecisionTuple.h
-	DriveSituation.h
-	EnvironmentInfo.h
 	FileDataStorage.h
 	IDataStorage.h
 	IDecision.h
@@ -53,13 +45,11 @@ SET(_HEADERS
 	InterventionExecutorPerformWhenNeeded.h
 	InterventionFactory.h
 	Mediator.h
-	PlayerInfo.h
 	Recorder.h
 	SDAConfig.h
 	SocketBlackBox.h
 	SQLDatabaseStorage.h
 	SteerDecision.h
-	TrackPosition.h
 	BlackBoxData.h
 )
 

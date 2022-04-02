@@ -2,12 +2,9 @@
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "FileDataStorage.inl"
-#include "mocks/EnvironmentInfoMock.h"
-#include "mocks/CarInfoMock.h"
-#include "mocks/PlayerInfoMock.h"
-#include "mocks/DriveSituationMock.h"
+#include "mocks/BlackBoxDataMock.h"
 
-CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(DriveSituationMock)
+CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(BlackBoxDataMock)
 
 #define TEST_FILE_PATH "testDataStorage.txt"
 
@@ -15,13 +12,14 @@ CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(DriveSituationMock)
 TEST(FileDataStorageTests, NoStorageTimestampZero)
 {
     // Initialise class, read+write no values
-    bool params[5] = {false, false, false, false, false};
-    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(params);
-    CREATE_DRIVE_SITUATION_MOCK;
+    DataToStore params = {false, false, false, false, false};
+    FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
+
 
     // Write a file with user id, save timestamp 0, and shut down
     fileDataStorage.Initialise(TEST_FILE_PATH, "player1");
-    DriveSituationMock exampleSituation = GetExampleDriveSituation();
+    Random random;
+    BlackBoxDataMock exampleSituation = CreateRandomBlackBoxDataMock(random);
     fileDataStorage.Save(exampleSituation, 0);
     fileDataStorage.Shutdown();
 
@@ -43,9 +41,8 @@ TEST(FileDataStorageTests, NoStorageTimestampZero)
 /// @param p_storeMeta Whether to save metadata
 void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool p_storeIntervention, bool p_storeMeta) {
     Random random;
-    bool params[5] = {p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
-    FileDataStorage<DriveSituationMock> fileDataStorage = FileDataStorage<DriveSituationMock>(params);
-    CREATE_DRIVE_SITUATION_MOCK;
+    tDataToStore params = { p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
+    FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
 
     // Create a string to save all intended random data to
     std::stringstream expected;
@@ -67,29 +64,26 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
     if (p_storeMeta) { /*TODO add metadata headers*/ }
 
     for (int i = 0; i < 5; i++) {
-        int timeOfDay = random.NextInt();
-        int clouds = random.NextInt();
-        int rain = random.NextInt();
-        float speed = random.NextFloat();
-        float topSpeed = random.NextFloat();
-        int gear = random.NextInt();
-        bool headlights = random.NextBool();
-        bool offroad = random.NextBool();
-        float toStart = random.NextFloat();
-        float toRight = random.NextFloat();
-        float toMiddle = random.NextFloat();
-        float toLeft = random.NextFloat();
-        float accelCmd = random.NextFloat();
-        float brakeCmd = random.NextFloat();
-        float clutchCmd = random.NextFloat();
-        float steerCmd = random.NextFloat();
-        float currentTime = random.NextFloat();
-        EnvironmentInfoMock envInfo(timeOfDay, clouds, rain);
-        TrackPositionMock trackPos(offroad, toStart, toRight, toMiddle, toLeft);
-        CarInfoMock carInfo(speed, topSpeed, gear, headlights, trackPos);
-        PlayerInfoMock playerInfo(steerCmd, accelCmd, brakeCmd, clutchCmd);
-        DriveSituationMock driveSit(playerInfo, carInfo, envInfo, currentTime);
 
+        BlackBoxDataMock driveSit = CreateRandomBlackBoxDataMock(random);
+        int timeOfDay = 0;
+        int clouds = 0;
+        int rain = 0;
+        float speed = driveSit.Car._speed_x;
+        float topSpeed = driveSit.Car._topSpeed;
+        int gear = driveSit.Car._gear;
+        bool headlights = false;
+        bool offroad = false;
+        float toStart = driveSit.Car._trkPos.toStart;
+        float toRight = driveSit.Car._trkPos.toRight;
+        float toMiddle = driveSit.Car._trkPos.toMiddle;
+        float toLeft = driveSit.Car._trkPos.toLeft;
+        float accelCmd = driveSit.Car._accelCmd;
+        float brakeCmd = driveSit.Car._brakeCmd;
+        float clutchCmd = driveSit.Car._clutchCmd;
+        float steerCmd = driveSit.Car._steerCmd;
+        double currentTime = driveSit.Situation.currentTime;
+        
         fileDataStorage.Save(driveSit, i);
         expected << std::to_string(i) << "\n";
         if (p_storeEnv) {

@@ -16,14 +16,14 @@ Task SDAConfig::GetTask() const
 
 /// @brief              Sets the settings for indication of interventions
 /// @param p_indicators The Indicator settings
-void SDAConfig::SetIndicatorSettings(bool* p_indicators)
+void SDAConfig::SetIndicatorSettings(tIndicator p_indicators)
 {
     m_indicatorSetting = p_indicators;
 }
 
 /// @brief  Gets the indicator settings
-/// @return An array of indicators to use
-bool* SDAConfig::GetIndicatorSettings() const
+/// @return A struct consisting of booleans of what indicators are used
+tIndicator SDAConfig::GetIndicatorSettings() const
 {
     return m_indicatorSetting;
 }
@@ -72,16 +72,16 @@ char* SDAConfig::GetUserId() const
     return m_userId;
 }
 
-/// @brief             Sets the settings for what data should be collected from the simulation
-/// @param p_boolArray Array of booleans for selecting the data to be collected in real-time
-void SDAConfig::SetDataCollectionSettings(bool* p_dataSetting)
+/// @brief               Sets the settings for what data should be collected from the simulation
+/// @param p_dataSetting A struct consisting of booleans for selecting the data to be collected in real-time
+void SDAConfig::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     m_dataCollectionSetting = p_dataSetting;
 }
 
 /// @brief  Gets the settings on what data from the simulation should be collected
-/// @return Array of booleans with what data is to be collected from the simulation
-bool* SDAConfig::GetDataCollectionSetting() const
+/// @return A struct consisting of booleans with what data is to be collected from the simulation
+tDataToStore SDAConfig::GetDataCollectionSetting() const
 {
     return m_dataCollectionSetting;
 }

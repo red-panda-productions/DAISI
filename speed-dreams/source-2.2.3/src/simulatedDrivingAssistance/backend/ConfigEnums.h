@@ -8,10 +8,11 @@ typedef unsigned int Task;
 #define TASK_SPEED_CONTROL  2
 
 /// @brief The different ways a user can be indicated about an intervention
-typedef unsigned int Indicator;
-
-#define INDICATOR_AUDITORY      0
-#define INDICATOR_VISUAL        1
+typedef struct Indicator
+{
+    bool Auditory;
+    bool Visual;
+} tIndicator;
 
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
@@ -30,12 +31,16 @@ typedef unsigned int InterventionAction;
 #define INTERVENTION_ACTION_TURN_RIGHT  2
 #define INTERVENTION_ACTION_BRAKE       3
 
-/// @brief The different types of control the participant has
-typedef unsigned int ParticipantControl;
+#define NUM_INTERVENTION_ACTION         4
 
-#define PARTICIPANT_CONTROL_INTERVENTIONS_ON_OFF    0
-#define PARTICIPANT_CONTROL_GAS                     1
-#define PARTICIPANT_CONTROL_STEERING                2
+/// @brief The different types of control the participant has
+typedef struct ParticipantControl
+{
+    bool ControlInterventionToggle;
+    bool ControlGas;
+    bool ControlSteering;
+    bool ForceFeedback;
+} tParticipantControl;
 
 /// @brief The different types of black boxes
 typedef unsigned int BlackBoxType;
@@ -49,13 +54,14 @@ typedef unsigned int DataStorageType;
 #define DATA_STORAGE_TYPE_SQL       1
 
 /// @brief The different types of data that can be stored
-typedef unsigned int DataToStore;
-
-#define DATA_TO_STORE_ENVIRONMENT_DATA  0
-#define DATA_TO_STORE_CAR_DATA          1
-#define DATA_TO_STORE_HUMAN_DATA        2
-#define DATA_TO_STORE_INTERVENTION_DATA 3
-#define DATA_TO_STORE_META_DATA         4
+typedef struct DataToStore
+{
+    bool EnvironmentData;
+    bool CarData;
+    bool HumanData;
+    bool InterventionData;
+    bool MetaData;
+} tDataToStore;
 
 // for recording a session
 //#define RECORD_SESSION
