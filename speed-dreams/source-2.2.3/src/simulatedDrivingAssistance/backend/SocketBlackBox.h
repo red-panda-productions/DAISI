@@ -8,6 +8,7 @@
 #include "car.h"
 #include "raceman.h"
 #include "BlackBoxData.h"
+#include "boost/interprocess/shared_memory_object.hpp"
 
 #define SBB_BUFFER_SIZE 512
 
@@ -42,7 +43,10 @@ private:
     ServerSocket m_server;
     char m_buffer[SBB_BUFFER_SIZE];
 
-    BlackBoxData* m_currentData = nullptr;
+    BlackBoxData* m_currentData;
+
+    boost::interprocess::shared_memory_object m_currentDataObject =
+        boost::interprocess::shared_memory_object(boost::interprocess::create_only, "SDA_SHARED_MEMORY", boost::interprocess::read_write);
 };
 
 /// @brief The standard SocketBlackBox type

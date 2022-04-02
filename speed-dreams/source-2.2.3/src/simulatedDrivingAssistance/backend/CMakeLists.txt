@@ -71,4 +71,6 @@ ADD_IPCLIB_PACKAGE(backend)
 
 ADD_SQLITE3_LIBRARY(backend)
 
+ADD_BOOST_PACKAGE(backend)
+
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)

@@ -1,7 +1,11 @@
 #pragma once
 #include "SocketBlackBox.h"
 #include <string>
+
+#include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
+
+#include "boost/interprocess/mapped_region.hpp"
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(type) \
 	template SocketBlackBox<type>::SocketBlackBox(PCWSTR p_ip, int p_port);\
@@ -34,6 +38,7 @@ SocketBlackBox<BlackBoxData>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server
 template <class BlackBoxData>
 void SocketBlackBox<BlackBoxData>::Initialize()
 {
+    m_currentDataObject.truncate(sizeof(BlackBoxData));
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
@@ -105,11 +110,13 @@ void SocketBlackBox<BlackBoxData>::SerializeBlackBoxData(msgpack::sbuffer& p_sbu
 {
     std::vector<std::string> dataToSerialize;
 
-    std::stringstream oss;
+    boost::interprocess::mapped_region region(m_currentDataObject, boost::interprocess::read_write);
 
-    oss << p_BlackBoxData;
+    BlackBoxData* pointer = static_cast<BlackBoxData*>(region.get_address());
 
-    dataToSerialize.push_back(oss.str());
+    *pointer = *p_BlackBoxData;
+
+    dataToSerialize.emplace_back("1");
 
     msgpack::pack(p_sbuffer, dataToSerialize);
 }
