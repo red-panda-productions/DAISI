@@ -21,7 +21,7 @@ template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar, 
     tSituation* p_initialSituation, BlackBoxData* p_testSituations, int p_testAmount)
 {
-    BlackBoxData initialData(p_initialCar, p_initialSituation, 0);
+    BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     m_blackBox.Initialize(initialData, p_testSituations, p_testAmount);
 }
 

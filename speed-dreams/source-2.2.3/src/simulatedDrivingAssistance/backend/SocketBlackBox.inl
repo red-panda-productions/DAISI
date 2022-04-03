@@ -27,6 +27,8 @@
 #define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) {p_function;}
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
+#define CONVERT_TO_GEAR_DECISION DECISION_LAMBDA(p_decisionTuple.SetGear(std::stoi(p_string)))
+#define CONVERT_TO_ACCEL_DECISION DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
 
 template <class BlackBoxData>
 SocketBlackBox<BlackBoxData>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip, p_port)
@@ -39,9 +41,12 @@ template <class BlackBoxData>
 void SocketBlackBox<BlackBoxData>::Initialize()
 {
     m_currentDataObject.truncate(sizeof(BlackBoxData));
+    s_segmentDataObject.truncate(sizeof(tTrackSeg) * LOOKAHEAD_SEGMENTS);
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
+    m_variableDecisionMap["Gear"] = CONVERT_TO_ACCEL_DECISION;
+    m_variableDecisionMap["Accel"] = CONVERT_TO_GEAR_DECISION;
 }
 
 /// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
@@ -158,8 +163,11 @@ bool SocketBlackBox<BlackBoxData>::GetDecisions(tCarElt* p_car, tSituation* p_si
 {
     if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
     msgpack::sbuffer sbuffer;
+
+    boost::interprocess::mapped_region region(s_segmentDataObject, boost::interprocess::read_write);
+
     delete m_currentData;
-    m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount);
+    m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, static_cast<tTrackSeg*>(region.get_address()), LOOKAHEAD_SEGMENTS);
     SerializeBlackBoxData(sbuffer, m_currentData);
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();

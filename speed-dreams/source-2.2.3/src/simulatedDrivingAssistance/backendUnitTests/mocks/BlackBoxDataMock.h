@@ -6,7 +6,7 @@
 struct BlackBoxDataMock
 {
 public:
-    BlackBoxDataMock(tCarElt* p_car, tSituation* p_situation, int p_tickCount)
+    BlackBoxDataMock(tCarElt* p_car, tSituation* p_situation, int p_tickCount, tTrackSeg* p_trackSegments, int p_trackSegmentsCount)
     {
         Car = *p_car;
         Situation = *p_situation;
@@ -23,7 +23,7 @@ inline BlackBoxDataMock GetExampleBlackBoxDataMock()
     tSituation* situation = new tSituation();
     int tickCount = 0;
 
-    return { car, situation, tickCount };
+    return { car, situation, tickCount, nullptr, 0 };
 }
 
 inline BlackBoxDataMock CreateRandomBlackBoxDataMock(Random& random)
@@ -32,5 +32,5 @@ inline BlackBoxDataMock CreateRandomBlackBoxDataMock(Random& random)
     tSituation* situation = new tSituation();
     int tickCount = random.NextInt(0,1000);
 
-    return { car, situation, tickCount };
+    return { car, situation, tickCount, nullptr, 0 };
 }

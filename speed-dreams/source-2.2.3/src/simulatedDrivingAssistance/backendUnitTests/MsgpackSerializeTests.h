@@ -22,7 +22,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
         tSituation situation;
 
         int r = random.NextInt();
-        BlackBoxDataMock mock(&car, &situation, r);
+        BlackBoxDataMock mock(&car, &situation, r, nullptr, 0);
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeBlackBoxData(sbuffer, &mock);

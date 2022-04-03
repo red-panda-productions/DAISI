@@ -9,7 +9,7 @@
  * @param p_situation The environment data in the simulation
  * @param p_tickCount The tick that this driving simulation is from
  */
-BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCount) : TickCount(p_tickCount)
+BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount) : TickCount(p_tickCount)
 {
     Car.index = p_car->index;
 
@@ -156,7 +156,32 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCo
 	    }
     }
 
-    // TODO trkPos.seg
+    bool skip = false;
+    tTrackSeg* seg = p_pub.trkPos.seg;
+    Car.pub.trkPos.seg = p_nextSegments;
+    if(p_nextSegmentsCount == 0 || p_nextSegments == nullptr || seg == nullptr)
+    {
+        Car.pub.trkPos.seg = nullptr;
+        skip = true;
+    }
+    for (int i = 0; i < p_nextSegmentsCount; i++)
+    {
+        if (skip) break;
+        p_nextSegments[i] = *seg;
+        p_nextSegments[i].next = &p_nextSegments[i + 1];
+
+        for(int j = 0; j < 4; j++)
+        {
+            p_nextSegments[i].vertex[j] = seg->vertex[j];
+        }
+
+        for (int j = 0; j < 7; j++)
+        {
+            p_nextSegments[i].angle[j] = seg->angle[j];
+        }
+        seg = seg->next;
+    }
+
     Car.pub.trkPos.type = p_pub.trkPos.type;
     Car.pub.trkPos.toStart = p_pub.trkPos.toStart;
     Car.pub.trkPos.toRight = p_pub.trkPos.toRight;
@@ -347,17 +372,17 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCo
     }
 
     //TODO: this might be an array which will need to be checked
-    tDashboardItem* ctrlDashboardItem = new tDashboardItem();
-    ctrlDashboardItem->type = p_ctrl.setupChangeCmd->type;
-    tCarSetupItem* ctrlCarSetupItem = new tCarSetupItem();
-    ctrlCarSetupItem->value = p_ctrl.setupChangeCmd->setup->value;
-    ctrlCarSetupItem->min = p_ctrl.setupChangeCmd->setup->min;
-    ctrlCarSetupItem->max = p_ctrl.setupChangeCmd->setup->max;
-    ctrlCarSetupItem->desired_value = p_ctrl.setupChangeCmd->setup->desired_value;
-    ctrlCarSetupItem->stepsize = p_ctrl.setupChangeCmd->setup->stepsize;
-    ctrlCarSetupItem->changed = p_ctrl.setupChangeCmd->setup->changed;
-    ctrlDashboardItem->setup = ctrlCarSetupItem;
-    Car.ctrl.setupChangeCmd = ctrlDashboardItem;
+    //tDashboardItem* ctrlDashboardItem = new tDashboardItem();
+    //ctrlDashboardItem->type = p_ctrl.setupChangeCmd->type;
+    //tCarSetupItem* ctrlCarSetupItem = new tCarSetupItem();
+    //ctrlCarSetupItem->value = p_ctrl.setupChangeCmd->setup->value;
+    //ctrlCarSetupItem->min = p_ctrl.setupChangeCmd->setup->min;
+    //ctrlCarSetupItem->max = p_ctrl.setupChangeCmd->setup->max;
+    //ctrlCarSetupItem->desired_value = p_ctrl.setupChangeCmd->setup->desired_value;
+    //ctrlCarSetupItem->stepsize = p_ctrl.setupChangeCmd->setup->stepsize;
+    //ctrlCarSetupItem->changed = p_ctrl.setupChangeCmd->setup->changed;
+    //ctrlDashboardItem->setup = ctrlCarSetupItem;
+    //Car.ctrl.setupChangeCmd = ctrlDashboardItem;
 
     // Copy p_car.setup
 #define p_setup p_car->setup
@@ -814,8 +839,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCo
 
     // TODO: Maybe set this to nullptrs for the time being
     // Copy p_car.robot
-    RobotItf* robot = new RobotItf();
-    Car.robot = robot;
+    //RobotItf* robot = new RobotItf();
+    //Car.robot = robot;
     // TODO Void pointers
 
     // Copy p_car.next
@@ -841,6 +866,6 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCo
 BlackBoxData::~BlackBoxData()
 {
     //TODO delete all items with new keywords and nullptrs (for the future)
-    delete Car.ctrl.setupChangeCmd;
-    delete Car.robot;
+    //delete Car.ctrl.setupChangeCmd;
+    //delete Car.robot;
 }

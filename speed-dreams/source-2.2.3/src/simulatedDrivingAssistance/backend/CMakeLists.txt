@@ -20,6 +20,7 @@ SET(_SOURCES
 	SQLDatabaseStorage.cpp
 	SteerDecision.cpp
 	BlackBoxData.cpp
+	AccelDecision.cpp
 )
 
 SET(_INLINES
@@ -51,6 +52,7 @@ SET(_HEADERS
 	SQLDatabaseStorage.h
 	SteerDecision.h
 	BlackBoxData.h
+	AccelDecision.h
 )
 
 ADD_INTERFACE_INCLUDEDIR()

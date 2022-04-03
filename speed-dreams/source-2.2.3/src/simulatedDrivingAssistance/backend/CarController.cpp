@@ -13,7 +13,7 @@ void CarController::SetSteerCmd(float p_steer) const
 /// @param  p_accel The amount that needs to be edited
 void CarController::SetAccelCmd(float p_accel) const
 {
-	m_car->ctrl.accelCmd = p_accel;
+	m_car->ctrl.accelCmd += p_accel;
 }
 
 /// @brief			Edits the brake command of the game

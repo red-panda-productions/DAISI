@@ -12,6 +12,8 @@
 
 #define SBB_BUFFER_SIZE 512
 
+#define LOOKAHEAD_SEGMENTS 10
+
 /// @brief                A class that makes a socket connection to a black box algorithm
 /// @tparam BlackBoxData  The BlackBoxData type
 template <class BlackBoxData>
@@ -43,10 +45,10 @@ private:
     ServerSocket m_server;
     char m_buffer[SBB_BUFFER_SIZE];
 
-    BlackBoxData* m_currentData;
+    BlackBoxData* m_currentData = nullptr;
 
     boost::interprocess::shared_memory_object m_currentDataObject =
-        boost::interprocess::shared_memory_object(boost::interprocess::create_only, "SDA_SHARED_MEMORY", boost::interprocess::read_write);
+        boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "SDA_SHARED_MEMORY", boost::interprocess::read_write);
 };
 
 /// @brief The standard SocketBlackBox type
