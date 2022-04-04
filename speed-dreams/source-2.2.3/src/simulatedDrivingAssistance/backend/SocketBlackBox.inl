@@ -5,8 +5,6 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
-
-
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1,p_type2) \
 	template SocketBlackBox<p_type1,p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);\
     template void SocketBlackBox<p_type1,p_type2>::Initialize();\
@@ -16,8 +14,9 @@
     template void SocketBlackBox<p_type1,p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
     template bool SocketBlackBox<p_type1,p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions);
 
+
 // inserts value from BlackBoxData variables in vector
-#define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, BlackBoxData& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
+#define PUSH_BACK_DS(p_getInfo) [](std::vector<std::string>& p_values, BlackBoxData& p_blackBoxData){p_values.push_back(std::to_string(p_blackBoxData.p_GetInfo));}
 #define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo()->p_variable)
 #define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo()->p_variable)
 #define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo()->TrackLocalPosition()->p_variable)
@@ -41,6 +40,7 @@ SocketBlackBox<BlackBoxData,PointerManager>::SocketBlackBox(PCWSTR p_ip, int p_p
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
 {
+    m_server.Initialize();
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;

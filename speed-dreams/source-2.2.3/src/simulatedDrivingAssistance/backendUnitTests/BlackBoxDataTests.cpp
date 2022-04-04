@@ -3,10 +3,5 @@
 
 TEST(BlackBoxDataTests,EqualityTest)
 {
-
-}
-
-TEST(BlackBoxDataTests,PointerInequalityTest)
-{
-	
+    // TODO
 }

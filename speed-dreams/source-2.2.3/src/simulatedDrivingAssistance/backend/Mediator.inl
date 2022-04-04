@@ -86,14 +86,22 @@ tIndicator Mediator<DecisionMaker>::GetIndicatorSettings()
     return m_decisionMaker.Config.GetIndicatorSettings();
 }
 
+/// @brief              Does one drive tick in the framework
+/// @param  p_car       The current car
+/// @param  p_situation The current situation
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
     CarController.SetCar(p_car);
-    m_decisionMaker.Decide(p_car, p_situation,m_tickCount);
+    m_decisionMaker.Decide(p_car, p_situation, m_tickCount);
     m_tickCount++;
 }
 
+/// @brief                  Starts the race in the framework
+/// @param  p_track         The track of the current race
+/// @param  p_carHandle     A car handle (from speed dreams)
+/// @param  p_carParmHandle A car parameter handle (from speed dreams)
+/// @param  p_situation     The current situation
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {

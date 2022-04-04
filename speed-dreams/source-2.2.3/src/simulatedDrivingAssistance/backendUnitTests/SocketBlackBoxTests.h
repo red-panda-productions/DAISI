@@ -16,6 +16,7 @@
 	t.detach();\
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));\
 	ClientSocket client;\
+	client.Initialize();\
 	client.SendData("AI ACTIVE", 9);\
 	char buffer[TEST_BUFFER_SIZE];\
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);\
@@ -37,7 +38,7 @@ void BlackBoxSide()
 	tCarElt car;
 	tSituation situation;
 	// no decision should be made yet
-	ASSERT_FALSE(bb.GetDecisions(&car,&situation,0, decisions));
+	ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));
 	std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
 	// awaited the client so a decision should be here
@@ -74,7 +75,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	// sends required and sending data of client
 	msgpack::sbuffer sbuffer;
 	msgpack::pack(sbuffer, order);
-	client.SendData(sbuffer.data(), sbuffer.size());
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// receives amount of tests
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
@@ -105,7 +106,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	};
 	sbuffer.clear();
 	msgpack::pack(sbuffer, action);
-	client.SendData(sbuffer.data(), sbuffer.size());
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// test 2
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
@@ -119,7 +120,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	TestDriveSituation(driveSituation2, exampleSituation);
 
 	// send back result of test 2
-	client.SendData(sbuffer.data(), sbuffer.size());
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
@@ -134,7 +135,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	TestDriveSituation(driveSituation3, mock);
 
 	// send back result of initial drive situation
-	client.SendData(sbuffer.data(), sbuffer.size());
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 
 	// normal
@@ -146,14 +147,14 @@ TEST(SocketBlackBoxTests, SocketTest)
 
 	// tests if the drive situation is expected
 	TestDriveSituation(driveSituation4, exampleSituation);
-	client.SendData(sbuffer.data(), sbuffer.size());
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// gets a stop command
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
 	ASSERT_TRUE(buffer[0] == 'S' && buffer[1] == 'T' && buffer[2] == 'O' && buffer[3] == 'P');
 
 	// return to break connection
-	client.SendData("OK", 2);
+	ASSERT_EQ(client.SendData("OK", 2), IPCLIB_SUCCEED);
 	client.Disconnect();
 }
 

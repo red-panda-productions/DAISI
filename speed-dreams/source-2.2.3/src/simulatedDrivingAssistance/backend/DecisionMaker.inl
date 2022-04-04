@@ -28,6 +28,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 /// @brief              Tries to get a decision from the black box
 /// @param  p_car       The current car
 /// @param  p_situation The current situation
+/// @param  p_tickCount The current tick count
 /// @return             Whether a decision was made
 template <typename SocketBlackBox, typename SDAConfig>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount)
