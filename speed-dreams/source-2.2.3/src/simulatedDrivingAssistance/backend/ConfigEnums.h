@@ -12,6 +12,7 @@ typedef struct Indicator
 {
     bool Auditory;
     bool Visual;
+    bool Textual;
 } tIndicator;
 
 /// @brief The different interventions that can be done
