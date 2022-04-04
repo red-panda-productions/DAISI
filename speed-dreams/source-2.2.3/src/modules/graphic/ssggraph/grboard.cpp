@@ -1535,10 +1535,11 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
       grDispSplitScreenIndicator();
   }
 
+  // SIMULATED DRIVING ASSISTANCE
   // Draw the intervention only when enabled in the settings
   if (SMediator::GetInstance()->GetIndicatorSettings().Visual)
   {
-      grDispIntervention();
+      DispIntervention();
   }
 
   if (arcadeFlag) {
@@ -1564,8 +1565,9 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the currently active intervention in InterventionConfig
-void cGrBoard::grDispIntervention() 
+void cGrBoard::DispIntervention() 
 {
     tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
     if (!textureData.Texture) return;

@@ -87,7 +87,7 @@ class cGrBoard
                         char const** label) const;
     void grSetupDrawingArea(int xl, int yb, int xr, int yt) const;
 
-    void grDispIntervention();
+    void DispIntervention();
 
 private:
     //Dash colour handling
