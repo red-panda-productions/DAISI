@@ -48,6 +48,7 @@ SET(_MOCK_HEADERS mocks/CarInfoMock.h
     mocks/SocketBlackBoxMock.h
     mocks/TrackPositionMock.h
     mocks/ConfigMock.h
+    mocks/PointerManagerMock.h
     mocks/DecisionMakerMock.h)
 
 

@@ -8,16 +8,14 @@
 #include "car.h"
 #include "raceman.h"
 #include "BlackBoxData.h"
-#include "boost/interprocess/shared_memory_object.hpp"
-#include "boost/interprocess/mapped_region.hpp"
+#include "IPCPointerManager.h"
 
 #define SBB_BUFFER_SIZE 512
 
-#define LOOKAHEAD_SEGMENTS 10
-
-/// @brief                A class that makes a socket connection to a black box algorithm
-/// @tparam BlackBoxData  The BlackBoxData type
-template <class BlackBoxData>
+/// @brief                 A class that makes a socket connection to a black box algorithm
+/// @tparam BlackBoxData   The BlackBoxData type
+/// @tparam PointerManager A manager that manages where the data should be stored
+template <class BlackBoxData, class PointerManager>
 class SocketBlackBox
 {
 public:
@@ -48,16 +46,9 @@ private:
 
     BlackBoxData* m_currentData = nullptr;
 
-    boost::interprocess::shared_memory_object m_currentDataObject =
-        boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "SDA_SHARED_MEMORY", boost::interprocess::read_write);
+    PointerManager m_pointerManager;
 
-    boost::interprocess::shared_memory_object m_segmentDataObject =
-        boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "SDA_SHARED_SEGMENT_MEMORY", boost::interprocess::read_write);
-
-    boost::interprocess::mapped_region m_dataRegion;
-
-    boost::interprocess::mapped_region m_segmentRegion;
 };
 
 /// @brief The standard SocketBlackBox type
-#define SSocketBlackBox SocketBlackBox<BlackBoxData>
+#define SSocketBlackBox SocketBlackBox<BlackBoxData,SIPCPointerManager>

@@ -24,7 +24,7 @@
 /// @brief The black box side of the test, as these tests have to run in parallel
 void BlackBoxSide()
 {
-	SocketBlackBox<BlackBoxDataMock> bb;
+	SocketBlackBox<BlackBoxDataMock,PointerManagerMock> bb;
 	Random random;
 	BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
 	BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();

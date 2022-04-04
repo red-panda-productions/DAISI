@@ -2,6 +2,7 @@
 #include "SocketBlackBox.h"
 #include "SocketBlackBox.inl"
 #include "mocks/BlackBoxDataMock.h"
+#include "mocks/PointerManagerMock.h"
 #include <limits>
 #include "../rppUtils/Random.hpp"
 #include "TestUtils.h"
@@ -15,7 +16,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
 {
     Random random;
     for (int test = 0; test < 100; test++) {
-        SocketBlackBox<BlackBoxDataMock> socketBlackBox;
+        SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
         socketBlackBox.Initialize();
 
         tCarElt car; //need assignments

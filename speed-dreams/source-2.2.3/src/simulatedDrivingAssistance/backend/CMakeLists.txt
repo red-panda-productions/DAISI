@@ -21,13 +21,15 @@ SET(_SOURCES
 	SteerDecision.cpp
 	BlackBoxData.cpp
 	AccelDecision.cpp
+	IPCPointerManager.cpp
 )
 
 SET(_INLINES
 	DecisionMaker.inl
 	FileDataStorage.inl
 	Mediator.inl
-	SocketBlackBox.inl)
+	SocketBlackBox.inl
+	IPCPointerManager.inl)
 
 SET(_HEADERS 
 	BrakeDecision.h
@@ -53,6 +55,7 @@ SET(_HEADERS
 	SteerDecision.h
 	BlackBoxData.h
 	AccelDecision.h
+	IPCPointerManager.h
 )
 
 ADD_INTERFACE_INCLUDEDIR()
