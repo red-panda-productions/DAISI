@@ -17,3 +17,5 @@ data/Singletons/*
 
 # Settings for Resharper
 Folder.DotSettings
+
+data/tracks/road/*

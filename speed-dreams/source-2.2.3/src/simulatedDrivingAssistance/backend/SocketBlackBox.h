@@ -8,12 +8,14 @@
 #include "car.h"
 #include "raceman.h"
 #include "BlackBoxData.h"
+#include "IPCPointerManager.h"
 
 #define SBB_BUFFER_SIZE 512
 
-/// @brief                A class that makes a socket connection to a black box algorithm
-/// @tparam BlackBoxData  The BlackBoxData type
-template <class BlackBoxData>
+/// @brief                 A class that makes a socket connection to a black box algorithm
+/// @tparam BlackBoxData   The BlackBoxData type
+/// @tparam PointerManager A manager that manages where the data should be stored
+template <class BlackBoxData, class PointerManager>
 class SocketBlackBox
 {
 public:
@@ -43,7 +45,10 @@ private:
     char m_buffer[SBB_BUFFER_SIZE];
 
     BlackBoxData* m_currentData = nullptr;
+
+    PointerManager m_pointerManager;
+
 };
 
 /// @brief The standard SocketBlackBox type
-#define SSocketBlackBox SocketBlackBox<BlackBoxData>
+#define SSocketBlackBox SocketBlackBox<BlackBoxData,SIPCPointerManager>

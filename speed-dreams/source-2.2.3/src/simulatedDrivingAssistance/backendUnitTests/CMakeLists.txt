@@ -45,6 +45,7 @@ SET(_MOCK_HEADERS
     mocks/InterventionExecutorMock.h
     mocks/SocketBlackBoxMock.h
     mocks/ConfigMock.h
+    mocks/PointerManagerMock.h
     mocks/DecisionMakerMock.h)
 
 

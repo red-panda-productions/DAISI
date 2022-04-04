@@ -25,7 +25,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
     tSituation* p_initialSituation, BlackBoxData* p_testSituations, int p_testAmount)
 {
     m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
-    BlackBoxData initialData(p_initialCar, p_initialSituation, 0);
+    BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 }
 

@@ -1,12 +1,10 @@
 #pragma once
-#include "../../backend/DriveSituation.h"
-#include "../../backend/ConfigEnums.h"
-#include "../../backend/Recorder.h"
+#include "ConfigEnums.h"
 
 class DecisionMakerMock
 {
 public:
-	bool Decide(DriveSituation& driveSituation)
+	bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount)
 	{
 		return Decision;
 	}
