@@ -6,6 +6,8 @@
 
 #define LOOKAHEAD_SEGMENTS 10
 
+/// @brief               Manages shared pointers so the program can use them
+/// @tparam BlackBoxData The data type that is set on the data pointer
 template <typename BlackBoxData>
 class IPCPointerManager
 {

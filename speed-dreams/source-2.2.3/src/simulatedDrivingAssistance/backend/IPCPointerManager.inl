@@ -7,6 +7,7 @@
     template tTrackSeg* IPCPointerManager<p_type>::GetSegmentPointer() const;
 
 
+/// @brief               Creates/opens the data pointers and sets their size
 template <typename BlackBoxData>
 IPCPointerManager<BlackBoxData>::IPCPointerManager()
 {
@@ -16,12 +17,16 @@ IPCPointerManager<BlackBoxData>::IPCPointerManager()
     m_segmentRegion = boost::interprocess::mapped_region(m_segmentDataObject, boost::interprocess::read_write);
 }
 
+/// @brief  Gets the data pointer from the shared memory
+/// @return The data pointer
 template<typename BlackBoxData>
 BlackBoxData* IPCPointerManager<BlackBoxData>::GetDataPointer() const
 {
     return static_cast<BlackBoxData*>(m_dataRegion.get_address());
 }
 
+/// @brief  Gets the segment pointer from the shared memory
+/// @return The segment pointer 
 template <typename BlackBoxData>
 tTrackSeg* IPCPointerManager<BlackBoxData>::GetSegmentPointer() const
 {
