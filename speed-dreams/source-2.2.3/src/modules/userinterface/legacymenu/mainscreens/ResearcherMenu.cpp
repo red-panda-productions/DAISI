@@ -174,10 +174,10 @@ static void SaveSettingsToDisk() {
     GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "no");
     switch (m_task)
     {
-        case 1:
+        case TASK_LANE_KEEPING:
             GfParmSetStr(readParam, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "yes");
             break;
-        case 2:
+        case TASK_SPEED_CONTROL:
             GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "yes");
             break;
     }
