@@ -380,8 +380,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     return s_scrHandle;
 }
 
-
-
 /// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
 int ResearcherMenuRun(void)
