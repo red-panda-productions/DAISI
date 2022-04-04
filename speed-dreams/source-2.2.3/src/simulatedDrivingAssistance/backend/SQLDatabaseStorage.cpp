@@ -8,7 +8,12 @@
   "INSERT IGNORE INTO" tableName "(" headers ") VALUES (" + values + ");"
 
 /// @brief The constructor of the SQL database storage
-SQLDatabaseStorage::SQLDatabaseStorage() = default;
+SQLDatabaseStorage::SQLDatabaseStorage() {
+    m_driver = nullptr;
+    m_connection = nullptr;
+    m_statement = nullptr;
+    m_resultSet = nullptr;
+};
 
 /// @brief Creates a database and stores data from input file into a table
 /// @param p_inputFilePath path and name of input file (from SimulationData\)
@@ -20,7 +25,6 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 
     bool newDatabase = false;
     OpenDatabase("localhost", "3306", "root", "root", "test", newDatabase);
-    if (newDatabase) CreateTables();
 
     InsertInitialData();
     InsertSimulationData();
@@ -34,7 +38,7 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 /// @param p_port Port the database is located on on the host. Should be numerical.
 /// @param p_username Username to connect with to the database.
 /// @param p_password Password to connect with to the database.
-/// @param p_schemaName Name of the database schema to use.
+/// @param p_schemaName Name of the database schema to use. Schema should exist already, but does not need to contain any tables.
 /// @param p_isNewSchema Whether the database schema is new. If new, the schema will be initialised with the proper tables.
 void SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
@@ -42,13 +46,14 @@ void SQLDatabaseStorage::OpenDatabase(
     const std::string& p_username,
     const std::string& p_password,
     const std::string& p_schemaName,
-    bool &p_isNewSchema)
+    bool p_isNewSchema)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
     // Connect to the database determined by the arguments
     m_connection = m_driver->connect("tcp://" + p_hostName + ":" + p_port, p_username, p_password);
+
     // Set the correct database schema
     m_connection->setSchema(p_schemaName);
     // Create a (reusable) statement
