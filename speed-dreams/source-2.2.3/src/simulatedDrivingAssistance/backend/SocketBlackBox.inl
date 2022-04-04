@@ -8,12 +8,12 @@
     template void SocketBlackBox<type>::Initialize();\
 	template void SocketBlackBox<type>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests);\
 	template void SocketBlackBox<type>::Shutdown();\
-	template void SocketBlackBox<type>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_BlackBoxData);\
+	template void SocketBlackBox<type>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);\
     template void SocketBlackBox<type>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
     template bool SocketBlackBox<type>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions);
 
 // inserts value from BlackBoxData variables in vector
-#define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, BlackBoxData& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
+#define PUSH_BACK_DS(p_getInfo) [](std::vector<std::string>& p_values, BlackBoxData& p_blackBoxData){p_values.push_back(std::to_string(p_blackBoxData.p_GetInfo));}
 #define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo()->p_variable)
 #define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo()->p_variable)
 #define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo()->TrackLocalPosition()->p_variable)
