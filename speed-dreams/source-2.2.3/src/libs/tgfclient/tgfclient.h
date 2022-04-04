@@ -639,6 +639,7 @@ TGFCLIENT_API const char* GfuiMenuGetStrProperty(void* hparm, const char* pszNam
                                                  const char* pszDefVal);
 // SIMULATED DRIVING ASSISTANCE
 TGFCLIENT_API bool gfuiMenuGetBoolean(const char* pszValue, bool bDefault);
+
 /*****************************
  * Texture / image interface *
  *****************************/
