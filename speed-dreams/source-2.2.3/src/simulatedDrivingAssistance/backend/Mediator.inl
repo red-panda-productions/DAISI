@@ -91,7 +91,7 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
     m_tickCount++;
     CarController.SetCar(p_car);
-    m_decisionMaker.Decide(p_car, p_situation,m_tickCount);
+    m_decisionMaker.Decide(p_car, p_situation, m_tickCount);
 }
 
 template<typename DecisionMaker>
