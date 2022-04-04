@@ -32,7 +32,7 @@ void SQLDatabaseStorage::OpenDatabase(std::string p_filePath, bool &p_newDatabas
 //    if (!checkForDatabase.good()) p_newDatabase = true;
 //    else checkForDatabase.close();
 
-    //driver = sql::mysql::get_mysql_driver_instance(); -- linker issues
+    m_driver = sql::mysql::get_mysql_driver_instance(); 
     sql::mysql::MySQL_Connection* connection;
 
     m_connection = m_driver->connect("tcp://127.0.0.1", "root", "root");
