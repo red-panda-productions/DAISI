@@ -75,7 +75,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	// sends required and sending data of client
 	msgpack::sbuffer sbuffer;
 	msgpack::pack(sbuffer, order);
-	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()),IPCLIB_SUCCEED);
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// receives amount of tests
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
