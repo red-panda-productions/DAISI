@@ -4,7 +4,6 @@
 
 <params name="ResearcherMenu">
   <section name="dynamic controls">
-
     <section name="CheckboxTaskLaneKeeping">
       <attstr name="type" val="check box"/>
       <attstr name="text" val="Lane keeping"/>
@@ -15,7 +14,7 @@
       <attnum name="image height" val="20"/>
       <attstr name="color" val="0xFFFFFF"/>
       <attstr name="font" val="small_t"/>
-      <attstr name="checked" val="no"/>
+      <attstr name="checked" val="yes"/>
     </section>
 
     <section name="CheckboxTaskSpeedControl">

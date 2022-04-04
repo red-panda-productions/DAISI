@@ -212,10 +212,12 @@ static void SaveSettingsToDisk() {
     }
 
     // Save indicator settings to xml file
-    const char* audioSetting = m_indicators.Auditory ? "yes" : "no";
+    const char* audioSetting = m_indicators.Audio ? "yes" : "no";
     GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
-    const char* visualSetting = m_indicators.Visual ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
+    const char* iconSetting = m_indicators.Icon ? "yes" : "no";
+    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", iconSetting);
+    const char* textSetting = m_indicators.Text ? "yes" : "no";
+    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorTextual", "checked", textSetting);
 
 
     // Save intervention type settings to xml file
@@ -331,13 +333,18 @@ void InitializeSettings(void* p_param) {
     bool* checkboxTasks = new bool[3];
     checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), true);
     checkboxTasks[TASK_SPEED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL), false);
+
     bool checkboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL), true);
     bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL), true);
+    bool checkboxIndicatorTextual = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorTextual", "checked", NULL), true);
+
+
     bool* checkboxInterventions = new bool[5];
     checkboxInterventions[INTERVENTION_TYPE_NO_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL), true);
     checkboxInterventions[INTERVENTION_TYPE_ONLY_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL), false);
     checkboxInterventions[INTERVENTION_TYPE_SHARED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL), false);
     checkboxInterventions[INTERVENTION_TYPE_COMPLETE_TAKEOVER] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", NULL), false);
+
     bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL), false);
     bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL), true);
     bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL), true);
@@ -350,8 +357,9 @@ void InitializeSettings(void* p_param) {
     setTask(checkboxTasks);
 
     // Set the indicator settings from the xml file
-    m_indicators.Auditory = checkboxIndicatorAuditory;
-    m_indicators.Visual = checkboxIndicatorVisual;
+    m_indicators.Audio = checkboxIndicatorAuditory;
+    m_indicators.Icon = checkboxIndicatorVisual;
+    m_indicators.Text = checkboxIndicatorTextual;
 
     // Set the indicator settings from the xml file
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
