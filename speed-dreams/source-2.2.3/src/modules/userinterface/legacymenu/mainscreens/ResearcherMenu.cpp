@@ -257,7 +257,8 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Inializes the menu setting from the ResearcherMenu.xml file
+/// @brief         Initializes the menu setting from the ResearcherMenu.xml file
+/// @param p_param The configuration menu handle
 void initializeSettings(void* p_param) {
     // Retrieve all setting variables from the xml file
     bool checkboxTaskLaneKeeping = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), false);
