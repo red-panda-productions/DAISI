@@ -195,16 +195,16 @@ static void SaveSettingsToDisk() {
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "no");
     switch (m_interventionType)
     {
-        case 0:
+        case INTERVENTION_TYPE_NO_SIGNALS:
             GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "yes");
             break;
-        case 1:
+        case INTERVENTION_TYPE_ONLY_SIGNALS:
             GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "yes");
             break;
-        case 3:
+        case INTERVENTION_TYPE_SHARED_CONTROL:
             GfParmSetStr(readParam, "dynamic controls/CheckboxTypeSharedControl", "checked", "yes");
             break;
-        case 4:
+        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
             GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "yes");
             break;
     }
