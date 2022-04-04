@@ -50,6 +50,7 @@ class cGrBoard
 
     void grDispCounterBoard2();
 
+    // SIMULATED DRIVING ASSISTANCE: add display intervention methods
     void DispIntervention();
     void DispInterventionIcon();
     void DispInterventionText();
