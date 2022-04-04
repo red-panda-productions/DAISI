@@ -1,8 +1,0 @@
-taskSetting = 0
-AudioIndicator = 1
-VisualIndicator = 1
-InterventionSettings = 0
-Track = 
-ControlGas = 1
-ControlInterventionToggle = 0
-ControlSteering = 1
