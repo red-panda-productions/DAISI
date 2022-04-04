@@ -119,6 +119,8 @@ Changed:
                     included "InterventionConfig.h"
 
                     added   DispIntervention()
+                    added   DispInterventionIcon();
+                    added   DispInterventionText();
                     added   LoadInterventionTextures()
 
                     changed cGrBoard(): removed assignments of removed members
@@ -151,7 +153,9 @@ Changed:
                     removed constants tracking the number of states of removed elements
 
                 grboard.h
-                    added   DispIntervention()  
+                    added   DispIntervention() 
+                    added   DispInterventionIcon();
+                    added   DispInterventionText();
 
                     removed grDispGGraph()
                     removed grDispEngineLeds()
