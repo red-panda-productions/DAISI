@@ -102,13 +102,13 @@ void SocketBlackBox<BlackBoxData>::Shutdown()
 /// @param p_sbuffer        Buffer to pack data in
 /// @param p_BlackBoxData Drive situation to serialize
 template <class BlackBoxData>
-void SocketBlackBox<BlackBoxData>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_BlackBoxData)
+void SocketBlackBox<BlackBoxData>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData)
 {
     std::vector<std::string> dataToSerialize;
 
     std::stringstream oss;
 
-    oss << p_BlackBoxData;
+    oss << p_blackBoxData;
 
     dataToSerialize.push_back(oss.str());
 
