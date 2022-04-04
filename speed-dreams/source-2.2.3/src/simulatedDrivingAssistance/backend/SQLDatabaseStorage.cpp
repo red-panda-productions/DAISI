@@ -19,28 +19,45 @@ SQLDatabaseStorage::SQLDatabaseStorage(std::string p_inputFilePath)
 void SQLDatabaseStorage::StoreData(const std::string p_filePath)
 {
     bool newDatabase = false;
-    OpenDatabase(p_filePath, newDatabase);
+    OpenDatabase("localhost", "3306", "root", "root", "test", newDatabase);
     if (newDatabase) CreateTables();
 
     InsertInitialData();
     InsertSimulationData();
 
     m_inputFile.close();
+    CloseDatabase();
 }
 
-void SQLDatabaseStorage::OpenDatabase(std::string p_filePath, bool &p_newDatabase)
+/// @brief Connect to the specified database. If the database is new, initialise the database with the proper table.
+/// @param p_hostName Hostname of the database to connect to. Should be a TCP-IP address.
+/// @param p_port Port the database is located on on the host. Should be numerical.
+/// @param p_username Username to connect with to the database.
+/// @param p_password Password to connect with to the database.
+/// @param p_schemaName Name of the database schema to use.
+/// @param p_isNewSchema Whether the database schema is new. If new, the schema will be initialised with the proper tables.
+void SQLDatabaseStorage::OpenDatabase(
+    const std::string& p_hostName,
+    const std::string& p_port,
+    const std::string& p_username,
+    const std::string& p_password,
+    const std::string& p_schemaName,
+    bool &p_isNewSchema)
 {
-//    std::ifstream checkForDatabase(p_filePath);
-//    if (!checkForDatabase.good()) p_newDatabase = true;
-//    else checkForDatabase.close();
+    // Initialise SQL driver
+    m_driver = sql::mysql::get_mysql_driver_instance();
 
-    m_driver = sql::mysql::get_mysql_driver_instance(); 
-    sql::mysql::MySQL_Connection* connection;
-
-    m_connection = m_driver->connect("tcp://127.0.0.1", "root", "root");
-    m_connection->setSchema("test");
-
+    // Connect to the database determined by the arguments
+    m_connection = m_driver->connect("tcp://" + p_hostName + ":" + p_port, p_username, p_password);
+    // Set the correct database schema
+    m_connection->setSchema(p_schemaName);
+    // Create a (reusable) statement
     m_statement = m_connection->createStatement();
+
+    // If the database schema is new, initialise it with tables
+    if (p_isNewSchema) {
+        CreateTables();
+    }
 }
 
 void SQLDatabaseStorage::CreateTables()
@@ -191,4 +208,14 @@ void SQLDatabaseStorage::InsertInitialData()
 void SQLDatabaseStorage::InsertSimulationData()
 {
 
+}
+
+/// @brief Close the connection to the database and clean up.
+void SQLDatabaseStorage::CloseDatabase() {
+    m_statement->close();
+    m_connection->close();
+
+    // sql::Statement and sql::Connection objects must be freed explicitly using delete
+    delete m_statement;
+    delete m_connection;
 }

@@ -14,7 +14,13 @@ public:
     void StoreData(const std::string p_filePath) override;
 
 private:
-    void OpenDatabase(std::string p_filePath, bool& p_newDatabase);
+    void OpenDatabase(const std::string& p_hostName,
+                      const std::string& p_port,
+                      const std::string& p_username,
+                      const std::string& p_password,
+                      const std::string& p_schemaName,
+                      bool& p_isNewSchema);
+    void CloseDatabase();
     void CreateTables();
     void InsertInitialData();
     void InsertSimulationData();
