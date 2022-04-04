@@ -42,6 +42,11 @@ void CreateCorrectDatabase(const std::string& p_fileName)
     remove(databasePath.c_str());
 }
 
+//void ConnectDatabase(const std::string& p_password)
+//{
+//    OpenDatabase("localhost", "3306", "root", "root", "test", true);
+//}
+
 TEST_CASE(SQLDatabaseStorageTests, CorrectInputTest, CreateCorrectDatabase, ("correctInput.txt"))
 
 TEST_CASE(SQLDatabaseStorageTests, NoStartTest, FailToCreateDatabase, ("noStart.txt"))
