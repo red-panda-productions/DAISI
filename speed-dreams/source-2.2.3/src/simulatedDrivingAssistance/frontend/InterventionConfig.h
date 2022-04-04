@@ -23,10 +23,10 @@ static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
     "none", "steer left", "steer right", "brake"
 };
 
-/// @brief Represents a position on screen
+/// @brief Represents a position on screen as percentages of the full screen.
 typedef struct ScreenPosition 
 {
-    int X, Y;
+    float X, Y;
 } tScreenPosition;
 
 /// @brief Stores all data of a texture

@@ -428,6 +428,61 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 /// @brief Displays the currently active intervention in InterventionConfig
 void cGrBoard::DispIntervention() 
 {
+    tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
+
+    if (settings.Visual)  
+        DispInterventionIcon();
+
+    if (settings.Textual) 
+        DispInterventionText();
+
+    //tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
+    //if (!textureData.Texture) return;
+
+    //// Dimensions of the icon on the screen (will be put in XML settings file later)
+    //float iconWidth = 100;
+    //float iconHeight = 100;
+
+    //// Duplicate the current matrix and enable opengl settings.
+    //glPushMatrix();
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_TEXTURE_2D);
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    //// Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
+    //glTranslatef(
+    //    1.5 * centerAnchor - 0.5 * iconWidth + textureData.Position.X,
+    //    BOTTOM_ANCHOR + 10 + textureData.Position.Y,
+    //    0);
+    //glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
+    //
+    //// Draw the texture as a Triangle Strip. 
+    //// glTexCoord2f defines point of the texture that you take (0-1).
+    //// glVertex2f then defines where to place this on the screen (relative to the current matrix)
+    //glBegin(GL_TRIANGLE_STRIP);
+    //glColor4f(1.0, 1.0, 1.0, 0.0);
+    //glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
+    //glTexCoord2f(0.0, 1.0); glVertex2f(0, iconHeight);
+    //glTexCoord2f(1.0, 0.0); glVertex2f(iconWidth, 0);
+    //glTexCoord2f(1.0, 1.0); glVertex2f(iconWidth, iconHeight);
+    //glEnd();
+
+    //// Unbind the texture and pop the translated matrix of the stack.
+    //glBindTexture(GL_TEXTURE_2D, 0);
+
+    //// Also draw the text only when enabled in the settings
+    //if (SMediator::GetInstance()->GetIndicatorSettings().Textual)
+    //{
+    //    tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
+    //    GfuiDrawString(textData.Text, normal_color_, GFUI_FONT_LARGE_C, textData.Position.X, textData.Position.Y);
+    //}
+
+    //glPopMatrix();
+}
+
+void cGrBoard::DispInterventionIcon()
+{
     tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
     if (!textureData.Texture) return;
 
@@ -444,11 +499,11 @@ void cGrBoard::DispIntervention()
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
     glTranslatef(
-        1.5 * centerAnchor - 0.5 * iconWidth + textureData.Position.X,
-        BOTTOM_ANCHOR + 10 + textureData.Position.Y,
+        rightAnchor * textureData.Position.X,
+        TOP_ANCHOR  * textureData.Position.Y,
         0);
     glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
-    
+
     // Draw the texture as a Triangle Strip. 
     // glTexCoord2f defines point of the texture that you take (0-1).
     // glVertex2f then defines where to place this on the screen (relative to the current matrix)
@@ -462,15 +517,16 @@ void cGrBoard::DispIntervention()
 
     // Unbind the texture and pop the translated matrix of the stack.
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    // Also draw the text only when enabled in the settings
-    if (SMediator::GetInstance()->GetIndicatorSettings().Textual)
-    {
-        tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
-        GfuiDrawString(textData.Text, normal_color_, GFUI_FONT_LARGE_C, textData.Position.X, textData.Position.Y);
-    }
-
     glPopMatrix();
+}
+
+void cGrBoard::DispInterventionText()
+{
+    tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
+    GfuiDrawString(
+        textData.Text, normal_color_, GFUI_FONT_LARGE_C, 
+        rightAnchor * textData.Position.X,
+        TOP_ANCHOR  * textData.Position.Y);
 }
 
 // SIMULATED DRIVING ASSISTANCE
@@ -488,7 +544,7 @@ void LoadInterventionData()
     void* xmlHandle = config->GetXmlHandle();
     for (int i = 0; i < interventionCnt; i++)
     {
-        int xPos, yPos;
+        float xPos, yPos;
 
         // Textures
         snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
