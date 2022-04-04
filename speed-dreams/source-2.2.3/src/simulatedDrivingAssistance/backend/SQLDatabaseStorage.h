@@ -24,4 +24,6 @@ private:
     std::stringstream m_sstream;
     sql::mysql::MySQL_Driver* m_driver;
     sql::Connection* m_connection;
+    sql::Statement* m_statement;
+    sql::ResultSet* m_resultSet;
 };
