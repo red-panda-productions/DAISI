@@ -135,7 +135,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	TestDriveSituation(driveSituation3, mock);
 
 	// send back result of initial drive situation
-	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()),IPCLIB_SUCCEED);
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 
 	// normal
