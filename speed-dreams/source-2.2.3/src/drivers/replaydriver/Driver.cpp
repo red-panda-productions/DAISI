@@ -33,8 +33,10 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     //m_humanDriver.new_race(m_index, p_car, p_situation);
-    m_replayFile.open("../test_data/user_recordings/userRecording");
-    m_replayFile >> m_inputTime;
+    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220404-160351.txt");
+    std::string inputTime
+    m_replayFile >> inputTime;
+    m_inputTime = std::stod(inputTime)
 }
 
 /// @brief Update the car's controls based on the current race situation.
@@ -45,7 +47,7 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
 
-    if(std::stod(m_inputTime) ==  p_situation -> currentTime)
+    if(m_inputTime ==  p_situation -> currentTime)
     {
         std::string accelString;
         m_replayFile >> accelString;
@@ -59,14 +61,17 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         p_car->_accelCmd = accel;
         p_car->_brakeCmd = brake;
         p_car->_steerCmd = steer;
-        m_replayFile >> m_inputTime;
+        std::string inputTime
+        m_replayFile >> inputTime;
+        m_inputTime = std::stod(inputTime);
         if (m_replayFile.eof())
         {
             PauseRace(p_car, p_situation);
         }
 
     }
-    return;
+    SMediator::GetInstance()->DriveTick(p_car, p_situation);
+
 }
 
 /// @brief Pause the current race.
