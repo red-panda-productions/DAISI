@@ -1,5 +1,4 @@
 #pragma once
-#include "DriveSituation.h"
 #include "ConfigEnums.h"
 #include "car.h"
 #include "raceman.h"
@@ -35,8 +34,6 @@ public:
 
     InterventionType GetInterventionType();
 
-	DriveSituation* Simulate();
-
     static Mediator* GetInstance();
 
 	/// @brief Removes copy constructor for singleton behaviour
@@ -52,7 +49,9 @@ public:
 
     DecisionMaker m_decisionMaker;
 
-	EnvironmentInfo m_environment = EnvironmentInfo(0, 0, 0);
+    int m_tickCount;
+
+    tTrack* m_track = nullptr;
 };
 
 SMediator* SMediator::m_instance = nullptr;

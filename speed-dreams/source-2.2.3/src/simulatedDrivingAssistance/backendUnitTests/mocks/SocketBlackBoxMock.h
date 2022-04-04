@@ -1,6 +1,6 @@
 #pragma once
-#include "DriveSituationMock.h"
 #include "DecisionTuple.h"
+#include "BlackBoxData.h"
 
 class SocketBlackBoxMock
 {
@@ -11,7 +11,7 @@ public:
 		Decisions.SetBrake(40);
 	}
 
-	void Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests = nullptr, int p_amountOfTests = 0)
+	void Initialize(BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)
 	{
 
 	}
@@ -21,7 +21,7 @@ public:
 
 	}
 
-	bool GetDecisions(DriveSituation& driveSituation, DecisionTuple& p_decisions)
+	bool GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions)
 	{
 		if (!IsDecision) return false;
 		p_decisions = Decisions;

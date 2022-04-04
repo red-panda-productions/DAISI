@@ -11,11 +11,13 @@ class IPCLIB_EXPORT ServerSocket : public Socket
 public:
 	ServerSocket(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888, int p_connections = 1);
 
+	int Initialize();
+
 	void ConnectAsync();
 
 	void AwaitClientConnection();
 
-	void SendData(const char* p_data, const int p_size) const;
+	int SendData(const char* p_data, const int p_size) const;
 
 	void Disconnect();
 
@@ -28,6 +30,10 @@ public:
 private:
 
 	void Connect();
+
+	PCWSTR m_ip;
+	int m_port;
+	int m_connections;
 
 	SOCKET m_serverSocket = 0;
 	struct sockaddr_in m_client;

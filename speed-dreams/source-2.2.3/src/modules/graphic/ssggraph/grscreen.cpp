@@ -148,24 +148,6 @@ void cGrScreen::activate(int x, int y, int w, int h, float v)
     active = true;
 }
 
-void cGrScreen::selectTrackMap()
-{
-    int viewmode;
-
-    board->getTrackMap()->selectTrackMap();
-    viewmode = board->getTrackMap()->getViewMode();
-
-    sprintf(path, "%s/%d", GR_SCT_DISPMODE, id);
-    GfParmSetNum(grHandle, path, GR_ATT_MAP, NULL, (tdble)viewmode);
-
-    /* save also as user's preference if human */
-    if (curCar->_driverType == RM_DRV_HUMAN) {
-        sprintf(path2, "%s/%s", GR_SCT_DISPMODE, curCar->_name);
-        GfParmSetNum(grHandle, path2, GR_ATT_MAP, NULL, (tdble)viewmode);
-    }
-    GfParmWriteFile(NULL, grHandle, "Graph");
-}
-
 void cGrScreen::setCurrentCar(tCarElt *newCurCar)
 {
     curCar = newCurCar;
