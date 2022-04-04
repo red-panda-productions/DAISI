@@ -154,7 +154,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_TRUE(buffer[0] == 'S' && buffer[1] == 'T' && buffer[2] == 'O' && buffer[3] == 'P');
 
 	// return to break connection
-	ASSERT_EQ(client.SendData("OK", 2),IPCLIB_SUCCEED);
+	ASSERT_EQ(client.SendData("OK", 2), IPCLIB_SUCCEED);
 	client.Disconnect();
 }
 
