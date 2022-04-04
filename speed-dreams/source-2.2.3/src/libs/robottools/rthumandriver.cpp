@@ -613,8 +613,6 @@ void HumanDriver::init_track(int index,
 
 /*
  * Original function: newrace
- *
- * Changes from original: none
  */
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
