@@ -65,15 +65,14 @@
 #include "forcefeedback.h"
 
 // ASSISTED DRIVING ASSISTANCE: added recorder
-// To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+// To record uncomment the #define RECORD_SESSION in backend/ConfigEnums.h
 #include <ConfigEnums.h>
 #define PARAMAMOUNT 3
+
 #ifdef RECORD_SESSION
 #include <Recorder.h>
 Recorder* recorder;
-
 #endif
-
 
 
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
