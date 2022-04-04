@@ -67,10 +67,11 @@
 // ASSISTED DRIVING ASSISTANCE: added recorder
 // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #include <ConfigEnums.h>
+#define PARAMAMOUNT 3
 #ifdef RECORD_SESSION
 #include <Recorder.h>
 Recorder* recorder;
-const int paramAmount = 3;
+
 #endif
 
 
@@ -621,7 +622,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #ifdef RECORD_SESSION
-    recorder = new Recorder("user_recordings", "userRecording", paramAmount);
+    recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
 #endif
     const int idx = index - 1;
 
@@ -1725,7 +1726,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #ifdef RECORD_SESSION
-        float inputs[paramAmount] = { car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
+        float inputs[PARAMAMOUNT] = { car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
         recorder->WriteRecording(inputs, s -> currentTime, false);
 #endif
     HCtx[idx]->lap = car->_laps;
