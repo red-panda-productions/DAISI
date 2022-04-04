@@ -115,6 +115,9 @@ Changed:
             ssggraph/
                 CMakeLists.txt added connection to frontend module
                 grboard.cpp
+                    included "Mediator.h"
+                    included "InterventionConfig.h"
+
                     added   DispIntervention()
                     added   LoadInterventionTextures()
 

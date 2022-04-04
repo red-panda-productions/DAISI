@@ -37,6 +37,7 @@
 #include "grscreen.h"
 
 #include "InterventionConfig.h"
+#include "Mediator.h"
 
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
@@ -410,9 +411,12 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
         grDispSplitScreenIndicator();
     }
 
-    // For now: display an intervention every frame.
-    DispIntervention();
-
+  // SIMULATED DRIVING ASSISTANCE
+  // Draw the intervention only when enabled in the settings
+  if (SMediator::GetInstance()->GetIndicatorSettings().Visual)
+  {
+      DispIntervention();
+  }
  
     if (debugFlag)
         grDispDebug(s, frameInfo);
@@ -420,7 +424,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
         grDispCounterBoard2();
 }
 
-// SIMULATED DIRIVING ASSISTANCE
+// SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the currently active intervention in InterventionConfig
 void cGrBoard::DispIntervention() 
 {
@@ -459,8 +463,12 @@ void cGrBoard::DispIntervention()
     // Unbind the texture and pop the translated matrix of the stack.
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
-    GfuiDrawString(textData.Text, normal_color_, GFUI_FONT_LARGE_C, textData.Position.X, textData.Position.Y);
+    // Also draw the text only when enabled in the settings
+    if (SMediator::GetInstance()->GetIndicatorSettings().Textual)
+    {
+        tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
+        GfuiDrawString(textData.Text, normal_color_, GFUI_FONT_LARGE_C, textData.Position.X, textData.Position.Y);
+    }
 
     glPopMatrix();
 }
