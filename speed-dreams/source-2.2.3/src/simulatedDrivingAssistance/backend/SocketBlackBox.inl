@@ -5,7 +5,7 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
-#include "boost/interprocess/mapped_region.hpp"
+
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(type) \
 	template SocketBlackBox<type>::SocketBlackBox(PCWSTR p_ip, int p_port);\
@@ -31,7 +31,10 @@
 #define CONVERT_TO_ACCEL_DECISION DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
 
 template <class BlackBoxData>
-SocketBlackBox<BlackBoxData>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip, p_port)
+SocketBlackBox<BlackBoxData>::SocketBlackBox(PCWSTR p_ip, int p_port)
+    : m_server(p_ip, p_port)
+    , m_dataRegion(m_currentDataObject, boost::interprocess::read_write)
+    , m_segmentRegion(m_segmentDataObject, boost::interprocess::read_write)
 {
 
 }
@@ -41,7 +44,7 @@ template <class BlackBoxData>
 void SocketBlackBox<BlackBoxData>::Initialize()
 {
     m_currentDataObject.truncate(sizeof(BlackBoxData));
-    s_segmentDataObject.truncate(sizeof(tTrackSeg) * LOOKAHEAD_SEGMENTS);
+    m_segmentDataObject.truncate(sizeof(tTrackSeg) * LOOKAHEAD_SEGMENTS);
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
@@ -115,9 +118,7 @@ void SocketBlackBox<BlackBoxData>::SerializeBlackBoxData(msgpack::sbuffer& p_sbu
 {
     std::vector<std::string> dataToSerialize;
 
-    boost::interprocess::mapped_region region(m_currentDataObject, boost::interprocess::read_write);
-
-    BlackBoxData* pointer = static_cast<BlackBoxData*>(region.get_address());
+    BlackBoxData* pointer = static_cast<BlackBoxData*>(m_dataRegion.get_address());
 
     *pointer = *p_BlackBoxData;
 
@@ -164,10 +165,8 @@ bool SocketBlackBox<BlackBoxData>::GetDecisions(tCarElt* p_car, tSituation* p_si
     if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
     msgpack::sbuffer sbuffer;
 
-    boost::interprocess::mapped_region region(s_segmentDataObject, boost::interprocess::read_write);
-
     delete m_currentData;
-    m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, static_cast<tTrackSeg*>(region.get_address()), LOOKAHEAD_SEGMENTS);
+    m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, static_cast<tTrackSeg*>(m_segmentRegion.get_address()), LOOKAHEAD_SEGMENTS);
     SerializeBlackBoxData(sbuffer, m_currentData);
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();

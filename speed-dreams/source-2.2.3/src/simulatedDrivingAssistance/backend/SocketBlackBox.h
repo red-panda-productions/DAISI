@@ -9,6 +9,7 @@
 #include "raceman.h"
 #include "BlackBoxData.h"
 #include "boost/interprocess/shared_memory_object.hpp"
+#include "boost/interprocess/mapped_region.hpp"
 
 #define SBB_BUFFER_SIZE 512
 
@@ -49,6 +50,13 @@ private:
 
     boost::interprocess::shared_memory_object m_currentDataObject =
         boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "SDA_SHARED_MEMORY", boost::interprocess::read_write);
+
+    boost::interprocess::shared_memory_object m_segmentDataObject =
+        boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "SDA_SHARED_SEGMENT_MEMORY", boost::interprocess::read_write);
+
+    boost::interprocess::mapped_region m_dataRegion;
+
+    boost::interprocess::mapped_region m_segmentRegion;
 };
 
 /// @brief The standard SocketBlackBox type
