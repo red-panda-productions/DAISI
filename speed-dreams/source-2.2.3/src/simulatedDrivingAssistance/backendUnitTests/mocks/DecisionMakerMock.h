@@ -1,6 +1,6 @@
 #pragma once
-
 #include "ConfigEnums.h"
+
 class DecisionMakerMock
 {
 public:
@@ -16,4 +16,6 @@ public:
 
     InterventionType Type;
 	bool Decision;
+
+    ~DecisionMakerMock() {};
 };
