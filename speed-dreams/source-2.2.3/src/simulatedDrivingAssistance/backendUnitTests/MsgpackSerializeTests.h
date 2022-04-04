@@ -7,7 +7,6 @@
 #include "TestUtils.h"
 #include <sstream>
 
-
 /// <summary>
 /// Tests if all variables can be serialized correctly
 /// </summary>
