@@ -12,6 +12,7 @@ typedef struct Indicator
 {
     bool Auditory;
     bool Visual;
+    bool Textual;
 } tIndicator;
 
 /// @brief The different interventions that can be done
@@ -39,6 +40,7 @@ typedef struct ParticipantControl
     bool ControlInterventionToggle;
     bool ControlGas;
     bool ControlSteering;
+    bool ForceFeedback;
 } tParticipantControl;
 
 /// @brief The different types of black boxes

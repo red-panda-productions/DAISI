@@ -23,7 +23,6 @@
 #include <car.h>        // tCarElt
 #include <raceman.h>    // tSituation
 
-class cGrTrackMap;
 class cGrFrameInfo;
 
 #include <string>
@@ -35,71 +34,29 @@ class cGrBoard
     int id;     // Board Id
     const tCarElt* car_;
 
-    int boardFlag;
-    int leaderFlag;
     int debugFlag;
-    int leaderNb;
     int counterFlag;
-    int GFlag;
-    int dashboardFlag;
-    int arcadeFlag;
     int boardWidth;
     int leftAnchor;
     int centerAnchor;
     int rightAnchor;
     int speedoRise;
-    // Scrolling leaderboard variables
-    int iStart;
-    double iTimer;
-    int iStringStart;
-    std::string st;     // This is the line we will display in the top
 
  private:
     void grDispDebug(const tSituation *s, const cGrFrameInfo* frame);
-    void grDispGGraph();
     void grDispSplitScreenIndicator();
     void grDrawGauge(tdble X1, tdble Y1, tdble H, float *clr1,
                         float *clr2, tdble val, const char *title);
-    void grDispEngineLeds(int X, int Y, int align, bool bg);
 
-    void grDispCarBoard(const tSituation *s);
-    void grDispCarBoard1(const tSituation *s);
-    void grDispCarBoard2(const tSituation *s);
-
-    void grDispIndicators(const bool arcade);
-
-    void grDispLeaderBoard(const tSituation *s);
     void grDispCounterBoard2();
-    void grDispLeaderBoardScroll(const tSituation *s);
-    void grDispLeaderBoardScrollLine(const tSituation *s);
-    
-    void grDispDashboard();
 
-    void grDispArcade(const tSituation *s);
-    std::string grGenerateLeaderBoardEntry(const tCarElt *car, const tSituation *s,
-                                            const bool isLeader) const;
-    // Track overview object
-    cGrTrackMap *trackMap;
-
-    bool grGetSplitTime(const tSituation *s, bool gap_inrace,
-                        double &time, int *laps_different, float **color);
-    void grGetLapsTime(const tSituation *s, char* result,
-                        char const** label) const;
-    void grSetupDrawingArea(int xl, int yb, int xr, int yt) const;
-
-    void grDispIntervention();
+    void DispIntervention();
 
 private:
     //Dash colour handling
     float *normal_color_;
     float *danger_color_;
-    float *ok_color_;
-    float *error_color_;
-    float *inactive_color_;
     float *emphasized_color_;
-    float *ahead_color_;
-    float *behind_color_;
-    float *arcade_color_;
     float *background_color_;
 
     void ReadDashColor(void *hdle, const std::string &color_name, float **color);
@@ -112,7 +69,6 @@ private:
     void shutdown(void);
     void selectBoard(int brd);
     void setWidth(int width);
-    inline cGrTrackMap *getTrackMap() { return trackMap; }
 
     void refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                         const tCarElt *currCar, bool isCurrScreen);
@@ -120,6 +76,5 @@ private:
 };
 
 extern void grInitBoardCar(tCarElt *car);
-extern void grShutdownBoardCar(void);
 
 #endif /* _GRBOARD_H_ */

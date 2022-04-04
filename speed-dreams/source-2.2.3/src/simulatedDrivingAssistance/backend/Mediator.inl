@@ -92,9 +92,9 @@ tIndicator Mediator<DecisionMaker>::GetIndicatorSettings()
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
-    m_tickCount++;
     CarController.SetCar(p_car);
     m_decisionMaker.Decide(p_car, p_situation, m_tickCount);
+    m_tickCount++;
 }
 
 /// @brief                  Starts the race in the framework
@@ -106,7 +106,8 @@ template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     m_track = p_track;
-    m_decisionMaker.Initialize(p_situation->cars[0], p_situation);
+    tCarElt car;
+    m_decisionMaker.Initialize(&car, p_situation);
 }
 
 template<typename DecisionMaker>
