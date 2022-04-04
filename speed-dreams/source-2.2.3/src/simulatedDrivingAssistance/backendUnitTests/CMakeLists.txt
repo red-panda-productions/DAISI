@@ -40,14 +40,12 @@ SET(_HEADERS MsgpackSerializeTests.h
 
 SET(_MOCK_SOURCES "")
 
-SET(_MOCK_HEADERS mocks/CarInfoMock.h
+SET(_MOCK_HEADERS
     mocks/BlackBoxDataMock.h
-    mocks/EnvironmentInfoMock.h
     mocks/InterventionExecutorMock.h
-    mocks/PlayerInfoMock.h
     mocks/SocketBlackBoxMock.h
-    mocks/TrackPositionMock.h
     mocks/ConfigMock.h
+    mocks/PointerManagerMock.h
     mocks/DecisionMakerMock.h)
 
 

@@ -4,6 +4,7 @@
 
 <params name="ResearcherMenu">
   <section name="dynamic controls">
+
     <section name="CheckboxTaskLaneKeeping">
       <attstr name="type" val="check box"/>
       <attstr name="text" val="Lane keeping"/>
@@ -27,13 +28,13 @@
       <attnum name="image height" val="20"/>
       <attstr name="color" val="0xFFFFFF"/>
       <attstr name="font" val="small_t"/>
-      <attstr name="checked" val="yes"/>
+      <attstr name="checked" val="no"/>
     </section>
 
     <section name="CheckboxIndicatorAuditory">
       <attstr name="type" val="check box"/>
-      <attstr name="text" val="Auditory"/>
-      <attstr name="tip" val="Enable/Disable Auditory indication of interventions"/>
+      <attstr name="text" val="Audio"/>
+      <attstr name="tip" val="Enable/Disable auditory indication of interventions"/>
       <attnum name="x" val="140"/>
       <attnum name="y" val="370"/>
       <attnum name="image width" val="20"/>
@@ -45,8 +46,8 @@
 
     <section name="CheckboxIndicatorVisual">
       <attstr name="type" val="check box"/>
-      <attstr name="text" val="Visual"/>
-      <attstr name="tip" val="Enable/Disable Visual indication of interventions"/>
+      <attstr name="text" val="Icon"/>
+      <attstr name="tip" val="Enable/Disable icon indication of interventions"/>
       <attnum name="x" val="140"/>
       <attnum name="y" val="340"/>
       <attnum name="image width" val="20"/>
@@ -58,8 +59,8 @@
 
     <section name="CheckboxIndicatorTextual">
       <attstr name="type" val="check box"/>
-      <attstr name="text" val="Textual"/>
-      <attstr name="tip" val="Enable/Disable Textual indication of interventions"/>
+      <attstr name="text" val="Text"/>
+      <attstr name="tip" val="Enable/Disable text indication of interventions"/>
       <attnum name="x" val="140"/>
       <attnum name="y" val="310"/>
       <attnum name="image width" val="20"/>

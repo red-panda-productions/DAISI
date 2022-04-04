@@ -24,7 +24,7 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-tParticipantControl m_pControl = {false, true, true, true};
+tParticipantControl m_pControl = { false, true, true, true };
 
 // Force feedback manager
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
@@ -72,23 +72,23 @@ static void SelectSpeedControl(tCheckBoxInfo* p_info)
 
 /// @brief        Enables/disables the auditory indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectAuditory(tCheckBoxInfo* p_info)
+static void SelectAudio(tCheckBoxInfo* p_info)
 {
-    m_indicators.Auditory = p_info->bChecked;
+    m_indicators.Audio = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the visual indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectVisual(tCheckBoxInfo* p_info)
+static void SelectIcon(tCheckBoxInfo* p_info)
 {
-    m_indicators.Visual = p_info->bChecked;
+    m_indicators.Icon = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the textual indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectTextual(tCheckBoxInfo* p_info)
+static void SelectText(tCheckBoxInfo* p_info)
 {
-    m_indicators.Textual = p_info->bChecked;
+    m_indicators.Text = p_info->bChecked;
 }
 
 /// @brief        Sets the interventionType to no signals
@@ -385,9 +385,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskSpeedControl", NULL, SelectSpeedControl);
 
     // Indicator checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAuditory);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectVisual);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectTextual);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAudio);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectIcon);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectText);
 
     // InterventionType checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeNoSignals", NULL, SelectTypeNoSignals);

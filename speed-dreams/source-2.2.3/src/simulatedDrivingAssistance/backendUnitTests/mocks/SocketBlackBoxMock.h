@@ -9,6 +9,7 @@ public:
 	{
 		Decisions.SetSteer(20);
 		Decisions.SetBrake(40);
+		Decisions.SetAccel(60);
 	}
 
 	void Initialize(BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)
