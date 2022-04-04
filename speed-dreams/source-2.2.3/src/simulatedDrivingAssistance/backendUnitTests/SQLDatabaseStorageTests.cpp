@@ -20,7 +20,7 @@
 /// @param  p_fileName The filename
 void FailToCreateDatabase(const std::string& p_fileName)
 {
-    SQLDatabaseStorage sqlDatabaseStorage(p_fileName);
+    SQLDatabaseStorage sqlDatabaseStorage;
 
     GET_CREATED_DATABASE_PATH
     std::ifstream databaseFile(databasePath);
@@ -31,9 +31,9 @@ void FailToCreateDatabase(const std::string& p_fileName)
 /// @param  p_fileName The filename
 void CreateCorrectDatabase(const std::string& p_fileName)
 {
-    SQLDatabaseStorage sqlDatabaseStorage(p_fileName);
+    SQLDatabaseStorage sqlDatabaseStorage;
 
-    ASSERT_NO_THROW(sqlDatabaseStorage.StoreData("test"));
+    ASSERT_NO_THROW(sqlDatabaseStorage.StoreData(p_fileName));
 
     GET_CREATED_DATABASE_PATH
     std::ifstream databaseFile(databasePath);
@@ -42,13 +42,15 @@ void CreateCorrectDatabase(const std::string& p_fileName)
     remove(databasePath.c_str());
 }
 
-//void ConnectDatabase(const std::string& p_password)
-//{
-//    OpenDatabase("localhost", "3306", "root", "root", "test", true);
-//}
+void ConnectDatabase(const std::string& p_password)
+{
+    SQLDatabaseStorage sqlDatabaseStorage;
+    sqlDatabaseStorage.OpenDatabase("127.0.0.1", "3306", "root", "root", "test", true);
+}
 
 TEST_CASE(SQLDatabaseStorageTests, CorrectInputTest, CreateCorrectDatabase, ("correctInput.txt"))
 
 TEST_CASE(SQLDatabaseStorageTests, NoStartTest, FailToCreateDatabase, ("noStart.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NonExistingKeyTest, FailToCreateDatabase, ("nonExistingKey.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NoVariableNamesTest, FailToCreateDatabase, ("noVariableNames.txt"))
+//TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, ConnectDatabase, ([your mySQL password here]))

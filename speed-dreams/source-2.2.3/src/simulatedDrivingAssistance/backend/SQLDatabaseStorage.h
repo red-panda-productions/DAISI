@@ -17,7 +17,7 @@ public:
                       const std::string& p_username,
                       const std::string& p_password,
                       const std::string& p_schemaName,
-                      bool& p_isNewSchema);
+                      bool p_isNewSchema);
 
 private:
     void CloseDatabase();
