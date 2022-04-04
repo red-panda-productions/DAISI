@@ -120,7 +120,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	TestDriveSituation(driveSituation2, exampleSituation);
 
 	// send back result of test 2
-	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()),IPCLIB_SUCCEED);
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
