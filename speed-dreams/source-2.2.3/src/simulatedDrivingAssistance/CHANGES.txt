@@ -117,12 +117,90 @@ Changed:
                 grboard.cpp
                     included "Mediator.h"
                     included "InterventionConfig.h"
+
                     added   DispIntervention()
                     added   LoadInterventionTextures()
+
+                    changed cGrBoard(): removed assignments of removed members
+                    changed ~cGrBoard(): removed deletes of removed members
                     changed grInitBoardCar() 
                     changed refreshBoard()
+                    changed selectBoard(): removed cases for removed elements
+                    changed loadDefaults(): removed loads of parameters for removed elements
+
+                    removed grDispGGraph()
+                    removed grDispEngineLeds()
+                    removed grDispCarBoard()
+                    removed grDispCarBoard1()
+                    removed grDispCarBoard2()
+                    removed grDispIndicators()
+                    removed grDispLeaderBoard()
+                    removed grDispLeaderBoardScroll()
+                    removed grDispLeaderBoardScrollLine()
+                    removed grDispDashboard()
+                    removed grDispArcade()
+                    removed grGenerateLeaderBoardEntry()
+                    removed trackMap member
+                    removed grGetSplitTime()
+                    removed grGetLapsTime()
+                    removed grSetupDrawingArea()
+                    removed getTrackMap()
+                    removed grShutdownBoardCar()
+
+                    remove all Dashboard and Leaderboard constants
+                    removed constants tracking the number of states of removed elements
+
                 grboard.h
-                    added DispIntervention()  
+                    added   DispIntervention()  
+
+                    removed grDispGGraph()
+                    removed grDispEngineLeds()
+                    removed grDispCarBoard()
+                    removed grDispCarBoard1()
+                    removed grDispCarBoard2()
+                    removed grDispIndicators()
+                    removed grDispLeaderBoard()
+                    removed grDispLeaderBoardScroll()
+                    removed grDispLeaderBoardScrollLine()
+                    removed grDispDashboard()
+                    removed grDispArcade()
+                    removed grGenerateLeaderBoardEntry()
+                    removed grGetSplitTime()
+                    removed grGetLapsTime()
+                    removed grSetupDrawingArea()
+                    removed getTrackMap()
+                    removed grShutdownBoardCar()
+
+                    removed boardFlag
+                    removed leaderFlag
+                    removed leaderNb
+                    removed GFlag
+                    removed dashboardFlag
+                    removed arcadeFlag
+                    removed iStart
+                    removed iTimer
+                    removed iStringStart
+                    removed st 
+
+                    removed trackMap
+
+                    removed *ok_color_;
+                    removed *error_color_;
+                    removed *inactive_color_;
+                    removed *ahead_color_;
+                    removed *behind_color_;
+                    removed *arcade_color_;
+
+                grmain.cpp
+                    changed initView(): removed keybinds for removed hud elements
+                    changed shutdownCars(): removed unused shutdown board
+                    removed grSelectTrackMap()
+
+                grscreen.cpp
+                    removed selectTrackMap()
+
+                grscreen.h
+                    removed selectTrackMap()
 
 
   data/
