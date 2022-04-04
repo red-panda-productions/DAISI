@@ -6,7 +6,7 @@
             <section name="texture">
                 <attstr name ="source" val="Intervention_Steer_None_Proto_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.02"/>
+                <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
                 <attstr name ="content" val="None"/>
@@ -18,7 +18,7 @@
             <section name="texture">
                 <attstr name ="source" val="Intervention_Steer_Left_Proto_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.02"/>
+                <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
                 <attstr name ="content" val="Steer left"/>
@@ -33,7 +33,7 @@
             <section name="texture">
                 <attstr name ="source" val="Intervention_Steer_Right_Proto_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.02"/>
+                <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
                 <attstr name ="content" val="Steer right"/>
@@ -48,7 +48,7 @@
             <section name="texture">
                 <attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.02"/>
+                <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
                 <attstr name ="content" val="Brake"/>
