@@ -106,7 +106,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	};
 	sbuffer.clear();
 	msgpack::pack(sbuffer, action);
-	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()),IPCLIB_SUCCEED);
+	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// test 2
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
