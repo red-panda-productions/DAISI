@@ -10,16 +10,16 @@
 class SQLDatabaseStorage : IDataStorage
 {
 public:
-    SQLDatabaseStorage(std::string p_infputFilePath);
-    void StoreData(const std::string p_filePath) override;
-
-private:
+    SQLDatabaseStorage();
+    void StoreData(const std::string p_inputFilePath) override;
     void OpenDatabase(const std::string& p_hostName,
                       const std::string& p_port,
                       const std::string& p_username,
                       const std::string& p_password,
                       const std::string& p_schemaName,
                       bool& p_isNewSchema);
+
+private:
     void CloseDatabase();
     void CreateTables();
     void InsertInitialData();

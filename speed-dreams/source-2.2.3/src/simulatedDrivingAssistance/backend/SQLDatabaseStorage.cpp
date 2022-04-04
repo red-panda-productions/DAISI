@@ -8,16 +8,16 @@
   "INSERT IGNORE INTO" tableName "(" headers ") VALUES (" + values + ");"
 
 /// @brief The constructor of the SQL database storage
-SQLDatabaseStorage::SQLDatabaseStorage(std::string p_inputFilePath)
-{
-    m_inputFile.open(p_inputFilePath);
-    if (!m_inputFile.good()) throw std::exception("Could not open data file");
-}
+SQLDatabaseStorage::SQLDatabaseStorage() = default;
 
 /// @brief Creates a database and stores data from input file into a table
-/// @param p_filePath path and name of input file (from SimulationData\)
-void SQLDatabaseStorage::StoreData(const std::string p_filePath)
+/// @param p_inputFilePath path and name of input file (from SimulationData\)
+void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 {
+    // Check the existence of an input file
+    m_inputFile.open(p_inputFilePath);
+    if (!m_inputFile.good()) throw std::exception("Could not open data file");
+
     bool newDatabase = false;
     OpenDatabase("localhost", "3306", "root", "root", "test", newDatabase);
     if (newDatabase) CreateTables();
