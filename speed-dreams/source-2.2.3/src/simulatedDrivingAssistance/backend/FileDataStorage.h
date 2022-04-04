@@ -1,12 +1,13 @@
 #pragma once
 
 #include <fstream>
-#include "DriveSituation.h"
+#include "BlackBoxData.h"
 #include "ConfigEnums.h"
 
-/// @brief                 A class that can store data to a file
-/// @tparam DriveSituation The drive situation that needs to be stored
-template <class DriveSituation>
+
+/// @brief               A class that can store data to a file
+/// @tparam BlackBoxData The data that needs to be stored
+template <class BlackBoxData>
 class FileDataStorage {
  private:
     /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
@@ -20,9 +21,9 @@ class FileDataStorage {
 
     void Shutdown();
 
-    void Save(DriveSituation& p_situation, int p_timestamp);
+    void Save(BlackBoxData& p_data, int p_timestamp);
 };
 
 /// @brief Standard implementation of the file data storage
-#define SFileDataStorage FileDataStorage<DriveSituation>
+#define SFileDataStorage FileDataStorage<BlackBoxData>
 

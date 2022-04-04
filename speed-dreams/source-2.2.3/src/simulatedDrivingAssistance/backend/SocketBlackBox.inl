@@ -4,16 +4,16 @@
 #include "../rppUtils/RppUtils.hpp"
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(type) \
-	template SocketBlackBox<type>::SocketBlackBox<type>(PCWSTR p_ip, int p_port);\
+	template SocketBlackBox<type>::SocketBlackBox(PCWSTR p_ip, int p_port);\
     template void SocketBlackBox<type>::Initialize();\
-	template void SocketBlackBox<type>::Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests, int p_amountOfTests);\
+	template void SocketBlackBox<type>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests);\
 	template void SocketBlackBox<type>::Shutdown();\
-	template void SocketBlackBox<type>::SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation);\
+	template void SocketBlackBox<type>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_BlackBoxData);\
     template void SocketBlackBox<type>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
-    template bool SocketBlackBox<type>::GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions);
+    template bool SocketBlackBox<type>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions);
 
-// inserts value from DriveSituation variables in vector
-#define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, DriveSituation& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
+// inserts value from BlackBoxData variables in vector
+#define PUSH_BACK_DS(p_GetInfo) [](std::vector<std::string>& p_values, BlackBoxData& p_ds){p_values.push_back(std::to_string(p_ds.p_GetInfo));}
 #define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo()->p_variable)
 #define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo()->p_variable)
 #define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo()->TrackLocalPosition()->p_variable)
@@ -24,52 +24,25 @@
 #define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
 #define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
 
-template <class DriveSituation>
-SocketBlackBox<DriveSituation>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip, p_port)
+template <class BlackBoxData>
+SocketBlackBox<BlackBoxData>::SocketBlackBox(PCWSTR p_ip, int p_port) : m_server(p_ip, p_port)
 {
 
 }
 
 /// @brief Sets keys and values for the functions that retrieve the correct information.
-template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::Initialize()
+template <class BlackBoxData>
+void SocketBlackBox<BlackBoxData>::Initialize()
 {
-    //CarInfo functions
-    m_variableConvertAndInsertMap["Speed"] = INSERT_CAR_INFO(Speed());
-    m_variableConvertAndInsertMap["TopSpeed"] = INSERT_CAR_INFO(TopSpeed());
-    m_variableConvertAndInsertMap["Gear"] = INSERT_CAR_INFO(Gear());
-    m_variableConvertAndInsertMap["Headlights"] = INSERT_CAR_INFO(Headlights());
-
-    //EnvironmentInfo functions
-    m_variableConvertAndInsertMap["TimeOfDay"] = INSERT_ENVIRONMENT_INFO(TimeOfDay());
-    m_variableConvertAndInsertMap["Clouds"] = INSERT_ENVIRONMENT_INFO(Clouds());
-    m_variableConvertAndInsertMap["Rain"] = INSERT_ENVIRONMENT_INFO(Rain());
-
-    //TrackLocalPosition functions
-    m_variableConvertAndInsertMap["Offroad"] = INSERT_TRACK_LOCAL_POSITION(Offroad());
-    m_variableConvertAndInsertMap["ToMiddle"] = INSERT_TRACK_LOCAL_POSITION(ToMiddle());
-    m_variableConvertAndInsertMap["ToLeft"] = INSERT_TRACK_LOCAL_POSITION(ToLeft());
-    m_variableConvertAndInsertMap["ToRight"] = INSERT_TRACK_LOCAL_POSITION(ToRight());
-    m_variableConvertAndInsertMap["ToStart"] = INSERT_TRACK_LOCAL_POSITION(ToStart());
-
-    //PlayerInfo functions
-    m_variableConvertAndInsertMap["AccelCmd"] = INSERT_PLAYER_INFO(AccelCmd());
-    m_variableConvertAndInsertMap["BrakeCmd"] = INSERT_PLAYER_INFO(BrakeCmd());
-    m_variableConvertAndInsertMap["ClutchCmd"] = INSERT_PLAYER_INFO(ClutchCmd());
-    m_variableConvertAndInsertMap["SteerCmd"] = INSERT_PLAYER_INFO(SteerCmd());
-
-    m_variableConvertAndInsertMap["TickCount"] = PUSH_BACK_DS(GetTickCount());
-
-
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
 }
 
 /// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
-/// @param p_initialDriveSituation  The initial drive situation
-template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSituation, DriveSituation* p_tests, int p_amountOfTests)
+/// @param p_initialBlackBoxData  The initial drive situation
+template <class BlackBoxData>
+void SocketBlackBox<BlackBoxData>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests)
 {
     Initialize();
     m_server.ConnectAsync();
@@ -83,12 +56,7 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     std::vector<std::string> orderVec;
     msg->convert(orderVec);
     int i = 0;
-    if (orderVec[i++] != "DATAORDER") throw std::exception("Black Box send wrong message: DATAORDER expected");
-    while (i < orderVec.size() && orderVec[i] != "ACTIONORDER")
-    {
-        VariablesToSend.push_back(orderVec[i++]);
-    }
-    if (i >= orderVec.size()) throw std::exception("Black box send wrong message: ACTIONORDER expected");
+    if (orderVec[i] != "ACTIONORDER") throw std::exception("Black box send wrong message: ACTIONORDER expected");
     i++;
     while (i < orderVec.size())
     {
@@ -105,7 +73,7 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
     for (int i = 0; i < p_amountOfTests; i++)
     {
         sbuffer.clear();
-        SerializeDriveSituation(sbuffer, p_tests[i]);
+        SerializeBlackBoxData(sbuffer, &p_tests[i]);
         m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
@@ -113,14 +81,14 @@ void SocketBlackBox<DriveSituation>::Initialize(DriveSituation& p_initialDriveSi
 
 
     sbuffer.clear();
-    SerializeDriveSituation(sbuffer, p_initialDriveSituation);
+    SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();
 }
 
 /// @brief Shuts the black box down
-template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::Shutdown()
+template <class BlackBoxData>
+void SocketBlackBox<BlackBoxData>::Shutdown()
 {
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     m_server.SendData("STOP", 4);
@@ -129,38 +97,29 @@ void SocketBlackBox<DriveSituation>::Shutdown()
     m_server.CloseServer();
 }
 
-/// @brief                  Inserts a string of value of variable in vector. Packs this vector to msgpack.
+/// @brief                  Inserts a string of value of a pointer into a msgpack message
 /// @param p_sbuffer        Buffer to pack data in
-/// @param p_driveSituation Drive situation to serialize
-template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::SerializeDriveSituation(msgpack::sbuffer& p_sbuffer, DriveSituation& p_driveSituation)
+/// @param p_BlackBoxData Drive situation to serialize
+template <class BlackBoxData>
+void SocketBlackBox<BlackBoxData>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_BlackBoxData)
 {
     std::vector<std::string> dataToSerialize;
 
-    if (VariablesToSend.empty())
-    {
-        dataToSerialize.push_back("There are no variables to send");
-        msgpack::pack(p_sbuffer, dataToSerialize);
-        throw std::exception("VariablesToSend is empty");
-    }
+    std::stringstream oss;
 
-    for (auto i = VariablesToSend.begin(); i != VariablesToSend.end(); i++) {
-        try { m_variableConvertAndInsertMap.at(*i)(dataToSerialize, p_driveSituation); }
-        catch (std::exception& e)
-        {
-            dataToSerialize.push_back("Variable key does not exist");
-        }
-    }
+    oss << p_BlackBoxData;
+
+    dataToSerialize.push_back(oss.str());
 
     msgpack::pack(p_sbuffer, dataToSerialize);
 }
 
-/// @brief                Deserializes received data and makes a decision array from this data
-/// @param p_decisions    Decision array to put decisions in
-/// @param p_dataReceived Data received from black box
-/// @param p_size         Size of received data
-template <class DriveSituation>
-void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple)
+/// @brief                 Deserializes received data and makes a decision array from this data
+/// @param p_decisionTuple Decision array to put decisions in
+/// @param p_dataReceived  Data received from black box
+/// @param p_size          Size of received data
+template <class BlackBoxData>
+void SocketBlackBox<BlackBoxData>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple)
 {
     //unpack
     msgpack::unpacked msg;
@@ -183,14 +142,18 @@ void SocketBlackBox<DriveSituation>::DeserializeBlackBoxResults(const char* p_da
 
 /// @brief Sends serialized drive situation to black box. Deserializes data received by black box.
 ///        Makes decisions from received data.
-/// @param p_driveSituation Drive situation to base decisions off.
+/// @param p_car       Car to base decisions off.
+/// @param p_situation Situation to base decisions off.
+/// @param p_tickCount The current tick count.
 /// @return returns decision array.
-template<class DriveSituation>
-bool SocketBlackBox<DriveSituation>::GetDecisions(DriveSituation& p_driveSituation, DecisionTuple& p_decisions)
+template <class BlackBoxData>
+bool SocketBlackBox<BlackBoxData>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions)
 {
     if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
     msgpack::sbuffer sbuffer;
-    SerializeDriveSituation(sbuffer, p_driveSituation);
+    delete m_currentData;
+    m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount);
+    SerializeBlackBoxData(sbuffer, m_currentData);
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();
 

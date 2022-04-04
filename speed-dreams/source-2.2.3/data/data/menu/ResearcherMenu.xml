@@ -167,6 +167,19 @@
             <attstr name="checked" val="yes"/>
         </section>
 
+        <section name="CheckboxForceFeedback">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Force Feedback"/>
+            <attstr name="tip" val="Enable/Disable force feedback"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="280"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
         <!-- Input field for max time -->
         <section name="MaxTimeEdit">
             <attstr name="type" val="edit box"/>
