@@ -20,7 +20,7 @@
 /// @param  p_fileName The filename
 void FailToCreateDatabase(const std::string& p_fileName)
 {
-    SQLDatabaseStorage sqlDatabaseStorage;
+    SQLDatabaseStorage sqlDatabaseStorage(p_fileName);
 
     GET_CREATED_DATABASE_PATH
     std::ifstream databaseFile(databasePath);
@@ -31,9 +31,9 @@ void FailToCreateDatabase(const std::string& p_fileName)
 /// @param  p_fileName The filename
 void CreateCorrectDatabase(const std::string& p_fileName)
 {
-    SQLDatabaseStorage sqlDatabaseStorage;
+    SQLDatabaseStorage sqlDatabaseStorage(p_fileName);
 
-    ASSERT_NO_THROW(sqlDatabaseStorage.StoreData(p_fileName));
+    ASSERT_NO_THROW(sqlDatabaseStorage.StoreData("test"));
 
     GET_CREATED_DATABASE_PATH
     std::ifstream databaseFile(databasePath);
