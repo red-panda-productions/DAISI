@@ -253,18 +253,57 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
+/// @brief Sets the task setting in the researcher menu
+/// @param p_interventionType boolean array that defines which task should be set
+void setTask(bool* p_tasks) {
+    if (p_tasks[TASK_LANE_KEEPING]) {
+        m_task = TASK_LANE_KEEPING;
+        return;
+    }
+    if (p_tasks[TASK_SPEED_CONTROL]) {
+        m_task = TASK_SPEED_CONTROL;
+        return;
+    }
+    m_task = TASK_NO_TASK;
+}
+
+/// @brief Sets the intervention setting in the researcher menu
+/// @param p_interventionType boolean array that defines which intervention type should be set
+void setInterventionType(bool* p_interventionType)
+{
+    if (p_interventionType[INTERVENTION_TYPE_NO_SIGNALS]) {
+        m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
+        return;
+    }
+    if (p_interventionType[INTERVENTION_TYPE_ONLY_SIGNALS]) {
+        m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
+        return;
+    }
+    if(p_interventionType[INTERVENTION_TYPE_SHARED_CONTROL]) {
+        m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
+        return;
+    }
+    if (p_interventionType[INTERVENTION_TYPE_COMPLETE_TAKEOVER]) {
+        m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
+        return;
+    }
+    return;
+}
+
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
 void InitializeSettings(void* p_param) {
     // Retrieve all setting variables from the xml file
-    bool checkboxTaskLaneKeeping = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), true);
-    bool checkboxTaskSpeedControl = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL), false);
+    bool* checkboxTasks = new bool[3];
+    checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), true);
+    checkboxTasks[TASK_SPEED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL), false);
     bool checkboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL), true);
     bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL), true);
-    bool checkboxTypeNoSignals = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL), true);
-    bool checkboxTypeOnlySignals = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL), false);
-    bool checkboxTypeSharedControl = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL), false);
-    bool checkboxTypeCompleteTakeover = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", NULL), false);
+    bool* checkboxInterventions = new bool[5];
+    checkboxInterventions[INTERVENTION_TYPE_NO_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL), true);
+    checkboxInterventions[INTERVENTION_TYPE_ONLY_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL), false);
+    checkboxInterventions[INTERVENTION_TYPE_SHARED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL), false);
+    checkboxInterventions[INTERVENTION_TYPE_COMPLETE_TAKEOVER] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", NULL), false);
     bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL), false);
     bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL), true);
     bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL), true);
@@ -274,15 +313,10 @@ void InitializeSettings(void* p_param) {
     
 
     // Set the Task settings from the xml file
-    if (!checkboxTaskLaneKeeping) {
-        m_task = checkboxTaskSpeedControl ? TASK_SPEED_CONTROL : TASK_NO_TASK;
-    }
-    else {
-        m_task = TASK_LANE_KEEPING;
-    }
+    setTask(checkboxTasks);
 
     // Set the indicator settings from the xml file
-    m_indicators.Auditory = CheckboxIndicatorAuditory;
+    m_indicators.Auditory = checkboxIndicatorAuditory;
     m_indicators.Visual = checkboxIndicatorVisual;
 
     // Set the indicator settings from the xml file
@@ -291,19 +325,7 @@ void InitializeSettings(void* p_param) {
     m_pControl.ControlSteering = checkboxPControlSteering;
 
     // Set the participant control settings from the xml file 
-    if (checkboxTypeNoSignals) {
-        m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-        return;
-    }
-    if (CheckboxTypeOnlySignals) {
-        m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
-        return;
-    }
-    if (checkboxTypeSharedControl) {
-        m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
-        return;
-    }
-    m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
+    setInterventionType(checkboxInterventions);
 }
 
 /// @brief            Initializes the researcher menu
