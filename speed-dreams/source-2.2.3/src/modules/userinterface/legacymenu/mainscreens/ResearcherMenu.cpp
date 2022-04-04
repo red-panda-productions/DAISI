@@ -284,8 +284,8 @@ void InitializeSettings(void* p_param) {
     m_indicators.Visual = checkboxIndicatorVisual;
 
     // Set the indicator settings from the xml file
-    m_pControl.ControlGas = checkboxPControlGas;
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
+    m_pControl.ControlGas = checkboxPControlGas;
     m_pControl.ControlSteering = checkboxPControlSteering;
 
     // Set the participant control settings from the xml file 
@@ -374,8 +374,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     return s_scrHandle;
 }
-
-
 
 /// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
