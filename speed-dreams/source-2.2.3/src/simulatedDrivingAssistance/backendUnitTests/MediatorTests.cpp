@@ -7,27 +7,12 @@
 #include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief Test if the distribution of the mediator works
 TEST(MediatorTest, GetDistributedMediator)
 {
-    // delete singletons
-    std::error_code errorCode;
-    std::experimental::filesystem::remove_all("Singletons",errorCode);
-
-    // set up singleton folder for tests
-    struct stat info;
-    char directory[256];
-    getcwd(directory,256);
-    std::string workingDirecotory(directory);
-    workingDirecotory += "\\Singletons";
-    const char* wd = workingDirecotory.c_str();
-    int err = stat(wd, &info);
-    if(err != 0)
-    {
-        err = _mkdir(wd);
-        ASSERT_TRUE(err == 0);
-    }
+    ASSERT_TRUE(SetupSingletonsFolder());
 
     SMediator* mediator1 = SMediator::GetInstance();
     SMediator* mediator2 = SMediator::GetInstance();
@@ -38,23 +23,7 @@ TEST(MediatorTest, GetDistributedMediator)
 /// @param p_interventionType The interventionType that needs to be set
 void InterventionTest(InterventionType p_interventionType)
 {
-    // delete singletons
-    std::error_code errorCode;
-    std::experimental::filesystem::remove_all("Singletons",errorCode);
-
-    // set up singleton folder for tests
-    struct stat info;
-    char directory[256];
-    getcwd(directory,256);
-    std::string workingDirecotory(directory);
-    workingDirecotory += "\\Singletons";
-    const char* wd = workingDirecotory.c_str();
-    int err = stat(wd, &info);
-    if(err != 0)
-    {
-        err = _mkdir(wd);
-        ASSERT_TRUE(err == 0);
-    }
+    ASSERT_TRUE(SetupSingletonsFolder());
 
     SMediator* mediator = SMediator::GetInstance();
 
