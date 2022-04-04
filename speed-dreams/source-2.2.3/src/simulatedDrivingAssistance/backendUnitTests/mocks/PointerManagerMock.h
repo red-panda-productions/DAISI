@@ -4,24 +4,22 @@
 class PointerManagerMock
 {
 public:
-    PointerManagerMock() : mock(GetExampleBlackBoxDataMock())
+    PointerManagerMock() : m_mock(GetExampleBlackBoxDataMock())
     {
         
     };
 
     BlackBoxDataMock* GetDataPointer()
     {
-        return &mock;
+        return &m_mock;
     }
 
     tTrackSeg* GetSegmentPointer()
     {
-        return segments;
+        return m_segments;
     }
 
 private:
-
-    BlackBoxDataMock mock;
-
-    tTrackSeg segments[10];
+    BlackBoxDataMock m_mock;
+    tTrackSeg m_segments[10];
 };
