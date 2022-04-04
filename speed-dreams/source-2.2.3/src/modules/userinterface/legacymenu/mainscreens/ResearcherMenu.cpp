@@ -3,11 +3,6 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
-#include <iostream>
-#include <fstream>
-
-using namespace std;
-
 
 
 // GUI screen handles
@@ -259,7 +254,7 @@ static void SaveSettings(void* /* dummy */)
 
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
-void initializeSettings(void* p_param) {
+void InitializeSettings(void* p_param) {
     // Retrieve all setting variables from the xml file
     bool checkboxTaskLaneKeeping = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), false);
     bool checkboxTaskSpeedControl = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL), false);
@@ -293,7 +288,7 @@ void initializeSettings(void* p_param) {
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
     m_pControl.ControlSteering = checkboxPControlSteering;
 
-    //Set the participant control settings from the xml file 
+    // Set the participant control settings from the xml file 
     if (checkboxTypeNoSignals) {
         m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
         return;
@@ -324,7 +319,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     s_nextHandle = p_nextMenu;
 
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
-    initializeSettings(param);
+    InitializeSettings(param);
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // Task checkboxes controls

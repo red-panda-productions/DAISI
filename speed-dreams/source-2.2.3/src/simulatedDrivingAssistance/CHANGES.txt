@@ -37,6 +37,8 @@ Changed:
                 included ConfigEnums.h
                 changed new_race()
                 changed common_drive()
+            tgfclient.h
+                added gfuiMenuGetBoolean()
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
