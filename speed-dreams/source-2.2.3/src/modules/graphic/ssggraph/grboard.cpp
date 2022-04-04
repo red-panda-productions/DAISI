@@ -17,7 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-// SIMULATED DRIVING ASSISTANCE: removed functions of unused hud elements (see sda/CHANGES.TXT)
+// SIMULATED DRIVING ASSISTANCE: removed functions of unused hud elements 
+// All changes are documented in src\simulatedDrivingAssistance\CHANGES.txt
 
 #include "grboard.h"
 
