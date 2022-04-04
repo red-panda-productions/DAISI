@@ -60,6 +60,7 @@ class Sound
 	bool loop; ///< Whether it's a looping sound
 	bool playing; ///< Sound is playing
     bool paused; ///< sound is paused
+    double LastStart; /// last time the sound was started
 
  public:
 
@@ -81,7 +82,9 @@ class Sound
 	virtual float getLPfilter() const;
 	virtual void getSource (sgVec3 p, sgVec3 u) const;
 
-	virtual void play() = 0;
+    virtual double GetLastStart() const;
+
+    virtual void play() = 0;
 	virtual void start() = 0;
 	virtual void stop() = 0;
 	virtual void resume() = 0;

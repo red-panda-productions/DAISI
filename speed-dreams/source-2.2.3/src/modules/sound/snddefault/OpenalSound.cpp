@@ -248,6 +248,7 @@ void OpenalSound::start()
 				if (loop) {
 					playing = true;
 				}
+                LastStart = GfTimeClock();
 				alSourcePlay (source);
 			}
 		}
@@ -272,7 +273,8 @@ void OpenalSound::start()
 				if (loop) {
 					playing = true;
 				}
-				alSourcePlay (source);
+                LastStart = GfTimeClock();
+                alSourcePlay (source);
 			}
 		}
 	}

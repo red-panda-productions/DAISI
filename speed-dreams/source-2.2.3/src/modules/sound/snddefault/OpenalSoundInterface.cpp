@@ -218,7 +218,7 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 /// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
 /// @brief                Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
-void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData) 
+void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData)
 {
     // Update the sounds of all indicators, even for the disabled indicators.
     for (Sound* sound : m_indicatorSounds) {
@@ -238,7 +238,7 @@ void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundDat
     // Start all currently active interventions if they were not active yet.
     for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators()) {
         Sound* sound = m_indicatorSounds[indicator.Action];
-        if(sound && !sound->isPlaying()) 
+        if(sound && !sound->isPlaying() && GfTimeClock() - sound->GetLastStart() > 10)
         {
             sound->start();
         }

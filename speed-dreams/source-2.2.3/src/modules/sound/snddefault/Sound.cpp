@@ -88,6 +88,10 @@ void Sound::getSource (sgVec3 p, sgVec3 u) const
 	// Do nothing implementation.
 }
 
+double Sound::GetLastStart() const {
+    return LastStart;
+}
+
 /// True if the sound is playing.
 bool Sound::isPlaying() const
 {
