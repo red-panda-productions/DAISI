@@ -11,7 +11,9 @@ class IPCLIB_EXPORT ClientSocket : public Socket
 public:
 	ClientSocket(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
 
-	void SendData(const char* p_data, const int p_size) const;
+	int Initialize();
+
+	int SendData(const char* p_data, const int p_size) const;
 
 	void Disconnect();
 
@@ -19,4 +21,6 @@ public:
 
 private:
 	struct sockaddr_in m_server;
+	PCWSTR m_ip;
+	int m_port;
 };

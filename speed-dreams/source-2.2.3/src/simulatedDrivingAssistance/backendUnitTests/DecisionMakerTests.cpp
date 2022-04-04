@@ -24,7 +24,7 @@ void DecisionTest(bool p_isDecision)
 
 	if(!p_isDecision)
 	{
-		ASSERT_FALSE(decisionMaker.Decide(&car,&situation,0));
+		ASSERT_FALSE(decisionMaker.Decide(&car, &situation, 0));
 		return;
 	}
 	ASSERT_TRUE(decisionMaker.Decide(&car, &situation, 0));
