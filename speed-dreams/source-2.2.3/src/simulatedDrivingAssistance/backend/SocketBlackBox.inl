@@ -10,7 +10,7 @@
     template void SocketBlackBox<p_type1,p_type2>::Initialize();\
 	template void SocketBlackBox<p_type1,p_type2>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests);\
 	template void SocketBlackBox<p_type1,p_type2>::Shutdown();\
-	template void SocketBlackBox<p_type1,p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_BlackBoxData);\
+	template void SocketBlackBox<p_type1,p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);\
     template void SocketBlackBox<p_type1,p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
     template bool SocketBlackBox<p_type1,p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions);
 
@@ -110,13 +110,13 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
 /// @param p_sbuffer        Buffer to pack data in
 /// @param p_BlackBoxData Drive situation to serialize
 template <class BlackBoxData, class PointerManager>
-void SocketBlackBox<BlackBoxData, PointerManager>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_BlackBoxData)
+void SocketBlackBox<BlackBoxData, PointerManager>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData)
 {
     std::vector<std::string> dataToSerialize;
 
     BlackBoxData* pointer = m_pointerManager.GetDataPointer();
 
-    *pointer = *p_BlackBoxData;
+    *pointer = *p_blackBoxData;
 
     dataToSerialize.emplace_back("1");
 
