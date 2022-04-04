@@ -186,9 +186,10 @@ static void SaveSettingsToDisk() {
     const char* audioSetting = m_indicators.Auditory ? "yes" : "no";
     GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
     const char* visualSetting = m_indicators.Visual ? "yes" : "no";
+    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
+
 
     // Save intervention type settings to xml file
-    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", visualSetting);
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeSharedControl", "checked", "no");
@@ -268,7 +269,7 @@ void InitializeSettings(void* p_param) {
     bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL), false);
 
     // Set the max time setting from the xml file
-    m_maxTime = atoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
+    m_maxTime = std::stoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
     
 
     // Set the Task settings from the xml file
