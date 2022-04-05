@@ -45,7 +45,7 @@ void CreateCorrectDatabase(const std::string& p_fileName)
 void ConnectDatabase(const std::string& p_password)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
-    sqlDatabaseStorage.OpenDatabase("127.0.0.1", "3306", "root", "root", "test", true);
+    sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "root", p_password, "test", true);
 }
 
 TEST_CASE(SQLDatabaseStorageTests, CorrectInputTest, CreateCorrectDatabase, ("correctInput.txt"))

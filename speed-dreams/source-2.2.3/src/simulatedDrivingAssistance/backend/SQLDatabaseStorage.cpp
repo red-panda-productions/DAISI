@@ -23,7 +23,7 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
     if (!m_inputFile.good()) throw std::exception("Could not open data file");
 
     bool newDatabase = false;
-    OpenDatabase("localhost", "3306", "root", "root", "test", newDatabase);
+    OpenDatabase("localhost", 3306, "root", "root", "test", newDatabase);
 
     InsertInitialData();
     InsertSimulationData();
@@ -34,14 +34,14 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 
 /// @brief Connect to the specified database. If the database is new, initialise the database with the proper table.
 /// @param p_hostName Hostname of the database to connect to. Should be a TCP-IP address.
-/// @param p_port Port the database is located on on the host. Should be numerical.
+/// @param p_port Port the database is located on on the host.
 /// @param p_username Username to connect with to the database.
 /// @param p_password Password to connect with to the database.
 /// @param p_schemaName Name of the database schema to use. Schema should exist already, but does not need to contain any tables.
 /// @param p_isNewSchema Whether the database schema is new. If new, the schema will be initialised with the proper tables.
 void SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
-    const std::string& p_port,
+    int p_port,
     const std::string& p_username,
     const std::string& p_password,
     const std::string& p_schemaName,
@@ -50,19 +50,29 @@ void SQLDatabaseStorage::OpenDatabase(
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
-    // Connect to the database determined by the arguments
-    // Using SQLString instead of char* or std::string because Connector C++ may respond in unexpected ways otherwise.
-    sql::SQLString sqlHost("tcp://" + p_hostName + ":" + p_port);
-    sql::SQLString sqlUser(p_username);
-    sql::SQLString sqlPassword(p_password);
-    m_connection = m_driver->connect(sqlHost, sqlUser, sqlPassword);
+    // Set connection options, and connect to the database
+    sql::ConnectOptionsMap connection_properties;
+    connection_properties["hostName"] = "tcp://" + p_hostName;
+    connection_properties["userName"] = p_username;
+    connection_properties["password"] = p_password;
+    connection_properties["port"] = p_port;
+    connection_properties["OPT_RECONNECT"] = true;
+    connection_properties["CLIENT_MULTI_STATEMENTS"] = true;
+    m_connection = m_driver->connect(connection_properties);
+
+    // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
+    if (p_isNewSchema) {
+        m_statement = m_connection->createStatement();
+        m_statement->execute("CREATE DATABASE IF NOT EXISTS " + p_schemaName);
+        m_statement->close();
+        delete m_statement;
+    }
 
     // Set the correct database schema
     m_connection->setSchema(p_schemaName);
 
     // Create a (reusable) statement
     m_statement = m_connection->createStatement();
-
     // If the database schema is new, initialise it with tables
     if (p_isNewSchema) {
         CreateTables();
@@ -79,7 +89,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE Blackbox (\n"
-            "    blackbox_id INT             NOT NULL,\n"
+            "    blackbox_id INT NOT NULL AUTO_INCREMENT,\n"
             "    filename    VARCHAR(255)    NOT NULL,\n"
             "    version     DATETIME(0)     NOT NULL,\n"
             "    name        VARCHAR(255)    NOT NULL,\n"
@@ -90,7 +100,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE Environment (\n"
-            "    environment_id  INT             NOT NULL,\n"
+            "    environment_id  INT             NOT NULL AUTO_INCREMENT,\n"
             "    filename        VARCHAR(255)    NOT NULL,\n"
             "    version         DATETIME(0)     NOT NULL,\n"
             "    name            VARCHAR(255)    NOT NULL,\n"
@@ -101,7 +111,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE Settings (\n"
-            "    settings_id         INT  NOT NULL,\n"
+            "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
             "    intervention_mode   ENUM('Force', 'Ask', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
             "    \n"
             "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id)\n"
@@ -109,7 +119,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE Trial (\n"
-            "    trial_id        INT         NOT NULL,\n"
+            "    trial_id        INT         NOT NULL AUTO_INCREMENT,\n"
             "    trial_time      DATETIME(0) NOT NULL,\n"
             "    participant_id  INT         NOT NULL,\n"
             "    blackbox_id     INT         NOT NULL,\n"
@@ -124,7 +134,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE UserInput (\n"
-            "    user_input_id   INT     NOT NULL,\n"
+            "    user_input_id   INT     NOT NULL AUTO_INCREMENT,\n"
             "    steer           FLOAT   NOT NULL,\n"
             "    brake           FLOAT   NOT NULL,\n"
             "    gas             FLOAT   NOT NULL,\n"
@@ -134,7 +144,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE GameState (\n"
-            "    game_state_id   INT     NOT NULL,\n"
+            "    game_state_id   INT     NOT NULL AUTO_INCREMENT,\n"
             "    x               DOUBLE  NOT NULL,\n"
             "    y               DOUBLE  NOT NULL,\n"
             "    z               DOUBLE  NOT NULL,\n"
@@ -151,7 +161,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "    \n"
             "CREATE TABLE TimeStep (\n"
-            "    trial_id        INT             NOT NULL,\n"
+            "    trial_id        INT             NOT NULL AUTO_INCREMENT,\n"
             "    tick            BIGINT UNSIGNED NOT NULL,\n"
             "    game_state_id   INT             NOT NULL,\n"
             "    \n"
@@ -160,7 +170,7 @@ void SQLDatabaseStorage::CreateTables()
             ");\n"
             "\n"
             "CREATE TABLE Intervention (\n"
-            "    intervention_id     INT NOT NULL,\n"
+            "    intervention_id     INT NOT NULL AUTO_INCREMENT,\n"
             "    trial_id            INT NOT NULL,\n"
             "    tick                BIGINT UNSIGNED NOT NULL,\n"
             "    \n"
