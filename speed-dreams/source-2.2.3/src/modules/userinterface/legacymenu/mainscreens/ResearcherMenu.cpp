@@ -271,7 +271,6 @@ static void SaveSettingsToDisk() {
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
 }
 
-
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
@@ -380,7 +379,7 @@ void InitializeSettings(void* p_param) {
     m_pControl.ControlSteering = checkboxPControlSteering;
 
     // Set the participant control settings from the xml file 
-    setInterventionType(checkboxInterventions);
+    SetInterventionType(checkboxInterventions);
     
     delete[] checkboxTasks;
     delete[] checkboxInterventions;
