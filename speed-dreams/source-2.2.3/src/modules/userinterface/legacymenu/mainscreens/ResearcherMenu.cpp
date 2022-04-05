@@ -352,7 +352,7 @@ void InitializeSettings(void* p_param) {
     m_maxTime = std::stoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
 
     // Set the Task settings from the xml file
-    setTask(checkboxTasks);
+    SetTask(checkboxTasks);
 
     // Set the indicator settings from the xml file
     m_indicators.Audio = checkboxIndicatorAuditory;
