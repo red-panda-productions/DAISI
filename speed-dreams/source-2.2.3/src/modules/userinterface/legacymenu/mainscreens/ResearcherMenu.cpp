@@ -367,6 +367,9 @@ void InitializeSettings(void* p_param) {
 
     // Set the participant control settings from the xml file 
     setInterventionType(checkboxInterventions);
+    
+    delete[] checkboxTasks;
+    delete[] checkboxInterventions ;
 }
 
 /// @brief            Initializes the researcher menu
