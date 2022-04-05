@@ -78,7 +78,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// receives amount of tests
-	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg;
 	msgpack::unpack(msg, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> amountOfTests;
