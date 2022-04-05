@@ -79,7 +79,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_in
     m_server.SendData(sbuffer.data(), sbuffer.size());
 
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
-    if (m_buffer[0] != 'O' && m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
+    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
 
     DecisionTuple decisionTuple;
     for (int i = 0; i < p_amountOfTests; i++)
