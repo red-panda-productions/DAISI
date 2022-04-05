@@ -18,6 +18,7 @@
 #define RESEARCHMENU_CONTROL_GAS "dynamic controls/CheckboxPControlGas"
 #define RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE "dynamic controls/CheckboxPControlInterventionToggle"
 #define RESEARCHMENU_CONTROL_STEERING "dynamic controls/CheckboxPControlSteering"
+#define RESEARCHMENU_FORCE_FEEDBACK "dynamic controls/CheckboxForceFeedback"
 #define RESEARCHMENU_MAX_TIME_EDIT "dynamic controls/MaxTimeEdit"
 
 
@@ -207,11 +208,15 @@ static void SetUserId(void*)
 /// @brief Saves the settings into the ResearcherMenu.xml file
 static void SaveSettingsToDisk() 
 {
-    // Open file parameter
-    std::string strPath("config/ResearcherMenu.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
-    void* readParam = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    // Copies xml to documents folder and then ospens file parameter
+    std::string srcStr("data/menu/ResearcherMenu.xml");
+    char src[512];
+    sprintf(src, "%s%s", GfDataDir(), srcStr.c_str());
+    std::string dstStr("config/ResearcherMenu.xml");
+    char dst[512];
+    sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
+    GfFileCopy(src, dst);
+    void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save task settings to xml file
     GfParmSetStr(readParam, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
@@ -262,6 +267,8 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, interventionToggle);
     const char* controlSteering = m_pControl.ControlSteering ? GFMNU_VAL_YES : GFMNU_VAL_NO;
     GfParmSetStr(readParam, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, controlSteering);
+    const char* forceFeedback = m_pControl.ForceFeedback ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, forceFeedback);
 
     // Save max time to xml file
     char buf2[32];
@@ -363,6 +370,7 @@ void InitializeSettings(void* p_param)
     bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, NULL), true);
     bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, NULL), false);
     bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, NULL), true);
+    bool checkboxForceFeedback = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, NULL), true);
 
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, NULL));
@@ -379,6 +387,7 @@ void InitializeSettings(void* p_param)
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
     m_pControl.ControlGas = checkboxPControlGas;
     m_pControl.ControlSteering = checkboxPControlSteering;
+    m_pControl.ForceFeedback = checkboxForceFeedback;
 
     // Set the participant control settings from the xml file 
     SetInterventionType(checkboxInterventions);
@@ -454,7 +463,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Set standard max time
     char buf2[32];
     sprintf(buf2, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf2);
 
     // Create random userId
     std::random_device rd;
