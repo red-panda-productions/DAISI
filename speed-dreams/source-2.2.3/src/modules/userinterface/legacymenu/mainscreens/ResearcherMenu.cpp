@@ -302,7 +302,7 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Sets the task setting in the researcher menu
+/// @brief                    Sets the task setting in the researcher menu
 /// @param p_interventionType boolean array that defines which task should be set
 void SetTask(bool* p_tasks) 
 {
@@ -372,8 +372,8 @@ void InitializeSettings(void* p_param)
 
     // Set the indicator settings from the xml file
     m_indicators.Audio = checkboxIndicatorAuditory;
-    m_indicators.Icon = checkboxIndicatorVisual;
-    m_indicators.Text = checkboxIndicatorTextual;
+    m_indicators.Icon  = checkboxIndicatorVisual;
+    m_indicators.Text  = checkboxIndicatorTextual;
 
     // Set the indicator settings from the xml file
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
