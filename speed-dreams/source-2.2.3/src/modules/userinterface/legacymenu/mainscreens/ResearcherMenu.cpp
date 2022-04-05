@@ -205,11 +205,12 @@ static void SetUserId(void*)
 }
 
 /// @brief Saves the settings into the ResearcherMenu.xml file
-static void SaveSettingsToDisk() {
+static void SaveSettingsToDisk() 
+{
     // Open file parameter
-    std::string strPath("data/menu/ResearcherMenu.xml");
+    std::string strPath("config/ResearcherMenu.xml");
     char buf[512];
-    sprintf(buf, "%s%s", GfDataDir(), strPath.c_str());
+    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
     void* readParam = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save task settings to xml file
@@ -318,7 +319,7 @@ void SetTask(bool* p_tasks)
 
 /// @brief Sets the intervention setting in the researcher menu
 /// @param p_interventionType boolean array that defines which intervention type should be set
-void setInterventionType(bool* p_interventionType)
+void SetInterventionType(bool* p_interventionType)
 {
     if (p_interventionType[INTERVENTION_TYPE_NO_SIGNALS]) {
         m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
@@ -341,7 +342,8 @@ void setInterventionType(bool* p_interventionType)
 
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
-void InitializeSettings(void* p_param) {
+void InitializeSettings(void* p_param)
+{
     // Retrieve all setting variables from the xml file
     bool* checkboxTasks = new bool[3];
     checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, NULL), true);
@@ -399,7 +401,15 @@ void* ResearcherMenuInit(void* p_nextMenu)
                                    NULL, (tfuiCallback)NULL, 1);
     s_nextHandle = p_nextMenu;
 
+    // Retrieves the saved user xml file, if it doesn't exist it retrieves the default xml file
+    std::string strPath("config/ResearcherMenu.xml");
+    char buf[512];
+    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
+    if (GfFileExists(buf)) {
+        param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+    }
+    // Initialize settings with the retrieved xml file
     InitializeSettings(param);
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
@@ -442,8 +452,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
 
     // Set standard max time
-    char buf[32];
-    sprintf(buf, "%d", m_maxTime);
+    char buf2[32];
+    sprintf(buf2, "%d", m_maxTime);
     GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 
     // Create random userId
