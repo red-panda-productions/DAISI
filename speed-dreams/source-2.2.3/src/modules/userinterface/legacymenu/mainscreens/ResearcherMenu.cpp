@@ -301,7 +301,7 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Sets the task setting in the researcher menu
+/// @brief                    Sets the task setting in the researcher menu
 /// @param p_interventionType boolean array that defines which task should be set
 void SetTask(bool* p_tasks) 
 {
