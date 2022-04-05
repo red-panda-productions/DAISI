@@ -219,7 +219,6 @@ static void SaveSettingsToDisk() {
     const char* textSetting = m_indicators.Text ? "yes" : "no";
     GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorTextual", "checked", textSetting);
 
-
     // Save intervention type settings to xml file
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
     GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
