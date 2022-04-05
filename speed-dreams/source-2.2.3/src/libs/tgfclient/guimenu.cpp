@@ -865,15 +865,16 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
     return id;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonsControl
-/// @brief            Creates the controls for radio buttons
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonListControl
+/// @brief            Creates the controls for a radiobutton-list
 /// @param p_hscr     The menu screen handle
 /// @param p_hparm    The menu information
 /// @param p_pszName  The xml sector name
-/// @param p_userData The p_userData
+/// @param p_userData The userData
 /// @param p_onChange Function to call when a radio button is clicked
-/// @return           The radio buttons object id
-int GfuiMenuCreateRadioButtonsControl(void* p_hscr, void* p_hparm, const char* p_pszName, void* p_userData, tfuiRadioButtonsCallback p_onChange)
+/// @return           The RadioButtonList object id
+int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char* p_pszName,
+                                         void* p_userData, tfuiRadioButtonCallback p_onChange)
 {
     std::string strControlPath(GFMNU_SECT_DYNAMIC_CONTROLS"/");
     strControlPath += p_pszName;
@@ -906,7 +907,9 @@ int GfuiMenuCreateRadioButtonsControl(void* p_hscr, void* p_hparm, const char* p
     if (imageheight <= 0)
         imageheight = 30; // TODO: Get default from screen.xml
 
-    int selected = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED, NULL, 0.0);
+    int selected = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED, NULL,  0.0);
+    int amount   = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_AMOUNT,   NULL,  2.0);
+    int distance = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE, NULL, 10.0);
 
     const char* pszTip = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TIP, "");
 
@@ -925,13 +928,13 @@ int GfuiMenuCreateRadioButtonsControl(void* p_hscr, void* p_hparm, const char* p
         onFocusLost = onFocusLostHideTip;
     }
 
-    id = GfuiRadioButtonsCreate(p_hscr, font, x, y, imagewidth, imageheight,
-                                pszText, selected, p_userData, p_onChange,
-                                userDataOnFocus, onFocus, onFocusLost);
+    id = GfuiRadioButtonListCreate(p_hscr, font, x, y, imagewidth, imageheight,
+                                   pszText, selected, amount, distance, p_userData, p_onChange,
+                                   userDataOnFocus, onFocus, onFocusLost);
 
     GfuiColor c = getControlColor(p_hparm, p_pszName, GFMNU_ATTR_COLOR);
     if (c.alpha)
-        GfuiCheckboxSetTextColor(p_hscr, id, c);
+        GfuiRadioButtonListSetTextColor(p_hscr, id, c);
 
     return id;
 }

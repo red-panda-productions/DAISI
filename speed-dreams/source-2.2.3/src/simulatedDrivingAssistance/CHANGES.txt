@@ -14,7 +14,8 @@ It is ordered by: if a file is added or changed, then if the file is in src or d
 Added:
   src/
     libs/tgfclient/
-        GuiRadioButtons.cpp
+        GuiRadioButton.cpp
+        GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
         ResearcherMenu.h
         ResearcherMenu.cpp
@@ -22,6 +23,9 @@ Added:
         DataSelectionMenu.cpp
   data/
     data/
+        img/
+            radio-checked.png
+            radio-unchecked.png
         intervention/
             CMakeLists.txt
             intervention.xml
@@ -46,25 +50,38 @@ Changed:
                 changed backend added to ADD_SDLIB_LIBRARY
         tgfclient/
             gui.h
-                added   tGfuiRadioButtons
-                added   GfuiDrawRadioButtons
-                added   GfuiReleaseRadioButtons
+                added   tGfuiRadioButtonList
+                added   tGfuiRadioButton
+                added   GfuiDrawRadioButtonList()
+                added   GfuiDrawRadioButton()
+                added   GfuiReleaseRadioButtonList()
+                added   GfuiReleaseRadioButton()
                 changed GfuiObject
             guimenu.cpp
-                added   GfuiMenuCreateRadioButtonsControl
+                added   GfuiMenuCreateRadioButtonListControl
             guimenu.h
                 added   GFMNU_TYPE_RADIO_BUTTONS
-                added   GFMNU_ATTR_SELECTED
+                added   GFMNU_ATTR_SELECTED, GFMNU_ATTR_AMOUNT, GFMNU_ATTR_DISTANCE
+            guiobject.cpp
+                changed GfuiDraw()
+                changed GfuiReleaseObject()
             tgfclient.h
-                added   GFUI_RADIOBUTTONS
-                added   RadioButtonsInfo
-                added   tfuiRadioButtonsCallback
-                added   GfuiRadioButtonsCreate
-                added   GfuiRadioButtonsSetSelected
-                added   GfuiRadioButtonsSetText
-                added   GfuiRadioButtonsSetTextColor
-                added   GfuiMenuCreateRadioButtonsControl
+                added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
+                added   tRadioButtonInfo
+                added   tRadioButtonListInfo
+                added   tfuiRadioButtonCallback
+                added   GfuiMenuCreateRadioButtonListControl()
 
+                added   GfuiRadioButtonListCreate()
+                added   GfuiRadioButtonListSetSelected()
+                added   GfuiRadioButtonListSetText()
+                added   GfuiRadioButtonListSetTextColor()
+
+                added   GfuiRadioButtonCreate()
+                added   GfuiRadioButtonSelect()
+                added   GfuiRadioButtonSetText()
+                added   GfuiRadioButtonSetTextColor()
+                added   GfuiRadioButtonIsSelected()
     main/
         main.cpp
     interfaces/

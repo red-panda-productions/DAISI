@@ -21,7 +21,7 @@ SET(_SOURCES control.cpp glfeatures.cpp guibutton.cpp guifont.cpp
             guiimage.cpp guimenu.cpp guiscrollbar.cpp guitexture.cpp
             tgfclient.cpp gui.cpp guiedit.cpp guihelp.cpp
             guilabel.cpp guiobject.cpp guiscrollist.cpp 
-            guicombobox.cpp guicheckbox.cpp guiprogresbar.cpp GuiRadioButtons.cpp
+            guicombobox.cpp guicheckbox.cpp guiprogresbar.cpp GuiRadioButton.cpp GuiRadioButtonList.cpp
             guiscreen.cpp guieventloop.cpp guiapplication.cpp 
             musicplayer.cpp musicplayer.h
             glfeatures.h gui.h guiscreen.h guimenu.h tgfclient.h guifont.h)
