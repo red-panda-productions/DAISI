@@ -290,7 +290,8 @@ static void SaveSettings(void* /* dummy */)
 
 /// @brief Sets the task setting in the researcher menu
 /// @param p_interventionType boolean array that defines which task should be set
-void setTask(bool* p_tasks) {
+void SetTask(bool* p_tasks) 
+{
     if (p_tasks[TASK_LANE_KEEPING]) {
         m_task = TASK_LANE_KEEPING;
         return;
