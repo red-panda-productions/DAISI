@@ -263,7 +263,7 @@
       <attstr name="type" val="label"/>
       <attnum name="x" val="260"/>
       <attnum name="y" val="400"/>
-      <attstr name="text" val="Type"/>
+      <attstr name="text" val="Intervention Type"/>
       <attstr name="h align" val="left"/>
       <attnum name="width" val="220"/>
       <attstr name="font" val="medium_t"/>
