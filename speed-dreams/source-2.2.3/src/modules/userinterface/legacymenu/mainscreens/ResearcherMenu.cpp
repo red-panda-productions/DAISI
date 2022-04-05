@@ -365,7 +365,7 @@ void InitializeSettings(void* p_param) {
     m_pControl.ControlSteering = checkboxPControlSteering;
 
     // Set the participant control settings from the xml file 
-    setInterventionType(checkboxInterventions);
+    SetInterventionType(checkboxInterventions);
     
     delete[] checkboxTasks;
     delete[] checkboxInterventions ;
