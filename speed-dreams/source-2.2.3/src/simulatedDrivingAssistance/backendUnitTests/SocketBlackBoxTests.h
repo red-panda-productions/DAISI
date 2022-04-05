@@ -14,7 +14,7 @@
 #define SETUP(method_name) \
 	std::thread t = std::thread(method_name); \
 	t.detach();\
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));\
+	std::this_thread::sleep_for(std::chrono::seconds(1));\
 	ClientSocket client;\
 	client.Initialize();\
 	client.SendData("AI ACTIVE", 9);\
@@ -39,7 +39,7 @@ void BlackBoxSide()
 	tSituation situation;
 	// no decision should be made yet
 	ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));
-	std::this_thread::sleep_for(std::chrono::milliseconds(30));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	// awaited the client so a decision should be here
 	ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
@@ -122,7 +122,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	// send back result of test 2
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	// initial situation
 	client.AwaitData(buffer, TEST_BUFFER_SIZE);
