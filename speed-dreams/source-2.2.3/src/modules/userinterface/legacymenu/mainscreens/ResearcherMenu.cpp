@@ -257,7 +257,6 @@ static void SaveSettingsToDisk() {
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
 }
 
-
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
