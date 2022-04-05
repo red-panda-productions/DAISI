@@ -351,7 +351,6 @@ void InitializeSettings(void* p_param) {
 
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
-    
 
     // Set the Task settings from the xml file
     setTask(checkboxTasks);
