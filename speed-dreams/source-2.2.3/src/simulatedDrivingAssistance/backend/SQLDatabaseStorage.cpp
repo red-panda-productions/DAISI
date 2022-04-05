@@ -1,7 +1,6 @@
 #include "SQLDatabaseStorage.h"
-#include "sqlite3.h"
 #include <string>
-#include "mysql/jdbc.h"
+#include "mysqlx/xdevapi.h"
 #include "../rppUtils/RppUtils.hpp"
 
 #define INSERT_INTO(tableName, headers, values) \
@@ -52,10 +51,15 @@ void SQLDatabaseStorage::OpenDatabase(
     m_driver = sql::mysql::get_mysql_driver_instance();
 
     // Connect to the database determined by the arguments
-    m_connection = m_driver->connect("tcp://" + p_hostName + ":" + p_port, p_username, p_password);
+    // Using SQLString instead of char* or std::string because Connector C++ may respond in unexpected ways otherwise.
+    sql::SQLString sqlHost("tcp://" + p_hostName + ":" + p_port);
+    sql::SQLString sqlUser(p_username);
+    sql::SQLString sqlPassword(p_password);
+    m_connection = m_driver->connect(sqlHost, sqlUser, sqlPassword);
 
     // Set the correct database schema
     m_connection->setSchema(p_schemaName);
+
     // Create a (reusable) statement
     m_statement = m_connection->createStatement();
 
