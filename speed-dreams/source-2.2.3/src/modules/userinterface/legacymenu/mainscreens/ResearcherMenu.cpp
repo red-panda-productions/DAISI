@@ -318,7 +318,7 @@ void SetTask(bool* p_tasks)
 
 /// @brief Sets the intervention setting in the researcher menu
 /// @param p_interventionType boolean array that defines which intervention type should be set
-void setInterventionType(bool* p_interventionType)
+void SetInterventionType(bool* p_interventionType)
 {
     if (p_interventionType[INTERVENTION_TYPE_NO_SIGNALS]) {
         m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
