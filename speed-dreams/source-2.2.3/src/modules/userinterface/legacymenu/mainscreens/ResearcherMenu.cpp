@@ -371,8 +371,8 @@ void InitializeSettings(void* p_param)
 
     // Set the indicator settings from the xml file
     m_indicators.Audio = checkboxIndicatorAuditory;
-    m_indicators.Icon = checkboxIndicatorVisual;
-    m_indicators.Text = checkboxIndicatorTextual;
+    m_indicators.Icon  = checkboxIndicatorVisual;
+    m_indicators.Text  = checkboxIndicatorTextual;
 
     // Set the indicator settings from the xml file
     m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
