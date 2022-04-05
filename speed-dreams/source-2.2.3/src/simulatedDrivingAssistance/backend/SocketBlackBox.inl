@@ -44,8 +44,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     //Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
-    m_variableDecisionMap["Gear"] = CONVERT_TO_ACCEL_DECISION;
-    m_variableDecisionMap["Accel"] = CONVERT_TO_GEAR_DECISION;
+    m_variableDecisionMap["Gear"] = CONVERT_TO_GEAR_DECISION;
+    m_variableDecisionMap["Accel"] = CONVERT_TO_ACCEL_DECISION;
 }
 
 /// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
@@ -77,6 +77,9 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_in
     std::string data[1] = { std::to_string(p_amountOfTests) };
     msgpack::pack(sbuffer, data);
     m_server.SendData(sbuffer.data(), sbuffer.size());
+
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    if (m_buffer[0] != 'O' && m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
 
     DecisionTuple decisionTuple;
     for (int i = 0; i < p_amountOfTests; i++)

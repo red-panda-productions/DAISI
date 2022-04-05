@@ -14,18 +14,18 @@
 #define SETUP(method_name) \
 	std::thread t = std::thread(method_name); \
 	t.detach();\
-	std::this_thread::sleep_for(std::chrono::seconds(1));\
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));\
 	ClientSocket client;\
 	client.Initialize();\
 	client.SendData("AI ACTIVE", 9);\
 	char buffer[TEST_BUFFER_SIZE];\
-	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));\
+	client.AwaitData(buffer, TEST_BUFFER_SIZE);\
 	ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
 /// @brief The black box side of the test, as these tests have to run in parallel
 void BlackBoxSide()
 {
-	SocketBlackBox<BlackBoxDataMock,PointerManagerMock> bb;
+	SocketBlackBox<BlackBoxDataMock, PointerManagerMock> bb;
 	Random random;
 	BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
 	BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
@@ -39,7 +39,7 @@ void BlackBoxSide()
 	tSituation situation;
 	// no decision should be made yet
 	ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));
-	std::this_thread::sleep_for(std::chrono::seconds(3));
+	std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
 	// awaited the client so a decision should be here
 	ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
@@ -78,7 +78,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// receives amount of tests
-	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
+	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg;
 	msgpack::unpack(msg, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> amountOfTests;
@@ -86,7 +86,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_TRUE(amountOfTests.size() == 1);
 	ASSERT_TRUE(stoi(amountOfTests[0]) == 2); // 2 tests
 
-
+	ASSERT_EQ(client.SendData("OK", 2),IPCLIB_SUCCEED);
 
 	// test 1
 	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
@@ -109,7 +109,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// test 2
-	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg3;
 	msgpack::unpack(msg3, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> driveSituation2;
@@ -122,10 +122,10 @@ TEST(SocketBlackBoxTests, SocketTest)
 	// send back result of test 2
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	// initial situation
-	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg4;
 	msgpack::unpack(msg4, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> driveSituation3;
