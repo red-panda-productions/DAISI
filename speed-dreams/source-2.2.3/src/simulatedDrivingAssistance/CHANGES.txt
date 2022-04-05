@@ -76,8 +76,6 @@ Changed:
                 added check for playing state
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
-            OpenalSoundInterface.cpp
-                added UpdateInterventionSounds()
                 added update and starting of intervention sounds
             SoundInterface.cpp
                 added setInterventionSound()
