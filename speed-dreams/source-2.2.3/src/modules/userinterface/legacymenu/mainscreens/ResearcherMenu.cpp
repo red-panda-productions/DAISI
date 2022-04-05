@@ -341,7 +341,8 @@ void setInterventionType(bool* p_interventionType)
 
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
-void InitializeSettings(void* p_param) {
+void InitializeSettings(void* p_param) 
+{
     // Retrieve all setting variables from the xml file
     bool* checkboxTasks = new bool[3];
     checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, NULL), true);
