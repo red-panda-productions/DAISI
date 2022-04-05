@@ -36,7 +36,7 @@ Added:
 
 Changed:
   src/
-      libs/
+    libs/
         robottools/
             rtHumanDriver.cpp
                 included Recorder.h
@@ -87,6 +87,8 @@ Changed:
     interfaces/
         playerpref.h
             added HM_ADRV_FILE define
+        sound.h
+            added intervention sound volume xml parameter 
     modules/
         racing/standardgame
             racesituation.cpp
@@ -97,53 +99,162 @@ Changed:
                 added backend
             grsound.cpp
                 added intervention sound initialization
+                added intervention sound volume setting
             OpenalSound.cpp
                 added check for playing state
+            OpenalSoundInterface.cpp
+                added UpdateInterventionSounds()
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
                 added update and starting of intervention sounds
             SoundInterface.cpp
                 added setInterventionSound()
+                added SetInterventionVolume()
+                added GetInterventionVolume()
+                changed SoundInterface(): added InterventionVolume member init
+                added Clamp() helper function
             SoundInterface.h
                 added setInterventionSound()
                 added intervention_sounds map
+                added SetInterventionVolume()
+                added GetInterventionVolume()
+                added InterventionVolume member
+                added Clamp() helper function
         userinterface/
             legacymenu.h 
-                  ActivateResearcherMenu()
+                ActivateResearcherMenu()
             legacymenu.cpp
-                  included "ResearcherMenu.h"
-                  included "DataSelectionMenu.h"
-                  added    ActivateResearcherMenu()
-                  changed  backLoad()
-                  changed  activate()
+                included "ResearcherMenu.h"
+                included "DataSelectionMenu.h"
+                added    ActivateResearcherMenu()
+                changed  backLoad()
+                changed  activate()
             racestopmenu.cpp
                 RmStopRaceMenu()
                     changed  AssistedHuman is a human
-            legacymenu/CMakeList.txt
-                  added    ResearcherMenu.h and .cpp
-                  added    DataSelectionMenu.h and .cpp
-                  added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+            legacymenu/
+                CMakeList.txt
+                    added    ResearcherMenu.h and .cpp
+                    added    DataSelectionMenu.h and .cpp
+                    added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                mainscreens/mainmenu.cpp
+                    included "DataSelectionMenu.h"
+                    added    GoBack()
+                    changed  MainMenuInit()
                 racescreens/
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
+                confscreens/soundconfig.cpp
+                    added ChangeInterventionVolume()
+                    added logic to create new controls for intervention volume and store their data
+                    changed readSoundCfg()
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module
                 grboard.cpp
-                    added   grDispIntervention()
+                    included "Mediator.h"
+                    included "InterventionConfig.h"
+
+                    added   DispIntervention()
+                    added   DispInterventionIcon();
+                    added   DispInterventionText();
                     added   LoadInterventionTextures()
+
+                    changed cGrBoard(): removed assignments of removed members
+                    changed ~cGrBoard(): removed deletes of removed members
                     changed grInitBoardCar() 
                     changed refreshBoard()
-                grboard.h
-                    added grDispIntervention() 
+                    changed selectBoard(): removed cases for removed elements
+                    changed loadDefaults(): removed loads of parameters for removed elements
 
+                    removed grDispGGraph()
+                    removed grDispEngineLeds()
+                    removed grDispCarBoard()
+                    removed grDispCarBoard1()
+                    removed grDispCarBoard2()
+                    removed grDispIndicators()
+                    removed grDispLeaderBoard()
+                    removed grDispLeaderBoardScroll()
+                    removed grDispLeaderBoardScrollLine()
+                    removed grDispDashboard()
+                    removed grDispArcade()
+                    removed grGenerateLeaderBoardEntry()
+                    removed trackMap member
+                    removed grGetSplitTime()
+                    removed grGetLapsTime()
+                    removed grSetupDrawingArea()
+                    removed getTrackMap()
+                    removed grShutdownBoardCar()
+
+                    remove all Dashboard and Leaderboard constants
+                    removed constants tracking the number of states of removed elements
+
+                grboard.h
+                    added   DispIntervention() 
+                    added   DispInterventionIcon();
+                    added   DispInterventionText();
+
+                    removed grDispGGraph()
+                    removed grDispEngineLeds()
+                    removed grDispCarBoard()
+                    removed grDispCarBoard1()
+                    removed grDispCarBoard2()
+                    removed grDispIndicators()
+                    removed grDispLeaderBoard()
+                    removed grDispLeaderBoardScroll()
+                    removed grDispLeaderBoardScrollLine()
+                    removed grDispDashboard()
+                    removed grDispArcade()
+                    removed grGenerateLeaderBoardEntry()
+                    removed grGetSplitTime()
+                    removed grGetLapsTime()
+                    removed grSetupDrawingArea()
+                    removed getTrackMap()
+                    removed grShutdownBoardCar()
+
+                    removed boardFlag
+                    removed leaderFlag
+                    removed leaderNb
+                    removed GFlag
+                    removed dashboardFlag
+                    removed arcadeFlag
+                    removed iStart
+                    removed iTimer
+                    removed iStringStart
+                    removed st 
+
+                    removed trackMap
+
+                    removed *ok_color_;
+                    removed *error_color_;
+                    removed *inactive_color_;
+                    removed *ahead_color_;
+                    removed *behind_color_;
+                    removed *arcade_color_;
+
+                grmain.cpp
+                    changed initView(): removed keybinds for removed hud elements
+                    changed shutdownCars(): removed unused shutdown board
+                    removed grSelectTrackMap()
+
+                grscreen.cpp
+                    removed selectTrackMap()
+
+                grscreen.h
+                    removed selectTrackMap()
 
 
   data/
-    data/CMakeLists.txt
-        added intervention folder
+    data/
+        CMakeLists.txt
+            added intervention folder
+        menu/
+            mainmenu.xml
+                added a back button
+            soundconfigmenu.xml
+                added controls for intervention sound volume
         
   cmake/
     checks.cmake

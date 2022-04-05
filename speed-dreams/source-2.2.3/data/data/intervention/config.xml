@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
+<params name="intervention-config" type="template">
+    <section name="Interventions">
+        <section name ="none">
+            <section name="texture">
+                <attstr name ="source" val="Intervention_Steer_None_Proto_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content" val="None"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0"/>
+            </section>
+        </section>
+        <section name ="steer left">
+            <section name="texture">
+                <attstr name ="source" val="Intervention_Steer_Left_Proto_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content" val="Steer left"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="left.wav"/>
+            </section>
+        </section>
+        <section name ="steer right">
+            <section name="texture">
+                <attstr name ="source" val="Intervention_Steer_Right_Proto_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content" val="Steer right"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="right.wav"/>
+            </section>
+        </section>
+        <section name ="brake">
+            <section name="texture">
+                <attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content" val="Brake"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="brake.wav"/>
+            </section>
+        </section>
+    </section>
+</params>

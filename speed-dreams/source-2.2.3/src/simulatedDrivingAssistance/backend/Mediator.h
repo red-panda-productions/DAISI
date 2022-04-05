@@ -1,5 +1,4 @@
 #pragma once
-#include "DriveSituation.h"
 #include "ConfigEnums.h"
 #include "car.h"
 #include "raceman.h"
@@ -21,7 +20,7 @@ public:
 
 	void SetTask(Task p_task);
 
-    void SetIndicatorSettings(bool* p_indicators);
+    void SetIndicatorSettings(tIndicator p_indicators);
 
     void SetInterventionType(InterventionType p_type);
 
@@ -29,13 +28,11 @@ public:
 
     void SetUserId(char* p_userId);
 
-    void SetDataCollectionSettings(bool* p_dataSetting);
+    void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
-    bool GetIndicatorSetting(Indicator p_indicator);
+    tIndicator GetIndicatorSettings();
 
     InterventionType GetInterventionType();
-
-	DriveSituation* Simulate();
 
     static Mediator* GetInstance();
 
@@ -52,7 +49,9 @@ public:
 
     DecisionMaker m_decisionMaker;
 
-	EnvironmentInfo m_environment = EnvironmentInfo(0, 0, 0);
+    int m_tickCount;
+
+    tTrack* m_track = nullptr;
 };
 
 SMediator* SMediator::m_instance = nullptr;

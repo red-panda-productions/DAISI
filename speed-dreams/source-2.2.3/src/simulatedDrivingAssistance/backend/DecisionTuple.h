@@ -1,7 +1,8 @@
 #pragma once
 #include "BrakeDecision.h"
 #include "SteerDecision.h"
-#define DECISIONS_COUNT 2
+#include "AccelDecision.h"
+#define DECISIONS_COUNT 3
 
 /// @brief A tuple that contains all decisions that can be made by an AI
 struct DecisionTuple
@@ -15,10 +16,17 @@ public:
 
     void SetSteer(float p_steerValue);
 
+    void SetGear(int p_gearValue);
+
+    void SetAccel(float p_accelValue);
+
     float GetBrake() const;
 
     float GetSteer() const;
 
+    float GetGear() const;
+
+    float GetAccel() const;
 
 private:
     IDecision* buffer[DECISIONS_COUNT];
@@ -27,5 +35,6 @@ private:
     bool m_brakeActive = false;
     SteerDecision m_steerDecision;
     bool m_steerActive = false;
-
+    AccelDecision m_accelDecision;
+    bool m_accelActive = false;
 };

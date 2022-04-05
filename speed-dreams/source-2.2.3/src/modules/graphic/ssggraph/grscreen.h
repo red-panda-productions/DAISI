@@ -77,7 +77,6 @@ class cGrScreen {
 		int getNthCamera(void);
 		float getViewOffset(void) { return viewOffset; }
 		void selectBoard(const long brd);
-		void selectTrackMap();
 	
 		void setCurrentCar(tCarElt *newCurCar);
 

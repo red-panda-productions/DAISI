@@ -65,13 +65,14 @@
 #include "forcefeedback.h"
 
 // ASSISTED DRIVING ASSISTANCE: added recorder
-// To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
+// To record uncomment the #define RECORD_SESSION in backend/ConfigEnums.h
 #include <ConfigEnums.h>
+#define PARAMAMOUNT 3
+
 #ifdef RECORD_SESSION
 #include <Recorder.h>
 Recorder* recorder;
 #endif
-
 
 
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
@@ -279,10 +280,13 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
  */
 void HumanDriver::shutdown(const int index)
 {
+    // SIMULATED DRIVING ASSISTANCE: DELETE RECORDER 
 #ifdef RECORD_SESSION
     delete recorder;
 #endif
-    int idx = index - 1;
+
+
+	int idx = index - 1;
 
     free(VecNames[idx]);
     VecNames[idx] = 0;
@@ -608,16 +612,14 @@ void HumanDriver::init_track(int index,
 
 /*
  * Original function: newrace
- *
- * Changes from original: none
  */
+
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #ifdef RECORD_SESSION
-    int paramAmount = 4;
-    recorder = new Recorder("user_recordings", "userRecording", paramAmount);
+    recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
 #endif
     const int idx = index - 1;
 
@@ -947,6 +949,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
     int scrw, scrh, dummy;
 
+
+
     const int idx = index - 1;
     tControlCmd *cmd = HCtx[idx]->cmdControl;
 
@@ -1073,7 +1077,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     switch (cmd[CMD_LEFTSTEER].type) {
     case GFCTRL_TYPE_JOY_AXIS:
         ax0 = joyInfo->ax[cmd[CMD_LEFTSTEER].val];
-
         // limit and normalise
         if (ax0 > cmd[CMD_LEFTSTEER].max) {
             ax0 = cmd[CMD_LEFTSTEER].max;
@@ -1151,6 +1154,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             if (leftSteer < 0.0) leftSteer = 0.0;
         }
 #endif
+        
         HCtx[idx]->prevLeftSteer = leftSteer;
         break;
     default:
@@ -1544,6 +1548,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
                 car->_brakeCmd =
                     MIN(car->_brakeCmd, HCtx[idx]->pbrake + inc_rate*d_brake/fabs(d_brake));
         }
+
         HCtx[idx]->pbrake = car->_brakeCmd;
     }
 
@@ -1718,8 +1723,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
     // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
 #ifdef RECORD_SESSION
-        float inputs[4] = { car->_accelCmd , car->_brakeCmd, leftSteer, rightSteer };
-        recorder->WriteRecording(inputs, s -> currentTime, true);
+        float inputs[PARAMAMOUNT] = { car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
+        recorder->WriteRecording(inputs, s -> currentTime, false);
 #endif
     HCtx[idx]->lap = car->_laps;
 }//common_drive

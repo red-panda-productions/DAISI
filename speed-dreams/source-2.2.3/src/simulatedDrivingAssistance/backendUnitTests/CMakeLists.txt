@@ -32,6 +32,7 @@ SET(_SOURCES MsgpackDeserializeTests.cpp
         ConfigTests.cpp
         FileDataStorageTests.cpp
         SQLDatabaseStorageTests.cpp
+        BlackBoxDataTests.cpp
         )
 
 SET(_HEADERS MsgpackSerializeTests.h
@@ -39,18 +40,16 @@ SET(_HEADERS MsgpackSerializeTests.h
 
 SET(_MOCK_SOURCES "")
 
-SET(_MOCK_HEADERS mocks/CarInfoMock.h
-    mocks/DriveSituationMock.h
-    mocks/EnvironmentInfoMock.h
+SET(_MOCK_HEADERS
+    mocks/BlackBoxDataMock.h
     mocks/InterventionExecutorMock.h
-    mocks/PlayerInfoMock.h
     mocks/SocketBlackBoxMock.h
-    mocks/TrackPositionMock.h
     mocks/ConfigMock.h
+    mocks/PointerManagerMock.h
     mocks/DecisionMakerMock.h)
 
 
-ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
+SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 
 target_link_libraries(
   backendUnitTests #moet het zelfde zijn
@@ -64,35 +63,7 @@ ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${IPCLIB_BIN_DIR}/IPCLib.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
-
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_BINARY_DIR}/bin/tgf.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
-
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_BINARY_DIR}/bin/tgfclient.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
-
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_BINARY_DIR}/bin/portability.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
-
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_BINARY_DIR}/bin/SDL2.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
-
-ADD_CUSTOM_COMMAND(TARGET backendUnitTests POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_BINARY_DIR}/bin/libexpat.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}")
+SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
 
 FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 

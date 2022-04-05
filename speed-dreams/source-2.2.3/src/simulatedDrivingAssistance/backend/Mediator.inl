@@ -7,17 +7,16 @@
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
     template InterventionType Mediator<type>::GetInterventionType(); \
-    template bool Mediator<type>::GetIndicatorSetting(Indicator p_indicator); \
+    template tIndicator Mediator<type>::GetIndicatorSettings(); \
 	template void Mediator<type>::SetTask(Task p_task);\
-	template void Mediator<type>::SetIndicatorSettings(bool* p_indicators);\
+	template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
 	template void Mediator<type>::SetUserId(char* p_userId);\
-	template void Mediator<type>::SetDataCollectionSettings(bool* p_dataSetting);\
+	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
 	template void Mediator<type>::RaceStop();\
-    template DriveSituation* Mediator<type>::Simulate();\
     template Mediator<type>* Mediator<type>::GetInstance(); \
 	template Mediator<type>::Mediator();
 
@@ -33,7 +32,7 @@ void Mediator<DecisionMaker>::SetTask(Task p_task)
 /// @brief              Sets the settings for indication of interventions
 /// @param p_indicators The Indicator settings
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetIndicatorSettings(bool* p_indicators)
+void Mediator<DecisionMaker>::SetIndicatorSettings(tIndicator p_indicators)
 {
     m_decisionMaker.Config.SetIndicatorSettings(p_indicators);
 }
@@ -73,7 +72,7 @@ void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 /// @brief               Sets the settings for data collection
 /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
+void Mediator<DecisionMaker>::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
@@ -82,53 +81,38 @@ void Mediator<DecisionMaker>::SetDataCollectionSettings(bool* p_dataSetting)
 /// @param p_indicator Indicator whose setting to get
 /// @return true if the indicator is enabled, false when disabled
 template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::GetIndicatorSetting(Indicator p_indicator)
+tIndicator Mediator<DecisionMaker>::GetIndicatorSettings()
 {
-    return m_decisionMaker.Config.GetIndicatorSettings()[p_indicator];
+    return m_decisionMaker.Config.GetIndicatorSettings();
 }
 
+/// @brief              Does one drive tick in the framework
+/// @param  p_car       The current car
+/// @param  p_situation The current situation
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
     CarController.SetCar(p_car);
-    DriveSituation currentSituation(
-        m_environment,
-        CarInfo(
-            TrackPosition(false, p_car->pub.trkPos.toStart, p_car->pub.trkPos.toRight, p_car->pub.trkPos.toMiddle, p_car->pub.trkPos.toLeft),
-            p_car->pub.speed, p_car->race.topSpeed, p_car->priv.gear, false),
-        PlayerInfo(p_car->ctrl.steer, p_car->ctrl.accelCmd, p_car->ctrl.brakeCmd, p_car->ctrl.clutchCmd),
-        p_situation->currentTime);
-
-    m_decisionMaker.Decide(currentSituation);
+    m_decisionMaker.Decide(p_car, p_situation, m_tickCount);
+    m_tickCount++;
 }
 
+/// @brief                  Starts the race in the framework
+/// @param  p_track         The track of the current race
+/// @param  p_carHandle     A car handle (from speed dreams)
+/// @param  p_carParmHandle A car parameter handle (from speed dreams)
+/// @param  p_situation     The current situation
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
-    m_environment.SetTimeOfDay(p_track->local.timeofday);
-    m_environment.SetClouds(p_track->local.clouds);
-    m_environment.SetRain(p_track->local.rain);
-
-    DriveSituation currentSituation(
-        m_environment,
-        CarInfo(
-            TrackPosition(false, 0, 0, 0, 0),
-            0, 0, 0, false),
-        PlayerInfo(0, 0, 0, 0),
-        0);
-
-
-    m_decisionMaker.Initialize(currentSituation);
+    m_track = p_track;
+    tCarElt car;
+    m_decisionMaker.Initialize(&car, p_situation);
 }
 
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop() {}
 
-template<typename DecisionMaker>
-DriveSituation* Mediator<DecisionMaker>::Simulate()
-{
-    return nullptr;
-}
 
 /// @brief Creates a mediator instance if needed and returns it
 /// @return A mediator instance

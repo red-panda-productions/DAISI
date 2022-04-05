@@ -25,8 +25,8 @@
         <!-- Checkboxes for selecting how to indicate an intervention -->
         <section name="CheckboxIndicatorAuditory">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Auditory"/>
-            <attstr name="tip" val="Enable/Disable Auditory indication of interventions"/>
+            <attstr name="text" val="Audio"/>
+            <attstr name="tip" val="Enable/Disable auditory indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -38,10 +38,23 @@
 
         <section name="CheckboxIndicatorVisual">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Visual"/>
-            <attstr name="tip" val="Enable/Disable Visual indication of interventions"/>
+            <attstr name="text" val="Icon"/>
+            <attstr name="tip" val="Enable/Disable icon indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="340"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="CheckboxIndicatorTextual">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Text"/>
+            <attstr name="tip" val="Enable/Disable text indication of interventions"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="310"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -114,6 +127,19 @@
             <attstr name="tip" val="Enable/Disable the possibility for the user to control steering"/>
             <attnum name="x" val="500"/>
             <attnum name="y" val="310"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="CheckboxForceFeedback">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Force Feedback"/>
+            <attstr name="tip" val="Enable/Disable force feedback"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="280"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>

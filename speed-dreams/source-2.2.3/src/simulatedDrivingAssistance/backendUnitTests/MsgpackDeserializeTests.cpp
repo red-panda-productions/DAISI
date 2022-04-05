@@ -5,6 +5,7 @@
 #include "MsgpackSerializeTests.h"
 #include "SocketBlackBoxTests.h"
 #include "DecisionTuple.h"
+#include "mocks/BlackBoxDataMock.h"
 
 #define STEER "Steer"
 #define BRAKE "Brake"
@@ -23,7 +24,7 @@ TEST(MsgpackDeserializeTests, Deserialize)
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
-    SocketBlackBox<DriveSituationMock> socketBlackBox;
+    SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
     socketBlackBox.VariablesToReceive = { STEER, BRAKE };
@@ -46,7 +47,7 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
-    SocketBlackBox<DriveSituationMock> socketBlackBox;
+    SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
     DecisionTuple decisionTuple;
@@ -64,7 +65,7 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
-    SocketBlackBox<DriveSituationMock> socketBlackBox;
+    SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
     socketBlackBox.VariablesToReceive = { STEER, BRAKE };
@@ -87,7 +88,7 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
-    SocketBlackBox<DriveSituationMock> socketBlackBox;
+    SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
     socketBlackBox.VariablesToReceive = { NON_EXISTING_DECISION_KEY, BRAKE };
@@ -108,7 +109,7 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
-    SocketBlackBox<DriveSituationMock> socketBlackBox;
+    SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
     socketBlackBox.VariablesToReceive = { STEER, BRAKE };
@@ -127,7 +128,7 @@ TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
-    SocketBlackBox<DriveSituationMock> socketBlackBox;
+    SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
     socketBlackBox.VariablesToReceive = { STEER, BRAKE };

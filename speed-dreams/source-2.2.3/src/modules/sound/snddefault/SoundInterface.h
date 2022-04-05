@@ -98,6 +98,9 @@ class SoundInterface {
 	/// Current global gain [0, 1] and mute flag. 
 	float global_gain;
 	bool silent;
+
+    // SIMULATED DRIVING ASSISTANCE: intervention volume [0, 1]
+    float InterventionVolume;
 	
 	/** Find the max amplitude sound in car_sound_data and put it in smap  */
 	void sortSingleQueue (CarSoundData** car_sound_data, QueueSoundMap* smap, int n_cars);
@@ -149,10 +152,17 @@ class SoundInterface {
 						sndVec3 c_obs = NULL, sndVec3 a_obs = NULL) = 0;
 
 	virtual float getGlobalGain() const;
-
 	virtual void setGlobalGain(float g);
 
+    // SIMULATED DRIVING ASSISTANCE: add getter and setter for intervention volume
+    float GetInterventionVolume() const;
+    void SetInterventionVolume(float p_volume);
+
 	virtual void mute(bool bOn = true);
+
+private:
+    // SIMULATED DRIVING ASSISTANCE: add helper function
+    float Clamp(float volume, float low, float high);
 };
 
 

@@ -1,6 +1,6 @@
 #include "BrakeDecision.h"
 #include "Mediator.h"
-#define BRAKE_THRESHOLD 0.2f
+#define BRAKE_THRESHOLD 0.9f
 
 
 void BrakeDecision::RunIndicateCommands()

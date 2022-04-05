@@ -13,7 +13,7 @@ void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sou
     char path[256];
     for (int i = 0; i < p_interventionCount; i++)
     {
-        snprintf(path, sizeof(path), "%s/%d/%s", PRM_SECT_INTERVENTIONS, i, PRM_SECT_SOUND);
+        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_SOUND);
         if(!GfParmExistsSection(p_xmlHandle, path)) continue;
 
         const char* src = GfParmGetStr(p_xmlHandle, path, PRM_ATTR_SRC, "");
@@ -40,7 +40,7 @@ void InterventionConfig::Initialize() {
 void* InterventionConfig::GetXmlHandle() {
     // Load intervention texture from XML file (unchecked max path size: 256)
     char* path = new char[256];
-    snprintf(path, 256, INTERVENTION_DATA_DIR_FORMAT, GfDataDir());
+    snprintf(path, 256, CONFIG_XML_DIR_FORMAT, GfDataDir());
     return GfParmReadFile(path, GFPARM_RMODE_STD);
 }
 
@@ -68,6 +68,25 @@ tTextureData InterventionConfig::GetCurrentInterventionTexture()
         throw std::out_of_range("Intervention index (Enum) is out-of-bounds of textures array");
     }
     return m_textures[m_currentAction];
+}
+
+/// @brief              Sets the texts that are used by the HUD
+/// @param p_textures   An array containing the text data, 
+///                     indexed by the InterventionAction type in ConfigEnums.h
+void InterventionConfig::SetTexts(tTextData* p_texts)
+{
+    m_texts = p_texts;
+}
+
+/// @brief  Retrieves the text belonging to the current intervention action
+/// @return The text data
+tTextData InterventionConfig::GetCurrentInterventionText()
+{
+    if (m_currentAction >= m_interventionCount)
+    {
+        throw std::out_of_range("Intervention index (Enum) is out-of-bounds of texts array");
+    }
+    return m_texts[m_currentAction];
 }
 
 /// @brief  Retrieves the sound locations belonging to the possible intervention actions
