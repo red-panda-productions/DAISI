@@ -19,7 +19,7 @@
 	client.Initialize();\
 	client.SendData("AI ACTIVE", 9);\
 	char buffer[TEST_BUFFER_SIZE];\
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);\
+	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));\
 	ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
 /// @brief The black box side of the test, as these tests have to run in parallel
@@ -78,7 +78,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// receives amount of tests
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg;
 	msgpack::unpack(msg, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> amountOfTests;
@@ -89,7 +89,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 
 
 	// test 1
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg2;
 	msgpack::unpack(msg2, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> driveSituation;
@@ -109,7 +109,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// test 2
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);
+	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg3;
 	msgpack::unpack(msg3, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> driveSituation2;
@@ -125,7 +125,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	// initial situation
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);
+	ASSERT_DURATION_LE(1,client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	msgpack::unpacked msg4;
 	msgpack::unpack(msg4, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> driveSituation3;
@@ -139,7 +139,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 
 
 	// normal
-	client.AwaitData(buffer, TEST_BUFFER_SIZE); //removes 1 data step
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE)); //removes 1 data step
 	msgpack::unpacked msg5;
 	msgpack::unpack(msg5, buffer, TEST_BUFFER_SIZE);
 	std::vector<std::string> driveSituation4;
@@ -150,7 +150,7 @@ TEST(SocketBlackBoxTests, SocketTest)
 	ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
 	// gets a stop command
-	client.AwaitData(buffer, TEST_BUFFER_SIZE);
+	ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));
 	ASSERT_TRUE(buffer[0] == 'S' && buffer[1] == 'T' && buffer[2] == 'O' && buffer[3] == 'P');
 
 	// return to break connection
