@@ -39,7 +39,7 @@ void BlackBoxSide()
 	tSituation situation;
 	// no decision should be made yet
 	ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(3));
 
 	// awaited the client so a decision should be here
 	ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
