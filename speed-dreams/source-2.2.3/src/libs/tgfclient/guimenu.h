@@ -104,6 +104,7 @@ extern bool gfuiMenuGetBoolean(const char* pszValue, bool bDefault = false);
 #define GFMNU_ATTR_BOX_SHOW "show box"
 
 #define GFMNU_ATTR_CHECKED "checked"
+#define GFMNU_ATTR_DEFAULT_VALUE "default value"
 
 #define GFMNU_ATTR_MASKED_TEXT "mask text"
 

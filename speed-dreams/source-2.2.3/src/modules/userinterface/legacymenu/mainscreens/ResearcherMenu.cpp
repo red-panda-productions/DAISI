@@ -1,10 +1,24 @@
 #include <tgfclient.h>
 #include <random>
 #include <forcefeedback.h>
-
+#include "guimenu.h"
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
+
+#define RESEARCHMENU_LANE_KEEPING "dynamic controls/CheckboxTaskLaneKeeping"
+#define RESEARCHMENU_SPEED_CONTROL "dynamic controls/CheckboxTaskSpeedControl"
+#define RESEARCHMENU_INDICATOR_AUDITORY "dynamic controls/CheckboxIndicatorAuditory"
+#define RESEARCHMENU_INDICATOR_VISUAL "dynamic controls/CheckboxIndicatorVisual"
+#define RESEARCHMENU_INDICATOR_TEXT "dynamic controls/CheckboxIndicatorTextual"
+#define RESEARCHMENU_TYPE_NO_SIGNALS "dynamic controls/CheckboxTypeNoSignals"
+#define RESEARCHMENU_TYPE_ONLY_SIGNALS "dynamic controls/CheckboxTypeOnlySignals"
+#define RESEARCHMENU_TYPE_SHARED_CONTROL "dynamic controls/CheckboxTaskSharedControl"
+#define RESEARCHMENU_TYPE_COMPLETE_TAKEOVER "dynamic controls/CheckboxTaskCompleteTakeover"
+#define RESEARCHMENU_CONTROL_GAS "dynamic controls/CheckboxPControlGas"
+#define RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE "dynamic controls/CheckboxPControlInterventionToggle"
+#define RESEARCHMENU_CONTROL_STEERING "dynamic controls/CheckboxPControlSteering"
+#define RESEARCHMENU_MAX_TIME_EDIT "dynamic controls/MaxTimeEdit"
 
 
 // GUI screen handles
@@ -199,59 +213,59 @@ static void SaveSettingsToDisk() {
     void* readParam = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save task settings to xml file
-    GfParmSetStr(readParam, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "no");
-    GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "no");
+    GfParmSetStr(readParam, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
+    GfParmSetStr(readParam, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
     switch (m_task)
     {
         case TASK_LANE_KEEPING:
-            GfParmSetStr(readParam, "dynamic controls/CheckboxTaskLaneKeeping", "checked", "yes");
+            GfParmSetStr(readParam, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
             break;
         case TASK_SPEED_CONTROL:
-            GfParmSetStr(readParam, "dynamic controls/CheckboxTaskSpeedControl", "checked", "yes");
+            GfParmSetStr(readParam, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
             break;
     }
 
     // Save indicator settings to xml file
-    const char* audioSetting = m_indicators.Audio ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorAuditory", "checked", audioSetting);
-    const char* iconSetting = m_indicators.Icon ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorVisual", "checked", iconSetting);
-    const char* textSetting = m_indicators.Text ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxIndicatorTextual", "checked", textSetting);
+    const char* audioSetting = m_indicators.Audio ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_AUDITORY, GFMNU_ATTR_CHECKED, audioSetting);
+    const char* iconSetting = m_indicators.Icon ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_VISUAL, GFMNU_ATTR_CHECKED, iconSetting);
+    const char* textSetting = m_indicators.Text ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_TEXT, GFMNU_ATTR_CHECKED, textSetting);
 
     // Save intervention type settings to xml file
-    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "no");
-    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "no");
-    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeSharedControl", "checked", "no");
-    GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "no");
+    GfParmSetStr(readParam, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
+    GfParmSetStr(readParam, RESEARCHMENU_TYPE_ONLY_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
+    GfParmSetStr(readParam, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
+    GfParmSetStr(readParam, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
     switch (m_interventionType)
     {
         case INTERVENTION_TYPE_NO_SIGNALS:
-            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeNoSignals", "checked", "yes");
+            GfParmSetStr(readParam, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
             break;
         case INTERVENTION_TYPE_ONLY_SIGNALS:
-            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeOnlySignals", "checked", "yes");
+            GfParmSetStr(readParam, RESEARCHMENU_TYPE_ONLY_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
             break;
         case INTERVENTION_TYPE_SHARED_CONTROL:
-            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeSharedControl", "checked", "yes");
+            GfParmSetStr(readParam, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
             break;
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
-            GfParmSetStr(readParam, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", "yes");
+            GfParmSetStr(readParam, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
             break;
     }
 
     // Save participant control settings to xml file
-    const char* controlGas = m_pControl.ControlGas ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxPControlGas", "checked", controlGas);
-    const char* interventionToggle = m_pControl.ControlInterventionToggle ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxPControlInterventionToggle", "checked", interventionToggle);
-    const char* controlSteering = m_pControl.ControlSteering ? "yes" : "no";
-    GfParmSetStr(readParam, "dynamic controls/CheckboxPControlSteering", "checked", controlSteering);
+    const char* controlGas = m_pControl.ControlGas ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, controlGas);
+    const char* interventionToggle = m_pControl.ControlInterventionToggle ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, interventionToggle);
+    const char* controlSteering = m_pControl.ControlSteering ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, controlSteering);
 
     // Save max time to xml file
     char buf2[32];
     sprintf(buf2, "%d", m_maxTime);
-    GfParmSetStr(readParam, "dynamic controls/MaxTimeEdit", "default value", buf2);
+    GfParmSetStr(readParam, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, buf2);
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
@@ -331,29 +345,29 @@ void setInterventionType(bool* p_interventionType)
 void InitializeSettings(void* p_param) {
     // Retrieve all setting variables from the xml file
     bool* checkboxTasks = new bool[3];
-    checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskLaneKeeping", "checked", NULL), true);
-    checkboxTasks[TASK_SPEED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTaskSpeedControl", "checked", NULL), false);
+    checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, NULL), true);
+    checkboxTasks[TASK_SPEED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, NULL), false);
 
-    bool checkboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorAuditory", "checked", NULL), true);
-    bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorVisual", "checked", NULL), true);
-    bool checkboxIndicatorTextual = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxIndicatorTextual", "checked", NULL), true);
+    bool checkboxIndicatorAuditory = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_AUDITORY, GFMNU_ATTR_CHECKED, NULL), true);
+    bool checkboxIndicatorVisual = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_VISUAL, GFMNU_ATTR_CHECKED, NULL), true);
+    bool checkboxIndicatorTextual = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_TEXT, GFMNU_ATTR_CHECKED, NULL), true);
 
 
     bool* checkboxInterventions = new bool[5];
-    checkboxInterventions[INTERVENTION_TYPE_NO_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeNoSignals", "checked", NULL), true);
-    checkboxInterventions[INTERVENTION_TYPE_ONLY_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeOnlySignals", "checked", NULL), false);
-    checkboxInterventions[INTERVENTION_TYPE_SHARED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeSharedControl", "checked", NULL), false);
-    checkboxInterventions[INTERVENTION_TYPE_COMPLETE_TAKEOVER] = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxTypeCompleteTakeover", "checked", NULL), false);
+    checkboxInterventions[INTERVENTION_TYPE_NO_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, NULL), true);
+    checkboxInterventions[INTERVENTION_TYPE_ONLY_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_ONLY_SIGNALS, GFMNU_ATTR_CHECKED, NULL), false);
+    checkboxInterventions[INTERVENTION_TYPE_SHARED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, NULL), false);
+    checkboxInterventions[INTERVENTION_TYPE_COMPLETE_TAKEOVER] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, NULL), false);
 
-    bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlInterventionToggle", "checked", NULL), false);
-    bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlGas", "checked", NULL), true);
-    bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, "dynamic controls/CheckboxPControlSteering", "checked", NULL), true);
+    bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, NULL), true);
+    bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, NULL), false);
+    bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, NULL), true);
 
     // Set the max time setting from the xml file
-    m_maxTime = std::stoi(GfParmGetStr(p_param, "dynamic controls/MaxTimeEdit", "default value", NULL));
+    m_maxTime = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, NULL));
 
     // Set the Task settings from the xml file
-    setTask(checkboxTasks);
+    SetTask(checkboxTasks);
 
     // Set the indicator settings from the xml file
     m_indicators.Audio = checkboxIndicatorAuditory;
@@ -369,7 +383,7 @@ void InitializeSettings(void* p_param) {
     setInterventionType(checkboxInterventions);
     
     delete[] checkboxTasks;
-    delete[] checkboxInterventions ;
+    delete[] checkboxInterventions;
 }
 
 /// @brief            Initializes the researcher menu
