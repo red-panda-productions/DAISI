@@ -61,7 +61,7 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     // Does not appear to lead to input inaccuracies
     // since this function is called around the same time
     // it is called in the recording
-    //if(m_inputTime - 0.0001 <=  p_situation -> currentTime 
+    //if(m_inputTime - 0.0001 <=  p_situation -> currentTime
     //    && p_situation->currentTime <= m_inputTime + 0.0001)
     {
         std::string accelString;
@@ -88,9 +88,10 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         m_replayFile >> inputTime;
         if (m_replayFile.eof())
         {
-            Shutdown();
+        	p_situation->raceInfo.state = RM_RACE_ENDED;
         }
-        m_inputTime = std::stod(inputTime);
+        else
+			m_inputTime = std::stod(inputTime);
 
         float inputs[PARAMAMOUNT] = { p_car->_accelCmd , p_car->_brakeCmd, p_car->_steerCmd, p_car->_gearCmd, p_car->_clutchCmd };
         recorder->WriteRecording(inputs, p_situation->currentTime, false);

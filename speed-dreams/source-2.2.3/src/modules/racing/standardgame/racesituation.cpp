@@ -348,6 +348,10 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
         }
         pCurrReInfo->_reLastRobTime = s->currentTime;
     }
+    if(s->raceInfo.state & RM_RACE_ENDED)
+    {
+        StandardGame::self().abandonRace();
+    }
     GfSchedEndEvent("raceupdate", "robots");
     GfProfStopProfile("rbDrive*");
 
