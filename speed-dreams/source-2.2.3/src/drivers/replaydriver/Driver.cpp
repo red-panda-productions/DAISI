@@ -39,10 +39,10 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
-    recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
+    //recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
 
     //m_humanDriver.new_race(m_index, p_car, p_situation);
-    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-162354.txt");
+    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-205849.txt");
     std::string inputTime;
     m_replayFile >> inputTime;
     m_inputTime = std::stod(inputTime);
@@ -139,24 +139,24 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         else
 			m_inputTime = std::stod(inputTime);
 
-        float inputs[PARAMAMOUNT] = {
-            p_car->_accelCmd ,
-            p_car->_brakeCmd,
-            p_car->_steerCmd,
-            p_car -> _gearCmd,
-            p_car -> _clutchCmd,
-            p_car->_raceCmd,
-            p_car->_lightCmd,
-            p_car->_ebrakeCmd,
-            p_car->_brakeFLCmd,
-            p_car->_brakeFRCmd,
-            p_car->_brakeRLCmd,
-            p_car->_brakeRRCmd,
-            p_car->_wingFCmd,
-            p_car->_wingRCmd,
-            p_car->_telemetryMode,
-            p_car->_singleWheelBrakeMode};
-        recorder->WriteRecording(inputs, p_situation->currentTime, false);
+        //float inputs[PARAMAMOUNT] = {
+        //    p_car->_accelCmd ,
+        //    p_car->_brakeCmd,
+        //    p_car->_steerCmd,
+        //    p_car -> _gearCmd,
+        //    p_car -> _clutchCmd,
+        //    p_car->_raceCmd,
+        //    p_car->_lightCmd,
+        //    p_car->_ebrakeCmd,
+        //    p_car->_brakeFLCmd,
+        //    p_car->_brakeFRCmd,
+        //    p_car->_brakeRLCmd,
+        //    p_car->_brakeRRCmd,
+        //    p_car->_wingFCmd,
+        //    p_car->_wingRCmd,
+        //    p_car->_telemetryMode,
+        //    p_car->_singleWheelBrakeMode};
+        //recorder->WriteRecording(inputs, p_situation->currentTime, false);
     }
     //SMediator::GetInstance()->DriveTick(p_car, p_situation);
 
