@@ -261,14 +261,14 @@ static void SaveSettingsToDisk()
     }
 
     // Save participant control settings to xml file
-    const char* controlGas = m_pControl.ControlGas ? GFMNU_VAL_YES : GFMNU_VAL_NO;
-    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, controlGas);
+    const char* controlGas         = m_pControl.ControlGas                ? GFMNU_VAL_YES : GFMNU_VAL_NO;
     const char* interventionToggle = m_pControl.ControlInterventionToggle ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    const char* controlSteering    = m_pControl.ControlSteering           ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    const char* forceFeedback      = m_pControl.ForceFeedback             ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_GAS,                 GFMNU_ATTR_CHECKED, controlGas);
     GfParmSetStr(readParam, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, interventionToggle);
-    const char* controlSteering = m_pControl.ControlSteering ? GFMNU_VAL_YES : GFMNU_VAL_NO;
-    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, controlSteering);
-    const char* forceFeedback = m_pControl.ForceFeedback ? GFMNU_VAL_YES : GFMNU_VAL_NO;
-    GfParmSetStr(readParam, RESEARCHMENU_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, forceFeedback);
+    GfParmSetStr(readParam, RESEARCHMENU_CONTROL_STEERING,            GFMNU_ATTR_CHECKED, controlSteering);
+    GfParmSetStr(readParam, RESEARCHMENU_FORCE_FEEDBACK,              GFMNU_ATTR_CHECKED, forceFeedback);
 
     // Save max time to xml file
     char buf2[32];
