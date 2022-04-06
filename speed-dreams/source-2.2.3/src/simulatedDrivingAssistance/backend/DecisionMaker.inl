@@ -24,7 +24,10 @@ template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar, 
     tSituation* p_initialSituation, BlackBoxData* p_testSituations, int p_testAmount)
 {
+#ifdef BB_RECORD_SESSION
     m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
+#endif
+
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 }
@@ -73,7 +76,7 @@ void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 template<typename SocketBlackBox, typename SDAConfig>
 DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 {
-#ifndef TEST
+#ifdef BB_RECORD_SESSION
     delete m_recorder;
 #endif
 }

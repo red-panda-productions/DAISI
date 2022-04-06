@@ -65,5 +65,5 @@ typedef struct DataToStore
 } tDataToStore;
 
 // for recording a session
-#define RECORD_SESSION
-#define BB_RECORD_SESSION
+//#define RECORD_SESSION
+//#define BB_RECORD_SESSION

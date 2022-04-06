@@ -650,8 +650,8 @@ GfuiMenuCreateEditControl(void* hscr, void* hparm, const char* pszName,
     //         {
     //                 tMenuCallbackInfo * cbinfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
     //                 cbinfo->screen = hscr;
-    //                 cbinfo->labelId = GfuiTipCreate(hscr, pszTip, strlen(pszTip));
-    //                 GfuiVisibilitySet(hscr, cbinfo->labelId, GFUI_INVISIBLE);
+    //                 cbinfo->LabelControl = GfuiTipCreate(hscr, pszTip, strlen(pszTip));
+    //                 GfuiVisibilitySet(hscr, cbinfo->LabelControl, GFUI_INVISIBLE);
     //
     //                 // TODO: In this case, we simply ignore onFocus/onFocusLost !
     //                 userDataOnFocus = (void*)cbinfo;
@@ -861,6 +861,97 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
     GfuiColor c = getControlColor(hparm, pszName, GFMNU_ATTR_COLOR);
     if (c.alpha)
         GfuiCheckboxSetTextColor(hscr, id, c);
+
+    return id;
+}
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonListControl
+/// @brief            Creates the controls for a radiobutton-list
+/// @param p_hscr     The menu screen handle
+/// @param p_hparm    The menu information
+/// @param p_pszName  The xml sector name
+/// @param p_userData The userData
+/// @param p_onChange Function to call when a radio button is clicked
+/// @return           The RadioButtonList object id
+int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char* p_pszName,
+                                         void* p_userData, tfuiRadioButtonCallback p_onChange)
+{
+    std::string strControlPath(GFMNU_SECT_DYNAMIC_CONTROLS"/");
+    strControlPath += p_pszName;
+
+    const std::string strType = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TYPE, "");
+    if (strType != GFMNU_TYPE_RADIO_BUTTON_LIST)
+    {
+        GfLogError("Failed to create control '%s' : section not found or not an '%s' \n",
+                   p_pszName, GFMNU_TYPE_RADIO_BUTTON_LIST);
+        return -1;
+    }
+
+    int id = -1;
+
+    const int x = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_X, NULL, 0.0);
+    const int y = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_Y, NULL, 0.0);
+
+    std::string strFontName = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_FONT, "");
+    const int font = gfuiMenuGetFontId(strFontName.c_str());
+
+    int imagewidth =
+        (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_WIDTH, NULL, 0.0);
+    if (imagewidth <= 0)
+        imagewidth = 30; // TODO: Get default from screen.xml
+
+    int imageheight =
+        (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_HEIGHT, NULL, 0.0);
+    if (imageheight <= 0)
+        imageheight = 30; // TODO: Get default from screen.xml
+
+    int  selected   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED,       NULL,  0.0);
+    int  distance   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE,       NULL, 10.0);
+    bool minimumOf1 = (bool)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_MINIMUM_OF_ONE, NULL,  0.0);
+
+    strControlPath = strControlPath + "/" + GFMNU_ATTR_OPTIONS;
+
+    int amount = (int)GfParmGetEltNb(p_hparm, strControlPath.c_str());
+
+    const char** pszText = new const char*[amount];
+    const char** pszTip  = new const char*[amount];
+
+    void** userDataOnFocus    = new void*[amount];
+    tfuiCallback* onFocus     = new tfuiCallback[amount];
+    tfuiCallback* onFocusLost = new tfuiCallback[amount];
+
+    for (int i = 0; i < amount; i++)
+    {
+        std::string optionPathById = strControlPath + "/" + std::to_string(i);
+        pszText[i] = GfParmGetStr(p_hparm, optionPathById.c_str(), GFMNU_ATTR_TEXT, "");
+        pszTip[i]  = GfParmGetStr(p_hparm, optionPathById.c_str(), GFMNU_ATTR_TIP,  "");
+
+        if (strlen(pszTip[i]) > 0)
+        {
+            tMenuCallbackInfo* cbInfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
+            cbInfo->screen = p_hscr;
+            cbInfo->labelId = GfuiTipCreate(p_hscr, pszTip[i], strlen(pszTip[i]));
+            GfuiVisibilitySet(p_hscr, cbInfo->labelId, GFUI_INVISIBLE);
+
+            userDataOnFocus[i] = (void*)cbInfo;
+            onFocus[i] = onFocusShowTip;
+            onFocusLost[i] = onFocusLostHideTip;
+        }
+    }
+
+    id = GfuiRadioButtonListCreate(p_hscr, font, x, y, imagewidth, imageheight, pszText,
+                                   selected, amount, distance, minimumOf1, p_userData,
+                                   p_onChange, userDataOnFocus, onFocus, onFocusLost);
+
+    GfuiColor c = getControlColor(p_hparm, p_pszName, GFMNU_ATTR_COLOR);
+    if (c.alpha)
+        GfuiRadioButtonListSetTextColor(p_hscr, id, c);
+
+    delete[] pszText;
+    delete[] pszTip;
+    delete[] userDataOnFocus;
+    delete[] onFocus;
+    delete[] onFocusLost;
 
     return id;
 }

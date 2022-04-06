@@ -6,7 +6,7 @@ CMakeSettings.json
 # Build output
 out/
 build/
-cmake-build-debug/
+cmake-build-*/
 
 # Test output
 Testing/
@@ -19,3 +19,5 @@ data/Singletons/*
 Folder.DotSettings
 
 data/tracks/road/*
+
+test_data
