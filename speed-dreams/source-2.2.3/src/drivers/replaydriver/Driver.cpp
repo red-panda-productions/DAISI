@@ -2,6 +2,9 @@
 #include "Mediator.h"
 #include "ConfigEnums.h"
 #include <tgf.h>
+#include <Recorder.h>
+Recorder* recorder;
+#define PARAMAMOUNT 5
 
 const float Driver::SHIFT = 0.9;         /* [-] (% of rpmredline) */
 const float Driver::SHIFT_MARGIN = 4.0;  /* [m/s] */
@@ -36,6 +39,8 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
+    recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
+
     //m_humanDriver.new_race(m_index, p_car, p_situation);
     m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-151911.txt");
     std::string inputTime;
@@ -87,7 +92,8 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         }
         m_inputTime = std::stod(inputTime);
 
-
+        float inputs[PARAMAMOUNT] = { p_car->_accelCmd , p_car->_brakeCmd, p_car->_steerCmd, p_car->_gearCmd, p_car->_clutchCmd };
+        recorder->WriteRecording(inputs, p_situation->currentTime, false);
     }
     //SMediator::GetInstance()->DriveTick(p_car, p_situation);
 
