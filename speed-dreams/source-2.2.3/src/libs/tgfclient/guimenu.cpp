@@ -906,12 +906,13 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
         imageheight = 30; // TODO: Get default from screen.xml
 
     int  selected   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED,       NULL,  0.0);
-    int  amount     =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_AMOUNT,         NULL,  2.0);
     int  distance   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE,       NULL, 10.0);
     bool minimumOf1 = (bool)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_MINIMUM_OF_ONE, NULL,  0.0);
 
-    std::string strTextControlPath = strControlPath + "/" GFMNU_ATTR_SUB_TEXTS;
-    std::string strTipControlPath  = strControlPath + "/" GFMNU_ATTR_SUB_TIPS;
+    strControlPath = strControlPath + "/" + GFMNU_ATTR_OPTIONS;
+
+    int amount = (int)GfParmGetEltNb(p_hparm, strControlPath.c_str());
+
     const char** pszText = new const char*[amount];
     const char** pszTip  = new const char*[amount];
 
@@ -921,8 +922,8 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
 
     for (int i = 0; i < amount; i++)
     {
-        pszText[i] = GfParmGetStr(p_hparm, strTextControlPath.c_str(), ("text" + std::to_string(i)).c_str(), "");
-        pszTip[i]  = GfParmGetStr(p_hparm, strTipControlPath.c_str(), ("tip"  + std::to_string(i)).c_str(), "");
+        pszText[i] = GfParmGetStr(p_hparm, (strControlPath + "/" + std::to_string(i)).c_str(), GFMNU_ATTR_TEXT, "");
+        pszTip[i]  = GfParmGetStr(p_hparm, (strControlPath + "/" + std::to_string(i)).c_str(), GFMNU_ATTR_TIP,  "");
 
         if (strlen(pszTip[i]) > 0)
         {

@@ -9,13 +9,15 @@
         <!-- RadioButtonList for selecting a Task -->
         <section name="TaskRadioButtonList">
             <attstr name="type" val="radio button list"/>
-            <section name="sub texts">
-                <attstr name="text0" val="Lane Keeping"/>
-                <attstr name="text1" val="Speed Control"/>
-            </section>
-            <section name="sub tips">
-                <attstr name="tip0" val="Select the Lane Keeping task"/>
-                <attstr name="tip1" val="Select the Speed Control task"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="Lane Keeping"/>
+                    <attstr name="tip" val="Select the Lane Keeping task"/>
+                </section>
+                <section name="1">
+                    <attstr name="text" val="Speed Control"/>
+                    <attstr name="tip" val="Select the Speed Control task"/>
+                </section>
             </section>
             <attnum name="x" val="20"/>
             <attnum name="y" val="370"/>
@@ -24,7 +26,6 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
             <attnum name="selected" val="0"/>
-            <attnum name="amount" val="2"/>
             <attnum name="distance" val="10"/>
             <attnum name="minimum of one" val="0"/>
         </section>
@@ -72,17 +73,23 @@
         <!-- RadioButtonList for selecting the type of intervention -->
         <section name="InterventionTypeRadioButtonList">
             <attstr name="type" val="radio button list"/>
-            <section name="sub texts">
-                <attstr name="text0" val="No Signals"/>
-                <attstr name="text1" val="Only Signals"/>
-                <attstr name="text2" val="Shared Control"/>
-                <attstr name="text3" val="Complete Takeover"/>
-            </section>
-            <section name="sub tips">
-                <attstr name="tip0" val="Set it so that the AI does not do anything"/>
-                <attstr name="tip1" val="Set it so that the AI only shows signals as intervention"/>
-                <attstr name="tip2" val="Set it so that the AI helps with controlling the car"/>
-                <attstr name="tip3" val="Set it so that the AI has complete control over the car"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="No Signals"/>
+                    <attstr name="tip" val="Set it so that the AI does not do anything"/>
+                </section>
+                <section name="1">
+                    <attstr name="text" val="Only Signals"/>
+                    <attstr name="tip" val="Set it so that the AI only shows signals as intervention"/>
+                </section>
+                <section name="2">
+                    <attstr name="text" val="Shared Control"/>
+                    <attstr name="tip" val="Set it so that the AI helps with controlling the car"/>
+                </section>
+                <section name="3">
+                    <attstr name="text" val="Complete Takeover"/>
+                    <attstr name="tip" val="Set it so that the AI has complete control over the car"/>
+                </section>
             </section>
             <attnum name="x" val="260"/>
             <attnum name="y" val="370"/>
@@ -91,7 +98,6 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
             <attnum name="selected" val="0"/>
-            <attnum name="amount" val="4"/>
             <attnum name="distance" val="10"/>
             <attnum name="minimum of one" val="1"/>
         </section>
@@ -99,11 +105,11 @@
         <!-- RadioButtonList for selecting the environment -->
         <section name="EnvironmentRadioButtonList">
             <attstr name="type" val="radio button list"/>
-            <section name="sub texts">
-                <attstr name="text0" val="Highway"/>
-            </section>
-            <section name="sub tips">
-                <attstr name="tip0" val="Set the environment to Highway"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="Highway"/>
+                    <attstr name="tip" val="Set the environment to Highway"/>
+                </section>
             </section>
             <attnum name="x" val="380"/>
             <attnum name="y" val="370"/>
@@ -112,7 +118,6 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
             <attnum name="selected" val="0"/>
-            <attnum name="amount" val="1"/>
             <attnum name="distance" val="10"/>
             <attnum name="minimum of one" val="1"/>
         </section>
