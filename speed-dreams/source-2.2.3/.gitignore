@@ -20,4 +20,6 @@ Folder.DotSettings
 
 data/tracks/road/*
 
+BackendCoverage.bat
+
 test_data
