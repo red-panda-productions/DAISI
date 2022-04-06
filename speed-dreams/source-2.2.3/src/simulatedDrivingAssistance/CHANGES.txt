@@ -37,13 +37,17 @@ Changed:
                 included ConfigEnums.h
                 changed new_race()
                 changed common_drive()
-            tgfclient.h
-                added gfuiMenuGetBoolean()
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
+        tgfclient/
+            guimenu.h
+                added GFMNU_ATTR_DEFAULT_VALUE
+            tgfclient.h
+                added gfuiMenuGetBoolean()
+                
 
     main/
         main.cpp

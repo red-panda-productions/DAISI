@@ -13,8 +13,8 @@
 #define RESEARCHMENU_INDICATOR_TEXT              "dynamic controls/CheckboxIndicatorTextual"
 #define RESEARCHMENU_TYPE_NO_SIGNALS             "dynamic controls/CheckboxTypeNoSignals"
 #define RESEARCHMENU_TYPE_ONLY_SIGNALS           "dynamic controls/CheckboxTypeOnlySignals"
-#define RESEARCHMENU_TYPE_SHARED_CONTROL         "dynamic controls/CheckboxTaskSharedControl"
-#define RESEARCHMENU_TYPE_COMPLETE_TAKEOVER      "dynamic controls/CheckboxTaskCompleteTakeover"
+#define RESEARCHMENU_TYPE_SHARED_CONTROL         "dynamic controls/CheckboxTypeSharedControl"
+#define RESEARCHMENU_TYPE_COMPLETE_TAKEOVER      "dynamic controls/CheckboxTypeCompleteTakeover"
 #define RESEARCHMENU_CONTROL_GAS                 "dynamic controls/CheckboxPControlGas"
 #define RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE "dynamic controls/CheckboxPControlInterventionToggle"
 #define RESEARCHMENU_CONTROL_STEERING            "dynamic controls/CheckboxPControlSteering"
@@ -271,9 +271,9 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, RESEARCHMENU_FORCE_FEEDBACK,              GFMNU_ATTR_CHECKED, forceFeedback);
 
     // Save max time to xml file
-    char buf2[32];
-    sprintf(buf2, "%d", m_maxTime);
-    GfParmSetStr(readParam, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, buf2);
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfParmSetStr(readParam, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, buf);
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
