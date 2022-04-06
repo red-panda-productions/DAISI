@@ -922,8 +922,9 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
 
     for (int i = 0; i < amount; i++)
     {
-        pszText[i] = GfParmGetStr(p_hparm, (strControlPath + "/" + std::to_string(i)).c_str(), GFMNU_ATTR_TEXT, "");
-        pszTip[i]  = GfParmGetStr(p_hparm, (strControlPath + "/" + std::to_string(i)).c_str(), GFMNU_ATTR_TIP,  "");
+        std::string optionPathById = strControlPath + "/" + std::to_string(i);
+        pszText[i] = GfParmGetStr(p_hparm, optionPathById.c_str(), GFMNU_ATTR_TEXT, "");
+        pszTip[i]  = GfParmGetStr(p_hparm, optionPathById.c_str(), GFMNU_ATTR_TIP,  "");
 
         if (strlen(pszTip[i]) > 0)
         {
