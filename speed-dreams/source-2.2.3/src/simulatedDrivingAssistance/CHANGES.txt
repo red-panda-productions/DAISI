@@ -68,7 +68,7 @@ Changed:
             guimenu.cpp
                 added   GfuiMenuCreateRadioButtonListControl
             guimenu.h
-                added   GFMNU_TYPE_RADIO_BUTTONS
+                added   GFMNU_TYPE_RADIO_BUTTON_LIST
                 added   GFMNU_ATTR_SELECTED, GFMNU_ATTR_AMOUNT, GFMNU_ATTR_DISTANCE, GFMNU_ATTR_MINIMUM_OF_ONE
             guiobject.cpp
                 changed GfuiDraw()

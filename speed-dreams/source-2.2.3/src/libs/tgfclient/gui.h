@@ -234,26 +234,26 @@ typedef struct
 /// @brief Radio Button type
 typedef struct
 {
-    int labelId;                      /**< id of the text label                    */
-    int parentId;                     /**< id of the radiobutton-list parent       */
-    int listId;                       /**< local id of the parent radiobutton-list */
-    void* scr;                        /**< The screen the radiobutton is on        */
-    tRadioButtonInfo* pInfo;          /**< Radiobutton information                 */
+    int LabelControl;                 /**< Control id of the text label              */
+    int ParentControl;                /**< Control id of the radiobutton-list parent */
+    int NrInList;                     /**< local id of the parent radiobutton-list   */
+    void* Scr;                        /**< The screen the radiobutton is on          */
+    tRadioButtonInfo* Info;           /**< Radiobutton information                   */
 
-    GfuiColor fgColor[3];             /**< Color */
-    int selectedId;                   /**< id of the selected radiobutton   */
-    int notSelectedId;                /**< id of the unselected radiobutton */
+    GfuiColor FgColor[3];             /**< Color */
+    int SelectedControl;              /**< Control id of the selected radiobutton    */
+    int NotSelectedControl;           /**< Control id of the unselected radiobutton  */
 
-    tfuiRadioButtonCallback onChange; /**< Function to call when a radio button is clicked */
+    tfuiRadioButtonCallback OnChange; /**< Function to call when a radio button is clicked */
 } tGfuiRadioButton;
 
 /// @brief Radio Button List type
 typedef struct
 {
-    void* scr;                   /**< The screen the radiobutton-list is on */
-    int*  buttonId;              /**< The children radiobutton ids */
+    void* Scr;                  /**< The screen the radiobutton-list is on  */
+    int*  ButtonControls;       /**< Array of children radiobutton controls */
 
-    tRadioButtonListInfo* pInfo; /**< Radiobutton-list information */
+    tRadioButtonListInfo* Info; /**< Radiobutton-list information */
 } tGfuiRadioButtonList;
 
 typedef struct

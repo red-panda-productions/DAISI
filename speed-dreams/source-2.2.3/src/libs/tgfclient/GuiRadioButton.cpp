@@ -19,10 +19,10 @@ static void GfuiSelected(void* p_idv)
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->parentId, -1);
+    GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->ParentControl, -1);
 
-    if (radioButton->onChange)
-        radioButton->onChange(radioButton->pInfo);
+    if (radioButton->OnChange)
+        radioButton->OnChange(radioButton->Info);
 }
 
 /// @brief       Function to call when a non-selected radiobutton is clicked
@@ -35,10 +35,10 @@ static void GfuiNotSelected(void* p_idv)
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->parentId, radioButton->listId);
+    GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->ParentControl, radioButton->NrInList);
 
-    if (radioButton->onChange)
-        radioButton->onChange(radioButton->pInfo);
+    if (radioButton->OnChange)
+        radioButton->OnChange(radioButton->Info);
 }
 
 /// @brief            Selects or deselects the radio button
@@ -53,10 +53,10 @@ void GfuiRadioButtonSelect(void* p_scr, int p_id, bool p_selected)
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    radioButton->pInfo->checked  = p_selected;
-    radioButton->pInfo->selected = p_selected ? radioButton->listId : radioButton->pInfo->selected;
-    GfuiVisibilitySet(p_scr, radioButton->selectedId,     p_selected);
-    GfuiVisibilitySet(p_scr, radioButton->notSelectedId, !p_selected);
+    radioButton->Info->Checked  = p_selected;
+    radioButton->Info->Selected = p_selected ? radioButton->NrInList : radioButton->Info->Selected;
+    GfuiVisibilitySet(p_scr, radioButton->SelectedControl, p_selected);
+    GfuiVisibilitySet(p_scr, radioButton->NotSelectedControl, !p_selected);
 }
 
 /// @brief                   Creates a RadioButton object
@@ -90,34 +90,34 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
     object->visible = 1;
 
     radioButton = &(object->u.radiobutton);
-    radioButton->onChange = p_onChange;
-    radioButton->pInfo = new tRadioButtonInfo;
-    radioButton->pInfo->checked  = p_selected == p_listId;
-    radioButton->pInfo->selected = p_selected;
-    radioButton->pInfo->userData = p_userData;
-    radioButton->listId   = p_listId;
-    radioButton->parentId = p_parentId;
-    radioButton->scr      = p_scr;
+    radioButton->OnChange = p_onChange;
+    radioButton->Info     = new tRadioButtonInfo;
+    radioButton->Info->Checked  = p_selected == p_listId;
+    radioButton->Info->Selected = p_selected;
+    radioButton->Info->UserData = p_userData;
+    radioButton->NrInList       = p_listId;
+    radioButton->ParentControl  = p_parentId;
+    radioButton->Scr            = p_scr;
 
     // Initialize the checked and unchecked button children.
     // Warning: All the images are supposed to be the same size.
     // Note: We avoid sharing the same p_userDataOnFocus among multiple controls
     //       (otherwise multiple frees at release time ...).
-    radioButton->selectedId =
+    radioButton->SelectedControl =
         GfuiGrButtonCreate(p_scr, "data/img/radio-checked.png", "data/img/radio-checked.png",
                            "data/img/radio-checked.png", "data/img/radio-checked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
                            (void*)(long)(object->id), GfuiSelected,
                            p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
-    radioButton->notSelectedId =
+    radioButton->NotSelectedControl =
         GfuiGrButtonCreate(p_scr, "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
                            "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
                            (void*)(long)(object->id), GfuiNotSelected, 0, 0, 0);
 
     // Compute total height (text or buttons)
-    tGfuiGrButton* selectedButton = &(gfuiGetObject(p_scr, radioButton->selectedId)->u.grbutton);
+    tGfuiGrButton* selectedButton = &(gfuiGetObject(p_scr, radioButton->SelectedControl)->u.grbutton);
     int height = gfuiFont[p_font]->getHeight();
     if (height < selectedButton->height)
         height = selectedButton->height;
@@ -125,7 +125,7 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
         // Fix button p_y coordinate if text is higher than the buttons
     else
     {
-        tGfuiGrButton* notSelectedButton = &(gfuiGetObject(p_scr, radioButton->notSelectedId)->u.grbutton);
+        tGfuiGrButton* notSelectedButton = &(gfuiGetObject(p_scr, radioButton->NotSelectedControl)->u.grbutton);
         selectedButton->y = notSelectedButton->y =
             p_y + (gfuiFont[p_font]->getHeight() - selectedButton->height) / 2;
     }
@@ -145,7 +145,7 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
     if (height > gfuiFont[p_font]->getHeight())
         yl += (height -  gfuiFont[p_font]->getHeight()) / 2;
 
-    radioButton->labelId =
+    radioButton->LabelControl =
         GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, strlen(p_pszText));
 
     gfuiAddObject(screen, object);
@@ -174,7 +174,7 @@ void GfuiRadioButtonSetText(void* p_scr, int p_id, const char* p_text)
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    GfuiLabelSetText(p_scr, radioButton->labelId, p_text);
+    GfuiLabelSetText(p_scr, radioButton->LabelControl, p_text);
 }
 
 /// @brief         Sets the text color to p_color
@@ -189,7 +189,7 @@ void GfuiRadioButtonSetTextColor(void* p_scr, int p_id, const GfuiColor& p_color
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    GfuiLabelSetColor(p_scr, radioButton->labelId, p_color.toFloatRGBA());
+    GfuiLabelSetColor(p_scr, radioButton->LabelControl, p_color.toFloatRGBA());
 }
 
 /// @brief       Return whether the radiobutton is selected or not
@@ -204,7 +204,7 @@ bool GfuiRadioButtonIsSelected(void* p_scr, int p_id)
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    return radioButton->pInfo->checked;
+    return radioButton->Info->Checked;
 }
 
 /// @brief       Frees the pointer to the RadioButton object

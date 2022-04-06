@@ -650,8 +650,8 @@ GfuiMenuCreateEditControl(void* hscr, void* hparm, const char* pszName,
     //         {
     //                 tMenuCallbackInfo * cbinfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
     //                 cbinfo->screen = hscr;
-    //                 cbinfo->labelId = GfuiTipCreate(hscr, pszTip, strlen(pszTip));
-    //                 GfuiVisibilitySet(hscr, cbinfo->labelId, GFUI_INVISIBLE);
+    //                 cbinfo->LabelControl = GfuiTipCreate(hscr, pszTip, strlen(pszTip));
+    //                 GfuiVisibilitySet(hscr, cbinfo->LabelControl, GFUI_INVISIBLE);
     //
     //                 // TODO: In this case, we simply ignore onFocus/onFocusLost !
     //                 userDataOnFocus = (void*)cbinfo;
@@ -880,10 +880,10 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
     strControlPath += p_pszName;
 
     const std::string strType = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TYPE, "");
-    if (strType != GFMNU_TYPE_RADIO_BUTTONS)
+    if (strType != GFMNU_TYPE_RADIO_BUTTON_LIST)
     {
         GfLogError("Failed to create control '%s' : section not found or not an '%s' \n",
-                   p_pszName, GFMNU_TYPE_RADIO_BUTTONS);
+                   p_pszName, GFMNU_TYPE_RADIO_BUTTON_LIST);
         return -1;
     }
 
@@ -894,8 +894,6 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
 
     std::string strFontName = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_FONT, "");
     const int font = gfuiMenuGetFontId(strFontName.c_str());
-
-    const char* pszText = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TEXT, "");
 
     int imagewidth =
         (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_WIDTH, NULL, 0.0);
@@ -912,21 +910,31 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
     int  distance   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE,       NULL, 10.0);
     bool minimumOf1 = (bool)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_MINIMUM_OF_ONE, NULL,  0.0);
 
-    const char* pszTip = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TIP, "");
+    std::string strTextControlPath = strControlPath + "/" GFMNU_ATTR_SUB_TEXTS;
+    std::string strTipControlPath  = strControlPath + "/" GFMNU_ATTR_SUB_TIPS;
+    const char** pszText = new const char*[amount];
+    const char** pszTip  = new const char*[amount];
 
-    void* userDataOnFocus = 0;
-    tfuiCallback onFocus = 0;
-    tfuiCallback onFocusLost = 0;
-    if (strlen(pszTip) > 0)
+    void** userDataOnFocus    = new void*[amount];
+    tfuiCallback* onFocus     = new tfuiCallback[amount];
+    tfuiCallback* onFocusLost = new tfuiCallback[amount];
+
+    for (int i = 0; i < amount; i++)
     {
-        tMenuCallbackInfo* cbInfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
-        cbInfo->screen = p_hscr;
-        cbInfo->labelId = GfuiTipCreate(p_hscr, pszTip, strlen(pszTip));
-        GfuiVisibilitySet(p_hscr, cbInfo->labelId, GFUI_INVISIBLE);
+        pszText[i] = GfParmGetStr(p_hparm, strTextControlPath.c_str(), ("text" + std::to_string(i)).c_str(), "");
+        pszTip[i]  = GfParmGetStr(p_hparm, strTipControlPath.c_str(), ("tip"  + std::to_string(i)).c_str(), "");
 
-        userDataOnFocus = (void*)cbInfo;
-        onFocus = onFocusShowTip;
-        onFocusLost = onFocusLostHideTip;
+        if (strlen(pszTip[i]) > 0)
+        {
+            tMenuCallbackInfo* cbInfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
+            cbInfo->screen = p_hscr;
+            cbInfo->labelId = GfuiTipCreate(p_hscr, pszTip[i], strlen(pszTip[i]));
+            GfuiVisibilitySet(p_hscr, cbInfo->labelId, GFUI_INVISIBLE);
+
+            userDataOnFocus[i] = (void*)cbInfo;
+            onFocus[i] = onFocusShowTip;
+            onFocusLost[i] = onFocusLostHideTip;
+        }
     }
 
     id = GfuiRadioButtonListCreate(p_hscr, font, x, y, imagewidth, imageheight, pszText,
@@ -936,6 +944,12 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
     GfuiColor c = getControlColor(p_hparm, p_pszName, GFMNU_ATTR_COLOR);
     if (c.alpha)
         GfuiRadioButtonListSetTextColor(p_hscr, id, c);
+
+    delete[] pszText;
+    delete[] pszTip;
+    delete[] userDataOnFocus;
+    delete[] onFocus;
+    delete[] onFocusLost;
 
     return id;
 }

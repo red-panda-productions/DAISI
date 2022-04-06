@@ -26,9 +26,9 @@ void GfuiRadioButtonListInit(void) { }
 /// @param p_onFocusLost     The function to call when the mouse stops hovering above the object
 /// @return                  The radioButtonList object id
 int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y, int p_imageWidth, int p_imageHeight,
-                              const char* p_pszText, int p_selected, int p_amount, int p_distance, bool p_minimumOfOne,
+                              const char** p_pszText, int p_selected, int p_amount, int p_distance, bool p_minimumOfOne,
                               void* p_userData, tfuiRadioButtonCallback p_onChange,
-                              void* p_userDataOnFocus, tfuiCallback p_onFocus, tfuiCallback p_onFocusLost)
+                              void** p_userDataOnFocus, tfuiCallback* p_onFocus, tfuiCallback* p_onFocusLost)
 {
     tGfuiRadioButtonList* radioButtonList;
     tGfuiObject* object;
@@ -41,23 +41,23 @@ int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y, int p_i
     object->visible = 1;
 
     radioButtonList = &(object->u.radiobuttonlist);
-    radioButtonList->scr      = p_scr;
-    radioButtonList->buttonId = new int[p_amount];
+    radioButtonList->Scr = p_scr;
+    radioButtonList->ButtonControls = new int[p_amount];
 
-    radioButtonList->pInfo = new tRadioButtonListInfo;
-    radioButtonList->pInfo->userData     = p_userData;
-    radioButtonList->pInfo->selected     = p_selected;
-    radioButtonList->pInfo->amount       = p_amount;
-    radioButtonList->pInfo->dist         = p_distance;
-    radioButtonList->pInfo->minimumOfOne = p_minimumOfOne;
+    radioButtonList->Info = new tRadioButtonListInfo;
+    radioButtonList->Info->UserData     = p_userData;
+    radioButtonList->Info->Selected     = p_selected;
+    radioButtonList->Info->Amount       = p_amount;
+    radioButtonList->Info->Dist         = p_distance;
+    radioButtonList->Info->MinimumOfOne = p_minimumOfOne;
 
     // Initialize the radiobutton children
-    for (int i = 0; i < radioButtonList->pInfo->amount; i++)
+    for (int i = 0; i < radioButtonList->Info->Amount; i++)
     {
-        int yPos = p_y - (p_imageHeight + radioButtonList->pInfo->dist) * i;
-        radioButtonList->buttonId[i] = GfuiRadioButtonCreate(p_scr, p_font, p_x, yPos, p_imageWidth, p_imageHeight,
-                                                             p_pszText, p_selected, i, object->id, p_userData, p_onChange,
-                                                             p_userDataOnFocus, p_onFocus, p_onFocusLost);
+        int yPos = p_y - (p_imageHeight + radioButtonList->Info->Dist) * i;
+        radioButtonList->ButtonControls[i] = GfuiRadioButtonCreate(p_scr, p_font, p_x, yPos, p_imageWidth, p_imageHeight,
+                                                                   p_pszText[i], p_selected, i, object->id, p_userData, p_onChange,
+                                                                   p_userDataOnFocus[i], p_onFocus[i], p_onFocusLost[i]);
     }
 
     gfuiAddObject(screen, object);
@@ -86,9 +86,9 @@ void GfuiRadioButtonListSetText(void* p_scr, int p_id, const char** p_texts)
 
     tGfuiRadioButtonList* radioButtonList = &(object->u.radiobuttonlist);
 
-    for (int i = 0; i < radioButtonList->pInfo->amount; i++)
+    for (int i = 0; i < radioButtonList->Info->Amount; i++)
     {
-        GfuiRadioButtonSetText(p_scr, radioButtonList->buttonId[i], p_texts[i]);
+        GfuiRadioButtonSetText(p_scr, radioButtonList->ButtonControls[i], p_texts[i]);
     }
 }
 
@@ -105,17 +105,17 @@ void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected)
     tGfuiRadioButtonList* radioButtonList = &(object->u.radiobuttonlist);
 
     // if at least one radiobutton has to be selected and p_selected is -1, return
-    if (radioButtonList->pInfo->minimumOfOne && (p_selected < 0))
+    if (radioButtonList->Info->MinimumOfOne && (p_selected < 0))
         return;
 
-    radioButtonList->pInfo->selected = p_selected;
+    radioButtonList->Info->Selected = p_selected;
 
-    for (int i = 0; i < radioButtonList->pInfo->amount; i++)
+    for (int i = 0; i < radioButtonList->Info->Amount; i++)
     {
-        tGfuiObject* obj = gfuiGetObject(p_scr, radioButtonList->buttonId[i]);
+        tGfuiObject* obj = gfuiGetObject(p_scr, radioButtonList->ButtonControls[i]);
         tGfuiRadioButton* radioButton = &(obj->u.radiobutton);
 
-        GfuiRadioButtonSelect(p_scr, radioButtonList->buttonId[i], radioButton->listId == p_selected);
+        GfuiRadioButtonSelect(p_scr, radioButtonList->ButtonControls[i], radioButton->NrInList == p_selected);
     }
 }
 
@@ -131,9 +131,9 @@ void GfuiRadioButtonListSetTextColor(void* p_scr, int p_id, const GfuiColor& p_c
 
     tGfuiRadioButtonList* radioButtonList = &(object->u.radiobuttonlist);
 
-    for (int i = 0; i < radioButtonList->pInfo->amount; i++)
+    for (int i = 0; i < radioButtonList->Info->Amount; i++)
     {
-        GfuiRadioButtonSetTextColor(p_scr, radioButtonList->buttonId[i], p_color);
+        GfuiRadioButtonSetTextColor(p_scr, radioButtonList->ButtonControls[i], p_color);
     }
 }
 
@@ -143,12 +143,12 @@ void GfuiReleaseRadioButtonList(tGfuiObject* p_obj)
 {
     tGfuiRadioButtonList* radioButtonList = &(p_obj->u.radiobuttonlist);
 
-    for (int i = 0; i < radioButtonList->pInfo->amount; i++)
+    for (int i = 0; i < radioButtonList->Info->Amount; i++)
     {
-        tGfuiObject* radioButton = gfuiGetObject(GfuiScreen, radioButtonList->buttonId[i]);
+        tGfuiObject* radioButton = gfuiGetObject(GfuiScreen, radioButtonList->ButtonControls[i]);
         GfuiReleaseRadioButton(radioButton);
     }
-    delete[] radioButtonList->buttonId;
+    delete[] radioButtonList->ButtonControls;
 
     free(p_obj);
 }

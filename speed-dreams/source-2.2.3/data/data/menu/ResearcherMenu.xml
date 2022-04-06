@@ -6,11 +6,17 @@
 
     <section name="dynamic controls">
 
-        <!-- RadioBoxList for selecting a Task -->
-        <section name="TaskRadioButtons">
-            <attstr name="type" val="radio buttons"/>
-            <attstr name="text" val="Undefined Task"/> <!-- Keep length high for overwriting -->
-            <attstr name="tip" val="Select the task"/>
+        <!-- RadioButtonList for selecting a Task -->
+        <section name="TaskRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="sub texts">
+                <attstr name="text0" val="Lane Keeping"/>
+                <attstr name="text1" val="Speed Control"/>
+            </section>
+            <section name="sub tips">
+                <attstr name="tip0" val="Select the Lane Keeping task"/>
+                <attstr name="tip1" val="Select the Speed Control task"/>
+            </section>
             <attnum name="x" val="20"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -63,11 +69,21 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <!-- RadioBoxList for selecting the type of intervention -->
-        <section name="InterventionTypeRadioButtons">
-            <attstr name="type" val="radio buttons"/>
-            <attstr name="text" val="Undefined Intervention"/> <!-- Keep length high for overwriting -->
-            <attstr name="tip" val="Select the Intervention Type"/>
+        <!-- RadioButtonList for selecting the type of intervention -->
+        <section name="InterventionTypeRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="sub texts">
+                <attstr name="text0" val="No Signals"/>
+                <attstr name="text1" val="Only Signals"/>
+                <attstr name="text2" val="Shared Control"/>
+                <attstr name="text3" val="Complete Takeover"/>
+            </section>
+            <section name="sub tips">
+                <attstr name="tip0" val="Set it so that the AI does not do anything"/>
+                <attstr name="tip1" val="Set it so that the AI only shows signals as intervention"/>
+                <attstr name="tip2" val="Set it so that the AI helps with controlling the car"/>
+                <attstr name="tip3" val="Set it so that the AI has complete control over the car"/>
+            </section>
             <attnum name="x" val="260"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -80,11 +96,15 @@
             <attnum name="minimum of one" val="1"/>
         </section>
 
-        <!-- RadioBoxList for selecting the environment -->
-        <section name="EnvironmentRadioButtons">
-            <attstr name="type" val="radio buttons"/>
-            <attstr name="text" val="Undefined Environment"/> <!-- Keep length high for overwriting -->
-            <attstr name="tip" val="Select the Driving Environment"/>
+        <!-- RadioButtonList for selecting the environment -->
+        <section name="EnvironmentRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="sub texts">
+                <attstr name="text0" val="Highway"/>
+            </section>
+            <section name="sub tips">
+                <attstr name="tip0" val="Set the environment to Highway"/>
+            </section>
             <attnum name="x" val="380"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>

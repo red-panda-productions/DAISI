@@ -44,7 +44,7 @@ static void OnActivate(void* /* dummy */) { }
 /// @param p_info Information on the radio button pressed
 static void SelectTask(tRadioButtonInfo* p_info)
 {
-    switch(p_info->selected)
+    switch(p_info->Selected)
     {
         case 1:
             m_task = TASK_LANE_KEEPING;
@@ -83,7 +83,7 @@ static void SelectText(tCheckBoxInfo* p_info)
 /// @param p_info Information on the radio button pressed
 static void SelectInterventionType(tRadioButtonInfo* p_info)
 {
-    switch(p_info->selected)
+    switch(p_info->Selected)
     {
         case 1:
             m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
@@ -104,7 +104,7 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
 /// @param p_info Information on the radio button pressed
 static void SelectEnvironment(tRadioButtonInfo* p_info)
 {
-    switch(p_info->selected)
+    switch(p_info->Selected)
     {
         default:
             // TODO: set environment
@@ -206,9 +206,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // Task radio button controls
-    int tasksId = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "TaskRadioButtons", NULL, SelectTask);
-    const char* tasks[] = { "LaneKeeping", "SpeedControl" };
-    GfuiRadioButtonListSetText(s_scrHandle, tasksId, tasks);
+    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "TaskRadioButtonList", NULL, SelectTask);
 
     // Indicator checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAudio);
@@ -216,14 +214,10 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectText);
 
     // InterventionTypes radio button controls
-    int typesId = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "InterventionTypeRadioButtons", NULL, SelectInterventionType);
-    const char* interventionTypes[] = { "No signals", "Only signals", "Shared Control", "Complete takeover" };
-    GfuiRadioButtonListSetText(s_scrHandle, typesId, interventionTypes);
+    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "InterventionTypeRadioButtonList", NULL, SelectInterventionType);
 
     // Environment checkboxes controls
-    int envId = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "EnvironmentRadioButtons", NULL, SelectEnvironment);
-    const char* environments[] = { "Highway" };
-    GfuiRadioButtonListSetText(s_scrHandle, envId, environments);
+    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "EnvironmentRadioButtonList", NULL, SelectEnvironment);
 
     // Participant-Control checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlInterventionToggle", NULL, SelectControlInterventionOnOff);
