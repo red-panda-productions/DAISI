@@ -19,8 +19,12 @@ public:
     void EndRace(tCarElt* p_car, tSituation* p_situation);
     void Shutdown();
     void Terminate();
+    int getGear(tCarElt* car);
+
 
 private:
+    static const float SHIFT;
+    static const float SHIFT_MARGIN;
     // The driver's index
     int m_index;
     std::ifstream m_replayFile;

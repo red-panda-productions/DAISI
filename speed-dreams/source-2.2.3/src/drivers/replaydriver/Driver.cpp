@@ -3,6 +3,9 @@
 #include "ConfigEnums.h"
 #include <tgf.h>
 
+const float Driver::SHIFT = 0.9;         /* [-] (% of rpmredline) */
+const float Driver::SHIFT_MARGIN = 4.0;  /* [m/s] */
+
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
 /// @param p_index The driver's index (starting from 1)
@@ -29,31 +32,32 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 }
 
 /// @brief Start a new race.
+/// it opens te replay file and sets the time of the first input
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     //m_humanDriver.new_race(m_index, p_car, p_situation);
-    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220404-160351.txt");
+    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-151911.txt");
     std::string inputTime;
     m_replayFile >> inputTime;
     m_inputTime = std::stod(inputTime);
 }
 
-/// @brief Update the car's controls based on the current race situation.
-/// In other words: Drive.
-/// Ask the human driver for input and ask the mediator for controls.
+/// @brief Update the car's controls based on recording at that currentTime.
+/// It then gets input from the black-box, which changes the input as well
+/// It ends the race if the file is done
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
+    //p_car->ctrl.gear = 1;//getGear(p_car);
     // input time isn't as accurate as currentTime,
     // so some margin needs to be added
     // Does not appear to lead to input inaccuracies
     // since this function is called around the same time
     // it is called in the recording
-
-    if(m_inputTime - 0.0001 <=  p_situation -> currentTime 
-        && p_situation->currentTime <= m_inputTime + 0.0001)
+    //if(m_inputTime - 0.0001 <=  p_situation -> currentTime 
+    //    && p_situation->currentTime <= m_inputTime + 0.0001)
     {
         std::string accelString;
         m_replayFile >> accelString;
@@ -64,9 +68,17 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         std::string steerString;
         m_replayFile >> steerString;
         float steer = std::stof(steerString);
+        std::string gearString;
+        m_replayFile >> gearString;
+        float gear = std::stof(gearString);
+        std::string clutchString;
+        m_replayFile >> clutchString;
+        float clutch = std::stof(clutchString);
         p_car->_accelCmd = accel;
         p_car->_brakeCmd = brake;
         p_car->_steerCmd = steer;
+        p_car->_gearCmd = gear;
+        p_car->_clutchCmd = clutch;
         std::string inputTime;
         m_replayFile >> inputTime;
         if (m_replayFile.eof())
@@ -80,6 +92,32 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     //SMediator::GetInstance()->DriveTick(p_car, p_situation);
 
 }
+
+/* Compute gear */
+int Driver::getGear(tCarElt* car)
+{
+    if (car->_gear <= 0) return 1;
+
+    float gr_up = car->_gearRatio[car->_gear + car->_gearOffset];
+    float omega = car->_enginerpmRedLine / gr_up;
+    float wr = car->_wheelRadius(2);
+
+    if (omega * wr * SHIFT < car->_speed_x) 
+    {
+        return car->_gear + 1;
+    }
+    else 
+    {
+        float gr_down = car->_gearRatio[car->_gear + car->_gearOffset - 1];
+        omega = car->_enginerpmRedLine / gr_down;
+        if (car->_gear > 1 && omega * wr * SHIFT > car->_speed_x + SHIFT_MARGIN) {
+            return car->_gear - 1;
+        }
+    }
+    return car->_gear;
+}
+
+
 
 /// @brief Pause the current race.
 /// @param p_car The car the driver controls

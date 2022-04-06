@@ -13,7 +13,7 @@ static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation);
 static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation);
 static void Shutdown(int p_index);
 
-/// @brief All the assisted human drivers.
+/// @brief All the replay drivers.
 /// Since it's technically possible to have more than 1 bot of the same type in a race it needs to be an array.
 static Driver* s_drivers[s_maxBotAmount];
 
