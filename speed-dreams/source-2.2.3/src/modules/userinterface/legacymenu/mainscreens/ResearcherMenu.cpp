@@ -233,11 +233,11 @@ static void SaveSettingsToDisk()
 
     // Save indicator settings to xml file
     const char* audioSetting = m_indicators.Audio ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    const char* iconSetting  = m_indicators.Icon  ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+    const char* textSetting  = m_indicators.Text  ? GFMNU_VAL_YES : GFMNU_VAL_NO;
     GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_AUDITORY, GFMNU_ATTR_CHECKED, audioSetting);
-    const char* iconSetting = m_indicators.Icon ? GFMNU_VAL_YES : GFMNU_VAL_NO;
-    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_VISUAL, GFMNU_ATTR_CHECKED, iconSetting);
-    const char* textSetting = m_indicators.Text ? GFMNU_VAL_YES : GFMNU_VAL_NO;
-    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_TEXT, GFMNU_ATTR_CHECKED, textSetting);
+    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_VISUAL,   GFMNU_ATTR_CHECKED, iconSetting);
+    GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_TEXT,     GFMNU_ATTR_CHECKED, textSetting);
 
     // Save intervention type settings to xml file
     GfParmSetStr(readParam, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
