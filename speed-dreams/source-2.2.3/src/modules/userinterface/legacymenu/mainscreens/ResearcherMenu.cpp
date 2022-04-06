@@ -381,10 +381,6 @@ void InitializeSettings(void* p_param)
     // Set the indicator settings from the xml file
 
     // Set the indicator settings from the xml file
-    m_pControl.ControlInterventionToggle = checkboxInterventionToggle;
-    m_pControl.ControlGas = checkboxPControlGas;
-    m_pControl.ControlSteering = checkboxPControlSteering;
-    m_pControl.ForceFeedback = checkboxForceFeedback;
 
     // Set the participant control settings from the xml file 
     SetInterventionType(checkboxInterventions);
