@@ -367,10 +367,10 @@ void InitializeSettings(void* p_param)
     checkboxInterventions[INTERVENTION_TYPE_SHARED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, NULL), false);
     checkboxInterventions[INTERVENTION_TYPE_COMPLETE_TAKEOVER] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, NULL), false);
 
-    bool checkboxPControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, NULL), true);
-    bool checkboxInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, NULL), false);
-    bool checkboxPControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, NULL), true);
-    bool checkboxForceFeedback = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, NULL), true);
+    m_pControl.ControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, NULL), true);
+    m_pControl.ControlInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, NULL), false);
+    m_pControl.ControlSteering = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_STEERING, GFMNU_ATTR_CHECKED, NULL), true);
+    m_pControl.ForceFeedback = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, NULL), true);
 
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, NULL));
