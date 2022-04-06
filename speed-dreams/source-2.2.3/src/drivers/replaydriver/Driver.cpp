@@ -4,7 +4,7 @@
 #include <tgf.h>
 #include <Recorder.h>
 Recorder* recorder;
-#define PARAMAMOUNT 5
+#define PARAMAMOUNT 16
 
 const float Driver::SHIFT = 0.9;         /* [-] (% of rpmredline) */
 const float Driver::SHIFT_MARGIN = 4.0;  /* [m/s] */
@@ -42,7 +42,7 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
 
     //m_humanDriver.new_race(m_index, p_car, p_situation);
-    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-151911.txt");
+    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-162354.txt");
     std::string inputTime;
     m_replayFile >> inputTime;
     m_inputTime = std::stod(inputTime);
@@ -79,11 +79,57 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         std::string clutchString;
         m_replayFile >> clutchString;
         float clutch = std::stof(clutchString);
+
+        std::string raceCmdString;
+        m_replayFile >> raceCmdString;
+        float raceCmd = std::stof(raceCmdString);
+        std::string lightCmdString;
+        m_replayFile >> lightCmdString;
+        float lightCmd = std::stof(lightCmdString);
+        std::string ebrakeCmdString;
+        m_replayFile >> ebrakeCmdString;
+        float ebrakeCmd = std::stof(ebrakeCmdString);
+        std::string brakeFLCmdString;
+        m_replayFile >> brakeFLCmdString;
+        float brakeFLCmd = std::stof(brakeFLCmdString);
+        std::string brakeFRCmdString;
+        m_replayFile >> brakeFRCmdString;
+        float brakeFRCmd = std::stof(brakeFRCmdString);
+        std::string brakeRLCmdString;
+        m_replayFile >> brakeRLCmdString;
+        float brakeRLCmd = std::stof(brakeRLCmdString);
+        std::string brakeRRCmdString;
+        m_replayFile >> brakeRRCmdString;
+        float brakeRRCmd = std::stof(brakeRRCmdString);
+        std::string wingFCmdString;
+        m_replayFile >> wingFCmdString;
+        float wingFCmd = std::stof(wingFCmdString);
+        std::string wingRCmdString;
+        m_replayFile >> wingRCmdString;
+        float wingRCmd = std::stof(wingRCmdString);
+        std::string telemetryModeString;
+        m_replayFile >> telemetryModeString;
+        float telemetryMode = std::stof(telemetryModeString);
+        std::string singleWheelBrakeModeString;
+        m_replayFile >> singleWheelBrakeModeString;
+        float singleWheelBrakeMode = std::stof(singleWheelBrakeModeString);
+
         p_car->_accelCmd = accel;
         p_car->_brakeCmd = brake;
         p_car->_steerCmd = steer;
         p_car->_gearCmd = gear;
         p_car->_clutchCmd = clutch;
+        p_car->_raceCmd = raceCmd;
+        p_car->_lightCmd = lightCmd;
+        p_car->_ebrakeCmd = ebrakeCmd;
+        p_car->_brakeFLCmd = brakeFLCmd;
+        p_car->_brakeFRCmd = brakeFRCmd;
+        p_car->_brakeRLCmd = brakeRLCmd;
+        p_car->_brakeRRCmd = brakeRRCmd;
+        p_car->_wingFCmd = wingFCmd;
+        p_car->_wingRCmd = wingRCmd;
+        p_car->_telemetryMode = telemetryMode;
+        p_car->_singleWheelBrakeMode = singleWheelBrakeMode;
         std::string inputTime;
         m_replayFile >> inputTime;
         if (m_replayFile.eof())
@@ -93,7 +139,23 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         else
 			m_inputTime = std::stod(inputTime);
 
-        float inputs[PARAMAMOUNT] = { p_car->_accelCmd , p_car->_brakeCmd, p_car->_steerCmd, p_car->_gearCmd, p_car->_clutchCmd };
+        float inputs[PARAMAMOUNT] = {
+            p_car->_accelCmd ,
+            p_car->_brakeCmd,
+            p_car->_steerCmd,
+            p_car -> _gearCmd,
+            p_car -> _clutchCmd,
+            p_car->_raceCmd,
+            p_car->_lightCmd,
+            p_car->_ebrakeCmd,
+            p_car->_brakeFLCmd,
+            p_car->_brakeFRCmd,
+            p_car->_brakeRLCmd,
+            p_car->_brakeRRCmd,
+            p_car->_wingFCmd,
+            p_car->_wingRCmd,
+            p_car->_telemetryMode,
+            p_car->_singleWheelBrakeMode};
         recorder->WriteRecording(inputs, p_situation->currentTime, false);
     }
     //SMediator::GetInstance()->DriveTick(p_car, p_situation);

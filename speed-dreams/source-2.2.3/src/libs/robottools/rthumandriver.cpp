@@ -68,7 +68,7 @@
 #include <ConfigEnums.h>
 #include "Mediator.h"
 
-#define PARAM_AMOUNT 4
+#define PARAM_AMOUNT 16
 tParticipantControl m_pControl;
 
 #include <Recorder.h>
@@ -1720,11 +1720,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 #endif
 #endif
-    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
-    if (m_pControl.RecordSession) {
-        float inputs[PARAM_AMOUNT] = {car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
-        recorder->WriteRecording(inputs, s->currentTime, false);
-    }
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 
@@ -2113,6 +2108,28 @@ void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
         car->_clutchCmd = getAutoClutch(idx, car->_gear, car->_gearCmd, car);
 
     common_brake(idx, car, s);
+
+    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
+    if (m_pControl.RecordSession) {
+        float inputs[PARAM_AMOUNT] = {
+            car->_accelCmd,
+            car->_brakeCmd,
+            car->_steerCmd,
+            car->_gearCmd,
+            car->_clutchCmd,
+            car->_raceCmd,
+            car->_lightCmd,
+            car->_ebrakeCmd,
+            car->_brakeFLCmd,
+            car->_brakeFRCmd,
+            car->_brakeRLCmd,
+            car->_brakeRRCmd,
+            car->_wingFCmd,
+            car->_wingRCmd,
+            car->_telemetryMode,
+            car->_singleWheelBrakeMode};
+        recorder->WriteRecording(inputs, s->currentTime, false);
+    }
 }
 
 /*
