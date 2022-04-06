@@ -25,7 +25,7 @@ Driver::Driver(int p_index, const char* p_name) : m_index(p_index) {
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
     //m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
 
-    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
+    //SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
 /// @brief Start a new race.
@@ -34,9 +34,9 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     //m_humanDriver.new_race(m_index, p_car, p_situation);
     m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220404-160351.txt");
-    std::string inputTime
+    std::string inputTime;
     m_replayFile >> inputTime;
-    m_inputTime = std::stod(inputTime)
+    m_inputTime = std::stod(inputTime);
 }
 
 /// @brief Update the car's controls based on the current race situation.
@@ -46,8 +46,12 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
+    // input time isn't as accurate as currentTime,
+    // so some margin needs to be added
+    // Cou
 
-    if(m_inputTime ==  p_situation -> currentTime)
+    if(m_inputTime - 0.0001 <=  p_situation -> currentTime 
+        && p_situation->currentTime <= m_inputTime + 0.0001)
     {
         std::string accelString;
         m_replayFile >> accelString;
@@ -61,16 +65,17 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
         p_car->_accelCmd = accel;
         p_car->_brakeCmd = brake;
         p_car->_steerCmd = steer;
-        std::string inputTime
+        std::string inputTime;
         m_replayFile >> inputTime;
-        m_inputTime = std::stod(inputTime);
         if (m_replayFile.eof())
         {
-            PauseRace(p_car, p_situation);
+            Shutdown();
         }
+        m_inputTime = std::stod(inputTime);
+
 
     }
-    SMediator::GetInstance()->DriveTick(p_car, p_situation);
+    //SMediator::GetInstance()->DriveTick(p_car, p_situation);
 
 }
 
