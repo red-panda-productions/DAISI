@@ -44,6 +44,7 @@
 #include <replay.h>
 #ifdef WEBSERVER
 #include <webserver.h>
+#include <iostream>
 #endif //WEBSERVER
 
 #include "standardgame.h"
@@ -335,8 +336,12 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
         for (int i = 0; i < s->_ncars; i++) {
             if ((s->cars[i]->_state & RM_CAR_STATE_NO_SIMU) == 0) {
                 robot = s->cars[i]->robot;
-                if (replayReplay == 0)
+                if (replayReplay == 0) {
+                    std::cout << s->cars[i]->pub.DynGC.pos.x << " " << s->cars[i]->pub.DynGC.pos.y << " " << s->cars[i]->pub.DynGC.pos.z << std::endl;
+                    std::cout << s->cars[i]->pub.DynGC.vel.x << " " << s->cars[i]->pub.DynGC.vel.y << " " << s->cars[i]->pub.DynGC.vel.z << std::endl;
+                    std::cout << s->cars[i]->pub.DynGC.acc.x << " " << s->cars[i]->pub.DynGC.acc.y << " " << s->cars[i]->pub.DynGC.acc.z << std::endl;
                     robot->rbDrive(robot->index, s->cars[i], s);
+                }
             }
             else if (! (s->cars[i]->_state & RM_CAR_STATE_ENDRACE_CALLED ) && ( s->cars[i]->_state & RM_CAR_STATE_OUT ) == RM_CAR_STATE_OUT )
             { // No simu, look if it is out
