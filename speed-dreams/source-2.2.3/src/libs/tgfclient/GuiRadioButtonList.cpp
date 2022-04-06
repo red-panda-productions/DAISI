@@ -18,6 +18,7 @@ void GfuiRadioButtonListInit(void) { }
 /// @param p_selected        The id of the radio button selected (-1 for none)
 /// @param p_amount          The amount of radio buttons to create
 /// @param p_distance        The distance between radio buttons
+/// @param p_minimumOfOne    If at least one radiobutton has to be selected at all times
 /// @param p_userData        The userData
 /// @param p_onChange        The function to call when a radiobutton is clicked
 /// @param p_userDataOnFocus The userData when the mouse is hovering above the object
@@ -25,7 +26,7 @@ void GfuiRadioButtonListInit(void) { }
 /// @param p_onFocusLost     The function to call when the mouse stops hovering above the object
 /// @return                  The radioButtonList object id
 int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y, int p_imageWidth, int p_imageHeight,
-                              const char* p_pszText, int p_selected, int p_amount, int p_distance,
+                              const char* p_pszText, int p_selected, int p_amount, int p_distance, bool p_minimumOfOne,
                               void* p_userData, tfuiRadioButtonCallback p_onChange,
                               void* p_userDataOnFocus, tfuiCallback p_onFocus, tfuiCallback p_onFocusLost)
 {
@@ -40,13 +41,15 @@ int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y, int p_i
     object->visible = 1;
 
     radioButtonList = &(object->u.radiobuttonlist);
-    radioButtonList->pInfo = new tRadioButtonListInfo;
-    radioButtonList->pInfo->userData = p_userData;
-    radioButtonList->pInfo->selected = p_selected;
-    radioButtonList->pInfo->amount = p_amount;
-    radioButtonList->pInfo->dist = p_distance;
-    radioButtonList->scr = p_scr;
+    radioButtonList->scr      = p_scr;
     radioButtonList->buttonId = new int[p_amount];
+
+    radioButtonList->pInfo = new tRadioButtonListInfo;
+    radioButtonList->pInfo->userData     = p_userData;
+    radioButtonList->pInfo->selected     = p_selected;
+    radioButtonList->pInfo->amount       = p_amount;
+    radioButtonList->pInfo->dist         = p_distance;
+    radioButtonList->pInfo->minimumOfOne = p_minimumOfOne;
 
     // Initialize the radiobutton children
     for (int i = 0; i < radioButtonList->pInfo->amount; i++)
@@ -92,7 +95,7 @@ void GfuiRadioButtonListSetText(void* p_scr, int p_id, const char** p_texts)
 /// @brief            Selects the radio button
 /// @param p_scr      The current screen
 /// @param p_id       The RadioButtonList object id
-/// @param p_selected The radiobutton that is selected
+/// @param p_selected The radiobutton that is being selected (-1 for unselecting all)
 void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected)
 {
     tGfuiObject* object = gfuiGetObject(p_scr, p_id);
@@ -100,6 +103,10 @@ void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected)
         return;
 
     tGfuiRadioButtonList* radioButtonList = &(object->u.radiobuttonlist);
+
+    // if at least one radiobutton has to be selected and p_selected is -1, return
+    if (radioButtonList->pInfo->minimumOfOne && (p_selected < 0))
+        return;
 
     radioButtonList->pInfo->selected = p_selected;
 

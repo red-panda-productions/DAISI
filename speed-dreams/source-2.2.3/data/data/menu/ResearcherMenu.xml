@@ -20,6 +20,7 @@
             <attnum name="selected" val="0"/>
             <attnum name="amount" val="2"/>
             <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="0"/>
         </section>
 
         <!-- Checkboxes for selecting how to indicate an intervention -->
@@ -76,6 +77,7 @@
             <attnum name="selected" val="0"/>
             <attnum name="amount" val="4"/>
             <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="1"/>
         </section>
 
         <!-- RadioBoxList for selecting the environment -->
@@ -92,6 +94,7 @@
             <attnum name="selected" val="0"/>
             <attnum name="amount" val="1"/>
             <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="1"/>
         </section>
 
         <!-- Checkboxes for selecting what a participant can control -->

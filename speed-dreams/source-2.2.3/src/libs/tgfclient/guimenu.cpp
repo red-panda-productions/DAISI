@@ -907,9 +907,10 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
     if (imageheight <= 0)
         imageheight = 30; // TODO: Get default from screen.xml
 
-    int selected = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED, NULL,  0.0);
-    int amount   = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_AMOUNT,   NULL,  2.0);
-    int distance = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE, NULL, 10.0);
+    int  selected   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED,       NULL,  0.0);
+    int  amount     =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_AMOUNT,         NULL,  2.0);
+    int  distance   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE,       NULL, 10.0);
+    bool minimumOf1 = (bool)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_MINIMUM_OF_ONE, NULL,  0.0);
 
     const char* pszTip = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TIP, "");
 
@@ -928,9 +929,9 @@ int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char
         onFocusLost = onFocusLostHideTip;
     }
 
-    id = GfuiRadioButtonListCreate(p_hscr, font, x, y, imagewidth, imageheight,
-                                   pszText, selected, amount, distance, p_userData, p_onChange,
-                                   userDataOnFocus, onFocus, onFocusLost);
+    id = GfuiRadioButtonListCreate(p_hscr, font, x, y, imagewidth, imageheight, pszText,
+                                   selected, amount, distance, minimumOf1, p_userData,
+                                   p_onChange, userDataOnFocus, onFocus, onFocusLost);
 
     GfuiColor c = getControlColor(p_hparm, p_pszName, GFMNU_ATTR_COLOR);
     if (c.alpha)

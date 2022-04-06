@@ -284,10 +284,11 @@ typedef struct RadioButtonInfo
 /// @brief Radio-button-list call-back information
 typedef struct RadioButtonListInfo
 {
-    int   amount;   /**< Number of radio buttons        */
-    int   dist;     /**< Distance between radio buttons */
-    int   selected; /**< The radiobutton selected       */
-    void* userData; /**< Associated user data           */
+    int   amount;       /**< Number of radio buttons        */
+    int   dist;         /**< Distance between radio buttons */
+    int   selected;     /**< The radiobutton selected       */
+    bool  minimumOfOne; /**< If at least one radiobutton has to be selected at all times */
+    void* userData;     /**< Associated user data           */
 } tRadioButtonListInfo;
 
 typedef void (*tfuiCallback)(void * /* userData */);
@@ -552,8 +553,8 @@ TGFCLIENT_API bool GfuiCheckboxIsChecked(void* scr, int id);
 // SIMULATED DRIVING ASSISTANCE CHANGE: Added radio button list functions and radio button functions
 /* Radio Button Lists */
 TGFCLIENT_API int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y,
-                                            int p_imageWidth, int p_imageHeight,
-                                            const char* p_pszText, int p_selected, int p_amount, int p_distance,
+                                            int p_imageWidth, int p_imageHeight, const char* p_pszText,
+                                            int p_selected, int p_amount, int p_distance, bool p_minimumOfOne,
                                             void* p_userData, tfuiRadioButtonCallback p_onChange,
                                             void* p_userDataOnFocus, tfuiCallback p_onFocus, tfuiCallback p_onFocusLost);
 TGFCLIENT_API void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected);

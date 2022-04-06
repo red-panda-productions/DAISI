@@ -250,10 +250,10 @@ typedef struct
 /// @brief Radio Button List type
 typedef struct
 {
-    void* scr;                        /**< The screen the radiobutton-list is on */
-    int* buttonId;                    /**< The children radiobutton ids */
+    void* scr;                   /**< The screen the radiobutton-list is on */
+    int*  buttonId;              /**< The children radiobutton ids */
 
-    tRadioButtonListInfo* pInfo;      /**< Radiobutton-list information */
+    tRadioButtonListInfo* pInfo; /**< Radiobutton-list information */
 } tGfuiRadioButtonList;
 
 typedef struct
