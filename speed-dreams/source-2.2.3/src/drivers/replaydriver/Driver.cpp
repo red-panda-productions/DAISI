@@ -48,7 +48,9 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
     // input time isn't as accurate as currentTime,
     // so some margin needs to be added
-    // Cou
+    // Does not appear to lead to input inaccuracies
+    // since this function is called around the same time
+    // it is called in the recording
 
     if(m_inputTime - 0.0001 <=  p_situation -> currentTime 
         && p_situation->currentTime <= m_inputTime + 0.0001)
