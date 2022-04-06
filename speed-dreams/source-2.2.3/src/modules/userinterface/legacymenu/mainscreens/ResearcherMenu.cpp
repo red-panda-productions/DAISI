@@ -324,7 +324,7 @@ void SetTask(bool* p_tasks)
     m_task = TASK_NO_TASK;
 }
 
-/// @brief Sets the intervention setting in the researcher menu
+/// @brief                    Sets the intervention setting in the researcher menu
 /// @param p_interventionType boolean array that defines which intervention type should be set
 void SetInterventionType(bool* p_interventionType)
 {
