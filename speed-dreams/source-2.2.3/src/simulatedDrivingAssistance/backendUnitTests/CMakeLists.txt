@@ -69,3 +69,5 @@ FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
+
+CREATE_OPEN_CPP_COVERAGE_BAT("BackendCoverage" "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe" "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/backend" "" "")

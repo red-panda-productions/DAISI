@@ -26,3 +26,5 @@ target_include_directories(unitTestUtilitiesTests PUBLIC "../unitTestUtilities")
 
 include(GoogleTest)
 gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)
+
+CREATE_OPEN_CPP_COVERAGE_BAT("UnitUtilitiesCoverage" "${CMAKE_CURRENT_BINARY_DIR}/unitTestUtilitiesTests.exe" "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities" "" "")
