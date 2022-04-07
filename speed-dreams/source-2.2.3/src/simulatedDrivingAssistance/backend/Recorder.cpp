@@ -61,18 +61,19 @@ Recorder::~Recorder()
 /// @param p_compression    boolean value if compression is done
 void Recorder::WriteRecording(const float* p_input, const double p_currentTime, const bool p_compression)
 {
-    // doesn't write if the input is the same as the previous time
-    // if p_compression is true
-    if (p_compression && CheckSameInput(p_input)) return;
-    m_recordingFile << p_currentTime << " ";
-    for (int i = 0; i < m_paramAmount; i++)
-    {
-        // update previous input
-        m_prevInput[i] = p_input[i];
-        // write to file
-        m_recordingFile << p_input[i] << " ";
-    }
-    m_recordingFile << std::endl;
+
+	// doesn't write if the input is the same as the previous time
+	// if p_compression is true
+	if (p_compression && CheckSameInput(p_input)) return;
+	m_recordingFile << p_currentTime << " ";
+	for (int i = 0; i < m_paramAmount; i++)
+	{
+		// update previous input
+		m_prevInput[i] = p_input[i];
+		// write to file
+		m_recordingFile << std::fixed <<std::setprecision(20) << p_input[i] << " ";
+	}
+	m_recordingFile << std::endl;
 }
 
 /// @brief				Checks if the input is the same as the previous input

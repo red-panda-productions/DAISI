@@ -42,7 +42,7 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     //recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
 
     //m_humanDriver.new_race(m_index, p_car, p_situation);
-    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220406-205849.txt");
+    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220407-100812.txt");
     std::string inputTime;
     m_replayFile >> inputTime;
     m_inputTime = std::stod(inputTime);
