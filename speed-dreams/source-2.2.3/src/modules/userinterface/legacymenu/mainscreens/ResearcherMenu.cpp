@@ -52,8 +52,6 @@ int m_maxTimeControl;
 char m_userId[32];
 int  m_userIdControl;
 
-/// @brief Sets the defaults values
-static void OnActivate(void* /* dummy */) { }
 
 /// @brief        Sets the task to lane keeping
 /// @param p_info Information on the checkbox
@@ -209,13 +207,9 @@ static void SetUserId(void*)
 static void SaveSettingsToDisk() 
 {
     // Copies xml to documents folder and then ospens file parameter
-    std::string srcStr("data/menu/ResearcherMenu.xml");
-    char src[512];
-    sprintf(src, "%s%s", GfDataDir(), srcStr.c_str());
     std::string dstStr("config/ResearcherMenu.xml");
     char dst[512];
     sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
-    GfFileCopy(src, dst);
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save task settings to xml file
@@ -353,13 +347,12 @@ void InitializeSettings(void* p_param)
 {
     // Retrieve all setting variables from the xml file
     bool* checkboxTasks = new bool[3];
-    checkboxTasks[TASK_LANE_KEEPING]  = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, NULL), true);
+    checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, NULL), true);
     checkboxTasks[TASK_SPEED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, NULL), false);
 
     m_indicators.Audio = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_AUDITORY, GFMNU_ATTR_CHECKED, NULL), true);
-   m_indicators.Icon  = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_VISUAL, GFMNU_ATTR_CHECKED, NULL), true);
-    m_indicators.Text  = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_TEXT, GFMNU_ATTR_CHECKED, NULL), true);
-
+    m_indicators.Icon = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_VISUAL, GFMNU_ATTR_CHECKED, NULL), true);
+    m_indicators.Text = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_TEXT, GFMNU_ATTR_CHECKED, NULL), true);
 
     bool* checkboxInterventions = new bool[5];
     checkboxInterventions[INTERVENTION_TYPE_NO_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, NULL), true);
@@ -378,15 +371,31 @@ void InitializeSettings(void* p_param)
     // Set the Task settings from the xml file
     SetTask(checkboxTasks);
 
-    // Set the indicator settings from the xml file
-
-    // Set the indicator settings from the xml file
-
     // Set the participant control settings from the xml file 
     SetInterventionType(checkboxInterventions);
-    
+
     delete[] checkboxTasks;
     delete[] checkboxInterventions;
+}
+
+
+void ReadConfig() {
+    GfuiCheckboxSetChecked(s_scrHandle, );
+}
+
+/// @brief Sets the defaults values
+static void OnActivate(void* /* dummy */)
+{
+    // Retrieves the saved user xml file, if it doesn't exist it retrieves the default xml file
+    std::string strPath("config/ResearcherMenu.xml");
+    char buf[512];
+    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
+    void* param = GfuiMenuLoad("ResearcherMenu.xml");
+    if (GfFileExists(buf)) {
+        param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+        InitializeSettings(param);
+    }
+    // Initialize settings with the retrieved xml file
 }
 
 /// @brief            Initializes the researcher menu
@@ -403,20 +412,11 @@ void* ResearcherMenuInit(void* p_nextMenu)
                                    NULL, (tfuiCallback)NULL, 1);
     s_nextHandle = p_nextMenu;
 
-    // Retrieves the saved user xml file, if it doesn't exist it retrieves the default xml file
-    std::string strPath("config/ResearcherMenu.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
-    if (GfFileExists(buf)) {
-        param = GfParmReadFile(buf, GFPARM_RMODE_STD);
-    }
-    // Initialize settings with the retrieved xml file
-    InitializeSettings(param);
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // Task checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskLaneKeeping", NULL, SelectLaneKeeping);
+    int id = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskLaneKeeping", NULL, SelectLaneKeeping);
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskSpeedControl", NULL, SelectSpeedControl);
 
     // Indicator checkboxes controls
@@ -454,9 +454,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
 
     // Set standard max time
-    char buf2[32];
-    sprintf(buf2, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf2);
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 
     // Create random userId
     std::random_device rd;
