@@ -1,6 +1,6 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_SOURCES IndicatorConfig.cpp )
+SET(_SOURCES IndicatorConfig.cpp)
 
 SET(_HEADERS IndicatorConfig.h IndicatorData.h)
 

@@ -569,7 +569,7 @@ void grInitBoardCar(tCarElt *car)
 
 
   // Add the data/intervention folder to the searchable filepaths for filenames.
-  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/indicators/texture");
 
   LoadIndicatorTextures();
 

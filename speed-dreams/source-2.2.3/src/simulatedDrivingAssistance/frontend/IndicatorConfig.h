@@ -7,8 +7,8 @@
 #define PATH_BUF_SIZE 256
 
 // Location of the config.xml file with respect to the root data directory.
-#define CONFIG_XML_DIR_FORMAT "%sdata/intervention/config.xml"
-#define SOUNDS_DIR_FORMAT     "%sdata/intervention/sound/%s"
+#define CONFIG_XML_DIR_FORMAT "%sdata/indicators/config.xml"
+#define SOUNDS_DIR_FORMAT     "%sdata/indicators/sound/%s"
 
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS  "Interventions"
