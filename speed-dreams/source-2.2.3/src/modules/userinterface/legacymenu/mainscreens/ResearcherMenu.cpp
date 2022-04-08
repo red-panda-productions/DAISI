@@ -255,13 +255,16 @@ void InitializeMenuButtons()
 {
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[0], m_indicators.Audio);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[1], m_indicators.Icon);
-    GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[2], m_indicators.Audio);
+    GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[2], m_indicators.Text);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[0], m_pControl.ControlInterventionToggle);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[1], m_pControl.ControlGas);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[2], m_pControl.ControlSteering);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[3], m_pControl.ForceFeedback);
     GfuiRadioButtonListSetSelected(s_scrHandle, m_taskGui, m_task);
     GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeGui, m_interventionType);
+    char buf[32];
+    sprintf(buf, "%d", m_maxTime);
+    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 }
 
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
