@@ -230,6 +230,32 @@ typedef struct
     tfuiCheckboxCallback onChange;
 } tGfuiCheckbox;
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added radiobutton type and radiobutton-list type
+/// @brief Radio Button type
+typedef struct
+{
+    int LabelControl;                 /**< Control id of the text label              */
+    int ParentControl;                /**< Control id of the radiobutton-list parent */
+    int NrInList;                     /**< local id of the parent radiobutton-list   */
+    void* Scr;                        /**< The screen the radiobutton is on          */
+    tRadioButtonInfo* Info;           /**< Radiobutton information                   */
+
+    GfuiColor FgColor[3];             /**< Color */
+    int SelectedControl;              /**< Control id of the selected radiobutton    */
+    int NotSelectedControl;           /**< Control id of the unselected radiobutton  */
+
+    tfuiRadioButtonCallback OnChange; /**< Function to call when a radio button is clicked */
+} tGfuiRadioButton;
+
+/// @brief Radio Button List type
+typedef struct
+{
+    void* Scr;                  /**< The screen the radiobutton-list is on  */
+    int*  ButtonControls;       /**< Array of children radiobutton controls */
+
+    tRadioButtonListInfo* Info; /**< Radiobutton-list information */
+} tGfuiRadioButtonList;
+
 typedef struct
 {
     void *scr;
@@ -278,6 +304,9 @@ typedef struct GfuiObject
         tGfuiCombobox combobox;
         tGfuiCheckbox checkbox;
         tGfuiProgressbar progressbar;
+        /* SIMULATED DRIVING ASSISTANCE CHANGE: added radiobuttons and radiobuttonlists */
+        tGfuiRadioButtonList radiobuttonlist;
+        tGfuiRadioButton radiobutton;
     } u;
     struct GfuiObject	*next;
     struct GfuiObject	*prev;
@@ -386,6 +415,9 @@ extern void gfuiDrawGrButton(tGfuiObject *obj);
 extern void gfuiDrawScrollist(tGfuiObject *obj);
 extern void gfuiDrawEditbox(tGfuiObject *obj);
 extern void gfuiDrawProgressbar(tGfuiObject *obj);
+// SIMULATED DRIVING ASSISTANCE CHANGE: added GfuiDrawRadioButtonList and GfuiDrawRadioButton
+extern void GfuiDrawRadioButtonList(tGfuiObject* p_obj);
+extern void GfuiDrawRadioButton(tGfuiObject* p_obj);
 
 extern void gfuiLabelSetText(tGfuiLabel *label, const char *text);
 extern void gfuiLabelSetColor(tGfuiLabel *label, const float *color);
@@ -414,6 +446,9 @@ extern void gfuiReleaseEditbox(tGfuiObject *curObject);
 extern void gfuiReleaseCombobox(tGfuiObject *obj);
 extern void gfuiReleaseCheckbox(tGfuiObject *obj);
 extern void gfuiReleaseProgressbar(tGfuiObject *obj);
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiReleaseRadioButtonList and GfuiReleaseRadioButton
+extern void GfuiReleaseRadioButtonList(tGfuiObject* p_obj);
+extern void GfuiReleaseRadioButton(tGfuiObject* p_obj);
 
 extern void gfuiLoadFonts(void);
 extern void gfuiFreeFonts(void);

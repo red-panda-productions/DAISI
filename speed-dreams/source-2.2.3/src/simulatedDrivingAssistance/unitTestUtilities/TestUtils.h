@@ -6,9 +6,9 @@
 #include "PairWiseTestGenerator.h"
 /// A big header file that contains functions that can be used in unit tests
 
-/// @brief      Executes a statement, and fails if it takes longer than the secs parameter
-/// @param secs The timeout parameter
-/// @param stmt The statement to be executed
+/// @brief        Executes a statement, and fails if it takes longer than the secs parameter
+/// @param p_secs The timeout parameter
+/// @param p_stmt The statement to be executed
 #define ASSERT_DURATION_LE(p_secs, p_stmt) { \
   std::promise<bool> completed; \
   auto stmt_future = completed.get_future(); \
@@ -16,7 +16,7 @@
     p_stmt; \
     completed.set_value(true); \
   }, std::ref(completed)).detach(); \
-  if(stmt_future.wait_for(std::chrono::seconds(secs)) == std::future_status::timeout) \
+  if(stmt_future.wait_for(std::chrono::seconds(p_secs)) == std::future_status::timeout) \
     GTEST_FATAL_FAILURE_("       timed out (> " #p_secs \
     " seconds). Check code for infinite loops"); \
 }
