@@ -3,7 +3,7 @@
 #include "DecisionTuple.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
-#include "/../rppUtils/RppUtils.hpp"
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
@@ -85,11 +85,13 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
-    std::string configPath("source-2.2.3\\data\\database_connection_settings.txt");
+    std::string configPath("source-2.2.3\\data");
+    std::string configFile("database_connection_settings.txt");
 
-    if (!FindFileDirectory(configPath, "")) throw std::exception("Could not find database settings file");
+    if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
 
-    std::ifstream ifstream(configPath);
+    std::ifstream ifstream(configPath + '\\' + configFile);
+    if (!ifstream.good()) throw std::exception("Could not open database settings file");
 
     std::string ip;
     std::string portString;
@@ -106,12 +108,13 @@ void TEMP_DECISIONMAKER::RaceStop()
         ifstream >> schema;
     }
     catch (std::exception& e) { throw std::exception("Something went wrong while reading the config file");}
+    ifstream.close();
 
     int port;
-    try {std::stoi(portString);}
+    try {port = std::stoi(portString);}
     catch (std::exception& e) { throw std::exception("Port in database settings config file could not be converted to an int");}
 
     m_SQLDatabaseStorage.OpenDatabase(ip, port, username, password, schema);
-    m_SQLDatabaseStorage.StoreData("");
+    //m_SQLDatabaseStorage.StoreData([INPUT FILE PATH HERE]);
     m_SQLDatabaseStorage.CloseDatabase();
 }
