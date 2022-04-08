@@ -568,8 +568,9 @@ MACRO(ADD_MYSQL_PACKAGE TARGET)
             ${MYSQL_LIBSSL_LIBRARY}
             ${MYSQL_CPPCONN_LIBRARY}
             ${MYSQL_CPPCONN8_LIBRARY}
-            ${MYSQL_CPPCONN_STATIC_LIBRARY}
-            ${MYSQL_CPPCONN8_STATIC_LIBRARY})
+            #${MYSQL_CPPCONN_STATIC_LIBRARY}  -- currently not used
+            #${MYSQL_CPPCONN8_STATIC_LIBRARY} -- currently not used
+            )
   ELSE(MYSQL_FOUND)
     MESSAGE(FATAL_ERROR "Cannot find MySQL libraries")
   ENDIF(MYSQL_FOUND)
