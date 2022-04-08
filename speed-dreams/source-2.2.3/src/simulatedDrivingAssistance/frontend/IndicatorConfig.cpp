@@ -98,6 +98,7 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path)
 {
     p_path += PRM_SECT_TEXTURE;
+    if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextureData* data = new TextureData;
     data->Path = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_SRC, "");
@@ -112,6 +113,7 @@ tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path)
 tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
 {
     p_path += PRM_SECT_TEXT;
+    if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextData* data = new TextData;
     data->Text = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_CONTENT, "");

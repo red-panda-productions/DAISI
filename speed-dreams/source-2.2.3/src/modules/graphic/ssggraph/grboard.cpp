@@ -499,10 +499,16 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
 void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
-    m_textures = new ssgSimpleState * [indicators.size()];
+    m_textures = new ssgSimpleState*[indicators.size()];
     for (const tIndicatorData& indicator : indicators)
     {
-        m_textures[indicator.Action] = (ssgSimpleState*)grSsgLoadTexState(indicator.Texture->Path);
+        ssgSimpleState* texture = nullptr;
+        if (indicator.Texture)
+        {
+            // Guard if there is no texture data for this action.
+            texture = (ssgSimpleState*)grSsgLoadTexState(indicator.Texture->Path);
+        }
+        m_textures[indicator.Action] = texture;
     }
 }
 
