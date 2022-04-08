@@ -9,7 +9,7 @@ void OpenStoreCloseDatabase(const std::string& p_password, const char* p_inputFi
     SQLDatabaseStorage sqlDatabaseStorage;
     sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "root", p_password, "test");
 
-    std::string path("source-2.2.3\\test_data\\testSimulationData");
+    std::string path(ROOT_FOLDER "\\test_data\\testSimulationData");
     if (!FindFileDirectory(path, p_inputFile)) throw std::exception("Can't find test files");
 
     sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile);

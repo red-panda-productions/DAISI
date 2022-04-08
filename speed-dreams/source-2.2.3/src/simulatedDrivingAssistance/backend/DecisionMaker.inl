@@ -93,7 +93,7 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
-    std::string configPath("source-2.2.3\\data");
+    std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_connection_settings.txt");
 
     if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");

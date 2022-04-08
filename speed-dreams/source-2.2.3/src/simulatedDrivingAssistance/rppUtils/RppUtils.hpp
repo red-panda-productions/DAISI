@@ -7,6 +7,8 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+#define ROOT_FOLDER "source-2.2.3"
+
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
 /// @return     The float
