@@ -4,6 +4,7 @@
 #include "SDAConfig.h"
 #include "InterventionExecutor.h"
 #include "SocketBlackBox.h"
+#include "SQLDatabaseStorage.h"
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
@@ -21,8 +22,13 @@ public:
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
+    void RaceStop();
+
     InterventionExecutor* m_interventionExecutor;
     SocketBlackBox m_blackBox;
+
+private:
+    SQLDatabaseStorage m_SQLDatabaseStorage;
 };
 
 /// @brief The standard type of the decisionMaker

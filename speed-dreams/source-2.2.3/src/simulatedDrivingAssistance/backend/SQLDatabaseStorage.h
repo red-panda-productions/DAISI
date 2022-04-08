@@ -12,7 +12,7 @@ class SQLDatabaseStorage : IDataStorage
 public:
     SQLDatabaseStorage();
     void StoreData(const std::string p_inputFilePath) override;
-    void OpenDatabase(const std::string& p_hostName,
+    bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
                       const std::string& p_username,
                       const std::string& p_password,

@@ -2,13 +2,15 @@
 #include "DecisionMaker.h"
 #include "DecisionTuple.h"
 #include "Mediator.h"
+#include "/../rppUtils/RppUtils.hpp"
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
     template void DecisionMaker<type1,type2>::Initialize(DriveSituation& p_initialSituation,DriveSituation* p_testSituations, int p_testAmount);\
     template bool DecisionMaker<type1,type2>::Decide(DriveSituation& p_driveSituation);\
     template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
-    template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);
+    template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
+    template void DecisionMaker<type1,type2>::RaceStop();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
 
@@ -52,4 +54,38 @@ template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     Config.SetDataCollectionSettings(p_dataSetting);
+}
+
+template<typename SocketBlackBox, typename SDAConfig>
+void TEMP_DECISIONMAKER::RaceStop()
+{
+    std::string configPath("source-2.2.3\\data\\database_connection_settings.txt");
+
+    if (!FindFileDirectory(configPath, "")) throw std::exception("Could not find database settings file");
+
+    std::ifstream ifstream(configPath);
+
+    std::string ip;
+    std::string portString;
+    std::string username;
+    std::string password;
+    std::string schema;
+
+    try
+    {
+        ifstream >> ip;
+        ifstream >> portString;
+        ifstream >> username;
+        ifstream >> password;
+        ifstream >> schema;
+    }
+    catch (std::exception& e) { throw std::exception("Something went wrong while reading the config file");}
+
+    int port;
+    try {std::stoi(portString);}
+    catch (std::exception& e) { throw std::exception("Port in database settings config file could not be converted to an int");}
+
+    m_SQLDatabaseStorage.OpenDatabase(ip, port, username, password, schema);
+    m_SQLDatabaseStorage.StoreData("");
+    m_SQLDatabaseStorage.CloseDatabase();
 }
