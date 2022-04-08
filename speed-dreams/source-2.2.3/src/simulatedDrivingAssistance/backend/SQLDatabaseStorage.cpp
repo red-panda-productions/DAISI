@@ -440,48 +440,58 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         EXECUTE(INSERT_INTO("timestep", "trial_id, tick, game_state_id", values));
 
         // interventions
-        std::string decision;
-        READ_INPUT(decision);
-        int decisionAmount = 0;
-        while (decision != "NONE" && decisionAmount++ < DECISIONS_AMOUNT)
+        InsertDecisions(p_inputFile, p_trialId, tick);
+    }
+}
+
+/// @brief Loops through the input file and inserts all decisions that the black box has made
+/// @param p_inputFile the input file to read from
+/// @param p_trialId the trial the decisions are made in
+/// @param p_tick the tick the decisions are made in
+void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
+{
+    std::string decision;
+    READ_INPUT(decision);
+    // there shouldn't be more than DECISIONS_AMOUNT decisions made
+    int decisionsRead = 0;
+    while (decision != "NONE" && decisionsRead++ < DECISIONS_AMOUNT)
+    {
+        m_statement->execute(INSERT_INTO("intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
+        int decisionId;
+        SELECT_LAST_ID(decisionId)
+
+        if (decision == "SteerDecision")
         {
-            m_statement->execute(INSERT_INTO("intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + tick + "'")));
-            int decisionId;
-            SELECT_LAST_ID(decisionId)
-
-            if (decision == "SteerDecision")
-            {
-                std::string amount;
-                READ_INPUT(amount);
-                EXECUTE(INSERT_INTO("steerdecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
-            }
-            else if (decision == "BrakeDecision")
-            {
-                std::string amount;
-                READ_INPUT(amount);
-                EXECUTE(INSERT_INTO("brakedecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
-            }
-            else if (decision == "AccelDecision")
-            {
-                std::string amount;
-                READ_INPUT(amount);
-                EXECUTE(INSERT_INTO("acceldecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
-            }
-            else if (decision == "GearDecision")
-            {
-                std::string gear;
-                READ_INPUT(gear);
-                EXECUTE(INSERT_INTO("geardecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
-            }
-            else if (decision == "LightsDecision")
-            {
-                std::string lightsOn;
-                READ_INPUT(lightsOn);
-                EXECUTE(INSERT_INTO("lightsdecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
-            }
-
-            READ_INPUT(decision);
+            std::string amount;
+            READ_INPUT(amount);
+            EXECUTE(INSERT_INTO("steerdecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
+        else if (decision == "BrakeDecision")
+        {
+            std::string amount;
+            READ_INPUT(amount);
+            EXECUTE(INSERT_INTO("brakedecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+        }
+        else if (decision == "AccelDecision")
+        {
+            std::string amount;
+            READ_INPUT(amount);
+            EXECUTE(INSERT_INTO("acceldecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+        }
+        else if (decision == "GearDecision")
+        {
+            std::string gear;
+            READ_INPUT(gear);
+            EXECUTE(INSERT_INTO("geardecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
+        }
+        else if (decision == "LightsDecision")
+        {
+            std::string lightsOn;
+            READ_INPUT(lightsOn);
+            EXECUTE(INSERT_INTO("lightsdecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
+        }
+
+        READ_INPUT(decision);
     }
 }
 
