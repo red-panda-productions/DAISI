@@ -8,15 +8,13 @@
     if (m_inputFile.eof()) throw std::exception("Reached end of file prematurely");\
     m_inputFile >> p_string;
 
-/// @brief executes sql statement with a safety net
+/// @brief executes sql statement
 #define EXECUTE(p_sql) \
-    try {m_statement->execute(p_sql);} \
-    catch (sql::SQLException& e) {throw e;}
+    m_statement->execute(p_sql);
 
-/// @brief executes sql statement with return value with a safety net
+/// @brief executes sql statement with return value
 #define EXECUTE_QUERY(p_sql) \
-    try {m_resultSet = m_statement->executeQuery(p_sql);} \
-    catch (sql::SQLException& e) {throw e;}
+    m_resultSet = m_statement->executeQuery(p_sql);
 
 /// @brief create sql insert ignore statement
 #define INSERT_IGNORE_INTO(p_tableName, p_headers, p_values) \
@@ -28,9 +26,8 @@
 
 /// @brief executes sql statement to get latest inserted id in database with safety net
 #define SELECT_LAST_ID(p_id) \
-    try { m_resultSet = m_statement->executeQuery("SELECT LAST_INSERT_ID()");\
-          while (m_resultSet->next()) { p_id = m_resultSet->getInt(1); }; }  \
-    catch (sql::SQLException& e) { throw e; }
+    m_resultSet = m_statement->executeQuery("SELECT LAST_INSERT_ID()");\
+    while (m_resultSet->next()) { p_id = m_resultSet->getInt(1); };
 
 /// @brief get int from result set
 #define GET_INT_FROM_RESULTS(p_int) \
@@ -59,7 +56,13 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
         int trial_id = InsertInitialData();
         InsertSimulationData(trial_id);
     }
-    catch (std::exception& e) {throw e;}
+    catch (std::exception& e)
+    {
+        CloseDatabase();
+        m_inputFile.close();
+        std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
+        throw e;
+    }
 
     m_inputFile.close();
 }
