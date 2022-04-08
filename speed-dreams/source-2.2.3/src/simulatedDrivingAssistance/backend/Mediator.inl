@@ -110,6 +110,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     m_decisionMaker.Initialize(&car, p_situation);
 }
 
+/// @brief Tells the decisionmaker that the race has ended
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
