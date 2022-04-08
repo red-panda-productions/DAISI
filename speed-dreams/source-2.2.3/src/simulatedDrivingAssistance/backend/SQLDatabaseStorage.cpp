@@ -4,8 +4,8 @@
 
 /// @brief reads input from input file, unless EOF has been reached
 #define READ_INPUT(p_string) \
-    if (m_inputFile.eof()) throw std::exception("Reached end of file prematurely");\
-    m_inputFile >> p_string;
+    if (p_inputFile.eof()) throw std::exception("Reached end of file prematurely");\
+    p_inputFile >> p_string;
 
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
@@ -48,23 +48,23 @@ SQLDatabaseStorage::SQLDatabaseStorage() {
 void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 {
     // Check the existence of an input file
-    m_inputFile.open(p_inputFilePath);
-    if (!m_inputFile.good()) throw std::exception("Could not open data file");
+    std::ifstream inputFile(p_inputFilePath);
+    if (!inputFile.good()) throw std::exception("Could not open data file");
 
     try
     {
-        int trial_id = InsertInitialData();
-        InsertSimulationData(trial_id);
+        int trial_id = InsertInitialData(inputFile);
+        InsertSimulationData(inputFile, trial_id);
     }
     catch (std::exception& e)
     {
         CloseDatabase();
-        m_inputFile.close();
+        inputFile.close();
         std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
         throw e;
     }
 
-    m_inputFile.close();
+    inputFile.close();
 }
 
 /// @brief Connect to the specified database. Initialise the database with the proper tables if they don't exist yet.
@@ -269,7 +269,7 @@ void SQLDatabaseStorage::CreateTables()
 
 /// @brief Inserts the data that stays the same during a trial. Includes participant, blackbox, environment, settings, and trial
 /// @return trialId
-int SQLDatabaseStorage::InsertInitialData()
+int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 {
     // participant
     std::string participantId;
@@ -356,9 +356,9 @@ int SQLDatabaseStorage::InsertInitialData()
 
 /// @brief Inserts data that is different for each tick in one trial, included tick, user input, gamestate, time step, interventions, and decisions
 /// @param p_trialId id of trial that the simulation is linked with
-void SQLDatabaseStorage::InsertSimulationData(const int p_trialId)
+void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId)
 {
-    while (!m_inputFile.eof()) {
+    while (!p_inputFile.eof()) {
 
         // tick
         std::string tick;

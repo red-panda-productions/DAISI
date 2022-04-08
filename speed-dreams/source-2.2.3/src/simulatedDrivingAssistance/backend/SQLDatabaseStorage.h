@@ -22,11 +22,10 @@ public:
 
 private:
     void CreateTables();
-    int InsertInitialData();
-    void InsertSimulationData(const int p_trialId);
+    int InsertInitialData(std::ifstream& p_inputFile);
+    void InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId);
 
     std::string m_values;
-    std::ifstream m_inputFile;
     sql::Driver* m_driver;
     sql::Connection* m_connection;
     sql::Statement* m_statement;
