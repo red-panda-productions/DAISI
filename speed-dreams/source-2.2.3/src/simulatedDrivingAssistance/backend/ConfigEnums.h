@@ -20,9 +20,9 @@ typedef unsigned int InterventionType;
 
 #define INTERVENTION_TYPE_NO_SIGNALS         0
 #define INTERVENTION_TYPE_ONLY_SIGNALS       1
-#define INTERVENTION_TYPE_ASK_FOR            2
-#define INTERVENTION_TYPE_SHARED_CONTROL     3
-#define INTERVENTION_TYPE_COMPLETE_TAKEOVER  4
+#define INTERVENTION_TYPE_ASK_FOR            -1      
+#define INTERVENTION_TYPE_SHARED_CONTROL     2
+#define INTERVENTION_TYPE_COMPLETE_TAKEOVER  3
 
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;

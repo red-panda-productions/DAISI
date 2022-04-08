@@ -6,15 +6,11 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 
-#define RESEARCHMENU_LANE_KEEPING                "dynamic controls/CheckboxTaskLaneKeeping"
-#define RESEARCHMENU_SPEED_CONTROL               "dynamic controls/CheckboxTaskSpeedControl"
+#define RESEARCHMENU_TASKS                       "dynamic controls/TaskRadioButtonList"
 #define RESEARCHMENU_INDICATOR_AUDITORY          "dynamic controls/CheckboxIndicatorAuditory"
 #define RESEARCHMENU_INDICATOR_VISUAL            "dynamic controls/CheckboxIndicatorVisual"
 #define RESEARCHMENU_INDICATOR_TEXT              "dynamic controls/CheckboxIndicatorTextual"
-#define RESEARCHMENU_TYPE_NO_SIGNALS             "dynamic controls/CheckboxTypeNoSignals"
-#define RESEARCHMENU_TYPE_ONLY_SIGNALS           "dynamic controls/CheckboxTypeOnlySignals"
-#define RESEARCHMENU_TYPE_SHARED_CONTROL         "dynamic controls/CheckboxTypeSharedControl"
-#define RESEARCHMENU_TYPE_COMPLETE_TAKEOVER      "dynamic controls/CheckboxTypeCompleteTakeover"
+#define RESEARCHMENU_INTERVENTIONTYPE            "dynamic controls/InterventionTypeRadioButtonList"
 #define RESEARCHMENU_CONTROL_GAS                 "dynamic controls/CheckboxPControlGas"
 #define RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE "dynamic controls/CheckboxPControlInterventionToggle"
 #define RESEARCHMENU_CONTROL_STEERING            "dynamic controls/CheckboxPControlSteering"
@@ -25,6 +21,12 @@
 // GUI screen handles
 static void* s_scrHandle  = nullptr;
 static void* s_nextHandle = nullptr;
+
+// GUI settings Id's 
+int m_indicatorsGui[3];
+int m_pControlGui[4];
+int m_taskGui;
+int m_interventionTypeGui;
 
 // Task
 Task m_task = TASK_NO_TASK;
@@ -52,8 +54,6 @@ int m_maxTimeControl;
 char m_userId[32];
 int  m_userIdControl;
 
-
-static void OnActivate(void* /* dummy */) { }
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
@@ -186,17 +186,9 @@ static void SaveSettingsToDisk()
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save task settings to xml file
-    GfParmSetStr(readParam, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
-    GfParmSetStr(readParam, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
-    switch (m_task)
-    {
-        case TASK_LANE_KEEPING:
-            GfParmSetStr(readParam, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
-            break;
-        case TASK_SPEED_CONTROL:
-            GfParmSetStr(readParam, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
-            break;
-    }
+    char val[32];
+    sprintf(val, "%d", m_task);
+    GfParmSetStr(readParam, RESEARCHMENU_TASKS, GFMNU_ATTR_SELECTED, val);
 
     // Save indicator settings to xml file
     const char* audioSetting = m_indicators.Audio ? GFMNU_VAL_YES : GFMNU_VAL_NO;
@@ -207,25 +199,8 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, RESEARCHMENU_INDICATOR_TEXT,     GFMNU_ATTR_CHECKED, textSetting);
 
     // Save intervention type settings to xml file
-    GfParmSetStr(readParam, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
-    GfParmSetStr(readParam, RESEARCHMENU_TYPE_ONLY_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
-    GfParmSetStr(readParam, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
-    GfParmSetStr(readParam, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, GFMNU_VAL_NO);
-    switch (m_interventionType)
-    {
-        case INTERVENTION_TYPE_NO_SIGNALS:
-            GfParmSetStr(readParam, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
-            break;
-        case INTERVENTION_TYPE_ONLY_SIGNALS:
-            GfParmSetStr(readParam, RESEARCHMENU_TYPE_ONLY_SIGNALS, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
-            break;
-        case INTERVENTION_TYPE_SHARED_CONTROL:
-            GfParmSetStr(readParam, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
-            break;
-        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
-            GfParmSetStr(readParam, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, GFMNU_VAL_YES);
-            break;
-    }
+    sprintf(val, "%d", m_interventionType);
+    GfParmSetStr(readParam, RESEARCHMENU_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, val);
 
     // Save participant control settings to xml file
     const char* controlGas         = m_pControl.ControlGas                ? GFMNU_VAL_YES : GFMNU_VAL_NO;
@@ -276,62 +251,32 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief         Sets the task setting in the researcher menu
-/// @param p_tasks boolean array that defines which task should be set
-void SetTask(bool* p_tasks) 
+/// @brief                    Sets all the checkboxes and radiobuttons in the researcher menu
+void InitializeMenuButtons()
 {
-    if (p_tasks[TASK_LANE_KEEPING]) {
-        m_task = TASK_LANE_KEEPING;
-        return;
-    }
-    if (p_tasks[TASK_SPEED_CONTROL]) {
-        m_task = TASK_SPEED_CONTROL;
-        return;
-    }
-    m_task = TASK_NO_TASK;
-}
-
-/// @brief                    Sets the intervention setting in the researcher menu
-/// @param p_interventionType boolean array that defines which intervention type should be set
-void SetInterventionType(bool* p_interventionType)
-{
-    if (p_interventionType[INTERVENTION_TYPE_NO_SIGNALS]) {
-        m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
-        return;
-    }
-    if (p_interventionType[INTERVENTION_TYPE_ONLY_SIGNALS]) {
-        m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
-        return;
-    }
-    if(p_interventionType[INTERVENTION_TYPE_SHARED_CONTROL]) {
-        m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
-        return;
-    }
-    if (p_interventionType[INTERVENTION_TYPE_COMPLETE_TAKEOVER]) {
-        m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
-        return;
-    }
-    return;
+    GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[0], m_indicators.Audio);
+    GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[1], m_indicators.Icon);
+    GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[2], m_indicators.Audio);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[0], m_pControl.ControlInterventionToggle);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[1], m_pControl.ControlGas);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[2], m_pControl.ControlSteering);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlGui[3], m_pControl.ForceFeedback);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskGui, m_task);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeGui, m_interventionType);
 }
 
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
 void InitializeSettings(void* p_param)
 {
-    // Retrieve all setting variables from the xml file
-    bool* checkboxTasks = new bool[3];
-    checkboxTasks[TASK_LANE_KEEPING] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_LANE_KEEPING, GFMNU_ATTR_CHECKED, NULL), true);
-    checkboxTasks[TASK_SPEED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_SPEED_CONTROL, GFMNU_ATTR_CHECKED, NULL), false);
+    // Retrieve all setting variables from the xml file and assigning them to the internal variables
+    m_task = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_TASKS, GFMNU_ATTR_SELECTED, NULL));
 
     m_indicators.Audio = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_AUDITORY, GFMNU_ATTR_CHECKED, NULL), true);
     m_indicators.Icon = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_VISUAL, GFMNU_ATTR_CHECKED, NULL), true);
     m_indicators.Text = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_INDICATOR_TEXT, GFMNU_ATTR_CHECKED, NULL), true);
 
-    bool* checkboxInterventions = new bool[5];
-    checkboxInterventions[INTERVENTION_TYPE_NO_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_NO_SIGNALS, GFMNU_ATTR_CHECKED, NULL), true);
-    checkboxInterventions[INTERVENTION_TYPE_ONLY_SIGNALS] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_ONLY_SIGNALS, GFMNU_ATTR_CHECKED, NULL), false);
-    checkboxInterventions[INTERVENTION_TYPE_SHARED_CONTROL] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_SHARED_CONTROL, GFMNU_ATTR_CHECKED, NULL), false);
-    checkboxInterventions[INTERVENTION_TYPE_COMPLETE_TAKEOVER] = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_TYPE_COMPLETE_TAKEOVER, GFMNU_ATTR_CHECKED, NULL), false);
+    m_interventionType = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, NULL));
 
     m_pControl.ControlGas = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_GAS, GFMNU_ATTR_CHECKED, NULL), true);
     m_pControl.ControlInterventionToggle = gfuiMenuGetBoolean(GfParmGetStr(p_param, RESEARCHMENU_CONTROL_INTERVENTION_TOGGLE, GFMNU_ATTR_CHECKED, NULL), false);
@@ -341,34 +286,24 @@ void InitializeSettings(void* p_param)
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, NULL));
 
-    // Set the Task settings from the xml file
-    SetTask(checkboxTasks);
-
-    // Set the participant control settings from the xml file 
-    SetInterventionType(checkboxInterventions);
-
-    delete[] checkboxTasks;
-    delete[] checkboxInterventions;
+    // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
+    InitializeMenuButtons();
 }
 
 
-void ReadConfig() {
-    GfuiCheckboxSetChecked(s_scrHandle, );
-}
 
 /// @brief Sets the defaults values
 static void OnActivate(void* /* dummy */)
 {
-    // Retrieves the saved user xml file, if it doesn't exist it retrieves the default xml file
+    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
     std::string strPath("config/ResearcherMenu.xml");
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
-    void* param = GfuiMenuLoad("ResearcherMenu.xml");
     if (GfFileExists(buf)) {
-        param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+        // Initialize settings with the retrieved xml file
         InitializeSettings(param);
     }
-    // Initialize settings with the retrieved xml file
 }
 
 /// @brief            Initializes the researcher menu
@@ -390,24 +325,24 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
 
     // Task radio button controls
-    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "TaskRadioButtonList", NULL, SelectTask);
+    m_taskGui = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "TaskRadioButtonList", NULL, SelectTask);
 
     // Indicator checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAudio);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectIcon);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectText);
+    m_indicatorsGui[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAudio);
+    m_indicatorsGui[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectIcon);
+    m_indicatorsGui[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectText);
 
     // InterventionTypes radio button controls
-    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "InterventionTypeRadioButtonList", NULL, SelectInterventionType);
+    m_interventionTypeGui = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "InterventionTypeRadioButtonList", NULL, SelectInterventionType);
 
     // Environment checkboxes controls
     GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "EnvironmentRadioButtonList", NULL, SelectEnvironment);
 
     // Participant-Control checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlInterventionToggle", NULL, SelectControlInterventionOnOff);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlGas", NULL, SelectControlGas);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlSteering", NULL, SelectControlSteering);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxForceFeedback", NULL, SelectForceFeedback);
+    m_pControlGui[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlInterventionToggle", NULL, SelectControlInterventionOnOff);
+    m_pControlGui[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlGas", NULL, SelectControlGas);
+    m_pControlGui[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlSteering", NULL, SelectControlSteering);
+    m_pControlGui[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxForceFeedback", NULL, SelectForceFeedback);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, "MaxTimeEdit", NULL, NULL, SetMaxTime);
@@ -424,7 +359,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
 
     // Set standard max time
-
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
     GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
