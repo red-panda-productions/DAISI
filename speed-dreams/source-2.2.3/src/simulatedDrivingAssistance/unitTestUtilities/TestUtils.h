@@ -16,7 +16,7 @@
     p_stmt; \
     completed.set_value(true); \
   }, std::ref(completed)).detach(); \
-  if(stmt_future.wait_for(std::chrono::seconds(secs)) == std::future_status::timeout) \
+  if(stmt_future.wait_for(std::chrono::seconds(p_secs)) == std::future_status::timeout) \
     GTEST_FATAL_FAILURE_("       timed out (> " #p_secs \
     " seconds). Check code for infinite loops"); \
 }

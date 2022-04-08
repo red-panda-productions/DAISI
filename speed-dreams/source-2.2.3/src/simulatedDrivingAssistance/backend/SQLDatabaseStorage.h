@@ -16,19 +16,18 @@ public:
                       int p_port,
                       const std::string& p_username,
                       const std::string& p_password,
-                      const std::string& p_schemaName,
-                      bool p_isNewSchema);
+                      const std::string& p_schemaName);
+
+    void CloseDatabase();
 
 private:
-    void CloseDatabase();
     void CreateTables();
-    void InsertInitialData();
-    void InsertSimulationData();
+    int InsertInitialData();
+    void InsertSimulationData(const int p_trialId);
 
-    std::string m_reading;
+    std::string m_values;
     std::ifstream m_inputFile;
-    std::stringstream m_sstream;
-    sql::mysql::MySQL_Driver* m_driver;
+    sql::Driver* m_driver;
     sql::Connection* m_connection;
     sql::Statement* m_statement;
     sql::ResultSet* m_resultSet;

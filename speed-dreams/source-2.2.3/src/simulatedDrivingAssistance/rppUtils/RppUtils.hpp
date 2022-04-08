@@ -38,6 +38,7 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 
         char filePath[256];
         strcpy(filePath, directoryPath);
+        strcat(filePath, "\\");
         strcat(filePath, p_fileToFind.c_str());
 
         std::cout << "current path: " << filePath << std::endl;
