@@ -486,6 +486,9 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
 /// @brief Displays the intervention text
 void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
+    // Guard if no text data is defined forthis indicator
+    if (!p_data) return;
+
     GfuiDrawString(
         p_data->Text, normal_color_, GFUI_FONT_LARGE_C, 
         rightAnchor * p_data->ScrPos.X,

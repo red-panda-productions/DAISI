@@ -35,8 +35,8 @@ public:
     void ActivateIndicator(InterventionAction p_action);
 
     std::vector<tIndicatorData> GetIndicatorData();
-    std::vector<tIndicatorData> GetActiveIndicators();
 
+    std::vector<tIndicatorData> GetActiveIndicators();
 
     static IndicatorConfig* GetInstance();
 
@@ -51,6 +51,7 @@ public:
     static IndicatorConfig* m_instance;
 
     std::vector<tIndicatorData> m_indicatorData;
+
     std::vector<tIndicatorData> m_activeIndicators;
 
     void LoadIndicatorData();

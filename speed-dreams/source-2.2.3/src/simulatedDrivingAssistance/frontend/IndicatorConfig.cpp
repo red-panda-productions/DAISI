@@ -44,11 +44,9 @@ void IndicatorConfig::LoadIndicatorData()
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     void* xmlHandle =  GfParmReadFile(path, GFPARM_RMODE_STD);
 
-    int count = GfParmGetEltNb(xmlHandle, PRM_SECT_INTERVENTIONS);
-
     // Load the indicator data for every intervention action
-    m_indicatorData = std::vector<tIndicatorData>(count);
-    for (int i = 0; i < count; i++)
+    m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
+    for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
         snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
         m_indicatorData[i] = { 
@@ -88,6 +86,12 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 {
     float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, NULL, 0);
     float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, NULL, 0);
+
+    // Check whether x- and y-pos are valid percentages in range [0,1]
+    if (xPos < 0.0f || yPos < 0.0f || xPos > 1.0f || yPos > 1.0f)
+    {
+        throw std::out_of_range("X and Y positions should be in the range [0,1]");
+    }
     return { xPos, yPos };
 }
 
