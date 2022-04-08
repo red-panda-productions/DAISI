@@ -3,7 +3,7 @@
 /// @brief The different tasks that can be performed
 typedef unsigned int Task;
 
-#define TASK_NO_TASK        0
+#define TASK_NO_TASK        -1
 #define TASK_LANE_KEEPING   1
 #define TASK_SPEED_CONTROL  2
 

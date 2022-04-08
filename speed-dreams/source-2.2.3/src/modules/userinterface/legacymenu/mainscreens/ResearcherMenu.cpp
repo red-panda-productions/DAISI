@@ -17,7 +17,6 @@
 #define RESEARCHMENU_FORCE_FEEDBACK              "dynamic controls/CheckboxForceFeedback"
 #define RESEARCHMENU_MAX_TIME_EDIT               "dynamic controls/MaxTimeEdit"
 
-
 // GUI screen handles
 static void* s_scrHandle  = nullptr;
 static void* s_nextHandle = nullptr;
