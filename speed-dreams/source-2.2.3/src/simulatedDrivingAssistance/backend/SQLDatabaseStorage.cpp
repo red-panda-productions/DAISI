@@ -88,12 +88,12 @@ bool SQLDatabaseStorage::OpenDatabase(
     sql::ConnectOptionsMap connection_properties;
     connection_properties["hostName"] = "tcp://" + p_hostName;
     connection_properties["userName"] = p_username;
-    connection_properties["password"] = p_password;
+    connection_properties["password"] = "WRONG";// p_password;
     connection_properties["port"] = p_port;
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     try { m_connection = m_driver->connect(connection_properties);}
-    catch (std::exception& e) {return false;}
+    catch (std::exception& e) {std::cerr << "Could not open database" << std::endl; return false;}
 
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
