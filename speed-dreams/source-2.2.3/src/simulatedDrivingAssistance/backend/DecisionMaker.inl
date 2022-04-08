@@ -16,6 +16,13 @@
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
 
+#define READ_FROM_FILE_SAFE(p_filestream, p_string) \
+    if (p_filestream.eof())\
+        {   p_filestream.close();\
+            throw std::exception("Reached end of file prematurely"); \
+        }\
+    p_filestream >> p_string;
+
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
 /// @param  p_initialSituation The initial situation
@@ -82,6 +89,7 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 #endif
 }
 
+/// @brief When the race stops, the simulation data collected will be stored in the database
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
@@ -99,15 +107,12 @@ void TEMP_DECISIONMAKER::RaceStop()
     std::string password;
     std::string schema;
 
-    try
-    {
-        ifstream >> ip;
-        ifstream >> portString;
-        ifstream >> username;
-        ifstream >> password;
-        ifstream >> schema;
-    }
-    catch (std::exception& e) { throw std::exception("Something went wrong while reading the config file");}
+    READ_FROM_FILE_SAFE(ifstream, ip);
+    READ_FROM_FILE_SAFE(ifstream, portString);
+    READ_FROM_FILE_SAFE(ifstream, username);
+    READ_FROM_FILE_SAFE(ifstream, password);
+    READ_FROM_FILE_SAFE(ifstream, schema);
+
     ifstream.close();
 
     int port;
