@@ -1,6 +1,5 @@
 #include "SQLDatabaseStorage.h"
 #include <string>
-#include "mysqlx/xdevapi.h"
 #include "../rppUtils/RppUtils.hpp"
 
 /// @brief reads input from input file, unless EOF has been reached
@@ -33,6 +32,7 @@
 #define GET_INT_FROM_RESULTS(p_int) \
     while (m_resultSet->next()) p_int = m_resultSet->getInt(1);
 
+/// @brief the amount of decision types a black box can create each tick
 #define DECISIONS_AMOUNT 5
 
 /// @brief The constructor of the SQL database storage
@@ -88,7 +88,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     sql::ConnectOptionsMap connection_properties;
     connection_properties["hostName"] = "tcp://" + p_hostName;
     connection_properties["userName"] = p_username;
-    connection_properties["password"] = "WRONG";// p_password;
+    connection_properties["password"] = p_password;
     connection_properties["port"] = p_port;
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
