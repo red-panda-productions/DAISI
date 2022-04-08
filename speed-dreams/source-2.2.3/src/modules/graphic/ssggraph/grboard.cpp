@@ -567,7 +567,7 @@ void grInitBoardCar(tCarElt *car)
 
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
 
-
+  // SIMULATED DRIVING ASSISTANCE
   // Add the data/intervention folder to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/indicators/texture");
 
