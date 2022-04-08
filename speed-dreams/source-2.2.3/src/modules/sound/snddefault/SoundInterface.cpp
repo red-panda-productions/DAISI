@@ -214,7 +214,7 @@ void SoundInterface::setGearChangeSound (const char* sound_name)
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Loads the indicator sounds from their respective filepaths.
+/// @brief Loads the indicator sounds from their respective filepaths and stores them into an array.
 void SoundInterface::LoadIndicatorSounds() {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
     m_indicatorSounds = std::vector<Sound*>(indicators.size());
