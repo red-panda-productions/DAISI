@@ -357,13 +357,13 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 }
 
 /// @brief Inserts data that is different for each tick in one trial, included tick, user input, gamestate, time step, interventions, and decisions
-///        These values are read as a string from p_inputFile, and used as a string in the sql statements,
-//         therefore they are not converted to the type they actually are.
 /// @param p_trialId id of trial that the simulation is linked with
 void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId)
 {
     std::string values;
 
+    // The values are read as a string from p_inputFile, and used as a string in the sql statements,
+    // therefore they are not converted to the type they actually are.
     while (!p_inputFile.eof())
     {
         // tick
