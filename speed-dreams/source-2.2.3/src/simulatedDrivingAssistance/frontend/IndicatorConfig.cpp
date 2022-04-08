@@ -6,7 +6,7 @@
 
 #include "IndicatorConfig.h"
 
-/// @brief Initialize the intervention configuration.
+/// @brief Initialize the indicator configuration.
 void IndicatorConfig::Initialize()
 {
     LoadIndicatorData();
@@ -27,8 +27,8 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
 }
 
 
-/// @brief          Sets the current active intervention action
-/// @param p_action The intervention to set as current active action
+/// @brief          Activates the given intervention indicator
+/// @param p_action The intervention to activate the indicators for
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
     // TODO: add to the vector instead of overwriting it, this also requires 
@@ -39,7 +39,7 @@ void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 /// @brief Loads the indicator data of every intervention action from the config.xml file.
 void IndicatorConfig::LoadIndicatorData()
 {
-    // Load intervention texture from XML file (unchecked max p_path size: 256)
+    // Load intervention indicator texture from XML file (unchecked max p_path size: 256)
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     void* xmlHandle =  GfParmReadFile(path, GFPARM_RMODE_STD);
@@ -58,10 +58,10 @@ void IndicatorConfig::LoadIndicatorData()
     }
 }
 
-/// @brief        Loads the sound indicator data from the indicator config.xml
+/// @brief          Loads the sound indicator data from the indicator config.xml
 /// @param p_handle The p_handle to the config.xml file
 /// @param p_path   The p_path to the current intervention action to load
-/// @return       The pointer to the struct containing the sound data
+/// @return         The pointer to the struct containing the sound data
 tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
 {
     p_path += PRM_SECT_SOUND;
@@ -78,10 +78,10 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
     return data;
 }
 
-/// @brief        Loads the screen position data from the indicator config.xml
+/// @brief          Loads the screen position data from the indicator config.xml
 /// @param p_handle The p_handle to the config.xml file
 /// @param p_path   The C-string pointer to the section containing x- and y-pos attributes
-/// @return       A struct containing the screen position data
+/// @return         A struct containing the screen position data
 tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_path)
 {
     float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, NULL, 0);
@@ -95,10 +95,10 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     return { xPos, yPos };
 }
 
-/// @brief        Loads the texture indicator data from the indicator config.xml
+/// @brief          Loads the texture indicator data from the indicator config.xml
 /// @param p_handle The p_handle to the config.xml file
 /// @param p_path   The p_path to the current intervention action to load
-/// @return       The pointer to struct containing the texture data
+/// @return         The pointer to struct containing the texture data
 tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path)
 {
     p_path += PRM_SECT_TEXTURE;
@@ -110,10 +110,10 @@ tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path)
     return data;
 }
 
-/// @brief        Loads the text indicator data from the indicator config.xml
+/// @brief          Loads the text indicator data from the indicator config.xml
 /// @param p_handle The p_handle to the config.xml file
 /// @param p_path   The p_path to the current intervention action to load
-/// @return       The pointer to struct containing the text data
+/// @return         The pointer to struct containing the text data
 tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
 {
     p_path += PRM_SECT_TEXT;

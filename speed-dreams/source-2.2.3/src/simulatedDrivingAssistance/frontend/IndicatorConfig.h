@@ -26,7 +26,7 @@ static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
 };
 
 
-/// @brief Represents the configuration of interventions
+/// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig 
 {
 public:

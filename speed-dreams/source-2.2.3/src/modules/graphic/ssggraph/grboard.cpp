@@ -415,7 +415,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
         grDispSplitScreenIndicator();
     }
 
-    // SIMULATED DRIVING ASSISTANCE: displays the current intervention
+    // SIMULATED DRIVING ASSISTANCE: displays the current intervention indicators 
     DispIndicators();
  
     if (debugFlag)
@@ -426,7 +426,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the currently active intervention in IndicatorConfig
+/// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
 void cGrBoard::DispIndicators() 
 {
@@ -442,7 +442,7 @@ void cGrBoard::DispIndicators()
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the intervention icon (if the texture was loaded correctly)
+/// @brief Displays and icon indicator (if the texture was loaded correctly)
 void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
 {
     // Guard if texture data is null or the texture itself is null
@@ -483,7 +483,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the intervention text
+/// @brief Displays the intervention indicator text
 void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
     // Guard if no text data is defined forthis indicator
@@ -577,7 +577,7 @@ void grInitBoardCar(tCarElt *car)
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
 
   // SIMULATED DRIVING ASSISTANCE
-  // Add the data/intervention folder to the searchable filepaths for filenames.
+  // Add the folder containing indicator textures to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/indicators/texture");
 
   LoadIndicatorTextures();
