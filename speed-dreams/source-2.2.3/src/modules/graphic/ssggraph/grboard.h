@@ -20,6 +20,8 @@
 #ifndef _GRBOARD_H_
 #define _GRBOARD_H_
 
+#include <plib/ssg.h>
+
 #include <car.h>        // tCarElt
 #include <raceman.h>    // tSituation
 
@@ -27,6 +29,8 @@ class cGrFrameInfo;
 
 #include <string>
 #include <vector>
+
+#include "IndicatorData.h"
 
 class cGrBoard
 {
@@ -51,9 +55,9 @@ class cGrBoard
     void grDispCounterBoard2();
 
     // SIMULATED DRIVING ASSISTANCE: add display intervention methods
-    void DispIntervention();
-    void DispInterventionIcon();
-    void DispInterventionText();
+    void DispIndicators();
+    void DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture);
+    void DispIndicatorText(tTextData* p_data);
 
 private:
     //Dash colour handling

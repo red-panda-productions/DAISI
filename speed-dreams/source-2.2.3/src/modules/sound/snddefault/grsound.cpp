@@ -26,7 +26,6 @@
 #include "PlibSoundInterface.h"
 #endif
 #include "CarSoundData.h"
-#include "InterventionConfig.h"
 
 static int soundInitialized = 0;
 
@@ -160,9 +159,7 @@ void grInitSound(tSituation* s, int ncars)
 
     // SIMULATED DRIVING ASSISTANCE: Added intervention sound initialization
     sound_interface->SetInterventionVolume(interventionVolume / 100.0f);
-    for (const auto &item : InterventionConfig::GetInstance()->GetSounds()) {
-        sound_interface->setInterventionSound(item.first, item.second);
-    }
+    sound_interface->LoadIndicatorSounds();
 
 	// Must happen after all static non-shared have been allocated. 
 	sound_interface->initSharedSourcePool();

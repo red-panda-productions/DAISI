@@ -36,10 +36,8 @@
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
 
-#include "InterventionConfig.h"
+#include "IndicatorConfig.h"
 #include "Mediator.h"
-
-ssgSimpleState* m_textures[];
 
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
@@ -61,14 +59,17 @@ static const int DEFAULT_WIDTH = 800;
 
 static const int BUFSIZE = 256;
 
-//void LoadTexturesFromPath()
-//{
-//    std::vector<tIndicatorData> indicators = InterventionConfig::GetInstance()->GetIndicators();
-//    for (tIndicatorData idata : indicators)
-//    {
-//
-//    }
-//}
+ssgSimpleState** m_textures;
+
+void LoadTexturesFromPath()
+{
+    std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
+    m_textures = new ssgSimpleState*[indicators.size()];
+    for (const tIndicatorData& indicator : indicators)
+    {
+        m_textures[indicator.Action] = (ssgSimpleState*)grSsgLoadTexState(indicator.Texture->Path);
+    }
+}
 
 cGrBoard::cGrBoard(int myid) : 
     normal_color_(NULL), danger_color_(NULL), emphasized_color_(NULL), background_color_(NULL)
@@ -423,7 +424,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
     }
 
     // SIMULATED DRIVING ASSISTANCE: displays the current intervention
-    DispIntervention();
+    DispIndicators();
  
     if (debugFlag)
         grDispDebug(s, frameInfo);
@@ -433,24 +434,28 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the currently active intervention in InterventionConfig
+/// @brief Displays the currently active intervention in IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispIntervention() 
+void cGrBoard::DispIndicators() 
 {
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-    if (settings.Icon)  
-        DispInterventionIcon();
 
-    if (settings.Text) 
-        DispInterventionText();
+    for (tIndicatorData data : IndicatorConfig::GetInstance()->GetActiveIndicators())
+    {
+        if (settings.Icon)
+            DispIndicatorIcon(data.Texture, m_textures[data.Action]);
+
+        if (settings.Text)
+            DispIndicatorText(data.Text);
+    }
 }
 
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the intervention icon (if the texture was loaded correctly)
-void cGrBoard::DispInterventionIcon()
+void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
 {
-    tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
-    if (!textureData.Path) return;
+    // Guard if texture data is null or the texture itself is null
+    if (!p_data || !p_texture) return;
 
     // Dimensions of the icon on the screen (will be put in XML settings file later)
     float iconWidth = 100;
@@ -465,10 +470,10 @@ void cGrBoard::DispInterventionIcon()
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
     glTranslatef(
-        rightAnchor * textureData.ScrPos.X,
-        TOP_ANCHOR  * textureData.ScrPos.Y,
+        rightAnchor * p_data->ScrPos.X,
+        TOP_ANCHOR  * p_data->ScrPos.Y,
         0);
-    //glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
+    glBindTexture(GL_TEXTURE_2D, p_texture->getTextureHandle());
 
     // Draw the texture as a Triangle Strip. 
     // glTexCoord2f defines point of the texture that you take (0-1).
@@ -488,21 +493,20 @@ void cGrBoard::DispInterventionIcon()
 
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the intervention text
-void cGrBoard::DispInterventionText()
+void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
-    tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
     GfuiDrawString(
-        textData.Text, normal_color_, GFUI_FONT_LARGE_C, 
-        rightAnchor * textData.ScrPos.X,
-        TOP_ANCHOR  * textData.ScrPos.Y);
+        p_data->Text, normal_color_, GFUI_FONT_LARGE_C, 
+        rightAnchor * p_data->ScrPos.X,
+        TOP_ANCHOR  * p_data->ScrPos.Y);
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Loads the intervention textures and texts from XML into the InterventionConfig singleton class.
+/// @brief Loads the intervention textures and texts from XML into the IndicatorConfig singleton class.
 ///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
 void LoadInterventionData()
 {
-    //InterventionConfig* config = InterventionConfig::GetInstance();
+    //IndicatorConfig* config = IndicatorConfig::GetInstance();
     //unsigned int interventionCnt = config->GetInterventionCount();
 
     //tTextureData* textures = new TextureData[interventionCnt];
@@ -602,7 +606,7 @@ void grInitBoardCar(tCarElt *car)
   // Add the data/intervention folder to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
 
-  LoadInterventionData();
+  LoadTexturesFromPath();
 
 
   /* Tachometer --------------------------------------------------------- */

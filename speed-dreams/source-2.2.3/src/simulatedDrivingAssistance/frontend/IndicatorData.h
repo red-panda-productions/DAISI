@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ConfigEnums.h"
+
 /// @brief Represents a position on screen as percentages of the full screen.
 typedef struct ScreenPosition
 {
@@ -30,9 +32,10 @@ typedef struct TextData
 
 /// @brief  Stores data belonging to each type of indicator. This is stored with 
 ///         pointers to the data structs to deal with the fact that it is not required 
-///         that all data is defined.    
+///         that all data is defined.
 typedef struct IndicatorData
 {
+    InterventionAction Action;
     tSoundData*   Sound;
     tTextureData* Texture;
     tTextData*    Text;

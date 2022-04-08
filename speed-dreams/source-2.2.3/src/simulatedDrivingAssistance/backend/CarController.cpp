@@ -1,6 +1,6 @@
 #include <algorithm>
 #include "CarController.h"
-#include "InterventionConfig.h"
+#include "IndicatorConfig.h"
 
 /// @brief			Edits the steer command of the game
 /// @param  p_steer The amount that needs to be edited
@@ -41,7 +41,7 @@ void CarController::SetLightCmd(bool p_light) const
 /// @param  p_element The element that should be shown
 void CarController::ShowIntervention(InterventionAction p_element) const
 {
-	InterventionConfig::GetInstance()->SetInterventionAction(p_element);
+	IndicatorConfig::GetInstance()->ActivateIndicator(p_element);
 }
 
 /// @brief		  Sets the current car of the game
