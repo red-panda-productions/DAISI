@@ -114,7 +114,8 @@ void TEMP_DECISIONMAKER::RaceStop()
     try {port = std::stoi(portString);}
     catch (std::exception& e) { throw std::exception("Port in database settings config file could not be converted to an int");}
 
-    m_SQLDatabaseStorage.OpenDatabase(ip, port, username, password, schema);
+    if (!m_SQLDatabaseStorage.OpenDatabase(ip, port, username, password, schema))
+        throw std::exception("Could not open database");
     //m_SQLDatabaseStorage.StoreData([INPUT FILE PATH HERE]);
     m_SQLDatabaseStorage.CloseDatabase();
 }
