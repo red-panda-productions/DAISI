@@ -70,7 +70,8 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 /// @param p_username Username to connect with to the database.
 /// @param p_password Password to connect with to the database.
 /// @param p_schemaName Name of the database schema to use.
-void SQLDatabaseStorage::OpenDatabase(
+/// @return returns true if connection to database has been made, false otherwise
+bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
     int p_port,
     const std::string& p_username,
@@ -88,7 +89,8 @@ void SQLDatabaseStorage::OpenDatabase(
     connection_properties["port"] = p_port;
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
-    m_connection = m_driver->connect(connection_properties);
+    try { m_connection = m_driver->connect(connection_properties);}
+    catch (std::exception& e) {return false;}
 
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
@@ -104,6 +106,8 @@ void SQLDatabaseStorage::OpenDatabase(
     m_statement = m_connection->createStatement();
 
     CreateTables();
+
+    return true;
 }
 
 /// @brief Executes sql create statements to create all tables

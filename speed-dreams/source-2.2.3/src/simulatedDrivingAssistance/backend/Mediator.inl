@@ -111,7 +111,10 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 }
 
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStop() {}
+void Mediator<DecisionMaker>::RaceStop()
+{
+    m_decisionMaker.RaceStop();
+}
 
 
 /// @brief Creates a mediator instance if needed and returns it
