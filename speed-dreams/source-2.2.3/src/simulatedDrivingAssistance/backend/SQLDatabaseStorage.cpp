@@ -271,6 +271,8 @@ void SQLDatabaseStorage::CreateTables()
 /// @return trialId
 int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 {
+    std::string values;
+
     // participant
     std::string participantId;
 
@@ -298,9 +300,9 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     blackboxVersion = blackboxVersionDate + ' ' + blackboxVersionTime;
 
-    m_values = "'" + blackboxFileName + "','" + blackboxVersion + "','" + blackboxName + "'";
+    values = "'" + blackboxFileName + "','" + blackboxVersion + "','" + blackboxName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("blackbox", "filename, version, name", m_values))
+    EXECUTE(INSERT_IGNORE_INTO("blackbox", "filename, version, name", values))
     EXECUTE_QUERY("SELECT blackbox_id FROM blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersion + "'")
 
     int blackboxId;
@@ -320,9 +322,9 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     environmentVersion = environmentVersionDate + ' ' + environmentVersionTime;
 
-    m_values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
+    values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("environment", "filename, version, name", m_values))
+    EXECUTE(INSERT_IGNORE_INTO("environment", "filename, version, name", values))
     EXECUTE_QUERY("SELECT environment_id FROM environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
 
     int environmentId;
@@ -333,19 +335,19 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     READ_INPUT(interventionMode);
 
-    m_values = "'" + interventionMode + "'";
+    values = "'" + interventionMode + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", m_values))
+    EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()")
 
     int settingsId;
     GET_INT_FROM_RESULTS(settingsId);
 
-    m_values = "'" + trialDate + ' ' + trialTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
+    values = "'" + trialDate + ' ' + trialTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
                std::to_string(settingsId) + "'";
 
     // trial
-    EXECUTE(INSERT_INTO("trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", m_values))
+    EXECUTE(INSERT_INTO("trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()");
 
     int trialId;
@@ -358,6 +360,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 /// @param p_trialId id of trial that the simulation is linked with
 void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId)
 {
+    std::string values;
+
     while (!p_inputFile.eof()) {
 
         // tick
@@ -375,8 +379,8 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         READ_INPUT(gas);
         READ_INPUT(clutch);
 
-        m_values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "'";
-        EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch", m_values));
+        values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "'";
+        EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch", values));
 
         int userInputId;
         SELECT_LAST_ID(userInputId);
@@ -402,36 +406,36 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         READ_INPUT(acceleration);
         READ_INPUT(gear);
 
-        m_values = "'";
-        m_values.append(x);
-        m_values.append("', '");
-        m_values.append(y);
-        m_values.append("', '");
-        m_values.append(z);
-        m_values.append("', '");
-        m_values.append(directionX);
-        m_values.append("', '");
-        m_values.append(directionY);
-        m_values.append("', '");
-        m_values.append(directionZ);
-        m_values.append("', '");
-        m_values.append(speed);
-        m_values.append("', '");
-        m_values.append(acceleration);
-        m_values.append("', '");
-        m_values.append(gear);
-        m_values.append("', '");
-        m_values.append(std::to_string(userInputId));
-        m_values.append("'");
+        values = "'";
+        values.append(x);
+        values.append("', '");
+        values.append(y);
+        values.append("', '");
+        values.append(z);
+        values.append("', '");
+        values.append(directionX);
+        values.append("', '");
+        values.append(directionY);
+        values.append("', '");
+        values.append(directionZ);
+        values.append("', '");
+        values.append(speed);
+        values.append("', '");
+        values.append(acceleration);
+        values.append("', '");
+        values.append(gear);
+        values.append("', '");
+        values.append(std::to_string(userInputId));
+        values.append("'");
 
-        EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, user_input_id", m_values));
+        EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, user_input_id", values));
 
         int gamestateId;
         SELECT_LAST_ID(gamestateId);
 
         // time step
-        m_values = "'" + std::to_string(p_trialId) + "','" + tick + "','" + std::to_string(gamestateId) + "'";
-        EXECUTE(INSERT_INTO("timestep", "trial_id, tick, game_state_id", m_values));
+        values = "'" + std::to_string(p_trialId) + "','" + tick + "','" + std::to_string(gamestateId) + "'";
+        EXECUTE(INSERT_INTO("timestep", "trial_id, tick, game_state_id", values));
 
         // interventions
         std::string decision;
