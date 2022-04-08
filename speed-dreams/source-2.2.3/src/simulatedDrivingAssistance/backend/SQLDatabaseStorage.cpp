@@ -92,6 +92,8 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["port"] = p_port;
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
+    connection_properties["sslEnforce"] = true;
+    
     try { m_connection = m_driver->connect(connection_properties);}
     catch (std::exception& e) {std::cerr << "Could not open database" << std::endl; return false;}
 
