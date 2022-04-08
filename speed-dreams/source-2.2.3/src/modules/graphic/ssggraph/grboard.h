@@ -54,7 +54,7 @@ class cGrBoard
 
     void grDispCounterBoard2();
 
-    // SIMULATED DRIVING ASSISTANCE: add display intervention methods
+    // SIMULATED DRIVING ASSISTANCE: add display indicator methods
     void DispIndicators();
     void DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture);
     void DispIndicatorText(tTextData* p_data);
@@ -83,5 +83,8 @@ private:
 };
 
 extern void grInitBoardCar(tCarElt *car);
+
+// SIMULATED DRIVING ASSISTANCE
+extern void LoadIndicatorTextures();
 
 #endif /* _GRBOARD_H_ */

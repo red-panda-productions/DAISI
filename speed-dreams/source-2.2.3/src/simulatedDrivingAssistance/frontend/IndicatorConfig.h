@@ -1,8 +1,6 @@
 #pragma once
 
-#include <plib/ssg.h>
 #include "ConfigEnums.h"
-#include <unordered_map>
 #include "IndicatorData.h"
 
 // Size of the path buffers, this will be used unchecked.
@@ -37,7 +35,6 @@ public:
     void ActivateIndicator(InterventionAction p_action);
 
     std::vector<tIndicatorData> GetIndicatorData();
-
     std::vector<tIndicatorData> GetActiveIndicators();
 
 
@@ -53,12 +50,14 @@ public:
     IndicatorConfig() = default;
     static IndicatorConfig* m_instance;
 
-    InterventionAction m_currentAction = 1;
-
     std::vector<tIndicatorData> m_indicatorData;
-
     std::vector<tIndicatorData> m_activeIndicators;
 
     void LoadIndicatorData();
 
+    // Loading helpers
+    tSoundData* LoadSound(void* p_handle, std::string p_path);
+    tScreenPosition LoadScreenPos(void* p_handle, const char* p_path);
+    tTextureData* LoadTexture(void* p_handle, std::string p_path);
+    tTextData* LoadText(void* p_handle, std::string p_path);
 };
