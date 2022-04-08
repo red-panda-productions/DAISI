@@ -5,6 +5,89 @@
 #include <tgf.h>
 #include "InterventionConfig.h"
 
+/// @brief        Loads the sound indicator data from the indicator config.xml
+/// @param handle The handle to the config.xml file
+/// @param path   The path to the current intervention action to load
+/// @return       The pointer to the struct containing the sound data
+tSoundData* LoadSound(void* handle, std::string path)
+{
+    path += PRM_SECT_SOUND;
+    if (!GfParmExistsSection(handle, path.c_str())) return nullptr;
+
+    tSoundData* data = new SoundData;
+
+    const char* source = GfParmGetStr(handle, path.c_str(), PRM_ATTR_SRC, "");
+
+    char* sndPath = new char[PATH_BUF_SIZE];
+    snprintf(sndPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), source);
+    data->Path = sndPath;
+
+    return data;
+}
+
+/// @brief        Loads the screen position data from the indicator config.xml
+/// @param handle The handle to the config.xml file
+/// @param path   The C-string pointer to the section containing x- and y-pos attributes
+/// @return       A struct containing the screen position data
+tScreenPosition LoadScreenPos(void* handle, const char* path)
+{
+    float xPos = GfParmGetNum(handle, path, PRM_ATTR_XPOS, NULL, 0);
+    float yPos = GfParmGetNum(handle, path, PRM_ATTR_YPOS, NULL, 0);
+    return { xPos, yPos };
+}
+
+/// @brief        Loads the texture indicator data from the indicator config.xml
+/// @param handle The handle to the config.xml file
+/// @param path   The path to the current intervention action to load
+/// @return       The pointer to struct containing the texture data
+tTextureData* LoadTexture(void* handle, std::string path)
+{
+    path += PRM_SECT_TEXTURE;
+
+    tTextureData* data = new TextureData;
+    data->Path   = GfParmGetStr(handle, path.c_str(), PRM_ATTR_SRC, "");
+    data->ScrPos = LoadScreenPos(handle, path.c_str());
+    return data;
+}
+
+/// @brief        Loads the text indicator data from the indicator config.xml
+/// @param handle The handle to the config.xml file
+/// @param path   The path to the current intervention action to load
+/// @return       The pointer to struct containing the text data
+tTextData* LoadText(void* handle, std::string path)
+{
+    path += PRM_SECT_TEXT;
+
+    tTextData* data = new TextData;
+    data->Text   = GfParmGetStr(handle, path.c_str(), PRM_ATTR_CONTENT, "");
+    data->ScrPos = LoadScreenPos(handle, path.c_str());
+    return data;
+}
+
+/// @brief Loads the indicator data of every intervention action from the config.xml file.
+void InterventionConfig::LoadIndicatorData()
+{
+    // Load intervention texture from XML file (unchecked max path size: 256)
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    void* xmlHandle =  GfParmReadFile(path, GFPARM_RMODE_STD);
+
+    // Get the number of defined interventions from the xml file and store this for re-use.
+    m_interventionCount = GfParmGetEltNb(xmlHandle, PRM_SECT_INTERVENTIONS);
+
+    // Load the indicator data for every intervention action
+    m_indicators = std::vector<tIndicatorData>(m_interventionCount);
+    for (int i = 0; i < m_interventionCount; i++)
+    {
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
+        m_indicators[i] = { 
+            LoadSound(xmlHandle, std::string(path)),
+            LoadTexture(xmlHandle, std::string(path)),
+            LoadText(xmlHandle, std::string(path))
+        };
+    }
+}
+
 /// @brief Initialize the intervention sound map. Note that this just gets which interventions use which sounds and does not create the sounds yet.
 /// @param p_sounds The map in which to store the sounds
 /// @param p_xmlHandle The handle to the xml config file to read from
@@ -13,7 +96,7 @@ void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sou
     char path[256];
     for (int i = 0; i < p_interventionCount; i++)
     {
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_SOUND);
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_SOUND);
         if(!GfParmExistsSection(p_xmlHandle, path)) continue;
 
         const char* src = GfParmGetStr(p_xmlHandle, path, PRM_ATTR_SRC, "");
@@ -24,15 +107,14 @@ void InitializeSounds(std::unordered_map<InterventionAction, const char*>& p_sou
     }
 }
 
+std::vector<tIndicatorData> InterventionConfig::GetIndicators()
+{
+    return m_indicators;
+}
+
 /// @brief Initialize the intervention configuration.
 void InterventionConfig::Initialize() {
-    void* xmlHandle = GetXmlHandle();
-
-    char interventionPath[256];
-    snprintf(interventionPath, sizeof(interventionPath), PRM_SECT_INTERVENTIONS);
-    m_interventionCount = GfParmGetEltNb(xmlHandle, interventionPath);
-
-    InitializeSounds(m_sounds, xmlHandle, m_interventionCount);
+    LoadIndicatorData();
 }
 
 /// @brief  Get the XML file for the intervention configuration
@@ -56,18 +138,19 @@ void InterventionConfig::SetInterventionAction(InterventionAction p_action)
 ///                     indexed by the InterventionAction type in ConfigEnums.h
 void InterventionConfig::SetTextures(tTextureData* p_textures) 
 {
-    m_textures = p_textures;
+    //m_textures = p_textures;
 }
 
 /// @brief  Retrieves the texture belonging to the current intervention action
 /// @return The texture data
 tTextureData InterventionConfig::GetCurrentInterventionTexture() 
 {
-    if (m_currentAction >= m_interventionCount)
+    /*if (m_currentAction >= m_interventionCount)
     {
         throw std::out_of_range("Intervention index (Enum) is out-of-bounds of textures array");
     }
-    return m_textures[m_currentAction];
+    return m_textures[m_currentAction];*/
+    return {};
 }
 
 /// @brief              Sets the texts that are used by the HUD
@@ -75,18 +158,19 @@ tTextureData InterventionConfig::GetCurrentInterventionTexture()
 ///                     indexed by the InterventionAction type in ConfigEnums.h
 void InterventionConfig::SetTexts(tTextData* p_texts)
 {
-    m_texts = p_texts;
+    //m_texts = p_texts;
 }
 
 /// @brief  Retrieves the text belonging to the current intervention action
 /// @return The text data
 tTextData InterventionConfig::GetCurrentInterventionText()
 {
-    if (m_currentAction >= m_interventionCount)
+    /*if (m_currentAction >= m_interventionCount)
     {
         throw std::out_of_range("Intervention index (Enum) is out-of-bounds of texts array");
     }
-    return m_texts[m_currentAction];
+    return m_texts[m_currentAction];*/
+    return {};
 }
 
 /// @brief  Retrieves the sound locations belonging to the possible intervention actions

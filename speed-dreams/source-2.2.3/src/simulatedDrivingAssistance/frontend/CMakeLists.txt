@@ -2,7 +2,7 @@ INCLUDE(../../../cmake/macros.cmake)
 
 SET(_SOURCES InterventionConfig.cpp )
 
-SET(_HEADERS InterventionConfig.h )
+SET(_HEADERS InterventionConfig.h IndicatorData.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability)

@@ -39,6 +39,8 @@
 #include "InterventionConfig.h"
 #include "Mediator.h"
 
+ssgSimpleState* m_textures[];
+
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2
@@ -58,6 +60,15 @@ static const int BOTTOM_ANCHOR = 0;
 static const int DEFAULT_WIDTH = 800;
 
 static const int BUFSIZE = 256;
+
+//void LoadTexturesFromPath()
+//{
+//    std::vector<tIndicatorData> indicators = InterventionConfig::GetInstance()->GetIndicators();
+//    for (tIndicatorData idata : indicators)
+//    {
+//
+//    }
+//}
 
 cGrBoard::cGrBoard(int myid) : 
     normal_color_(NULL), danger_color_(NULL), emphasized_color_(NULL), background_color_(NULL)
@@ -439,7 +450,7 @@ void cGrBoard::DispIntervention()
 void cGrBoard::DispInterventionIcon()
 {
     tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
-    if (!textureData.Texture) return;
+    if (!textureData.Path) return;
 
     // Dimensions of the icon on the screen (will be put in XML settings file later)
     float iconWidth = 100;
@@ -454,10 +465,10 @@ void cGrBoard::DispInterventionIcon()
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
     glTranslatef(
-        rightAnchor * textureData.Position.X,
-        TOP_ANCHOR  * textureData.Position.Y,
+        rightAnchor * textureData.ScrPos.X,
+        TOP_ANCHOR  * textureData.ScrPos.Y,
         0);
-    glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
+    //glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
 
     // Draw the texture as a Triangle Strip. 
     // glTexCoord2f defines point of the texture that you take (0-1).
@@ -482,8 +493,8 @@ void cGrBoard::DispInterventionText()
     tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
     GfuiDrawString(
         textData.Text, normal_color_, GFUI_FONT_LARGE_C, 
-        rightAnchor * textData.Position.X,
-        TOP_ANCHOR  * textData.Position.Y);
+        rightAnchor * textData.ScrPos.X,
+        TOP_ANCHOR  * textData.ScrPos.Y);
 }
 
 // SIMULATED DRIVING ASSISTANCE
@@ -491,39 +502,39 @@ void cGrBoard::DispInterventionText()
 ///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
 void LoadInterventionData()
 {
-    InterventionConfig* config = InterventionConfig::GetInstance();
-    unsigned int interventionCnt = config->GetInterventionCount();
+    //InterventionConfig* config = InterventionConfig::GetInstance();
+    //unsigned int interventionCnt = config->GetInterventionCount();
 
-    tTextureData* textures = new TextureData[interventionCnt];
-    tTextData* texts = new TextData[interventionCnt];
+    //tTextureData* textures = new TextureData[interventionCnt];
+    //tTextData* texts = new TextData[interventionCnt];
 
-    char path[256];
-    void* xmlHandle = config->GetXmlHandle();
-    for (int i = 0; i < interventionCnt; i++)
-    {
-        float xPos, yPos;
+    //char path[256];
+    //void* xmlHandle = config->GetXmlHandle();
+    //for (int i = 0; i < interventionCnt; i++)
+    //{
+    //    float xPos, yPos;
 
-        // Textures
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
-        const char* source = GfParmGetStr(xmlHandle, path, PRM_ATTR_SRC, "");
-        xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
-        yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
+    //    // Textures
+    //    snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
+    //    const char* source = GfParmGetStr(xmlHandle, path, PRM_ATTR_SRC, "");
+    //    xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
+    //    yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
 
-        // IMPORTANT: The texture should not be bigger than 256x256 due to buffer sizes.
-        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(source);
-        textures[i] = TextureData(texture, { xPos, yPos });
+    //    // IMPORTANT: The texture should not be bigger than 256x256 due to buffer sizes.
+    //    ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(source);
+    //    textures[i] = TextureData(texture, { xPos, yPos });
 
-        // Texts
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
-        const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_CONTENT, "");
-        xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
-        yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
+    //    // Texts
+    //    snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
+    //    const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_CONTENT, "");
+    //    xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
+    //    yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
 
-        texts[i] = { txt, { xPos, yPos } };
-    }
+    //    texts[i] = { txt, { xPos, yPos } };
+    //}
 
-    config->SetTextures(textures);
-    config->SetTexts(texts);
+    //config->SetTextures(textures);
+    //config->SetTexts(texts);
 }
 
 

@@ -3,6 +3,10 @@
 #include <plib/ssg.h>
 #include "ConfigEnums.h"
 #include <unordered_map>
+#include "IndicatorData.h"
+
+// Size of the path buffers, this will be used unchecked.
+#define PATH_BUF_SIZE 256
 
 // Location of the config.xml file with respect to the root data directory.
 #define CONFIG_XML_DIR_FORMAT "%sdata/intervention/config.xml"
@@ -23,29 +27,6 @@ static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
     "none", "steer left", "steer right", "brake"
 };
 
-/// @brief Represents a position on screen as percentages of the full screen.
-typedef struct ScreenPosition 
-{
-    float X, Y;
-} tScreenPosition;
-
-/// @brief Stores all data of a texture
-typedef struct TextureData 
-{
-    ssgSimpleState* Texture;
-    tScreenPosition Position;
-
-    TextureData() = default;
-    TextureData(ssgSimpleState* p_tex, tScreenPosition p_pos)
-        : Texture(p_tex) , Position(p_pos) { }
-} tTextureData;
-
-/// @brief Stores data for text
-typedef struct TextData
-{
-    const char*     Text;
-    tScreenPosition Position;
-} tTextData;
 
 /// @brief Represents the configuration of interventions
 class InterventionConfig 
@@ -69,6 +50,12 @@ public:
 
     std::vector<InterventionAction> GetEnabledSounds();
 
+    std::vector<tIndicatorData> GetIndicators();
+
+
+    void LoadIndicatorData();
+
+
     unsigned int GetInterventionCount() const;
 
     static InterventionConfig* GetInstance();
@@ -85,7 +72,9 @@ public:
 
     unsigned int m_interventionCount = 0;
     InterventionAction m_currentAction;
-    tTextureData* m_textures;
-    tTextData* m_texts;
+    //tTextureData* m_textures;
+    //tTextData* m_texts;
     std::unordered_map<InterventionAction, const char*> m_sounds;
+
+    std::vector<tIndicatorData> m_indicators;
 };
