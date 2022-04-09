@@ -56,7 +56,7 @@ static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
     m_dataToStore.MetaData = p_info->bChecked;
 }
 
-/// @brief        Sets all the checkboxes in the dataselection menu
+/// @brief Sets all the checkboxes in the dataselection menu
 void InitializeDataSelectionButtons()
 {
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[0], m_dataToStore.CarData);
@@ -70,11 +70,11 @@ void InitializeDataSelectionButtons()
 /// @param p_param The configuration menu handle
 void InitializeDataSelectionSettings(void* p_param)
 {
-    m_dataToStore.CarData = getControlBoolean(p_param, DATASELECTIONMENU_CAR_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.EnvironmentData = getControlBoolean(p_param, DATASELECTIONMENU_ENVIRONMENT_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.HumanData = getControlBoolean(p_param, DATASELECTIONMENU_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.InterventionData = getControlBoolean(p_param, DATASELECTIONMENU_INTERVENTION_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.MetaData = getControlBoolean(p_param, DATASELECTIONMENU_META_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.CarData          = GfuiControlGetBoolean(p_param, DATASELECTIONMENU_CAR_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.EnvironmentData  = GfuiControlGetBoolean(p_param, DATASELECTIONMENU_ENVIRONMENT_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.HumanData        = GfuiControlGetBoolean(p_param, DATASELECTIONMENU_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.InterventionData = GfuiControlGetBoolean(p_param, DATASELECTIONMENU_INTERVENTION_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.MetaData         = GfuiControlGetBoolean(p_param, DATASELECTIONMENU_META_DATA, GFMNU_ATTR_CHECKED, NULL);
     InitializeDataSelectionButtons();
 }
 

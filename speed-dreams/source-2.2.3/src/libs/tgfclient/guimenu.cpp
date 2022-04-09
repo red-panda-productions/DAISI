@@ -217,8 +217,8 @@ gfuiMenuGetBoolean(const char* pszValue, bool bDefault)
     return bDefault;
 }
 
-static bool
-getControlBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault)
+bool
+GfuiControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault)
 {
     return gfuiMenuGetBoolean(GfParmGetStr(hparm, pszPath, pszFieldName, 0), bDefault);
 }
@@ -239,7 +239,7 @@ createStaticImage(void* hscr, void* hparm, const char* pszName)
     const int w = (int)GfParmGetNum(hparm, pszName, GFMNU_ATTR_WIDTH, NULL, 100.0);
     const int h = (int)GfParmGetNum(hparm, pszName, GFMNU_ATTR_HEIGHT, NULL, 100.0);
 
-    const bool canDeform = getControlBoolean(hparm, pszName, GFMNU_ATTR_CAN_DEFORM, true);
+    const bool canDeform = GfuiControlGetBoolean(hparm, pszName, GFMNU_ATTR_CAN_DEFORM, true);
 
     int id = GfuiStaticImageCreate(hscr, x, y, w, h, pszImage, canDeform);
 
@@ -474,7 +474,7 @@ createTextButton(void* hscr, void* hparm, const char* pszPath,
         onFocusLost = onFocusLostHideTip;
     }
 
-    const bool bShowbox = getControlBoolean(hparm, pszPath, GFMNU_ATTR_BOX_SHOW, true);
+    const bool bShowbox = GfuiControlGetBoolean(hparm, pszPath, GFMNU_ATTR_BOX_SHOW, true);
 
     const char* pszDisabledImage = GfParmGetStr(hparm, pszPath, GFMNU_ATTR_IMAGE_DISABLED, 0);
     const char* pszEnabledImage = GfParmGetStr(hparm, pszPath, GFMNU_ATTR_IMAGE_ENABLED, 0);
@@ -676,7 +676,7 @@ GfuiMenuCreateEditControl(void* hscr, void* hparm, const char* pszName,
     const GfuiColor bfc = getControlColor(hparm, strControlPath.c_str(), GFMNU_ATTR_BG_COLOR_FOCUSED);
     const GfuiColor bdc = getControlColor(hparm, strControlPath.c_str(), GFMNU_ATTR_BG_COLOR_DISABLED);
 
-    const bool masked = getControlBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_MASKED_TEXT, false);
+    const bool masked = GfuiControlGetBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_MASKED_TEXT, false);
 
     int id = GfuiEditboxCreate(hscr, pszText, font, x, y, width, maxlen, align,
                                userDataOnFocus, onFocus, onFocusLost);
@@ -834,7 +834,7 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
         imageheight = 30; // TODO: Get default from screen.xml
 
     const bool bChecked =
-        getControlBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_CHECKED, false);
+        GfuiControlGetBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_CHECKED, false);
 
     const char* pszTip = GfParmGetStr(hparm, strControlPath.c_str(), GFMNU_ATTR_TIP, "");
 
