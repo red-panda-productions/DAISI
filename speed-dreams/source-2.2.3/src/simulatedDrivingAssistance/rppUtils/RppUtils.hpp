@@ -7,6 +7,17 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+// If compiling for a Windows system, the compiler will define one of these values.
+// Define the OS_WINDOWS property so we can easily check if we're running on Windows elsewhere,
+// and include Windows headers
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define OS_WINDOWS
+#include <windows.h>
+// If not compiling for a Windows system, we will currently always assume we are running on a Linux system
+#else
+#define OS_LINUX
+#endif
+
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
 /// @return     The float
@@ -95,4 +106,35 @@ inline bool SetupSingletonsFolder()
     }
 
     return true;
+}
+
+/// @brief Start running a separate executable with no command-line arguments
+/// @param p_executablePath The path to the executable.
+///// Should either be an absolute path or relative to the current directory.
+///// Path must include file extension; no default extension is assumed.
+///// Path is assumed to refer to an existing executable file
+inline void StartExecutable(const std::string& p_executablePath) {
+    // If compiling for Windows, use CreateProcess to run an executable
+#ifdef OS_WINDOWS
+    LPSTR args = _strdup(""); // Create an empty string of arguments for process
+    STARTUPINFO startupInformation = {sizeof(startupInformation)}; // Create an empty STARTUPINFO
+    PROCESS_INFORMATION processInformation; // Allocate space for PROCESS_INFORMATION
+    // Start the process. Nullpointers correspond to default values for this method.
+    // Inherit handles is not necessary for our use case and is thus false.
+    CreateProcess(p_executablePath.c_str(),
+                  args,
+                  nullptr,
+                  nullptr,
+                  false,
+                  0,
+                  nullptr,
+                  nullptr,
+                  &startupInformation,
+                  &processInformation
+    );
+
+    // TODO: If compiling for Linux, use a different method of starting an executable
+#elif OS_LINUX
+    std::cout << "Linux builds currently do not start your black box; please start a black box process yourself" << std::endl;
+#endif
 }
