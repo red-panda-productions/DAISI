@@ -60,10 +60,10 @@ static void SelectTask(tRadioButtonInfo* p_info)
 {
     switch(p_info->Selected)
     {
-        case 0:
+        case 1:
             m_task = TASK_LANE_KEEPING;
             break;
-        case 1:
+        case 2:
             m_task = TASK_SPEED_CONTROL;
             break;
         default:
