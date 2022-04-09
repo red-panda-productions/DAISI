@@ -129,35 +129,36 @@ tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
 /// @return The IndicatorConfig instance
 IndicatorConfig* IndicatorConfig::GetInstance() 
 {
-    if (m_instance == nullptr)
-    {
-        // check if IndicatorConfig file exists
-        struct stat info;
-        char workingDir[256];
-        getcwd(workingDir, 256);
-        std::string workingDirectory(workingDir);
-        workingDirectory += "\\Singletons\\IndicatorConfig";
-        const char* filepath = workingDirectory.c_str();
-        int err = stat(filepath, &info);
-        if (err == -1)
-        {
-            // file does not exist create pointer
-            m_instance = new IndicatorConfig();
-            std::ofstream file("Singletons/IndicatorConfig");
-            file << m_instance;
-            file.close();
-            m_instance->Initialize();
-            return m_instance;
-        }
+    // If the instance exists, return it.
+    // Otherwise create the instance and store it for future calls.
+    if (m_instance) return m_instance;
 
-        // file exists read pointer
-        std::string pointerName("00000000");
-        std::ifstream file("Singletons/IndicatorConfig");
-        getline(file, pointerName);
+    // Check if IndicatorConfig file exists
+    struct stat info;
+    char workingDir[256];
+    getcwd(workingDir, 256);
+    std::string workingDirectory(workingDir);
+    workingDirectory += "\\Singletons\\IndicatorConfig";
+    const char* filepath = workingDirectory.c_str();
+    int err = stat(filepath, &info);
+    if (err == -1)
+    {
+        // File does not exist -> create pointer
+        m_instance = new IndicatorConfig();
+        std::ofstream file("Singletons/IndicatorConfig");
+        file << m_instance;
         file.close();
-        int pointerValue = stoi(pointerName, 0, 16);
-        m_instance = (IndicatorConfig*)pointerValue;
+        m_instance->Initialize();
+        return m_instance;
     }
+
+    // File exists -> read pointer
+    std::string pointerName("00000000");
+    std::ifstream file("Singletons/IndicatorConfig");
+    getline(file, pointerName);
+    file.close();
+    int pointerValue = stoi(pointerName, 0, 16);
+    m_instance = (IndicatorConfig*)pointerValue;
     return m_instance;
 }
 
