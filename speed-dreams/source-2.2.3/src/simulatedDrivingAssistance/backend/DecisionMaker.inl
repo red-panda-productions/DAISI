@@ -8,7 +8,11 @@
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
-    template void DecisionMaker<type1,type2>::Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, const std::string& p_blackBoxExecutablePath, BlackBoxData* p_testSituations, int p_testAmount);\
+    template void DecisionMaker<type1,type2>::Initialize(tCarElt* p_initialCar, \
+        tSituation* p_initialSituation,                                         \
+        const std::string& p_blackBoxExecutablePath,                            \
+        BlackBoxData* p_testSituations,                                         \
+        int p_testAmount);                                                      \
     template bool DecisionMaker<type1,type2>::Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);\
     template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
     template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
