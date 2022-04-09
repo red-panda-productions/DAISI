@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <algorithm>
 #include "SoundInterface.h"
 #include "CarSoundData.h"
 

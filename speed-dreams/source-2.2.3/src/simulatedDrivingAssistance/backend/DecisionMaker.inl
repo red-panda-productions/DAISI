@@ -16,6 +16,7 @@
     template bool DecisionMaker<type1,type2>::Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);\
     template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
     template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
+    template void DecisionMaker<type1,type2>::RaceStop();\
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
@@ -93,4 +94,11 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 #ifdef BB_RECORD_SESSION
     delete m_recorder;
 #endif
+}
+
+/// @brief When the race stops, the simulation data collected will be stored in the database
+template<typename SocketBlackBox, typename SDAConfig>
+void TEMP_DECISIONMAKER::RaceStop()
+{
+    m_SQLDatabaseStorage.Run("INPUT FILE HERE");
 }
