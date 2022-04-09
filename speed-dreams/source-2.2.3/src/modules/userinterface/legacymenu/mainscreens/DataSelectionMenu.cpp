@@ -5,11 +5,11 @@
 #include "DataSelectionMenu.h"
 #include "ResearcherMenu.h"
 
-#define DATASELECTIONMENU_CAR_DATA                       "dynamic controls/CheckboxCarData"
-#define DATASELECTIONMENU_ENVIRONMENT_DATA          "dynamic controls/CheckboxIndicatorAuditory"
-#define DATASELECTIONMENU_HUMAN_DATA            "dynamic controls/CheckboxUserData"
-#define DATASELECTIONMENU_INTERVENTION_DATA              "dynamic controls/CheckboxInterventionData"
-#define DATASELECTIONMENU_META_DATA            "dynamic controls/CheckboxMetaData"
+#define DATASELECTIONMENU_CAR_DATA                      "dynamic controls/CheckboxCarData"
+#define DATASELECTIONMENU_ENVIRONMENT_DATA              "dynamic controls/CheckboxIndicatorAuditory"
+#define DATASELECTIONMENU_HUMAN_DATA                    "dynamic controls/CheckboxUserData"
+#define DATASELECTIONMENU_INTERVENTION_DATA             "dynamic controls/CheckboxInterventionData"
+#define DATASELECTIONMENU_META_DATA                     "dynamic controls/CheckboxMetaData"
 
 static void* s_scrHandle  = nullptr;
 static void* s_prevHandle = nullptr;
@@ -18,7 +18,7 @@ static void* s_nextHandle = nullptr;
 // Data to store
 tDataToStore m_dataToStore;
 
-int m_dataToStoreGui[5];
+int m_dataToStoreControl[5];
 
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
@@ -56,25 +56,25 @@ static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
     m_dataToStore.MetaData = p_info->bChecked;
 }
 
-/// @brief                    Sets all the checkboxes in the dataselection menu
+/// @brief        Sets all the checkboxes in the dataselection menu
 void InitializeDataSelectionButtons()
 {
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreGui[0], m_dataToStore.CarData);
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreGui[1], m_dataToStore.EnvironmentData);
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreGui[2], m_dataToStore.HumanData);
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreGui[3], m_dataToStore.InterventionData);
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreGui[4], m_dataToStore.MetaData);
+    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[0], m_dataToStore.CarData);
+    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[1], m_dataToStore.EnvironmentData);
+    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[2], m_dataToStore.HumanData);
+    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[3], m_dataToStore.InterventionData);
+    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[4], m_dataToStore.MetaData);
 }
 
 /// @brief         Initializes the menu setting from the DataSelectionMenu.xml file
 /// @param p_param The configuration menu handle
 void InitializeDataSelectionSettings(void* p_param)
 {
-    m_dataToStore.CarData = gfuiMenuGetBoolean(GfParmGetStr(p_param, DATASELECTIONMENU_CAR_DATA, GFMNU_ATTR_CHECKED, NULL), true);
-    m_dataToStore.EnvironmentData = gfuiMenuGetBoolean(GfParmGetStr(p_param, DATASELECTIONMENU_ENVIRONMENT_DATA, GFMNU_ATTR_CHECKED, NULL), true);
-    m_dataToStore.HumanData = gfuiMenuGetBoolean(GfParmGetStr(p_param, DATASELECTIONMENU_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL), true);
-    m_dataToStore.InterventionData = gfuiMenuGetBoolean(GfParmGetStr(p_param, DATASELECTIONMENU_INTERVENTION_DATA, GFMNU_ATTR_CHECKED, NULL), true);
-    m_dataToStore.MetaData = gfuiMenuGetBoolean(GfParmGetStr(p_param, DATASELECTIONMENU_META_DATA, GFMNU_ATTR_CHECKED, NULL), true);
+    m_dataToStore.CarData = getControlBoolean(p_param, DATASELECTIONMENU_CAR_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.EnvironmentData = getControlBoolean(p_param, DATASELECTIONMENU_ENVIRONMENT_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.HumanData = getControlBoolean(p_param, DATASELECTIONMENU_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.InterventionData = getControlBoolean(p_param, DATASELECTIONMENU_INTERVENTION_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.MetaData = getControlBoolean(p_param, DATASELECTIONMENU_META_DATA, GFMNU_ATTR_CHECKED, NULL);
     InitializeDataSelectionButtons();
 }
 
@@ -92,6 +92,8 @@ static void OnActivate(void* /* dummy */)
         InitializeDataSelectionSettings(param);
     }
 }
+
+/// @brief Saves the settings into the local DataSelectionMenu.xml file
 static void SaveSettingsToDisk()
 {
     // Copies xml to documents folder and then ospens file parameter
@@ -116,6 +118,7 @@ static void SaveSettingsToDisk()
     GfParmWriteFile(NULL, readParam, "DataSelectionMenu");
 
 }
+
 /// @brief Configures the SDAConfig with the options selected on this menu
 static void SaveSettings(void* /* dummy */)
 {
@@ -157,11 +160,11 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle,param,"BackButton",s_prevHandle,GoBack);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
-    m_dataToStoreGui[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxDrivingData", NULL, ChangeDrivingStorage);
-    m_dataToStoreGui[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxCarData", NULL, ChangeCarStorage);
-    m_dataToStoreGui[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxUserData", NULL, ChangeHumanStorage);
-    m_dataToStoreGui[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxInterventionData", NULL, ChangeInterventionStorage);
-    m_dataToStoreGui[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxMetaData", NULL, ChangeMetaDataStorage);
+    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxDrivingData", NULL, ChangeDrivingStorage);
+    m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxCarData", NULL, ChangeCarStorage);
+    m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxUserData", NULL, ChangeHumanStorage);
+    m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxInterventionData", NULL, ChangeInterventionStorage);
+    m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxMetaData", NULL, ChangeMetaDataStorage);
 
     GfParmReleaseHandle(param);
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);

@@ -74,14 +74,14 @@ Changed:
             guiobject.cpp
                 changed GfuiDraw()
                 changed GfuiReleaseObject()
-            tgfclient.h                
+            tgfclient.h
                 added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
                 added   tRadioButtonInfo
                 added   tRadioButtonListInfo
                 added   tfuiRadioButtonCallback
                 added   GfuiMenuCreateRadioButtonListControl()
 
-                added   gfuiMenuGetBoolean()
+                added   getControlBoolean()
                 
                 added   GfuiRadioButtonListCreate()
                 added   GfuiRadioButtonListSetSelected()

@@ -4313,6 +4313,13 @@ int GfParmSetCurFormulaf(void* handle, char const *formula, char const* format, 
     return ret;
 }
 
+// SIMULATED DRIVING ASSISTANCE
+int GfParmSetBoolean(void* handle, char const* path, char const* key, bool boolean)
+{
+	const char* strBool = boolean ? "yes" : "no";
+	return GfParmSetStr(handle, path, key, strBool);
+}
+
 
 /** Check a parameter set against another.
     @ingroup	paramsfile
