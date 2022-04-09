@@ -442,7 +442,9 @@ void cGrBoard::DispIndicators()
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays and icon indicator (if the texture was loaded correctly)
+/// @brief           Displays the icon indicator (if the texture was loaded correctly) 
+/// @param p_data    Pointer to struct containing data about the texture, like its position   
+/// @param p_texture Pointer to the object containing the actual loaded OpenGL texture
 void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
 {
     // Guard if texture data is null or the texture itself is null
@@ -483,7 +485,8 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the intervention indicator text
+/// @brief        Displays the intervention indicator text
+/// @param p_data Pointer to struct containing data about the text, like its position  
 void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
     // Guard if no text data is defined forthis indicator

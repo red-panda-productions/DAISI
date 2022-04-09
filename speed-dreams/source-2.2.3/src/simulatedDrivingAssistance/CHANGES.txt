@@ -111,17 +111,20 @@ Changed:
                 added intervention sound volume setting
             OpenalSound.cpp
                 added check for playing state
+            OpenalSoundInterface.h
+                added UpdateInterventionSounds()
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
-                added update and starting of intervention sounds
+                changed update(): added update and starting of intervention sounds
             SoundInterface.cpp
-                added SetInterventionSound()
+                included "IndicatorConfig.h"
+                added LoadIndicatorSounds()
                 added SetInterventionVolume()
                 added GetInterventionVolume()
-                changed SoundInterface(): added InterventionVolume member init
                 added Clamp() helper function
+                changed SoundInterface(): added InterventionVolume member init
             SoundInterface.h
-                added SetInterventionSound()
+                added LoadIndicatorSounds()
                 added m_indicatorSounds vector
                 added SetInterventionVolume()
                 added GetInterventionVolume()
@@ -166,9 +169,9 @@ Changed:
 
                     added   m_textures array
 
-                    added   DispIntervention()
-                    added   DispInterventionIcon();
-                    added   DispInterventionText();
+                    added   DispIndicators()
+                    added   DispIndicatorIcon();
+                    added   DispIndicatorText();
                     added   LoadIndicatorTextures()
 
                     changed cGrBoard(): removed assignments of removed members
@@ -201,9 +204,12 @@ Changed:
                     removed constants tracking the number of states of removed elements
 
                 grboard.h
-                    added   DispIntervention() 
-                    added   DispInterventionIcon();
-                    added   DispInterventionText();
+                    included <plib/ssg.h>
+                    included "IndicatorData.h"
+
+                    added   DispIndicators()
+                    added   DispIndicatorIcon();
+                    added   DispIndicatorText();
                     added   LoadIndicatorTextures()
 
                     removed grDispGGraph()

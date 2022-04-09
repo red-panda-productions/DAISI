@@ -216,9 +216,8 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 }
 
 /// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
-/// @brief Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
+/// @brief                Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
-/// @param p_interventionSounds The registered sounds
 void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData) 
 {
     // Update the sounds of all indicators, even for the disabled indicators.
