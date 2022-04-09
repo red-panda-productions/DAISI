@@ -569,11 +569,18 @@ IF(OPEN_CPP_COVERAGE)
     STRING(REGEX REPLACE "/" "\\\\" BINARYDIR ${CMAKE_BINARY_DIR})
     STRING(REGEX REPLACE "/" "\\\\" EXEPATH ${EXE_PATH})
 
+    #Creates the excluded sources string
+    SET(EXCLUDEDSOURCES "")
+    FOREACH(EXCLUDED_SOURCE ${EXCLUDED_SOURCES})
+        STRING(REGEX REPLACE "/" "\\\\" EXCLUDEDSOURCE ${EXCLUDED_SOURCE})
+        STRING(APPEND EXCLUDEDSOURCES " --excluded_sources=${EXCLUDEDSOURCE}")
+    ENDFOREACH(EXCLUDED_SOURCE ${EXCLUDEDSOURCESLIST})
+
     FILE(GENERATE OUTPUT ${COVERAGE_OUTPUT_FOLDER}/${BAT_NAME}.bat
         CONTENT
             "@echo off
             cd /d ${CURRENTBINARYDIR}
-            \"${OPEN_CPP_COVERAGE}\" --sources=${CURRENTSOURCEDIR} --export_type=html:${CURRENTBINARYDIR}\\${BAT_NAME} --excluded_sources ${EXCLUDED_SOURCES} --excluded_line_regex ${EXCLUDED_LINES} -- ${EXEPATH}
+            \"${OPEN_CPP_COVERAGE}\" --sources=${CURRENTSOURCEDIR} --export_type=html:${CURRENTBINARYDIR}\\${BAT_NAME} ${EXCLUDEDSOURCES} --excluded_line_regex ${EXCLUDED_LINES} -- ${EXEPATH}
             @start ${CURRENTBINARYDIR}\\${BAT_NAME}\\index.html")
 
     MESSAGE(STATUS "Created ${BAT_NAME} for code coverage. Run with ./${BAT_NAME}.bat in ${COVERAGE_OUTPUT_FOLDER}")

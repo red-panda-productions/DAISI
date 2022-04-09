@@ -70,4 +70,6 @@ FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
-CREATE_OPEN_CPP_COVERAGE_BAT("BackendCoverage" "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe" "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/backend" "" "")
+#Code coverage
+SET(BACKEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/backend")
+CREATE_OPEN_CPP_COVERAGE_BAT("BackendCoverage" "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe" "${BACKEND_SOURCE_DIR}" "${BACKEND_SOURCE_DIR}/IPCPointerManager.h;${BACKEND_SOURCE_DIR}/IPCPointerManager.inl" "")
