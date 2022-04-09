@@ -99,7 +99,7 @@ void TEMP_DECISIONMAKER::RaceStop()
     if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
 
     std::ifstream ifstream(configPath + '\\' + configFile);
-    if (!ifstream.good()) throw std::exception("Could not open database settings file");
+    if (ifstream.fail()) throw std::exception("Could not open database settings file");
 
     std::string ip;
     std::string portString;

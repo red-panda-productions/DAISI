@@ -9,7 +9,6 @@ name
 Off
 GameState
 UserInput
-Decisions
 69420
 9.4724
 9294.23
@@ -24,6 +23,7 @@ Decisions
 2.44
 67.98
 0.4
+Decisions
 SteerDecision
 5
 BrakeDecision
@@ -49,6 +49,7 @@ NONE
 7.0
 4.42
 89.76
+Decisions
 BrakeDecision
 1
 AccelDecision

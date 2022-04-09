@@ -49,7 +49,7 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
-    if (!inputFile.good()) throw std::exception("Could not open data file");
+    if (inputFile.fail()) throw std::exception("Could not open data file");
 
     try
     {
@@ -367,7 +367,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
 
     bool saveGameState = false;
     bool saveUserInput = false;
-    bool saveDecisions = false;
+    bool hasReadTick = false;
 
     std::string dataToSave;
     READ_INPUT(dataToSave)
@@ -379,12 +379,8 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
     if (dataToSave == "UserInput")
     {
         saveUserInput = true;
-        READ_INPUT(dataToSave)
     }
-    if (dataToSave == "Decisions")
-    {
-        saveDecisions = true;
-    }
+    else hasReadTick = true;
 
     // The values are read as a string from p_inputFile, and used as a string in the sql statements,
     // therefore they are not converted to the type they actually are.
@@ -392,7 +388,13 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
     {
         // tick
         std::string tick;
-        READ_INPUT(tick);
+        // if decisions aren't saved, dataToSave has read the tick value in the previous loop
+        if (hasReadTick)
+        {
+            hasReadTick = false;
+            tick = dataToSave;
+        }
+        else {READ_INPUT(tick)}
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
@@ -404,8 +406,13 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         // user input
         if (saveUserInput) InsertUserInput(p_inputFile, p_trialId, tick);
 
-        // interventions
-        if(saveDecisions) InsertDecisions(p_inputFile, p_trialId, tick);
+        READ_INPUT(dataToSave)
+        if (dataToSave == "Decisions")
+        {
+            InsertDecisions(p_inputFile, p_trialId, tick);
+            dataToSave.empty();
+        }
+        else hasReadTick = true;
     }
 }
 
