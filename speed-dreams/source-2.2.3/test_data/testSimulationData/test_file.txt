@@ -7,11 +7,10 @@ filename
 2020-04-08 09:10:03
 name
 Off
+GameState
+UserInput
+Decisions
 69420
-0.7
-2.44
-67.98
-0.4
 9.4724
 9294.23
 2848.123
@@ -21,6 +20,10 @@ Off
 74
 42.5
 2
+0.7
+2.44
+67.98
+0.4
 SteerDecision
 5
 BrakeDecision
@@ -33,9 +36,6 @@ LightsDecision
 1
 NONE
 69421
-7.0
-4.42
-89.76
 4.0
 4.2749
 32.4929
@@ -46,6 +46,9 @@ NONE
 47
 52.4
 9
+7.0
+4.42
+89.76
 BrakeDecision
 1
 AccelDecision

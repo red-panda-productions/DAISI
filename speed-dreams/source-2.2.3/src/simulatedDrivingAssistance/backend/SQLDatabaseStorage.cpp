@@ -173,42 +173,45 @@ void SQLDatabaseStorage::CreateTables()
             ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS UserInput (\n"
-            "    user_input_id   INT     NOT NULL AUTO_INCREMENT,\n"
-            "    steer           FLOAT   NOT NULL,\n"
-            "    brake           FLOAT   NOT NULL,\n"
-            "    gas             FLOAT   NOT NULL,\n"
-            "    clutch          FLOAT   NOT NULL,\n"
+            "CREATE TABLE IF NOT EXISTS TimeStep (\n"
+            "    trial_id        INT             NOT NULL,\n"
+            "    tick            BIGINT UNSIGNED NOT NULL,\n"
             "    \n"
-            "    CONSTRAINT user_input_id_primary_key PRIMARY KEY (user_input_id)\n"
+            "    CONSTRAINT trial_tick_primary_key    PRIMARY KEY (trial_id, tick),\n"
+            "    CONSTRAINT trial_id_foreign_key      FOREIGN KEY (trial_id) REFERENCES Trial(trial_id)\n"
             ")")
 
     EXECUTE(
             "CREATE TABLE IF NOT EXISTS GameState (\n"
-            "    game_state_id   INT     NOT NULL AUTO_INCREMENT,\n"
-            "    x               DOUBLE  NOT NULL,\n"
-            "    y               DOUBLE  NOT NULL,\n"
-            "    z               DOUBLE  NOT NULL,\n"
-            "    direction_x     DOUBLE  NOT NULL,\n"
-            "    direction_y     DOUBLE  NOT NULL,\n"
-            "    direction_z     DOUBLE  NOT NULL,\n"
-            "    speed           FLOAT   NOT NULL,\n"
-            "    acceleration    FLOAT   NOT NULL,\n"
-            "    gear            INT     NOT NULL,\n"
-            "    user_input_id   INT     NOT NULL,\n"
+            "    game_state_id   INT             NOT NULL AUTO_INCREMENT,\n"
+            "    x               DOUBLE          NOT NULL,\n"
+            "    y               DOUBLE          NOT NULL,\n"
+            "    z               DOUBLE          NOT NULL,\n"
+            "    direction_x     DOUBLE          NOT NULL,\n"
+            "    direction_y     DOUBLE          NOT NULL,\n"
+            "    direction_z     DOUBLE          NOT NULL,\n"
+            "    speed           FLOAT           NOT NULL,\n"
+            "    acceleration    FLOAT           NOT NULL,\n"
+            "    gear            INT             NOT NULL,\n"
+            "    trial_id        INT             NOT NULL,\n"
+            "    tick            BIGINT UNSIGNED NOT NULL,\n"
             "    \n"
             "    CONSTRAINT game_state_id_primary_key PRIMARY KEY (game_state_id),\n"
-            "    CONSTRAINT user_input_id_foreign_key FOREIGN KEY (user_input_id) REFERENCES UserInput(user_input_id)\n"
+            "    CONSTRAINT game_state_time_step_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
             ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS TimeStep (\n"
+            "CREATE TABLE IF NOT EXISTS UserInput (\n"
+            "    user_input_id   INT             NOT NULL AUTO_INCREMENT,\n"
+            "    steer           FLOAT           NOT NULL,\n"
+            "    brake           FLOAT           NOT NULL,\n"
+            "    gas             FLOAT           NOT NULL,\n"
+            "    clutch          FLOAT           NOT NULL,\n"
             "    trial_id        INT             NOT NULL,\n"
             "    tick            BIGINT UNSIGNED NOT NULL,\n"
-            "    game_state_id   INT             NOT NULL,\n"
             "    \n"
-            "    CONSTRAINT trial_tick_primary_key       PRIMARY KEY (trial_id, tick),\n"
-            "    CONSTRAINT game_state_id_foreign_key    FOREIGN KEY (game_state_id)     REFERENCES GameState(game_state_id)\n"
+            "    CONSTRAINT user_input_id_primary_key PRIMARY KEY (user_input_id),\n"
+            "    CONSTRAINT user_input_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
             ")")
 
     EXECUTE(
@@ -218,7 +221,7 @@ void SQLDatabaseStorage::CreateTables()
             "    tick                BIGINT UNSIGNED NOT NULL,\n"
             "    \n"
             "    CONSTRAINT decision_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT trial_tick_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
+            "    CONSTRAINT intervention_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
             ")")
 
     EXECUTE(
@@ -362,6 +365,27 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
 {
     std::string values;
 
+    bool saveGameState = false;
+    bool saveUserInput = false;
+    bool saveDecisions = false;
+
+    std::string dataToSave;
+    READ_INPUT(dataToSave)
+    if (dataToSave == "GameState")
+    {
+        saveGameState = true;
+        READ_INPUT(dataToSave)
+    }
+    if (dataToSave == "UserInput")
+    {
+        saveUserInput = true;
+        READ_INPUT(dataToSave)
+    }
+    if (dataToSave == "Decisions")
+    {
+        saveDecisions = true;
+    }
+
     // The values are read as a string from p_inputFile, and used as a string in the sql statements,
     // therefore they are not converted to the type they actually are.
     while (!p_inputFile.eof())
@@ -370,78 +394,89 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         std::string tick;
         READ_INPUT(tick);
 
-        // user input
-        std::string steer;
-        std::string brake;
-        std::string gas;
-        std::string clutch;
+        values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
-        READ_INPUT(steer);
-        READ_INPUT(brake);
-        READ_INPUT(gas);
-        READ_INPUT(clutch);
-
-        values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "'";
-        EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch", values));
-
-        int userInputId;
-        SELECT_LAST_ID(userInputId);
+        EXECUTE(INSERT_INTO("timestep",  "trial_id, tick", values))
 
         // gamestate
-        std::string x;
-        std::string y;
-        std::string z;
-        std::string directionX;
-        std::string directionY;
-        std::string directionZ;
-        std::string speed;
-        std::string acceleration;
-        std::string gear;
+        if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
 
-        READ_INPUT(x);
-        READ_INPUT(y);
-        READ_INPUT(z);
-        READ_INPUT(directionX);
-        READ_INPUT(directionY);
-        READ_INPUT(directionZ);
-        READ_INPUT(speed);
-        READ_INPUT(acceleration);
-        READ_INPUT(gear);
-
-        values = "'";
-        values.append(x);
-        values.append("', '");
-        values.append(y);
-        values.append("', '");
-        values.append(z);
-        values.append("', '");
-        values.append(directionX);
-        values.append("', '");
-        values.append(directionY);
-        values.append("', '");
-        values.append(directionZ);
-        values.append("', '");
-        values.append(speed);
-        values.append("', '");
-        values.append(acceleration);
-        values.append("', '");
-        values.append(gear);
-        values.append("', '");
-        values.append(std::to_string(userInputId));
-        values.append("'");
-
-        EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, user_input_id", values));
-
-        int gamestateId;
-        SELECT_LAST_ID(gamestateId);
-
-        // time step
-        values = "'" + std::to_string(p_trialId) + "','" + tick + "','" + std::to_string(gamestateId) + "'";
-        EXECUTE(INSERT_INTO("timestep", "trial_id, tick, game_state_id", values));
+        // user input
+        if (saveUserInput) InsertUserInput(p_inputFile, p_trialId, tick);
 
         // interventions
-        InsertDecisions(p_inputFile, p_trialId, tick);
+        if(saveDecisions) InsertDecisions(p_inputFile, p_trialId, tick);
     }
+}
+
+void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick)
+{
+    std::string values;
+
+    // gamestate
+    std::string x;
+    std::string y;
+    std::string z;
+    std::string directionX;
+    std::string directionY;
+    std::string directionZ;
+    std::string speed;
+    std::string acceleration;
+    std::string gear;
+
+    READ_INPUT(x);
+    READ_INPUT(y);
+    READ_INPUT(z);
+    READ_INPUT(directionX);
+    READ_INPUT(directionY);
+    READ_INPUT(directionZ);
+    READ_INPUT(speed);
+    READ_INPUT(acceleration);
+    READ_INPUT(gear);
+
+    values = "'";
+    values.append(x);
+    values.append("', '");
+    values.append(y);
+    values.append("', '");
+    values.append(z);
+    values.append("', '");
+    values.append(directionX);
+    values.append("', '");
+    values.append(directionY);
+    values.append("', '");
+    values.append(directionZ);
+    values.append("', '");
+    values.append(speed);
+    values.append("', '");
+    values.append(acceleration);
+    values.append("', '");
+    values.append(gear);
+    values.append("','");
+    values.append(std::to_string(p_trialId));
+    values.append("','");
+    values.append(p_tick);
+    values.append("'");
+
+    EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
+}
+
+void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick)
+{
+    std::string values;
+
+    std::string steer;
+    std::string brake;
+    std::string gas;
+    std::string clutch;
+
+    READ_INPUT(steer);
+    READ_INPUT(brake);
+    READ_INPUT(gas);
+    READ_INPUT(clutch);
+
+    values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "','" + std::to_string(p_trialId) + "','" + p_tick + "'";
+    EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch, trial_id, tick", values));
 }
 
 /// @brief Loops through the input file and inserts all decisions that the black box has made
