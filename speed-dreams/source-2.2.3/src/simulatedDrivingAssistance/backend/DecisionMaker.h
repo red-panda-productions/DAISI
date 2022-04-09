@@ -6,6 +6,7 @@
 #include "Recorder.h"
 #include "ConfigEnums.h"
 #include "BlackBoxData.h"
+#include "SQLDatabaseStorage.h"
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
@@ -22,6 +23,7 @@ public:
 
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void RaceStop();
 
     InterventionExecutor* InterventionExecutor;
     SocketBlackBox BlackBox;
@@ -32,6 +34,7 @@ private:
 #ifdef BB_RECORD_SESSION
     Recorder* m_recorder;
 #endif
+    SQLDatabaseStorage m_SQLDatabaseStorage;
 };
 
 

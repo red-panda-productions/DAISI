@@ -15,6 +15,9 @@ TestResults/
 # Singletons folder
 data/Singletons/*
 
+# Database config connections
+data/database_connection_settings.txt
+
 # Settings for Resharper
 Folder.DotSettings
 
