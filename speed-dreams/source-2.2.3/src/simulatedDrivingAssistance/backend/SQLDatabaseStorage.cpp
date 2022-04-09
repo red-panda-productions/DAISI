@@ -3,8 +3,8 @@
 #include "../rppUtils/RppUtils.hpp"
 
 /// @brief reads input from input file, unless EOF has been reached
-#define READ_INPUT(p_string) \
-    if (p_inputFile.eof()) throw std::exception("Reached end of file prematurely");\
+#define READ_INPUT(p_inputFile, p_string) \
+    if (p_inputFile.eof()) {p_inputFile.close(); throw std::exception("Reached end of file prematurely");}\
     p_inputFile >> p_string;
 
 /// @brief executes sql statement
@@ -279,15 +279,15 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // participant
     std::string participantId;
 
-    READ_INPUT(participantId);
+    READ_INPUT(p_inputFile, participantId);
 
     EXECUTE(INSERT_IGNORE_INTO("Participant", "participant_id", participantId))
 
     std::string trialDate;
     std::string trialTime;
 
-    READ_INPUT(trialDate);
-    READ_INPUT(trialTime);
+    READ_INPUT(p_inputFile, trialDate);
+    READ_INPUT(p_inputFile, trialTime);
 
     // blackbox
     std::string blackboxFileName;
@@ -296,10 +296,10 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     std::string blackboxVersionTime;
     std::string blackboxName;
 
-    READ_INPUT(blackboxFileName);
-    READ_INPUT(blackboxVersionDate);
-    READ_INPUT(blackboxVersionTime);
-    READ_INPUT(blackboxName);
+    READ_INPUT(p_inputFile, blackboxFileName);
+    READ_INPUT(p_inputFile, blackboxVersionDate);
+    READ_INPUT(p_inputFile, blackboxVersionTime);
+    READ_INPUT(p_inputFile, blackboxName);
 
     blackboxVersion = blackboxVersionDate + ' ' + blackboxVersionTime;
 
@@ -318,10 +318,10 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     std::string environmentVersionTime;
     std::string environmentName;
 
-    READ_INPUT(environmentFileName);
-    READ_INPUT(environmentVersionDate);
-    READ_INPUT(environmentVersionTime);
-    READ_INPUT(environmentName);
+    READ_INPUT(p_inputFile, environmentFileName);
+    READ_INPUT(p_inputFile, environmentVersionDate);
+    READ_INPUT(p_inputFile, environmentVersionTime);
+    READ_INPUT(p_inputFile, environmentName);
 
     environmentVersion = environmentVersionDate + ' ' + environmentVersionTime;
 
@@ -336,7 +336,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // settings
     std::string interventionMode;
 
-    READ_INPUT(interventionMode);
+    READ_INPUT(p_inputFile, interventionMode);
 
     values = "'" + interventionMode + "'";
 
@@ -370,11 +370,11 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
     bool hasReadTick = false;
 
     std::string dataToSave;
-    READ_INPUT(dataToSave)
+    READ_INPUT(p_inputFile, dataToSave)
     if (dataToSave == "GameState")
     {
         saveGameState = true;
-        READ_INPUT(dataToSave)
+        READ_INPUT(p_inputFile, dataToSave)
     }
     if (dataToSave == "UserInput")
     {
@@ -394,7 +394,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
             hasReadTick = false;
             tick = dataToSave;
         }
-        else {READ_INPUT(tick)}
+        else {READ_INPUT(p_inputFile, tick)}
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
@@ -406,7 +406,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         // user input
         if (saveUserInput) InsertUserInput(p_inputFile, p_trialId, tick);
 
-        READ_INPUT(dataToSave)
+        READ_INPUT(p_inputFile, dataToSave)
         if (dataToSave == "Decisions")
         {
             InsertDecisions(p_inputFile, p_trialId, tick);
@@ -431,15 +431,15 @@ void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p
     std::string acceleration;
     std::string gear;
 
-    READ_INPUT(x);
-    READ_INPUT(y);
-    READ_INPUT(z);
-    READ_INPUT(directionX);
-    READ_INPUT(directionY);
-    READ_INPUT(directionZ);
-    READ_INPUT(speed);
-    READ_INPUT(acceleration);
-    READ_INPUT(gear);
+    READ_INPUT(p_inputFile, x);
+    READ_INPUT(p_inputFile, y);
+    READ_INPUT(p_inputFile, z);
+    READ_INPUT(p_inputFile, directionX);
+    READ_INPUT(p_inputFile, directionY);
+    READ_INPUT(p_inputFile, directionZ);
+    READ_INPUT(p_inputFile, speed);
+    READ_INPUT(p_inputFile, acceleration);
+    READ_INPUT(p_inputFile, gear);
 
     values = "'";
     values.append(x);
@@ -477,10 +477,10 @@ void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p
     std::string gas;
     std::string clutch;
 
-    READ_INPUT(steer);
-    READ_INPUT(brake);
-    READ_INPUT(gas);
-    READ_INPUT(clutch);
+    READ_INPUT(p_inputFile, steer);
+    READ_INPUT(p_inputFile, brake);
+    READ_INPUT(p_inputFile, gas);
+    READ_INPUT(p_inputFile, clutch);
 
     values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "','" + std::to_string(p_trialId) + "','" + p_tick + "'";
     EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch, trial_id, tick", values));
@@ -493,7 +493,7 @@ void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p
 void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
 {
     std::string decision;
-    READ_INPUT(decision);
+    READ_INPUT(p_inputFile, decision);
     // there shouldn't be more than DECISIONS_AMOUNT decisions made
     int decisionsRead = 0;
     while (decision != "NONE" && decisionsRead++ < DECISIONS_AMOUNT)
@@ -505,35 +505,35 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
         if (decision == "SteerDecision")
         {
             std::string amount;
-            READ_INPUT(amount);
+            READ_INPUT(p_inputFile, amount);
             EXECUTE(INSERT_INTO("steerdecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "BrakeDecision")
         {
             std::string amount;
-            READ_INPUT(amount);
+            READ_INPUT(p_inputFile, amount);
             EXECUTE(INSERT_INTO("brakedecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "AccelDecision")
         {
             std::string amount;
-            READ_INPUT(amount);
+            READ_INPUT(p_inputFile, amount);
             EXECUTE(INSERT_INTO("acceldecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "GearDecision")
         {
             std::string gear;
-            READ_INPUT(gear);
+            READ_INPUT(p_inputFile, gear);
             EXECUTE(INSERT_INTO("geardecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
         }
         else if (decision == "LightsDecision")
         {
             std::string lightsOn;
-            READ_INPUT(lightsOn);
+            READ_INPUT(p_inputFile, lightsOn);
             EXECUTE(INSERT_INTO("lightsdecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
         }
 
-        READ_INPUT(decision);
+        READ_INPUT(p_inputFile, decision);
     }
 }
 
@@ -545,4 +545,39 @@ void SQLDatabaseStorage::CloseDatabase() {
     // sql::Statement and sql::Connection objects must be freed explicitly using delete
     delete m_statement;
     delete m_connection;
+}
+
+void SQLDatabaseStorage::Run(std::string p_inputFilePath)
+{
+    std::string configPath(ROOT_FOLDER "\\data");
+    std::string configFile("database_connection_settings.txt");
+
+    if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
+
+    std::ifstream ifstream(configPath + '\\' + configFile);
+    if (ifstream.fail()) throw std::exception("Could not open database settings file");
+
+    std::string ip;
+    std::string portString;
+    std::string username;
+    std::string password;
+    std::string schema;
+
+    READ_INPUT(ifstream, ip);
+    READ_INPUT(ifstream, portString);
+    READ_INPUT(ifstream, username);
+    READ_INPUT(ifstream, password);
+    READ_INPUT(ifstream, schema);
+
+    ifstream.close();
+
+    int port;
+    try {port = std::stoi(portString);}
+    catch (std::exception& e) { throw std::exception("Port in database settings config file could not be converted to an int");}
+
+    if (OpenDatabase(ip, port, username, password, schema))
+    {
+        //StoreData([INPUT FILE PATH HERE]);
+        CloseDatabase();
+    }
 }

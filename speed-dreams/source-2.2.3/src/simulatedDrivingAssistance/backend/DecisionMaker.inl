@@ -16,13 +16,6 @@
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
 
-#define READ_FROM_FILE_SAFE(p_filestream, p_string) \
-    if (p_filestream.eof())\
-        {   p_filestream.close();\
-            throw std::exception("Reached end of file prematurely"); \
-        }\
-    p_filestream >> p_string;
-
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
 /// @param  p_initialSituation The initial situation
@@ -93,35 +86,5 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
-    std::string configPath(ROOT_FOLDER "\\data");
-    std::string configFile("database_connection_settings.txt");
-
-    if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
-
-    std::ifstream ifstream(configPath + '\\' + configFile);
-    if (ifstream.fail()) throw std::exception("Could not open database settings file");
-
-    std::string ip;
-    std::string portString;
-    std::string username;
-    std::string password;
-    std::string schema;
-
-    READ_FROM_FILE_SAFE(ifstream, ip);
-    READ_FROM_FILE_SAFE(ifstream, portString);
-    READ_FROM_FILE_SAFE(ifstream, username);
-    READ_FROM_FILE_SAFE(ifstream, password);
-    READ_FROM_FILE_SAFE(ifstream, schema);
-
-    ifstream.close();
-
-    int port;
-    try {port = std::stoi(portString);}
-    catch (std::exception& e) { throw std::exception("Port in database settings config file could not be converted to an int");}
-
-    if (m_SQLDatabaseStorage.OpenDatabase(ip, port, username, password, schema))
-    {
-        //m_SQLDatabaseStorage.StoreData([INPUT FILE PATH HERE]);
-        m_SQLDatabaseStorage.CloseDatabase();
-    }
+    m_SQLDatabaseStorage.Run("INPUT FILE HERE");
 }
