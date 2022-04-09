@@ -251,7 +251,7 @@ static void SaveSettings(void* /* dummy */)
 }
 
 /// @brief                    Sets all the checkboxes and radiobuttons in the researcher menu
-void InitializeMenuButtons()
+void InitializeResearcherMenuButtons()
 {
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[0], m_indicators.Audio);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsGui[1], m_indicators.Icon);
@@ -269,7 +269,7 @@ void InitializeMenuButtons()
 
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
-void InitializeSettings(void* p_param)
+void InitializeResearcherMenuSettings(void* p_param)
 {
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
     m_task = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_TASKS, GFMNU_ATTR_SELECTED, NULL));
@@ -289,7 +289,7 @@ void InitializeSettings(void* p_param)
     m_maxTime = std::stoi(GfParmGetStr(p_param, RESEARCHMENU_MAX_TIME_EDIT, GFMNU_ATTR_DEFAULT_VALUE, NULL));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
-    InitializeMenuButtons();
+    InitializeResearcherMenuButtons();
 }
 
 
@@ -304,7 +304,7 @@ static void OnActivate(void* /* dummy */)
     if (GfFileExists(buf)) {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
-        InitializeSettings(param);
+        InitializeResearcherMenuSettings(param);
     }
 }
 
