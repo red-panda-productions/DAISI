@@ -79,7 +79,7 @@ void InitializeDataSelectionSettings(void* p_param)
 }
 
 
-/// @brief Function to call when screen is activated
+/// @brief Loads the user menu settings from the local config file
 static void OnActivate(void* /* dummy */) 
 { 
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
