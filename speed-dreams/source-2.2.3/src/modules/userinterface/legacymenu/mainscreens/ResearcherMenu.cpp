@@ -263,8 +263,6 @@ void InitializeResearcherMenuSettings(void* p_param)
     InitializeResearcherMenuButtons();
 }
 
-
-
 /// @brief Sets the defaults values
 static void OnActivate(void* /* dummy */)
 {
