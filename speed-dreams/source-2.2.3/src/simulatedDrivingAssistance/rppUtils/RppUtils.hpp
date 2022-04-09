@@ -3,20 +3,10 @@
 #include <fstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
+#include <windows.h>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
-
-// If compiling for a Windows system, the compiler will define one of these values.
-// Define the OS_WINDOWS property so we can easily check if we're running on Windows elsewhere,
-// and include Windows headers
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#define OS_WINDOWS
-#include <windows.h>
-// If not compiling for a Windows system, we will currently always assume we are running on a Linux system
-#else
-#define OS_LINUX
-#endif
 
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
@@ -114,8 +104,9 @@ inline bool SetupSingletonsFolder()
 ///// Path must include file extension; no default extension is assumed.
 ///// Path is assumed to refer to an existing executable file
 inline void StartExecutable(const std::string& p_executablePath) {
-    // If compiling for Windows, use CreateProcess to run an executable
-#ifdef OS_WINDOWS
+    // WARNING: This method of starting a process is Windows-exclusive.
+    // Add a different method to run a process here if a Linux build is planned.
+
     LPSTR args = _strdup(""); // Create an empty string of arguments for process
     STARTUPINFO startupInformation = {sizeof(startupInformation)}; // Create an empty STARTUPINFO
     PROCESS_INFORMATION processInformation; // Allocate space for PROCESS_INFORMATION
@@ -133,8 +124,4 @@ inline void StartExecutable(const std::string& p_executablePath) {
                   &processInformation
     );
 
-    // TODO: If compiling for Linux, use a different method of starting an executable
-#elif OS_LINUX
-    std::cout << "Linux builds currently do not start your black box; please start a black box process yourself" << std::endl;
-#endif
 }
