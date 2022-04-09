@@ -67,7 +67,8 @@ Changed:
                 changed GfuiObject
             guimenu.cpp
                 added   GfuiMenuCreateRadioButtonListControl
-                changed GfuiControlGetBoolean: made public and renamed to fit the api function naming scheme.
+                added   GfuiMenuBoolToStr()
+                changed GfuiMenuControlGetBoolean(): made public and renamed to fit the api function naming scheme.
             guimenu.h
                 added   GFMNU_ATTR_DEFAULT_VALUE
                 added   GFMNU_TYPE_RADIO_BUTTON_LIST
@@ -82,7 +83,8 @@ Changed:
                 added   tfuiRadioButtonCallback
                 added   GfuiMenuCreateRadioButtonListControl()
 
-                added   GfuiControlGetBoolean()
+                added   GfuiMenuBoolToStr()
+                added   GfuiMenuControlGetBoolean()
                 
                 added   GfuiRadioButtonListCreate()
                 added   GfuiRadioButtonListSetSelected()

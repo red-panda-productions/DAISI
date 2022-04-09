@@ -689,8 +689,10 @@ TGFCLIENT_API tdble GfuiMenuGetNumProperty(void* hparm, const char* pszName,
                                            tdble nDefVal, const char* pszUnit = 0);
 TGFCLIENT_API const char* GfuiMenuGetStrProperty(void* hparm, const char* pszName,
                                                  const char* pszDefVal);
+
 // SIMULATED DRIVING ASSISTANCE
-TGFCLIENT_API bool GfuiControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault);
+TGFCLIENT_API const char* GfuiMenuBoolToStr(bool p_bool);
+TGFCLIENT_API bool GfuiMenuControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault);
 
 
 /*****************************
