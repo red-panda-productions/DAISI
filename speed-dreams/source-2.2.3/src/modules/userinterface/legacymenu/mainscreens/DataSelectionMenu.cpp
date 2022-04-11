@@ -16,7 +16,7 @@ static void* s_prevHandle = nullptr;
 static void* s_nextHandle = nullptr;
 
 // Data to store
-tDataToStore m_dataToStore = { true, true, true, true, true };
+tDataToStore m_dataToStore;
 
 int m_dataToStoreControl[5];
 
@@ -56,8 +56,8 @@ static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
     m_dataToStore.MetaData = p_info->bChecked;
 }
 
-/// @brief Sets all the checkboxes in the dataselection menu
-void InitializeDataSelectionButtons()
+/// @brief Synchronizes all the menu controls with the internal settings
+static void SynchronizeControls()
 {
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[0], m_dataToStore.EnvironmentData);
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[1], m_dataToStore.CarData);
@@ -68,23 +68,24 @@ void InitializeDataSelectionButtons()
 
 /// @brief         Initializes the menu setting from the DataSelectionMenu.xml file
 /// @param p_param The configuration menu handle
-void InitializeDataSelectionSettings(void* p_param)
+static void LoadConfigSettings(void* p_param)
 {
     m_dataToStore.EnvironmentData  = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA,   GFMNU_ATTR_CHECKED, NULL);
     m_dataToStore.CarData          = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA,   GFMNU_ATTR_CHECKED, NULL);
     m_dataToStore.HumanData        = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
     m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, NULL);
     m_dataToStore.MetaData         = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA,  GFMNU_ATTR_CHECKED, NULL);
-    InitializeDataSelectionButtons();
+    SynchronizeControls();
 }
 
-void InitializeDefaultDataSettings()
+/// @brief Loads the default settings from the controls into the internal variables.
+static void LoadDefaultSettings()
 {
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
+    m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
     m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
+    m_dataToStore.HumanData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
+    m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
+    m_dataToStore.MetaData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
 }
 
 
@@ -99,10 +100,10 @@ static void OnActivate(void* /* dummy */)
     {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
-        InitializeDataSelectionSettings(param);
+        LoadConfigSettings(param);
         return;
     }
-    InitializeDefaultDataSettings();
+    LoadDefaultSettings();
 }
 
 /// @brief Saves the settings into the local DataSelectionMenu.xml file

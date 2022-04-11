@@ -217,8 +217,8 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Sets all the checkboxes and radiobuttons in the researcher menu
-void InitializeResearcherMenuButtons()
+/// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
+static void SynchronizeControls()
 {
     GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, m_task);
 
@@ -238,9 +238,9 @@ void InitializeResearcherMenuButtons()
     GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 }
 
-/// @brief         Initializes the menu setting from the default ResearcherMenu.xml file
-/// @param p_param The configuration menu handle
-void InitializeDefaultResearcherSettings()
+/// @brief         Loads the default menu settings from the controls into the internal variables
+/// @param p_param The configuration xml file handle
+static void LoadDefaultSettings()
 {
     m_task = GfuiRadioButtonListGetSelected(s_scrHandle, m_taskControl);
 
@@ -258,9 +258,9 @@ void InitializeDefaultResearcherSettings()
     m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
 }
 
-/// @brief         Initializes the menu setting from the ResearcherMenu.xml file
-/// @param p_param The configuration menu handle
-void InitializeResearcherMenuSettings(void* p_param)
+/// @brief        Loads the settings from the config file into the internal variables
+/// @param p_param The configuration xml file handle
+static void LoadConfigSettings(void* p_param)
 {
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
     m_task = std::stoi(GfParmGetStr(p_param, PRM_TASKS, GFMNU_ATTR_SELECTED, NULL));
@@ -280,7 +280,7 @@ void InitializeResearcherMenuSettings(void* p_param)
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, NULL));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
-    InitializeResearcherMenuButtons();
+    SynchronizeControls();
 }
 
 /// @brief Loads the user menu settings from the local config file
@@ -294,10 +294,10 @@ static void OnActivate(void* /* dummy */)
     {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
-        InitializeResearcherMenuSettings(param);
+        LoadConfigSettings(param);
         return;
     }
-    InitializeDefaultResearcherSettings();
+    LoadDefaultSettings();
 }
 
 /// @brief            Initializes the researcher menu
