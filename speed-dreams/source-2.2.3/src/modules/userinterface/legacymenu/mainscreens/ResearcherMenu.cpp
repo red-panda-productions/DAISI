@@ -181,7 +181,7 @@ static void SaveSettingsToDisk()
     // Save max time to xml file
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
-    GfParmSetStr(readParam, PRM_MAX_TIME, GFMNU_ATTR_DEFAULT_VALUE, buf);
+    GfParmSetStr(readParam, PRM_MAX_TIME, GFMNU_ATTR_TEXT, buf);
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
@@ -277,7 +277,7 @@ void InitializeResearcherMenuSettings(void* p_param)
     m_pControl.ForceFeedback             = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK,   GFMNU_ATTR_CHECKED, NULL);
 
     // Set the max time setting from the xml file
-    m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_DEFAULT_VALUE, NULL));
+    m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, NULL));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     InitializeResearcherMenuButtons();
