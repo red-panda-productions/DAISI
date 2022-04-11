@@ -226,8 +226,8 @@ const char* GfuiMenuBoolToStr(bool p_bool)
     return p_bool ? GFMNU_VAL_YES : GFMNU_VAL_NO;
 }
 
-bool
-GfuiMenuControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault)
+// SIMULATED DRIVING ASSISTANCE CHANGED: renamed this function and removed the static keyword
+bool GfuiMenuControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault)
 {
     return gfuiMenuGetBoolean(GfParmGetStr(hparm, pszPath, pszFieldName, 0), bDefault);
 }
