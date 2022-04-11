@@ -70,7 +70,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, int p_t
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
 #if !defined(TEST)
-    if (m_recordBB) {
+    if (m_recorder) {
         const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
         m_recorder->WriteRecording(decisionValues, p_tickCount, false);
     }

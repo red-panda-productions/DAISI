@@ -34,7 +34,6 @@ public:
 private:
     Recorder* m_recorder = nullptr;
     SQLDatabaseStorage m_SQLDatabaseStorage;
-    bool m_recordBB;
 };
 
 
