@@ -23,6 +23,7 @@ public:
 
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void SetPControlSettings(tParticipantControl p_pControl);
     void RaceStop();
 
     InterventionExecutor* InterventionExecutor;
@@ -31,10 +32,9 @@ public:
     ~DecisionMaker();
 
 private:
-#ifdef BB_RECORD_SESSION
     Recorder* m_recorder;
-#endif
     SQLDatabaseStorage m_SQLDatabaseStorage;
+    bool m_recordBB;
 };
 
 

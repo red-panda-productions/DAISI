@@ -19,20 +19,18 @@ public:
 	void RaceStop();
 
 	void SetTask(Task p_task);
-
     void SetIndicatorSettings(tIndicator p_indicators);
-
     void SetInterventionType(InterventionType p_type);
+    void SetPControlSettings(tParticipantControl p_pControl);
 
     void SetMaxTime(int p_maxTime);
-
     void SetUserId(char* p_userId);
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
-    tIndicator GetIndicatorSettings();
-
-    InterventionType GetInterventionType();
+    tIndicator          GetIndicatorSettings();
+    InterventionType    GetInterventionType();
+    tParticipantControl GetPControlSettings();
 
     static Mediator* GetInstance();
 

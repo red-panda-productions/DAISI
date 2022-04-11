@@ -65,14 +65,13 @@
 #include "forcefeedback.h"
 
 // ASSISTED DRIVING ASSISTANCE: added recorder
-// To record uncomment the #define RECORD_SESSION in backend/ConfigEnums.h
 #include <ConfigEnums.h>
+#include "Mediator.h"
 #define PARAMAMOUNT 3
+tParticipantControl m_pControl;
 
-#ifdef RECORD_SESSION
 #include <Recorder.h>
 Recorder* recorder;
-#endif
 
 
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
@@ -280,11 +279,8 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
  */
 void HumanDriver::shutdown(const int index)
 {
-    // SIMULATED DRIVING ASSISTANCE: DELETE RECORDER 
-#ifdef RECORD_SESSION
+    // SIMULATED DRIVING ASSISTANCE: Delete recorder
     delete recorder;
-#endif
-
 
 	int idx = index - 1;
 
@@ -617,10 +613,10 @@ void HumanDriver::init_track(int index,
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
-    // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
-#ifdef RECORD_SESSION
-    recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
-#endif
+    m_pControl = SMediator::GetInstance()->GetPControlSettings();
+    if (m_pControl.RecordSession) {
+        recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
+    }
     const int idx = index - 1;
 
     // Have to read engine curve
@@ -1721,11 +1717,10 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
 #endif
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
-    // To record uncomment the #define RECORD_SESSION 1 in backend/ConfigEnums.h
-#ifdef RECORD_SESSION
-        float inputs[PARAMAMOUNT] = { car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
-        recorder->WriteRecording(inputs, s -> currentTime, false);
-#endif
+    if (m_pControl.RecordSession) {
+        float inputs[PARAMAMOUNT] = {car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
+        recorder->WriteRecording(inputs, s->currentTime, false);
+    }
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 

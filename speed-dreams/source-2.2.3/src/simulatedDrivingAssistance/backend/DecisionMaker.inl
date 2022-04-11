@@ -11,6 +11,7 @@
     template bool DecisionMaker<type1,type2>::Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);\
     template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
     template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
+    template void DecisionMaker<type1,type2>::SetPControlSettings(tParticipantControl p_pControl);\
     template void DecisionMaker<type1,type2>::RaceStop();\
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
@@ -25,9 +26,7 @@ template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar, 
     tSituation* p_initialSituation, BlackBoxData* p_testSituations, int p_testAmount)
 {
-#ifdef BB_RECORD_SESSION
     m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
-#endif
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
@@ -50,9 +49,11 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, int p_t
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
-#if defined(BB_RECORD_SESSION) && !defined(TEST)
-    const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
-    m_recorder->WriteRecording(decisionValues, p_tickCount, false);
+#if !defined(TEST)
+    if (m_recordBB) {
+        const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
+        m_recorder->WriteRecording(decisionValues, p_tickCount, false);
+    }
 #endif
 
     return true;
@@ -66,20 +67,28 @@ void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
     InterventionExecutor = Config.SetInterventionType(p_dataSetting);
 }
 
-/// @brief         Changes the settings of how decisions should be made
-/// @param  p_type The new type of interventions
+/// @brief         Changes the settings of what data should be collected
+/// @param  p_type The new data collection settings
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     Config.SetDataCollectionSettings(p_dataSetting);
 }
 
+/// @brief             Changes the settings of what participants can control
+///                    and enables/disables the black box recorder
+/// @param  p_pControl The new participant control settings
+template<typename SocketBlackBox, typename SDAConfig>
+void TEMP_DECISIONMAKER::SetPControlSettings(tParticipantControl p_pControl)
+{
+    Config.SetPControlSettings(p_pControl);
+    m_recordBB = p_pControl.BBRecordSession;
+}
+
 template<typename SocketBlackBox, typename SDAConfig>
 DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 {
-#ifdef BB_RECORD_SESSION
     delete m_recorder;
-#endif
 }
 
 /// @brief When the race stops, the simulation data collected will be stored in the database
