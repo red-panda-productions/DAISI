@@ -7,7 +7,7 @@ To run with a different black box, this means that you need to compile your blac
 
 The current Blackbox.exe is a compiled version of SDASteerSample, as included in the 
   [SDALib repository](https://github.com/red-panda-productions/SDALib).
-  This black box requires the [IPCLib](https://github.com/red-panda-productions/SDALib) dll to run, which is why this 
+  This black box requires the [IPCLib](https://github.com/red-panda-productions/ipc-lib) dll to run, which is why this 
   file is included in this folder as well.
 
 Eventually, a selection menu will be added for a black box. 
