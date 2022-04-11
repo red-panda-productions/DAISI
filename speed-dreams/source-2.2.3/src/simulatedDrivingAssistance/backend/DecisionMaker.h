@@ -17,8 +17,8 @@ class DecisionMaker
 public:
     SDAConfig Config;
 
-    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, bool p_recordBB = false, const std::string& p_blackBoxExecutablePath,
-                    BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
+    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, const std::string& p_blackBoxExecutablePath,
+                    bool p_recordBB = false, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
 
     bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);
 
