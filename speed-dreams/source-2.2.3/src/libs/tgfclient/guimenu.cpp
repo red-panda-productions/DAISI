@@ -227,9 +227,15 @@ const char* GfuiMenuBoolToStr(bool p_bool)
 }
 
 // SIMULATED DRIVING ASSISTANCE CHANGED: renamed this function and removed the static keyword
-bool GfuiMenuControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault)
+/// @brief              Retrieves the boolean value of a given control
+/// @param hparm        The file handle to search
+/// @param pszPath      The xml path in the file to look for the field
+/// @param pszFieldName The field name to check the value of
+/// @param bDefault     The default value to return if the field was not found
+/// @return             The boolean value of the field or the default value if it was not found
+bool GfuiMenuControlGetBoolean(void* p_hparm, const char* p_pszPath, const char* p_pszFieldName, bool p_bDefault)
 {
-    return gfuiMenuGetBoolean(GfParmGetStr(hparm, pszPath, pszFieldName, 0), bDefault);
+    return gfuiMenuGetBoolean(GfParmGetStr(p_hparm, p_pszPath, p_pszFieldName, 0), p_bDefault);
 }
 
 static GfuiColor
