@@ -17,13 +17,13 @@ class DecisionMaker
 public:
     SDAConfig Config;
 
-    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
+    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, bool p_recordBB = false,
+                    BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
 
     bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);
 
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
-    void SetPControlSettings(tParticipantControl p_pControl);
     void RaceStop();
 
     InterventionExecutor* InterventionExecutor;
@@ -32,7 +32,7 @@ public:
     ~DecisionMaker();
 
 private:
-    Recorder* m_recorder;
+    Recorder* m_recorder = nullptr;
     SQLDatabaseStorage m_SQLDatabaseStorage;
     bool m_recordBB;
 };

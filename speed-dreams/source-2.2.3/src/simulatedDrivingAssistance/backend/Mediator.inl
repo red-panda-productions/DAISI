@@ -17,7 +17,7 @@
 	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
-    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
+    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, bool p_recordBB);\
 	template void Mediator<type>::RaceStop();\
     template Mediator<type>* Mediator<type>::GetInstance(); \
 	template Mediator<type>::Mediator();
@@ -60,7 +60,7 @@ void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetPControlSettings(tParticipantControl p_pControl)
 {
-    return m_decisionMaker.SetPControlSettings(p_pControl);
+    return m_decisionMaker.Config.SetPControlSettings(p_pControl);
 }
 
 /// @brief           Sets the maximum simulation time to p_maxTime
@@ -121,11 +121,12 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 /// @param  p_carParmHandle A car parameter handle (from speed dreams)
 /// @param  p_situation     The current situation
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle,
+                                        tSituation* p_situation, bool p_recordBB)
 {
     m_track = p_track;
     tCarElt car;
-    m_decisionMaker.Initialize(&car, p_situation);
+    m_decisionMaker.Initialize(&car, p_situation, p_recordBB);
 }
 
 /// @brief Tells the decisionmaker that the race has ended

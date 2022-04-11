@@ -280,7 +280,9 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
 void HumanDriver::shutdown(const int index)
 {
     // SIMULATED DRIVING ASSISTANCE: Delete recorder
-    delete recorder;
+    if (m_pControl.RecordSession) {
+        delete recorder;
+    }
 
 	int idx = index - 1;
 

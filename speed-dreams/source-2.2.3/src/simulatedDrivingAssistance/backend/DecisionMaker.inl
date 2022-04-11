@@ -7,11 +7,10 @@
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
-    template void DecisionMaker<type1,type2>::Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, BlackBoxData* p_testSituations, int p_testAmount);\
+    template void DecisionMaker<type1,type2>::Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, bool p_recordBB, BlackBoxData* p_testSituations, int p_testAmount);\
     template bool DecisionMaker<type1,type2>::Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);\
     template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
     template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
-    template void DecisionMaker<type1,type2>::SetPControlSettings(tParticipantControl p_pControl);\
     template void DecisionMaker<type1,type2>::RaceStop();\
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
@@ -23,11 +22,14 @@
 /// @param  p_testSituations   The test situations
 /// @param  p_testAmount       The amount of tests
 template <typename SocketBlackBox, typename SDAConfig>
-void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar, 
-    tSituation* p_initialSituation, BlackBoxData* p_testSituations, int p_testAmount)
+void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation,
+    bool p_recordBB, BlackBoxData* p_testSituations, int p_testAmount)
 {
-    m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
-
+#if !defined(TEST)
+    if (p_recordBB) {
+        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
+    }
+#endif
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 }
@@ -73,16 +75,6 @@ template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     Config.SetDataCollectionSettings(p_dataSetting);
-}
-
-/// @brief             Changes the settings of what participants can control
-///                    and enables/disables the black box recorder
-/// @param  p_pControl The new participant control settings
-template<typename SocketBlackBox, typename SDAConfig>
-void TEMP_DECISIONMAKER::SetPControlSettings(tParticipantControl p_pControl)
-{
-    Config.SetPControlSettings(p_pControl);
-    m_recordBB = p_pControl.BBRecordSession;
 }
 
 template<typename SocketBlackBox, typename SDAConfig>

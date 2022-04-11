@@ -24,7 +24,8 @@ Driver::Driver(int p_index, const char* p_name) : m_index(p_index), m_humanDrive
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
     m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
 
-    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
+    bool recordBB = SMediator::GetInstance()->GetPControlSettings().BBRecordSession;
+    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation, recordBB);
 }
 
 /// @brief Start a new race.
