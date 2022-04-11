@@ -31,10 +31,10 @@ int m_taskControl;
 int m_interventionTypeControl;
 
 // Task
-Task m_task = TASK_NO_TASK;
+Task m_task;
 
 // Indicators
-tIndicator m_indicators = { true, true, true };
+tIndicator m_indicators;
 
 // InterventionType
 InterventionType m_interventionType;
@@ -43,13 +43,13 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-tParticipantControl m_pControl = { false, true, true, true };
+tParticipantControl m_pControl;
 
 // Force feedback manager
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 // Max time
-int m_maxTime = 10.0f;
+int m_maxTime;
 int m_maxTimeControl;
 
 // User ID
@@ -238,6 +238,26 @@ void InitializeResearcherMenuButtons()
     GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 }
 
+/// @brief         Initializes the menu setting from the default ResearcherMenu.xml file
+/// @param p_param The configuration menu handle
+void InitializeDefaultResearcherSettings()
+{
+    m_task = GfuiRadioButtonListGetSelected(s_scrHandle, m_taskControl);
+
+    m_indicators.Audio = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[0]);
+    m_indicators.Icon = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[1]);
+    m_indicators.Text = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[2]);
+
+    m_interventionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_interventionTypeControl);
+
+    m_pControl.ControlGas = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
+    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
+    m_pControl.ControlSteering = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
+    m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
+
+    m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
+}
+
 /// @brief         Initializes the menu setting from the ResearcherMenu.xml file
 /// @param p_param The configuration menu handle
 void InitializeResearcherMenuSettings(void* p_param)
@@ -275,7 +295,9 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         InitializeResearcherMenuSettings(param);
+        return;
     }
+    InitializeDefaultResearcherSettings();
 }
 
 /// @brief            Initializes the researcher menu
@@ -328,11 +350,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
     GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
-
-    // Set standard max time
-    char buf[32];
-    sprintf(buf, "%d", m_maxTime);
-    GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 
     // Create random userId
     std::random_device rd;

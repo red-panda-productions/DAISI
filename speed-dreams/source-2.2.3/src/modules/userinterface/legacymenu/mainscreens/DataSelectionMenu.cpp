@@ -78,6 +78,15 @@ void InitializeDataSelectionSettings(void* p_param)
     InitializeDataSelectionButtons();
 }
 
+void InitializeDefaultDataSettings()
+{
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
+}
+
 
 /// @brief Loads the user menu settings from the local config file
 static void OnActivate(void* /* dummy */) 
@@ -91,7 +100,9 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         InitializeDataSelectionSettings(param);
+        return;
     }
+    InitializeDefaultDataSettings();
 }
 
 /// @brief Saves the settings into the local DataSelectionMenu.xml file

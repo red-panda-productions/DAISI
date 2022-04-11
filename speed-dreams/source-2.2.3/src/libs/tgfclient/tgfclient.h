@@ -558,6 +558,7 @@ TGFCLIENT_API int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, in
                                             void* p_userData, tfuiRadioButtonCallback p_onChange,
                                             void** p_userDataOnFocus, tfuiCallback* p_onFocus, tfuiCallback* p_onFocusLost);
 TGFCLIENT_API void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected);
+TGFCLIENT_API int GfuiRadioButtonListGetSelected(void* p_scr, int p_id);
 TGFCLIENT_API void GfuiRadioButtonListSetText(void* p_scr, int p_id, const char** p_texts);
 TGFCLIENT_API void GfuiRadioButtonListSetTextColor(void* p_scr, int p_id, const GfuiColor& p_color);
 

@@ -112,9 +112,6 @@ extern bool gfuiMenuGetBoolean(const char* pszValue, bool bDefault = false);
 
 #define GFMNU_ATTR_CHECKED "checked"
 
-// SIMULATED DRIVING ASSISTANCE
-#define GFMNU_ATTR_DEFAULT_VALUE "default value"
-
 #define GFMNU_ATTR_MASKED_TEXT "mask text"
 
 #define GFMNU_ATTR_MIN "min"

@@ -207,6 +207,20 @@ bool GfuiRadioButtonIsSelected(void* p_scr, int p_id)
     return radioButton->Info->Checked;
 }
 
+/// @brief       Return the radiobutton selected value
+/// @param p_scr The current screen
+/// @param p_id  The RadioButton object id
+/// @return      The radiobutton selected value
+int GfuiRadioButtonListGetSelected(void* p_scr, int p_id)
+{
+    tGfuiObject* object = gfuiGetObject(p_scr, p_id);
+    if (!object || object->widget != GFUI_RADIOBUTTONLIST)
+        return -1;
+
+    tGfuiRadioButtonList* radioButtonList = &(object->u.radiobuttonlist);
+    return radioButtonList->Info->Selected;
+}
+
 /// @brief       Frees the pointer to the RadioButton object
 /// @param p_obj The RadioButton object
 void GfuiReleaseRadioButton(tGfuiObject* obj)
