@@ -3,6 +3,7 @@
 #include <fstream>
 #include <portability.h>
 #include <SDL2/SDL_main.h>
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
@@ -120,13 +121,22 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 /// @param  p_carHandle     A car handle (from speed dreams)
 /// @param  p_carParmHandle A car parameter handle (from speed dreams)
 /// @param  p_situation     The current situation
+/// #param  p_recordBB      If the blackbox decisions will be recorded
 template<typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle,
                                         tSituation* p_situation, bool p_recordBB)
 {
     m_track = p_track;
     tCarElt car;
-    m_decisionMaker.Initialize(&car, p_situation, p_recordBB);
+
+    // Find a black box run file in the data folder
+    // TODO: Replace this by letting the user select a path to a black box executable, and use that instead of blackBoxPath
+    std::string blackBoxPath(R"(source-2.2.3\data\blackbox\)");
+    std::string blackBoxExecutable("Blackbox.exe");
+    if (!FindFileDirectory(blackBoxPath, blackBoxExecutable)) throw std::exception("Can't find black box executable");
+
+    // Initialize the decision maker with the full path to the current black box executable
+    m_decisionMaker.Initialize(&car, p_situation, p_recordBB, blackBoxPath + blackBoxExecutable);
 }
 
 /// @brief Tells the decisionmaker that the race has ended
