@@ -185,6 +185,7 @@
             <attnum name="width" val="50"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
+			<attstr name="text" val="10"/>
         </section>
 
         <!-- Input field for userId -->

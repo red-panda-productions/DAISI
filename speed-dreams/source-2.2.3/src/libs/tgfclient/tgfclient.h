@@ -558,6 +558,7 @@ TGFCLIENT_API int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, in
                                             void* p_userData, tfuiRadioButtonCallback p_onChange,
                                             void** p_userDataOnFocus, tfuiCallback* p_onFocus, tfuiCallback* p_onFocusLost);
 TGFCLIENT_API void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected);
+TGFCLIENT_API int GfuiRadioButtonListGetSelected(void* p_scr, int p_id);
 TGFCLIENT_API void GfuiRadioButtonListSetText(void* p_scr, int p_id, const char** p_texts);
 TGFCLIENT_API void GfuiRadioButtonListSetTextColor(void* p_scr, int p_id, const GfuiColor& p_color);
 
@@ -689,6 +690,11 @@ TGFCLIENT_API tdble GfuiMenuGetNumProperty(void* hparm, const char* pszName,
                                            tdble nDefVal, const char* pszUnit = 0);
 TGFCLIENT_API const char* GfuiMenuGetStrProperty(void* hparm, const char* pszName,
                                                  const char* pszDefVal);
+
+// SIMULATED DRIVING ASSISTANCE
+TGFCLIENT_API const char* GfuiMenuBoolToStr(bool p_bool);
+TGFCLIENT_API bool GfuiMenuControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault);
+
 
 /*****************************
  * Texture / image interface *
