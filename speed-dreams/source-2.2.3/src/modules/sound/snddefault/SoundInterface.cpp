@@ -20,6 +20,7 @@
 #include <algorithm>
 #include "SoundInterface.h"
 #include "CarSoundData.h"
+#include "IndicatorConfig.h"
 
 
 SoundInterface::SoundInterface(float sampling_rate, int n_channels)
@@ -213,11 +214,21 @@ void SoundInterface::setGearChangeSound (const char* sound_name)
 	gear_change_sound = sound;
 }
 
-// SIMULATED DRIVING ASSISTANCE: Added setInterventionSound()
-void SoundInterface::setInterventionSound(InterventionAction p_soundEvent, const char* p_soundSource, int p_flags,
-                                          bool p_loop, bool p_staticPool) {
-    Sound* sound = addSample (p_soundSource, p_flags, p_loop, p_staticPool);
-    intervention_sounds[p_soundEvent] = sound;
+// SIMULATED DRIVING ASSISTANCE
+/// @brief Loads the indicator sounds from their respective filepaths and stores them into an array.
+void SoundInterface::LoadIndicatorSounds() {
+    std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
+    m_indicatorSounds = std::vector<Sound*>(indicators.size());
+    for (const tIndicatorData& indicator : indicators)
+    {
+        Sound* sound = nullptr;
+        if (indicator.Sound)
+        {
+            // Guard if there is no sound data for this action.
+            sound = addSample(indicator.Sound->Path, (ACTIVE_VOLUME | ACTIVE_PITCH), false, true);
+        }
+        m_indicatorSounds[indicator.Action] = sound;
+    }
 }
 
 // SIMULATED DRIVING ASSISTANCE

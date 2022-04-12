@@ -41,7 +41,7 @@ static void GfuiNotSelected(void* p_idv)
         radioButton->OnChange(radioButton->Info);
 }
 
-/// @brief            Selects or deselects the radio button
+/// @brief            Selects or deselects the radio button, if the button was deselected it sets the selected to -1.
 /// @param p_scr      The current screen
 /// @param p_id       The RadioButton object id
 /// @param p_selected If the radiobutton is selected
@@ -54,7 +54,7 @@ void GfuiRadioButtonSelect(void* p_scr, int p_id, bool p_selected)
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
     radioButton->Info->Checked  = p_selected;
-    radioButton->Info->Selected = p_selected ? radioButton->NrInList : radioButton->Info->Selected;
+    radioButton->Info->Selected = p_selected ? radioButton->NrInList : -1;
     GfuiVisibilitySet(p_scr, radioButton->SelectedControl, p_selected);
     GfuiVisibilitySet(p_scr, radioButton->NotSelectedControl, !p_selected);
 }
