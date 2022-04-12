@@ -67,7 +67,8 @@
 // ASSISTED DRIVING ASSISTANCE: added recorder
 #include <ConfigEnums.h>
 #include "Mediator.h"
-#define PARAMAMOUNT 3
+
+#define PARAM_AMOUNT 3
 tParticipantControl m_pControl;
 
 #include <Recorder.h>
@@ -617,7 +618,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     m_pControl = SMediator::GetInstance()->GetPControlSettings();
     if (m_pControl.RecordSession) {
-        recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
+        recorder = new Recorder("user_recordings", "userRecording", PARAM_AMOUNT);
     }
     const int idx = index - 1;
 
@@ -1720,7 +1721,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 #endif
     // SIMULATED DRIVING ASSISTANCE: added recording of parameters
     if (m_pControl.RecordSession) {
-        float inputs[PARAMAMOUNT] = {car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
+        float inputs[PARAM_AMOUNT] = {car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
         recorder->WriteRecording(inputs, s->currentTime, false);
     }
     HCtx[idx]->lap = car->_laps;

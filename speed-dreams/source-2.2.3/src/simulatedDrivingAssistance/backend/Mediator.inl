@@ -18,7 +18,7 @@
 	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
-    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, bool p_recordBB);\
+    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
 	template void Mediator<type>::RaceStop();\
     template Mediator<type>* Mediator<type>::GetInstance(); \
 	template Mediator<type>::Mediator();
@@ -121,13 +121,12 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 /// @param  p_carHandle     A car handle (from speed dreams)
 /// @param  p_carParmHandle A car parameter handle (from speed dreams)
 /// @param  p_situation     The current situation
-/// #param  p_recordBB      If the blackbox decisions will be recorded
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle,
-                                        tSituation* p_situation, bool p_recordBB)
+void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     m_track = p_track;
     tCarElt car;
+    bool recordBB = m_decisionMaker.Config.GetPControlSettings().BBRecordSession;
 
     // Find a black box run file in the data folder
     // TODO: Replace this by letting the user select a path to a black box executable, and use that instead of blackBoxPath
@@ -136,7 +135,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     if (!FindFileDirectory(blackBoxPath, blackBoxExecutable)) throw std::exception("Can't find black box executable");
 
     // Initialize the decision maker with the full path to the current black box executable
-    m_decisionMaker.Initialize(&car, p_situation, blackBoxPath + blackBoxExecutable, p_recordBB);
+    m_decisionMaker.Initialize(&car, p_situation, blackBoxPath + blackBoxExecutable, recordBB);
 }
 
 /// @brief Tells the decisionmaker that the race has ended
