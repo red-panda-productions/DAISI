@@ -15,6 +15,7 @@
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
 	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
+    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
 	template void Mediator<type>::RaceStop();\
@@ -77,6 +78,15 @@ void Mediator<DecisionMaker>::SetDataCollectionSettings(tDataToStore p_dataSetti
 {
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
+
+/// @brief            Sets the filepath for the black box executable
+/// @param p_filePath A const char* representing the filepath of the black box executable
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
+{
+    m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
+}
+
 
 /// @brief             Gets the setting for the given indicator
 /// @param p_indicator Indicator whose setting to get

@@ -30,6 +30,33 @@
             <attnum name="minimum of one" val="0"/>
         </section>
 
+
+        <!-- Choose black box button-->
+        <section name="ChooseBlackBoxButton">
+	        <attstr name="type" val="text button"/>
+	        <attstr name="show box" val="yes"/>
+            <!-- Below value is "Choose Black Box: " followed by 256 (max filepath size) spaces, 
+			as giving a new value to a button's text is only as long as the original length,
+			although even with the small font, a name that long would go off-screen -->
+	        <attstr name="text" val="Choose Black Box:                                                                                                                                                                                                                                                                 "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+	        <attstr name="h align" val="left"/>
+	        <attnum name="x" val="20"/>
+	        <attnum name="y" val="40"/>
+            <attnum name="width" val="110"/>
+	        <attstr name="font" val="small"/>
+	        <attstr name="color" val="0xFFFFFF"/>
+	        <attstr name="focused color" val="0xFFFFFF"/>
+	        <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
         <!-- Checkboxes for selecting how to indicate an intervention -->
         <section name="CheckboxIndicatorAuditory">
             <attstr name="type" val="check box"/>

@@ -2,6 +2,7 @@
 #include "ConfigEnums.h"
 #include "InterventionExecutor.h"
 #include "InterventionFactory.h"
+#include <string>
 
 class SDAConfig
 {
@@ -15,6 +16,7 @@ private:
     int   m_maxSimulationTime = 0;
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
+    const char* m_blackBoxFilePath;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -32,6 +34,8 @@ public:
     int   GetMaxTime() const;
     void  SetUserId(char* p_userId);
     char* GetUserId() const;
+    void  SetBlackBoxFilePath(const char* p_filePath);
+    const char* GetBlackBoxFilePath() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
 };

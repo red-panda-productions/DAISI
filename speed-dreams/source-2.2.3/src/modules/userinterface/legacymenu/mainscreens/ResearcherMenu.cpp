@@ -6,6 +6,10 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 
+#include <shobjidl.h> // For Windows COM interface
+#include <locale>
+#include <codecvt>
+
 
 // GUI screen handles
 static void* s_scrHandle  = nullptr;
@@ -36,6 +40,8 @@ int m_maxTimeControl;
 // User ID
 char m_userId[32];
 int  m_userIdControl;
+
+int m_blackBox;
 
 
 static void OnActivate(void* /* dummy */) { }
@@ -188,6 +194,41 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
+/// brief Opens a file dialog and changes the button to reflect this choice.
+static void SelectFile(void* /* dummy */)
+{
+    // Opens a file dialog on Windows
+    // Create file dialog
+    HRESULT hresult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (!SUCCEEDED(hresult)) { return; }
+    IFileDialog* fileDialog;
+    hresult = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileDialog, reinterpret_cast<void**>(&fileDialog));
+    if (!SUCCEEDED(hresult)) { CoUninitialize(); return; }
+    // Open file dialog
+    hresult = fileDialog->Show(NULL);
+    if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
+    // Get filename
+    IShellItem* shellItem;
+    hresult = fileDialog->GetResult(&shellItem);
+    if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; } // I feel like I should release shellItem here as well, but the Microsoft Docs does not do so at this stage
+    PWSTR filePath;
+    hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
+    if (!SUCCEEDED(hresult)) { shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
+    // Convert PWSTR to std::string
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    std::string fileName = converter.to_bytes(filePath);
+    std::string buttonText = "Choose Black Box: " + fileName;
+    GfuiButtonSetText(s_scrHandle, m_blackBox, buttonText.c_str());
+    SMediator* mediator = SMediator::GetInstance();
+    const char* p_filePath = fileName.c_str();
+    mediator->SetBlackBoxFilePath(p_filePath);
+    // Release variables: relevant ones are also released early if an action didn't succeed
+    CoTaskMemFree(filePath);
+    shellItem->Release();
+    fileDialog->Release();
+    CoUninitialize();
+}
+
 /// @brief            Initializes the researcher menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The researcherMenu scrHandle
@@ -207,6 +248,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Task radio button controls
     GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "TaskRadioButtonList", NULL, SelectTask);
+    // Choose black box control
+    m_blackBox = GfuiMenuCreateButtonControl(s_scrHandle, param, "ChooseBlackBoxButton", s_scrHandle, SelectFile);
 
     // Indicator checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAudio);
