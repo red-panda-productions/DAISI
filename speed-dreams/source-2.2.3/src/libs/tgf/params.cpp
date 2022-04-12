@@ -4313,7 +4313,6 @@ int GfParmSetCurFormulaf(void* handle, char const *formula, char const* format, 
     return ret;
 }
 
-
 /** Check a parameter set against another.
     @ingroup	paramsfile
     @param	ref	Contains the min and max values (reference)

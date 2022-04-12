@@ -152,34 +152,35 @@ void Mediator<DecisionMaker>::RaceStop()
 template<typename DecisionMaker>
 Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 {
-    if (m_instance == nullptr)
-    {
-        // check if Mediator file exists
-        struct stat info;
-        char workingDir[256];
-        getcwd(workingDir, 256);
-        std::string workingDirectory(workingDir);
-        workingDirectory += "\\Singletons\\Mediator";
-        const char* filepath = workingDirectory.c_str();
-        int err = stat(filepath, &info);
-        if (err == -1)
-        {
-            // file does not exist create pointer
-            m_instance = new Mediator();
-            std::ofstream file("Singletons/Mediator");
-            file << m_instance;
-            file.close();
-            return m_instance;
-        }
+    // If the instance exists, return it.
+    // Otherwise create the instance and store it for future calls.
+    if (m_instance) return m_instance;
 
-        // file exists read pointer
-        std::string pointerName("00000000");
-        std::ifstream file("Singletons/Mediator");
-        getline(file, pointerName);
+    // Check if Mediator file exists
+    struct stat info;
+    char workingDir[256];
+    getcwd(workingDir, 256);
+    std::string workingDirectory(workingDir);
+    workingDirectory += "\\Singletons\\Mediator";
+    const char* filepath = workingDirectory.c_str();
+    int err = stat(filepath, &info);
+    if (err == -1)
+    {
+        // File does not exist -> create pointer
+        m_instance = new Mediator();
+        std::ofstream file("Singletons/Mediator");
+        file << m_instance;
         file.close();
-        int pointerValue = stoi(pointerName, 0, 16);
-        m_instance = (Mediator<DecisionMaker>*)pointerValue;
+        return m_instance;
     }
+
+    // File exists -> read pointer
+    std::string pointerName("00000000");
+    std::ifstream file("Singletons/Mediator");
+    getline(file, pointerName);
+    file.close();
+    int pointerValue = stoi(pointerName, 0, 16);
+    m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
 }
 

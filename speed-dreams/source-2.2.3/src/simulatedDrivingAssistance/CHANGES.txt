@@ -31,10 +31,8 @@ Added:
         img/
             radio-checked.png
             radio-unchecked.png
-        intervention/
-            CMakeLists.txt
-            intervention.xml
-            Multiple intervention texture PNGs
+        indicators/
+            *
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
@@ -67,6 +65,8 @@ Changed:
                 changed GfuiObject
             guimenu.cpp
                 added   GfuiMenuCreateRadioButtonListControl
+                added   GfuiMenuBoolToStr()
+                changed GfuiMenuControlGetBoolean(): made public and renamed to fit the api function naming scheme.
             guimenu.h
                 added   GFMNU_TYPE_RADIO_BUTTON_LIST
                 added   GFMNU_ATTR_SELECTED, GFMNU_ATTR_DISTANCE, GFMNU_ATTR_MINIMUM_OF_ONE, GFMNU_ATTR_OPTIONS
@@ -80,8 +80,12 @@ Changed:
                 added   tfuiRadioButtonCallback
                 added   GfuiMenuCreateRadioButtonListControl()
 
+                added   GfuiMenuBoolToStr()
+                added   GfuiMenuControlGetBoolean()
+                
                 added   GfuiRadioButtonListCreate()
                 added   GfuiRadioButtonListSetSelected()
+                added   GfuiRadioButtonListGetSelected()
                 added   GfuiRadioButtonListSetText()
                 added   GfuiRadioButtonListSetTextColor()
 
@@ -113,18 +117,21 @@ Changed:
                 added intervention sound volume setting
             OpenalSound.cpp
                 added check for playing state
+            OpenalSoundInterface.h
+                added UpdateInterventionSounds()
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
-                added update and starting of intervention sounds
+                changed update(): added update and starting of intervention sounds
             SoundInterface.cpp
-                added setInterventionSound()
+                included "IndicatorConfig.h"
+                added LoadIndicatorSounds()
                 added SetInterventionVolume()
                 added GetInterventionVolume()
-                changed SoundInterface(): added InterventionVolume member init
                 added Clamp() helper function
+                changed SoundInterface(): added InterventionVolume member init
             SoundInterface.h
-                added setInterventionSound()
-                added intervention_sounds map
+                added LoadIndicatorSounds()
+                added m_indicatorSounds vector
                 added SetInterventionVolume()
                 added GetInterventionVolume()
                 added InterventionVolume member
@@ -164,12 +171,14 @@ Changed:
                 CMakeLists.txt added connection to frontend module
                 grboard.cpp
                     included "Mediator.h"
-                    included "InterventionConfig.h"
+                    included "IndicatorConfig.h"
 
-                    added   DispIntervention()
-                    added   DispInterventionIcon();
-                    added   DispInterventionText();
-                    added   LoadInterventionTextures()
+                    added   m_textures array
+
+                    added   DispIndicators()
+                    added   DispIndicatorIcon();
+                    added   DispIndicatorText();
+                    added   LoadIndicatorTextures()
 
                     changed cGrBoard(): removed assignments of removed members
                     changed ~cGrBoard(): removed deletes of removed members
@@ -201,9 +210,13 @@ Changed:
                     removed constants tracking the number of states of removed elements
 
                 grboard.h
-                    added   DispIntervention() 
-                    added   DispInterventionIcon();
-                    added   DispInterventionText();
+                    included <plib/ssg.h>
+                    included "IndicatorData.h"
+
+                    added   DispIndicators()
+                    added   DispIndicatorIcon();
+                    added   DispIndicatorText();
+                    added   LoadIndicatorTextures()
 
                     removed grDispGGraph()
                     removed grDispEngineLeds()
@@ -255,15 +268,11 @@ Changed:
                     removed selectTrackMap()
 
 
-  data/
-    data/
-        CMakeLists.txt
-            added intervention folder
-        menu/
-            mainmenu.xml
-                added a back button
-            soundconfigmenu.xml
-                added controls for intervention sound volume
+  data/data/menu/
+    mainmenu.xml
+        added a back button
+    soundconfigmenu.xml
+        added controls for intervention sound volume
         
   cmake/
     checks.cmake
