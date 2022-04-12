@@ -22,13 +22,16 @@
 #define PRM_MAX_TIME         "MaxTimeEdit"
 #define PRM_USER_ID          "UserIdEdit"
 
+#define INDICATOR_AMOUNT 3
+#define PCONTROL_AMOUNT  6
+
 // GUI screen handles
 static void* s_scrHandle  = nullptr;
 static void* s_nextHandle = nullptr;
 
 // GUI settings Id's 
-int m_indicatorsControl[3];
-int m_pControlControl[6];
+int m_indicatorsControl[INDICATOR_AMOUNT];
+int m_pControlControl[PCONTROL_AMOUNT];
 int m_taskControl;
 int m_interventionTypeControl;
 
