@@ -119,6 +119,21 @@ void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected)
     }
 }
 
+
+/// @brief       Return the radiobutton selected value
+/// @param p_scr The current screen
+/// @param p_id  The RadioButton object id
+/// @return      The radiobutton selected value
+int GfuiRadioButtonListGetSelected(void* p_scr, int p_id)
+{
+    tGfuiObject* object = gfuiGetObject(p_scr, p_id);
+    if (!object || object->widget != GFUI_RADIOBUTTONLIST)
+        return -1;
+
+    tGfuiRadioButtonList* radioButtonList = &(object->u.radiobuttonlist);
+    return radioButtonList->Info->Selected;
+}
+
 /// @brief         Sets the text color of all radiobutton children to p_color
 /// @param p_scr   The current screen
 /// @param p_id    The RadioButtonList object id
