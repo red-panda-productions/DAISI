@@ -229,8 +229,6 @@ static void SaveSettings(void* /* dummy */)
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
 
-    // Save settings to frontend settings
-
     // TODO: Set Environment (Track)
 
     // Enable/Disable force feedback in the force feedback manager
