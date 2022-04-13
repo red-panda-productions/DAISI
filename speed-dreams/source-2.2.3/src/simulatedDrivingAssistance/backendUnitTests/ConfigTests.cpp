@@ -16,10 +16,10 @@ void InterventionTypeTest(InterventionType p_interventionType)
     ASSERT_EQ(p_interventionType, config.GetInterventionType());
 }
 
-TEST_CASE(ConfigTests, InterventionTypeTestNoSignals, InterventionTypeTest, (INTERVENTION_TYPE_NO_SIGNALS))
+TEST_CASE(ConfigTests, InterventionTypeTestNoSignals,   InterventionTypeTest, (INTERVENTION_TYPE_NO_SIGNALS))
 TEST_CASE(ConfigTests, InterventionTypeTestOnlySignals, InterventionTypeTest, (INTERVENTION_TYPE_ONLY_SIGNALS))
-TEST_CASE(ConfigTests, InterventionTypeTestAskFor, InterventionTypeTest, (INTERVENTION_TYPE_ASK_FOR))
-TEST_CASE(ConfigTests, InterventionTypeTestSharedControl, InterventionTypeTest, (INTERVENTION_TYPE_SHARED_CONTROL))
+TEST_CASE(ConfigTests, InterventionTypeTestAskFor,      InterventionTypeTest, (INTERVENTION_TYPE_ASK_FOR))
+TEST_CASE(ConfigTests, InterventionTypeTestSharedControl,    InterventionTypeTest, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(ConfigTests, InterventionTypeTestCompleteTakeover, InterventionTypeTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
 
 /// @brief        Tests if the SDAConfig sets and gets the task correctly
@@ -32,8 +32,8 @@ void TaskTest(Task p_task)
     ASSERT_EQ(p_task, config.GetTask());
 }
 
-TEST_CASE(ConfigTests, TaskTestsNoTask, TaskTest, (TASK_NO_TASK))
-TEST_CASE(ConfigTests, TaskTestsLaneKeeping, TaskTest, (TASK_LANE_KEEPING))
+TEST_CASE(ConfigTests, TaskTestsNoTask,       TaskTest, (TASK_NO_TASK))
+TEST_CASE(ConfigTests, TaskTestsLaneKeeping,  TaskTest, (TASK_LANE_KEEPING))
 TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
 
 /// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
@@ -46,14 +46,54 @@ void IndicatorTest(bool p_bool1, bool p_bool2, bool p_bool3)
     config.SetIndicatorSettings(arr);
     tIndicator indicator = config.GetIndicatorSettings();
     ASSERT_EQ(arr.Audio, indicator.Audio);
-    ASSERT_EQ(arr.Icon, indicator.Icon);
-    ASSERT_EQ(arr.Text, indicator.Text);
+    ASSERT_EQ(arr.Icon,  indicator.Icon);
+    ASSERT_EQ(arr.Text,  indicator.Text);
 }
 
 /// @brief Tests the SDAConfig IndicatorSetting for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(ConfigTests, IndicatorSettings)
 bool booleans[] = {false,true};
 END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
+
+/// @brief         Tests if the SDAConfig sets and gets the participant control settings correctly
+/// @param p_bool1 First  bool
+/// @param p_bool2 Second bool
+/// @param p_bool3 Third  bool
+void PControlTest1(bool p_bool1, bool p_bool2, bool p_bool3)
+{
+    SDAConfig config;
+    tParticipantControl arr = { p_bool1, p_bool2, p_bool3, NULL, NULL, NULL };
+    config.SetPControlSettings(arr);
+    tParticipantControl pControl = config.GetPControlSettings();
+    ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
+    ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
+    ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
+}
+
+/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
+BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
+bool booleans[] = {false,true};
+END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
+
+/// @brief         Tests if the SDAConfig sets and gets the other pControl settings correctly
+/// @param p_bool1 First  bool
+/// @param p_bool2 Second bool
+/// @param p_bool3 Third  bool
+void PControlTest2(bool p_bool1, bool p_bool2, bool p_bool3)
+{
+    SDAConfig config;
+    tParticipantControl arr = { NULL, NULL, NULL, p_bool1, p_bool2, p_bool3 };
+    config.SetPControlSettings(arr);
+    tParticipantControl pControl = config.GetPControlSettings();
+    ASSERT_EQ(arr.ForceFeedback,   pControl.ForceFeedback);
+    ASSERT_EQ(arr.RecordSession,   pControl.RecordSession);
+    ASSERT_EQ(arr.BBRecordSession, pControl.BBRecordSession);
+}
+
+/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (last 3)
+BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings2)
+    bool booleans[] = {false,true};
+END_TEST_COMBINATORIAL3(PControlTest2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the SDAConfig sets and gets the MaxTime correctly
 TEST(ConfigTests, MaxTimeTest)

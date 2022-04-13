@@ -189,17 +189,44 @@
             <attstr name="checked" val="yes"/>
         </section>
 
+        <!-- Checkboxes for selecting other options -->
         <section name="CheckboxForceFeedback">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Force Feedback"/>
             <attstr name="tip" val="Enable/Disable force feedback"/>
             <attnum name="x" val="500"/>
-            <attnum name="y" val="280"/>
+            <attnum name="y" val="220"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
             <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="CheckboxRecorderToggle">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Recorder on/off"/>
+            <attstr name="tip" val="Enable/Disable the simulation recorder"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="190"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
+        </section>
+
+        <section name="CheckboxBBRecorderToggle">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="BB Recorder on/off"/>
+            <attstr name="tip" val="Enable/Disable the black box recorder"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="160"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
         </section>
 
         <!-- Input field for max time -->
@@ -311,6 +338,16 @@
 
         <section name="7">
             <attstr name="type" val="label"/>
+            <attnum name="x" val="500"/>
+            <attnum name="y" val="250"/>
+            <attstr name="text" val="Other options"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
+        <section name="8">
+            <attstr name="type" val="label"/>
             <attnum name="x" val="80"/>
             <attnum name="y" val="180"/>
             <attstr name="text" val="Max Time"/>
@@ -319,7 +356,7 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
-        <section name="8">
+        <section name="9">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="150"/>

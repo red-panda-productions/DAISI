@@ -47,8 +47,11 @@ Changed:
             rtHumanDriver.cpp
                 included Recorder.h
                 included ConfigEnums.h
+                included Mediator.h
                 changed new_race()
                 changed common_drive()
+                changed shutdown()
+                added   tParticipantControl var
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR

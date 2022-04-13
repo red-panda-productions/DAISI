@@ -20,18 +20,22 @@
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 #define PRM_CTRL_STEERING    "CheckboxPControlSteering"
 #define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
+#define PRM_RECORD_TGGLE     "CheckboxRecorderToggle"
+#define PRM_RECORD_BB_TGGLE  "CheckboxBBRecorderToggle"
 #define PRM_MAX_TIME         "MaxTimeEdit"
 #define PRM_USER_ID          "UserIdEdit"
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
 
+#define INDICATOR_AMOUNT 3
+#define PCONTROL_AMOUNT  6
 
 // GUI screen handles
 static void* s_scrHandle  = nullptr;
 static void* s_nextHandle = nullptr;
 
 // GUI settings Id's 
-int m_indicatorsControl[3];
-int m_pControlControl[4];
+int m_indicatorsControl[INDICATOR_AMOUNT];
+int m_pControlControl[PCONTROL_AMOUNT];
 int m_taskControl;
 int m_interventionTypeControl;
 
@@ -126,11 +130,26 @@ static void SelectControlSteering(tCheckBoxInfo* p_info)
 {
     m_pControl.ControlSteering = p_info->bChecked;
 }
+
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
 static void SelectForceFeedback(tCheckBoxInfo* p_info)
 {
     m_pControl.ForceFeedback = p_info->bChecked;
+}
+
+/// @brief        Enables/disables the simulation recorder
+/// @param p_info Information on the checkbox
+static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
+{
+    m_pControl.RecordSession = p_info->bChecked;
+}
+
+/// @brief        Enables/disables the black box recorder
+/// @param p_info Information on the checkbox
+static void SelectBBRecorderOnOff(tCheckBoxInfo* p_info)
+{
+    m_pControl.BBRecordSession = p_info->bChecked;
 }
 
 /// @brief Handle input in the max time textbox
@@ -158,7 +177,7 @@ static void SetUserId(void*)
 /// @brief Saves the settings into the ResearcherMenu.xml file
 static void SaveSettingsToDisk() 
 {
-    // Copies xml to documents folder and then ospens file parameter
+    // Copies xml to documents folder and then opens file parameter
     std::string dstStr("config/ResearcherMenu.xml");
     char dst[512];
     sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
@@ -182,7 +201,10 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_CTRL_GAS,         GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlGas));
     GfParmSetStr(readParam, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
     GfParmSetStr(readParam, PRM_CTRL_STEERING,    GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteering));
+
     GfParmSetStr(readParam, PRM_FORCE_FEEDBACK,   GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
+    GfParmSetStr(readParam, PRM_RECORD_TGGLE,     GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.RecordSession));
+    GfParmSetStr(readParam, PRM_RECORD_BB_TGGLE,  GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.BBRecordSession));
 
     // Save max time to xml file
     char buf[32];
@@ -202,6 +224,7 @@ static void SaveSettings(void* /* dummy */)
     mediator->SetIndicatorSettings(m_indicators);
     mediator->SetInterventionType(m_interventionType);
     mediator->SetMaxTime(m_maxTime);
+    mediator->SetPControlSettings(m_pControl);
 
     // Save the encrypted userId in the SDAConfig
     size_t encryptedUserId = std::hash<std::string>{}(m_userId);
@@ -211,9 +234,7 @@ static void SaveSettings(void* /* dummy */)
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
 
-    // Save settings to frontend settings
     // TODO: Set Environment (Track)
-    // TODO: Set Participant control (tParticipantControl)
 
     // Enable/Disable force feedback in the force feedback manager
     forceFeedback.effectsConfig["globalEffect"]["enabled"] = m_pControl.ForceFeedback;
@@ -238,6 +259,8 @@ static void SynchronizeControls()
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlInterventionToggle);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlSteering);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ForceFeedback);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[4], m_pControl.RecordSession);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[5], m_pControl.BBRecordSession);
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -251,8 +274,8 @@ static void LoadDefaultSettings()
     m_task = GfuiRadioButtonListGetSelected(s_scrHandle, m_taskControl);
 
     m_indicators.Audio = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[0]);
-    m_indicators.Icon = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[1]);
-    m_indicators.Text = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[2]);
+    m_indicators.Icon  = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[1]);
+    m_indicators.Text  = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[2]);
 
     m_interventionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_interventionTypeControl);
 
@@ -280,7 +303,10 @@ static void LoadConfigSettings(void* p_param)
     m_pControl.ControlGas                = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_GAS,         GFMNU_ATTR_CHECKED, NULL);
     m_pControl.ControlInterventionToggle = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, NULL);
     m_pControl.ControlSteering           = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEERING,    GFMNU_ATTR_CHECKED, NULL);
+
     m_pControl.ForceFeedback             = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK,   GFMNU_ATTR_CHECKED, NULL);
+    m_pControl.RecordSession             = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_TGGLE,     GFMNU_ATTR_CHECKED, NULL);
+    m_pControl.BBRecordSession           = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_BB_TGGLE,  GFMNU_ATTR_CHECKED, NULL);
 
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, NULL));
@@ -376,7 +402,11 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS,         NULL, SelectControlGas);
     m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, NULL, SelectControlInterventionOnOff);
     m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING,    NULL, SelectControlSteering);
+  
+    // Other options checkbox controls
     m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK,   NULL, SelectForceFeedback);
+    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE,     NULL, SelectRecorderOnOff);
+    m_pControlControl[5] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_BB_TGGLE,  NULL, SelectBBRecorderOnOff);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, NULL, NULL, SetMaxTime);
