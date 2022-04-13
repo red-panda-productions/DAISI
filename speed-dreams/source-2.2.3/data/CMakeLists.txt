@@ -1,5 +1,6 @@
 INCLUDE(../cmake/macros.cmake)
 
+ADD_SUBDIRECTORY(blackbox)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(drivers)
 ADD_SUBDIRECTORY(cars)

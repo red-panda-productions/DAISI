@@ -117,6 +117,9 @@ Section "!Base System" SEC01
   SetOutPath "$INSTDIR\data"
   File "${BUILD_INST_DIR}\data\*.*"
 
+  SetOutPath "$INSTDIR\data\blackbox"
+  File /r "${BUILD_INST_DIR}\data\blackbox\*.*"
+
   SetOutPath "$INSTDIR\data\cars\categories"
   File /r "${BUILD_INST_DIR}\data\cars\categories\*.*"
 
