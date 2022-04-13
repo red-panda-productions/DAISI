@@ -343,9 +343,12 @@ static void SelectFile(void* /* dummy */)
     HRESULT hresult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (!SUCCEEDED(hresult)) { return; }
     IFileDialog* fileDialog;
+    COMDLG_FILTERSPEC filter[1] = {{L"Executables", L"*.exe"}};
     hresult = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileDialog, reinterpret_cast<void**>(&fileDialog));
     if (!SUCCEEDED(hresult)) { CoUninitialize(); return; }
     // Open file dialog
+    hresult = fileDialog->SetFileTypes(1, filter);
+    if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
     hresult = fileDialog->Show(NULL);
     if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
     // Get filename
@@ -360,7 +363,7 @@ static void SelectFile(void* /* dummy */)
     std::string fileName = converter.to_bytes(filePath);
     // Minimum file length: "{empty file name}.exe"
     if (fileName.size() <= 4) {
-        m_blackBoxChosen = false; (s_scrHandle, m_blackBox, "Choose Black Box: chosen file was not a .exe");
+        m_blackBoxChosen = false; GfuiButtonSetText(s_scrHandle, m_blackBox, "Choose Black Box: chosen file was not a .exe");
     	shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
     std::string extension = fileName.substr(fileName.size() - 4, std::string::npos);
     // Enforce that file ends in .exe
