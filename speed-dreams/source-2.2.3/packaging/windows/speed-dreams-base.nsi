@@ -106,6 +106,12 @@ Section "!Base System" SEC01
   File /r /x *.lib "${BUILD_INST_DIR}\lib\modules\racing\*.*"
   ;SetOutPath "$INSTDIR\lib\modules\networking"
   ;File /r /x *.lib "${BUILD_INST_DIR}\lib\modules\networking\*.*"
+  SetOutPath "$INSTDIR\lib\simulatedDrivingAssistance\backend\*.*"
+
+  ; might need to make dll modules in the future
+  File /r "${BUILD_INST_DIR}\lib\simulatedDrivingAssistance\backend\*.*"
+  SetOutPath "$INSTDIR\lib\simulatedDrivingAssistance\frontend\*.*"
+  File /r "${BUILD_INST_DIR}\lib\simulatedDrivingAssistance\frontend\*.*"
 
   ; Core data files (sound, textures, menus, car categories, ...)
   SetOutPath "$INSTDIR\data"
@@ -140,6 +146,9 @@ Section "!Base System" SEC01
   SetOutPath "$INSTDIR\lib\drivers\human"
   File /r /x *.lib "${BUILD_INST_DIR}\lib\drivers\human\*.*"
 
+  SetOutPath "$INSTDIR\lib\drivers\assistedhuman"
+  File /r /x *.lib "${BUILD_INST_DIR}\lib\drivers\assistedhuman\*.*"
+
   SetOutPath "$INSTDIR\lib\drivers\networkhuman"
   File /r /x *.lib "${BUILD_INST_DIR}\lib\drivers\networkhuman\*.*"
 
@@ -158,6 +167,9 @@ Section "!Base System" SEC01
   ; Base robots data files (car and track setups)
   SetOutPath "$INSTDIR\data\drivers\human"
   File /r /x *.lib "${BUILD_INST_DIR}\data\drivers\human\*.*"
+
+  SetOutPath "$INSTDIR\data\drivers\assistedhuman"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\drivers\assistedhuman\*.*"
 
   SetOutPath "$INSTDIR\data\drivers\networkhuman"
   File /r /x *.lib "${BUILD_INST_DIR}\data\drivers\networkhuman\*.*"
