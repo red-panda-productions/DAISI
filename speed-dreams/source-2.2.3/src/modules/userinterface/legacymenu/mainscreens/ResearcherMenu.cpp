@@ -341,23 +341,23 @@ static void SelectFile(void* /* dummy */)
     // Opens a file dialog on Windows
     // Create file dialog
     HRESULT hresult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (!SUCCEEDED(hresult)) { return; }
+    if (FAILED(hresult)) { return; }
     IFileDialog* fileDialog;
     COMDLG_FILTERSPEC filter[1] = {{L"Executables", L"*.exe"}};
     hresult = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileDialog, reinterpret_cast<void**>(&fileDialog));
-    if (!SUCCEEDED(hresult)) { CoUninitialize(); return; }
+    if (FAILED(hresult)) { CoUninitialize(); return; }
     // Open file dialog
     hresult = fileDialog->SetFileTypes(1, filter);
-    if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
+    if (FAILED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
     hresult = fileDialog->Show(NULL);
-    if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
+    if (FAILED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
     // Get filename
     IShellItem* shellItem;
     hresult = fileDialog->GetResult(&shellItem);
-    if (!SUCCEEDED(hresult)) { fileDialog->Release(); CoUninitialize(); return; } // I feel like I should release shellItem here as well, but the Microsoft Docs does not do so at this stage
+    if (FAILED(hresult)) { fileDialog->Release(); CoUninitialize(); return; } // I feel like I should release shellItem here as well, but the Microsoft Docs does not do so at this stage
     PWSTR filePath;
     hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
-    if (!SUCCEEDED(hresult)) { shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
+    if (FAILED(hresult)) { shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
     // Convert PWSTR to std::string
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string fileName = converter.to_bytes(filePath);
