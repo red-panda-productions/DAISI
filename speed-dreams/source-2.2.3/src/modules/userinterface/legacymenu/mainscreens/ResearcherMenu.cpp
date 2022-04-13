@@ -65,7 +65,9 @@ int m_maxTimeControl;
 char m_userId[32];
 int  m_userIdControl;
 
+// Black Box
 int m_blackBox;
+bool m_blackBoxChosen = false;
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
@@ -218,6 +220,7 @@ static void SaveSettingsToDisk()
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
+    if (!m_blackBoxChosen) { return; }
     // Save settings to the SDAConfig
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetTask(m_task);
@@ -355,10 +358,20 @@ static void SelectFile(void* /* dummy */)
     // Convert PWSTR to std::string
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string fileName = converter.to_bytes(filePath);
+    // Minimum file length: "{empty file name}.exe"
+    if (fileName.size() <= 4) {
+        m_blackBoxChosen = false; (s_scrHandle, m_blackBox, "Choose Black Box: chosen file was not a .exe");
+    	shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
+    std::string extension = fileName.substr(fileName.size() - 4, std::string::npos);
+    // Enforce that file ends in .exe
+    if (std::strcmp(extension.c_str(), ".exe") != 0) {
+        m_blackBoxChosen = false; GfuiButtonSetText(s_scrHandle, m_blackBox, "Choose Black Box: chosen file was not a .exe");
+    	shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
     std::string buttonText = "Choose Black Box: " + fileName;
     GfuiButtonSetText(s_scrHandle, m_blackBox, buttonText.c_str());
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetBlackBoxFilePath(fileName.c_str());
+    m_blackBoxChosen = true;
     // Release variables: relevant ones are also released early if an action didn't succeed
     CoTaskMemFree(filePath);
     shellItem->Release();
