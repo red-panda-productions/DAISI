@@ -30,7 +30,7 @@ Message(STATUS "NSIS_INET_PLUGIN = ${NSIS_INET_PLUGIN}")
 
 
 if(NSIS_FOUND AND NSIS_MAKE_EXE AND NSIS_INET_PLUGIN)
-   FILE(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_PREFIX}" NSIS_INSTALL_DIR)
+   FILE(TO_NATIVE_PATH "${CMAKE_INSTALL_PREFIX}" NSIS_INSTALL_DIR)
 
    CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/packaging/windows/readme_for_user.txt" 
                   "${CMAKE_BINARY_DIR}/packaging/readme_for_user.txt" COPYONLY)
@@ -75,7 +75,7 @@ if(NSIS_FOUND AND NSIS_MAKE_EXE AND NSIS_INET_PLUGIN)
    ADD_CUSTOM_TARGET(PACKAGE_MKDIR)
    
    ADD_CUSTOM_COMMAND(TARGET PACKING_INSTALL
-                      COMMAND "${CMAKE_COMMAND}" --build . --target INSTALL --config $<CONFIG>
+                      COMMAND "${CMAKE_COMMAND}" --build . --target install --config $<CONFIG>
                       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                       COMMENT "Building INSTALL...")
 
