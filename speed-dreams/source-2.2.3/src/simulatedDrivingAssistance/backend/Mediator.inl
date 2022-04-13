@@ -121,12 +121,11 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     // Find a black box run file in the data folder
     // TODO: Replace this by letting the user select a path to a black box executable, and use that instead of blackBoxPath
-    std::string blackBoxPath(R"(source-2.2.3\data\blackbox\)");
-    std::string blackBoxExecutable("Blackbox.exe");
-    if (!FindFileDirectory(blackBoxPath, blackBoxExecutable)) throw std::exception("Can't find black box executable");
+    const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
+    std::cout << blackBoxFilePath << std::endl;
 
     // Initialize the decision maker with the full path to the current black box executable
-    m_decisionMaker.Initialize(&car, p_situation, blackBoxPath + blackBoxExecutable);
+    m_decisionMaker.Initialize(&car, p_situation, blackBoxFilePath);
 }
 
 /// @brief Tells the decisionmaker that the race has ended

@@ -4,6 +4,9 @@
 #include "InterventionFactory.h"
 #include <string>
 
+
+#define BLACKBOX_PATH_SIZE 256
+
 class SDAConfig
 {
 private:
@@ -16,7 +19,7 @@ private:
     int   m_maxSimulationTime = 0;
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
-    const char* m_blackBoxFilePath;
+    char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();

@@ -332,8 +332,7 @@ static void SelectFile(void* /* dummy */)
     std::string buttonText = "Choose Black Box: " + fileName;
     GfuiButtonSetText(s_scrHandle, m_blackBox, buttonText.c_str());
     SMediator* mediator = SMediator::GetInstance();
-    const char* p_filePath = fileName.c_str();
-    mediator->SetBlackBoxFilePath(p_filePath);
+    mediator->SetBlackBoxFilePath(fileName.c_str());
     // Release variables: relevant ones are also released early if an action didn't succeed
     CoTaskMemFree(filePath);
     shellItem->Release();

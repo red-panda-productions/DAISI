@@ -90,7 +90,7 @@ tDataToStore SDAConfig::GetDataCollectionSetting() const
 /// @param p_filePath A const char* representing the filepath of the black box executable
 void SDAConfig::SetBlackBoxFilePath(const char* p_filePath)
 {
-    m_blackBoxFilePath = p_filePath;
+    strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, p_filePath);
 }
 
 /// @brief  Gets the filepath for the black box executable
