@@ -85,6 +85,33 @@ TEST(ConfigTests, UserIDTest)
     }
 }
 
+/// @brief Tests if the SDAConfig sets and gets the BlackBoxFilePath correctly
+TEST(ConfigTests, BlackBoxFilePathTest)
+{
+    SDAConfig config;
+    Random random;
+    for (int j = 0; j <= 10; j++) {
+        char path[256];
+        int length = 2 + 254 * j / 10;
+        for (int i = 0; i < length - 1; i++)
+        {
+            char c;
+            do
+            {   // Make sure no character is assigned the null character
+                c = (char)random.NextByte();
+            } while (c == '\0');
+            path[i] = c;
+        }
+        path[length - 1] = '\0';
+        config.SetBlackBoxFilePath(path);
+        const char* configPath = config.GetBlackBoxFilePath();
+        for (int i = 0; i < length; i++)
+        {
+            ASSERT_EQ(path[i], configPath[i]);
+        }
+    }
+}
+
 /// @brief         Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
 /// @param p_bool1 First bool
 /// @param p_bool2 Second bool
