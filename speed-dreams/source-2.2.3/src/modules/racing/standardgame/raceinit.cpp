@@ -64,6 +64,8 @@
 
 #include "raceinit.h"
 
+#include "Mediator.h"
+
 #ifdef WEBSERVER
 extern TGFCLIENT_API WebServer webServer;
 #endif //WEBSERVER
@@ -106,6 +108,7 @@ ReReset(void)
 // Race Engine cleanup
 void ReCleanup(void)
 {
+    ReShutdownUpdaters(); // RPP: shut down updaters
     ReSituation::terminate();
 
     if (!ReInfo)
