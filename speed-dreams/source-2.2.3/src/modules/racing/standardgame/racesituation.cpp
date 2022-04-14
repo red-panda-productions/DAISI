@@ -500,8 +500,8 @@ int ReSituationUpdater::threadLoop()
             GfProfStopProfile("reOneStep*");
 
             // Send car physics to network if needed
-            /*if (NetGetNetwork())
-                NetGetNetwork()->SendCarControlsPacket(pCurrReInfo->s);*/
+            if (NetGetNetwork())
+                NetGetNetwork()->SendCarControlsPacket(pCurrReInfo->s);
         }
 
         // 3) If not time to terminate, and not running, do nothing.
