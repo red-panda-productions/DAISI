@@ -64,8 +64,6 @@
 
 #include "raceinit.h"
 
-#include "Mediator.h"
-
 #ifdef WEBSERVER
 extern TGFCLIENT_API WebServer webServer;
 #endif //WEBSERVER
