@@ -221,6 +221,9 @@ Section "!Base System" SEC01
   SetOutPath "$INSTDIR\data\tracks\circuit\espie"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\circuit\espie\*.*"
 
+  SetOutPath "$INSTDIR\data\tracks\road\test_highway"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\road\test_highway\*.*"
+
   ; Write the install dir to the registry so that optional installs can find it.
   WriteRegStr   ${GAME_ROOT_REGKEY} "${GAME_DIR_REGKEY}" "" "$INSTDIR"
 
