@@ -105,5 +105,7 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
+    BlackBox.Shutdown();
     m_SQLDatabaseStorage.Run("INPUT FILE HERE");
 }
+
