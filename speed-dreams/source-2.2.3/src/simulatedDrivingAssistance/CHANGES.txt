@@ -99,6 +99,8 @@ Changed:
                 added   GfuiRadioButtonIsSelected()
     main/
         main.cpp
+            added singletonfolder setup
+            added mediator shut down
     interfaces/
         playerpref.h
             added HM_ADRV_FILE define
@@ -109,8 +111,10 @@ Changed:
             raceinit.cpp
                 changed reLoadSingleCar() to fix isHuman flag
                 changed ReInitCars() to fix isHuman flag
+                changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+
         sound/snddefault/
             CMakeLists.txt
                 added frontend
