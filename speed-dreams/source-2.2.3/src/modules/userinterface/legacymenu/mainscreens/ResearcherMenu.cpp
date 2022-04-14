@@ -66,8 +66,12 @@ char m_userId[32];
 int  m_userIdControl;
 
 // Black Box
-int m_blackBox;
+int m_blackBoxButton;
 bool m_blackBoxChosen = false;
+char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+
+// Apply Button
+int m_applyButton;
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
@@ -213,6 +217,9 @@ static void SaveSettingsToDisk()
     sprintf(buf, "%d", m_maxTime);
     GfParmSetStr(readParam, PRM_MAX_TIME, GFMNU_ATTR_TEXT, buf);
 
+    // Save filepath to xml file
+    GfParmSetStr(readParam, PRM_BLACKBOX, "name", m_blackBoxFilePath);
+
     // Write all the above queued changed to xml file
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
 }
@@ -220,7 +227,11 @@ static void SaveSettingsToDisk()
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
-    if (!m_blackBoxChosen) { return; }
+    if (!m_blackBoxChosen)
+    {
+        GfuiButtonSetText(s_scrHandle, m_applyButton, "Apply | You need to select a valid Black Box");
+	    return;
+    }
     // Save settings to the SDAConfig
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetTask(m_task);
@@ -314,6 +325,30 @@ static void LoadConfigSettings(void* p_param)
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, NULL));
 
+    const char* filePath = GfParmGetStr(p_param, PRM_BLACKBOX, "name", NULL);
+    if (filePath != nullptr) 
+    {
+        strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, filePath);
+        SMediator* mediator = SMediator::GetInstance();
+        mediator->SetBlackBoxFilePath(m_blackBoxFilePath);
+        m_blackBoxChosen = true;
+        std::string fileName;
+        fileName.resize(BLACKBOX_PATH_SIZE);
+        for (int i = 0; i < BLACKBOX_PATH_SIZE; i++)
+        {
+            fileName[i] = m_blackBoxFilePath[i];
+        }
+        int lastDirectoryIndex = 0;
+        for (int i = fileName.size() - 1; i >= 0; i--)
+        {
+            if (fileName[i] != '\\') { continue; }
+            lastDirectoryIndex = i;
+            break;
+        }
+        std::string buttonText = "Choose Black Box: ..\\" + fileName.substr(lastDirectoryIndex, std::string::npos);
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    }
+
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
 }
@@ -339,43 +374,112 @@ static void OnActivate(void* /* dummy */)
 static void SelectFile(void* /* dummy */)
 {
     // Opens a file dialog on Windows
-    // Create file dialog
+
+    // Initialize COM interface
     HRESULT hresult = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (FAILED(hresult)) { return; }
+
+    // Create a file dialog
     IFileDialog* fileDialog;
-    COMDLG_FILTERSPEC filter[1] = {{L"Executables", L"*.exe"}};
     hresult = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileDialog, reinterpret_cast<void**>(&fileDialog));
-    if (FAILED(hresult)) { CoUninitialize(); return; }
-    // Open file dialog
+    if (FAILED(hresult)) 
+    {
+    	CoUninitialize();
+    	return;
+    }
+
+    // Set file types for file dialog, then open it
+    COMDLG_FILTERSPEC filter[1] = { {L"Executables", L"*.exe"} };
     hresult = fileDialog->SetFileTypes(1, filter);
-    if (FAILED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
+    if (FAILED(hresult))
+    {
+	    fileDialog->Release();
+    	CoUninitialize();
+    	return;
+    }
     hresult = fileDialog->Show(NULL);
-    if (FAILED(hresult)) { fileDialog->Release(); CoUninitialize(); return; }
+    if (FAILED(hresult))
+    {
+	    fileDialog->Release();
+    	CoUninitialize();
+    	return;
+    }
+
     // Get filename
     IShellItem* shellItem;
     hresult = fileDialog->GetResult(&shellItem);
-    if (FAILED(hresult)) { fileDialog->Release(); CoUninitialize(); return; } // I feel like I should release shellItem here as well, but the Microsoft Docs does not do so at this stage
+    if (FAILED(hresult))
+    {
+	    fileDialog->Release();
+    	CoUninitialize();
+    	return;
+    } // I feel like I should release shellItem here as well, but the Microsoft Docs do not do so at this stage
     PWSTR filePath;
     hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
-    if (FAILED(hresult)) { shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
+    if (FAILED(hresult))
+    {
+	    shellItem->Release();
+    	fileDialog->Release();
+    	CoUninitialize();
+    	return;
+    }
+
     // Convert PWSTR to std::string
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string fileName = converter.to_bytes(filePath);
-    // Minimum file length: "{empty file name}.exe"
-    if (fileName.size() <= 4) {
-        m_blackBoxChosen = false; GfuiButtonSetText(s_scrHandle, m_blackBox, "Choose Black Box: chosen file was not a .exe");
-    	shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
+    // Over max file length
+    if (fileName.size() >= BLACKBOX_PATH_SIZE - 1) // std::string isn't null terminated, while Windows paths/char* are
+    {
+        // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars, or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
+        m_blackBoxChosen = false;
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, "Choose Black Box: you've broken COM interface: your > 260 char file path was not aliased to an 8.3 file name");
+        shellItem->Release();
+        fileDialog->Release();
+        CoUninitialize();
+        return;
+    }
+    // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
+    if (fileName.size() <= 7) 
+    {
+        m_blackBoxChosen = false;
+    	GfuiButtonSetText(s_scrHandle, m_blackBoxButton, "Choose Black Box: chosen file was not a .exe");
+    	shellItem->Release();
+    	fileDialog->Release();
+    	CoUninitialize();
+    	return;
+    }
+    // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
     std::string extension = fileName.substr(fileName.size() - 4, std::string::npos);
+    for (int i = 1; i < 5; i++)
+    {
+        extension[i] = std::tolower(extension[i]);
+    }
     // Enforce that file ends in .exe
     if (std::strcmp(extension.c_str(), ".exe") != 0) {
-        m_blackBoxChosen = false; GfuiButtonSetText(s_scrHandle, m_blackBox, "Choose Black Box: chosen file was not a .exe");
-    	shellItem->Release(); fileDialog->Release(); CoUninitialize(); return; }
-    std::string buttonText = "Choose Black Box: " + fileName;
-    GfuiButtonSetText(s_scrHandle, m_blackBox, buttonText.c_str());
+        m_blackBoxChosen = false;
+    	GfuiButtonSetText(s_scrHandle, m_blackBoxButton, "Choose Black Box: chosen file was not a .exe");
+    	shellItem->Release();
+    	fileDialog->Release();
+    	CoUninitialize();
+    	return;
+    }
+
+    // Visual feedback of choice
+    int lastDirectoryIndex = 0;
+    for (int i = fileName.size() - 1; i >= 0; i--)
+    {
+        if (fileName[i] != '\\') { continue; }
+        lastDirectoryIndex = i;
+        break;
+    }
+    std::string buttonText = "Choose Black Box: ..\\" + fileName.substr(lastDirectoryIndex, std::string::npos);
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    GfuiButtonSetText(s_scrHandle, m_applyButton, "Apply");
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetBlackBoxFilePath(fileName.c_str());
+    strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, fileName.c_str());
     m_blackBoxChosen = true;
-    // Release variables: relevant ones are also released early if an action didn't succeed
+    // Release variables: relevant ones are also released early if an action didn't succeed => is potentially a lot of code repetition because of nesting limitation
     CoTaskMemFree(filePath);
     shellItem->Release();
     fileDialog->Release();
@@ -399,7 +503,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
     
     // Choose black box control
-    m_blackBox = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
+    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
     // Task radio button controls
     m_taskControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_TASKS, NULL, SelectTask);
 
@@ -429,7 +533,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_userIdControl  = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID,  NULL, NULL, SetUserId);
 
     // ApplyButton control
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
 
     GfParmReleaseHandle(param);
 

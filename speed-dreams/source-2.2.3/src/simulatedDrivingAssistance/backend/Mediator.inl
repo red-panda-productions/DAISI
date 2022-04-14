@@ -137,9 +137,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     m_track = p_track;
     tCarElt car;
     bool recordBB = GetPControlSettings().BBRecordSession;
-
-    // Find a black box run file in the data folder
-    // TODO: Replace this by letting the user select a path to a black box executable, and use that instead of blackBoxPath
+    
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
     std::cout << blackBoxFilePath << std::endl;
 

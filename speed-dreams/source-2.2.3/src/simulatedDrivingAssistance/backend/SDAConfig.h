@@ -5,7 +5,7 @@
 #include <string>
 
 
-#define BLACKBOX_PATH_SIZE 256
+#define BLACKBOX_PATH_SIZE 260 // Windows MAX_PATH
 
 class SDAConfig
 {
