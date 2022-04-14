@@ -44,6 +44,20 @@ InterventionType SDAConfig::GetInterventionType() const
     return m_interventionType;
 }
 
+/// @brief            Sets the participant control settings to p_pControl
+/// @param p_pControl The participant control settings
+void SDAConfig::SetPControlSettings(tParticipantControl p_pControl)
+{
+    m_pControl = p_pControl;
+}
+
+/// @brief  Returns the participant control settings
+/// @return The participant control settings
+tParticipantControl SDAConfig::GetPControlSettings() const
+{
+    return m_pControl;
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 void SDAConfig::SetMaxTime(int p_maxTime)

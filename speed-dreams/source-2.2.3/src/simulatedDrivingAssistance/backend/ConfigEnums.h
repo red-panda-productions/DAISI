@@ -42,7 +42,10 @@ typedef struct ParticipantControl
     bool ControlInterventionToggle;
     bool ControlGas;
     bool ControlSteering;
+
     bool ForceFeedback;
+    bool RecordSession;
+    bool BBRecordSession;
 } tParticipantControl;
 
 /// @brief The different types of black boxes
@@ -65,7 +68,3 @@ typedef struct DataToStore
     bool InterventionData;
     bool MetaData;
 } tDataToStore;
-
-// for recording a session
-//#define RECORD_SESSION
-//#define BB_RECORD_SESSION
