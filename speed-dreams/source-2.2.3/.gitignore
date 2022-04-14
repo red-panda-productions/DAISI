@@ -6,7 +6,7 @@ CMakeSettings.json
 # Build output
 out/
 build/
-cmake-build-debug/
+cmake-build-*/
 
 # Test output
 Testing/
@@ -17,3 +17,11 @@ data/Singletons/*
 
 # Settings for Resharper
 Folder.DotSettings
+
+data/tracks/road/*
+
+BackendCoverage.bat
+
+UnitUtilitiesCoverage.bat
+
+test_data

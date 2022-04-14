@@ -28,6 +28,8 @@ ENDIF(POLICY CMP0077)
 
 ENABLE_TESTING()
 
+SET(COVERAGE_OUTPUT_FOLDER ${CMAKE_SOURCE_DIR} CACHE STRING "The output folder of the coverage bat files")
+
 IF(NOT ${CMAKE_VERSION} VERSION_LESS "3.0.2")
    # Speed Dreams project
    PROJECT(speed-dreams-2 VERSION 2.2.3)

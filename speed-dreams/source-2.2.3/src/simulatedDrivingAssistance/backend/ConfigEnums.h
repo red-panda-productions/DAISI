@@ -10,9 +10,9 @@ typedef unsigned int Task;
 /// @brief The different ways a user can be indicated about an intervention
 typedef struct Indicator
 {
-    bool Auditory;
-    bool Visual;
-    bool Textual;
+    bool Audio;
+    bool Icon;
+    bool Text;
 } tIndicator;
 
 /// @brief The different interventions that can be done
@@ -66,3 +66,4 @@ typedef struct DataToStore
 
 // for recording a session
 //#define RECORD_SESSION
+//#define BB_RECORD_SESSION

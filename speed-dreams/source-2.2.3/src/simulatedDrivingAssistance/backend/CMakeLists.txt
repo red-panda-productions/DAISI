@@ -20,13 +20,16 @@ SET(_SOURCES
 	SQLDatabaseStorage.cpp
 	SteerDecision.cpp
 	BlackBoxData.cpp
+	AccelDecision.cpp
+	IPCPointerManager.cpp
 )
 
 SET(_INLINES
 	DecisionMaker.inl
 	FileDataStorage.inl
 	Mediator.inl
-	SocketBlackBox.inl)
+	SocketBlackBox.inl
+	IPCPointerManager.inl)
 
 SET(_HEADERS 
 	BrakeDecision.h
@@ -51,6 +54,8 @@ SET(_HEADERS
 	SQLDatabaseStorage.h
 	SteerDecision.h
 	BlackBoxData.h
+	AccelDecision.h
+	IPCPointerManager.h
 )
 
 ADD_INTERFACE_INCLUDEDIR()
@@ -70,5 +75,7 @@ ADD_MSGPACK_PACKAGE(backend)
 ADD_IPCLIB_PACKAGE(backend)
 
 ADD_SQLITE3_LIBRARY(backend)
+
+ADD_BOOST_PACKAGE(backend)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)

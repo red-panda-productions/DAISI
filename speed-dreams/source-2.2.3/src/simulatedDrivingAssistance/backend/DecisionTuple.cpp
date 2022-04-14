@@ -25,6 +25,11 @@ IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
         buffer[p_count++] = &m_steerDecision;
     }
 
+    if(m_accelActive)
+    {
+        buffer[p_count++] = &m_accelDecision;
+    }
+
     return buffer;
 }
 
@@ -44,6 +49,16 @@ void DecisionTuple::SetSteer(float p_steerValue)
     m_steerActive = true;
 }
 
+void DecisionTuple::SetGear(int p_gearValue)
+{
+}
+
+void DecisionTuple::SetAccel(float p_accelValue)
+{
+    m_accelDecision.AccelAmount = p_accelValue;
+    m_accelActive = true;
+}
+
 /// @brief  Gets the brake value
 /// @return The brake value
 float DecisionTuple::GetBrake() const
@@ -56,4 +71,14 @@ float DecisionTuple::GetBrake() const
 float DecisionTuple::GetSteer() const
 {
     return m_steerDecision.m_steerAmount;
+}
+
+float DecisionTuple::GetGear() const
+{
+    return 0;
+}
+
+float DecisionTuple::GetAccel() const
+{
+    return m_accelDecision.AccelAmount;
 }

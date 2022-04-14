@@ -39,20 +39,21 @@ TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
 /// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
 /// @param p_bool1 First bool
 /// @param p_bool2 Second bool
-void IndicatorTest(bool p_bool1, bool p_bool2)
+void IndicatorTest(bool p_bool1, bool p_bool2, bool p_bool3)
 {
     SDAConfig config;
-    tIndicator arr = { p_bool1, p_bool2 };
+    tIndicator arr = { p_bool1, p_bool2, p_bool3 };
     config.SetIndicatorSettings(arr);
     tIndicator indicator = config.GetIndicatorSettings();
-    ASSERT_EQ(arr.Auditory, indicator.Auditory);
-    ASSERT_EQ(arr.Visual, indicator.Visual);
+    ASSERT_EQ(arr.Audio, indicator.Audio);
+    ASSERT_EQ(arr.Icon, indicator.Icon);
+    ASSERT_EQ(arr.Text, indicator.Text);
 }
 
 /// @brief Tests the SDAConfig IndicatorSetting for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(ConfigTests, IndicatorSettings)
 bool booleans[] = {false,true};
-END_TEST_COMBINATORIAL2(IndicatorTest,booleans,2,booleans,2)
+END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the SDAConfig sets and gets the MaxTime correctly
 TEST(ConfigTests, MaxTimeTest)
@@ -106,4 +107,4 @@ void TestBoolArr(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_
 /// @brief Tests the SDAConfig DataCollectionSetting for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(ConfigTests, DataCollectionSettings)
 bool booleans[] = {false,true};
-END_TEST_COMBINATORIAL5(TestBoolArr,booleans,2,booleans,2,booleans,2,booleans,2,booleans,2)
+END_TEST_COMBINATORIAL5(TestBoolArr, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)

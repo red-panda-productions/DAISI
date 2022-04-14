@@ -180,6 +180,15 @@ GfuiDraw(tGfuiObject *obj)
 	case GFUI_PROGRESSBAR:
 		gfuiDrawProgressbar(obj);
 		break;
+
+    // SIMULATED DRIVING ASSISTANCE: Added radiobuttonlist and radiobutton
+    case GFUI_RADIOBUTTONLIST:
+        GfuiDrawRadioButtonList(obj);
+        break;
+
+    case GFUI_RADIOBUTTON:
+        GfuiDrawRadioButton(obj);
+        break;
 	}
     }
 }
@@ -657,6 +666,15 @@ gfuiReleaseObject(tGfuiObject *curObject)
 	case GFUI_PROGRESSBAR:
 	gfuiReleaseProgressbar(curObject);
 	break;
+
+    // SIMULATED DRIVING ASSISTANCE: Added radiobuttonlist and radiobutton
+    case GFUI_RADIOBUTTONLIST:
+    GfuiReleaseRadioButtonList(curObject);
+    break;
+
+    case GFUI_RADIOBUTTON:
+    GfuiReleaseRadioButton(curObject);
+    break;
 
     }
 }

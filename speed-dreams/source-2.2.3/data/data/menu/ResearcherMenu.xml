@@ -6,38 +6,35 @@
 
     <section name="dynamic controls">
 
-        <!-- Checkboxes for selecting a Task -->
-        <section name="CheckboxTaskLaneKeeping">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Lane keeping"/>
-            <attstr name="tip" val="Select the Lane Keeping task"/>
+        <!-- RadioButtonList for selecting a Task -->
+        <section name="TaskRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="Lane Keeping"/>
+                    <attstr name="tip" val="Select the Lane Keeping task"/>
+                </section>
+                <section name="1">
+                    <attstr name="text" val="Speed Control"/>
+                    <attstr name="tip" val="Select the Speed Control task"/>
+                </section>
+            </section>
             <attnum name="x" val="20"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
-        </section>
-
-        <section name="CheckboxTaskSpeedControl">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Speed control"/>
-            <attstr name="tip" val="Select the Speed Control task"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="340"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
+            <attnum name="selected" val="0"/>
+            <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="0"/>
         </section>
 
         <!-- Checkboxes for selecting how to indicate an intervention -->
         <section name="CheckboxIndicatorAuditory">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Auditory"/>
-            <attstr name="tip" val="Enable/Disable Auditory indication of interventions"/>
+            <attstr name="text" val="Audio"/>
+            <attstr name="tip" val="Enable/Disable auditory indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
@@ -49,8 +46,8 @@
 
         <section name="CheckboxIndicatorVisual">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Visual"/>
-            <attstr name="tip" val="Enable/Disable Visual indication of interventions"/>
+            <attstr name="text" val="Icon"/>
+            <attstr name="tip" val="Enable/Disable icon indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
@@ -62,8 +59,8 @@
 
         <section name="CheckboxIndicatorTextual">
             <attstr name="type" val="check box"/>
-            <attstr name="text" val="Textual"/>
-            <attstr name="tip" val="Enable/Disable Textual indication of interventions"/>
+            <attstr name="text" val="Text"/>
+            <attstr name="tip" val="Enable/Disable text indication of interventions"/>
             <attnum name="x" val="140"/>
             <attnum name="y" val="310"/>
             <attnum name="image width" val="20"/>
@@ -73,71 +70,56 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <!-- Checkboxes for selecting the type of intervention -->
-        <section name="CheckboxTypeNoSignals">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="No signals"/>
-            <attstr name="tip" val="Set it so that the AI does not do anything"/>
+        <!-- RadioButtonList for selecting the type of intervention -->
+        <section name="InterventionTypeRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="No Signals"/>
+                    <attstr name="tip" val="Set it so that the AI does not do anything"/>
+                </section>
+                <section name="1">
+                    <attstr name="text" val="Only Signals"/>
+                    <attstr name="tip" val="Set it so that the AI only shows signals as intervention"/>
+                </section>
+                <section name="2">
+                    <attstr name="text" val="Shared Control"/>
+                    <attstr name="tip" val="Set it so that the AI helps with controlling the car"/>
+                </section>
+                <section name="3">
+                    <attstr name="text" val="Complete Takeover"/>
+                    <attstr name="tip" val="Set it so that the AI has complete control over the car"/>
+                </section>
+            </section>
             <attnum name="x" val="260"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="yes"/>
+            <attnum name="selected" val="0"/>
+            <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="1"/>
         </section>
 
-        <section name="CheckboxTypeOnlySignals">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Only signals"/>
-            <attstr name="tip" val="Set it so that the AI only shows signals as intervention"/>
-            <attnum name="x" val="260"/>
-            <attnum name="y" val="340"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
-        </section>
-
-        <section name="CheckboxTypeSharedControl">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Shared control"/>
-            <attstr name="tip" val="Set it so that the AI helps with controlling the car"/>
-            <attnum name="x" val="260"/>
-            <attnum name="y" val="310"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
-        </section>
-
-        <section name="CheckboxTypeCompleteTakeover">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Complete takeover"/>
-            <attstr name="tip" val="Set it so that the AI has complete control over the car"/>
-            <attnum name="x" val="260"/>
-            <attnum name="y" val="280"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
-        </section>
-
-        <!-- Checkboxes for selecting the environment -->
-        <section name="CheckboxEnvironmentHighway">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Highway"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+        <!-- RadioButtonList for selecting the environment -->
+        <section name="EnvironmentRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="Highway"/>
+                    <attstr name="tip" val="Set the environment to Highway"/>
+                </section>
+            </section>
             <attnum name="x" val="380"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="yes"/>
+            <attnum name="selected" val="0"/>
+            <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="1"/>
         </section>
 
         <!-- Checkboxes for selecting what a participant can control -->
@@ -273,7 +255,7 @@
             <attstr name="type" val="label"/>
             <attnum name="x" val="260"/>
             <attnum name="y" val="400"/>
-            <attstr name="text" val="Type"/>
+            <attstr name="text" val="Intervention Type"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>

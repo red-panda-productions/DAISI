@@ -24,7 +24,7 @@ InterventionType m_interventionType;
 Track m_track;
 
 // Participant control
-tParticipantControl m_pControl = {false, true, true, true};
+tParticipantControl m_pControl = { false, true, true, true };
 
 // Force feedback manager
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
@@ -37,107 +37,78 @@ int m_maxTimeControl;
 char m_userId[32];
 int  m_userIdControl;
 
-/// @brief Sets the defaults values
+
 static void OnActivate(void* /* dummy */) { }
 
-/// @brief        Sets the task to lane keeping
-/// @param p_info Information on the checkbox
-static void SelectLaneKeeping(tCheckBoxInfo* p_info)
+/// @brief        Sets the task to the selected one
+/// @param p_info Information on the radio button pressed
+static void SelectTask(tRadioButtonInfo* p_info)
 {
-    if (p_info->bChecked)
+    switch(p_info->Selected)
     {
-        m_task = TASK_LANE_KEEPING;
-    }
-    else if (m_task == TASK_LANE_KEEPING)
-    {
-        // this is temporary, TODO: Make it so that only one checkbox can be selected at once
-        m_task = TASK_NO_TASK;
-    }
-}
-
-/// @brief        Sets the task to speed control
-/// @param p_info Information on the checkbox
-static void SelectSpeedControl(tCheckBoxInfo* p_info)
-{
-    if (p_info->bChecked)
-    {
-        m_task = TASK_SPEED_CONTROL;
-    }
-    else if (m_task == TASK_SPEED_CONTROL)
-    {
-        // this is temporary, TODO: Make it so that only one checkbox can be selected at once
-        m_task = TASK_NO_TASK;
+        case 1:
+            m_task = TASK_LANE_KEEPING;
+            break;
+        case 2:
+            m_task = TASK_SPEED_CONTROL;
+            break;
+        default:
+            m_task = TASK_NO_TASK;
+            break;
     }
 }
 
 /// @brief        Enables/disables the auditory indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectAuditory(tCheckBoxInfo* p_info)
+static void SelectAudio(tCheckBoxInfo* p_info)
 {
-    m_indicators.Auditory = p_info->bChecked;
+    m_indicators.Audio = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the visual indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectVisual(tCheckBoxInfo* p_info)
+static void SelectIcon(tCheckBoxInfo* p_info)
 {
-    m_indicators.Visual = p_info->bChecked;
+    m_indicators.Icon = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the textual indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectTextual(tCheckBoxInfo* p_info)
+static void SelectText(tCheckBoxInfo* p_info)
 {
-    m_indicators.Textual = p_info->bChecked;
+    m_indicators.Text = p_info->bChecked;
 }
 
-/// @brief        Sets the interventionType to no signals
-/// @param p_info Information on the checkbox
-static void SelectTypeNoSignals(tCheckBoxInfo* p_info)
+/// @brief        Sets the interventionType to the selected one
+/// @param p_info Information on the radio button pressed
+static void SelectInterventionType(tRadioButtonInfo* p_info)
 {
-    if (p_info->bChecked)
+    switch(p_info->Selected)
     {
-        m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
+        case 1:
+            m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
+            break;
+        case 2:
+            m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
+            break;
+        case 3:
+            m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
+            break;
+        default:
+            m_interventionType = INTERVENTION_TYPE_NO_SIGNALS;
+            break;
     }
 }
 
-/// @brief        Sets the interventionType to only signals
-/// @param p_info Information on the checkbox
-static void SelectTypeOnlySignals(tCheckBoxInfo* p_info)
+/// @brief        Sets the environment to the selected one
+/// @param p_info Information on the radio button pressed
+static void SelectEnvironment(tRadioButtonInfo* p_info)
 {
-    if (p_info->bChecked)
+    switch(p_info->Selected)
     {
-        m_interventionType = INTERVENTION_TYPE_ONLY_SIGNALS;
-    }
-}
-
-/// @brief        Sets the interventionType to shared control
-/// @param p_info Information on the checkbox
-static void SelectTypeSharedControl(tCheckBoxInfo* p_info)
-{
-    if (p_info->bChecked)
-    {
-        m_interventionType = INTERVENTION_TYPE_SHARED_CONTROL;
-    }
-}
-
-/// @brief        Sets the interventionType to complete takeover
-/// @param p_info Information on the checkbox
-static void SelectTypeCompleteTakeover(tCheckBoxInfo* p_info)
-{
-    if (p_info->bChecked)
-    {
-        m_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
-    }
-}
-
-/// @brief        Sets the environment to highway
-/// @param p_info Information on the checkbox
-static void SelectEnvironmentHighway(tCheckBoxInfo* p_info)
-{
-    if (p_info->bChecked)
-    {
-        // TODO: move track selection from SD somewhere to here?
+        default:
+            // TODO: set environment
+            break;
     }
 }
 
@@ -234,23 +205,19 @@ void* ResearcherMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // Task checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskLaneKeeping", NULL, SelectLaneKeeping);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTaskSpeedControl", NULL, SelectSpeedControl);
+    // Task radio button controls
+    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "TaskRadioButtonList", NULL, SelectTask);
 
     // Indicator checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAuditory);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectVisual);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectTextual);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorAuditory", NULL, SelectAudio);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorVisual", NULL, SelectIcon);
+    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxIndicatorTextual", NULL, SelectText);
 
-    // InterventionType checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeNoSignals", NULL, SelectTypeNoSignals);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeOnlySignals", NULL, SelectTypeOnlySignals);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeSharedControl", NULL, SelectTypeSharedControl);
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxTypeCompleteTakeover", NULL, SelectTypeCompleteTakeover);
+    // InterventionTypes radio button controls
+    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "InterventionTypeRadioButtonList", NULL, SelectInterventionType);
 
     // Environment checkboxes controls
-    GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxEnvironmentHighway", NULL, SelectEnvironmentHighway);
+    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, "EnvironmentRadioButtonList", NULL, SelectEnvironment);
 
     // Participant-Control checkboxes controls
     GfuiMenuCreateCheckboxControl(s_scrHandle, param, "CheckboxPControlInterventionToggle", NULL, SelectControlInterventionOnOff);

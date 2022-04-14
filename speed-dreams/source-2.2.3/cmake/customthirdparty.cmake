@@ -421,7 +421,10 @@ MACRO(SD_INSTALL_CUSTOM_3RDPARTY TARGET_NAME)
     FOREACH(_DLL ${_THIRDPARTY_DLL_PATHNAMES})
       ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME} POST_BUILD
                          COMMAND ${CMAKE_COMMAND} -E echo Copying "${_DLL}" to "${_NOINST_DIR}"
-                         COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
+                         COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}" || 
+								${CMAKE_COMMAND} -E echo ERROR copying "${_DLL}" to "${_NOINST_DIR}" retrying... &&
+								${CMAKE_COMMAND} -E sleep 2 &&
+								${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
                          VERBATIM)
     ENDFOREACH()
 
@@ -448,7 +451,10 @@ MACRO(SD_INSTALL_CUSTOM_3RDPARTY TARGET_NAME)
 	FOREACH(_DLL ${_COMPILER_DLL_PATHNAMES})
 		ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME} POST_BUILD
                  		   COMMAND ${CMAKE_COMMAND} -E echo Copying "${_DLL}" to "${_NOINST_DIR}"
-                 		   COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
+                 		   COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}" || 
+								${CMAKE_COMMAND} -E echo ERROR copying "${_DLL}" to "${_NOINST_DIR}" retrying... &&
+								${CMAKE_COMMAND} -E sleep 2 &&
+								${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
                  		   VERBATIM)
 	ENDFOREACH()
 
