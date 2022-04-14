@@ -4,9 +4,19 @@
 
 /// @brief Creates an implementation of file data storage
 #define CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(type)\
-    template void FileDataStorage<type>::Initialise(const std::string& p_fileName, const std::string& p_userId);\
+    template void FileDataStorage<type>::Initialise(const std::string& p_fileName, \
+        const std::string& p_userId,                        \
+        const std::time_t& p_trialStartTime,                \
+        const std::string& p_blackboxFilename,              \
+        const std::string& p_blackboxName,                  \
+        const std::time_t& p_blackboxTime,                  \
+        const std::string& p_environmentFilename,           \
+        const std::string& p_environmentName,               \
+        const std::time_t& p_environmentTime,               \
+        InterventionType   p_interventionType               \
+        );                                                  \
     template void FileDataStorage<type>::Shutdown();\
-    template void FileDataStorage<type>::Save(type& p_situation, int p_timestamp);
+    template void FileDataStorage<type>::Save(type& p_situation, const DecisionTuple& decisions, int p_timestamp);
 
 // Write a literal string to the stream, as the string in text format (without conversion)
 #define WRITE_STRING_LIT(stream, string) stream << string << "\n"
@@ -15,85 +25,45 @@
 // Write a variable to the stream
 #define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n" //Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
 
-/// @brief Write headers for the environment data in the same order as actual data will be written
-/// @param p_outputStream stream to write headers to
-void WriteEnvironmentHeaders(std::ostream& p_outputStream) {
-    WRITE_STRING_LIT(p_outputStream, "TimeOfDay");
-    WRITE_STRING_LIT(p_outputStream, "Clouds");
-    WRITE_STRING_LIT(p_outputStream, "Rain");
-}
-/// @brief Write data about the current environment to the file.
-/// @tparam BlackBoxData Type of Environment Info to use, should contain the proper definitions.
-/// @param p_outputStream The stream to write data to.
-/// @param p_data          The current data information.
-template<class BlackBoxData>
-void WriteEnvironmentData(std::ostream& p_outputStream, BlackBoxData& p_data) {
-    WRITE_VAR(p_outputStream, 0); // are set in the track not in the black box data
-    WRITE_VAR(p_outputStream, 0);
-    WRITE_VAR(p_outputStream, 0);
-}
-/// @brief Write headers for the car data in the same order as actual data will be written
-/// @param p_outputStream stream to write headers to
-inline void WriteCarHeaders(std::ostream& p_outputStream) {
-    WRITE_STRING_LIT(p_outputStream, "Speed");
-    WRITE_STRING_LIT(p_outputStream, "Gear");
-    WRITE_STRING_LIT(p_outputStream, "Headlights");
-    WRITE_STRING_LIT(p_outputStream, "Offroad");
-}
-/// @brief Write data about the current car status to the file.
-/// @tparam BlackBoxData Type of Car Info to use, should contain the proper definitions.
-/// @param p_outputStream The stream to write data to.
-/// @param p_data The current car status information.
-template<class BlackBoxData>
-void WriteCarData(std::ostream& p_outputStream, BlackBoxData& p_data) {
-    WRITE_VAR(p_outputStream, p_data.Car._speed_x * 3.6f);
-    WRITE_VAR(p_outputStream, p_data.Car._gear);
-    WRITE_VAR(p_outputStream, false);
-    WRITE_VAR(p_outputStream, false);
-}
-/// @brief Write headers for the player data in the same order as actual data will be written
-/// @param p_outputStream stream to write headers to
-inline void WritePlayerHeaders(std::ostream& p_outputStream) {
-    WRITE_STRING_LIT(p_outputStream, "AccelCmd");
-    WRITE_STRING_LIT(p_outputStream, "BrakeCmd");
-    WRITE_STRING_LIT(p_outputStream, "ClutchCmd");
-    WRITE_STRING_LIT(p_outputStream, "SteerCmd");
-}
-/// @brief Write data about the current player control status to the file.
-/// @tparam BlackBoxData Type of Player Info to use, should contain the proper definitions.
-/// @param p_outputStream The stream to write data to.
-/// @param p_data         The current player control information.
-template<class BlackBoxData>
-void WritePlayerData(std::ostream& p_outputStream, BlackBoxData& p_data) {
-    WRITE_VAR(p_outputStream, p_data.Car._accelCmd);
-    WRITE_VAR(p_outputStream, p_data.Car._brakeCmd);
-    WRITE_VAR(p_outputStream, p_data.Car._clutchCmd);
-    WRITE_VAR(p_outputStream, p_data.Car._steerCmd);
-}
-
 /// @brief Initialise the file data storage.
 /// End result: a file is created at the given filepath, and initial data is written to the file.
 /// @param p_fileName Path of the file to save.
 /// @param p_userId User ID of the current player.
 template<class BlackBoxData>
-void FileDataStorage<BlackBoxData>::Initialise(const std::string& p_fileName, const std::string& p_userId) {
+void FileDataStorage<BlackBoxData>::Initialise(const std::string& p_fileName,
+                                               const std::string& p_userId,
+                                               const std::time_t& p_trialStartTime,
+                                               const std::string& p_blackboxFilename,
+                                               const std::string& p_blackboxName,
+                                               const std::time_t& p_blackboxTime,
+                                               const std::string& p_environmentFilename,
+                                               const std::string& p_environmentName,
+                                               const std::time_t& p_environmentTime,
+                                               InterventionType p_interventionType
+) {
     m_outputStream.open(p_fileName);
+    // User and trial data
     WRITE_STRING_VAR(m_outputStream, p_userId);
-
+    WRITE_VAR(m_outputStream, p_trialStartTime);
+    // Black box data
+    WRITE_STRING_VAR(m_outputStream, p_blackboxFilename);
+    WRITE_VAR(m_outputStream, p_blackboxTime);
+    WRITE_STRING_VAR(m_outputStream, p_blackboxName);
+    // Environment data
+    WRITE_STRING_VAR(m_outputStream, p_environmentFilename);
+    WRITE_VAR(m_outputStream, p_environmentTime);
+    WRITE_STRING_VAR(m_outputStream, p_environmentName);
+    // Intervention data
+    WRITE_VAR(m_outputStream, p_interventionType);
+    // Headers to indicate what data will be saved
     if (m_saveSettings->EnvironmentData) {
-        WriteEnvironmentHeaders(m_outputStream);
-    }
-    if (m_saveSettings->CarData) {
-        WriteCarHeaders(m_outputStream);
+        WRITE_STRING_LIT(m_outputStream, "GameState");
     }
     if (m_saveSettings->HumanData) {
-        WritePlayerHeaders(m_outputStream);
+        WRITE_STRING_LIT(m_outputStream, "UserInput");
     }
     if (m_saveSettings->InterventionData) {
-        // TODO: write intervention headers here
-    }
-    if (m_saveSettings->MetaData) {
-        // TODO: write metadata headers here
+        WRITE_STRING_LIT(m_outputStream, "Decisions");
     }
 }
 
@@ -107,31 +77,56 @@ void FileDataStorage<BlackBoxData>::Shutdown() {
 /// @param p_data The current driving situation to write data about.
 /// @param p_timestamp The current timestamp of the situation.
 template<class BlackBoxData>
-void FileDataStorage<BlackBoxData>::Save(BlackBoxData& p_data, int p_timestamp) {
+void FileDataStorage<BlackBoxData>::Save(BlackBoxData& p_data, const DecisionTuple& p_decisions, int p_timestamp) {
     WRITE_VAR(m_outputStream, p_timestamp);
-
     if (m_saveSettings->EnvironmentData) {
-        WriteEnvironmentData(m_outputStream, p_data);
-    }
-    if (m_saveSettings->CarData) {
-        WriteCarData(m_outputStream, p_data);
+        Posd pos = p_data.Car.pub.DynGCg.pos;
+        tDynPt mov = p_data.Car.pub.DynGC;
+        WRITE_VAR(m_outputStream, pos.x); // x-position
+        WRITE_VAR(m_outputStream, pos.y); // y-position
+        WRITE_VAR(m_outputStream, pos.z); // z-position
+        WRITE_VAR(m_outputStream, pos.ax);// x-direction
+        WRITE_VAR(m_outputStream, pos.ay);// y-direction
+        WRITE_VAR(m_outputStream, pos.az);// z-direction
+        WRITE_VAR(m_outputStream, mov.vel.x); // speed
+        WRITE_VAR(m_outputStream, mov.acc.x); // acceleration
+        WRITE_VAR(m_outputStream, p_data.Car.priv.gear); // gear
     }
     if (m_saveSettings->HumanData) {
-        WritePlayerData(m_outputStream, p_data);
-
+        tCarCtrl ctrl = p_data.Car.ctrl;
+        WRITE_VAR(m_outputStream, ctrl.steer); // steer
+        WRITE_VAR(m_outputStream, ctrl.brakeCmd); // brake
+        WRITE_VAR(m_outputStream, ctrl.accelCmd); // gas
+        WRITE_VAR(m_outputStream, ctrl.clutchCmd); // clutch
     }
     if (m_saveSettings->InterventionData) {
-        // TODO: write intervention data here
-    }
-    if (m_saveSettings->MetaData) {
-        // TODO: write metadata data here
+        if (p_decisions.GetContainsSteer()) {
+            WRITE_STRING_LIT(m_outputStream, "SteerDecision");
+            WRITE_VAR(m_outputStream, p_decisions.GetSteer());
+        }
+        if (p_decisions.GetContainsBrake()) {
+            WRITE_STRING_LIT(m_outputStream, "BrakeDecision");
+            WRITE_VAR(m_outputStream, p_decisions.GetBrake());
+        }
+        if (p_decisions.GetContainsAccel()) {
+            WRITE_STRING_LIT(m_outputStream, "AccelDecision");
+            WRITE_VAR(m_outputStream, p_decisions.GetAccel());
+        }
+        if (p_decisions.GetContainsGear()) {
+            WRITE_STRING_LIT(m_outputStream, "GearDecision");
+            WRITE_VAR(m_outputStream, p_decisions.GetGear());
+        }
+        if (p_decisions.GetContainsLights()) {
+            WRITE_STRING_LIT(m_outputStream, "LightsDecision");
+            WRITE_VAR(m_outputStream, p_decisions.GetLights());
+        }
+        WRITE_STRING_LIT(m_outputStream, "NONE"); // Write that there are no (more) decisions
     }
 }
 
 /// @brief Initialise the temporary data storage
 /// @param p_saveSettings Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
 template<class DriveSituation>
-FileDataStorage<DriveSituation>::FileDataStorage(tDataToStore* p_saveSettings) :m_saveSettings(p_saveSettings)
-{
+FileDataStorage<DriveSituation>::FileDataStorage(tDataToStore* p_saveSettings) :m_saveSettings(p_saveSettings) {
 
 };

@@ -3,7 +3,7 @@
 #include <fstream>
 #include "BlackBoxData.h"
 #include "ConfigEnums.h"
-
+#include "DecisionTuple.h"
 
 /// @brief               A class that can store data to a file
 /// @tparam BlackBoxData The data that needs to be stored
@@ -15,13 +15,23 @@ class FileDataStorage {
     /// @brief Output filestream to write data to, should be initialised through @link FileDataStorage::Initialise
     std::ofstream m_outputStream;
  public:
-    FileDataStorage(tDataToStore* p_saveSettings);
+    explicit FileDataStorage(tDataToStore* p_saveSettings);
 
-    void Initialise(const std::string& p_fileName, const std::string& p_userId);
+    void Initialise(const std::string& p_fileName,
+                    const std::string& p_userId,
+                    const std::time_t& p_trialStartTime,
+                    const std::string& p_blackboxFilename,
+                    const std::string& p_blackboxName,
+                    const std::time_t& p_blackboxTime,
+                    const std::string& p_environmentFilename,
+                    const std::string& p_environmentName,
+                    const std::time_t& p_environmentTime,
+                    InterventionType   p_interventionType
+                    );
 
     void Shutdown();
 
-    void Save(BlackBoxData& p_data, int p_timestamp);
+    void Save(BlackBoxData& p_data, const DecisionTuple& decisions, int p_timestamp);
 };
 
 /// @brief Standard implementation of the file data storage

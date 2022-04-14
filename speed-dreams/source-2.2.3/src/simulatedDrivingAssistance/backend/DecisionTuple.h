@@ -28,6 +28,14 @@ public:
 
     float GetAccel() const;
 
+    bool GetLights() const;
+
+    bool GetContainsBrake() const;
+    bool GetContainsSteer() const;
+    bool GetContainsGear() const;
+    bool GetContainsAccel() const;
+    bool GetContainsLights() const;
+
 private:
     IDecision* buffer[DECISIONS_COUNT];
 
