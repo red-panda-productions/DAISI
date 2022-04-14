@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConfigEnums.h"
+#include "guifont.h"
 
 /// @brief Represents a position on screen as percentages of the full screen.
 typedef struct ScreenPosition
@@ -27,6 +28,7 @@ typedef struct TextureData
 typedef struct TextData
 {
     const char* Text;
+    GfuiFontClass* Font;
     tScreenPosition ScrPos;
 } tTextData;
 
