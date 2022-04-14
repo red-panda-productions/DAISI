@@ -294,7 +294,7 @@ main(int argc, char *argv[])
 	#endif
 	// ... Use new Memory Manager
 
-	// RPP: shut down mediator
+	// SIMULATED DRIVING ASSISTANCE: safely shutdown the experiment
 	SMediator::GetInstance()->RaceStop();
 
 	return (piUserItf && piRaceEngine) ? 0 : 1;
