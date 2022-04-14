@@ -185,10 +185,11 @@ Changed:
 
                     changed cGrBoard(): removed assignments of removed members
                     changed ~cGrBoard(): removed deletes of removed members
-                    changed grInitBoardCar() 
-                    changed refreshBoard()
+                    changed grInitBoardCar(): added loading of indicator textures
+                    changed refreshBoard(): removed deleted ui elements
                     changed selectBoard(): removed cases for removed elements
                     changed loadDefaults(): removed loads of parameters for removed elements
+                    changed grDispCounterBoard2(): removed gauges
 
                     removed grDispGGraph()
                     removed grDispEngineLeds()
@@ -243,6 +244,7 @@ Changed:
                     removed leaderFlag
                     removed leaderNb
                     removed GFlag
+                    removed counterFlag
                     removed dashboardFlag
                     removed arcadeFlag
                     removed iStart
