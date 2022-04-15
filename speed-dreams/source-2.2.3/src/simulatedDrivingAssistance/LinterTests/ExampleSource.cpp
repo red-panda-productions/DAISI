@@ -1,6 +1,6 @@
-#include "ExampleHeader.h"
+#include "ExampleHeader.hpp"
 
-void ExampleClass::Hello(int name)
+void exampleClass::hello(int name)
 {
     
 }
