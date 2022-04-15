@@ -1,7 +1,7 @@
 #pragma once
 
-class exampleClass
+class ExampleClass
 {
 public:
-    void hello(int name);
+    void Hello(int p_name);
 };

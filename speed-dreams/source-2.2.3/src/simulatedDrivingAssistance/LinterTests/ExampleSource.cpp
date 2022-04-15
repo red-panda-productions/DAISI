@@ -1,6 +1,6 @@
 #include "ExampleHeader.hpp"
-
-void exampleClass::hello(int name)
+#include <iostream>
+void ExampleClass::Hello(int p_name)
 {
-    //hello
+    std::cout << p_name << std::endl;
 }
