@@ -26,7 +26,7 @@ jobs:
 
       - name: Fail?
         if: steps.linter.outputs.checks-failed > 0
-        run: |
-          echo "Some files failed the linting checks!"
+        run: echo "Some files failed the linting checks!"
+        run: exit 1
 
       
