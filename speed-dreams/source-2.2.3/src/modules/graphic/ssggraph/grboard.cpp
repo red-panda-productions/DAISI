@@ -470,7 +470,7 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
     GfuiDrawString(
         rightAnchor * p_data->ScrPos.X, 
         TOP_ANCHOR * p_data->ScrPos.Y, 
-        p_data->Text, nullptr, normal_color_);
+        p_data->Text, p_data->Font, normal_color_);
 }
 
 // SIMULATED DRIVING ASSISTANCE

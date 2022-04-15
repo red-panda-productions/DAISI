@@ -28,7 +28,7 @@ typedef struct TextureData
 typedef struct TextData
 {
     const char* Text;
-   // GfuiFontClass* Font;
+    GfuiFontClass* Font;
     tScreenPosition ScrPos;
 } tTextData;
 
