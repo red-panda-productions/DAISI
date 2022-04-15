@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ExampleHeader.hpp"
 
-void ExampleClass::Hello(int p_name)
+void ExampleClass::Hello(int name)
 {
-    std::cout << p_name << std::endl;
+    std::cout << name << std::endl;
 }
