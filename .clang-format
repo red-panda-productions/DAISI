@@ -1,6 +1,8 @@
 ---
 BasedOnStyle: Google
 AccessModifierOffset: '-4'
+AllowShortBlocksOnASingleLine: 'true'
+AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBraces: Allman
 IndentWidth: '4'
 ...
