@@ -107,6 +107,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
     m_server.CloseServer();
+    VariablesToReceive.clear();
+    m_variableDecisionMap.clear();
 }
 
 /// @brief                  Inserts a string of value of a pointer into a msgpack message
