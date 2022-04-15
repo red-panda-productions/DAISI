@@ -27,6 +27,8 @@
             </section>
             <section name="sound">
                 <attstr name ="source" val="left.wav"/>
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop_interval" val="3"/>
             </section>
         </section>
         <section name ="steer right">
@@ -42,6 +44,7 @@
             </section>
             <section name="sound">
                 <attstr name ="source" val="right.wav"/>
+                <attstr name="looping" val="false"/>
             </section>
         </section>
         <section name ="brake">

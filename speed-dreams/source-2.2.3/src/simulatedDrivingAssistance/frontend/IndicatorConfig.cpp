@@ -75,6 +75,13 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
     snprintf(sndPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), source);
     data->Path = sndPath;
 
+    data->Looping = strcmp(GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_LOOPING, VAL_NO), VAL_YES) == 0;
+    data->LoopInterval = GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_LOOP_INTERVAL, nullptr, 0);
+
+    if(data->LoopInterval < 0) {
+        throw std::runtime_error("Loop interval must be greater than 0");
+    }
+
     return data;
 }
 

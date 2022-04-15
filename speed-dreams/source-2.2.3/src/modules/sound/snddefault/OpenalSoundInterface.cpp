@@ -235,13 +235,35 @@ void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundDat
         sound->update();
     }
 
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+    // Go through all indicators and set Active to false if the indicator is not active.
+    for (const auto &indicator : IndicatorConfig::GetInstance()->GetIndicatorData()) {
+        if(!indicator.Sound) continue;
+
+        if(std::any_of(activeIndicators.begin(), activeIndicators.end(), [&](const auto &p_activeIndicator) {
+            return indicator.Action == p_activeIndicator.Action;
+        })) {
+            continue;
+        }
+
+        indicator.Sound->ActiveLastFrame = false;
+    }
+
     // Start all currently active interventions if they were not active yet.
-    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators()) {
+    for (const tIndicatorData& indicator : activeIndicators) {
         Sound* sound = m_indicatorSounds[indicator.Action];
-        if(sound && !sound->isPlaying() && GfTimeClock() - sound->GetLastStart() > 10)
-        {
+        if (!sound) continue;
+
+        if(!indicator.Sound->Looping && indicator.Sound->ActiveLastFrame) continue;
+
+        if(!indicator.Sound->Looping && !sound->isPlaying()) {
+            sound->start();
+        } else if (indicator.Sound->Looping && GfTimeClock() - sound->GetLastStart() > indicator.Sound->LoopInterval) {
             sound->start();
         }
+
+        indicator.Sound->ActiveLastFrame = true;
     }
 }
 	
