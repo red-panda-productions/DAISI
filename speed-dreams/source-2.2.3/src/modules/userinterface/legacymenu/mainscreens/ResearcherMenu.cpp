@@ -345,7 +345,7 @@ static void LoadConfigSettings(void* p_param)
             lastDirectoryIndex = i;
             break;
         }
-        std::string buttonText = "Choose Black Box: ..\\" + fileName.substr(lastDirectoryIndex, std::string::npos);
+        std::string buttonText = "Choose Black Box: fakePath" + fileName.substr(lastDirectoryIndex, std::string::npos);
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     }
 
@@ -368,6 +368,29 @@ static void OnActivate(void* /* dummy */)
         return;
     }
     LoadDefaultSettings();
+}
+
+
+/// @brief Releases a file dialog
+void ReleaseDialogAndCom(IFileDialog* fileDialog)
+{
+    fileDialog->Release();
+    CoUninitialize();
+}
+
+/// @brief Releases a shell item and a file dialog
+void ReleaseShellItemAndDialogAndCom(IShellItem* shellItem, IFileDialog* fileDialog)
+{
+    shellItem->Release();
+    ReleaseDialogAndCom(fileDialog);
+}
+
+/// @brief Edits the black box button with a message, releases a shell item and file dialog
+void ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(const char* message, IShellItem* shellItem, IFileDialog* fileDialog)
+{
+    m_blackBoxChosen = false;
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, message);
+    ReleaseShellItemAndDialogAndCom(shellItem, fileDialog);
 }
 
 /// @brief Opens a file dialog and changes the button to reflect this choice.
@@ -393,15 +416,13 @@ static void SelectFile(void* /* dummy */)
     hresult = fileDialog->SetFileTypes(1, filter);
     if (FAILED(hresult))
     {
-	    fileDialog->Release();
-    	CoUninitialize();
+        ReleaseDialogAndCom(fileDialog);
     	return;
     }
     hresult = fileDialog->Show(NULL);
     if (FAILED(hresult))
     {
-	    fileDialog->Release();
-    	CoUninitialize();
+        ReleaseDialogAndCom(fileDialog);
     	return;
     }
 
@@ -410,17 +431,14 @@ static void SelectFile(void* /* dummy */)
     hresult = fileDialog->GetResult(&shellItem);
     if (FAILED(hresult))
     {
-	    fileDialog->Release();
-    	CoUninitialize();
+        ReleaseDialogAndCom(fileDialog);
     	return;
     } // I feel like I should release shellItem here as well, but the Microsoft Docs do not do so at this stage
     PWSTR filePath;
     hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
     if (FAILED(hresult))
     {
-	    shellItem->Release();
-    	fileDialog->Release();
-    	CoUninitialize();
+        ReleaseShellItemAndDialogAndCom(shellItem, fileDialog);
     	return;
     }
 
@@ -431,21 +449,13 @@ static void SelectFile(void* /* dummy */)
     if (fileName.size() >= BLACKBOX_PATH_SIZE - 1) // std::string isn't null terminated, while Windows paths/char* are
     {
         // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars, or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
-        m_blackBoxChosen = false;
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, "Choose Black Box: you've broken COM interface: your > 260 char file path was not aliased to an 8.3 file name");
-        shellItem->Release();
-        fileDialog->Release();
-        CoUninitialize();
+        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom("Choose Black Box: you've broken COM interface: your > 260 char file path was not aliased to an 8.3 file name", shellItem, fileDialog);
         return;
     }
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (fileName.size() <= 7) 
     {
-        m_blackBoxChosen = false;
-    	GfuiButtonSetText(s_scrHandle, m_blackBoxButton, "Choose Black Box: chosen file was not a .exe");
-    	shellItem->Release();
-    	fileDialog->Release();
-    	CoUninitialize();
+        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom("Choose Black Box: chosen file was not a .exe", shellItem, fileDialog);
     	return;
     }
     // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
@@ -456,11 +466,7 @@ static void SelectFile(void* /* dummy */)
     }
     // Enforce that file ends in .exe
     if (std::strcmp(extension.c_str(), ".exe") != 0) {
-        m_blackBoxChosen = false;
-    	GfuiButtonSetText(s_scrHandle, m_blackBoxButton, "Choose Black Box: chosen file was not a .exe");
-    	shellItem->Release();
-    	fileDialog->Release();
-    	CoUninitialize();
+        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom("Choose Black Box: chosen file was not a .exe", shellItem, fileDialog);
     	return;
     }
 
@@ -472,19 +478,19 @@ static void SelectFile(void* /* dummy */)
         lastDirectoryIndex = i;
         break;
     }
-    std::string buttonText = "Choose Black Box: ..\\" + fileName.substr(lastDirectoryIndex, std::string::npos);
+    std::string buttonText = "Choose Black Box: fakePath" + fileName.substr(lastDirectoryIndex, std::string::npos);
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-    GfuiButtonSetText(s_scrHandle, m_applyButton, "Apply");
+    GfuiButtonSetText(s_scrHandle, m_applyButton, "Apply"); // Reset the apply button
+
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetBlackBoxFilePath(fileName.c_str());
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, fileName.c_str());
     m_blackBoxChosen = true;
-    // Release variables: relevant ones are also released early if an action didn't succeed => is potentially a lot of code repetition because of nesting limitation
+    // Release variables: relevant ones are also released early if an action didn't succeed
     CoTaskMemFree(filePath);
-    shellItem->Release();
-    fileDialog->Release();
-    CoUninitialize();
+    ReleaseShellItemAndDialogAndCom(shellItem, fileDialog);
 }
+
 
 /// @brief            Initializes the researcher menu
 /// @param p_nextMenu The scrHandle of the next menu
