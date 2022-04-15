@@ -7,6 +7,7 @@
 #include "ConfigEnums.h"
 #include "BlackBoxData.h"
 #include "SQLDatabaseStorage.h"
+#include "FileDataStorage.h"
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
@@ -34,6 +35,7 @@ public:
 private:
     Recorder* m_recorder = nullptr;
     SQLDatabaseStorage m_SQLDatabaseStorage;
+    FileDataStorage* m_fileBufferStorage = nullptr;
 };
 
 

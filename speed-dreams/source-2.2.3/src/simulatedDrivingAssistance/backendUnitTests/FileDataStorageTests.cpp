@@ -1,11 +1,7 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "FileDataStorage.h"
-#include "FileDataStorage.inl"
 #include "mocks/BlackBoxDataMock.h"
-
-CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(BlackBoxDataMock)
-
 #define TEST_FILE_PATH "testDataStorage.txt"
 
 // Get dummy time variables. These set the trial to have started now,
@@ -45,15 +41,14 @@ std::string getTimeAsString(time_t time) {
 TEST(FileDataStorageTests, NoStorageTimestampZero) {
     // Initialise class, read+write no values
     DataToStore params = {false, false, false, false, false};
-    FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
+    FileDataStorage fileDataStorage(params);
 
     GET_DUMMY_TIMES;
 
     // Write a file with dummy initialisation data, save timestamp 0, and shut down
     fileDataStorage.Initialise(DUMMY_INITIALISATION_PARAMETERS);
-    Random random;
-    BlackBoxDataMock exampleSituation = CreateRandomBlackBoxDataMock(random);
-    fileDataStorage.Save(exampleSituation, DecisionTuple(), 0);
+    fileDataStorage.Save(nullptr, nullptr, 0);
+    fileDataStorage.SaveNoDecisions();
     fileDataStorage.Shutdown();
 
     // Read the written file

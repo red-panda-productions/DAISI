@@ -21,6 +21,7 @@
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
+#define BUFFER_FILE_PATH "C:\\Users\\letsp\\Documents\\University\\SP\\buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -50,6 +51,19 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
+
+    m_fileBufferStorage = new FileDataStorage(Config.GetDataCollectionSetting());
+    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
+    m_fileBufferStorage->Initialise(BUFFER_FILE_PATH,
+                                   Config.GetUserId(),
+                                   std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
+                                   blackBoxPath.filename().string(),
+                                   blackBoxPath.stem().string(),
+                                    std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
+                                   "Unknown", // TODO: Filename of environment is not available to this method yet
+                                   "Unknown", // TODO: Name of environment is not available to this method yet
+                                   0, // TODO: Update date of environment is not available to this method yet
+                                   Config.GetInterventionType());
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -60,9 +74,16 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 template <typename SocketBlackBox, typename SDAConfig>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount)
 {
+    if (m_fileBufferStorage) m_fileBufferStorage->Save(p_car, p_situation, p_tickCount);
+
     DecisionTuple decision;
 
-    if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) return false;
+    if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) {
+        if (m_fileBufferStorage) m_fileBufferStorage->SaveNoDecisions();
+        return false;
+    }
+
+    if (m_fileBufferStorage) m_fileBufferStorage->SaveDecisions(decision);
 
     int decisionCount = 0;
     IDecision** decisions = decision.GetActiveDecisions(decisionCount);
@@ -105,5 +126,6 @@ DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
-    m_SQLDatabaseStorage.Run("INPUT FILE HERE");
+    m_fileBufferStorage->Shutdown();
+    m_SQLDatabaseStorage.Run(BUFFER_FILE_PATH);
 }

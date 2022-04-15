@@ -568,7 +568,7 @@ void SQLDatabaseStorage::CloseDatabase() {
     delete m_connection;
 }
 
-void SQLDatabaseStorage::Run(std::string p_inputFilePath)
+void SQLDatabaseStorage::Run(const std::string& p_inputFilePath)
 {
     std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_connection_settings.txt");
@@ -598,7 +598,9 @@ void SQLDatabaseStorage::Run(std::string p_inputFilePath)
 
     if (OpenDatabase(ip, port, username, password, schema))
     {
-        //StoreData([INPUT FILE PATH HERE]);
+        std::cout << "Writing local buffer file to database" << std::endl;
+        StoreData(p_inputFilePath);
         CloseDatabase();
+        std::cout << "Finished writing to database" << std::endl;
     }
 }

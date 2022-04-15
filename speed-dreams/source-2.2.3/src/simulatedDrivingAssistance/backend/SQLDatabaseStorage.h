@@ -10,7 +10,7 @@ class SQLDatabaseStorage : IDataStorage
 {
 public:
     SQLDatabaseStorage();
-    void Run(const std::string p_inputFilePath);
+    void Run(const std::string& p_inputFilePath);
     void StoreData(const std::string p_inputFilePath) override;
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
