@@ -56,7 +56,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="brake.wav"/>
+                <attstr name ="source" val="warning_brake_brake.wav"/>
             </section>
         </section>
     </section>
