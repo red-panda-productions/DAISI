@@ -3,5 +3,5 @@
 class exampleClass
 {
 public:
-    void hello(int name);
+void hello(int name);
 };
