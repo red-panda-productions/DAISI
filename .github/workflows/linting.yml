@@ -20,7 +20,7 @@ jobs:
         id: linter
         with: 
           style: file #should change
-          version: '14'
+          version: '10'
           lines-changed-only: true
           extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,inl'
           tidy-checks: '-*'

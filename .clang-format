@@ -5,4 +5,5 @@ AllowShortBlocksOnASingleLine: 'true'
 AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBraces: Allman
 IndentWidth: '4'
+
 ...
