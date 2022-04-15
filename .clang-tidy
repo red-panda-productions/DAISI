@@ -216,10 +216,14 @@ CheckOptions:
     value:           CamelCase    
   - key:             readability-identifier-naming.MethodCase
     value:           CamelCase 
+  - key:             readability-identifier-naming.ParameterCase
+    value:           camelBack
+  - key:             readability-identifier-naming.ParameterPrefix
+    value:           'p_'
   - key:             readability-identifier-naming.PrivateMemberCase
     value:           camelBack
   - key:             readability-identifier-naming.PrivateMemberPrefix
-    value:           'p_'
+    value:           'm_'
   - key:             readability-identifier-naming.ProtectedMemberCase
     value:           CamelCase 
   - key:             readability-identifier-naming.PublicMemberCase
