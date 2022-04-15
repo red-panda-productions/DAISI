@@ -1,8 +1,9 @@
 
 
 File(GLOB LINT_HEADERS *.h)
+File(GLOB LINT_HEADERS_CPP *.hpp)
 File(GLOB LINT_SOURCES *.cpp)
 File(GLOB LINT_INLINES *.inl)
 
 
-add_library(linttest ${LINT_HEADERS} ${LINT_SOURCES} ${LINT_INLINES})
+add_library(linttest ${LINT_HEADERS} ${LINT_HEADERS_CPP} ${LINT_SOURCES} ${LINT_INLINES})
