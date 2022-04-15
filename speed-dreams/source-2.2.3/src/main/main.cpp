@@ -44,6 +44,8 @@
 
 #include "../rppUtils/RppUtils.hpp"
 
+#include "Mediator.h"
+
 
 
 // If defined in tgf.h:
@@ -291,6 +293,9 @@ main(int argc, char *argv[])
 
 	#endif
 	// ... Use new Memory Manager
+
+	// SIMULATED DRIVING ASSISTANCE: safely shutdown the experiment
+	SMediator::GetInstance()->RaceStop();
 
 	return (piUserItf && piRaceEngine) ? 0 : 1;
 }

@@ -128,8 +128,8 @@ tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
 
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, "%sdata/fonts/%s", GfDataDir(), fontFile);
-    data->Font = new GfuiFontClass(path);
-    data->Font->create(fontSize);
+    //data->Font = new GfuiFontClass(path);
+    //data->Font->create(fontSize);
 
     return data;
 }
