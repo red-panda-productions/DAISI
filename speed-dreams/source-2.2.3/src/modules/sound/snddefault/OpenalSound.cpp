@@ -304,7 +304,12 @@ void OpenalSound::resume()
 {
 	if (paused) {
 		paused = false;
-		alSourcePlay (source);
+        ALint state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+        if(state == AL_PAUSED) {
+            alSourcePlay(source);
+        }
 	}
 }
 
@@ -313,7 +318,13 @@ void OpenalSound::pause()
 {
 	if (!paused) {
 		paused = true;
-		alSourcePause (source);
+
+        ALint state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+        if(state == AL_PLAYING) {
+            alSourcePause(source);
+        }
 	}
 }
 
