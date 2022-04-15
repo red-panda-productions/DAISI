@@ -23,6 +23,7 @@ jobs:
           version: '14'
           lines-changed-only: true
           extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,inl'
+          tidy-checks: '-*'
 
       - name: Fail?
         if: steps.linter.outputs.checks-failed > 0
