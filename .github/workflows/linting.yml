@@ -1,0 +1,31 @@
+name: linter
+
+on:
+  push:
+    paths-ignore: "speed-dreams/3rdparty/**"
+    branches: [ main ]
+  pull_request:
+    paths-ignore: "speed-dreams/3rdparty/**"
+    branches: [ main ]
+
+  # Allow manually triggering from the actions tab
+  workflow_dispatch:
+
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shenxianpeng/cpp-linter-action@v1.4.1
+        id: linter
+        with: 
+          style: file #should change
+          lines-changed-only: true
+          extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx,inl'
+
+      - name: Fail?
+        if: steps.linter.outputs.checks-failed > 0
+        run: |
+          echo "Some files failed the linting checks!"
+
+      
