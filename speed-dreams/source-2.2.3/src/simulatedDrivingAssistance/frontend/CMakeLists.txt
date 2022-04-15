@@ -12,6 +12,8 @@ SET_TARGET_PROPERTIES(frontend PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_SDLIB_LIBRARY(frontend tgf tgfclient tgfdata portability)
 
+target_include_directories(frontend PUBLIC "${CMAKE_SOURCE_DIR}/src/libs/tgfclient")
+
 ADD_PLIB_LIBRARY(frontend)
 ADD_PLIB_INCLUDEDIR()
 
