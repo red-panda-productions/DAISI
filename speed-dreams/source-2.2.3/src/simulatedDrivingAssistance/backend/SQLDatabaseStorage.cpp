@@ -1,6 +1,7 @@
 #include "SQLDatabaseStorage.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
+#include "ConfigEnums.h"
 
 /// @brief reads input from input file, unless EOF has been reached
 #define READ_INPUT(p_inputFile, p_string) \
@@ -152,7 +153,7 @@ void SQLDatabaseStorage::CreateTables()
     EXECUTE(
             "CREATE TABLE IF NOT EXISTS Settings (\n"
             "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
-            "    intervention_mode   ENUM('Force', 'Ask', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
+            "    intervention_mode   ENUM('Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
             "    \n"
             "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id)\n"
             "    \n"
@@ -336,11 +337,29 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     GET_INT_FROM_RESULTS(environmentId)
 
     // settings
+    // Saved as enum index, but since indices in our code and MySQL are not the same, perform conversion
     std::string interventionMode;
-
     READ_INPUT(p_inputFile, interventionMode);
-
-    values = "'" + interventionMode + "'";
+    switch (std::stoi(interventionMode)) {
+        case INTERVENTION_TYPE_NO_SIGNALS:
+            values = "'Off'";
+            break;
+        case INTERVENTION_TYPE_ONLY_SIGNALS:
+            values = "'Suggest'";
+            break;
+        case INTERVENTION_TYPE_SHARED_CONTROL:
+            values = "'Shared'";
+            break;
+        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
+            values = "'Force'";
+            break;
+        case INTERVENTION_TYPE_ASK_FOR:
+            std::cout << "'Ask for' intervention type deprecated. Replaced by empty intervention in database" << std::endl;
+            values = "''";
+            break;
+        default:
+            throw std::exception("Invalid intervention type index read from buffer file");
+    }
 
     EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()")

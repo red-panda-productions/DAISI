@@ -12,8 +12,8 @@ CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(BlackBoxDataMock)
 //  the black box to have been created yesterday, and the environment last year.
 #define GET_DUMMY_TIMES std::chrono::system_clock::time_point now = std::chrono::system_clock::now();\
         std::time_t timeSimStart = std::chrono::system_clock::to_time_t(now);\
-        std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(100 * 24));\
-        std::time_t timeEnv = std::chrono::system_clock::to_time_t(now - std::chrono::hours(365 * 100 * 24));\
+        std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24));\
+        std::time_t timeEnv = std::chrono::system_clock::to_time_t(now - std::chrono::hours(365 * 24));\
 // Dummy parameters to use to quickly initialise a FileDataStorage system.
 #define DUMMY_INITIALISATION_PARAMETERS TEST_FILE_PATH,\
                                         "Player1",\
@@ -25,17 +25,24 @@ CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(BlackBoxDataMock)
                                         "Name of a dummy environment",\
                                         timeEnv,\
                                         INTERVENTION_TYPE_ONLY_SIGNALS
+
 // Values written at the top of a file initialised with the dummy parameters above
 #define DUMMY_INITIALISATION_FILE_ENTRIES ("Player1\n"            \
-    + std::to_string(timeSimStart)                                \
+    + getTimeAsString(timeSimStart)                                \
     + "\nnotABlackBox.exe\n"                                      \
-    + std::to_string(timeBlackBox)                                \
+    + getTimeAsString(timeBlackBox)                                \
     + "\nReally just a string\nenvironmentAlsoFake.xml\n"         \
-    + std::to_string(timeEnv)                                     \
+    + getTimeAsString(timeEnv)                                     \
     + "\nName of a dummy environment\n" + std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) + "\n")
+
+std::string getTimeAsString(time_t time) {
+    char buffer[20]; // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a null terminator makes 20
+    strftime(buffer, 20, "%F %T", gmtime(&time));
+    return buffer;
+};
+
 // Run a single test on the data storage system, containing no data except for the driver's name and the zero timestamp.
-TEST(FileDataStorageTests, NoStorageTimestampZero)
-{
+TEST(FileDataStorageTests, NoStorageTimestampZero) {
     // Initialise class, read+write no values
     DataToStore params = {false, false, false, false, false};
     FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);

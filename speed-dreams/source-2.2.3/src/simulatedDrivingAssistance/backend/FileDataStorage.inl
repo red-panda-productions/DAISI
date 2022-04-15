@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "ConfigEnums.h"
+#include <time.h>
 
 /// @brief Creates an implementation of file data storage
 #define CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(type)\
@@ -24,6 +25,12 @@
 #define WRITE_STRING_VAR(stream, string) stream << string << "\n"
 // Write a variable to the stream
 #define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n" //Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
+// Write a time_t variable to the stream as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
+// "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20. Thus allocate space for 20 characters.
+// Use {brackets} to ensure scope of buffer variable stays limited
+#define WRITE_TIME(stream, date) { char buffer[20]; \
+    strftime(buffer, 20, "%F %T", gmtime(&date)); \
+    stream << buffer << "\n"; }
 
 /// @brief Initialise the file data storage.
 /// End result: a file is created at the given filepath, and initial data is written to the file.
@@ -44,14 +51,14 @@ void FileDataStorage<BlackBoxData>::Initialise(const std::string& p_fileName,
     m_outputStream.open(p_fileName);
     // User and trial data
     WRITE_STRING_VAR(m_outputStream, p_userId);
-    WRITE_VAR(m_outputStream, p_trialStartTime);
+    WRITE_TIME(m_outputStream, p_trialStartTime);
     // Black box data
     WRITE_STRING_VAR(m_outputStream, p_blackboxFilename);
-    WRITE_VAR(m_outputStream, p_blackboxTime);
+    WRITE_TIME(m_outputStream, p_blackboxTime);
     WRITE_STRING_VAR(m_outputStream, p_blackboxName);
     // Environment data
     WRITE_STRING_VAR(m_outputStream, p_environmentFilename);
-    WRITE_VAR(m_outputStream, p_environmentTime);
+    WRITE_TIME(m_outputStream, p_environmentTime);
     WRITE_STRING_VAR(m_outputStream, p_environmentName);
     // Intervention data
     WRITE_VAR(m_outputStream, p_interventionType);
