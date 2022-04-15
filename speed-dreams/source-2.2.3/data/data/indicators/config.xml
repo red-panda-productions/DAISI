@@ -12,8 +12,8 @@
                 <attstr name ="content"   val="None"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
-                <attstr name ="font"      val="fragile.glf"/>
-                <attnum name ="font-size" val="5"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
         </section>
         <section name ="steer left">
@@ -26,8 +26,8 @@
                 <attstr name ="content"   val="Steer left"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
-                <attstr name ="font"      val="fragile.glf"/>
-                <attnum name ="font-size" val="5"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
                 <attstr name ="source" val="left.wav"/>
@@ -43,8 +43,8 @@
                 <attstr name ="content"   val="Steer right"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
-                <attstr name ="font"      val="fragile.glf"/>
-                <attnum name ="font-size" val="5"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
                 <attstr name ="source" val="right.wav"/>
@@ -60,8 +60,8 @@
                 <attstr name ="content"   val="Brake"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
-                <attstr name ="font"      val="fragile.glf"/>
-                <attnum name ="font-size" val="5"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
                 <attstr name ="source" val="brake.wav"/>

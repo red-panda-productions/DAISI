@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ConfigEnums.h"
-#include "guifont.h"
+#include "D:\Universiteit\UU\Jaar-3\Software-Project\code\speed-dreams\speed-dreams\source-2.2.3\src\libs\tgfclient\guifont.h"
 
 /// @brief Represents a position on screen as percentages of the full screen.
 typedef struct ScreenPosition
