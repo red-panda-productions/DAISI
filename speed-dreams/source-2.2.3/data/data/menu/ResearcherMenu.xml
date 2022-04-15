@@ -43,8 +43,8 @@
 	        <attstr name="h align" val="left"/>
 	        <attnum name="x" val="20"/>
 	        <attnum name="y" val="200"/>
-            <attnum name="width" val="110"/>
-	        <attstr name="font" val="small"/>
+            <attnum name="width" val="145"/>
+	        <attstr name="font" val="medium"/>
 	        <attstr name="color" val="0xFFFFFF"/>
 	        <attstr name="focused color" val="0xFFFFFF"/>
 	        <attstr name="pushed color" val="0xFFFFFF"/>

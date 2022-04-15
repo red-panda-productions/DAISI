@@ -29,6 +29,13 @@
 #define INDICATOR_AMOUNT 3
 #define PCONTROL_AMOUNT  6
 
+// Messages for file selection
+#define MSG_BLACK_BOX_NORMAL_TEXT   "Choose Black Box: "
+#define MSG_BLACK_BOX_NOT_EXE       "Choose Black Box: chosen file was not a .exe"
+#define MSG_BLACK_BOX_PATH_TOO_LONG "Choose Black Box: you've broken COM interface: your > 260 char file path was not aliased to an 8.3 file name"
+#define MSG_APPLY_NORMAL_TEXT       "Apply"
+#define MSG_APPLY_NO_BLACK_BOX      "Apply | You need to select a valid Black Box"
+
 // GUI screen handles
 static void* s_scrHandle  = nullptr;
 static void* s_nextHandle = nullptr;
@@ -229,7 +236,7 @@ static void SaveSettings(void* /* dummy */)
 {
     if (!m_blackBoxChosen)
     {
-        GfuiButtonSetText(s_scrHandle, m_applyButton, "Apply | You need to select a valid Black Box");
+        GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NO_BLACK_BOX);
 	    return;
     }
     // Save settings to the SDAConfig
@@ -345,7 +352,7 @@ static void LoadConfigSettings(void* p_param)
             lastDirectoryIndex = i;
             break;
         }
-        std::string buttonText = "Choose Black Box: fakePath" + fileName.substr(lastDirectoryIndex, std::string::npos);
+        std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + fileName.substr(lastDirectoryIndex + 1, std::string::npos);
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     }
 
@@ -449,13 +456,13 @@ static void SelectFile(void* /* dummy */)
     if (fileName.size() >= BLACKBOX_PATH_SIZE - 1) // std::string isn't null terminated, while Windows paths/char* are
     {
         // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars, or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
-        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom("Choose Black Box: you've broken COM interface: your > 260 char file path was not aliased to an 8.3 file name", shellItem, fileDialog);
+        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_PATH_TOO_LONG, shellItem, fileDialog);
         return;
     }
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (fileName.size() <= 7) 
     {
-        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom("Choose Black Box: chosen file was not a .exe", shellItem, fileDialog);
+        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
     	return;
     }
     // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
@@ -466,7 +473,7 @@ static void SelectFile(void* /* dummy */)
     }
     // Enforce that file ends in .exe
     if (std::strcmp(extension.c_str(), ".exe") != 0) {
-        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom("Choose Black Box: chosen file was not a .exe", shellItem, fileDialog);
+        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
     	return;
     }
 
@@ -478,9 +485,9 @@ static void SelectFile(void* /* dummy */)
         lastDirectoryIndex = i;
         break;
     }
-    std::string buttonText = "Choose Black Box: fakePath" + fileName.substr(lastDirectoryIndex, std::string::npos);
+    std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + fileName.substr(lastDirectoryIndex + 1, std::string::npos);
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-    GfuiButtonSetText(s_scrHandle, m_applyButton, "Apply"); // Reset the apply button
+    GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NORMAL_TEXT); // Reset the apply button
 
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetBlackBoxFilePath(fileName.c_str());
