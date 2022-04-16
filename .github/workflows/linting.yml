@@ -26,7 +26,7 @@ jobs:
         run: python3 -m pip install git+https://github.com/shenxianpeng/cpp-linter-action
 
       - name: Generate compilation database  
-        run: mkdir build && cmake -Bbuild src -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        run: mkdir build && cmake -Bbuild src -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S '${{github.workspace}}/speed-dreams/source-2.2.3'
 
       - name: run linter as package
         id: linter
