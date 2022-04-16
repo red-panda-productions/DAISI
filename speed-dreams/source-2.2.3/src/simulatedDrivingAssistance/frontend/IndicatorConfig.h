@@ -23,7 +23,7 @@
 #define PRM_ATTR_FONT           "font"
 #define PRM_ATTR_FONT_SIZE      "font-size"
 #define PRM_ATTR_LOOPING        "looping"
-#define PRM_ATTR_LOOP_INTERVAL  "loop_interval"
+#define PRM_ATTR_LOOP_INTERVAL  "loop-interval"
 
 #define VAL_YES                 "yes"
 #define VAL_NO                  "no"

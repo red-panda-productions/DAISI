@@ -32,7 +32,7 @@
             <section name="sound">
                 <attstr name ="source" val="warning_left_driftingright.wav"/>
                 <attstr name="looping" val="yes"/>
-                <attnum name="loop_interval" val="3"/>
+                <attnum name="loop-interval" val="3"/>
             </section>
         </section>
         <section name ="steer right">
