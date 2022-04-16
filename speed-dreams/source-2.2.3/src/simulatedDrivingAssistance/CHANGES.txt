@@ -76,6 +76,7 @@ Changed:
             guiobject.cpp
                 changed GfuiDraw()
                 changed GfuiReleaseObject()
+                added   GfuiDrawString() overloaded to support different parameters.
             tgfclient.h
                 added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
                 added   tRadioButtonInfo
@@ -97,6 +98,9 @@ Changed:
                 added   GfuiRadioButtonSetText()
                 added   GfuiRadioButtonSetTextColor()
                 added   GfuiRadioButtonIsSelected()
+
+                added   GfuiDrawString(): overload
+                added   GfuiFontClass: expose to API
     main/
         main.cpp
             added singletonfolder setup
