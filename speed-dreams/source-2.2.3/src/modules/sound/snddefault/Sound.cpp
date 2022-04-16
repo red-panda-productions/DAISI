@@ -88,6 +88,7 @@ void Sound::getSource (sgVec3 p, sgVec3 u) const
 	// Do nothing implementation.
 }
 
+// SIMULATED DRIVING ASSISTANCE
 /// @brief Get the time the sound was last started at.
 /// @return Time in seconds.
 double Sound::GetLastStart() const {

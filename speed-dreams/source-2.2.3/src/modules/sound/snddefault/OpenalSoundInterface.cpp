@@ -215,7 +215,7 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 	return sound;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
 /// @brief                Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
 void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData)
@@ -255,12 +255,16 @@ void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundDat
         Sound* sound = m_indicatorSounds[indicator.Action];
         if (!sound) continue;
 
+        // Don't start the sound if it shouldn't loop and was already active last frame.
         if(!indicator.Sound->Looping && indicator.Sound->ActiveLastFrame) continue;
 
-        if(!indicator.Sound->Looping && !sound->isPlaying()) {
-            sound->start();
-        } else if (indicator.Sound->Looping && GfTimeClock() - sound->GetLastStart() > indicator.Sound->LoopInterval) {
-            sound->start();
+        // Start the sound if it wasn't playing already.
+        if(!sound->isPlaying()) {
+            // If the sound is not looping start it.
+            // Else the sound is looping, check if it has been at least LoopInterval seconds since it last played start it.
+            if(!indicator.Sound->Looping || GfTimeClock() - sound->GetLastStart() > indicator.Sound->LoopInterval) {
+                sound->start();
+            }
         }
 
         indicator.Sound->ActiveLastFrame = true;
