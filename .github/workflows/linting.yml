@@ -1,9 +1,6 @@
 name: linter
 
 on:
-  push:
-    paths-ignore: "speed-dreams/3rdparty/**"
-    branches: [ main ]
   pull_request:
     paths-ignore: "speed-dreams/3rdparty/**"
     branches: [ main ]
