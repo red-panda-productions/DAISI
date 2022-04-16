@@ -11,6 +11,10 @@ on:
   # Allow manually triggering from the actions tab
   workflow_dispatch:
 
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
 jobs:
   cpp-linter:
     runs-on: windows-latest
@@ -24,6 +28,10 @@ jobs:
 
       - name: Install linter package
         run: python3 -m pip install git+https://github.com/shenxianpeng/cpp-linter-action
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
 
       - name: Generate compilation database  
         run: mkdir build && cmake -Bbuild src -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S '${{github.workspace}}/speed-dreams/source-2.2.3'
