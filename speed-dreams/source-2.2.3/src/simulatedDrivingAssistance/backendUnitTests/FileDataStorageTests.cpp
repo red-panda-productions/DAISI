@@ -9,7 +9,6 @@
 #define GET_DUMMY_TIMES std::chrono::system_clock::time_point now = std::chrono::system_clock::now();\
         std::time_t timeSimStart = std::chrono::system_clock::to_time_t(now);\
         std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24));\
-        std::time_t timeEnv = std::chrono::system_clock::to_time_t(now - std::chrono::hours(365 * 24));\
 // Dummy parameters to use to quickly initialise a FileDataStorage system.
 #define DUMMY_INITIALISATION_PARAMETERS TEST_FILE_PATH,\
                                         "Player1",\
@@ -19,23 +18,26 @@
                                         timeBlackBox,\
                                         "environmentAlsoFake.xml",\
                                         "Name of a dummy environment",\
-                                        timeEnv,\
+                                        0,\
                                         INTERVENTION_TYPE_ONLY_SIGNALS
 
-// Values written at the top of a file initialised with the dummy parameters above
-#define DUMMY_INITIALISATION_FILE_ENTRIES ("Player1\n"            \
-    + getTimeAsString(timeSimStart)                                \
-    + "\nnotABlackBox.exe\n"                                      \
-    + getTimeAsString(timeBlackBox)                                \
-    + "\nReally just a string\nenvironmentAlsoFake.xml\n"         \
-    + getTimeAsString(timeEnv)                                     \
-    + "\nName of a dummy environment\n" + std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) + "\n")
-
-std::string getTimeAsString(time_t time) {
-    char buffer[20]; // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a null terminator makes 20
-    strftime(buffer, 20, "%F %T", gmtime(&time));
+/// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
+/// @param date Time to format and write to the stream.
+inline std::string getTimeAsString(time_t date) {
+    // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
+    // Thus allocate space for 20 characters.
+    char buffer[20];
+    strftime(buffer, 20, "%F %T", gmtime(&date));
     return buffer;
-};
+}
+
+// Values written at the top of a file initialised with the dummy parameters above
+#define DUMMY_INITIALISATION_FILE_ENTRIES ("Player1\n"                                  \
+    + getTimeAsString(timeSimStart)                                                                    \
+    + "\nnotABlackBox.exe\n"                                                            \
+    + getTimeAsString(timeBlackBox)                                                     \
+    + "\nReally just a string\nenvironmentAlsoFake.xml\n0\nName of a dummy environment\n" \
+    + std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) + "\n")
 
 // Run a single test on the data storage system, containing no data except for the driver's name and the zero timestamp.
 TEST(FileDataStorageTests, NoStorageTimestampZero) {
@@ -56,7 +58,7 @@ TEST(FileDataStorageTests, NoStorageTimestampZero) {
     reader.close();
 
     // Check contents
-    ASSERT_EQ(fileContents, DUMMY_INITIALISATION_FILE_ENTRIES + "0\n");
+    ASSERT_EQ(fileContents, DUMMY_INITIALISATION_FILE_ENTRIES + "0\nEND");
 }
 
 /// @brief Test the data storage system over 5 timesteps with certain modules enabled.

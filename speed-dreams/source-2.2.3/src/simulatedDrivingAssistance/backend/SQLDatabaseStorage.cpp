@@ -413,6 +413,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
             tick = dataToSave;
         }
         else {READ_INPUT(p_inputFile, tick)}
+        if (tick == "END") break;
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 

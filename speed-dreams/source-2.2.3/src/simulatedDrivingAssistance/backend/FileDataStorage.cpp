@@ -69,6 +69,7 @@ void FileDataStorage::Initialise(const std::string& p_fileName,
 /// @brief Shutdown the file data storage.
 /// End result: any possible final data is written and the file is released.
 void FileDataStorage::Shutdown() {
+    m_outputStream << "END";
     m_outputStream.close();
 }
 
