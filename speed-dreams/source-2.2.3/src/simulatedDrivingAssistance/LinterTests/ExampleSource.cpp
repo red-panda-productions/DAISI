@@ -1,5 +1,7 @@
 #include <iostream>
 #include "ExampleHeader.hpp"
+#include "windows.h"
+#include "../backend/Mediator.h"
 
 void ExampleClass::Hello(int p_name)
 {
