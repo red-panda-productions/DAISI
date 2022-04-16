@@ -64,9 +64,6 @@ void FileDataStorage::Initialise(const std::string& p_fileName,
     if (m_saveSettings.HumanData) {
         WRITE_STRING_LIT(m_outputStream, "UserInput");
     }
-    if (m_saveSettings.InterventionData) {
-        WRITE_STRING_LIT(m_outputStream, "Decisions");
-    }
 }
 
 /// @brief Shutdown the file data storage.
@@ -105,7 +102,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, int p_timest
 
 /// @brief Initialise the temporary data storage.
 /// @param p_saveSettings Settings for what data to store.
-FileDataStorage::FileDataStorage(tDataToStore& p_saveSettings) : m_saveSettings(p_saveSettings) {
+FileDataStorage::FileDataStorage(tDataToStore p_saveSettings) : m_saveSettings(p_saveSettings) {
 
 }
 
@@ -113,6 +110,7 @@ FileDataStorage::FileDataStorage(tDataToStore& p_saveSettings) : m_saveSettings(
 /// @param p_decisions Tuple of decisions taken this tick
 void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions) {
     if (!m_saveSettings.InterventionData) return;
+    WRITE_STRING_LIT(m_outputStream, "Decisions");
     if (p_decisions.GetContainsSteer()) {
         WRITE_STRING_LIT(m_outputStream, "SteerDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetSteer());
@@ -135,10 +133,4 @@ void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions) {
     }
     WRITE_STRING_LIT(m_outputStream, "NONE");
 }
-
-/// @brief Write to the buffer that no decisions were taken this tick
-void FileDataStorage::SaveNoDecisions() {
-    if (!m_saveSettings.InterventionData) return;
-    WRITE_STRING_LIT(m_outputStream, "NONE");
-};
 

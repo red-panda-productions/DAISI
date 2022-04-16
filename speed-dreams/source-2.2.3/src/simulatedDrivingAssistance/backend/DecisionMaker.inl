@@ -78,10 +78,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, int p_t
 
     DecisionTuple decision;
 
-    if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) {
-        if (m_fileBufferStorage) m_fileBufferStorage->SaveNoDecisions();
-        return false;
-    }
+    if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) return false;
 
     if (m_fileBufferStorage) m_fileBufferStorage->SaveDecisions(decision);
 

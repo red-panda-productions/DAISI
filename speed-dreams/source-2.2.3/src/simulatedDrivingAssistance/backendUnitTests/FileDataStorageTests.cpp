@@ -48,7 +48,6 @@ TEST(FileDataStorageTests, NoStorageTimestampZero) {
     // Write a file with dummy initialisation data, save timestamp 0, and shut down
     fileDataStorage.Initialise(DUMMY_INITIALISATION_PARAMETERS);
     fileDataStorage.Save(nullptr, nullptr, 0);
-    fileDataStorage.SaveNoDecisions();
     fileDataStorage.Shutdown();
 
     // Read the written file
