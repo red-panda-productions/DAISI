@@ -50,7 +50,7 @@
             </section>
             <section name="sound">
                 <attstr name ="source" val="warning_right_driftingleft.wav"/>
-                <attstr name="looping" val="false"/>
+                <attstr name="looping" val="no"/>
             </section>
         </section>
         <section name ="brake">
