@@ -379,25 +379,25 @@ static void OnActivate(void* /* dummy */)
 
 
 /// @brief Releases a file dialog
-void ReleaseDialogAndCom(IFileDialog* fileDialog)
+void Release(IFileDialog* fileDialog)
 {
     fileDialog->Release();
     CoUninitialize();
 }
 
 /// @brief Releases a shell item and a file dialog
-void ReleaseShellItemAndDialogAndCom(IShellItem* shellItem, IFileDialog* fileDialog)
+void Release(IShellItem* shellItem, IFileDialog* fileDialog)
 {
     shellItem->Release();
-    ReleaseDialogAndCom(fileDialog);
+    Release(fileDialog);
 }
 
 /// @brief Edits the black box button with a message, releases a shell item and file dialog
-void ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(const char* message, IShellItem* shellItem, IFileDialog* fileDialog)
+void ShowErrorThenRelease(const char* errorMsg, IShellItem* shellItem, IFileDialog* fileDialog)
 {
     m_blackBoxChosen = false;
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, message);
-    ReleaseShellItemAndDialogAndCom(shellItem, fileDialog);
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, errorMsg);
+    Release(shellItem, fileDialog);
 }
 
 /// @brief Opens a file dialog and changes the button to reflect this choice.
@@ -455,7 +455,8 @@ static void SelectFile(void* /* dummy */)
     // Over max file length
     if (fileName.size() >= BLACKBOX_PATH_SIZE - 1) // std::string isn't null terminated, while Windows paths/char* are
     {
-        // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars, or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
+        // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars, 
+        // or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
         ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_PATH_TOO_LONG, shellItem, fileDialog);
         return;
     }

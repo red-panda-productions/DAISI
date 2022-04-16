@@ -42,7 +42,7 @@
             <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
 	        <attstr name="h align" val="left"/>
 	        <attnum name="x" val="20"/>
-	        <attnum name="y" val="200"/>
+	        <attnum name="y" val="220"/>
             <attnum name="width" val="145"/>
 	        <attstr name="font" val="medium"/>
 	        <attstr name="color" val="0xFFFFFF"/>
