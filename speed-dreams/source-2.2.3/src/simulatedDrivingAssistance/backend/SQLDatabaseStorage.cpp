@@ -155,7 +155,8 @@ void SQLDatabaseStorage::CreateTables()
             "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
             "    intervention_mode   ENUM('Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
             "    \n"
-            "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id)\n"
+            "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id),\n"
+            "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
             "    \n"
             ")")
 
@@ -357,7 +358,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     }
 
     EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
-    EXECUTE_QUERY("SELECT LAST_INSERT_ID()")
+    EXECUTE_QUERY("SELECT settings_id FROM settings WHERE "
+                  "intervention_mode = '" + interventionMode + "'")
 
     int settingsId;
     GET_INT_FROM_RESULTS(settingsId);

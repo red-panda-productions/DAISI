@@ -21,7 +21,7 @@ public:
     void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, tTrack* p_track, const std::string& p_blackBoxExecutablePath,
                     bool p_recordBB = false, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
 
-    bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);
+    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount);
 
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
