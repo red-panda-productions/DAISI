@@ -4,7 +4,7 @@
 class DecisionMakerMock
 {
 public:
-	bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount)
+	bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 	{
 		return Decision;
 	}
