@@ -26,7 +26,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="left.wav"/>
+                <attstr name ="source" val="warning_left_driftingright.wav"/>
                 <attstr name="looping" val="yes"/>
                 <attnum name="loop_interval" val="3"/>
             </section>
@@ -43,7 +43,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="right.wav"/>
+                <attstr name ="source" val="warning_right_driftingleft.wav"/>
                 <attstr name="looping" val="false"/>
             </section>
         </section>
@@ -59,7 +59,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="brake.wav"/>
+                <attstr name ="source" val="warning_brake_brake.wav"/>
             </section>
         </section>
     </section>
