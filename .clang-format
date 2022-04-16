@@ -4,6 +4,7 @@ AccessModifierOffset: '-4'
 AllowShortBlocksOnASingleLine: 'true'
 AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBraces: Allman
+ColumnLimit: '0'
 IndentWidth: '4'
 SortIncludes: 'false'
 

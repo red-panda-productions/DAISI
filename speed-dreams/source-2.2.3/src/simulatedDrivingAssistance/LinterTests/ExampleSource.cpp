@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ExampleHeader.hpp"
+#include "ExampleHeader.h"
 #include "Mediator.h"
 
 void ExampleClass::Hello(int p_name)
