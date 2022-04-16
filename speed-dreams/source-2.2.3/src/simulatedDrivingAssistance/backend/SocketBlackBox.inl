@@ -12,7 +12,7 @@
 	template void SocketBlackBox<p_type1,p_type2>::Shutdown();\
 	template void SocketBlackBox<p_type1,p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);\
     template void SocketBlackBox<p_type1,p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
-    template bool SocketBlackBox<p_type1,p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions);
+    template bool SocketBlackBox<p_type1,p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
 
 
 // inserts value from BlackBoxData variables in vector
@@ -161,7 +161,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
 /// @param p_tickCount The current tick count.
 /// @return returns decision array.
 template <class BlackBoxData, class PointerManager>
-bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions)
+bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
 {
     if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
     msgpack::sbuffer sbuffer;

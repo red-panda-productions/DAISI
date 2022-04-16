@@ -9,9 +9,11 @@
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
-                <attstr name ="content" val="None"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0"/>
+                <attstr name ="content"   val="None"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
         </section>
         <section name ="steer left">
@@ -21,9 +23,11 @@
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
-                <attstr name ="content" val="Steer left"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0"/>
+                <attstr name ="content"   val="Steer left"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
                 <attstr name ="source" val="warning_left_driftingright.wav"/>
@@ -38,9 +42,11 @@
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
-                <attstr name ="content" val="Steer right"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0"/>
+                <attstr name ="content"   val="Steer right"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
                 <attstr name ="source" val="warning_right_driftingleft.wav"/>
@@ -54,9 +60,11 @@
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
-                <attstr name ="content" val="Brake"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0"/>
+                <attstr name ="content"   val="Brake"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
                 <attstr name ="source" val="warning_brake_brake.wav"/>
