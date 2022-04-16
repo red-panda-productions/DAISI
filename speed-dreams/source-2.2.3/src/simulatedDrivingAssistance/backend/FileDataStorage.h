@@ -23,7 +23,7 @@ class FileDataStorage {
                     const std::time_t& p_blackboxTime,
                     const std::string& p_environmentFilename,
                     const std::string& p_environmentName,
-                    const std::time_t& p_environmentTime,
+                    int p_environmentVersion,
                     InterventionType   p_interventionType
                     );
 

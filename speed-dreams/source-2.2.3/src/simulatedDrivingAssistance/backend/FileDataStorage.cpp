@@ -30,7 +30,7 @@ inline void writeTime(std::ostream& stream, time_t date) {
 /// @param p_blackboxTime Timestamp for when the current black box was last updated
 /// @param p_environmentFilename Filename without path (e.g. "highway.xml") for the current environment
 /// @param p_environmentName Name of the current environment (e.g. "Espie Circuit")
-/// @param p_environmentTime Timestamp for when the current environment was last updated
+/// @param p_environmentVersion Version of the current environment
 /// @param p_interventionType Intervention type for the current race
 void FileDataStorage::Initialise(const std::string& p_fileName,
                                  const std::string& p_userId,
@@ -40,7 +40,7 @@ void FileDataStorage::Initialise(const std::string& p_fileName,
                                  const std::time_t& p_blackboxTime,
                                  const std::string& p_environmentFilename,
                                  const std::string& p_environmentName,
-                                 const std::time_t& p_environmentTime,
+                                 int p_environmentVersion,
                                  InterventionType p_interventionType
 ) {
     m_outputStream.open(p_fileName);
@@ -53,7 +53,7 @@ void FileDataStorage::Initialise(const std::string& p_fileName,
     WRITE_STRING_VAR(m_outputStream, p_blackboxName);
     // Environment data
     WRITE_STRING_VAR(m_outputStream, p_environmentFilename);
-    writeTime(m_outputStream, p_environmentTime);
+    WRITE_VAR(m_outputStream, p_environmentVersion);
     WRITE_STRING_VAR(m_outputStream, p_environmentName);
     // Intervention data
     WRITE_VAR(m_outputStream, p_interventionType);

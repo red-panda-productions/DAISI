@@ -142,7 +142,7 @@ void SQLDatabaseStorage::CreateTables()
             "CREATE TABLE IF NOT EXISTS Environment (\n"
             "    environment_id  INT             NOT NULL AUTO_INCREMENT,\n"
             "    filename        VARCHAR(255)    NOT NULL,\n"
-            "    version         DATETIME(0)     NOT NULL,\n"
+            "    version         INT             NOT NULL,\n"
             "    name            VARCHAR(255)    NOT NULL,\n"
             "    \n"
             "    CONSTRAINT environment_id_primary_key PRIMARY KEY (environment_id),\n"
@@ -317,16 +317,11 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // environment
     std::string environmentFileName;
     std::string environmentVersion;
-    std::string environmentVersionDate;
-    std::string environmentVersionTime;
     std::string environmentName;
 
     READ_INPUT(p_inputFile, environmentFileName);
-    READ_INPUT(p_inputFile, environmentVersionDate);
-    READ_INPUT(p_inputFile, environmentVersionTime);
+    READ_INPUT(p_inputFile, environmentVersion);
     READ_INPUT(p_inputFile, environmentName);
-
-    environmentVersion = environmentVersionDate + ' ' + environmentVersionTime;
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 

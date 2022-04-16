@@ -10,6 +10,7 @@
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
     template void DecisionMaker<type1,type2>::Initialize(tCarElt* p_initialCar, \
         tSituation* p_initialSituation,                                         \
+        tTrack* p_track,                                                        \
         const std::string& p_blackBoxExecutablePath,                            \
         bool p_recordBB,                                                        \
         BlackBoxData* p_testSituations,                                         \
@@ -36,6 +37,7 @@
 template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
                                                           tSituation* p_initialSituation,
+                                                          tTrack* p_track,
                                                           const std::string& p_blackBoxExecutablePath,
                                                           bool p_recordBB,
                                                           BlackBoxData* p_testSituations,
@@ -60,9 +62,9 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
                                    blackBoxPath.filename().string(),
                                    blackBoxPath.stem().string(),
                                     std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
-                                   "Unknown", // TODO: Filename of environment is not available to this method yet
-                                   "Unknown", // TODO: Name of environment is not available to this method yet
-                                   0, // TODO: Update date of environment is not available to this method yet
+                                   p_track->filename,
+                                   p_track->name,
+                                   p_track->version,
                                    Config.GetInterventionType());
 }
 
