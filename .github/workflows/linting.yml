@@ -21,7 +21,6 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "12"
-        run: A
 
       - name: Install linter package
         run: python3 -m pip install git+https://github.com/shenxianpeng/cpp-linter-action
