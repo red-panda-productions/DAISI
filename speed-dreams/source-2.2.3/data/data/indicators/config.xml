@@ -26,7 +26,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="left.wav"/>
+                <attstr name ="source" val="warning_left_driftingright.wav"/>
             </section>
         </section>
         <section name ="steer right">
@@ -41,7 +41,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="right.wav"/>
+                <attstr name ="source" val="warning_right_driftingleft.wav"/>
             </section>
         </section>
         <section name ="brake">
@@ -56,7 +56,7 @@
                 <attnum name ="ypos"   val="0"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="brake.wav"/>
+                <attstr name ="source" val="warning_brake_brake.wav"/>
             </section>
         </section>
     </section>
