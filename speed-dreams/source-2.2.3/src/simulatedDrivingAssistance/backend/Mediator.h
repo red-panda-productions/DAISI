@@ -28,6 +28,8 @@ public:
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
+    void SetBlackBoxFilePath(const char* p_filePath);
+
     tIndicator          GetIndicatorSettings();
     InterventionType    GetInterventionType();
     tParticipantControl GetPControlSettings();
