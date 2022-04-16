@@ -9,7 +9,7 @@
  * @param p_situation The environment data in the simulation
  * @param p_tickCount The tick that this driving simulation is from
  */
-BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount) : TickCount(p_tickCount)
+BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount) : TickCount(p_tickCount)
 {
     Car.index = p_car->index;
 
