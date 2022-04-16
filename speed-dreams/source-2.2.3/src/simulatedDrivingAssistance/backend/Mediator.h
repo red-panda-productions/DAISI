@@ -47,7 +47,7 @@ public:
 
     DecisionMaker m_decisionMaker;
 
-    unsigned long m_tickCount;
+    unsigned long m_tickCount = 0;
 
     tTrack* m_track = nullptr;
 };

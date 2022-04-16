@@ -121,7 +121,7 @@ void SQLDatabaseStorage::CreateTables()
 {
     EXECUTE(
             "CREATE TABLE IF NOT EXISTS Participant (\n"
-            "    participant_id INT NOT NULL,    \n"
+            "    participant_id VARCHAR(255) NOT NULL,    \n"
             "    \n"
             "    CONSTRAINT participant_id_primary_key PRIMARY KEY (participant_id)\n"
             ")\n")
@@ -164,7 +164,7 @@ void SQLDatabaseStorage::CreateTables()
             "CREATE TABLE IF NOT EXISTS Trial (\n"
             "    trial_id        INT         NOT NULL AUTO_INCREMENT,\n"
             "    trial_time      DATETIME(0) NOT NULL,\n"
-            "    participant_id  INT         NOT NULL,\n"
+            "    participant_id  VARCHAR(255) NOT NULL,\n"
             "    blackbox_id     INT         NOT NULL,\n"
             "    environment_id  INT         NOT NULL,\n"
             "    settings_id     INT         NOT NULL,\n"
@@ -359,7 +359,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
     EXECUTE_QUERY("SELECT settings_id FROM settings WHERE "
-                  "intervention_mode = '" + interventionMode + "'")
+                  "intervention_mode = " + values)
 
     int settingsId;
     GET_INT_FROM_RESULTS(settingsId);

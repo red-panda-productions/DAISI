@@ -29,7 +29,7 @@ class FileDataStorage {
 
     void Shutdown();
 
-    void Save(tCarElt* p_car, tSituation* p_situation, int p_timestamp);
+    void Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp);
     void SaveDecisions(DecisionTuple& p_decisions);
 };
 
