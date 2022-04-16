@@ -36,8 +36,11 @@
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
 
-#include "InterventionConfig.h"
+#include "IndicatorConfig.h"
 #include "Mediator.h"
+
+// SIMULATED DRIVING ASSITANCE: array to store the loaded (ssg) textures
+ssgSimpleState** m_textures;
 
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
@@ -48,7 +51,6 @@ using std::string;
 static const string rgba[4] =
     { GFSCR_ATTR_RED, GFSCR_ATTR_GREEN, GFSCR_ATTR_BLUE, GFSCR_ATTR_ALPHA };
 
-static const int NB_COUNTERS = 3;
 static const int NB_DEBUG = 4;
 
 // Boards work on a OrthoCam with fixed height of 600, width flows
@@ -58,6 +60,7 @@ static const int BOTTOM_ANCHOR = 0;
 static const int DEFAULT_WIDTH = 800;
 
 static const int BUFSIZE = 256;
+
 
 cGrBoard::cGrBoard(int myid) : 
     normal_color_(NULL), danger_color_(NULL), emphasized_color_(NULL), background_color_(NULL)
@@ -94,7 +97,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
   snprintf(path, sizeof(path), "%s/%d", GR_SCT_DISPMODE, id);
 
   debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, 1);
-  counterFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, 1);
   boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, 100);
   speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, 0);
 
@@ -103,7 +105,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
   if (strcmp(pszSpanSplit, GR_VAL_YES) && curCar->_driverType == RM_DRV_HUMAN) {
     snprintf(path, sizeof(path), "%s/%s", GR_SCT_DISPMODE, curCar->_name);
     debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, debugFlag);
-    counterFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, counterFlag);
     boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, boardWidth);
     speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, speedoRise);
   }
@@ -134,10 +135,6 @@ void cGrBoard::selectBoard(int val)
   snprintf(path, sizeof(path), "%s/%d", GR_SCT_DISPMODE, id);
 
   switch (val) {
-    case 1:
-      counterFlag = (counterFlag + 1) % NB_COUNTERS;
-      GfParmSetNum(grHandle, path, GR_ATT_COUNTER, (char*)NULL, (tdble)counterFlag);
-      break;
     case 3:
       debugFlag = (debugFlag + 1) % NB_DEBUG;
       GfParmSetNum(grHandle, path, GR_ATT_DEBUG, (char*)NULL, (tdble)debugFlag);
@@ -365,22 +362,6 @@ void cGrBoard::grDispCounterBoard2()
   }
 
   glTranslatef(-centerAnchor, -BOTTOM_ANCHOR, 0);
-
-  // Fuel and damage meter
-  if (counterFlag == 1) {
-    float *color;
-    if (car_->_fuel < 5.0f) {
-      color = danger_color_;    //red
-    } else {
-      color = emphasized_color_;    //yellow
-    }
-
-    grDrawGauge(centerAnchor + 140, BOTTOM_ANCHOR + 25, 100, color,
-                background_color_, car_->_fuel / car_->_tank, "F");
-    grDrawGauge(centerAnchor + 155, BOTTOM_ANCHOR + 25, 100, danger_color_, //red
-                background_color_, (tdble)(car_->_dammage) / grMaxDammage, "D");
-  }
-
   glTranslatef(0, -(speedoRise * TOP_ANCHOR / 100), 0);
 }  // grDispCounterBoard2
  
@@ -406,40 +387,43 @@ void cGrBoard::shutdown(void)
 void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                             const tCarElt *currCar, bool isCurrScreen)
 {
-    car_ = currCar;
-    if (isCurrScreen) {
-        grDispSplitScreenIndicator();
-    }
+    car_ = currCar;  
 
-    // SIMULATED DRIVING ASSISTANCE: displays the current intervention
-    DispIntervention();
- 
-    if (debugFlag)
+    // SIMULATED DRIVING ASSISTANCE: displays the current intervention indicators 
+    DispIndicators();
+
+    grDispCounterBoard2();
+
+    if (debugFlag) 
         grDispDebug(s, frameInfo);
-
-    if (counterFlag)
-        grDispCounterBoard2();
+    if (isCurrScreen) 
+        grDispSplitScreenIndicator();
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the currently active intervention in InterventionConfig
+/// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispIntervention() 
+void cGrBoard::DispIndicators() 
 {
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-    if (settings.Icon)  
-        DispInterventionIcon();
+    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators())
+    {
+        if (settings.Icon)
+            DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
 
-    if (settings.Text) 
-        DispInterventionText();
+        if (settings.Text)
+            DispIndicatorText(indicator.Text);
+    }
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the intervention icon (if the texture was loaded correctly)
-void cGrBoard::DispInterventionIcon()
+/// @brief           Displays the icon indicator (if the texture was loaded correctly) 
+/// @param p_data    Pointer to struct containing data about the texture, like its position   
+/// @param p_texture Pointer to the object containing the actual loaded OpenGL texture
+void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
 {
-    tTextureData textureData = InterventionConfig::GetInstance()->GetCurrentInterventionTexture();
-    if (!textureData.Texture) return;
+    // Guard if texture data is null or the texture itself is null
+    if (!p_data || !p_texture) return;
 
     // Dimensions of the icon on the screen (will be put in XML settings file later)
     float iconWidth = 100;
@@ -454,10 +438,10 @@ void cGrBoard::DispInterventionIcon()
 
     // Translate the opengl matrix to the position on the screen where we want to display the texture, and load the texture.
     glTranslatef(
-        rightAnchor * textureData.Position.X,
-        TOP_ANCHOR  * textureData.Position.Y,
+        rightAnchor * p_data->ScrPos.X,
+        TOP_ANCHOR  * p_data->ScrPos.Y,
         0);
-    glBindTexture(GL_TEXTURE_2D, textureData.Texture->getTextureHandle());
+    glBindTexture(GL_TEXTURE_2D, p_texture->getTextureHandle());
 
     // Draw the texture as a Triangle Strip. 
     // glTexCoord2f defines point of the texture that you take (0-1).
@@ -476,54 +460,37 @@ void cGrBoard::DispInterventionIcon()
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the intervention text
-void cGrBoard::DispInterventionText()
+/// @brief        Displays the intervention indicator text
+/// @param p_data Pointer to struct containing data about the text, like its position  
+void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
-    tTextData textData = InterventionConfig::GetInstance()->GetCurrentInterventionText();
+    // Guard if no text data is defined forthis indicator
+    if (!p_data) return;
+
     GfuiDrawString(
-        textData.Text, normal_color_, GFUI_FONT_LARGE_C, 
-        rightAnchor * textData.Position.X,
-        TOP_ANCHOR  * textData.Position.Y);
+        p_data->Text, normal_color_, GFUI_FONT_LARGE_C, 
+        rightAnchor * p_data->ScrPos.X,
+        TOP_ANCHOR  * p_data->ScrPos.Y);
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief Loads the intervention textures and texts from XML into the InterventionConfig singleton class.
-///        Requires that 'data/intervention' has been added to the search filepath grFilePath.
-void LoadInterventionData()
+/// @brief Loads the textures for the indicators from their filepaths.
+///        MUST BE CALLED AFTER THE TEXTURE DIRECTORY HAS BEEN ADDED TO grFilePath
+///        which happens in grInitBoardCar.
+void LoadIndicatorTextures()
 {
-    InterventionConfig* config = InterventionConfig::GetInstance();
-    unsigned int interventionCnt = config->GetInterventionCount();
-
-    tTextureData* textures = new TextureData[interventionCnt];
-    tTextData* texts = new TextData[interventionCnt];
-
-    char path[256];
-    void* xmlHandle = config->GetXmlHandle();
-    for (int i = 0; i < interventionCnt; i++)
+    std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
+    m_textures = new ssgSimpleState*[indicators.size()];
+    for (const tIndicatorData& indicator : indicators)
     {
-        float xPos, yPos;
-
-        // Textures
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
-        const char* source = GfParmGetStr(xmlHandle, path, PRM_ATTR_SRC, "");
-        xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
-        yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
-
-        // IMPORTANT: The texture should not be bigger than 256x256 due to buffer sizes.
-        ssgSimpleState* texture = (ssgSimpleState*)grSsgLoadTexState(source);
-        textures[i] = TextureData(texture, { xPos, yPos });
-
-        // Texts
-        snprintf(path, sizeof(path), "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
-        const char* txt = GfParmGetStr(xmlHandle, path, PRM_ATTR_CONTENT, "");
-        xPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_XPOS, NULL, 0);
-        yPos = GfParmGetNum(xmlHandle, path, PRM_ATTR_YPOS, NULL, 0);
-
-        texts[i] = { txt, { xPos, yPos } };
+        ssgSimpleState* texture = nullptr;
+        if (indicator.Texture)
+        {
+            // Guard if there is no texture data for this action.
+            texture = (ssgSimpleState*)grSsgLoadTexState(indicator.Texture->Path);
+        }
+        m_textures[indicator.Action] = texture;
     }
-
-    config->SetTextures(textures);
-    config->SetTexts(texts);
 }
 
 
@@ -587,11 +554,11 @@ void grInitBoardCar(tCarElt *car)
 
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
 
+  // SIMULATED DRIVING ASSISTANCE
+  // Add the folder containing indicator textures to the searchable filepaths for filenames.
+  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/indicators/texture");
 
-  // Add the data/intervention folder to the searchable filepaths for filenames.
-  lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/intervention");
-
-  LoadInterventionData();
+  LoadIndicatorTextures();
 
 
   /* Tachometer --------------------------------------------------------- */

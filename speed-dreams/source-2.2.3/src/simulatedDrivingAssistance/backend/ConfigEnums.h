@@ -3,9 +3,10 @@
 /// @brief The different tasks that can be performed
 typedef unsigned int Task;
 
-#define TASK_NO_TASK        0
-#define TASK_LANE_KEEPING   1
-#define TASK_SPEED_CONTROL  2
+// TODO: remove no-task
+#define TASK_NO_TASK        -1
+#define TASK_LANE_KEEPING   0
+#define TASK_SPEED_CONTROL  1
 
 /// @brief The different ways a user can be indicated about an intervention
 typedef struct Indicator
@@ -18,11 +19,12 @@ typedef struct Indicator
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 
+// TODO: remove INTERVENTION_TYPE_ASK_FOR 
+#define INTERVENTION_TYPE_ASK_FOR            -1  
 #define INTERVENTION_TYPE_NO_SIGNALS         0
-#define INTERVENTION_TYPE_ONLY_SIGNALS       1
-#define INTERVENTION_TYPE_ASK_FOR            2
-#define INTERVENTION_TYPE_SHARED_CONTROL     3
-#define INTERVENTION_TYPE_COMPLETE_TAKEOVER  4
+#define INTERVENTION_TYPE_ONLY_SIGNALS       1     
+#define INTERVENTION_TYPE_SHARED_CONTROL     2
+#define INTERVENTION_TYPE_COMPLETE_TAKEOVER  3
 
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
@@ -40,7 +42,10 @@ typedef struct ParticipantControl
     bool ControlInterventionToggle;
     bool ControlGas;
     bool ControlSteering;
+
     bool ForceFeedback;
+    bool RecordSession;
+    bool BBRecordSession;
 } tParticipantControl;
 
 /// @brief The different types of black boxes
@@ -63,7 +68,3 @@ typedef struct DataToStore
     bool InterventionData;
     bool MetaData;
 } tDataToStore;
-
-// for recording a session
-//#define RECORD_SESSION
-//#define BB_RECORD_SESSION

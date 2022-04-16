@@ -76,8 +76,7 @@ class OpenalSoundInterface : public SoundInterface
 
 private:
     // SIMULATED DRIVING ASSISTANCE
-    void UpdateInterventionSounds(CarSoundData** p_carSoundData, 
-        std::unordered_map<InterventionAction, Sound*>& p_interventionSounds);
+    void UpdateInterventionSounds(CarSoundData** p_carSoundData);
 };
 
 struct sharedSource {

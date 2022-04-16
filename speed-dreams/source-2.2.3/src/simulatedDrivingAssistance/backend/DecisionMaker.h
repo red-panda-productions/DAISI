@@ -6,6 +6,7 @@
 #include "Recorder.h"
 #include "ConfigEnums.h"
 #include "BlackBoxData.h"
+#include "SQLDatabaseStorage.h"
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
@@ -16,12 +17,14 @@ class DecisionMaker
 public:
     SDAConfig Config;
 
-    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
+    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, const std::string& p_blackBoxExecutablePath,
+                    bool p_recordBB = false, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
 
     bool Decide(tCarElt* p_car, tSituation* p_situation, int p_tickCount);
 
     void ChangeSettings(InterventionType p_type);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void RaceStop();
 
     InterventionExecutor* InterventionExecutor;
     SocketBlackBox BlackBox;
@@ -29,9 +32,8 @@ public:
     ~DecisionMaker();
 
 private:
-#ifdef BB_RECORD_SESSION
-    Recorder* m_recorder;
-#endif
+    Recorder* m_recorder = nullptr;
+    SQLDatabaseStorage m_SQLDatabaseStorage;
 };
 
 

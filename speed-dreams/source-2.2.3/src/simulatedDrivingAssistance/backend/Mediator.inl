@@ -3,14 +3,17 @@
 #include <fstream>
 #include <portability.h>
 #include <SDL2/SDL_main.h>
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)\
-    template InterventionType Mediator<type>::GetInterventionType(); \
-    template tIndicator Mediator<type>::GetIndicatorSettings(); \
+    template InterventionType Mediator<type>::GetInterventionType();\
+    template tIndicator Mediator<type>::GetIndicatorSettings();\
+    template tParticipantControl Mediator<type>::GetPControlSettings();\
 	template void Mediator<type>::SetTask(Task p_task);\
 	template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);\
 	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
+    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);\
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
 	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
@@ -53,6 +56,14 @@ void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type)
     m_decisionMaker.ChangeSettings(p_type);
 }
 
+/// @brief            Sets the participant control settings to p_pControl
+/// @param p_pControl The participant control settings
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetPControlSettings(tParticipantControl p_pControl)
+{
+    return m_decisionMaker.Config.SetPControlSettings(p_pControl);
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 template<typename DecisionMaker>
@@ -86,6 +97,14 @@ tIndicator Mediator<DecisionMaker>::GetIndicatorSettings()
     return m_decisionMaker.Config.GetIndicatorSettings();
 }
 
+/// @brief  Gets the participant control settings
+/// @return The participant control settings
+template <typename DecisionMaker>
+tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
+{
+    return m_decisionMaker.Config.GetPControlSettings();
+}
+
 /// @brief              Does one drive tick in the framework
 /// @param  p_car       The current car
 /// @param  p_situation The current situation
@@ -107,11 +126,24 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 {
     m_track = p_track;
     tCarElt car;
-    m_decisionMaker.Initialize(&car, p_situation);
+    bool recordBB = GetPControlSettings().BBRecordSession;
+
+    // Find a black box run file in the data folder
+    // TODO: Replace this by letting the user select a path to a black box executable, and use that instead of blackBoxPath
+    std::string blackBoxPath(R"(source-2.2.3\data\blackbox\)");
+    std::string blackBoxExecutable("Blackbox.exe");
+    if (!FindFileDirectory(blackBoxPath, blackBoxExecutable)) throw std::exception("Can't find black box executable");
+
+    // Initialize the decision maker with the full path to the current black box executable
+    m_decisionMaker.Initialize(&car, p_situation, blackBoxPath + blackBoxExecutable, recordBB);
 }
 
+/// @brief Tells the decisionmaker that the race has ended
 template<typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStop() {}
+void Mediator<DecisionMaker>::RaceStop()
+{
+    m_decisionMaker.RaceStop();
+}
 
 
 /// @brief Creates a mediator instance if needed and returns it
@@ -119,34 +151,35 @@ void Mediator<DecisionMaker>::RaceStop() {}
 template<typename DecisionMaker>
 Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 {
-    if (m_instance == nullptr)
-    {
-        // check if Mediator file exists
-        struct stat info;
-        char workingDir[256];
-        getcwd(workingDir, 256);
-        std::string workingDirectory(workingDir);
-        workingDirectory += "\\Singletons\\Mediator";
-        const char* filepath = workingDirectory.c_str();
-        int err = stat(filepath, &info);
-        if (err == -1)
-        {
-            // file does not exist create pointer
-            m_instance = new Mediator();
-            std::ofstream file("Singletons/Mediator");
-            file << m_instance;
-            file.close();
-            return m_instance;
-        }
+    // If the instance exists, return it.
+    // Otherwise create the instance and store it for future calls.
+    if (m_instance) return m_instance;
 
-        // file exists read pointer
-        std::string pointerName("00000000");
-        std::ifstream file("Singletons/Mediator");
-        getline(file, pointerName);
+    // Check if Mediator file exists
+    struct stat info;
+    char workingDir[256];
+    getcwd(workingDir, 256);
+    std::string workingDirectory(workingDir);
+    workingDirectory += "\\Singletons\\Mediator";
+    const char* filepath = workingDirectory.c_str();
+    int err = stat(filepath, &info);
+    if (err == -1)
+    {
+        // File does not exist -> create pointer
+        m_instance = new Mediator();
+        std::ofstream file("Singletons/Mediator");
+        file << m_instance;
         file.close();
-        int pointerValue = stoi(pointerName, 0, 16);
-        m_instance = (Mediator<DecisionMaker>*)pointerValue;
+        return m_instance;
     }
+
+    // File exists -> read pointer
+    std::string pointerName("00000000");
+    std::ifstream file("Singletons/Mediator");
+    getline(file, pointerName);
+    file.close();
+    int pointerValue = stoi(pointerName, 0, 16);
+    m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
 }
 

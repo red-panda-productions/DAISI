@@ -3,9 +3,12 @@
 #include <fstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
+#include <windows.h>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
+
+#define ROOT_FOLDER "source-2.2.3"
 
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
@@ -38,6 +41,7 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 
         char filePath[256];
         strcpy(filePath, directoryPath);
+        strcat(filePath, "\\");
         strcat(filePath, p_fileToFind.c_str());
 
         std::cout << "current path: " << filePath << std::endl;
@@ -95,4 +99,32 @@ inline bool SetupSingletonsFolder()
     }
 
     return true;
+}
+
+/// @brief Start running a separate executable with no command-line arguments
+/// @param p_executablePath The path to the executable.
+///// Should either be an absolute path or relative to the current directory.
+///// Path must include file extension; no default extension is assumed.
+///// Path is assumed to refer to an existing executable file
+inline void StartExecutable(const std::string& p_executablePath) {
+    // WARNING: This method of starting a process is Windows-exclusive.
+    // Add a different method to run a process here if a Linux build is planned.
+
+    LPSTR args = _strdup(""); // Create an empty string of arguments for process
+    STARTUPINFO startupInformation = {sizeof(startupInformation)}; // Create an empty STARTUPINFO
+    PROCESS_INFORMATION processInformation; // Allocate space for PROCESS_INFORMATION
+    // Start the process. Nullpointers correspond to default values for this method.
+    // Inherit handles is not necessary for our use case and is thus false.
+    CreateProcess(p_executablePath.c_str(),
+                  args,
+                  nullptr,
+                  nullptr,
+                  false,
+                  0,
+                  nullptr,
+                  nullptr,
+                  &startupInformation,
+                  &processInformation
+    );
+
 }

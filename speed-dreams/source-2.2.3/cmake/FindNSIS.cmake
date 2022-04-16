@@ -12,7 +12,7 @@ if(NSIS_MAKE_EXE)
    get_filename_component(NSIS_LOCATION ${NSIS_MAKE_EXE} DIRECTORY)
    Message(STATUS "NSIS_LOCATION = ${NSIS_LOCATION}")
 
-   find_file(NSIS_INET_PLUGIN INetC.dll PATHS ${NSIS_LOCATION} PATH_SUFFIXES Plugins)
+   find_file(NSIS_INET_PLUGIN INetC.dll PATHS ${NSIS_LOCATION} PATH_SUFFIXES Plugins Plugins/x86-unicode)
 endif()
 
 include(FindPackageHandleStandardArgs)
