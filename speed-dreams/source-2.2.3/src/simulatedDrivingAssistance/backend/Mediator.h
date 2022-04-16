@@ -49,7 +49,7 @@ public:
 
     DecisionMaker m_decisionMaker;
 
-    int m_tickCount;
+    unsigned long m_tickCount;
 
     tTrack* m_track = nullptr;
 };
