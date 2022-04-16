@@ -18,16 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v3
-      #- name: Install clang-tools
-      #  uses: KyleMayes/install-llvm-action@v1
-      #  with:
-      #    version: "12"
 
       - name: Install linter package
         run: python3 -m pip install git+https://github.com/shenxianpeng/cpp-linter-action
-
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
