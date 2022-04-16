@@ -215,10 +215,10 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 	return sound;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
 /// @brief                Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
-void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData) 
+void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData)
 {
     // Update the sounds of all indicators, even for the disabled indicators.
     for (Sound* sound : m_indicatorSounds) {
@@ -235,13 +235,39 @@ void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundDat
         sound->update();
     }
 
-    // Start all currently active interventions if they were not active yet.
-    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators()) {
-        Sound* sound = m_indicatorSounds[indicator.Action];
-        if(sound && !sound->isPlaying()) 
-        {
-            sound->start();
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+    // Go through all indicators and set Active to false if the indicator is not active.
+    for (const auto &indicator : IndicatorConfig::GetInstance()->GetIndicatorData()) {
+        if(!indicator.Sound) continue;
+
+        if(std::any_of(activeIndicators.begin(), activeIndicators.end(), [&](const auto &p_activeIndicator) {
+            return indicator.Action == p_activeIndicator.Action;
+        })) {
+            continue;
         }
+
+        indicator.Sound->ActiveLastFrame = false;
+    }
+
+    // Start all currently active interventions if they were not active yet.
+    for (const tIndicatorData& indicator : activeIndicators) {
+        Sound* sound = m_indicatorSounds[indicator.Action];
+        if (!sound) continue;
+
+        // Don't start the sound if it shouldn't loop and was already active last frame.
+        if(!indicator.Sound->Looping && indicator.Sound->ActiveLastFrame) continue;
+
+        // Start the sound if it wasn't playing already.
+        if(!sound->isPlaying()) {
+            // If the sound is not looping start it.
+            // Else the sound is looping, check if it has been at least LoopInterval seconds since it last played start it.
+            if(!indicator.Sound->Looping || GfTimeClock() - sound->GetLastStart() > indicator.Sound->LoopInterval) {
+                sound->start();
+            }
+        }
+
+        indicator.Sound->ActiveLastFrame = true;
     }
 }
 	
