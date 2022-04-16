@@ -248,6 +248,8 @@ void OpenalSound::start()
 				if (loop) {
 					playing = true;
 				}
+                // SIMULATED DRIVING ASSISTANCE: Set LastStart
+                LastStart = GfTimeClock();
 				alSourcePlay (source);
 			}
 		}
@@ -272,7 +274,9 @@ void OpenalSound::start()
 				if (loop) {
 					playing = true;
 				}
-				alSourcePlay (source);
+                // SIMULATED DRIVING ASSISTANCE: Set LastStart
+                LastStart = GfTimeClock();
+                alSourcePlay (source);
 			}
 		}
 	}
@@ -302,7 +306,14 @@ void OpenalSound::resume()
 {
 	if (paused) {
 		paused = false;
-		alSourcePlay (source);
+
+        // SIMULATED DRIVING ASSISTANCE: Check if state is AL_PAUSED and only resume if it is, prevents all sounds playing at once
+        ALint state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+        if(state == AL_PAUSED) {
+            alSourcePlay(source);
+        }
 	}
 }
 
@@ -311,7 +322,14 @@ void OpenalSound::pause()
 {
 	if (!paused) {
 		paused = true;
-		alSourcePause (source);
+
+        // SIMULATED DRIVING ASSISTANCE: Check if state is AL_PLAYING and only pause if it is, prevents all sounds playing at once
+        ALint state;
+        alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+        if(state == AL_PLAYING) {
+            alSourcePause(source);
+        }
 	}
 }
 

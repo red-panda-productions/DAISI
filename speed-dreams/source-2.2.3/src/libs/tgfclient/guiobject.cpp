@@ -69,6 +69,19 @@ gfuiDrawString(int x, int y, GfuiFontClass *font, const char *string)
     glDisable(GL_TEXTURE_2D);
 }
 
+// SIMULATED DRIVING ASSISTANCE
+/// @brief          Draws a string on the given position based on a specific font.
+/// @param p_x      The x position of the string
+/// @param p_y      The y position of the string
+/// @param p_string The text to draw
+/// @param p_font   The font to use for the text
+/// @param p_color  The color of the text
+void GfuiDrawString(int p_x, int p_y, const char* p_string, GfuiFontClass* p_font, float* p_color)
+{
+    glColor4fv(p_color);
+    gfuiDrawString(p_x, p_y, p_font, p_string);
+}
+
 void GfuiDrawString(const char *text, float *fgColor, int font,
 					int x, int y, int width, int hAlign)
 {
