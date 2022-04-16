@@ -14,6 +14,11 @@ typedef struct ScreenPosition
 typedef struct SoundData
 {
     const char* Path;
+    bool Looping;
+    /// @brief How often it should loop, in seconds.
+    float LoopInterval;
+    /// @brief True if last frame the sound was active
+    bool ActiveLastFrame;
 } tSoundData;
 
 /// @brief Stores data related to drawing a texture on the Hud.
