@@ -25,6 +25,7 @@
 #define PRM_MAX_TIME         "MaxTimeEdit"
 #define PRM_USER_ID          "UserIdEdit"
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
+#define GFMNU_ATTR_PATH      "path"
 
 #define INDICATOR_AMOUNT 3
 #define PCONTROL_AMOUNT  6
@@ -32,7 +33,7 @@
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT   "Choose Black Box: "
 #define MSG_BLACK_BOX_NOT_EXE       "Choose Black Box: chosen file was not a .exe"
-#define MSG_BLACK_BOX_PATH_TOO_LONG "Choose Black Box: you've broken COM interface: your > 260 char file path was not aliased to an 8.3 file name"
+#define MSG_BLACK_BOX_PATH_TOO_LONG "Choose Black Box: >260 char path was not aliased to <260 char"
 #define MSG_APPLY_NORMAL_TEXT       "Apply"
 #define MSG_APPLY_NO_BLACK_BOX      "Apply | You need to select a valid Black Box"
 
@@ -225,7 +226,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_MAX_TIME, GFMNU_ATTR_TEXT, buf);
 
     // Save filepath to xml file
-    GfParmSetStr(readParam, PRM_BLACKBOX, "name", m_blackBoxFilePath);
+    GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(NULL, readParam, "ResearcherMenu");
@@ -269,16 +270,16 @@ static void SaveSettings(void* /* dummy */)
 /// @brief   Finds the message to display on the black box button
 /// @param   The path to a file
 /// @returns The default black box button text, plus the filename of the file represented by the path, ignoring any directories
-std::string FindBlackBoxButtonTextFromPath(std::string& path)
+std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 {
     int lastDirectoryIndex = 0;
-    for (int i = path.size() - 1; i >= 0; i--)
+    for (int i = p_path.size() - 1; i >= 0; i--)
     {
-        if (path[i] != '\\') { continue; }
+        if (p_path[i] != '\\') { continue; }
         lastDirectoryIndex = i;
         break;
     }
-    return MSG_BLACK_BOX_NORMAL_TEXT + path.substr(lastDirectoryIndex + 1, std::string::npos);
+    return MSG_BLACK_BOX_NORMAL_TEXT + p_path.substr(lastDirectoryIndex + 1, std::string::npos);
 }
 
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
@@ -305,7 +306,7 @@ static void SynchronizeControls()
 
     std::string fileName = m_blackBoxFilePath;
     std::string buttonText = FindBlackBoxButtonTextFromPath(fileName);
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_PATH_TOO_LONG/*buttonText.c_str()*/);
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
@@ -352,8 +353,8 @@ static void LoadConfigSettings(void* p_param)
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, NULL));
 
-    const char* filePath = GfParmGetStr(p_param, PRM_BLACKBOX, "name", NULL);
-    if (filePath != nullptr) 
+    const char* filePath = GfParmGetStr(p_param, PRM_BLACKBOX, GFMNU_ATTR_PATH, NULL);
+    if (filePath) 
     {
         strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, filePath);
         m_blackBoxChosen = true;
@@ -382,25 +383,25 @@ static void OnActivate(void* /* dummy */)
 
 
 /// @brief Releases a file dialog
-void Release(IFileDialog* fileDialog)
+void Release(IFileDialog* p_fileDialog)
 {
-    fileDialog->Release();
+    p_fileDialog->Release();
     CoUninitialize();
 }
 
 /// @brief Releases a shell item and a file dialog
-void Release(IShellItem* shellItem, IFileDialog* fileDialog)
+void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 {
-    shellItem->Release();
-    Release(fileDialog);
+    p_shellItem->Release();
+    Release(p_fileDialog);
 }
 
 /// @brief Edits the black box button with a message, releases a shell item and file dialog
-void ShowErrorThenRelease(const char* errorMsg, IShellItem* shellItem, IFileDialog* fileDialog)
+void ShowErrorThenRelease(const char* p_errorMsg, IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 {
     m_blackBoxChosen = false;
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, errorMsg);
-    Release(shellItem, fileDialog);
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, p_errorMsg);
+    Release(p_shellItem, p_fileDialog);
 }
 
 /// @brief Opens a file dialog and changes the button to reflect this choice.
