@@ -306,7 +306,7 @@ static void SynchronizeControls()
 
     std::string fileName = m_blackBoxFilePath;
     std::string buttonText = FindBlackBoxButtonTextFromPath(fileName);
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_PATH_TOO_LONG/*buttonText.c_str()*/);
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
