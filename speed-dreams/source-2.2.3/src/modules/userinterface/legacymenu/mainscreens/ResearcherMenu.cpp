@@ -246,6 +246,7 @@ static void SaveSettings(void* /* dummy */)
     mediator->SetInterventionType(m_interventionType);
     mediator->SetMaxTime(m_maxTime);
     mediator->SetPControlSettings(m_pControl);
+    mediator->SetBlackBoxFilePath(m_blackBoxFilePath);
 
     // Save the encrypted userId in the SDAConfig
     size_t encryptedUserId = std::hash<std::string>{}(m_userId);
@@ -263,6 +264,21 @@ static void SaveSettings(void* /* dummy */)
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
+}
+
+/// @brief   Finds the message to display on the black box button
+/// @param   The path to a file
+/// @returns The default black box button text, plus the filename of the file represented by the path, ignoring any directories
+std::string FindBlackBoxButtonTextFromPath(std::string& path)
+{
+    int lastDirectoryIndex = 0;
+    for (int i = path.size() - 1; i >= 0; i--)
+    {
+        if (path[i] != '\\') { continue; }
+        lastDirectoryIndex = i;
+        break;
+    }
+    return MSG_BLACK_BOX_NORMAL_TEXT + path.substr(lastDirectoryIndex + 1, std::string::npos);
 }
 
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
@@ -286,6 +302,10 @@ static void SynchronizeControls()
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
     GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
+
+    std::string fileName = m_blackBoxFilePath;
+    std::string buttonText = FindBlackBoxButtonTextFromPath(fileName);
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
@@ -336,24 +356,7 @@ static void LoadConfigSettings(void* p_param)
     if (filePath != nullptr) 
     {
         strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, filePath);
-        SMediator* mediator = SMediator::GetInstance();
-        mediator->SetBlackBoxFilePath(m_blackBoxFilePath);
         m_blackBoxChosen = true;
-        std::string fileName;
-        fileName.resize(BLACKBOX_PATH_SIZE);
-        for (int i = 0; i < BLACKBOX_PATH_SIZE; i++)
-        {
-            fileName[i] = m_blackBoxFilePath[i];
-        }
-        int lastDirectoryIndex = 0;
-        for (int i = fileName.size() - 1; i >= 0; i--)
-        {
-            if (fileName[i] != '\\') { continue; }
-            lastDirectoryIndex = i;
-            break;
-        }
-        std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + fileName.substr(lastDirectoryIndex + 1, std::string::npos);
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     }
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
@@ -423,13 +426,13 @@ static void SelectFile(void* /* dummy */)
     hresult = fileDialog->SetFileTypes(1, filter);
     if (FAILED(hresult))
     {
-        ReleaseDialogAndCom(fileDialog);
+        Release(fileDialog);
     	return;
     }
     hresult = fileDialog->Show(NULL);
     if (FAILED(hresult))
     {
-        ReleaseDialogAndCom(fileDialog);
+        Release(fileDialog);
     	return;
     }
 
@@ -438,14 +441,14 @@ static void SelectFile(void* /* dummy */)
     hresult = fileDialog->GetResult(&shellItem);
     if (FAILED(hresult))
     {
-        ReleaseDialogAndCom(fileDialog);
+        Release(fileDialog);
     	return;
     } // I feel like I should release shellItem here as well, but the Microsoft Docs do not do so at this stage
     PWSTR filePath;
     hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
     if (FAILED(hresult))
     {
-        ReleaseShellItemAndDialogAndCom(shellItem, fileDialog);
+        Release(shellItem, fileDialog);
     	return;
     }
 
@@ -457,13 +460,13 @@ static void SelectFile(void* /* dummy */)
     {
         // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars, 
         // or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
-        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_PATH_TOO_LONG, shellItem, fileDialog);
+        ShowErrorThenRelease(MSG_BLACK_BOX_PATH_TOO_LONG, shellItem, fileDialog);
         return;
     }
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (fileName.size() <= 7) 
     {
-        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
+        ShowErrorThenRelease(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
     	return;
     }
     // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
@@ -474,29 +477,20 @@ static void SelectFile(void* /* dummy */)
     }
     // Enforce that file ends in .exe
     if (std::strcmp(extension.c_str(), ".exe") != 0) {
-        ErrorBlackBoxButtonThenReleaseShellItemAndDialogAndCom(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
+        ShowErrorThenRelease(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
     	return;
     }
 
     // Visual feedback of choice
-    int lastDirectoryIndex = 0;
-    for (int i = fileName.size() - 1; i >= 0; i--)
-    {
-        if (fileName[i] != '\\') { continue; }
-        lastDirectoryIndex = i;
-        break;
-    }
-    std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + fileName.substr(lastDirectoryIndex + 1, std::string::npos);
+    std::string buttonText = FindBlackBoxButtonTextFromPath(fileName);
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NORMAL_TEXT); // Reset the apply button
 
-    SMediator* mediator = SMediator::GetInstance();
-    mediator->SetBlackBoxFilePath(fileName.c_str());
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, fileName.c_str());
     m_blackBoxChosen = true;
     // Release variables: relevant ones are also released early if an action didn't succeed
     CoTaskMemFree(filePath);
-    ReleaseShellItemAndDialogAndCom(shellItem, fileDialog);
+    Release(shellItem, fileDialog);
 }
 
 
