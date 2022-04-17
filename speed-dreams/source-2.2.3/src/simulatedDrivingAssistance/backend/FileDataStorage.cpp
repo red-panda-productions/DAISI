@@ -1,10 +1,8 @@
 #include <ostream>
 #include "FileDataStorage.h"
 
-// Write a literal string to the stream, as the string in text format (without conversion)
-#define WRITE_STRING_LIT(stream, string) stream << string << "\n"
-// Write a variable string to the stream, as the string in text format (without conversion)
-#define WRITE_STRING_VAR(stream, string) stream << string << "\n"
+// Write a string to the stream, as the string in text format (without conversion)
+#define WRITE_STRING(stream, string) stream << string << "\n"
 // Write a variable to the stream
 #define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n" //Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
 
@@ -48,24 +46,24 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
     m_saveSettings = p_saveSettings;
     m_outputStream.open(p_fileName);
     // User and trial data
-    WRITE_STRING_VAR(m_outputStream, p_userId);
+    WRITE_STRING(m_outputStream, p_userId);
     writeTime(m_outputStream, p_trialStartTime);
     // Black box data
-    WRITE_STRING_VAR(m_outputStream, p_blackboxFilename);
+    WRITE_STRING(m_outputStream, p_blackboxFilename);
     writeTime(m_outputStream, p_blackboxTime);
-    WRITE_STRING_VAR(m_outputStream, p_blackboxName);
+    WRITE_STRING(m_outputStream, p_blackboxName);
     // Environment data
-    WRITE_STRING_VAR(m_outputStream, p_environmentFilename);
+    WRITE_STRING(m_outputStream, p_environmentFilename);
     WRITE_VAR(m_outputStream, p_environmentVersion);
-    WRITE_STRING_VAR(m_outputStream, p_environmentName);
+    WRITE_STRING(m_outputStream, p_environmentName);
     // Intervention data
     WRITE_VAR(m_outputStream, p_interventionType);
     // Headers to indicate what data will be saved
     if (m_saveSettings.EnvironmentData) {
-        WRITE_STRING_LIT(m_outputStream, "GameState");
+        WRITE_STRING(m_outputStream, "GameState");
     }
     if (m_saveSettings.HumanData) {
-        WRITE_STRING_LIT(m_outputStream, "UserInput");
+        WRITE_STRING(m_outputStream, "UserInput");
     }
 }
 
@@ -108,27 +106,27 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
 /// @param p_decisions Tuple of decisions taken this tick
 void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions) {
     if (!m_saveSettings.InterventionData) return;
-    WRITE_STRING_LIT(m_outputStream, "Decisions");
+    WRITE_STRING(m_outputStream, "Decisions");
     if (p_decisions.ContainsSteer()) {
-        WRITE_STRING_LIT(m_outputStream, "SteerDecision");
+        WRITE_STRING(m_outputStream, "SteerDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetSteer());
     }
     if (p_decisions.ContainsBrake()) {
-        WRITE_STRING_LIT(m_outputStream, "BrakeDecision");
+        WRITE_STRING(m_outputStream, "BrakeDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetBrake());
     }
     if (p_decisions.ContainsAccel()) {
-        WRITE_STRING_LIT(m_outputStream, "AccelDecision");
+        WRITE_STRING(m_outputStream, "AccelDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetAccel());
     }
     if (p_decisions.ContainsGear()) {
-        WRITE_STRING_LIT(m_outputStream, "GearDecision");
+        WRITE_STRING(m_outputStream, "GearDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetGear());
     }
     if (p_decisions.ContainsLights()) {
-        WRITE_STRING_LIT(m_outputStream, "LightsDecision");
+        WRITE_STRING(m_outputStream, "LightsDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetLights());
     }
-    WRITE_STRING_LIT(m_outputStream, "NONE");
+    WRITE_STRING(m_outputStream, "NONE");
 }
 
