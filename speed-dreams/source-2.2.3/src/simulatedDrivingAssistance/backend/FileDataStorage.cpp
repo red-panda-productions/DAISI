@@ -112,23 +112,23 @@ FileDataStorage::FileDataStorage(tDataToStore p_saveSettings) : m_saveSettings(p
 void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions) {
     if (!m_saveSettings.InterventionData) return;
     WRITE_STRING_LIT(m_outputStream, "Decisions");
-    if (p_decisions.GetContainsSteer()) {
+    if (p_decisions.ContainsSteer()) {
         WRITE_STRING_LIT(m_outputStream, "SteerDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetSteer());
     }
-    if (p_decisions.GetContainsBrake()) {
+    if (p_decisions.ContainsBrake()) {
         WRITE_STRING_LIT(m_outputStream, "BrakeDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetBrake());
     }
-    if (p_decisions.GetContainsAccel()) {
+    if (p_decisions.ContainsAccel()) {
         WRITE_STRING_LIT(m_outputStream, "AccelDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetAccel());
     }
-    if (p_decisions.GetContainsGear()) {
+    if (p_decisions.ContainsGear()) {
         WRITE_STRING_LIT(m_outputStream, "GearDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetGear());
     }
-    if (p_decisions.GetContainsLights()) {
+    if (p_decisions.ContainsLights()) {
         WRITE_STRING_LIT(m_outputStream, "LightsDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetLights());
     }

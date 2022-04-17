@@ -30,11 +30,11 @@ public:
 
     bool GetLights() const;
 
-    bool GetContainsBrake() const;
-    bool GetContainsSteer() const;
-    bool GetContainsGear() const;
-    bool GetContainsAccel() const;
-    bool GetContainsLights() const;
+    bool ContainsBrake() const;
+    bool ContainsSteer() const;
+    bool ContainsGear() const;
+    bool ContainsAccel() const;
+    bool ContainsLights() const;
 
 private:
     IDecision* buffer[DECISIONS_COUNT];
