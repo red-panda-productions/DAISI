@@ -22,6 +22,7 @@ inline void writeTime(std::ostream& stream, time_t date) {
 
 /// @brief Initialize the file data storage.
 /// End result: a file is created at the given filepath, and initial data is written to the file.
+/// @param p_saveSettings Settings for what data to store.
 /// @param p_fileName Path of the file to save.
 /// @param p_userId User ID of the current player.
 /// @param p_trialStartTime Start time of the current race
@@ -32,7 +33,8 @@ inline void writeTime(std::ostream& stream, time_t date) {
 /// @param p_environmentName Name of the current environment (e.g. "Espie Circuit")
 /// @param p_environmentVersion Version of the current environment
 /// @param p_interventionType Intervention type for the current race
-void FileDataStorage::Initialize(const std::string& p_fileName,
+void FileDataStorage::Initialize(tDataToStore p_saveSettings,
+                                 const std::string& p_fileName,
                                  const std::string& p_userId,
                                  const std::time_t& p_trialStartTime,
                                  const std::string& p_blackboxFilename,
@@ -43,6 +45,7 @@ void FileDataStorage::Initialize(const std::string& p_fileName,
                                  int p_environmentVersion,
                                  InterventionType p_interventionType
 ) {
+    m_saveSettings = p_saveSettings;
     m_outputStream.open(p_fileName);
     // User and trial data
     WRITE_STRING_VAR(m_outputStream, p_userId);
@@ -99,12 +102,6 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
         WRITE_VAR(m_outputStream, ctrl.accelCmd); // gas
         WRITE_VAR(m_outputStream, ctrl.clutchCmd); // clutch
     }
-}
-
-/// @brief Initialize the temporary data storage.
-/// @param p_saveSettings Settings for what data to store.
-FileDataStorage::FileDataStorage(tDataToStore p_saveSettings) : m_saveSettings(p_saveSettings) {
-
 }
 
 /// @brief Save all decisions that were taken this tick

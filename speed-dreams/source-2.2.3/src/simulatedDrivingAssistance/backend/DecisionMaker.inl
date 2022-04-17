@@ -54,9 +54,9 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 
-    m_fileBufferStorage = new FileDataStorage(Config.GetDataCollectionSetting());
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
-    m_fileBufferStorage->Initialize(BUFFER_FILE_PATH,
+    m_fileBufferStorage.Initialize(Config.GetDataCollectionSetting(),
+                                   BUFFER_FILE_PATH,
                                    Config.GetUserId(),
                                    std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
                                    blackBoxPath.filename().string(),
@@ -76,13 +76,13 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 template <typename SocketBlackBox, typename SDAConfig>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
-    if (m_fileBufferStorage) m_fileBufferStorage->Save(p_car, p_situation, p_tickCount);
+    m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
 
     DecisionTuple decision;
 
     if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) return false;
 
-    if (m_fileBufferStorage) m_fileBufferStorage->SaveDecisions(decision);
+    m_fileBufferStorage.SaveDecisions(decision);
 
     int decisionCount = 0;
     IDecision** decisions = decision.GetActiveDecisions(decisionCount);
@@ -126,7 +126,8 @@ template<typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
     BlackBox.Shutdown();
-    m_fileBufferStorage->Shutdown();
-    m_SQLDatabaseStorage.Run(BUFFER_FILE_PATH);
+    m_fileBufferStorage.Shutdown();
+    SQLDatabaseStorage sqlDatabaseStorage;
+    sqlDatabaseStorage.Run(BUFFER_FILE_PATH);
 }
 

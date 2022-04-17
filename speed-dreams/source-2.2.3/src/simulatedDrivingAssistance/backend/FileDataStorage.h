@@ -13,9 +13,8 @@ class FileDataStorage {
     /// @brief Output filestream to write data to, should be initialized through @link FileDataStorage::Initialize
     std::ofstream m_outputStream;
  public:
-    explicit FileDataStorage(tDataToStore p_saveSettings);
-
-    void Initialize(const std::string& p_fileName,
+    void Initialize(tDataToStore p_saveSettings,
+                    const std::string& p_fileName,
                     const std::string& p_userId,
                     const std::time_t& p_trialStartTime,
                     const std::string& p_blackboxFilename,

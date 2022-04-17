@@ -34,8 +34,7 @@ public:
 
 private:
     Recorder* m_recorder = nullptr;
-    SQLDatabaseStorage m_SQLDatabaseStorage;
-    FileDataStorage* m_fileBufferStorage = nullptr;
+    FileDataStorage m_fileBufferStorage;
 };
 
 

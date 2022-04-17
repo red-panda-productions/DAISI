@@ -43,12 +43,11 @@ inline std::string getTimeAsString(time_t date) {
 TEST(FileDataStorageTests, NoStorageTimestampZero) {
     // Initialise class, read+write no values
     DataToStore params = {false, false, false, false, false};
-    FileDataStorage fileDataStorage(params);
 
     GET_DUMMY_TIMES;
-
     // Write a file with dummy initialization data, save timestamp 0, and shut down
-    fileDataStorage.Initialize(DUMMY_INITIALISATION_PARAMETERS);
+    FileDataStorage fileDataStorage;
+    fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     fileDataStorage.Save(nullptr, nullptr, 0);
     fileDataStorage.Shutdown();
 
