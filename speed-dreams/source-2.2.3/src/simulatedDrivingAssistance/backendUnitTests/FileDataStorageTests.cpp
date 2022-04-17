@@ -2,7 +2,7 @@
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
-#define TEST_FILE_PATH "testDataStorage.txt"
+#define TEST_FILE_PATH "..\\temp\\testDataStorage.txt"
 
 // Get dummy time variables. These set the trial to have started now,
 //  the black box to have been created yesterday, and the environment last year.

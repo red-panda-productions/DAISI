@@ -45,9 +45,13 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
                                  int p_environmentVersion,
                                  InterventionType p_interventionType
 ) {
+    // Create file directory if not yet exists
+    std::experimental::filesystem::path filePath = std::experimental::filesystem::path(p_fileName);
+    create_directories(filePath.parent_path());
+    // Initialize member variables
     m_saveSettings = p_saveSettings;
-    create_directories(std::experimental::filesystem::path(p_fileName)); // Create file directory if not yet exists
-    m_outputStream.open(p_fileName);
+    m_outputStream.open(filePath);
+
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
     WriteTime(m_outputStream, p_trialStartTime);
