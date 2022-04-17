@@ -106,6 +106,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
 /// @param p_decisions Tuple of decisions taken this tick
 void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions) {
     if (!m_saveSettings.InterventionData) return;
+
     WRITE_STRING(m_outputStream, "Decisions");
     if (p_decisions.ContainsSteer()) {
         WRITE_STRING(m_outputStream, "SteerDecision");
