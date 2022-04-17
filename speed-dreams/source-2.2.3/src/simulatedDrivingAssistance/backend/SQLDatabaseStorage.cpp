@@ -349,10 +349,6 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
             values = "'Force'";
             break;
-        case INTERVENTION_TYPE_ASK_FOR:
-            std::cout << "'Ask for' intervention type deprecated. Replaced by empty intervention in database" << std::endl;
-            values = "''";
-            break;
         default:
             throw std::exception("Invalid intervention type index read from buffer file");
     }
