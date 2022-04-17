@@ -10,7 +10,7 @@
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
 /// @param date Time to format and write to the stream.
-inline void writeTime(std::ostream& stream, time_t date) {
+inline void WriteTime(std::ostream& stream, time_t date) {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
     char buffer[20];
@@ -25,7 +25,7 @@ inline void writeTime(std::ostream& stream, time_t date) {
 /// @param p_userId User ID of the current player.
 /// @param p_trialStartTime Start time of the current race
 /// @param p_blackboxFilename Filename without path (e.g. "blackbox.exe") for the current black box
-/// @param p_blackboxName Name of the current black box (e.g. "Client Black Box")
+/// @param p_blackboxName Name of the current black box (e.g. "My Lane Keeping Algorithm")
 /// @param p_blackboxTime Timestamp for when the current black box was last updated
 /// @param p_environmentFilename Filename without path (e.g. "highway.xml") for the current environment
 /// @param p_environmentName Name of the current environment (e.g. "Espie Circuit")
@@ -47,10 +47,10 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
     m_outputStream.open(p_fileName);
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
-    writeTime(m_outputStream, p_trialStartTime);
+    WriteTime(m_outputStream, p_trialStartTime);
     // Black box data
     WRITE_STRING(m_outputStream, p_blackboxFilename);
-    writeTime(m_outputStream, p_blackboxTime);
+    WriteTime(m_outputStream, p_blackboxTime);
     WRITE_STRING(m_outputStream, p_blackboxName);
     // Environment data
     WRITE_STRING(m_outputStream, p_environmentFilename);
