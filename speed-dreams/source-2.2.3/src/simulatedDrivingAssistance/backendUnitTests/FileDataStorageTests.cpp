@@ -47,8 +47,8 @@ TEST(FileDataStorageTests, NoStorageTimestampZero) {
 
     GET_DUMMY_TIMES;
 
-    // Write a file with dummy initialisation data, save timestamp 0, and shut down
-    fileDataStorage.Initialise(DUMMY_INITIALISATION_PARAMETERS);
+    // Write a file with dummy initialization data, save timestamp 0, and shut down
+    fileDataStorage.Initialize(DUMMY_INITIALISATION_PARAMETERS);
     fileDataStorage.Save(nullptr, nullptr, 0);
     fileDataStorage.Shutdown();
 

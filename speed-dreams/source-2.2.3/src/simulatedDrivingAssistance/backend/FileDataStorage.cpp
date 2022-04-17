@@ -20,7 +20,7 @@ inline void writeTime(std::ostream& stream, time_t date) {
     stream << buffer << "\n";
 }
 
-/// @brief Initialise the file data storage.
+/// @brief Initialize the file data storage.
 /// End result: a file is created at the given filepath, and initial data is written to the file.
 /// @param p_fileName Path of the file to save.
 /// @param p_userId User ID of the current player.
@@ -32,7 +32,7 @@ inline void writeTime(std::ostream& stream, time_t date) {
 /// @param p_environmentName Name of the current environment (e.g. "Espie Circuit")
 /// @param p_environmentVersion Version of the current environment
 /// @param p_interventionType Intervention type for the current race
-void FileDataStorage::Initialise(const std::string& p_fileName,
+void FileDataStorage::Initialize(const std::string& p_fileName,
                                  const std::string& p_userId,
                                  const std::time_t& p_trialStartTime,
                                  const std::string& p_blackboxFilename,
@@ -101,7 +101,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
     }
 }
 
-/// @brief Initialise the temporary data storage.
+/// @brief Initialize the temporary data storage.
 /// @param p_saveSettings Settings for what data to store.
 FileDataStorage::FileDataStorage(tDataToStore p_saveSettings) : m_saveSettings(p_saveSettings) {
 

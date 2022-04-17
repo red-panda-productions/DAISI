@@ -56,7 +56,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 
     m_fileBufferStorage = new FileDataStorage(Config.GetDataCollectionSetting());
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
-    m_fileBufferStorage->Initialise(BUFFER_FILE_PATH,
+    m_fileBufferStorage->Initialize(BUFFER_FILE_PATH,
                                    Config.GetUserId(),
                                    std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
                                    blackBoxPath.filename().string(),
