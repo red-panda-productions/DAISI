@@ -1,5 +1,7 @@
 #include <ostream>
 #include "FileDataStorage.h"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
 
 // Write a string to the stream, as the string in text format (without conversion)
 #define WRITE_STRING(stream, string) stream << string << "\n"
@@ -44,6 +46,7 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
                                  InterventionType p_interventionType
 ) {
     m_saveSettings = p_saveSettings;
+    create_directories(std::experimental::filesystem::path(p_fileName)); // Create file directory if not yet exists
     m_outputStream.open(p_fileName);
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
