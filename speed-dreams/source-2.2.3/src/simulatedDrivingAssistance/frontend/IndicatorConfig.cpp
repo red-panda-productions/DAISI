@@ -75,6 +75,15 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
     snprintf(sndPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), source);
     data->Path = sndPath;
 
+    data->Looping = strcmp(GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_LOOPING, VAL_NO), VAL_YES) == 0;
+    data->LoopInterval = GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_LOOP_INTERVAL, nullptr, 0);
+
+    // A loop interval of 0 means "loop as fast as possible without sounds overlapping"
+    // The actual loop interval is max(sound_length, loop-interval) to guarantee sounds don't overlap
+    if(data->LoopInterval < 0) {
+        throw std::runtime_error("Loop interval must be greater than or equal to 0");
+    }
+
     return data;
 }
 
@@ -122,6 +131,15 @@ tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
     tTextData* data = new TextData;
     data->Text = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_CONTENT, "");
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
+
+    const char* fontFile = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_FONT, "");
+    int fontSize = (int)GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_FONT_SIZE, "pt", 10.0);
+
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, "%sdata/fonts/%s", GfDataDir(), fontFile);
+    data->Font = new GfuiFontClass(path);
+    data->Font->create(fontSize);
+
     return data;
 }
 

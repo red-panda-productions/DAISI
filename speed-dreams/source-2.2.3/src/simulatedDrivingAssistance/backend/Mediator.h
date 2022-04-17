@@ -28,8 +28,10 @@ public:
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
-    tIndicator GetIndicatorSettings();
-    InterventionType GetInterventionType();
+    void SetBlackBoxFilePath(const char* p_filePath);
+
+    tIndicator          GetIndicatorSettings();
+    InterventionType    GetInterventionType();
     tParticipantControl GetPControlSettings();
 
     static Mediator* GetInstance();
@@ -47,7 +49,7 @@ private:
 
     DecisionMaker m_decisionMaker;
 
-    int m_tickCount;
+    unsigned long m_tickCount;
 
     tTrack* m_track = nullptr;
 };

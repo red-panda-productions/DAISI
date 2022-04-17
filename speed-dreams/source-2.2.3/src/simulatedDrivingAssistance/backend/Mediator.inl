@@ -17,6 +17,7 @@
 	template void Mediator<type>::SetMaxTime(int p_maxTime);\
 	template void Mediator<type>::SetUserId(char* p_userId);\
 	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
+    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);\
 	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
 	template void Mediator<type>::RaceStop();\
@@ -88,6 +89,15 @@ void Mediator<DecisionMaker>::SetDataCollectionSettings(tDataToStore p_dataSetti
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
 }
 
+/// @brief            Sets the filepath for the black box executable
+/// @param p_filePath A const char* representing the filepath of the black box executable
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
+{
+    m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
+}
+
+
 /// @brief             Gets the setting for the given indicator
 /// @param p_indicator Indicator whose setting to get
 /// @return true if the indicator is enabled, false when disabled
@@ -127,15 +137,12 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     m_track = p_track;
     tCarElt car;
     bool recordBB = GetPControlSettings().BBRecordSession;
-
-    // Find a black box run file in the data folder
-    // TODO: Replace this by letting the user select a path to a black box executable, and use that instead of blackBoxPath
-    std::string blackBoxPath(R"(source-2.2.3\data\blackbox\)");
-    std::string blackBoxExecutable("Blackbox.exe");
-    if (!FindFileDirectory(blackBoxPath, blackBoxExecutable)) throw std::exception("Can't find black box executable");
+    
+    const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
+    std::cout << blackBoxFilePath << std::endl;
 
     // Initialize the decision maker with the full path to the current black box executable
-    m_decisionMaker.Initialize(&car, p_situation, blackBoxPath + blackBoxExecutable, recordBB);
+    m_decisionMaker.Initialize(&car, p_situation, blackBoxFilePath);
 }
 
 /// @brief Tells the decisionmaker that the race has ended

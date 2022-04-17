@@ -76,6 +76,7 @@ Changed:
             guiobject.cpp
                 changed GfuiDraw()
                 changed GfuiReleaseObject()
+                added   GfuiDrawString() overloaded to support different parameters.
             tgfclient.h
                 added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
                 added   tRadioButtonInfo
@@ -97,6 +98,9 @@ Changed:
                 added   GfuiRadioButtonSetText()
                 added   GfuiRadioButtonSetTextColor()
                 added   GfuiRadioButtonIsSelected()
+
+                added   GfuiDrawString(): overload
+                added   GfuiFontClass: expose to API
     main/
         main.cpp
             added singletonfolder setup
@@ -123,12 +127,20 @@ Changed:
                 added intervention sound initialization
                 added intervention sound volume setting
             OpenalSound.cpp
-                added check for playing state
+                changed start(): track when the sound was started
+                changed resume(): added check if sound is actually paused
+                changed pause(): added check if sound is playing
+                changed update(): added check for playing state
             OpenalSoundInterface.h
                 added UpdateInterventionSounds()
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
                 changed update(): added update and starting of intervention sounds
+            Sound.h
+                added LastStart
+                added GetLastStart()
+            Sound.cpp
+                added GetLastStart()
             SoundInterface.cpp
                 included "IndicatorConfig.h"
                 added LoadIndicatorSounds()

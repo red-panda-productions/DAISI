@@ -2,6 +2,10 @@
 #include "ConfigEnums.h"
 #include "InterventionExecutor.h"
 #include "InterventionFactory.h"
+#include <string>
+
+
+#define BLACKBOX_PATH_SIZE 260 // Windows MAX_PATH
 
 class SDAConfig
 {
@@ -16,6 +20,7 @@ private:
     int   m_maxSimulationTime = 0;
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
+    char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -38,6 +43,8 @@ public:
 
     void  SetUserId(char* p_userId);
     char* GetUserId() const;
+    void  SetBlackBoxFilePath(const char* p_filePath);
+    const char* GetBlackBoxFilePath() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType      GetInterventionType() const;
