@@ -60,14 +60,11 @@ typedef unsigned int DataStorageType;
 #define DATA_STORAGE_TYPE_SQL       1
 
 /// @brief The different types of data that can be stored
-// TODO: update these to the newer database structure in the front-end.
-//  Current uses in the back-end for each value are listed below.
-//  Changing these without updating the front-end as well may break checkboxes and such
 typedef struct DataToStore
 {
-    bool EnvironmentData; // Used as Gamestate
-    bool CarData; // Unused
-    bool HumanData; // Used as UserInput
-    bool InterventionData; // Used as Decisions
-    bool MetaData; // Unused
+    bool EnvironmentData;
+    bool CarData;
+    bool HumanData;
+    bool InterventionData;
+    bool MetaData;
 } tDataToStore;

@@ -117,6 +117,10 @@ bool SQLDatabaseStorage::OpenDatabase(
 }
 
 /// @brief Executes sql create statements to create all tables
+// TODO: update these to match the values of DataToStore in ConfigEnums
+//  The current setup uses Gamestate (which includes both car and environment data) for "Environment data" checkbox,
+//  UserInput for "Human data" and Decisions for "Intervention data",
+//  but there should be separate tables for environment, car and internal metadata.
 void SQLDatabaseStorage::CreateTables()
 {
     EXECUTE(
