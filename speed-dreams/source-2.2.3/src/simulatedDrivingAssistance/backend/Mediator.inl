@@ -165,7 +165,8 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     // Check if Mediator file exists
     struct stat info;
     char workingDir[256];
-    getcwd(workingDir, 256);
+    if(getcwd(workingDir, 256) == nullptr) 
+        throw std::exception("[Mediator] Working dir not found");
     std::string workingDirectory(workingDir);
     workingDirectory += "\\Singletons\\Mediator";
     const char* filepath = workingDirectory.c_str();
@@ -185,7 +186,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     std::ifstream file("Singletons/Mediator");
     getline(file, pointerName);
     file.close();
-    int pointerValue = stoi(pointerName, 0, 16);
+    int pointerValue = stoi(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
 }

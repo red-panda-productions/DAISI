@@ -8,33 +8,31 @@
 
 // Location of the config.xml file with respect to the root data directory.
 #define CONFIG_XML_DIR_FORMAT "%sdata/indicators/config.xml"
-#define SOUNDS_DIR_FORMAT     "%sdata/indicators/sound/%s"
+#define SOUNDS_DIR_FORMAT "%sdata/indicators/sound/%s"
 
 // Parameters of sections and attributes used to search in the XML file.
-#define PRM_SECT_INTERVENTIONS  "Interventions"
-#define PRM_SECT_TEXTURE        "texture"
-#define PRM_SECT_SOUND          "sound"
-#define PRM_SECT_TEXT           "text"
+#define PRM_SECT_INTERVENTIONS "Interventions"
+#define PRM_SECT_TEXTURE "texture"
+#define PRM_SECT_SOUND "sound"
+#define PRM_SECT_TEXT "text"
 
-#define PRM_ATTR_XPOS           "xpos"
-#define PRM_ATTR_YPOS           "ypos"
-#define PRM_ATTR_SRC            "source"
-#define PRM_ATTR_CONTENT        "content"
-#define PRM_ATTR_FONT           "font"
-#define PRM_ATTR_FONT_SIZE      "font-size"
-#define PRM_ATTR_LOOPING        "looping"
-#define PRM_ATTR_LOOP_INTERVAL  "loop-interval"
+#define PRM_ATTR_XPOS "xpos"
+#define PRM_ATTR_YPOS "ypos"
+#define PRM_ATTR_SRC "source"
+#define PRM_ATTR_CONTENT "content"
+#define PRM_ATTR_FONT "font"
+#define PRM_ATTR_FONT_SIZE "font-size"
+#define PRM_ATTR_LOOPING "looping"
+#define PRM_ATTR_LOOP_INTERVAL "loop-interval"
 
-#define VAL_YES                 "yes"
-#define VAL_NO                  "no"
+#define VAL_YES "yes"
+#define VAL_NO "no"
 
 static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "none", "steer left", "steer right", "brake"
-};
-
+    "none", "steer left", "steer right", "brake"};
 
 /// @brief Contains the configuration of indicators for interventions
-class IndicatorConfig 
+class IndicatorConfig
 {
 public:
     void Initialize();
@@ -53,13 +51,13 @@ public:
     /// @brief Removes assigment for singleton behaviour
     void operator=(IndicatorConfig const&) = delete;
 
- private:
+private:
     IndicatorConfig() = default;
     static IndicatorConfig* m_instance;
 
-    std::vector<tIndicatorData> m_indicatorData;
+    std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
 
-    std::vector<tIndicatorData> m_activeIndicators;
+    std::vector<tIndicatorData> m_activeIndicators = {};
 
     void LoadIndicatorData();
 
