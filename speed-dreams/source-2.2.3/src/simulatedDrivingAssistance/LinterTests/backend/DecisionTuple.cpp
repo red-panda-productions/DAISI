@@ -5,7 +5,7 @@ DecisionTuple::DecisionTuple()
 {
     for (int i = 0; i < DECISIONS_COUNT; i++)
     {
-        buffer[0] = nullptr;
+        m_buffer[0] = nullptr;
     }
 }
 
@@ -17,20 +17,20 @@ IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
     p_count = 0;
     if (m_brakeActive)
     {
-        buffer[p_count++] = &m_brakeDecision;
+        m_buffer[p_count++] = &m_brakeDecision;
     }
 
     if (m_steerActive)
     {
-        buffer[p_count++] = &m_steerDecision;
+        m_buffer[p_count++] = &m_steerDecision;
     }
 
     if (m_accelActive)
     {
-        buffer[p_count++] = &m_accelDecision;
+        m_buffer[p_count++] = &m_accelDecision;
     }
 
-    return buffer;
+    return m_buffer;
 }
 
 /// @brief               Sets the brake value of a decision

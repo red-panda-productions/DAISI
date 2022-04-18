@@ -26,7 +26,7 @@ public:
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void RaceStop();
 
-    InterventionExecutor* InterventionExecutor;
+    InterventionExecutor* InterventionExecutor = nullptr;
     SocketBlackBox BlackBox;
 
     ~DecisionMaker();
