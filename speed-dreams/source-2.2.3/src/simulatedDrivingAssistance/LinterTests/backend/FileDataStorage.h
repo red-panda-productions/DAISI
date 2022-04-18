@@ -16,7 +16,7 @@ private:
     std::ofstream m_outputStream;
 
 public:
-    FileDataStorage(tDataToStore* p_saveSettings);
+    explicit FileDataStorage(tDataToStore* p_saveSettings);
 
     void Initialise(const std::string& p_fileName, const std::string& p_userId);
 

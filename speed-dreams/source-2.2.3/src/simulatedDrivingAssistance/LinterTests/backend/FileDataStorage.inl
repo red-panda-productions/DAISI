@@ -6,12 +6,12 @@
 #define CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(type)\
     template void FileDataStorage<type>::Initialise(const std::string& p_fileName, const std::string& p_userId);\
     template void FileDataStorage<type>::Shutdown();\
-    template void FileDataStorage<type>::Save(type& p_situation, int p_timestamp);
+    template void FileDataStorage<type>::Save((type)& p_situation, int p_timestamp);
 
 // Write a literal string to the stream, as the string in text format (without conversion)
-#define WRITE_STRING_LIT(stream, string) stream << string << "\n"
+#define WRITE_STRING_LIT(stream, string) stream << (string) << "\n"
 // Write a variable string to the stream, as the string in text format (without conversion)
-#define WRITE_STRING_VAR(stream, string) stream << string << "\n"
+#define WRITE_STRING_VAR(stream, string) stream << (string) << "\n"
 // Write a variable to the stream
 #define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n" //Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
 

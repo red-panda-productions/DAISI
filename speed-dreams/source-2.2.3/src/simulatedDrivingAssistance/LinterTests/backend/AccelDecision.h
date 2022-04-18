@@ -4,7 +4,7 @@
 class AccelDecision : public IDecision
 {
 public:
-    float AccelAmount;
+    float AccelAmount = 0;
 
     void RunIndicateCommands() override;
     void RunInterveneCommands() override;

@@ -14,7 +14,7 @@
                                                           BlackBoxData* p_testSituations,                                  \
                                                           int p_testAmount);                                               \
     template bool DecisionMaker<type1, type2>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
-    template void DecisionMaker<type1, type2>::ChangeSettings(InterventionType p_type);                                    \
+    template void DecisionMaker<type1, type2>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
     template void DecisionMaker<type1, type2>::RaceStop();                                                                 \
     template DecisionMaker<type1, type2>::~DecisionMaker();
@@ -107,5 +107,5 @@ template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
     BlackBox.Shutdown();
-    m_SQLDatabaseStorage.Run("INPUT FILE HERE");
+    m_sqlDatabaseStorage.Run("INPUT FILE HERE");
 }

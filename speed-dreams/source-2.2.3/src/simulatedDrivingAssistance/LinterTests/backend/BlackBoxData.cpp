@@ -10,7 +10,9 @@
  * @param p_tickCount The tick that this driving simulation is from
  */
 BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
-    : TickCount(p_tickCount)
+    : Car(*p_car),
+      Situation(*p_situation),
+      TickCount(p_tickCount)
 {
     Car.index = p_car->index;
 
@@ -862,11 +864,4 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     Situation.accelTime = p_situation->accelTime;
     Situation.nbPlayers = p_situation->nbPlayers;
     // TODO **cars
-}
-
-BlackBoxData::~BlackBoxData()
-{
-    // TODO delete all items with new keywords and nullptrs (for the future)
-    // delete Car.ctrl.setupChangeCmd;
-    // delete Car.robot;
 }

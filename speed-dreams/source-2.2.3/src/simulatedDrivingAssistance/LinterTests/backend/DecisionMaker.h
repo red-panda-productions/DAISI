@@ -22,7 +22,7 @@ public:
 
     bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount);
 
-    void ChangeSettings(InterventionType p_type);
+    void ChangeSettings(InterventionType p_dataSetting);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void RaceStop();
 
@@ -33,7 +33,7 @@ public:
 
 private:
     Recorder* m_recorder = nullptr;
-    SQLDatabaseStorage m_SQLDatabaseStorage;
+    SQLDatabaseStorage m_sqlDatabaseStorage;
 };
 
 /// @brief The standard type of the decisionMaker
