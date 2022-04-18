@@ -32,7 +32,7 @@ void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
     // TODO: add to the vector instead of overwriting it, this also requires
     //       a way to remove the indicator after some time has passed.
-    m_activeIndicators = { m_indicatorData[p_action] };
+    m_activeIndicators = {m_indicatorData[p_action]};
 }
 
 /// @brief Loads the indicator data of every intervention action from the config.xml file.
@@ -51,7 +51,7 @@ void IndicatorConfig::LoadIndicatorData()
             (InterventionAction)i,
             LoadSound(xmlHandle, std::string(path)),
             LoadTexture(xmlHandle, std::string(path)),
-            LoadText(xmlHandle, std::string(path)) };
+            LoadText(xmlHandle, std::string(path))};
     }
 }
 
@@ -99,7 +99,7 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     {
         throw std::out_of_range("X and Y positions should be in the range [0,1]");
     }
-    return { xPos, yPos };
+    return {xPos, yPos};
 }
 
 /// @brief          Loads the texture indicator data from the indicator config.xml

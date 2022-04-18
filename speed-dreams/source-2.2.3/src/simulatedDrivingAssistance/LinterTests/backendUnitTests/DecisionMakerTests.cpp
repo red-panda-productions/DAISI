@@ -32,8 +32,8 @@ void DecisionTest(bool p_isDecision)
     InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
 
     ASSERT_FALSE(mock == nullptr);
-    ASSERT_EQ(mock->m_decisionCount, DECISIONS_COUNT);
-    ASSERT_FALSE(mock->m_decisions == nullptr);
+    ASSERT_EQ(mock->DecisionCount, DECISIONS_COUNT);
+    ASSERT_FALSE(mock->Decisions == nullptr);
 }
 
 TEST_CASE(DecisionMakerTests, DecisionTestTrue, DecisionTest, (true))

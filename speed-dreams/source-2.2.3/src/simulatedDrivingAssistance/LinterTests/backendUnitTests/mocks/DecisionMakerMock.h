@@ -6,7 +6,7 @@
 class DecisionMakerMock
 {
 public:
-    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount) const 
+    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount) const
     {
         return Decision;
     }

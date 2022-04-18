@@ -4,12 +4,12 @@
 class InterventionExecutorMock : public InterventionExecutor
 {
 public:
-    virtual void RunDecision(IDecision** p_decisions, int p_decisionCount) override
+    void RunDecision(IDecision** p_decisions, int p_decisionCount) override
     {
-        m_decisions = p_decisions;
-        m_decisionCount = p_decisionCount;
+        Decisions = p_decisions;
+        DecisionCount = p_decisionCount;
     }
 
-    IDecision** m_decisions = nullptr;
-    int m_decisionCount = 0;
+    IDecision** Decisions = nullptr;
+    int DecisionCount = 0;
 };

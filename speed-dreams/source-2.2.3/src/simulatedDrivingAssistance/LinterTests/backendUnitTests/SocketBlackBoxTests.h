@@ -5,6 +5,9 @@
 #include "ClientSocket.h"
 #include "DecisionTuple.h"
 #include "msgpack.hpp"
+#include "SocketBlackBox.h"
+#include "SocketBlackBox.inl"
+#include "TestUtils.h"
 #include "mocks/PointerManagerMock.h"
 #include "mocks/BlackBoxDataMock.h"
 #define TEST_BUFFER_SIZE 512
@@ -192,7 +195,7 @@ TEST(SocketBlackBoxTests, NoOrderSend)
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, order);
-    client.SendData(sbuffer.data(), sbuffer.size());
+    client.SendData(sbuffer.data(), static_cast<int>(sbuffer.size()));
 }
 
 /// @brief Tests what happens when no action order is sent
@@ -224,5 +227,5 @@ TEST(SocketBlackBoxTests, NoActionOrderSend)
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, order);
-    client.SendData(sbuffer.data(), sbuffer.size());
+    client.SendData(sbuffer.data(), static_cast<int>(sbuffer.size()));
 }

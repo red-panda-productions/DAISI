@@ -2,14 +2,13 @@
 #include "BlackBoxDataMock.h"
 #define SEGMENT_AMOUNT 10
 
-
 class PointerManagerMock
 {
 public:
     PointerManagerMock()
         : m_mock(GetExampleBlackBoxDataMock())
     {
-        for(int i = 0; i < SEGMENT_AMOUNT; i++)
+        for (int i = 0; i < SEGMENT_AMOUNT; i++)
         {
             m_segments[i] = {};
         }

@@ -15,7 +15,7 @@ public:
         return &m_interventionExecutor;
     }
 
-    InterventionType GetInterventionType()
+    InterventionType GetInterventionType() const
     {
         return m_interventionType;
     }

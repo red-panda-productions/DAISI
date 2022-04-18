@@ -12,7 +12,7 @@
 
 #define TMediator Mediator<DecisionMakerMock>
 
-template<>
+template <>
 TMediator* TMediator::m_instance = nullptr;
 
 /// @brief Test if the distribution of the mediator works

@@ -9,7 +9,7 @@ public:
     BlackBoxDataMock(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_trackSegments, int p_trackSegmentsCount)
         : Car(*p_car),
           Situation(*p_situation),
-          TickCount(p_tickCount) { }
+          TickCount(p_tickCount) {}
     tCarElt Car;
     tSituation Situation;
     unsigned long TickCount;
