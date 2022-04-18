@@ -15,7 +15,8 @@ private:
     tDataToStore m_saveSettings;
     /// @brief Output filestream to write data to, should be initialized through @link FileDataStorage::Initialize
     std::ofstream m_outputStream;
- public:
+
+public:
     void Initialize(tDataToStore p_saveSettings,
                     const std::string& p_fileName,
                     const std::string& p_userId,
@@ -26,8 +27,7 @@ private:
                     const std::string& p_environmentFilename,
                     const std::string& p_environmentName,
                     int p_environmentVersion,
-                    InterventionType   p_interventionType
-                    );
+                    InterventionType p_interventionType);
 
     void Shutdown();
 
@@ -37,4 +37,3 @@ private:
 
 /// @brief Standard implementation of the file data storage
 #define SFileDataStorage FileDataStorage<BlackBoxData>
-

@@ -6,13 +6,14 @@
 // Write a string to the stream, as the string in text format (without conversion)
 #define WRITE_STRING(stream, string) stream << string << "\n"
 // Write a variable to the stream
-#define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n" //Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
+#define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n"  // Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
 
 /// @brief Write a time variable to a stream as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string),
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
 /// @param date Time to format and write to the stream.
-inline void WriteTime(std::ostream& p_stream, time_t p_date) {
+inline void WriteTime(std::ostream& p_stream, time_t p_date)
+{
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
     char buffer[20];
@@ -43,8 +44,8 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
                                  const std::string& p_environmentFilename,
                                  const std::string& p_environmentName,
                                  int p_environmentVersion,
-                                 InterventionType p_interventionType
-) {
+                                 InterventionType p_interventionType)
+{
     // Create file directory if not yet exists
     std::experimental::filesystem::path filePath = std::experimental::filesystem::path(p_fileName);
     create_directories(filePath.parent_path());
@@ -66,17 +67,20 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
     // Intervention data
     WRITE_VAR(m_outputStream, p_interventionType);
     // Headers to indicate what data will be saved
-    if (m_saveSettings.EnvironmentData) {
+    if (m_saveSettings.EnvironmentData)
+    {
         WRITE_STRING(m_outputStream, "GameState");
     }
-    if (m_saveSettings.HumanData) {
+    if (m_saveSettings.HumanData)
+    {
         WRITE_STRING(m_outputStream, "UserInput");
     }
 }
 
 /// @brief Shutdown the file data storage.
 /// End result: any possible final data is written and the file is released.
-void FileDataStorage::Shutdown() {
+void FileDataStorage::Shutdown()
+{
     m_outputStream << "END";
     m_outputStream.close();
 }
@@ -85,56 +89,64 @@ void FileDataStorage::Shutdown() {
 /// @param p_car Current car status in Speed Dreams
 /// @param p_situation Current situation in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp) {
+void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
+{
     WRITE_VAR(m_outputStream, p_timestamp);
-    if (m_saveSettings.EnvironmentData) {
+    if (m_saveSettings.EnvironmentData)
+    {
         Posd pos = p_car->pub.DynGCg.pos;
         tDynPt mov = p_car->pub.DynGC;
-        WRITE_VAR(m_outputStream, pos.x); // x-position
-        WRITE_VAR(m_outputStream, pos.y); // y-position
-        WRITE_VAR(m_outputStream, pos.z); // z-position
-        WRITE_VAR(m_outputStream, pos.ax);// x-direction
-        WRITE_VAR(m_outputStream, pos.ay);// y-direction
-        WRITE_VAR(m_outputStream, pos.az);// z-direction
-        WRITE_VAR(m_outputStream, mov.vel.x); // speed
-        WRITE_VAR(m_outputStream, mov.acc.x); // acceleration
-        WRITE_VAR(m_outputStream, p_car->priv.gear); // gear
+        WRITE_VAR(m_outputStream, pos.x);             // x-position
+        WRITE_VAR(m_outputStream, pos.y);             // y-position
+        WRITE_VAR(m_outputStream, pos.z);             // z-position
+        WRITE_VAR(m_outputStream, pos.ax);            // x-direction
+        WRITE_VAR(m_outputStream, pos.ay);            // y-direction
+        WRITE_VAR(m_outputStream, pos.az);            // z-direction
+        WRITE_VAR(m_outputStream, mov.vel.x);         // speed
+        WRITE_VAR(m_outputStream, mov.acc.x);         // acceleration
+        WRITE_VAR(m_outputStream, p_car->priv.gear);  // gear
     }
-    if (m_saveSettings.HumanData) {
+    if (m_saveSettings.HumanData)
+    {
         tCarCtrl ctrl = p_car->ctrl;
-        WRITE_VAR(m_outputStream, ctrl.steer); // steer
-        WRITE_VAR(m_outputStream, ctrl.brakeCmd); // brake
-        WRITE_VAR(m_outputStream, ctrl.accelCmd); // gas
-        WRITE_VAR(m_outputStream, ctrl.clutchCmd); // clutch
+        WRITE_VAR(m_outputStream, ctrl.steer);      // steer
+        WRITE_VAR(m_outputStream, ctrl.brakeCmd);   // brake
+        WRITE_VAR(m_outputStream, ctrl.accelCmd);   // gas
+        WRITE_VAR(m_outputStream, ctrl.clutchCmd);  // clutch
     }
 }
 
 /// @brief Save all decisions that were taken this tick
 /// @param p_decisions Tuple of decisions taken this tick
-void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions) {
+void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
+{
     if (!m_saveSettings.InterventionData) return;
 
     WRITE_STRING(m_outputStream, "Decisions");
-    if (p_decisions.ContainsSteer()) {
+    if (p_decisions.ContainsSteer())
+    {
         WRITE_STRING(m_outputStream, "SteerDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetSteer());
     }
-    if (p_decisions.ContainsBrake()) {
+    if (p_decisions.ContainsBrake())
+    {
         WRITE_STRING(m_outputStream, "BrakeDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetBrake());
     }
-    if (p_decisions.ContainsAccel()) {
+    if (p_decisions.ContainsAccel())
+    {
         WRITE_STRING(m_outputStream, "AccelDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetAccel());
     }
-    if (p_decisions.ContainsGear()) {
+    if (p_decisions.ContainsGear())
+    {
         WRITE_STRING(m_outputStream, "GearDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetGear());
     }
-    if (p_decisions.ContainsLights()) {
+    if (p_decisions.ContainsLights())
+    {
         WRITE_STRING(m_outputStream, "LightsDecision");
         WRITE_VAR(m_outputStream, p_decisions.GetLights());
     }
     WRITE_STRING(m_outputStream, "NONE");
 }
-

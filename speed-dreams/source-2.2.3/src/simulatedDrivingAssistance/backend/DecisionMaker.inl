@@ -21,7 +21,7 @@
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
-#define BUFFER_FILE_PATH "..\\temp\\race_data_buffer.txt"
+#define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -61,7 +61,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
                                    std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
                                    blackBoxPath.filename().string(),
                                    blackBoxPath.stem().string(),
-                                    std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
+                                   std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
                                    p_track->filename,
                                    p_track->name,
                                    p_track->version,

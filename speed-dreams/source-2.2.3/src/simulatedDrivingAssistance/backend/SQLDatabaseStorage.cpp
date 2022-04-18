@@ -352,7 +352,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // Saved as enum index, but since indices in our code and MySQL are not the same, perform conversion
     std::string interventionMode;
     READ_INPUT(p_inputFile, interventionMode);
-    switch (std::stoi(interventionMode)) {
+    switch (std::stoi(interventionMode))
+    {
         case INTERVENTION_TYPE_NO_SIGNALS:
             values = "'Off'";
             break;
@@ -372,7 +373,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
     EXECUTE_QUERY(
         "SELECT settings_id FROM settings WHERE "
-        "intervention_mode = " + values)
+        "intervention_mode = " +
+        values)
 
     int settingsId;
     GET_INT_FROM_RESULTS(settingsId);
