@@ -1,10 +1,12 @@
 #pragma once
 #include "ConfigEnums.h"
+#include "raceman.h"
+#include "car.h"
 
 class DecisionMakerMock
 {
 public:
-    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
+    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount) const 
     {
         return Decision;
     }
@@ -17,5 +19,5 @@ public:
     InterventionType Type;
     bool Decision;
 
-    ~DecisionMakerMock(){};
+    ~DecisionMakerMock() = default;
 };

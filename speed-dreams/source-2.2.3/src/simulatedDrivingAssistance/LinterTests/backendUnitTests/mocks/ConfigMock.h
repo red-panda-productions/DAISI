@@ -1,11 +1,12 @@
 #pragma once
 #include "InterventionExecutorMock.h"
 #include "ConfigEnums.h"
+
 class ConfigMock
 {
 private:
-    InterventionType m_interventionType;
-    InterventionExecutorMock m_interventionExecutor;
+    InterventionType m_interventionType = 0;
+    InterventionExecutorMock m_interventionExecutor = InterventionExecutorMock();
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)

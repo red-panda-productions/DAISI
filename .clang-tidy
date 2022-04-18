@@ -211,7 +211,7 @@ CheckOptions:
   - key:             readability-identifier-naming.GlobalConstantPrefix
     value:           s_
   - key:             readability-identifier-naming.MacroDefinitionCase
-    value:           UPPER_CASE
+    value:           aNy_CasE
   - key:             readability-identifier-naming.AbstractClassCase
     value:           CamelCase    
   - key:             readability-identifier-naming.MethodCase

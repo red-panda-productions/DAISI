@@ -3,6 +3,9 @@
 #include <limits>
 #include <thread>
 #include "ClientSocket.h"
+#include "DecisionTuple.h"
+#include "msgpack.hpp"
+#include "mocks/PointerManagerMock.h"
 #include "mocks/BlackBoxDataMock.h"
 #define TEST_BUFFER_SIZE 512
 #define TOLERANCE        0.1f

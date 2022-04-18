@@ -20,7 +20,7 @@ public:
     {
     }
 
-    bool GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
+    bool GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions) const
     {
         if (!IsDecision) return false;
         p_decisions = Decisions;

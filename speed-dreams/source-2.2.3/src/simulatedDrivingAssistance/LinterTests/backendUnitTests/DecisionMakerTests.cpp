@@ -31,7 +31,7 @@ void DecisionTest(bool p_isDecision)
     ASSERT_TRUE(decisionMaker.Decide(&car, &situation, 0));
     InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
 
-    ASSERT_FALSE(mock == NULL);
+    ASSERT_FALSE(mock == nullptr);
     ASSERT_EQ(mock->m_decisionCount, DECISIONS_COUNT);
     ASSERT_FALSE(mock->m_decisions == nullptr);
 }
@@ -48,7 +48,7 @@ void ChangeSettingsTest(InterventionType p_intervention)
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
     InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
-    ASSERT_FALSE(mockCheck == NULL);
+    ASSERT_FALSE(mockCheck == nullptr);
 }
 
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTest, (INTERVENTION_TYPE_NO_SIGNALS));

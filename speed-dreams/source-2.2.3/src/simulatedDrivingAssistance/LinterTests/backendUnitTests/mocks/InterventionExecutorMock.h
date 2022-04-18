@@ -10,6 +10,6 @@ public:
         m_decisionCount = p_decisionCount;
     }
 
-    IDecision** m_decisions;
-    int m_decisionCount;
+    IDecision** m_decisions = nullptr;
+    int m_decisionCount = 0;
 };
