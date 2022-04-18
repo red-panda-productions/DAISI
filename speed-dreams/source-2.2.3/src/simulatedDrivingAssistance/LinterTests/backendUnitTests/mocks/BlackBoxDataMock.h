@@ -23,14 +23,14 @@ inline BlackBoxDataMock GetExampleBlackBoxDataMock()
     tSituation* situation = new tSituation();
     unsigned long tickCount = 0;
 
-    return { car, situation, tickCount, nullptr, 0 };
+    return {car, situation, tickCount, nullptr, 0};
 }
 
 inline BlackBoxDataMock CreateRandomBlackBoxDataMock(Random& random)
 {
     tCarElt* car = new tCarElt();
     tSituation* situation = new tSituation();
-    unsigned long tickCount = random.NextInt(0,1000);
+    unsigned long tickCount = random.NextInt(0, 1000);
 
-    return { car, situation, tickCount, nullptr, 0 };
+    return {car, situation, tickCount, nullptr, 0};
 }

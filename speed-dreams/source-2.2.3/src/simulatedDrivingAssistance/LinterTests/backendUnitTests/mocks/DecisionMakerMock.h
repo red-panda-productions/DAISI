@@ -4,18 +4,18 @@
 class DecisionMakerMock
 {
 public:
-	bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
-	{
-		return Decision;
-	}
+    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
+    {
+        return Decision;
+    }
 
-	void ChangeSettings(InterventionType p_type)
-	{
-		Type = p_type;
-	}
+    void ChangeSettings(InterventionType p_type)
+    {
+        Type = p_type;
+    }
 
     InterventionType Type;
-	bool Decision;
+    bool Decision;
 
-    ~DecisionMakerMock() {};
+    ~DecisionMakerMock(){};
 };

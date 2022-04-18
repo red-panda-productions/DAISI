@@ -4,10 +4,10 @@
 class PointerManagerMock
 {
 public:
-    PointerManagerMock() : m_mock(GetExampleBlackBoxDataMock())
-    {
-        
-    };
+    PointerManagerMock()
+        : m_mock(GetExampleBlackBoxDataMock()){
+
+          };
 
     BlackBoxDataMock* GetDataPointer()
     {
