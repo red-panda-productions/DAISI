@@ -42,7 +42,5 @@ jobs:
         if: steps.linter.outputs.checks-failed > 0
         run: |
           echo "Some files failed the linting checks!"
-        # for actual deployment
-        # run: exit 1
 
       
