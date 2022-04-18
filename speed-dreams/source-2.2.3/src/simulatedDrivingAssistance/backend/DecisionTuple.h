@@ -29,7 +29,7 @@ public:
     float GetAccel() const;
 
 private:
-    IDecision* buffer[DECISIONS_COUNT] = {};
+    IDecision* m_buffer[DECISIONS_COUNT] = {};
 
     BrakeDecision m_brakeDecision;
     bool m_brakeActive = false;

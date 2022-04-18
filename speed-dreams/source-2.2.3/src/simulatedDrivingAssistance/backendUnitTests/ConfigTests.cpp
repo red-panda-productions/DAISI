@@ -17,7 +17,6 @@ void InterventionTypeTest(InterventionType p_interventionType)
 
 TEST_CASE(ConfigTests, InterventionTypeTestNoSignals, InterventionTypeTest, (INTERVENTION_TYPE_NO_SIGNALS))
 TEST_CASE(ConfigTests, InterventionTypeTestOnlySignals, InterventionTypeTest, (INTERVENTION_TYPE_ONLY_SIGNALS))
-TEST_CASE(ConfigTests, InterventionTypeTestAskFor, InterventionTypeTest, (INTERVENTION_TYPE_ASK_FOR))
 TEST_CASE(ConfigTests, InterventionTypeTestSharedControl, InterventionTypeTest, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(ConfigTests, InterventionTypeTestCompleteTakeover, InterventionTypeTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
 
@@ -31,7 +30,6 @@ void TaskTest(Task p_task)
     ASSERT_EQ(p_task, config.GetTask());
 }
 
-TEST_CASE(ConfigTests, TaskTestsNoTask, TaskTest, (TASK_NO_TASK))
 TEST_CASE(ConfigTests, TaskTestsLaneKeeping, TaskTest, (TASK_LANE_KEEPING))
 TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
 

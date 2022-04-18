@@ -37,7 +37,7 @@ IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
 /// @param  p_brakeValue The value
 void DecisionTuple::SetBrake(float p_brakeValue)
 {
-    m_brakeDecision.m_brakeAmount = p_brakeValue;
+    m_brakeDecision.BrakeAmount = p_brakeValue;
     m_brakeActive = true;
 }
 
@@ -45,7 +45,7 @@ void DecisionTuple::SetBrake(float p_brakeValue)
 /// @param  p_steerValue The value
 void DecisionTuple::SetSteer(float p_steerValue)
 {
-    m_steerDecision.m_steerAmount = p_steerValue;
+    m_steerDecision.SteerAmount = p_steerValue;
     m_steerActive = true;
 }
 
@@ -63,14 +63,14 @@ void DecisionTuple::SetAccel(float p_accelValue)
 /// @return The brake value
 float DecisionTuple::GetBrake() const
 {
-    return m_brakeDecision.m_brakeAmount;
+    return m_brakeDecision.BrakeAmount;
 }
 
 /// @brief  Gets the steer value
 /// @return The steer value
 float DecisionTuple::GetSteer() const
 {
-    return m_steerDecision.m_steerAmount;
+    return m_steerDecision.SteerAmount;
 }
 
 float DecisionTuple::GetGear() const

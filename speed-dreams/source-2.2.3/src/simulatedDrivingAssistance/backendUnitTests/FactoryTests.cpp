@@ -19,8 +19,6 @@ TEST(FactoryTests, Creation)
     ASSERT_NE(
         dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ONLY_SIGNALS)), nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR)), nullptr);
-    ASSERT_NE(
         dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL)), nullptr);
     ASSERT_NE(
         dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_COMPLETE_TAKEOVER)), nullptr);
