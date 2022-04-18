@@ -1,9 +1,10 @@
 #pragma once
 #include <cstdint>
 #include <random>
-#define byte uint8_t
-#define ushort uint16_t
-#define uint unsigned int
+
+#define BYTE uint8_t
+#define USHORT uint16_t
+#define UINT unsigned int
 
 /// @brief Creates random numbers
 class Random
@@ -29,41 +30,41 @@ public:
 	}
 
 	/// @return A random byte
-	byte NextByte()
+	BYTE NextByte()
 	{
 		if (m_bytes >= 8) RefreshByte();
 		return (m_byteRandom >> (8 * m_bytes++)) & 0xFF;
 	}
 
 	/// @return A random byte with a maximum
-	byte NextByte(byte p_max)
+	BYTE NextByte(BYTE p_max)
 	{
 		if (m_bytes >= 8) RefreshByte();
 		return ((m_byteRandom >> (8 * m_bytes++)) & 0xFF) % p_max;
 	}
 
 	/// @return A random byte between a maximum and a minimum
-	byte NextByte(byte p_min, byte p_max)
+	BYTE NextByte(BYTE p_min, BYTE p_max)
 	{
 		return NextByte(p_max - p_min) + p_min;
 	}
 
 	/// @return A random ushort
-	ushort NextUShort()
+	USHORT NextUShort()
 	{
 		if (m_shorts >= 4) RefreshShort();
-		return (m_shortRandom >> (16 * m_shorts++)) & 0xFFFF;
+		return static_cast<USHORT>((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF);
 	}
 
 	/// @return A random ushort with a maximum
-	ushort NextUShort(ushort p_max)
+	USHORT NextUShort(USHORT p_max)
 	{
 		if (m_shorts >= 4) RefreshShort();
-		return ((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max;
+		return static_cast<USHORT>(((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max);
 	}
 
 	/// @return A random ushort between a maximum and a minimum
-	ushort NextUShort(ushort p_min, ushort p_max)
+	USHORT NextUShort(USHORT p_min, USHORT p_max)
 	{
 		return NextUShort(p_max - p_min) + p_min;
 	}
@@ -85,21 +86,21 @@ public:
 	/// @return A random short between a maximum and a minimum
 	short NextShort(short p_min, short p_max)
 	{
-		return NextShort(p_max - p_min) + p_min;
+		return NextShort(static_cast<short>(p_max - p_min)) + p_min;
 	}
 
 	/// @return A random int
 	int NextInt()
 	{
 		if (m_ints >= 2) RefreshInt();
-		return (m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF;
+		return static_cast<int>((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF);
 	}
 
 	/// @return A random int with a maximum
 	int NextInt(int p_max)
 	{
 		if (m_ints >= 2) RefreshInt();
-		return ((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max;
+		return static_cast<int>(((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max);
 	}
 
 	/// @return A random int between a maximum and a minimum
@@ -109,21 +110,21 @@ public:
 	}
 
 	/// @return A random uint
-	uint NextUInt()
+	UINT NextUInt()
 	{
 		if (m_ints >= 2) RefreshInt();
-		return (m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF;
+		return static_cast<UINT>((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF);
 	}
 
 	/// @return A random uint with a maximum
-	uint NextUInt(uint p_max)
+	UINT NextUInt(UINT p_max)
 	{
 		if (m_ints >= 2) RefreshInt();
-		return ((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max;
+		return static_cast<UINT>(((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max);
 	}
 
 	/// @return A random uint between a maximum and a minimum
-	uint NextUint(uint p_min, uint p_max)
+	UINT NextUint(UINT p_min, UINT p_max)
 	{
 		return NextUInt(p_max - p_min) + p_min;
 	}
@@ -135,29 +136,37 @@ public:
 		return (m_boolRandom & (1UL << m_bools++)) > 0;
 	}
 
-	/// @brief				 Creates a random number generator
-	/// @param  pseudoRandom If it is pseudorandom or not
-	Random(bool pseudoRandom = false)
-	{
-		if (pseudoRandom)
-		{
-			new (&m_generator) std::mt19937_64(0xFABCD00AABBCC32); //just a random chosen number
-		}
-		else
-		{
-			std::random_device rd;
-			new (&m_generator) std::mt19937_64(rd());
-		}
-		
+	/// @brief Creates a random number generator
+	Random()
+            : m_bytes(0),
+              m_shorts(0),
+              m_ints(0),
+              m_bools(0)
+    {
+	    std::random_device rd;
+	    new (&m_generator) std::mt19937_64(rd());
+	    
+	    m_byteRandom = m_dis(m_generator);
+	    m_shortRandom = m_dis(m_generator);
+	    m_intRandom = m_dis(m_generator);
+	    m_boolRandom = m_dis(m_generator);
+    }
+
+    /// @brief		   Creates a pseudo random number generator with a seed
+    /// @param  p_seed The seed of the generator
+    Random(long long p_seed)
+        : m_bytes(0),
+          m_shorts(0),
+          m_ints(0),
+          m_bools(0)
+    {
+		new (&m_generator) std::mt19937_64(p_seed); //just a random chosen number
+
 		m_byteRandom = m_dis(m_generator);
 		m_shortRandom = m_dis(m_generator);
 		m_intRandom = m_dis(m_generator);
 		m_boolRandom = m_dis(m_generator);
-		m_bytes = 0;
-		m_shorts = 0;
-		m_ints = 0;
-		m_bools = 0;
-	}
+    }
 
 private:
 
