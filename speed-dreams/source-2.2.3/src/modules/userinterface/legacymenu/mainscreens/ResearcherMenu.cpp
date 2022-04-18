@@ -473,7 +473,7 @@ static void SelectFile(void* /* dummy */)
     std::string extension = fileName.substr(fileName.size() - 4, std::string::npos);
     for (int i = 1; i < 5; i++)
     {
-        extension[i] = std::tolower(extension[i]);
+        extension[i] = static_cast<char>(std::tolower(extension[i]));
     }
     // Enforce that file ends in .exe
     if (std::strcmp(extension.c_str(), ".exe") != 0)
