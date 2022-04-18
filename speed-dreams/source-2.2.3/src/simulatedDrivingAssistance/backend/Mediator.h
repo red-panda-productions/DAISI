@@ -44,7 +44,7 @@ public:
     CarController CarController;
 
 private:
-    Mediator();
+    Mediator() = default;
     static Mediator<DecisionMaker>* m_instance;
 
     DecisionMaker m_decisionMaker;

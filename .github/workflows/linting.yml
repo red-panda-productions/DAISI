@@ -27,7 +27,7 @@ jobs:
           arch: x86
 
       - name: Generate compilation database  
-        run: cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
+        run: cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
       - name: run linter as package
         id: linter

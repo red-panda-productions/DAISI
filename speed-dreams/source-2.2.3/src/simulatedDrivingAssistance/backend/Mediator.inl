@@ -21,8 +21,7 @@
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                             \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation); \
     template void Mediator<type>::RaceStop();                                                                                     \
-    template Mediator<type>* Mediator<type>::GetInstance();                                                                       \
-    template Mediator<type>::Mediator();
+    template Mediator<type>* Mediator<type>::GetInstance();                                                                       
 
 /// @brief        Sets the task in SDAConfig to p_task
 /// @param p_task The Task
@@ -186,9 +185,4 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     int pointerValue = stoi(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
-}
-
-template <typename DecisionMaker>
-Mediator<DecisionMaker>::Mediator()
-{
 }
