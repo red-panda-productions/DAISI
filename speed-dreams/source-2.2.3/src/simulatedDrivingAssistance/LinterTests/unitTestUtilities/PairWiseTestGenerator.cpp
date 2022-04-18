@@ -72,10 +72,8 @@ TestCaseInfo::TestCaseInfo(int p_length)
 
 /// @brief The default constructor of TestCaseInfo
 TestCaseInfo::TestCaseInfo()
-    : Features(nullptr)
-{
-    Length = 0;
-}
+    : Features(nullptr),
+      Length(0) { }
 
 /// @brief			 Set the internal data of the test info
 /// @param  p_length The length
@@ -89,7 +87,7 @@ void TestCaseInfo::SetTestCaseInfo(int p_length)
 /// @brief			Checks if a testCase is covered by a tuple
 /// @param  p_tuple The tuple
 /// @return			Whether the test case is covered
-bool TestCaseInfo::IsTupleCovered(FeatureTuple& p_tuple)
+bool TestCaseInfo::IsTupleCovered(FeatureTuple& p_tuple) const
 {
 	for(int i = 0; i < p_tuple.Count(); i++)
 	{
