@@ -4,7 +4,6 @@
 
 #define BYTE uint8_t
 #define USHORT uint16_t
-#define UINT unsigned int
 
 /// @brief Creates random numbers
 class Random
@@ -110,21 +109,21 @@ public:
 	}
 
 	/// @return A random uint
-	UINT NextUInt()
+	unsigned int NextUInt()
 	{
 		if (m_ints >= 2) RefreshInt();
-		return static_cast<UINT>((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF);
+		return static_cast<unsigned int>((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF);
 	}
 
 	/// @return A random uint with a maximum
-	UINT NextUInt(UINT p_max)
+	unsigned int NextUInt(unsigned int p_max)
 	{
 		if (m_ints >= 2) RefreshInt();
-		return static_cast<UINT>(((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max);
+		return static_cast<unsigned int>(((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max);
 	}
 
 	/// @return A random uint between a maximum and a minimum
-	UINT NextUint(UINT p_min, UINT p_max)
+	unsigned int NextUint(unsigned int p_min, unsigned int p_max)
 	{
 		return NextUInt(p_max - p_min) + p_min;
 	}
@@ -158,10 +157,9 @@ public:
 		: m_bytes(0),
 		m_shorts(0),
 		m_ints(0),
-		m_bools(0)
+		m_bools(0),
+	    m_generator(p_seed)
 	{
-		new (&m_generator) std::mt19937_64(p_seed); //just a random chosen number
-
 		m_byteRandom = m_dis(m_generator);
 		m_shortRandom = m_dis(m_generator);
 		m_intRandom = m_dis(m_generator);
