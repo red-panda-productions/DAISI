@@ -30,8 +30,8 @@ public:
 
     void SetBlackBoxFilePath(const char* p_filePath);
 
-    tIndicator          GetIndicatorSettings();
-    InterventionType    GetInterventionType();
+    tIndicator GetIndicatorSettings();
+    InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
 
     static Mediator* GetInstance();
@@ -45,6 +45,7 @@ public:
 
 private:
     Mediator();
+
     static Mediator<DecisionMaker>* m_instance;
 
     DecisionMaker m_decisionMaker;

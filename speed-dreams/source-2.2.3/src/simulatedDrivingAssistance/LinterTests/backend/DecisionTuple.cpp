@@ -25,7 +25,7 @@ IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
         buffer[p_count++] = &m_steerDecision;
     }
 
-    if(m_accelActive)
+    if (m_accelActive)
     {
         buffer[p_count++] = &m_accelDecision;
     }

@@ -36,6 +36,5 @@ private:
     SQLDatabaseStorage m_SQLDatabaseStorage;
 };
 
-
 /// @brief The standard type of the decisionMaker
-#define SDecisionMaker DecisionMaker<SSocketBlackBox,SDAConfig>
+#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig>

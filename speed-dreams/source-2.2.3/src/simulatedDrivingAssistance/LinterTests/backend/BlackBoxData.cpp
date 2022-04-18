@@ -9,7 +9,8 @@
  * @param p_situation The environment data in the simulation
  * @param p_tickCount The tick that this driving simulation is from
  */
-BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount) : TickCount(p_tickCount)
+BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
+    : TickCount(p_tickCount)
 {
     Car.index = p_car->index;
 
@@ -150,16 +151,16 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
     for (int i = 0; i < 4; i++)
     {
-	    for (int j = 0; j < 4; j++)
-	    {
+        for (int j = 0; j < 4; j++)
+        {
             Car.pub.posMat[i][j] = p_pub.posMat[i][j];
-	    }
+        }
     }
 
     bool skip = false;
     tTrackSeg* seg = p_pub.trkPos.seg;
     Car.pub.trkPos.seg = p_nextSegments;
-    if(p_nextSegmentsCount == 0 || p_nextSegments == nullptr || seg == nullptr)
+    if (p_nextSegmentsCount == 0 || p_nextSegments == nullptr || seg == nullptr)
     {
         Car.pub.trkPos.seg = nullptr;
         skip = true;
@@ -170,7 +171,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
         p_nextSegments[i] = *seg;
         p_nextSegments[i].next = &p_nextSegments[i + 1];
 
-        for(int j = 0; j < 4; j++)
+        for (int j = 0; j < 4; j++)
         {
             p_nextSegments[i].vertex[j] = seg->vertex[j];
         }
@@ -207,12 +208,12 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     Car.race.bestLapTime = p_race.bestLapTime;
     Car.race.commitBestLapTime = p_race.commitBestLapTime;
 
-    //TODO: best split time
+    // TODO: best split time
 
     Car.race.deltaBestLapTime = p_race.deltaBestLapTime;
     Car.race.curLapTime = p_race.curLapTime;
 
-    //TODO: current split time
+    // TODO: current split time
 
     Car.race.lastLapTime = p_race.lastLapTime;
     Car.race.curTime = p_race.curTime;
@@ -233,7 +234,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     Car.race.nbSectors = p_race.nbSectors;
     Car.race.trackLength = p_race.trackLength;
     Car.race.scheduledEventTime = p_race.scheduledEventTime;
-    Car.race.pit = nullptr; // TODO *pit
+    Car.race.pit = nullptr;  // TODO *pit
     Car.race.event = p_race.event;
     // TODO penaltyList
     Car.race.penaltyTime = p_race.penaltyTime;
@@ -242,8 +243,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
     // Copy p_car.priv
 #define p_priv p_car->priv
-    Car.priv.paramsHandle = nullptr; // TODO paramsHandle
-    Car.priv.carHandle = nullptr; // TODO carHandle
+    Car.priv.paramsHandle = nullptr;  // TODO paramsHandle
+    Car.priv.carHandle = nullptr;     // TODO carHandle
     Car.priv.driverIndex = p_priv.driverIndex;
     Car.priv.moduleIndex = p_priv.moduleIndex;
 
@@ -324,13 +325,13 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
     for (int i = 0; i < NR_DI_INSTANT; i++)
     {
-        Car.priv.dashboardInstant[i] = p_priv.dashboardInstant[i]; // TODO: check if this copy works
+        Car.priv.dashboardInstant[i] = p_priv.dashboardInstant[i];  // TODO: check if this copy works
     }
     Car.priv.dashboardInstantNb = p_priv.dashboardInstantNb;
 
     for (int i = 0; i < NR_DI_REQUEST; i++)
     {
-        Car.priv.dashboardRequest[i] = p_priv.dashboardRequest[i]; // TODO: check if this copy works
+        Car.priv.dashboardRequest[i] = p_priv.dashboardRequest[i];  // TODO: check if this copy works
     }
     Car.priv.dashboardRequestNb = p_priv.dashboardRequestNb;
     Car.priv.dashboardActiveItem = p_priv.dashboardActiveItem;
@@ -360,10 +361,10 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
     for (int i = 0; i < 4; i++)
     {
-	    for (int j = 0; j < RM_CMD_MAX_MSG_SIZE; j++)
-	    {
+        for (int j = 0; j < RM_CMD_MAX_MSG_SIZE; j++)
+        {
             Car.ctrl.msg[i][j] = p_ctrl.msg[i][j];
-	    }
+        }
     }
 
     for (int i = 0; i < 4; i++)
@@ -371,18 +372,18 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
         Car.ctrl.msgColor[i] = p_ctrl.msgColor[i];
     }
 
-    //TODO: this might be an array which will need to be checked
-    //tDashboardItem* ctrlDashboardItem = new tDashboardItem();
-    //ctrlDashboardItem->type = p_ctrl.setupChangeCmd->type;
-    //tCarSetupItem* ctrlCarSetupItem = new tCarSetupItem();
-    //ctrlCarSetupItem->value = p_ctrl.setupChangeCmd->setup->value;
-    //ctrlCarSetupItem->min = p_ctrl.setupChangeCmd->setup->min;
-    //ctrlCarSetupItem->max = p_ctrl.setupChangeCmd->setup->max;
-    //ctrlCarSetupItem->desired_value = p_ctrl.setupChangeCmd->setup->desired_value;
-    //ctrlCarSetupItem->stepsize = p_ctrl.setupChangeCmd->setup->stepsize;
-    //ctrlCarSetupItem->changed = p_ctrl.setupChangeCmd->setup->changed;
-    //ctrlDashboardItem->setup = ctrlCarSetupItem;
-    //Car.ctrl.setupChangeCmd = ctrlDashboardItem;
+    // TODO: this might be an array which will need to be checked
+    // tDashboardItem* ctrlDashboardItem = new tDashboardItem();
+    // ctrlDashboardItem->type = p_ctrl.setupChangeCmd->type;
+    // tCarSetupItem* ctrlCarSetupItem = new tCarSetupItem();
+    // ctrlCarSetupItem->value = p_ctrl.setupChangeCmd->setup->value;
+    // ctrlCarSetupItem->min = p_ctrl.setupChangeCmd->setup->min;
+    // ctrlCarSetupItem->max = p_ctrl.setupChangeCmd->setup->max;
+    // ctrlCarSetupItem->desired_value = p_ctrl.setupChangeCmd->setup->desired_value;
+    // ctrlCarSetupItem->stepsize = p_ctrl.setupChangeCmd->setup->stepsize;
+    // ctrlCarSetupItem->changed = p_ctrl.setupChangeCmd->setup->changed;
+    // ctrlDashboardItem->setup = ctrlCarSetupItem;
+    // Car.ctrl.setupChangeCmd = ctrlDashboardItem;
 
     // Copy p_car.setup
 #define p_setup p_car->setup
@@ -414,7 +415,6 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     Car.setup.fuel.desired_value = p_setup.fuel.desired_value;
     Car.setup.fuel.stepsize = p_setup.fuel.stepsize;
     Car.setup.fuel.changed = p_setup.fuel.changed;
-
 
     for (int i = 0; i < 2; i++)
     {
@@ -478,7 +478,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
         Car.setup.differentialMaxTqBias[i].changed = p_setup.differentialMaxTqBias[i].changed;
     }
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         Car.setup.differentialViscosity[i].value = p_setup.differentialViscosity[i].value;
         Car.setup.differentialViscosity[i].min = p_setup.differentialViscosity[i].min;
         Car.setup.differentialViscosity[i].max = p_setup.differentialViscosity[i].max;
@@ -558,7 +559,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
         Car.setup.toe[i].changed = p_setup.toe[i].changed;
     }
 
-    for (int i = 0; i < 4; i++) 
+    for (int i = 0; i < 4; i++)
     {
         Car.setup.camber[i].value = p_setup.camber[i].value;
         Car.setup.camber[i].min = p_setup.camber[i].min;
@@ -839,8 +840,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
     // TODO: Maybe set this to nullptrs for the time being
     // Copy p_car.robot
-    //RobotItf* robot = new RobotItf();
-    //Car.robot = robot;
+    // RobotItf* robot = new RobotItf();
+    // Car.robot = robot;
     // TODO Void pointers
 
     // Copy p_car.next
@@ -865,7 +866,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
 BlackBoxData::~BlackBoxData()
 {
-    //TODO delete all items with new keywords and nullptrs (for the future)
-    //delete Car.ctrl.setupChangeCmd;
-    //delete Car.robot;
+    // TODO delete all items with new keywords and nullptrs (for the future)
+    // delete Car.ctrl.setupChangeCmd;
+    // delete Car.robot;
 }
