@@ -69,11 +69,11 @@ static void SynchronizeControls()
 /// @param p_param The configuration menu handle
 static void LoadConfigSettings(void* p_param)
 {
-    m_dataToStore.EnvironmentData = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, nullptr);
-    m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, nullptr);
-    m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, nullptr);
-    m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, nullptr);
-    m_dataToStore.MetaData = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA, GFMNU_ATTR_CHECKED, nullptr);
+    m_dataToStore.EnvironmentData = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, false);
+    m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, false);
+    m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, false);
+    m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, false);
+    m_dataToStore.MetaData = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA, GFMNU_ATTR_CHECKED, false);
     SynchronizeControls();
 }
 
