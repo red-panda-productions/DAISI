@@ -12,12 +12,12 @@
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
 /// @param date Time to format and write to the stream.
-inline void WriteTime(std::ostream& stream, time_t date) {
+inline void WriteTime(std::ostream& p_stream, time_t p_date) {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
     char buffer[20];
-    strftime(buffer, 20, "%F %T", gmtime(&date));
-    stream << buffer << "\n";
+    strftime(buffer, 20, "%F %T", gmtime(&p_date));
+    p_stream << buffer << "\n";
 }
 
 /// @brief Initialize the file data storage.

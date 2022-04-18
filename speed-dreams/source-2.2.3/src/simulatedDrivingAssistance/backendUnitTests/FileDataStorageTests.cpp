@@ -23,11 +23,11 @@
 
 /// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
 /// @param date Time to format and write to the stream.
-inline std::string getTimeAsString(time_t date) {
+inline std::string getTimeAsString(time_t p_date) {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
     char buffer[20];
-    strftime(buffer, 20, "%F %T", gmtime(&date));
+    strftime(buffer, 20, "%F %T", gmtime(&p_date));
     return buffer;
 }
 
