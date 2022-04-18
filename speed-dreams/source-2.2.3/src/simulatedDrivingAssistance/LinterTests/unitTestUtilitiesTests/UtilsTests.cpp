@@ -39,12 +39,12 @@ TEST(UtilsTests, RandomCharArray)
     }
 }
 
-/// @brief		Sample function
-/// @param  x	Sample parameter
-/// @param  msg Sample parameter
-void Sample(int x, const char* msg)
+/// @brief		  Sample function
+/// @param  p_x	  Sample parameter
+/// @param  p_msg Sample parameter
+void Sample(int p_x, const char* p_msg)
 {
-    SUCCEED() << x << " " << msg;
+    SUCCEED() << p_x << " " << p_msg;
 }
 
 // example test case
@@ -90,15 +90,15 @@ TEST(UtilsTests, PairwiseLimitTest)
     delete testCases;
 }
 
-/// @brief			  Checks if a tuple is covered by the test cases
-/// @param  testCases The test cases
-/// @param  tuple	  The tuple
-/// @return			  Whether the tuple is covered
-bool IsTupleCovered(std::vector<TestCaseInfo>* testCases, FeatureTuple& tuple)
+/// @brief			    Checks if a tuple is covered by the test cases
+/// @param  p_testCases The test cases
+/// @param  p_tuple	    The tuple
+/// @return			    Whether the tuple is covered
+bool IsTupleCovered(std::vector<TestCaseInfo>* p_testCases, FeatureTuple& p_tuple)
 {
-    for (int i = 0; i < testCases->size(); i++)
+    for (int i = 0; i < p_testCases->size(); i++)
     {
-        if (testCases->at(i).IsTupleCovered(tuple))
+        if (p_testCases->at(i).IsTupleCovered(p_tuple))
         {
             return true;
         }
