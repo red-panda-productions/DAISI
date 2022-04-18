@@ -9,6 +9,7 @@
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2)                                                                 \
     template void DecisionMaker<type1, type2>::Initialize(tCarElt* p_initialCar,                                           \
                                                           tSituation* p_initialSituation,                                  \
+                                                          tTrack* p_track,                                                 \
                                                           const std::string& p_blackBoxExecutablePath,                     \
                                                           bool p_recordBB,                                                 \
                                                           BlackBoxData* p_testSituations,                                  \
@@ -20,6 +21,7 @@
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
+#define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -34,6 +36,7 @@
 template <typename SocketBlackBox, typename SDAConfig>
 void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
                                                           tSituation* p_initialSituation,
+                                                          tTrack* p_track,
                                                           const std::string& p_blackBoxExecutablePath,
                                                           bool p_recordBB,
                                                           BlackBoxData* p_testSituations,
@@ -50,6 +53,19 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
+
+    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
+    m_fileBufferStorage.Initialize(Config.GetDataCollectionSetting(),
+                                   BUFFER_FILE_PATH,
+                                   Config.GetUserId(),
+                                   std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
+                                   blackBoxPath.filename().string(),
+                                   blackBoxPath.stem().string(),
+                                   std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
+                                   p_track->filename,
+                                   p_track->name,
+                                   p_track->version,
+                                   Config.GetInterventionType());
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -60,9 +76,13 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 template <typename SocketBlackBox, typename SDAConfig>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
+    m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
+
     DecisionTuple decision;
 
     if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) return false;
+
+    m_fileBufferStorage.SaveDecisions(decision);
 
     int decisionCount = 0;
     IDecision** decisions = decision.GetActiveDecisions(decisionCount);
@@ -107,5 +127,7 @@ template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
     BlackBox.Shutdown();
-    m_sqlDatabaseStorage.Run("INPUT FILE HERE");
+    m_fileBufferStorage.Shutdown();
+    SQLDatabaseStorage sqlDatabaseStorage;
+    sqlDatabaseStorage.Run(BUFFER_FILE_PATH);
 }

@@ -1,6 +1,7 @@
 #include "SQLDatabaseStorage.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
+#include "ConfigEnums.h"
 
 /// @brief reads input from input file, unless EOF has been reached
 #define READ_INPUT(p_inputFile, p_string)                        \
@@ -128,11 +129,15 @@ bool SQLDatabaseStorage::OpenDatabase(
 }
 
 /// @brief Executes sql create statements to create all tables
+// TODO: update these to match the values of DataToStore in ConfigEnums
+//  The current setup uses Gamestate (which includes both car and environment data) for "Environment data" checkbox,
+//  UserInput for "Human data" and Decisions for "Intervention data",
+//  but there should be separate tables for environment, car and internal metadata.
 void SQLDatabaseStorage::CreateTables()
 {
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Participant (\n"
-        "    participant_id INT NOT NULL,    \n"
+        "    participant_id VARCHAR(255) NOT NULL,    \n"
         "    \n"
         "    CONSTRAINT participant_id_primary_key PRIMARY KEY (participant_id)\n"
         ")\n")
@@ -153,7 +158,7 @@ void SQLDatabaseStorage::CreateTables()
         "CREATE TABLE IF NOT EXISTS Environment (\n"
         "    environment_id  INT             NOT NULL AUTO_INCREMENT,\n"
         "    filename        VARCHAR(255)    NOT NULL,\n"
-        "    version         DATETIME(0)     NOT NULL,\n"
+        "    version         INT             NOT NULL,\n"
         "    name            VARCHAR(255)    NOT NULL,\n"
         "    \n"
         "    CONSTRAINT environment_id_primary_key PRIMARY KEY (environment_id),\n"
@@ -164,7 +169,7 @@ void SQLDatabaseStorage::CreateTables()
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Settings (\n"
         "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
-        "    intervention_mode   ENUM('Force', 'Ask', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
+        "    intervention_mode   ENUM('Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
         "    \n"
         "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id),\n"
         "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
@@ -175,7 +180,7 @@ void SQLDatabaseStorage::CreateTables()
         "CREATE TABLE IF NOT EXISTS Trial (\n"
         "    trial_id        INT         NOT NULL AUTO_INCREMENT,\n"
         "    trial_time      DATETIME(0) NOT NULL,\n"
-        "    participant_id  INT         NOT NULL,\n"
+        "    participant_id  VARCHAR(255) NOT NULL,\n"
         "    blackbox_id     INT         NOT NULL,\n"
         "    environment_id  INT         NOT NULL,\n"
         "    settings_id     INT         NOT NULL,\n"
@@ -329,16 +334,11 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // environment
     std::string environmentFileName;
     std::string environmentVersion;
-    std::string environmentVersionDate;
-    std::string environmentVersionTime;
     std::string environmentName;
 
     READ_INPUT(p_inputFile, environmentFileName);
-    READ_INPUT(p_inputFile, environmentVersionDate);
-    READ_INPUT(p_inputFile, environmentVersionTime);
+    READ_INPUT(p_inputFile, environmentVersion);
     READ_INPUT(p_inputFile, environmentName);
-
-    environmentVersion = environmentVersionDate + ' ' + environmentVersionTime;
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
@@ -349,17 +349,32 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     GET_INT_FROM_RESULTS(environmentId)
 
     // settings
+    // Saved as enum index, but since indices in our code and MySQL are not the same, perform conversion
     std::string interventionMode;
-
     READ_INPUT(p_inputFile, interventionMode);
-
-    values = "'" + interventionMode + "'";
+    switch (std::stoi(interventionMode))
+    {
+        case INTERVENTION_TYPE_NO_SIGNALS:
+            values = "'Off'";
+            break;
+        case INTERVENTION_TYPE_ONLY_SIGNALS:
+            values = "'Suggest'";
+            break;
+        case INTERVENTION_TYPE_SHARED_CONTROL:
+            values = "'Shared'";
+            break;
+        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
+            values = "'Force'";
+            break;
+        default:
+            throw std::exception("Invalid intervention type index read from buffer file");
+    }
 
     EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
     EXECUTE_QUERY(
         "SELECT settings_id FROM settings WHERE "
-        "intervention_mode = '" +
-        interventionMode + "'")
+        "intervention_mode = " +
+        values)
 
     int settingsId;
     GET_INT_FROM_RESULTS(settingsId);
@@ -417,6 +432,8 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         {
             READ_INPUT(p_inputFile, tick)
         }
+
+        if (tick == "END") break;
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
@@ -571,7 +588,7 @@ void SQLDatabaseStorage::CloseDatabase()
     delete m_connection;
 }
 
-void SQLDatabaseStorage::Run(std::string p_inputFilePath)
+void SQLDatabaseStorage::Run(const std::string& p_inputFilePath)
 {
     std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_connection_settings.txt");
@@ -607,7 +624,9 @@ void SQLDatabaseStorage::Run(std::string p_inputFilePath)
 
     if (OpenDatabase(ip, port, username, password, schema))
     {
-        // StoreData([INPUT FILE PATH HERE]);
+        std::cout << "Writing local buffer file to database" << std::endl;
+        StoreData(p_inputFilePath);
         CloseDatabase();
+        std::cout << "Finished writing to database" << std::endl;
     }
 }

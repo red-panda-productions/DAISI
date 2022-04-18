@@ -82,3 +82,45 @@ float DecisionTuple::GetAccel() const
 {
     return m_accelDecision.AccelAmount;
 }
+
+/// @brief Gets whether to turn the lights on or off
+/// @return True if the headlights should be on, False if the headlights should be off
+bool DecisionTuple::GetLights() const
+{
+    return false;
+}
+
+/// @brief Gets whether this tuple contains a brake decision
+/// @return True if tuple contains a brake decision
+bool DecisionTuple::ContainsBrake() const
+{
+    return m_brakeActive;
+}
+
+/// @brief Gets whether this tuple contains a steer decision
+/// @return True if tuple contains a steer decision
+bool DecisionTuple::ContainsSteer() const
+{
+    return m_steerActive;
+}
+
+/// @brief Gets whether this tuple contains a gear shift decision
+/// @return True if tuple contains a gear shift decision
+bool DecisionTuple::ContainsGear() const
+{
+    return false;
+}
+
+/// @brief Gets whether this tuple contains an acceleration decision
+/// @return True if tuple contains an acceleration decision
+bool DecisionTuple::ContainsAccel() const
+{
+    return m_accelActive;
+}
+
+/// @brief Gets whether this tuple contains a headlights decision
+/// @return True if tuple contains a headlights decision
+bool DecisionTuple::ContainsLights() const
+{
+    return false;
+}
