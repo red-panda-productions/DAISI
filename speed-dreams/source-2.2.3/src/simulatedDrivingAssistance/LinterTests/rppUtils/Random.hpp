@@ -33,20 +33,20 @@ public:
 	BYTE NextByte()
 	{
 		if (m_bytes >= 8) RefreshByte();
-		return (m_byteRandom >> (8 * m_bytes++)) & 0xFF;
+		return static_cast<BYTE>((m_byteRandom >> (8 * m_bytes++)) & 0xFF);
 	}
 
 	/// @return A random byte with a maximum
 	BYTE NextByte(BYTE p_max)
 	{
 		if (m_bytes >= 8) RefreshByte();
-		return ((m_byteRandom >> (8 * m_bytes++)) & 0xFF) % p_max;
+		return static_cast<BYTE>(((m_byteRandom >> (8 * m_bytes++)) & 0xFF) % p_max);
 	}
 
 	/// @return A random byte between a maximum and a minimum
 	BYTE NextByte(BYTE p_min, BYTE p_max)
 	{
-		return NextByte(p_max - p_min) + p_min;
+		return static_cast<BYTE>(NextByte(p_max - p_min) + p_min);
 	}
 
 	/// @return A random ushort
@@ -66,27 +66,27 @@ public:
 	/// @return A random ushort between a maximum and a minimum
 	USHORT NextUShort(USHORT p_min, USHORT p_max)
 	{
-		return NextUShort(p_max - p_min) + p_min;
+		return static_cast<USHORT>(NextUShort(static_cast<USHORT>(p_max - p_min)) + p_min);
 	}
 
 	/// @return A random short
 	short NextShort()
 	{
 		if (m_shorts >= 4) RefreshShort();
-		return (m_shortRandom >> (16 * m_shorts++)) & 0xFFFF;
+		return static_cast<short>((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF);
 	}
 
 	/// @return A random short with a maximum
 	short NextShort(short p_max)
 	{
 		if (m_shorts >= 4) RefreshShort();
-		return ((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max;
+		return static_cast<short>(((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max);
 	}
 
 	/// @return A random short between a maximum and a minimum
 	short NextShort(short p_min, short p_max)
 	{
-		return NextShort(static_cast<short>(p_max - p_min)) + p_min;
+		return static_cast<short>(NextShort(static_cast<short>(p_max - p_min)) + p_min);
 	}
 
 	/// @return A random int
@@ -154,7 +154,7 @@ public:
 
     /// @brief		   Creates a pseudo random number generator with a seed
     /// @param  p_seed The seed of the generator
-    Random(long long p_seed)
+    explicit Random(long long p_seed)
         : m_bytes(0),
           m_shorts(0),
           m_ints(0),
