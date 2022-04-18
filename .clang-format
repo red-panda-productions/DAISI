@@ -1,6 +1,7 @@
 ---
 BasedOnStyle: Google
 AccessModifierOffset: '-4'
+AlignConsecutiveMacros: 'true'
 AllowShortBlocksOnASingleLine: 'true'
 AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBraces: Allman
