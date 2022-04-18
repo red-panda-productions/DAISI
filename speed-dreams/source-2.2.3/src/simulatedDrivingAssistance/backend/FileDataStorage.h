@@ -4,6 +4,7 @@
 #include "BlackBoxData.h"
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
+#include <ctime>
 
 /// @brief               A class that can store data to a file
 class FileDataStorage {
