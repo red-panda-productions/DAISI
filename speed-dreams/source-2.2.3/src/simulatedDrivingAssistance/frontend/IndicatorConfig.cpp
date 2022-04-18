@@ -26,14 +26,13 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
     return m_activeIndicators;
 }
 
-
 /// @brief          Activates the given intervention indicator
 /// @param p_action The intervention to activate the indicators for
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
-    // TODO: add to the vector instead of overwriting it, this also requires 
+    // TODO: add to the vector instead of overwriting it, this also requires
     //       a way to remove the indicator after some time has passed.
-    m_activeIndicators = { m_indicatorData[p_action] };
+    m_activeIndicators = {m_indicatorData[p_action]};
 }
 
 /// @brief Loads the indicator data of every intervention action from the config.xml file.
@@ -42,19 +41,17 @@ void IndicatorConfig::LoadIndicatorData()
     // Load intervention indicator texture from XML file (unchecked max p_path size: 256)
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    void* xmlHandle =  GfParmReadFile(path, GFPARM_RMODE_STD);
+    void* xmlHandle = GfParmReadFile(path, GFPARM_RMODE_STD);
 
     // Load the indicator data for every intervention action
-    m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
         snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
-        m_indicatorData[i] = { 
+        m_indicatorData[i] = {
             (InterventionAction)i,
             LoadSound(xmlHandle, std::string(path)),
             LoadTexture(xmlHandle, std::string(path)),
-            LoadText(xmlHandle, std::string(path))
-        };
+            LoadText(xmlHandle, std::string(path))};
     }
 }
 
@@ -80,7 +77,8 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
 
     // A loop interval of 0 means "loop as fast as possible without sounds overlapping"
     // The actual loop interval is max(sound_length, loop-interval) to guarantee sounds don't overlap
-    if(data->LoopInterval < 0) {
+    if (data->LoopInterval < 0)
+    {
         throw std::runtime_error("Loop interval must be greater than or equal to 0");
     }
 
@@ -93,15 +91,15 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
 /// @return         A struct containing the screen position data
 tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_path)
 {
-    float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, NULL, 0);
-    float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, NULL, 0);
+    float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, nullptr, 0);
+    float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, nullptr, 0);
 
     // Check whether x- and y-pos are valid percentages in range [0,1]
     if (xPos < 0.0f || yPos < 0.0f || xPos > 1.0f || yPos > 1.0f)
     {
         throw std::out_of_range("X and Y positions should be in the range [0,1]");
     }
-    return { xPos, yPos };
+    return {xPos, yPos};
 }
 
 /// @brief          Loads the texture indicator data from the indicator config.xml
@@ -145,16 +143,17 @@ tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
 
 /// @brief  Returns an the existing IndicatorConfig, or creates the initial one if it doesn't exist yet.
 /// @return The IndicatorConfig instance
-IndicatorConfig* IndicatorConfig::GetInstance() 
+IndicatorConfig* IndicatorConfig::GetInstance()
 {
     // If the instance exists, return it.
     // Otherwise create the instance and store it for future calls.
     if (m_instance) return m_instance;
 
     // Check if IndicatorConfig file exists
-    struct stat info;
+    struct stat info = {};
     char workingDir[256];
-    getcwd(workingDir, 256);
+    if (getcwd(workingDir, 256) == nullptr)
+        throw std::exception("[IndicatorConfig] Working dir not found");
     std::string workingDirectory(workingDir);
     workingDirectory += "\\Singletons\\IndicatorConfig";
     const char* filepath = workingDirectory.c_str();
@@ -175,7 +174,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
     std::ifstream file("Singletons/IndicatorConfig");
     getline(file, pointerName);
     file.close();
-    int pointerValue = stoi(pointerName, 0, 16);
+    int pointerValue = stoi(pointerName, nullptr, 16);
     m_instance = (IndicatorConfig*)pointerValue;
     return m_instance;
 }

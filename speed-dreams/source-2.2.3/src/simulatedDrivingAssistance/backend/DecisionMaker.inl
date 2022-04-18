@@ -5,23 +5,22 @@
 #include "ConfigEnums.h"
 #include "../rppUtils/RppUtils.hpp"
 
-
 /// @brief  Creates an implementation of a decision maker
-#define CREATE_DECISION_MAKER_IMPLEMENTATION(type1,type2) \
-    template void DecisionMaker<type1,type2>::Initialize(tCarElt* p_initialCar, \
-        tSituation* p_initialSituation,                                         \
-        tTrack* p_track,                                                        \
-        const std::string& p_blackBoxExecutablePath,                            \
-        bool p_recordBB,                                                        \
-        BlackBoxData* p_testSituations,                                         \
-        int p_testAmount);                                                      \
-    template bool DecisionMaker<type1,type2>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount);\
-    template void DecisionMaker<type1,type2>::ChangeSettings(InterventionType p_type);\
-    template void DecisionMaker<type1,type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
-    template void DecisionMaker<type1,type2>::RaceStop();\
+#define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2)                                                                 \
+    template void DecisionMaker<type1, type2>::Initialize(tCarElt* p_initialCar,                                           \
+                                                          tSituation* p_initialSituation,                                  \
+                                                          tTrack* p_track,                                                 \
+                                                          const std::string& p_blackBoxExecutablePath,                     \
+                                                          bool p_recordBB,                                                 \
+                                                          BlackBoxData* p_testSituations,                                  \
+                                                          int p_testAmount);                                               \
+    template bool DecisionMaker<type1, type2>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
+    template void DecisionMaker<type1, type2>::ChangeSettings(InterventionType p_dataSetting);                             \
+    template void DecisionMaker<type1, type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
+    template void DecisionMaker<type1, type2>::RaceStop();                                                                 \
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
-#define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox,SDAConfig>
+#define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
 #define BUFFER_FILE_PATH "..\\temp\\race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
@@ -44,7 +43,8 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
                                                           int p_testAmount)
 {
 #if !defined(TEST)
-    if (p_recordBB) {
+    if (p_recordBB)
+    {
         m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
     }
 #endif
@@ -90,8 +90,9 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
 #if !defined(TEST)
-    if (m_recorder) {
-        const float decisionValues[2] = { decision.GetBrake(), decision.GetSteer() };
+    if (m_recorder)
+    {
+        const float decisionValues[2] = {decision.GetBrake(), decision.GetSteer()};
         m_recorder->WriteRecording(decisionValues, p_tickCount, false);
     }
 #endif
@@ -101,7 +102,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
 /// @brief                Changes the settings of how decisions should be made
 /// @param  p_dataSetting The new type of interventions
-template<typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
     InterventionExecutor = Config.SetInterventionType(p_dataSetting);
@@ -109,20 +110,20 @@ void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 
 /// @brief         Changes the settings of what data should be collected
 /// @param  p_type The new data collection settings
-template<typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     Config.SetDataCollectionSettings(p_dataSetting);
 }
 
-template<typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig>
 DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
 {
     delete m_recorder;
 }
 
 /// @brief When the race stops, the simulation data collected will be stored in the database
-template<typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::RaceStop()
 {
     BlackBox.Shutdown();
@@ -130,4 +131,3 @@ void TEMP_DECISIONMAKER::RaceStop()
     SQLDatabaseStorage sqlDatabaseStorage;
     sqlDatabaseStorage.Run(BUFFER_FILE_PATH);
 }
-

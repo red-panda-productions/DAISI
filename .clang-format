@@ -1,0 +1,12 @@
+---
+BasedOnStyle: Google
+AccessModifierOffset: '-4'
+AlignConsecutiveMacros: 'true'
+AllowShortBlocksOnASingleLine: 'true'
+AllowShortFunctionsOnASingleLine: Empty
+BreakBeforeBraces: Allman
+ColumnLimit: '0'
+IndentWidth: '4'
+SortIncludes: 'false'
+
+...

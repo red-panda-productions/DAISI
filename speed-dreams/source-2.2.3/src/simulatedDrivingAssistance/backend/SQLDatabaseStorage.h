@@ -24,9 +24,9 @@ private:
     void CreateTables();
     int InsertInitialData(std::ifstream& p_inputFile);
     void InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId);
-    void InsertDecisions(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick);
-    void InsertGameState(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick);
-    void InsertUserInput(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick);
+    void InsertDecisions(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick);
+    void InsertGameState(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick);
+    void InsertUserInput(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

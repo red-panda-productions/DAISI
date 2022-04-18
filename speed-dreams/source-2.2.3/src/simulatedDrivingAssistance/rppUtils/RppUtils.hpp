@@ -13,10 +13,16 @@
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
 /// @return     The float
-inline float stringToFloat(std::string p_s)
+inline float stringToFloat(const std::string& p_s)
 {
-    try { return std::stof(p_s); }
-    catch (std::exception& e) { return NAN; }
+    try
+    {
+        return std::stof(p_s);
+    }
+    catch (std::exception& e)
+    {
+        return NAN;
+    }
 }
 
 /// @brief                    Finds a file in a directory
@@ -31,35 +37,29 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 
     while (cwd[0] != '\0')
     {
-        struct stat info;
-
         char directoryPath[256];
 
-        strcpy(directoryPath, cwd);
-        strcat(directoryPath, "\\");
-        strcat(directoryPath, p_knownPathToFile.c_str());
+        strcpy_s(directoryPath, cwd);
+        strcat_s(directoryPath, "\\");
+        strcat_s(directoryPath, p_knownPathToFile.c_str());
 
         char filePath[256];
-        strcpy(filePath, directoryPath);
-        strcat(filePath, "\\");
-        strcat(filePath, p_fileToFind.c_str());
+        strcpy_s(filePath, directoryPath);
+        strcat_s(filePath, "\\");
+        strcat_s(filePath, p_fileToFind.c_str());
 
         std::cout << "current path: " << filePath << std::endl;
 
+        struct stat info = {};
         if (stat(filePath, &info) == 0)
         {
             p_knownPathToFile = directoryPath;
             return true;
         }
 
-        for (int i = strlen(cwd); i>=0; i--)
-        {
-            if (cwd[i] == '\\' || i == 0)
-            {
-                cwd[i] = '\0';
-                break;
-            }
-        }
+        size_t i = strlen(cwd);
+        while (cwd[i] != '\\' && i != 0) i--;
+        cwd[i] = '\0';
     }
 
     return false;
@@ -79,12 +79,12 @@ inline bool SetupSingletonsFolder()
     }
 
     // set up singleton folder
-    struct stat info;
     char directory[256];
     getcwd(directory, 256);
     std::string workingDirecotory(directory);
     workingDirecotory += "\\Singletons";
     const char* wd = workingDirecotory.c_str();
+    struct stat info = {};
     int err = stat(wd, &info);
     if (err != 0 && err != -1)
     {
@@ -106,13 +106,14 @@ inline bool SetupSingletonsFolder()
 ///// Should either be an absolute path or relative to the current directory.
 ///// Path must include file extension; no default extension is assumed.
 ///// Path is assumed to refer to an existing executable file
-inline void StartExecutable(const std::string& p_executablePath) {
+inline void StartExecutable(const std::string& p_executablePath)
+{
     // WARNING: This method of starting a process is Windows-exclusive.
     // Add a different method to run a process here if a Linux build is planned.
 
-    LPSTR args = _strdup(""); // Create an empty string of arguments for process
-    STARTUPINFO startupInformation = {sizeof(startupInformation)}; // Create an empty STARTUPINFO
-    PROCESS_INFORMATION processInformation; // Allocate space for PROCESS_INFORMATION
+    LPSTR args = _strdup("");                                       // Create an empty string of arguments for process
+    STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
+    PROCESS_INFORMATION processInformation;                         // Allocate space for PROCESS_INFORMATION
     // Start the process. Nullpointers correspond to default values for this method.
     // Inherit handles is not necessary for our use case and is thus false.
     CreateProcess(p_executablePath.c_str(),
@@ -124,7 +125,5 @@ inline void StartExecutable(const std::string& p_executablePath) {
                   nullptr,
                   nullptr,
                   &startupInformation,
-                  &processInformation
-    );
-
+                  &processInformation);
 }

@@ -6,28 +6,26 @@
 #include "../rppUtils/RppUtils.hpp"
 
 /// @brief Creates an implementation of the mediator
-#define CREATE_MEDIATOR_IMPLEMENTATION(type)\
-    template InterventionType Mediator<type>::GetInterventionType();\
-    template tIndicator Mediator<type>::GetIndicatorSettings();\
-    template tParticipantControl Mediator<type>::GetPControlSettings();\
-	template void Mediator<type>::SetTask(Task p_task);\
-	template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);\
-	template void Mediator<type>::SetInterventionType(InterventionType p_type);\
-    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);\
-	template void Mediator<type>::SetMaxTime(int p_maxTime);\
-	template void Mediator<type>::SetUserId(char* p_userId);\
-	template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);\
-    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);\
-	template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);\
-    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);\
-	template void Mediator<type>::RaceStop();\
-    template Mediator<type>* Mediator<type>::GetInstance(); \
-	template Mediator<type>::Mediator();
-
+#define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                      \
+    template InterventionType Mediator<type>::GetInterventionType();                                                              \
+    template tIndicator Mediator<type>::GetIndicatorSettings();                                                                   \
+    template tParticipantControl Mediator<type>::GetPControlSettings();                                                           \
+    template void Mediator<type>::SetTask(Task p_task);                                                                           \
+    template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                  \
+    template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                   \
+    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                            \
+    template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                      \
+    template void Mediator<type>::SetUserId(char* p_userId);                                                                      \
+    template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                          \
+    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                    \
+    template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                             \
+    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation); \
+    template void Mediator<type>::RaceStop();                                                                                     \
+    template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
 /// @param p_task The Task
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetTask(Task p_task)
 {
     m_decisionMaker.Config.SetTask(p_task);
@@ -35,7 +33,7 @@ void Mediator<DecisionMaker>::SetTask(Task p_task)
 
 /// @brief              Sets the settings for indication of interventions
 /// @param p_indicators The Indicator settings
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetIndicatorSettings(tIndicator p_indicators)
 {
     m_decisionMaker.Config.SetIndicatorSettings(p_indicators);
@@ -43,7 +41,7 @@ void Mediator<DecisionMaker>::SetIndicatorSettings(tIndicator p_indicators)
 
 /// @brief  Gets the intervention type from the decision maker
 /// @return The intervention type from the decision maker
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 InterventionType Mediator<DecisionMaker>::GetInterventionType()
 {
     return m_decisionMaker.Config.GetInterventionType();
@@ -51,7 +49,7 @@ InterventionType Mediator<DecisionMaker>::GetInterventionType()
 
 /// @brief        Sets the settings for interventionType to p_type
 /// @param p_type The InterventionType
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetInterventionType(InterventionType p_type)
 {
     m_decisionMaker.ChangeSettings(p_type);
@@ -67,7 +65,7 @@ void Mediator<DecisionMaker>::SetPControlSettings(tParticipantControl p_pControl
 
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime)
 {
     m_decisionMaker.Config.SetMaxTime(p_maxTime);
@@ -75,7 +73,7 @@ void Mediator<DecisionMaker>::SetMaxTime(int p_maxTime)
 
 /// @brief          Sets the userID to p_userID
 /// @param p_userID The userID
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 {
     m_decisionMaker.Config.SetUserId(p_userId);
@@ -83,7 +81,7 @@ void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 
 /// @brief               Sets the settings for data collection
 /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     m_decisionMaker.SetDataCollectionSettings(p_dataSetting);
@@ -96,7 +94,6 @@ void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
 {
     m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
 }
-
 
 /// @brief             Gets the setting for the given indicator
 /// @param p_indicator Indicator whose setting to get
@@ -118,7 +115,7 @@ tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
 /// @brief              Does one drive tick in the framework
 /// @param  p_car       The current car
 /// @param  p_situation The current situation
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
     CarController.SetCar(p_car);
@@ -131,7 +128,7 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 /// @param  p_carHandle     A car handle (from speed dreams)
 /// @param  p_carParmHandle A car parameter handle (from speed dreams)
 /// @param  p_situation     The current situation
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     m_track = p_track;
@@ -146,16 +143,15 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 }
 
 /// @brief Tells the decisionmaker that the race has ended
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     m_decisionMaker.RaceStop();
 }
 
-
 /// @brief Creates a mediator instance if needed and returns it
 /// @return A mediator instance
-template<typename DecisionMaker>
+template <typename DecisionMaker>
 Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 {
     // If the instance exists, return it.
@@ -165,7 +161,8 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     // Check if Mediator file exists
     struct stat info;
     char workingDir[256];
-    getcwd(workingDir, 256);
+    if (getcwd(workingDir, 256) == nullptr)
+        throw std::exception("[Mediator] Working dir not found");
     std::string workingDirectory(workingDir);
     workingDirectory += "\\Singletons\\Mediator";
     const char* filepath = workingDirectory.c_str();
@@ -185,13 +182,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     std::ifstream file("Singletons/Mediator");
     getline(file, pointerName);
     file.close();
-    int pointerValue = stoi(pointerName, 0, 16);
+    int pointerValue = stoi(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
-}
-
-template<typename DecisionMaker>
-Mediator<DecisionMaker>::Mediator()
-{
-
 }

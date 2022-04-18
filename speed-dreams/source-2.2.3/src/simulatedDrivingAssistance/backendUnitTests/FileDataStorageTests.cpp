@@ -42,7 +42,7 @@ inline std::string getTimeAsString(time_t date) {
 // Run a single test on the data storage system, containing no data except for the driver's name and the zero timestamp.
 TEST(FileDataStorageTests, NoStorageTimestampZero) {
     // Initialise class, read+write no values
-    DataToStore params = {false, false, false, false, false};
+    DataToStore params = { false, false, false, false, false };
 
     GET_DUMMY_TIMES;
     // Write a file with dummy initialization data, save timestamp 0, and shut down
