@@ -1,13 +1,15 @@
 #pragma once
 #include "BlackBoxDataMock.h"
+#define SEGMENT_AMOUNT 10
 
 class PointerManagerMock
 {
 public:
-    PointerManagerMock() : m_mock(GetExampleBlackBoxDataMock())
+    PointerManagerMock()
+        : m_mock(GetExampleBlackBoxDataMock()),
+        m_segments{}
     {
-        
-    };
+    }
 
     BlackBoxDataMock* GetDataPointer()
     {
@@ -21,5 +23,5 @@ public:
 
 private:
     BlackBoxDataMock m_mock;
-    tTrackSeg m_segments[10];
+    tTrackSeg m_segments[SEGMENT_AMOUNT];
 };

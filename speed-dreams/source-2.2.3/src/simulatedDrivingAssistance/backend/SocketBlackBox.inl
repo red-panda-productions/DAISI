@@ -5,35 +5,33 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
-#define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1,p_type2) \
-	template SocketBlackBox<p_type1,p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);\
-    template void SocketBlackBox<p_type1,p_type2>::Initialize();\
-	template void SocketBlackBox<p_type1,p_type2>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests);\
-	template void SocketBlackBox<p_type1,p_type2>::Shutdown();\
-	template void SocketBlackBox<p_type1,p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);\
-    template void SocketBlackBox<p_type1,p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);\
-    template bool SocketBlackBox<p_type1,p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
-
+#define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                  \
+    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                          \
+    template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                \
+    template void SocketBlackBox<p_type1, p_type2>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests);                 \
+    template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                  \
+    template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                            \
+    template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple); \
+    template bool SocketBlackBox<p_type1, p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
 
 // inserts value from BlackBoxData variables in vector
-#define PUSH_BACK_DS(p_getInfo) [](std::vector<std::string>& p_values, BlackBoxData& p_blackBoxData){p_values.push_back(std::to_string(p_blackBoxData.p_GetInfo));}
-#define INSERT_CAR_INFO(p_variable) PUSH_BACK_DS(GetCarInfo()->p_variable)
-#define INSERT_ENVIRONMENT_INFO(p_variable) PUSH_BACK_DS(GetEnvironmentInfo()->p_variable)
+#define PUSH_BACK_DS(p_getInfo)                 [](std::vector<std::string>& p_values, BlackBoxData& p_blackBoxData) { p_values.push_back(std::to_string(p_blackBoxData.p_GetInfo)); }
+#define INSERT_CAR_INFO(p_variable)             PUSH_BACK_DS(GetCarInfo()->p_variable)
+#define INSERT_ENVIRONMENT_INFO(p_variable)     PUSH_BACK_DS(GetEnvironmentInfo()->p_variable)
 #define INSERT_TRACK_LOCAL_POSITION(p_variable) PUSH_BACK_DS(GetCarInfo()->TrackLocalPosition()->p_variable)
-#define INSERT_PLAYER_INFO(p_variable) PUSH_BACK_DS(GetPlayerInfo()->p_variable)
+#define INSERT_PLAYER_INFO(p_variable)          PUSH_BACK_DS(GetPlayerInfo()->p_variable)
 
 // converts abstract decision to concrete decision with correct value
-#define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) {p_function;}
-#define CONVERT_TO_STEER_DECISION DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
-#define CONVERT_TO_BRAKE_DECISION DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
-#define CONVERT_TO_GEAR_DECISION DECISION_LAMBDA(p_decisionTuple.SetGear(std::stoi(p_string)))
-#define CONVERT_TO_ACCEL_DECISION DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
+#define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) { p_function; }
+#define CONVERT_TO_STEER_DECISION   DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
+#define CONVERT_TO_BRAKE_DECISION   DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
+#define CONVERT_TO_GEAR_DECISION    DECISION_LAMBDA(p_decisionTuple.SetGear(std::stoi(p_string)))
+#define CONVERT_TO_ACCEL_DECISION   DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
 
 template <class BlackBoxData, class PointerManager>
-SocketBlackBox<BlackBoxData,PointerManager>::SocketBlackBox(PCWSTR p_ip, int p_port)
+SocketBlackBox<BlackBoxData, PointerManager>::SocketBlackBox(PCWSTR p_ip, int p_port)
     : m_server(p_ip, p_port)
 {
-
 }
 
 /// @brief Sets keys and values for the functions that retrieve the correct information.
@@ -41,7 +39,7 @@ template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
 {
     m_server.Initialize();
-    //Decision functions
+    // Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
     m_variableDecisionMap["Gear"] = CONVERT_TO_GEAR_DECISION;
@@ -74,7 +72,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_in
 
     // testing can be done here later
     msgpack::sbuffer sbuffer;
-    std::string data[1] = { std::to_string(p_amountOfTests) };
+    std::string data[1] = {std::to_string(p_amountOfTests)};
     msgpack::pack(sbuffer, data);
     m_server.SendData(sbuffer.data(), sbuffer.size());
 
@@ -91,7 +89,6 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_in
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
     }
 
-
     sbuffer.clear();
     SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
     m_server.SendData(sbuffer.data(), sbuffer.size());
@@ -102,6 +99,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_in
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
 {
+    if (!m_server.Connected()) return;
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     m_server.SendData("STOP", 4);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
@@ -135,11 +133,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::SerializeBlackBoxData(msgpack
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple)
 {
-    //unpack
+    // unpack
     msgpack::unpacked msg;
     msgpack::unpack(msg, p_dataReceived, p_size);
 
-    //convert
+    // convert
     msgpack::object obj = msg.get();
     std::vector<std::string> resultVec;
     obj.convert(resultVec);
@@ -149,8 +147,14 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
         throw std::exception("Number of variables received does not match number of expected variables to receive");
     for (int i = 0; i < VariablesToReceive.size(); i++)
     {
-        try { m_variableDecisionMap.at(VariablesToReceive[i])(resultVec.at(i), p_decisionTuple); }
-        catch (std::exception& e) { throw e; }
+        try
+        {
+            m_variableDecisionMap.at(VariablesToReceive[i])(resultVec.at(i), p_decisionTuple);
+        }
+        catch (std::exception& e)
+        {
+            throw e;
+        }
     }
 }
 

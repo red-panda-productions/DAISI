@@ -4,8 +4,7 @@
 #include "InterventionFactory.h"
 #include <string>
 
-
-#define BLACKBOX_PATH_SIZE 260 // Windows MAX_PATH
+#define BLACKBOX_PATH_SIZE 260  // Windows MAX_PATH
 
 class SDAConfig
 {
@@ -13,11 +12,11 @@ private:
     InterventionType m_interventionType = 0;
     BlackBoxType m_blackBoxType = 0;
     DataStorageType m_dataStorageType = 0;
-    Task  m_task = 0;
+    Task m_task = 0;
     tDataToStore m_dataCollectionSetting = DataToStore();
-    tIndicator m_indicatorSetting  = Indicator();
+    tIndicator m_indicatorSetting = Indicator();
     tParticipantControl m_pControl = ParticipantControl();
-    int   m_maxSimulationTime = 0;
+    int m_maxSimulationTime = 0;
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
@@ -39,13 +38,13 @@ public:
     tParticipantControl GetPControlSettings() const;
 
     void SetMaxTime(int p_maxTime);
-    int  GetMaxTime() const;
+    int GetMaxTime() const;
 
-    void  SetUserId(char* p_userId);
+    void SetUserId(char* p_userId);
     char* GetUserId() const;
-    void  SetBlackBoxFilePath(const char* p_filePath);
+    void SetBlackBoxFilePath(const char* p_filePath);
     const char* GetBlackBoxFilePath() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
-    InterventionType      GetInterventionType() const;
+    InterventionType GetInterventionType() const;
 };

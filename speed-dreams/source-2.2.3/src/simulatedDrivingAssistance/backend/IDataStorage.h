@@ -5,5 +5,5 @@
 class IDataStorage
 {
 public:
-    virtual void StoreData(const std::string p_filePath) = 0;
+    virtual void StoreData(std::string p_filePath) = 0;
 };

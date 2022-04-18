@@ -1,11 +1,10 @@
 #pragma once
 #include "IPCPointerManager.h"
 
-#define CREATE_IPC_POINTER_MANAGER_IMPLEMENTATION(p_type) \
-    template IPCPointerManager<p_type>::IPCPointerManager(); \
+#define CREATE_IPC_POINTER_MANAGER_IMPLEMENTATION(p_type)               \
+    template IPCPointerManager<p_type>::IPCPointerManager();            \
     template p_type* IPCPointerManager<p_type>::GetDataPointer() const; \
     template tTrackSeg* IPCPointerManager<p_type>::GetSegmentPointer() const;
-
 
 /// @brief               Creates/opens the data pointers and sets their size
 template <typename BlackBoxData>
@@ -19,14 +18,14 @@ IPCPointerManager<BlackBoxData>::IPCPointerManager()
 
 /// @brief  Gets the data pointer from the shared memory
 /// @return The data pointer
-template<typename BlackBoxData>
+template <typename BlackBoxData>
 BlackBoxData* IPCPointerManager<BlackBoxData>::GetDataPointer() const
 {
     return static_cast<BlackBoxData*>(m_dataRegion.get_address());
 }
 
 /// @brief  Gets the segment pointer from the shared memory
-/// @return The segment pointer 
+/// @return The segment pointer
 template <typename BlackBoxData>
 tTrackSeg* IPCPointerManager<BlackBoxData>::GetSegmentPointer() const
 {

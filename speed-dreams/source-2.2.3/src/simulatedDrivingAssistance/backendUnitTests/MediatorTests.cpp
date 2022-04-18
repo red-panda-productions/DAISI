@@ -12,6 +12,7 @@
 
 #define TMediator Mediator<DecisionMakerMock>
 
+template <>
 TMediator* TMediator::m_instance = nullptr;
 
 /// @brief Test if the distribution of the mediator works
@@ -48,6 +49,5 @@ void InterventionTest(InterventionType p_interventionType)
 
 TEST_CASE(MediatorTests, InterventionTestNoSignals, InterventionTest, (INTERVENTION_TYPE_NO_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTestOnlySignals, InterventionTest, (INTERVENTION_TYPE_ONLY_SIGNALS))
-TEST_CASE(MediatorTests, InterventionTestAskFor, InterventionTest, (INTERVENTION_TYPE_ASK_FOR))
 TEST_CASE(MediatorTests, InterventionTestSharedControl, InterventionTest, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))

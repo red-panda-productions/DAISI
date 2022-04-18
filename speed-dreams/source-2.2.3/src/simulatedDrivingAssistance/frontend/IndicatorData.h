@@ -37,13 +37,13 @@ typedef struct TextData
     tScreenPosition ScrPos;
 } tTextData;
 
-/// @brief  Stores data belonging to each type of indicator. This is stored with 
-///         pointers to the data structs to deal with the fact that it is not required 
+/// @brief  Stores data belonging to each type of indicator. This is stored with
+///         pointers to the data structs to deal with the fact that it is not required
 ///         that all data is defined.
 typedef struct IndicatorData
 {
     InterventionAction Action;
-    tSoundData*   Sound;
+    tSoundData* Sound;
     tTextureData* Texture;
-    tTextData*    Text;
+    tTextData* Text;
 } tIndicatorData;
