@@ -12,9 +12,8 @@ CREATE_FILE_DATA_STORAGE_IMPLEMENTATION(BlackBoxDataMock)
 TEST(FileDataStorageTests, NoStorageTimestampZero)
 {
     // Initialise class, read+write no values
-    DataToStore params = {false, false, false, false, false};
+    DataToStore params = { false, false, false, false, false };
     FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
-
 
     // Write a file with user id, save timestamp 0, and shut down
     fileDataStorage.Initialise(TEST_FILE_PATH, "player1");
@@ -39,7 +38,8 @@ TEST(FileDataStorageTests, NoStorageTimestampZero)
 /// @param p_storePlayer Whether to save player control data
 /// @param p_storeIntervention Whether to save intervention data
 /// @param p_storeMeta Whether to save metadata
-void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool p_storeIntervention, bool p_storeMeta) {
+void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool p_storeIntervention, bool p_storeMeta)
+{
     Random random;
     tDataToStore params = { p_storeEnv, p_storeCar, p_storePlayer, p_storeIntervention, p_storeMeta };
     FileDataStorage<BlackBoxDataMock> fileDataStorage(&params);
@@ -51,20 +51,27 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
     std::string userId = std::to_string(random.NextInt());
     fileDataStorage.Initialise(TEST_FILE_PATH, userId);
     expected << userId << "\n";
-    if (p_storeEnv) {
+    if (p_storeEnv)
+    {
         expected << "TimeOfDay\nClouds\nRain\n";
     }
-    if (p_storeCar) {
+    if (p_storeCar)
+    {
         expected << "Speed\nGear\nHeadlights\nOffroad\n";
     }
-    if (p_storePlayer) {
+    if (p_storePlayer)
+    {
         expected << "AccelCmd\nBrakeCmd\nClutchCmd\nSteerCmd\n";
     }
-    if (p_storeIntervention) { /*TODO add intervention headers*/ }
-    if (p_storeMeta) { /*TODO add metadata headers*/ }
+    if (p_storeIntervention)
+    { /*TODO add intervention headers*/
+    }
+    if (p_storeMeta)
+    { /*TODO add metadata headers*/
+    }
 
-    for (int i = 0; i < 5; i++) {
-
+    for (int i = 0; i < 5; i++)
+    {
         BlackBoxDataMock driveSit = CreateRandomBlackBoxDataMock(random);
         int timeOfDay = 0;
         int clouds = 0;
@@ -83,28 +90,35 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
         float clutchCmd = driveSit.Car._clutchCmd;
         float steerCmd = driveSit.Car._steerCmd;
         double currentTime = driveSit.Situation.currentTime;
-        
+
         fileDataStorage.Save(driveSit, i);
         expected << std::to_string(i) << "\n";
-        if (p_storeEnv) {
+        if (p_storeEnv)
+        {
             expected << std::to_string(timeOfDay) << "\n"
                 << std::to_string(clouds) << "\n"
                 << std::to_string(rain) << "\n";
         }
-        if (p_storeCar) {
+        if (p_storeCar)
+        {
             expected << std::to_string(speed) << "\n"
                 << std::to_string(gear) << "\n"
                 << std::to_string(headlights) << "\n"
                 << std::to_string(offroad) << "\n";
         }
-        if (p_storePlayer) {
+        if (p_storePlayer)
+        {
             expected << std::to_string(accelCmd) << "\n"
                 << std::to_string(brakeCmd) << "\n"
                 << std::to_string(clutchCmd) << "\n"
                 << std::to_string(steerCmd) << "\n";
         }
-        if (p_storeIntervention) { /*TODO add intervention headers*/ }
-        if (p_storeMeta) { /*TODO add metadata headers*/ }
+        if (p_storeIntervention)
+        { /*TODO add intervention headers*/
+        }
+        if (p_storeMeta)
+        { /*TODO add metadata headers*/
+        }
     }
 
     fileDataStorage.Shutdown();
@@ -119,7 +133,8 @@ void TestDataStorage(bool p_storeEnv, bool p_storeCar, bool p_storePlayer, bool 
 }
 
 /// Run the @link #TestDataStorage(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
-TEST(FileDataStorageTests, TestDataStorageSingle) {
-    bool booleans[2]{true, false};
+TEST(FileDataStorageTests, TestDataStorageSingle)
+{
+    bool booleans[2]{ true, false };
     PairWiseTest(TestDataStorage, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
 }

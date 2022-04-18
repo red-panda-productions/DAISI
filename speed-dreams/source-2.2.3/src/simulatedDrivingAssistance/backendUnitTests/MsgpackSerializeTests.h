@@ -14,11 +14,12 @@
 TEST(MsgpackSerializeTests, SerializeAll)
 {
     Random random;
-    for (int test = 0; test < 100; test++) {
-        SocketBlackBox<BlackBoxDataMock,PointerManagerMock> socketBlackBox;
+    for (int test = 0; test < 100; test++)
+    {
+        SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
         socketBlackBox.Initialize();
 
-        tCarElt car; //need assignments
+        tCarElt car;  // need assignments
         tSituation situation;
 
         int r = random.NextInt();
@@ -35,7 +36,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
         std::stringstream oss;
         oss << &mock;
         std::string s = oss.str();
-        
-        //TestStringEqual(s.c_str(), data[0].c_str(), s.size());
+
+        // TestStringEqual(s.c_str(), data[0].c_str(), s.size());
     }
 }

@@ -15,40 +15,40 @@
 /// @param  p_isDecision Whether the black box made a decision
 void DecisionTest(bool p_isDecision)
 {
-	TDecisionMaker decisionMaker;
-	decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
-	
-	tCarElt car; // need data
-	tSituation situation;
-	
-	decisionMaker.BlackBox.IsDecision = p_isDecision;
+    TDecisionMaker decisionMaker;
+    decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
 
-	if (!p_isDecision)
-	{
-		ASSERT_FALSE(decisionMaker.Decide(&car, &situation, 0));
-		return;
-	}
-	ASSERT_TRUE(decisionMaker.Decide(&car,&situation,0));
-	InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+    tCarElt car;  // need data
+    tSituation situation;
 
-	ASSERT_FALSE(mock == NULL);
-	ASSERT_EQ(mock->m_decisionCount, DECISIONS_COUNT);
-	ASSERT_FALSE(mock->m_decisions == nullptr);
+    decisionMaker.BlackBox.IsDecision = p_isDecision;
+
+    if (!p_isDecision)
+    {
+        ASSERT_FALSE(decisionMaker.Decide(&car, &situation, 0));
+        return;
+    }
+    ASSERT_TRUE(decisionMaker.Decide(&car, &situation, 0));
+    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+
+    ASSERT_FALSE(mock == nullptr);
+    ASSERT_EQ(mock->DecisionCount, DECISIONS_COUNT);
+    ASSERT_FALSE(mock->Decisions == nullptr);
 }
 
-TEST_CASE(DecisionMakerTests,DecisionTestTrue,DecisionTest,(true))
-TEST_CASE(DecisionMakerTests,DecisionTestFalse,DecisionTest,(false))
+TEST_CASE(DecisionMakerTests, DecisionTestTrue, DecisionTest, (true))
+TEST_CASE(DecisionMakerTests, DecisionTestFalse, DecisionTest, (false))
 
 /// @brief					Tests if settings can be changed
 /// @param  p_intervention  The setting that needs to be set
 void ChangeSettingsTest(InterventionType p_intervention)
 {
-	TDecisionMaker decisionMaker;
-	decisionMaker.ChangeSettings(p_intervention);
-	ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
+    TDecisionMaker decisionMaker;
+    decisionMaker.ChangeSettings(p_intervention);
+    ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
-	InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
-	ASSERT_FALSE(mockCheck == NULL);
+    InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+    ASSERT_FALSE(mockCheck == nullptr);
 }
 
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTest, (INTERVENTION_TYPE_NO_SIGNALS));

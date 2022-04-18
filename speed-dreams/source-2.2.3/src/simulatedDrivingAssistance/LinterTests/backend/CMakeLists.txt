@@ -63,21 +63,21 @@ ADD_SDLIB_INCLUDEDIR(tgf math portability frontend)
 
 ADD_SQLITE3_INCLUDEDIR()
 
-SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
-SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
+SD_ADD_LIBRARY(backendLint STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
+SET_TARGET_PROPERTIES(backendLint PROPERTIES LINKER_LANGUAGE CXX)
 
-TARGET_LINK_LIBRARIES(backend frontend)
+TARGET_LINK_LIBRARIES(backendLint frontend)
 
-ADD_SDLIB_LIBRARY(backend tgf portability)
+ADD_SDLIB_LIBRARY(backendLint tgf portability)
 
-ADD_MSGPACK_PACKAGE(backend)
+ADD_MSGPACK_PACKAGE(backendLint)
 
-ADD_IPCLIB_PACKAGE(backend)
+ADD_IPCLIB_PACKAGE(backendLint)
 
-ADD_SQLITE3_LIBRARY(backend)
+ADD_SQLITE3_LIBRARY(backendLint)
 
-ADD_MYSQL_PACKAGE(backend)
+ADD_MYSQL_PACKAGE(backendLint)
 
-ADD_BOOST_PACKAGE(backend)
+ADD_BOOST_PACKAGE(backendLint)
 
-SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)
+SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backendLint TARGETS backendLint)

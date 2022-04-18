@@ -7,7 +7,6 @@
 #include "InterventionExecutorNoIntervention.h"
 #include "InterventionExecutorAlwaysIntervene.h"
 
-
 /// @brief Tests if the Factory creates the the correct InterventionExecutor
 TEST(FactoryTests, Creation)
 {
@@ -16,20 +15,15 @@ TEST(FactoryTests, Creation)
     // Creates InterventionExecutors of different types and casts the resulting InterventionExecutor type to
     // the type it should have made, then it checks if it throws an error.
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_SIGNALS))
-        ,nullptr);
+        dynamic_cast<InterventionExecutorNoIntervention*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_NO_SIGNALS)), nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ONLY_SIGNALS))
-        ,nullptr);
+        dynamic_cast<InterventionExecutorIndication*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ONLY_SIGNALS)), nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR))
-    ,nullptr);
+        dynamic_cast<InterventionExecutorAskFor*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_ASK_FOR)), nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL))
-        ,nullptr);
+        dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL)), nullptr);
     ASSERT_NE(
-        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_COMPLETE_TAKEOVER))
-        ,nullptr);
+        dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_COMPLETE_TAKEOVER)), nullptr);
 }
 
 /// @brief Tests if the Factory creates the InterventionExecutorNoIntervention if the input is incorrect
