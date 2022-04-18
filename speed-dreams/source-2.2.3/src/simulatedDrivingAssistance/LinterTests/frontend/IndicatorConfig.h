@@ -1,5 +1,6 @@
 #pragma once
-
+#include <vector>
+#include <string>
 #include "ConfigEnums.h"
 #include "IndicatorData.h"
 
