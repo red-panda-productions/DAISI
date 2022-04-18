@@ -15,8 +15,14 @@
 /// @return     The float
 inline float stringToFloat(const std::string& p_s)
 {
-    try { return std::stof(p_s); }
-    catch (std::exception& e) { return NAN; }
+    try
+    {
+        return std::stof(p_s);
+    }
+    catch (std::exception& e)
+    {
+        return NAN;
+    }
 }
 
 /// @brief                    Finds a file in a directory
@@ -100,25 +106,24 @@ inline bool SetupSingletonsFolder()
 ///// Should either be an absolute path or relative to the current directory.
 ///// Path must include file extension; no default extension is assumed.
 ///// Path is assumed to refer to an existing executable file
-inline void StartExecutable(const std::string& p_executablePath) {
+inline void StartExecutable(const std::string& p_executablePath)
+{
     // WARNING: This method of starting a process is Windows-exclusive.
     // Add a different method to run a process here if a Linux build is planned.
 
-    LPSTR args = _strdup(""); // Create an empty string of arguments for process
-    STARTUPINFO startupInformation = { sizeof(startupInformation) }; // Create an empty STARTUPINFO
-    PROCESS_INFORMATION processInformation; // Allocate space for PROCESS_INFORMATION
+    LPSTR args = _strdup("");                                       // Create an empty string of arguments for process
+    STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
+    PROCESS_INFORMATION processInformation;                         // Allocate space for PROCESS_INFORMATION
     // Start the process. Nullpointers correspond to default values for this method.
     // Inherit handles is not necessary for our use case and is thus false.
     CreateProcess(p_executablePath.c_str(),
-        args,
-        nullptr,
-        nullptr,
-        false,
-        0,
-        nullptr,
-        nullptr,
-        &startupInformation,
-        &processInformation
-    );
-
+                  args,
+                  nullptr,
+                  nullptr,
+                  false,
+                  0,
+                  nullptr,
+                  nullptr,
+                  &startupInformation,
+                  &processInformation);
 }

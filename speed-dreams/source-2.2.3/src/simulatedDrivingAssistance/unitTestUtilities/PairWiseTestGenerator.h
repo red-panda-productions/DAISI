@@ -11,10 +11,10 @@
 class FeatureInfo
 {
 public:
-	int Dimension;
-	int Feature;
-	FeatureInfo(int p_dimension, int p_feature);
-	FeatureInfo();
+    int Dimension;
+    int Feature;
+    FeatureInfo(int p_dimension, int p_feature);
+    FeatureInfo();
 };
 
 /// @brief Represents a combination of features, one per test
@@ -25,82 +25,82 @@ public:
 class FeatureTuple
 {
 public:
-	FeatureTuple() = default;
-	explicit FeatureTuple(FeatureInfo& p_feature);
-	explicit FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
+    FeatureTuple() = default;
+    explicit FeatureTuple(FeatureInfo& p_feature);
+    explicit FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
 
-	int Count() const;
-	FeatureInfo& operator[](int p_index);
-	void SetTuple(const FeatureInfo& p_feature);
-	void SetTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
+    int Count() const;
+    FeatureInfo& operator[](int p_index);
+    void SetTuple(const FeatureInfo& p_feature);
+    void SetTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
+
 private:
-	FeatureInfo m_features[2];
-	int m_count = 0;
+    FeatureInfo m_features[2];
+    int m_count = 0;
 };
 
 /// @brief Represents a single test case covering a list of features
 class TestCaseInfo
 {
 public:
-	int* Features;
-	int Length;
+    int* Features;
+    int Length;
 
-	explicit TestCaseInfo(int p_length);
+    explicit TestCaseInfo(int p_length);
 
-	TestCaseInfo();
+    TestCaseInfo();
 
-	void SetTestCaseInfo(int p_length);
+    void SetTestCaseInfo(int p_length);
 
-	bool IsTupleCovered(FeatureTuple& p_tuple) const;
+    bool IsTupleCovered(FeatureTuple& p_tuple) const;
 };
 
 /// @brief					  Implements an algorithm which generates a set of test cases
 ///							  which covers all pairs of possible values of test function
 /// @tparam DimensionsCount The amount of dimensions the generator should use
-template<int DimensionsCount>
+template <int DimensionsCount>
 class PairWiseTestGenerator
 {
 public:
-	std::vector<TestCaseInfo>* GetTestCases(int* p_dimensions);
+    std::vector<TestCaseInfo>* GetTestCases(int* p_dimensions);
 
 private:
-	class Queue : public std::queue<FeatureTuple>
-	{
-	public:
-		FeatureTuple& At(int p_index)
-		{
-			return this->c.at(p_index);
-		}
-		void RemoveAt(int p_index)
-		{
-			this->c.erase(c.begin()+p_index);
-		}
-	};
+    class Queue : public std::queue<FeatureTuple>
+    {
+    public:
+        FeatureTuple& At(int p_index)
+        {
+            return this->c.at(p_index);
+        }
+        void RemoveAt(int p_index)
+        {
+            this->c.erase(c.begin() + p_index);
+        }
+    };
 
-	Random m_random = Random();
-	int m_dimensions[DimensionsCount] = {0};
-	Queue* m_uncoveredTuples[DimensionsCount] = {nullptr};
+    Random m_random = Random();
+    int m_dimensions[DimensionsCount] = {0};
+    Queue* m_uncoveredTuples[DimensionsCount] = {nullptr};
 
+    void CreateAllTuples();
 
-	void CreateAllTuples();
+    void CreateTuples(int p_dimension, int p_feature, Queue& p_uncoveredTuple);
 
-	void CreateTuples(int p_dimension, int p_feature, Queue& p_uncoveredTuple);
+    bool GetNextTuple(FeatureTuple& p_tuple);
 
-	bool GetNextTuple(FeatureTuple& p_tuple);
+    void CreateTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase);
 
-	void CreateTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase);
+    void CreateRandomTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase);
 
-	void CreateRandomTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase);
+    int MaximizeCoverage(TestCaseInfo& p_testCase, FeatureTuple& p_tuple);
 
-	int MaximizeCoverage(TestCaseInfo& p_testCase, FeatureTuple& p_tuple);
+    int* GetMutableDimensions(FeatureTuple& p_tuple, int& p_count);
 
-	int* GetMutableDimensions(FeatureTuple& p_tuple, int& p_count);
+    void ScrambleDimensions(int* p_dimensions, int p_dimensionCount);
 
-	void ScrambleDimensions(int* p_dimensions, int p_dimensionCount);
+    int MaximizeCoverageForDimension(TestCaseInfo& p_testCase, int p_dimension, int p_bestCoverage);
 
-	int MaximizeCoverageForDimension(TestCaseInfo& p_testCase, int p_dimension, int p_bestCoverage);
+    int CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature);
 
-	int CountTuplesCoveredByTest(TestCaseInfo& p_testCase, int p_dimension, int p_feature);
-
-	void RemoveTuplesCoveredByTest(TestCaseInfo& p_testCase);
+    void RemoveTuplesCoveredByTest(TestCaseInfo& p_testCase);
 };

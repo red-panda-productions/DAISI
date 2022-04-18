@@ -1,3 +1,3 @@
 
 
-ADD_SUBDIRECTORY(unitTestUtilities)
+ADD_SUBDIRECTORY(unitTestUtilitiesTests)

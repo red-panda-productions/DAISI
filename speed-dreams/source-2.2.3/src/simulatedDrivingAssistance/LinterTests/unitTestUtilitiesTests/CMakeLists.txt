@@ -1,4 +1,4 @@
-project(unitTestUtilitiesTests)
+project(unitTestutilitiesTestsLint)
 
 ENABLE_TESTING()
 
@@ -15,16 +15,14 @@ FetchContent_MakeAvailable(googletest)
 
 
 add_executable(
-  unitTestUtilitiesTests "UtilsTests.cpp")
+  unitTestutilitiesTestsLint "UtilsTests.cpp")
 target_link_libraries(
-  unitTestUtilitiesTests #moet het zelfde zijn
+  unitTestutilitiesTestsLint #moet het zelfde zijn
   unitTestUtilities
   gtest_main
 )
 
-target_include_directories(unitTestUtilitiesTests PUBLIC "../unitTestUtilities")
+target_include_directories(unitTestutilitiesTestsLint PUBLIC "../unitTestUtilitiesLint")
 
 include(GoogleTest)
-gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)
-
-CREATE_OPEN_CPP_COVERAGE_BAT("UnitUtilitiesCoverage" "${CMAKE_CURRENT_BINARY_DIR}/unitTestUtilitiesTests.exe" "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities" "" "")
+gtest_discover_tests(unitTestutilitiesTestsLint DISCOVERY_TIMEOUT 600)
