@@ -69,11 +69,11 @@ static void SynchronizeControls()
 /// @param p_param The configuration menu handle
 static void LoadConfigSettings(void* p_param)
 {
-    m_dataToStore.EnvironmentData = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.MetaData = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.EnvironmentData = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, nullptr);
+    m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, nullptr);
+    m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, nullptr);
+    m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, nullptr);
+    m_dataToStore.MetaData = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA, GFMNU_ATTR_CHECKED, nullptr);
     SynchronizeControls();
 }
 
@@ -120,7 +120,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.InterventionData));
     GfParmSetStr(readParam, PRM_META_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
 
-    GfParmWriteFile(NULL, readParam, "DataSelectionMenu");
+    GfParmWriteFile(nullptr, readParam, "DataSelectionMenu");
 }
 
 /// @brief Configures the SDAConfig with the options selected on this menu
@@ -150,8 +150,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     // Screen already created
     if (s_scrHandle) return s_scrHandle;
 
-    s_scrHandle = GfuiScreenCreate((float*)NULL, NULL, OnActivate,
-                                   NULL, (tfuiCallback)NULL, 1);
+    s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
+                                   nullptr, (tfuiCallback)nullptr, 1);
     s_nextHandle = p_nextMenu;
 
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
@@ -162,17 +162,17 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
-    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, NULL, ChangeEnvironmentStorage);
-    m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA, NULL, ChangeCarStorage);
-    m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, NULL, ChangeHumanStorage);
-    m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, NULL, ChangeInterventionStorage);
-    m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, NULL, ChangeMetaDataStorage);
+    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, nullptr, ChangeEnvironmentStorage);
+    m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA, nullptr, ChangeCarStorage);
+    m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
+    m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
+    m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
 
     GfParmReleaseHandle(param);
-    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
-    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, NULL);
-    GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, NULL);
-    GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
+    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveSettings, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", nullptr, GfuiScreenShot, nullptr);
 
     return s_scrHandle;
 }
