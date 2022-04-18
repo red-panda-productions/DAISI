@@ -5,7 +5,7 @@
 class BrakeDecision : public IDecision
 {
 public:
-    float m_brakeAmount = 0;
+    float BrakeAmount = 0;
 
     void RunIndicateCommands() override;
     void RunInterveneCommands() override;
