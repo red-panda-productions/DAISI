@@ -2,11 +2,6 @@
 INCLUDE(../../../../cmake/macros.cmake)
 
 SET(_SOURCES 
-	BrakeDecision.cpp
-	CarController.cpp
-	DecisionMaker.cpp
-	DecisionTuple.cpp
-	FileDataStorage.cpp
 	InterventionExecutorAlwaysIntervene.cpp
 	InterventionExecutorAskFor.cpp
 	InterventionExecutorIndication.cpp
@@ -19,26 +14,15 @@ SET(_SOURCES
 	SocketBlackBox.cpp
 	SQLDatabaseStorage.cpp
 	SteerDecision.cpp
-	BlackBoxData.cpp
-	AccelDecision.cpp
 	IPCPointerManager.cpp
 )
 
 SET(_INLINES
-	DecisionMaker.inl
-	FileDataStorage.inl
 	Mediator.inl
 	SocketBlackBox.inl
 	IPCPointerManager.inl)
 
 SET(_HEADERS 
-	BrakeDecision.h
-	CarController.h
-	ConfigEnums.h
-	DecisionMaker.h
-	DecisionTuple.h
-	FileDataStorage.h
-	IDataStorage.h
 	IDecision.h
 	InterventionExecutor.h
 	InterventionExecutorAlwaysIntervene.h
@@ -53,8 +37,6 @@ SET(_HEADERS
 	SocketBlackBox.h
 	SQLDatabaseStorage.h
 	SteerDecision.h
-	BlackBoxData.h
-	AccelDecision.h
 	IPCPointerManager.h
 )
 
