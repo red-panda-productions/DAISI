@@ -22,7 +22,7 @@ target_link_libraries(
   gtest_main
 )
 
-target_include_directories(unitTestutilitiesTestsLint PUBLIC "../unitTestUtilitiesLint")
+target_include_directories(unitTestutilitiesTestsLint PUBLIC "../../unitTestUtilities")
 
 include(GoogleTest)
 gtest_discover_tests(unitTestutilitiesTestsLint DISCOVERY_TIMEOUT 600)
