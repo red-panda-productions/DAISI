@@ -11,7 +11,7 @@
 #define PRM_INTRV_DATA "CheckboxInterventionData"
 #define PRM_META_DATA  "CheckboxMetaData"
 
-static void* s_scrHandle  = nullptr;
+static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 static void* s_nextHandle = nullptr;
 
@@ -19,7 +19,6 @@ static void* s_nextHandle = nullptr;
 tDataToStore m_dataToStore;
 
 int m_dataToStoreControl[5];
-
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
@@ -70,11 +69,11 @@ static void SynchronizeControls()
 /// @param p_param The configuration menu handle
 static void LoadConfigSettings(void* p_param)
 {
-    m_dataToStore.EnvironmentData  = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA,   GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.CarData          = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA,   GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.HumanData        = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.EnvironmentData = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, NULL);
     m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, NULL);
-    m_dataToStore.MetaData         = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA,  GFMNU_ATTR_CHECKED, NULL);
+    m_dataToStore.MetaData = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA, GFMNU_ATTR_CHECKED, NULL);
     SynchronizeControls();
 }
 
@@ -88,15 +87,14 @@ static void LoadDefaultSettings()
     m_dataToStore.MetaData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
 }
 
-
 /// @brief Loads the user menu settings from the local config file
-static void OnActivate(void* /* dummy */) 
-{ 
+static void OnActivate(void* /* dummy */)
+{
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
     std::string strPath("config/DataSelectionMenu.xml");
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
-    if (GfFileExists(buf)) 
+    if (GfFileExists(buf))
     {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
@@ -116,11 +114,11 @@ static void SaveSettingsToDisk()
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save participant control settings to xml file
-    GfParmSetStr(readParam, PRM_ENV_DATA,   GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.EnvironmentData));
-    GfParmSetStr(readParam, PRM_CAR_DATA,   GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.CarData));
+    GfParmSetStr(readParam, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.EnvironmentData));
+    GfParmSetStr(readParam, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.CarData));
     GfParmSetStr(readParam, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.HumanData));
     GfParmSetStr(readParam, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.InterventionData));
-    GfParmSetStr(readParam, PRM_META_DATA,  GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
+    GfParmSetStr(readParam, PRM_META_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
 
     GfParmWriteFile(NULL, readParam, "DataSelectionMenu");
 }
@@ -150,25 +148,25 @@ static void GoBack(void* /* dummy */)
 void* DataSelectionMenuInit(void* p_nextMenu)
 {
     // Screen already created
-    if (s_scrHandle) return s_scrHandle;   
+    if (s_scrHandle) return s_scrHandle;
 
     s_scrHandle = GfuiScreenCreate((float*)NULL, NULL, OnActivate,
-                                   NULL,(tfuiCallback)NULL, 1);
+                                   NULL, (tfuiCallback)NULL, 1);
     s_nextHandle = p_nextMenu;
 
-    void *param = GfuiMenuLoad("DataSelectionMenu.xml");
+    void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // ApplyButton and Back-button controls
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",s_scrHandle, SaveSettings);
-    GfuiMenuCreateButtonControl(s_scrHandle,param,"BackButton",s_prevHandle,GoBack);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
-    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA,   NULL, ChangeEnvironmentStorage);
-    m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA,   NULL, ChangeCarStorage);
+    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, NULL, ChangeEnvironmentStorage);
+    m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA, NULL, ChangeCarStorage);
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, NULL, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, NULL, ChangeInterventionStorage);
-    m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA,  NULL, ChangeMetaDataStorage);
+    m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, NULL, ChangeMetaDataStorage);
 
     GfParmReleaseHandle(param);
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveSettings, NULL);
