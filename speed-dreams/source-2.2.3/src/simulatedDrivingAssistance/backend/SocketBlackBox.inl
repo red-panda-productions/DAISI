@@ -102,6 +102,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_in
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
 {
+    if (!m_server.Connected()) return;
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     m_server.SendData("STOP", 4);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);

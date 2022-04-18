@@ -1,5 +1,5 @@
 #pragma once
-#include "../rppUtils/Random.hpp"
+#include "../../rppUtils/Random.hpp"
 #include <queue>
 // based on https://github.com/nunit/nunit/blob/b34eba3ac1aa6957157857bddd116256c634afab/src/NUnitFramework/framework/Internal/Builders/PairwiseStrategy.cs
 
@@ -25,17 +25,17 @@ public:
 class FeatureTuple
 {
 public:
-	FeatureTuple();
+	FeatureTuple() = default;
 	FeatureTuple(FeatureInfo& p_feature);
 	FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
 
-	int Count();
+	int Count() const;
 	FeatureInfo& operator[](int p_index);
-	void SetTuple(FeatureInfo& p_feature);
+	void SetTuple(const FeatureInfo& p_feature);
 	void SetTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
 private:
 	FeatureInfo m_features[2];
-	int m_count;
+	int m_count = 0;
 };
 
 /// @brief Represents a single test case covering a list of features
@@ -51,7 +51,7 @@ public:
 
 	void SetTestCaseInfo(int p_length);
 
-	bool IsTupleCovered(FeatureTuple& p_tuple);
+	bool IsTupleCovered(FeatureTuple& p_tuple) const;
 };
 
 /// @brief					  Implements an algorithm which generates a set of test cases
@@ -77,7 +77,7 @@ private:
 		}
 	};
 
-	Random m_random;
+	Random m_random = Random();
 	int m_dimensions[m_dimensionsCount] = {0};
 	Queue* m_uncoveredTuples[m_dimensionsCount] = {nullptr};
 

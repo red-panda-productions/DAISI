@@ -5,23 +5,13 @@
 /// @param  p_dimension The dimension
 /// @param  p_feature   The feature
 FeatureInfo::FeatureInfo(int p_dimension, int p_feature)
-{
-	Dimension = p_dimension;
-	Feature = p_feature;
-}
+    : Dimension(p_dimension),
+      Feature(p_feature) { }
 
 /// @brief Default constructor of a FeatureInfo
 FeatureInfo::FeatureInfo()
-{
-	Dimension = -1;
-	Feature = -1;
-}
-
-/// @brief Default constructor of a FeatureTuple
-FeatureTuple::FeatureTuple()
-{
-	m_count = 0;
-}
+    : Dimension(-1),
+      Feature(-1) { }
 
 /// @brief			  Constructs a FeatureTuple with 1 feature
 /// @param  p_feature The feature
@@ -40,7 +30,7 @@ FeatureTuple::FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2)
 
 /// @brief  Gives back the internal count of this tuple
 /// @return The amount of features in this tuple
-int FeatureTuple::Count()
+int FeatureTuple::Count() const
 {
 	return m_count;
 }
@@ -55,7 +45,7 @@ FeatureInfo& FeatureTuple::operator[](int p_index)
 
 /// @brief			  Sets the internal data of the tuple
 /// @param  p_feature The feature to set
-void FeatureTuple::SetTuple(FeatureInfo& p_feature)
+void FeatureTuple::SetTuple(const FeatureInfo& p_feature)
 {
 	m_features[0].Dimension = p_feature.Dimension;
 	m_features[0].Feature = p_feature.Feature;
@@ -77,16 +67,14 @@ void FeatureTuple::SetTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2)
 /// @brief			 Constructs a TestCaseInfo with a given length
 /// @param  p_length The length
 TestCaseInfo::TestCaseInfo(int p_length)
-{
-	Features = new int[p_length];
-	Length = p_length;
-}
+    : Features(new int[p_length]),
+      Length(p_length) { }
 
 /// @brief The default constructor of TestCaseInfo
 TestCaseInfo::TestCaseInfo()
+    : Features(nullptr)
 {
-	Features = nullptr;
-	Length = 0;
+    Length = 0;
 }
 
 /// @brief			 Set the internal data of the test info
