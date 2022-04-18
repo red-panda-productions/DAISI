@@ -151,7 +151,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     if (s_scrHandle) return s_scrHandle;
 
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
-                                   nullptr, (tfuiCallback)nullptr, 1);
+                                   nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");

@@ -504,7 +504,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Otherwise, create the screen
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
-                                   nullptr, (tfuiCallback)nullptr, 1);
+                                   nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
