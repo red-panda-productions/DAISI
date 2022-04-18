@@ -6,12 +6,9 @@ class PointerManagerMock
 {
 public:
     PointerManagerMock()
-        : m_mock(GetExampleBlackBoxDataMock())
+        : m_mock(GetExampleBlackBoxDataMock()),
+          m_segments{}
     {
-        for (int i = 0; i < SEGMENT_AMOUNT; i++)
-        {
-            m_segments[i] = {};
-        }
     }
 
     BlackBoxDataMock* GetDataPointer()
