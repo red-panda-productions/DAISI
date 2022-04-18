@@ -26,8 +26,8 @@ class FeatureTuple
 {
 public:
 	FeatureTuple() = default;
-	FeatureTuple(FeatureInfo& p_feature);
-	FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
+	explicit FeatureTuple(FeatureInfo& p_feature);
+	explicit FeatureTuple(FeatureInfo& p_feature1, FeatureInfo& p_feature2);
 
 	int Count() const;
 	FeatureInfo& operator[](int p_index);
@@ -45,7 +45,7 @@ public:
 	int* Features;
 	int Length;
 
-	TestCaseInfo(int p_length);
+	explicit TestCaseInfo(int p_length);
 
 	TestCaseInfo();
 
@@ -56,8 +56,8 @@ public:
 
 /// @brief					  Implements an algorithm which generates a set of test cases
 ///							  which covers all pairs of possible values of test function
-/// @tparam m_dimensionsCount The amount of dimensions the generator should use
-template<int m_dimensionsCount>
+/// @tparam DimensionsCount The amount of dimensions the generator should use
+template<int DimensionsCount>
 class PairWiseTestGenerator
 {
 public:
@@ -78,15 +78,15 @@ private:
 	};
 
 	Random m_random = Random();
-	int m_dimensions[m_dimensionsCount] = {0};
-	Queue* m_uncoveredTuples[m_dimensionsCount] = {nullptr};
+	int m_dimensions[DimensionsCount] = {0};
+	Queue* m_uncoveredTuples[DimensionsCount] = {nullptr};
 
 
 	void CreateAllTuples();
 
 	void CreateTuples(int p_dimension, int p_feature, Queue& p_uncoveredTuple);
 
-	bool GetNextTuple(FeatureTuple& tuple);
+	bool GetNextTuple(FeatureTuple& p_tuple);
 
 	void CreateTestCase(FeatureTuple& p_tuple, TestCaseInfo& p_testCase);
 
