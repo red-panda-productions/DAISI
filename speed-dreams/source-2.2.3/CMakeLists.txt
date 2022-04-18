@@ -202,7 +202,7 @@ SET_PROPERTY(GLOBAL PROPERTY SD_EXE_LIST "")
 # Sub-dirs to build ...
 ADD_SUBDIRECTORY(data)
 ADD_SUBDIRECTORY(cmake)
-SD_ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(src)
 
 # After the user settings files have been collected,
 # Update (and then install) version.xml from their respective version.
