@@ -16,3 +16,5 @@ TARGET_LINK_LIBRARIES(linttest backend)
 ADD_SDLIB_LIBRARY(linttest tgf portability)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/linttest TARGETS linttest)
+
+ADD_SUBDIRECTORY(unitTestUtilities)
