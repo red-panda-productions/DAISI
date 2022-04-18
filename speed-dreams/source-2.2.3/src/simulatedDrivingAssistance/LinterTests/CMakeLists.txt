@@ -1,20 +1,3 @@
 
 
-File(GLOB LINT_HEADERS *.h)
-File(GLOB LINT_HEADERS_CPP *.hpp)
-File(GLOB LINT_SOURCES *.cpp)
-File(GLOB LINT_INLINES *.inl)
-
-ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability backend)
-
-SD_ADD_LIBRARY(linttest STATIC ${LINT_HEADERS} ${LINT_HEADERS_CPP} ${LINT_SOURCES} ${LINT_INLINES})
-SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
-
-TARGET_LINK_LIBRARIES(linttest backend)
-
-ADD_SDLIB_LIBRARY(linttest tgf portability)
-
-SD_INSTALL_FILES(LIB simulatedDrivingAssistance/linttest TARGETS linttest)
-
 ADD_SUBDIRECTORY(unitTestUtilities)
