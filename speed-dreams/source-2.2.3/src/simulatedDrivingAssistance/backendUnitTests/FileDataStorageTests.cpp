@@ -23,7 +23,7 @@
 
 /// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
 /// @param date Time to format and write to the stream.
-inline std::string getTimeAsString(time_t p_date) {
+inline std::string GetTimeAsString(time_t p_date) {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
     char buffer[20];
@@ -33,9 +33,9 @@ inline std::string getTimeAsString(time_t p_date) {
 
 // Values written at the top of a file initialised with the dummy parameters above
 #define DUMMY_INITIALISATION_FILE_ENTRIES ("Player1\n"                                  \
-    + getTimeAsString(timeSimStart)                                                                    \
+    + GetTimeAsString(timeSimStart)                                                                    \
     + "\nnotABlackBox.exe\n"                                                            \
-    + getTimeAsString(timeBlackBox)                                                     \
+    + GetTimeAsString(timeBlackBox)                                                     \
     + "\nReally just a string\nenvironmentAlsoFake.xml\n0\nName of a dummy environment\n" \
     + std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) + "\n")
 
