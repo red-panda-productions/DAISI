@@ -29,7 +29,7 @@ inline void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size)
 {
 	bool len1 = p_size == strlen(p_msg1);
 	ASSERT_TRUE(len1) << "Length of msg1 was not equal to the size: " << strlen(p_msg1) << " != " << p_size;
-	int length = strlen(p_msg2);
+	int length = static_cast<int>(strlen(p_msg2));
 	bool len2 = p_size == length;
 	ASSERT_TRUE(len2) << "Length of msg2 was not equal to the size: " << strlen(p_msg2) << " != " << p_size;
 	for (int i = 0; i < p_size; i++)
@@ -51,7 +51,7 @@ inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
 }
 
 /// @brief compares two values. If their difference is lower than the tolerance, return true.
-#define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs(f1-f2), tolerance)
+#define ASSERT_ALMOST_EQ(f1, f2, tolerance) ASSERT_LE(abs((f1)-(f2)), tolerance)
 
 // test cases, how to use:
 // TEST_CASE(TestSuite,ExampleTest,ExampleFunc,(1,"hi"));
@@ -176,7 +176,7 @@ inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
 
 /// @brief A pairwise test for 2 arrays
 template<typename T1, typename T2>
-inline void PairWiseTest(void(*func)(T1, T2), T1* p_input1, int p_count1, T2* p_input2, int p_count2)
+inline void PairWiseTest(void(*p_func)(T1, T2), T1* p_input1, int p_count1, T2* p_input2, int p_count2)
 {
 	PairWiseTestGenerator<2> generator;
 	int dimensions[2]{ p_count1, p_count2 };
@@ -186,7 +186,7 @@ inline void PairWiseTest(void(*func)(T1, T2), T1* p_input1, int p_count1, T2* p_
 	for(int i = 0; i < testCases.size(); i++)
 	{
 		int* Features = testCases[i].Features;
-		func(p_input1[Features[0]], p_input2[Features[1]]);
+		p_func(p_input1[Features[0]], p_input2[Features[1]]);
 	}
 }
 
