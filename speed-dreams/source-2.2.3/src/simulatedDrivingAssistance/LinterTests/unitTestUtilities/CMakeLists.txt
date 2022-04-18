@@ -1,6 +1,6 @@
-INCLUDE(../../../cmake/macros.cmake)
+INCLUDE(../../../../cmake/macros.cmake)
 
-project(unitTestUtilities)
+project(unitTestUtilitiesLint)
 
 set(INSTALL_GTEST OFF)
 
@@ -21,14 +21,14 @@ SET(_HEADERS TestUtils.h
 			 ../../rppUtils/Random.hpp
 			 PairWiseTestGenerator.h)
 
-SD_ADD_LIBRARY(unitTestUtilities STATIC ${_INLINES} ${_SOURCES} ${_HEADERS} )
-SET_TARGET_PROPERTIES(unitTestUtilities PROPERTIES LINKER_LANGUAGE CXX)
+SD_ADD_LIBRARY(unitTestUtilitiesLint STATIC ${_INLINES} ${_SOURCES} ${_HEADERS} )
+SET_TARGET_PROPERTIES(unitTestUtilitiesLint PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(
-	unitTestUtilities
+	unitTestUtilitiesLint
 	gtest_main
 )
 
 include(GoogleTest)
 
-SD_INSTALL_FILES(LIB simulatedDrivingAssistance/unitTestUtilities TARGETS unitTestUtilities)
+SD_INSTALL_FILES(LIB simulatedDrivingAssistance/unitTestUtilitiesLint TARGETS unitTestUtilitiesLint)
