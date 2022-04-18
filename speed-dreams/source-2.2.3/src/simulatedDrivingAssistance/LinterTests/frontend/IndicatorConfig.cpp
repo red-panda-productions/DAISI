@@ -152,7 +152,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
     // Check if IndicatorConfig file exists
     struct stat info = {};
     char workingDir[256];
-    if (getcwd(workingDir, 256) == nullptr) 
+    if (getcwd(workingDir, 256) == nullptr)
         throw std::exception("[IndicatorConfig] Working dir not found");
     std::string workingDirectory(workingDir);
     workingDirectory += "\\Singletons\\IndicatorConfig";

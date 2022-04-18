@@ -16,8 +16,8 @@ TEST(UtilsTests, MessageEqual)
 /// @brief Tests if Generate random char array works (kind of)
 TEST(UtilsTests, RandomCharArray)
 {
-    char buffer[256] = { 0 };
-    char buffer2[256] = { 0 };
+    char buffer[256] = {0};
+    char buffer2[256] = {0};
     for (int i = 0; i < 100; i++)
     {
         int r = rand() % 255;
@@ -52,8 +52,8 @@ TEST_CASE(UtilsTests, SampleTest, Sample, (1, "hi"))
 
 // example combinatorial test
 BEGIN_TEST_COMBINATORIAL(UtilsTests, Combinatorial2)
-int arr1[3]{ 0, 1, 2 };
-const char* arr2[2]{ "hi", "hello" };
+int arr1[3]{0, 1, 2};
+const char* arr2[2]{"hi", "hello"};
 END_TEST_COMBINATORIAL2(Sample, arr1, 3, arr2, 2)
 
 // example pairwise test
@@ -64,7 +64,7 @@ TEST(UtilsTests, ExamplePairwiseTest)
     {
         xs[i] = i;
     }
-    const char* msgs[5]{ "bob", "alison", "carol", "daniel", "edward" };
+    const char* msgs[5]{"bob", "alison", "carol", "daniel", "edward"};
     PairWiseTest(Sample, xs, 20, msgs, 5);
 }
 
@@ -72,7 +72,7 @@ TEST(UtilsTests, ExamplePairwiseTest)
 TEST(UtilsTests, PairwiseRun)
 {
     PairWiseTestGenerator<4> generator;
-    int dimensions[4]{ 2, 3, 4, 5 };
+    int dimensions[4]{2, 3, 4, 5};
     std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
 
     SUCCEED() << testCases->size();
@@ -83,7 +83,7 @@ TEST(UtilsTests, PairwiseRun)
 TEST(UtilsTests, PairwiseLimitTest)
 {
     PairWiseTestGenerator<8> generator;
-    int dimensions[8]{ 5, 5, 5, 5, 5, 5, 5, 5 };
+    int dimensions[8]{5, 5, 5, 5, 5, 5, 5, 5};
     std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
 
     SUCCEED() << testCases->size();
@@ -110,7 +110,7 @@ bool IsTupleCovered(std::vector<TestCaseInfo>* p_testCases, FeatureTuple& p_tupl
 TEST(UtilsTests, PairWiseCoverageTest)
 {
     PairWiseTestGenerator<5> generator;
-    int dimensions[5]{ 2, 3, 4, 5, 6 };
+    int dimensions[5]{2, 3, 4, 5, 6};
     std::vector<TestCaseInfo>* testCases = generator.GetTestCases(dimensions);
 
     for (int d1 = 0; d1 < 3; d1++)

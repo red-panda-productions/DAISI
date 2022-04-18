@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <random>
 
-#define BYTE uint8_t
+#define BYTE   uint8_t
 #define USHORT uint16_t
 
 /// @brief Creates random numbers
