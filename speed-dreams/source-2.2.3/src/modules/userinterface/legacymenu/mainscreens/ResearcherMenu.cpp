@@ -83,92 +83,79 @@ int m_applyButton;
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
-static void SelectTask(tRadioButtonInfo* p_info)
-{
-    m_task = (Task)p_info->Selected;
+static void SelectTask(tRadioButtonInfo* p_info) {
+    m_task = (Task) p_info->Selected;
 }
 
 /// @brief        Enables/disables the auditory indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectAudio(tCheckBoxInfo* p_info)
-{
+static void SelectAudio(tCheckBoxInfo* p_info) {
     m_indicators.Audio = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the visual indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectIcon(tCheckBoxInfo* p_info)
-{
+static void SelectIcon(tCheckBoxInfo* p_info) {
     m_indicators.Icon = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the textual indication for interventions
 /// @param p_info Information on the checkbox
-static void SelectText(tCheckBoxInfo* p_info)
-{
+static void SelectText(tCheckBoxInfo* p_info) {
     m_indicators.Text = p_info->bChecked;
 }
 
 /// @brief        Sets the interventionType to the selected one
 /// @param p_info Information on the radio button pressed
-static void SelectInterventionType(tRadioButtonInfo* p_info)
-{
-    m_interventionType = (InterventionType)p_info->Selected;
+static void SelectInterventionType(tRadioButtonInfo* p_info) {
+    m_interventionType = (InterventionType) p_info->Selected;
 }
 
 /// @brief        Sets the environment to the selected one
 /// @param p_info Information on the radio button pressed
-static void SelectEnvironment(tRadioButtonInfo* p_info)
-{
+static void SelectEnvironment(tRadioButtonInfo* p_info) {
     // TODO: set environment
     // m_track = _something_
 }
 
 /// @brief        Enables/disables the possibility for participants to enable/disable interventions
 /// @param p_info Information on the checkbox
-static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
-{
+static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info) {
     m_pControl.ControlInterventionToggle = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the possibility for participants to control gas
 /// @param p_info Information on the checkbox
-static void SelectControlGas(tCheckBoxInfo* p_info)
-{
+static void SelectControlGas(tCheckBoxInfo* p_info) {
     m_pControl.ControlGas = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
-static void SelectControlSteering(tCheckBoxInfo* p_info)
-{
+static void SelectControlSteering(tCheckBoxInfo* p_info) {
     m_pControl.ControlSteering = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
-static void SelectForceFeedback(tCheckBoxInfo* p_info)
-{
+static void SelectForceFeedback(tCheckBoxInfo* p_info) {
     m_pControl.ForceFeedback = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the simulation recorder
 /// @param p_info Information on the checkbox
-static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
-{
+static void SelectRecorderOnOff(tCheckBoxInfo* p_info) {
     m_pControl.RecordSession = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the black box recorder
 /// @param p_info Information on the checkbox
-static void SelectBBRecorderOnOff(tCheckBoxInfo* p_info)
-{
+static void SelectBBRecorderOnOff(tCheckBoxInfo* p_info) {
     m_pControl.BBRecordSession = p_info->bChecked;
 }
 
 /// @brief Handle input in the max time textbox
-static void SetMaxTime(void*)
-{
+static void SetMaxTime(void*) {
     char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeControl);
     sscanf(val, "%d", &m_maxTime);
     if (m_maxTime > 1440.0f)
@@ -182,15 +169,13 @@ static void SetMaxTime(void*)
 }
 
 /// @brief Handle input in the userId textbox
-static void SetUserId(void*)
-{
+static void SetUserId(void*) {
     strcpy(m_userId, GfuiEditboxGetString(s_scrHandle, m_userIdControl));
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 }
 
 /// @brief Saves the settings into the ResearcherMenu.xml file
-static void SaveSettingsToDisk()
-{
+static void SaveSettingsToDisk() {
     // Copies xml to documents folder and then opens file parameter
     std::string dstStr("config/ResearcherMenu.xml");
     char dst[512];
@@ -213,7 +198,10 @@ static void SaveSettingsToDisk()
 
     // Save participant control settings to xml file
     GfParmSetStr(readParam, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlGas));
-    GfParmSetStr(readParam, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
+    GfParmSetStr(readParam,
+                 PRM_CTRL_INTRV_TGGLE,
+                 GFMNU_ATTR_CHECKED,
+                 GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
     GfParmSetStr(readParam, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteering));
 
     GfParmSetStr(readParam, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
@@ -233,10 +221,8 @@ static void SaveSettingsToDisk()
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
-static void SaveSettings(void* /* dummy */)
-{
-    if (!m_blackBoxChosen)
-    {
+static void SaveSettings(void* /* dummy */) {
+    if (!m_blackBoxChosen) {
         GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NO_BLACK_BOX);
         return;
     }
@@ -270,11 +256,9 @@ static void SaveSettings(void* /* dummy */)
 /// @brief   Finds the message to display on the black box button
 /// @param   The path to a file
 /// @returns The default black box button text, plus the filename of the file represented by the path, ignoring any directories
-std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
-{
+std::string FindBlackBoxButtonTextFromPath(std::string& p_path) {
     int lastDirectoryIndex = 0;
-    for (int i = p_path.size() - 1; i >= 0; i--)
-    {
+    for (int i = p_path.size() - 1; i >= 0; i--) {
         if (p_path[i] != '\\') { continue; }
         lastDirectoryIndex = i;
         break;
@@ -283,8 +267,7 @@ std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 }
 
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
-static void SynchronizeControls()
-{
+static void SynchronizeControls() {
     GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, m_task);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[0], m_indicators.Audio);
@@ -311,8 +294,7 @@ static void SynchronizeControls()
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
 /// @param p_param The configuration xml file handle
-static void LoadDefaultSettings()
-{
+static void LoadDefaultSettings() {
     m_task = GfuiRadioButtonListGetSelected(s_scrHandle, m_taskControl);
 
     m_indicators.Audio = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[0]);
@@ -331,8 +313,7 @@ static void LoadDefaultSettings()
 
 /// @brief        Loads the settings from the config file into the internal variables
 /// @param p_param The configuration xml file handle
-static void LoadConfigSettings(void* p_param)
-{
+static void LoadConfigSettings(void* p_param) {
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
     m_task = std::stoi(GfParmGetStr(p_param, PRM_TASKS, GFMNU_ATTR_SELECTED, nullptr));
 
@@ -343,7 +324,8 @@ static void LoadConfigSettings(void* p_param)
     m_interventionType = std::stoi(GfParmGetStr(p_param, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, nullptr));
 
     m_pControl.ControlGas = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, false);
-    m_pControl.ControlInterventionToggle = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, false);
+    m_pControl.ControlInterventionToggle =
+        GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlSteering = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, false);
 
     m_pControl.ForceFeedback = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, false);
@@ -354,8 +336,7 @@ static void LoadConfigSettings(void* p_param)
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, nullptr));
 
     const char* filePath = GfParmGetStr(p_param, PRM_BLACKBOX, GFMNU_ATTR_PATH, nullptr);
-    if (filePath)
-    {
+    if (filePath) {
         strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, filePath);
         m_blackBoxChosen = true;
     }
@@ -365,14 +346,12 @@ static void LoadConfigSettings(void* p_param)
 }
 
 /// @brief Loads the user menu settings from the local config file
-static void OnActivate(void* /* dummy */)
-{
+static void OnActivate(void* /* dummy */) {
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
     std::string strPath("config/ResearcherMenu.xml");
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
-    if (GfFileExists(buf))
-    {
+    if (GfFileExists(buf)) {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
@@ -382,30 +361,26 @@ static void OnActivate(void* /* dummy */)
 }
 
 /// @brief Releases a file dialog
-void Release(IFileDialog* p_fileDialog)
-{
+void Release(IFileDialog* p_fileDialog) {
     p_fileDialog->Release();
     CoUninitialize();
 }
 
 /// @brief Releases a shell item and a file dialog
-void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
-{
+void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog) {
     p_shellItem->Release();
     Release(p_fileDialog);
 }
 
 /// @brief Edits the black box button with a message, releases a shell item and file dialog
-void ShowErrorThenRelease(const char* p_errorMsg, IShellItem* p_shellItem, IFileDialog* p_fileDialog)
-{
+void ShowErrorThenRelease(const char* p_errorMsg, IShellItem* p_shellItem, IFileDialog* p_fileDialog) {
     m_blackBoxChosen = false;
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, p_errorMsg);
     Release(p_shellItem, p_fileDialog);
 }
 
 /// @brief Opens a file dialog and changes the button to reflect this choice.
-static void SelectFile(void* /* dummy */)
-{
+static void SelectFile(void* /* dummy */) {
     // Opens a file dialog on Windows
 
     // Initialize COM interface
@@ -414,9 +389,12 @@ static void SelectFile(void* /* dummy */)
 
     // Create a file dialog
     IFileDialog* fileDialog;
-    hresult = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_ALL, IID_IFileDialog, reinterpret_cast<void**>(&fileDialog));
-    if (FAILED(hresult))
-    {
+    hresult = CoCreateInstance(CLSID_FileOpenDialog,
+                               nullptr,
+                               CLSCTX_ALL,
+                               IID_IFileDialog,
+                               reinterpret_cast<void**>(&fileDialog));
+    if (FAILED(hresult)) {
         CoUninitialize();
         return;
     }
@@ -424,14 +402,12 @@ static void SelectFile(void* /* dummy */)
     // Set file types for file dialog, then open it
     COMDLG_FILTERSPEC filter[1] = {{L"Executables", L"*.exe"}};
     hresult = fileDialog->SetFileTypes(1, filter);
-    if (FAILED(hresult))
-    {
+    if (FAILED(hresult)) {
         Release(fileDialog);
         return;
     }
     hresult = fileDialog->Show(nullptr);
-    if (FAILED(hresult))
-    {
+    if (FAILED(hresult)) {
         Release(fileDialog);
         return;
     }
@@ -439,15 +415,13 @@ static void SelectFile(void* /* dummy */)
     // Get filename
     IShellItem* shellItem;
     hresult = fileDialog->GetResult(&shellItem);
-    if (FAILED(hresult))
-    {
+    if (FAILED(hresult)) {
         Release(fileDialog);
         return;
     }  // I feel like I should release shellItem here as well, but the Microsoft Docs do not do so at this stage
     PWSTR filePath;
     hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
-    if (FAILED(hresult))
-    {
+    if (FAILED(hresult)) {
         Release(shellItem, fileDialog);
         return;
     }
@@ -464,20 +438,17 @@ static void SelectFile(void* /* dummy */)
         return;
     }
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
-    if (fileName.size() <= 7)
-    {
+    if (fileName.size() <= 7) {
         ShowErrorThenRelease(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
         return;
     }
     // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
     std::string extension = fileName.substr(fileName.size() - 4, std::string::npos);
-    for (int i = 1; i < 5; i++)
-    {
+    for (int i = 1; i < 5; i++) {
         extension[i] = static_cast<char>(std::tolower(extension[i]));
     }
     // Enforce that file ends in .exe
-    if (std::strcmp(extension.c_str(), ".exe") != 0)
-    {
+    if (std::strcmp(extension.c_str(), ".exe") != 0) {
         ShowErrorThenRelease(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
         return;
     }
@@ -497,13 +468,12 @@ static void SelectFile(void* /* dummy */)
 /// @brief            Initializes the researcher menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The researcherMenu scrHandle
-void* ResearcherMenuInit(void* p_nextMenu)
-{
+void* ResearcherMenuInit(void* p_nextMenu) {
     // Return if screen already created
     if (s_scrHandle) return s_scrHandle;
 
     // Otherwise, create the screen
-    s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
+    s_scrHandle = GfuiScreenCreate((float*) nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
@@ -517,29 +487,39 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
 
     // Indicator checkboxes controls
-    m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
+    m_indicatorsControl[0] =
+        GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
     m_indicatorsControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_VISUAL, nullptr, SelectIcon);
     m_indicatorsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_TEXT, nullptr, SelectText);
 
     // InterventionTypes radio button controls
-    m_interventionTypeControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_INTERVENTIONTYPE, nullptr, SelectInterventionType);
+    m_interventionTypeControl =
+        GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_INTERVENTIONTYPE, nullptr, SelectInterventionType);
 
     // Environment checkboxes controls
     GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_ENVIRONMENT, nullptr, SelectEnvironment);
 
     // Participant-Control checkboxes controls
-    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
-    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS,         nullptr, SelectControlGas);
-    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING,    nullptr, SelectControlSteering);
+    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle,
+                                                         param,
+                                                         PRM_CTRL_INTRV_TGGLE,
+                                                         nullptr,
+                                                         SelectControlInterventionOnOff);
+    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS, nullptr, SelectControlGas);
+    m_pControlControl[2] =
+        GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING, nullptr, SelectControlSteering);
 
     // Other options checkbox controls
-    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK,  nullptr, SelectForceFeedback);
-    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE,    nullptr, SelectRecorderOnOff);
-    m_pControlControl[5] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_BB_TGGLE, nullptr, SelectBBRecorderOnOff);
+    m_pControlControl[3] =
+        GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
+    m_pControlControl[4] =
+        GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE, nullptr, SelectRecorderOnOff);
+    m_pControlControl[5] =
+        GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_BB_TGGLE, nullptr, SelectBBRecorderOnOff);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
-    m_userIdControl  = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
+    m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
     // ApplyButton control
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
@@ -567,8 +547,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
 /// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
-int ResearcherMenuRun(void)
-{
+int ResearcherMenuRun(void) {
     GfuiScreenActivate(s_scrHandle);
 
     return 0;
