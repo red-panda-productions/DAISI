@@ -105,14 +105,14 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
     //       (otherwise multiple frees at release time ...).
     radioButton->SelectedControl =
         GfuiGrButtonCreate(p_scr, "data/img/radio-checked.png", "data/img/radio-checked.png",
-                           "data/img/radio-checked.png", "data/img/radio-checked.png",
+                           "data/img/radio-checked-focused.png", "data/img/radio-checked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
                            (void*)(long)(object->id), GfuiSelected,
                            p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
     radioButton->NotSelectedControl =
         GfuiGrButtonCreate(p_scr, "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
-                           "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
+                           "data/img/radio-unchecked-focused.png", "data/img/radio-unchecked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
                            (void*)(long)(object->id), GfuiNotSelected, 0, 0, 0);
 

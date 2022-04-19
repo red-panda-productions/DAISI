@@ -161,6 +161,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
 
+    GfuiMenuDefaultKeysAdd(s_scrHandle);
+
     // Checkboxes for choosing the simulation information to collect and store in real-time
     m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, nullptr, ChangeEnvironmentStorage);
     m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA, nullptr, ChangeCarStorage);

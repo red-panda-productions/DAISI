@@ -17,6 +17,7 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="medium"/>
             <attstr name="checked" val="yes"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
         </section>
 
         <section name="CheckboxCarData">

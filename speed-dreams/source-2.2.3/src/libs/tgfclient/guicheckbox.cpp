@@ -97,14 +97,14 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	//       (otherwise multiple frees at release time ...).
 	checkbox->checkId =
 		GfuiGrButtonCreate(scr, "data/img/checked.png", "data/img/checked.png",
-						   "data/img/checked.png", "data/img/checked.png",
+						   "data/img/checked-focused.png", "data/img/checked.png",
 						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
 						   (void*)(long)(object->id), gfuiChecked,
 						   userDataOnFocus, onFocus, onFocusLost);
 
 	checkbox->uncheckId =
 		GfuiGrButtonCreate(scr, "data/img/unchecked.png", "data/img/unchecked.png",
-						   "data/img/unchecked.png", "data/img/unchecked.png",
+						   "data/img/unchecked-focused.png", "data/img/unchecked.png",
 						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
 						   (void*)(long)(object->id), gfuiUnchecked, 0, 0, 0);
 

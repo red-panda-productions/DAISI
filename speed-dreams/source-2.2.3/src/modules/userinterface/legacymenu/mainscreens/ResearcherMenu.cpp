@@ -543,6 +543,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // ApplyButton control
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
 
+    GfuiMenuDefaultKeysAdd(s_scrHandle);
+
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
