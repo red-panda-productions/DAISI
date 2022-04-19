@@ -19,9 +19,9 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, 
 {
     // create directory if it doesn't exist
     auto sdaFolder = std::experimental::filesystem::temp_directory_path()
-        .parent_path()
-        .parent_path()
-        .append("Roaming\\sda");
+                         .parent_path()
+                         .parent_path()
+                         .append("Roaming\\sda");
 
     std::string sdaFolderString = sdaFolder.string();
 
@@ -34,7 +34,7 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, 
 
     std::string recordingsFolderString = recordingsFolder.string();
 
-    if(!GfDirExists(recordingsFolderString.c_str()))
+    if (!GfDirExists(recordingsFolderString.c_str()))
     {
         GfDirCreate(recordingsFolderString.c_str());
     }
