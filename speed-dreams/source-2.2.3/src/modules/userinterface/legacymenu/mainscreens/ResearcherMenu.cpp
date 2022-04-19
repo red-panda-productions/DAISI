@@ -171,10 +171,10 @@ static void SetMaxTime(void*)
 {
     char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeControl);
     sscanf(val, "%d", &m_maxTime);
-    if (m_maxTime > 1440.0f)
-        m_maxTime = 1440.0f;
-    else if (m_maxTime < 0.0f)
-        m_maxTime = 0.0f;
+    if (m_maxTime > 1440)
+        m_maxTime = 1440;
+    else if (m_maxTime < 0)
+        m_maxTime = 0;
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -273,7 +273,7 @@ static void SaveSettings(void* /* dummy */)
 std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 {
     int lastDirectoryIndex = 0;
-    for (int i = p_path.size() - 1; i >= 0; i--)
+    for (unsigned int i = p_path.size() - 1; i >= 0; i--)
     {
         if (p_path[i] != '\\') { continue; }
         lastDirectoryIndex = i;
@@ -285,7 +285,7 @@ std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, m_task);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, (int) m_task);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[0], m_indicators.Audio);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[1], m_indicators.Icon);
@@ -529,17 +529,17 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Participant-Control checkboxes controls
     m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
-    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS,         nullptr, SelectControlGas);
-    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING,    nullptr, SelectControlSteering);
+    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS, nullptr, SelectControlGas);
+    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING, nullptr, SelectControlSteering);
 
     // Other options checkbox controls
-    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK,  nullptr, SelectForceFeedback);
-    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE,    nullptr, SelectRecorderOnOff);
+    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
+    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE, nullptr, SelectRecorderOnOff);
     m_pControlControl[5] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_BB_TGGLE, nullptr, SelectBBRecorderOnOff);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
-    m_userIdControl  = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
+    m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
     // ApplyButton control
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
