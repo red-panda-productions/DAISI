@@ -28,10 +28,13 @@
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
 
-static void* MenuHandle = 0;
+
+static void *MenuHandle = 0;
+
 
 static void
-onPlayerConfigMenuActivate(void* /* dummy */) {
+onPlayerConfigMenuActivate(void * /* dummy */)
+{
     /* Here, we need to call OptionOptionInit each time the firing button
        is pressed, and not only once at the Main menu initialization,
        because the previous menu has to be saved (ESC, Back) and because it can be this menu,
@@ -40,7 +43,8 @@ onPlayerConfigMenuActivate(void* /* dummy */) {
 }
 
 static void
-onRaceSelectMenuActivate(void* /* dummy */) {
+onRaceSelectMenuActivate(void * /* dummy */)
+{
     GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
 }
 
@@ -51,28 +55,33 @@ onRaceSelectMenuActivate(void* /* dummy */) {
 }*/
 
 static void
-onOptionsMenuActivate(void* /* dummy */) {
+onOptionsMenuActivate(void * /* dummy */)
+{
     GfuiScreenActivate(OptionsMenuInit(MenuHandle));
 }
 
 // SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
 /// @brief Activates the dataSelectionMenu screen
-static void GoBack(void* /* dummy */) {
+static void GoBack(void* /* dummy */)
+{
     GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
 }
 
 static void
-onCreditsMenuActivate(void* /* dummy */) {
+onCreditsMenuActivate(void * /* dummy */)
+{
     CreditsMenuActivate(MenuHandle);
 }
 
 static void
-onExitMenuActivate(void* /*dummy*/) {
+onExitMenuActivate(void * /*dummy*/)
+{
     GfuiScreenActivate(ExitMenuInit(MenuHandle));
 }
 
 static void
-onMainMenuActivate(void* /* dummy */) {
+onMainMenuActivate(void * /* dummy */)
+{
 }
 
 /*
@@ -92,26 +101,27 @@ onMainMenuActivate(void* /* dummy */) {
  *	
  */
 
-void*
-MainMenuInit(bool SupportsHumanDrivers) {
+void *
+MainMenuInit(bool SupportsHumanDrivers)
+{
     // Initialize only once.
     if (MenuHandle)
         return MenuHandle;
 
-    MenuHandle = GfuiScreenCreate((float*) NULL,
-                                  NULL, onMainMenuActivate,
-                                  NULL, (tfuiCallback) NULL,
-                                  1);
+    MenuHandle = GfuiScreenCreate((float*)NULL, 
+				    NULL, onMainMenuActivate, 
+				    NULL, (tfuiCallback)NULL, 
+				    1);
 
-    void* menuDescHdle = GfuiMenuLoad("mainmenu.xml");
+    void *menuDescHdle = GfuiMenuLoad("mainmenu.xml");
 
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "race", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
-    if (SupportsHumanDrivers)
-        GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
+	if (SupportsHumanDrivers)
+		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
@@ -145,8 +155,9 @@ MainMenuInit(bool SupportsHumanDrivers) {
  *	
  */
 int
-MainMenuRun(void) {
+MainMenuRun(void)
+{
     GfuiScreenActivate(MenuHandle);
-
+	
     return 0;
 }
