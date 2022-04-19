@@ -18,10 +18,17 @@
 Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, const int p_paramAmount)
 {
     // create directory if it doesn't exist
-    auto sdaFolder = std::experimental::filesystem::temp_directory_path()
-                         .parent_path()
-                         .parent_path()
-                         .append("Roaming\\sda");
+    char *pValue;
+    size_t len;
+    errno_t err = _dupenv_s(&pValue, &len, "APPDATA");
+
+    if(err) {
+        GfLogError("Error getting APPDATA environment variable: %d\n", err);
+        return;
+    }
+
+    auto sdaFolder = std::experimental::filesystem::path(std::string(pValue, len))
+                         .append("sda");
 
     std::string sdaFolderString = sdaFolder.string();
 
@@ -44,8 +51,8 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, 
     std::tm tm = *std::localtime(&t);
     std::stringstream buffer;
     buffer << std::put_time(&tm, "%Y%m%d-%H%M%S");
-    std::string path = recordingsFolderString + "\\" + p_fileName + buffer.str() + ".txt";
-    m_recordingFile.open(sdaFolder, std::ios::binary | std::ios::app);
+    auto fileName = recordingsFolder.append(p_fileName + buffer.str() + ".txt");
+    m_recordingFile.open(fileName, std::ios::binary | std::ios::app);
 
     m_paramAmount = p_paramAmount;
     // initialize previous input with impossible values
