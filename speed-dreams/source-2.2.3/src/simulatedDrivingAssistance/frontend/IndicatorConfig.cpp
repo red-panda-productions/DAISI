@@ -154,7 +154,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
 
     // Check if IndicatorConfig file exists
     struct stat info = {};
-   
+
     std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
     path.append("Singletons\\IndicatorConfig");
     std::string pathstring = path.string();
