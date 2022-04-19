@@ -4,6 +4,9 @@
 #include <stdexcept>
 #include <tgf.h>
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
+
 #include "IndicatorConfig.h"
 
 /// @brief Initialize the indicator configuration.
@@ -151,18 +154,17 @@ IndicatorConfig* IndicatorConfig::GetInstance()
 
     // Check if IndicatorConfig file exists
     struct stat info = {};
-    char workingDir[256];
-    if (getcwd(workingDir, 256) == nullptr)
-        throw std::exception("[IndicatorConfig] Working dir not found");
-    std::string workingDirectory(workingDir);
-    workingDirectory += "\\Singletons\\IndicatorConfig";
-    const char* filepath = workingDirectory.c_str();
+
+    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
+    path.append("Singletons\\IndicatorConfig");
+    std::string pathstring = path.string();
+    const char* filepath = pathstring.c_str();
     int err = stat(filepath, &info);
     if (err == -1)
     {
         // File does not exist -> create pointer
         m_instance = new IndicatorConfig();
-        std::ofstream file("Singletons/IndicatorConfig");
+        std::ofstream file(filepath);
         file << m_instance;
         file.close();
         m_instance->Initialize();
@@ -171,7 +173,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
 
     // File exists -> read pointer
     std::string pointerName("00000000");
-    std::ifstream file("Singletons/IndicatorConfig");
+    std::ifstream file(filepath);
     getline(file, pointerName);
     file.close();
     int pointerValue = stoi(pointerName, nullptr, 16);
