@@ -514,6 +514,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
+    // ApplyButton control
+    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+        
     // Task radio button controls
     m_taskControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_TASKS, nullptr, SelectTask);
 
@@ -544,9 +547,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
-
-    // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
 
     GfParmReleaseHandle(param);
 
