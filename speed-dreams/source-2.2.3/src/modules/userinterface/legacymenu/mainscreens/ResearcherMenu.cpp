@@ -170,7 +170,11 @@ static void SelectBBRecorderOnOff(tCheckBoxInfo* p_info)
 static void SetMaxTime(void*)
 {
     char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeControl);
-    sscanf(val, "%d", &m_maxTime);
+    char* endptr;
+    m_maxTime = (int)strtol(val, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
+
     if (m_maxTime > 1440)
         m_maxTime = 1440;
     else if (m_maxTime < 0)
@@ -272,7 +276,7 @@ static void SaveSettings(void* /* dummy */)
 /// @returns The default black box button text, plus the filename of the file represented by the path, ignoring any directories
 std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 {
-    int lastDirectoryIndex = 0;
+    unsigned int lastDirectoryIndex = 0;
     for (unsigned int i = p_path.size() - 1; i >= 0; i--)
     {
         if (p_path[i] != '\\') { continue; }
@@ -285,13 +289,13 @@ std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, (int) m_task);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, (int)m_task);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[0], m_indicators.Audio);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[1], m_indicators.Icon);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[2], m_indicators.Text);
 
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, m_interventionType);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, (int)m_interventionType);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlGas);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlInterventionToggle);
@@ -567,7 +571,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
 /// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
-int ResearcherMenuRun(void)
+int ResearcherMenuRun()
 {
     GfuiScreenActivate(s_scrHandle);
 
