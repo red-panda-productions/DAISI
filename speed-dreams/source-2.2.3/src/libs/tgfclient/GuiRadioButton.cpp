@@ -114,7 +114,8 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
         GfuiGrButtonCreate(p_scr, "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
                            "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
-                           (void*)(long)(object->id), GfuiNotSelected, 0, 0, 0);
+                           (void*)(long)(object->id), GfuiNotSelected,
+                           p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
     // Compute total height (text or buttons)
     tGfuiGrButton* selectedButton = &(gfuiGetObject(p_scr, radioButton->SelectedControl)->u.grbutton);

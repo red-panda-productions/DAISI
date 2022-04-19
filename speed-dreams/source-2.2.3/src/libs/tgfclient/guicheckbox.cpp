@@ -90,23 +90,25 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	checkbox->pInfo->userData = userData;
 	checkbox->scr = scr;
 
+        // SIMULATED DRIVING ASSISTANCE CHANGE: added onFocus to unchecked Radiobuttons
 	// Initialize the checked and unchecked button children.
 	// Warning: All the images are supposed to be the same size.
 	// TODO: Make graphic properties XML-customizable (images, ...)
 	// Note: We avoid sharing the same userDataOnFocus among multiple controls
 	//       (otherwise multiple frees at release time ...).
 	checkbox->checkId =
-		GfuiGrButtonCreate(scr, "data/img/checked.png", "data/img/checked.png",
-						   "data/img/checked.png", "data/img/checked.png",
-						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
-						   (void*)(long)(object->id), gfuiChecked,
-						   userDataOnFocus, onFocus, onFocusLost);
+            GfuiGrButtonCreate(scr, "data/img/checked.png", "data/img/checked.png",
+                               "data/img/checked.png", "data/img/checked.png",
+                               x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
+                               (void*)(long)(object->id), gfuiChecked,
+                               userDataOnFocus, onFocus, onFocusLost);
 
 	checkbox->uncheckId =
-		GfuiGrButtonCreate(scr, "data/img/unchecked.png", "data/img/unchecked.png",
-						   "data/img/unchecked.png", "data/img/unchecked.png",
-						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
-						   (void*)(long)(object->id), gfuiUnchecked, 0, 0, 0);
+            GfuiGrButtonCreate(scr, "data/img/unchecked.png", "data/img/unchecked.png",
+                               "data/img/unchecked.png", "data/img/unchecked.png",
+                               x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
+                               (void*)(long)(object->id), gfuiUnchecked,
+                               userDataOnFocus, onFocus, onFocusLost);
 
 	// Compute total height (text or buttons)
 	tGfuiGrButton* pCheckedBut = &(gfuiGetObject(scr, checkbox->checkId)->u.grbutton);
