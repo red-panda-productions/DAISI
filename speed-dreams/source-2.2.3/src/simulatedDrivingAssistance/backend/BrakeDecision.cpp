@@ -2,16 +2,14 @@
 #include "Mediator.h"
 #define BRAKE_THRESHOLD 0.9f
 
-template <class Mediator>
-void BrakeDecision<Mediator>::RunIndicateCommands()
+void BrakeDecision::RunIndicateCommands()
 {
     if (BrakeAmount < BRAKE_THRESHOLD) return;
 
-	Mediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
+	SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
 }
 
-template <class Mediator>
-void BrakeDecision<Mediator>::RunInterveneCommands()
+void BrakeDecision::RunInterveneCommands()
 {
-	Mediator::GetInstance()->CarController.SetBrakeCmd(m_brakeAmount);
+	SMediator::GetInstance()->CarController.SetBrakeCmd(BrakeAmount);
 }

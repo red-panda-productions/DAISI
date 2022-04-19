@@ -17,6 +17,6 @@ TEST(DecisionsTest, RunDecisions)
     ASSERT_EQ(mediator1, mediator2);
 
 
-    BrakeDecision<MockMediator> brakeDecision;
+    BrakeDecision brakeDecision;
     brakeDecision.RunIndicateCommands();
 }

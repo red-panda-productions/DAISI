@@ -2,7 +2,6 @@
 #include "BrakeDecision.h"
 #include "SteerDecision.h"
 #include "AccelDecision.h"
-#include "Mediator.h"
 
 #define DECISIONS_COUNT 3
 
@@ -42,8 +41,7 @@ public:
 private:
     IDecision* m_buffer[DECISIONS_COUNT] = {};
 
-    template <class Mediator>
-    BrakeDecision<Mediator> m_brakeDecision;
+    BrakeDecision m_brakeDecision;
     bool m_brakeActive = false;
     SteerDecision m_steerDecision;
     bool m_steerActive = false;
