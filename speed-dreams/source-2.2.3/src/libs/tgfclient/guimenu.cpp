@@ -217,10 +217,25 @@ gfuiMenuGetBoolean(const char* pszValue, bool bDefault)
     return bDefault;
 }
 
-static bool
-getControlBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault)
+// SIMULATED DRIVING ASSISTANCE
+/// @brief         Converts a boolean into a menu bool str 'yes' or 'no'
+/// @param p_bool  The boolean to base the conversion on
+/// @return        The resulting string 'yes' or 'no'
+const char* GfuiMenuBoolToStr(bool p_bool)
 {
-    return gfuiMenuGetBoolean(GfParmGetStr(hparm, pszPath, pszFieldName, 0), bDefault);
+    return p_bool ? GFMNU_VAL_YES : GFMNU_VAL_NO;
+}
+
+// SIMULATED DRIVING ASSISTANCE CHANGED: renamed this function and removed the static keyword
+/// @brief              Retrieves the boolean value of a given control
+/// @param hparm        The file handle to search
+/// @param pszPath      The xml path in the file to look for the field
+/// @param pszFieldName The field name to check the value of
+/// @param bDefault     The default value to return if the field was not found
+/// @return             The boolean value of the field or the default value if it was not found
+bool GfuiMenuControlGetBoolean(void* p_hparm, const char* p_pszPath, const char* p_pszFieldName, bool p_bDefault)
+{
+    return gfuiMenuGetBoolean(GfParmGetStr(p_hparm, p_pszPath, p_pszFieldName, 0), p_bDefault);
 }
 
 static GfuiColor
@@ -239,7 +254,7 @@ createStaticImage(void* hscr, void* hparm, const char* pszName)
     const int w = (int)GfParmGetNum(hparm, pszName, GFMNU_ATTR_WIDTH, NULL, 100.0);
     const int h = (int)GfParmGetNum(hparm, pszName, GFMNU_ATTR_HEIGHT, NULL, 100.0);
 
-    const bool canDeform = getControlBoolean(hparm, pszName, GFMNU_ATTR_CAN_DEFORM, true);
+    const bool canDeform = GfuiMenuControlGetBoolean(hparm, pszName, GFMNU_ATTR_CAN_DEFORM, true);
 
     int id = GfuiStaticImageCreate(hscr, x, y, w, h, pszImage, canDeform);
 
@@ -474,7 +489,7 @@ createTextButton(void* hscr, void* hparm, const char* pszPath,
         onFocusLost = onFocusLostHideTip;
     }
 
-    const bool bShowbox = getControlBoolean(hparm, pszPath, GFMNU_ATTR_BOX_SHOW, true);
+    const bool bShowbox = GfuiMenuControlGetBoolean(hparm, pszPath, GFMNU_ATTR_BOX_SHOW, true);
 
     const char* pszDisabledImage = GfParmGetStr(hparm, pszPath, GFMNU_ATTR_IMAGE_DISABLED, 0);
     const char* pszEnabledImage = GfParmGetStr(hparm, pszPath, GFMNU_ATTR_IMAGE_ENABLED, 0);
@@ -650,8 +665,8 @@ GfuiMenuCreateEditControl(void* hscr, void* hparm, const char* pszName,
     //         {
     //                 tMenuCallbackInfo * cbinfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
     //                 cbinfo->screen = hscr;
-    //                 cbinfo->labelId = GfuiTipCreate(hscr, pszTip, strlen(pszTip));
-    //                 GfuiVisibilitySet(hscr, cbinfo->labelId, GFUI_INVISIBLE);
+    //                 cbinfo->LabelControl = GfuiTipCreate(hscr, pszTip, strlen(pszTip));
+    //                 GfuiVisibilitySet(hscr, cbinfo->LabelControl, GFUI_INVISIBLE);
     //
     //                 // TODO: In this case, we simply ignore onFocus/onFocusLost !
     //                 userDataOnFocus = (void*)cbinfo;
@@ -676,7 +691,7 @@ GfuiMenuCreateEditControl(void* hscr, void* hparm, const char* pszName,
     const GfuiColor bfc = getControlColor(hparm, strControlPath.c_str(), GFMNU_ATTR_BG_COLOR_FOCUSED);
     const GfuiColor bdc = getControlColor(hparm, strControlPath.c_str(), GFMNU_ATTR_BG_COLOR_DISABLED);
 
-    const bool masked = getControlBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_MASKED_TEXT, false);
+    const bool masked = GfuiMenuControlGetBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_MASKED_TEXT, false);
 
     int id = GfuiEditboxCreate(hscr, pszText, font, x, y, width, maxlen, align,
                                userDataOnFocus, onFocus, onFocusLost);
@@ -834,7 +849,7 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
         imageheight = 30; // TODO: Get default from screen.xml
 
     const bool bChecked =
-        getControlBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_CHECKED, false);
+        GfuiMenuControlGetBoolean(hparm, strControlPath.c_str(), GFMNU_ATTR_CHECKED, false);
 
     const char* pszTip = GfParmGetStr(hparm, strControlPath.c_str(), GFMNU_ATTR_TIP, "");
 
@@ -861,6 +876,97 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
     GfuiColor c = getControlColor(hparm, pszName, GFMNU_ATTR_COLOR);
     if (c.alpha)
         GfuiCheckboxSetTextColor(hscr, id, c);
+
+    return id;
+}
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonListControl
+/// @brief            Creates the controls for a radiobutton-list
+/// @param p_hscr     The menu screen handle
+/// @param p_hparm    The menu information
+/// @param p_pszName  The xml sector name
+/// @param p_userData The userData
+/// @param p_onChange Function to call when a radio button is clicked
+/// @return           The RadioButtonList object id
+int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char* p_pszName,
+                                         void* p_userData, tfuiRadioButtonCallback p_onChange)
+{
+    std::string strControlPath(GFMNU_SECT_DYNAMIC_CONTROLS"/");
+    strControlPath += p_pszName;
+
+    const std::string strType = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_TYPE, "");
+    if (strType != GFMNU_TYPE_RADIO_BUTTON_LIST)
+    {
+        GfLogError("Failed to create control '%s' : section not found or not an '%s' \n",
+                   p_pszName, GFMNU_TYPE_RADIO_BUTTON_LIST);
+        return -1;
+    }
+
+    int id = -1;
+
+    const int x = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_X, NULL, 0.0);
+    const int y = (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_Y, NULL, 0.0);
+
+    std::string strFontName = GfParmGetStr(p_hparm, strControlPath.c_str(), GFMNU_ATTR_FONT, "");
+    const int font = gfuiMenuGetFontId(strFontName.c_str());
+
+    int imagewidth =
+        (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_WIDTH, NULL, 0.0);
+    if (imagewidth <= 0)
+        imagewidth = 30; // TODO: Get default from screen.xml
+
+    int imageheight =
+        (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_IMAGE_HEIGHT, NULL, 0.0);
+    if (imageheight <= 0)
+        imageheight = 30; // TODO: Get default from screen.xml
+
+    int  selected   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_SELECTED,       NULL,  0.0);
+    int  distance   =  (int)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_DISTANCE,       NULL, 10.0);
+    bool minimumOf1 = (bool)GfParmGetNum(p_hparm, strControlPath.c_str(), GFMNU_ATTR_MINIMUM_OF_ONE, NULL,  0.0);
+
+    strControlPath = strControlPath + "/" + GFMNU_ATTR_OPTIONS;
+
+    int amount = (int)GfParmGetEltNb(p_hparm, strControlPath.c_str());
+
+    const char** pszText = new const char*[amount];
+    const char** pszTip  = new const char*[amount];
+
+    void** userDataOnFocus    = new void*[amount];
+    tfuiCallback* onFocus     = new tfuiCallback[amount];
+    tfuiCallback* onFocusLost = new tfuiCallback[amount];
+
+    for (int i = 0; i < amount; i++)
+    {
+        std::string optionPathById = strControlPath + "/" + std::to_string(i);
+        pszText[i] = GfParmGetStr(p_hparm, optionPathById.c_str(), GFMNU_ATTR_TEXT, "");
+        pszTip[i]  = GfParmGetStr(p_hparm, optionPathById.c_str(), GFMNU_ATTR_TIP,  "");
+
+        if (strlen(pszTip[i]) > 0)
+        {
+            tMenuCallbackInfo* cbInfo = (tMenuCallbackInfo*)calloc(1, sizeof(tMenuCallbackInfo));
+            cbInfo->screen = p_hscr;
+            cbInfo->labelId = GfuiTipCreate(p_hscr, pszTip[i], strlen(pszTip[i]));
+            GfuiVisibilitySet(p_hscr, cbInfo->labelId, GFUI_INVISIBLE);
+
+            userDataOnFocus[i] = (void*)cbInfo;
+            onFocus[i] = onFocusShowTip;
+            onFocusLost[i] = onFocusLostHideTip;
+        }
+    }
+
+    id = GfuiRadioButtonListCreate(p_hscr, font, x, y, imagewidth, imageheight, pszText,
+                                   selected, amount, distance, minimumOf1, p_userData,
+                                   p_onChange, userDataOnFocus, onFocus, onFocusLost);
+
+    GfuiColor c = getControlColor(p_hparm, p_pszName, GFMNU_ATTR_COLOR);
+    if (c.alpha)
+        GfuiRadioButtonListSetTextColor(p_hscr, id, c);
+
+    delete[] pszText;
+    delete[] pszTip;
+    delete[] userDataOnFocus;
+    delete[] onFocus;
+    delete[] onFocusLost;
 
     return id;
 }

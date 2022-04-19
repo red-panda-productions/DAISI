@@ -21,7 +21,7 @@
 
 #include "OpenalSound.h"
 #include "OpenalSoundInterface.h"
-#include "InterventionConfig.h"
+#include "IndicatorConfig.h"
 #include "Mediator.h"
 
 
@@ -215,15 +215,15 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 	return sound;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
-/// @brief Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
+// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+/// @brief                Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
-/// @param p_interventionSounds The registered sounds
-void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData, std::unordered_map<InterventionAction, Sound*>& p_interventionSounds) {
-    if(!SMediator::GetInstance()->GetIndicatorSettings().Auditory) return;
+void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData)
+{
+    // Update the sounds of all indicators, even for the disabled indicators.
+    for (Sound* sound : m_indicatorSounds) {
+        if (!sound) continue;
 
-    for (const auto &item : p_interventionSounds) {
-        Sound* sound = item.second;
         sgVec3 p, u;
         p_carSoundData[0]->getCarPosition(p);
         p_carSoundData[0]->getCarSpeed(u);
@@ -235,13 +235,39 @@ void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundDat
         sound->update();
     }
 
-    for (const auto &action : InterventionConfig::GetInstance()->GetEnabledSounds()) {
-        if(p_interventionSounds.find(action) == p_interventionSounds.end()) continue;
-        Sound* sound = p_interventionSounds[action];
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-        if(!sound->isPlaying()) {
-            sound->start();
+    // Go through all indicators and set Active to false if the indicator is not active.
+    for (const auto &indicator : IndicatorConfig::GetInstance()->GetIndicatorData()) {
+        if(!indicator.Sound) continue;
+
+        if(std::any_of(activeIndicators.begin(), activeIndicators.end(), [&](const auto &p_activeIndicator) {
+            return indicator.Action == p_activeIndicator.Action;
+        })) {
+            continue;
         }
+
+        indicator.Sound->ActiveLastFrame = false;
+    }
+
+    // Start all currently active interventions if they were not active yet.
+    for (const tIndicatorData& indicator : activeIndicators) {
+        Sound* sound = m_indicatorSounds[indicator.Action];
+        if (!sound) continue;
+
+        // Don't start the sound if it shouldn't loop and was already active last frame.
+        if(!indicator.Sound->Looping && indicator.Sound->ActiveLastFrame) continue;
+
+        // Start the sound if it wasn't playing already.
+        if(!sound->isPlaying()) {
+            // If the sound is not looping start it.
+            // Else the sound is looping, check if it has been at least LoopInterval seconds since it last played start it.
+            if(!indicator.Sound->Looping || GfTimeClock() - sound->GetLastStart() > indicator.Sound->LoopInterval) {
+                sound->start();
+            }
+        }
+
+        indicator.Sound->ActiveLastFrame = true;
     }
 }
 	
@@ -290,7 +316,8 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
 	}
 
     // SIMULATED DRIVING ASSISTANCE: Update intervention sounds
-    UpdateInterventionSounds(car_sound_data, intervention_sounds);
+    if (SMediator::GetInstance()->GetIndicatorSettings().Audio)
+        UpdateInterventionSounds(car_sound_data);
 
 	qsort((void*) engpri, n_cars, sizeof(SoundPri), &sortSndPriority);
 

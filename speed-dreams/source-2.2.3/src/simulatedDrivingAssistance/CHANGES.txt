@@ -13,6 +13,14 @@ It is ordered by: if a file is added or changed, then if the file is in src or d
 
 Added:
   src/
+    drivers/assistedhuman/
+        assistedhuman.cpp
+        CmakeList.txt
+        Driver.cpp
+        Driver.h
+    libs/tgfclient/
+        GuiRadioButton.cpp
+        GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
         ResearcherMenu.h
         ResearcherMenu.cpp
@@ -20,13 +28,17 @@ Added:
         DataSelectionMenu.cpp
   data/
     data/
-        intervention/
-            CMakeLists.txt
-            intervention.xml
-            Multiple intervention texture PNGs
+        img/
+            radio-checked.png
+            radio-unchecked.png
+        indicators/
+            *
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
+    drivers/
+        assistedhuman/
+            *
 
 Changed:
   src/
@@ -35,16 +47,64 @@ Changed:
             rtHumanDriver.cpp
                 included Recorder.h
                 included ConfigEnums.h
+                included Mediator.h
                 changed new_race()
                 changed common_drive()
+                changed shutdown()
+                added   tParticipantControl var
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
+        tgfclient/
+            gui.h
+                added   tGfuiRadioButtonList
+                added   tGfuiRadioButton
+                added   GfuiDrawRadioButtonList()
+                added   GfuiDrawRadioButton()
+                added   GfuiReleaseRadioButtonList()
+                added   GfuiReleaseRadioButton()
+                changed GfuiObject
+            guimenu.cpp
+                added   GfuiMenuCreateRadioButtonListControl
+                added   GfuiMenuBoolToStr()
+                changed GfuiMenuControlGetBoolean(): made public and renamed to fit the api function naming scheme.
+            guimenu.h
+                added   GFMNU_TYPE_RADIO_BUTTON_LIST
+                added   GFMNU_ATTR_SELECTED, GFMNU_ATTR_DISTANCE, GFMNU_ATTR_MINIMUM_OF_ONE, GFMNU_ATTR_OPTIONS
+            guiobject.cpp
+                changed GfuiDraw()
+                changed GfuiReleaseObject()
+                added   GfuiDrawString() overloaded to support different parameters.
+            tgfclient.h
+                added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
+                added   tRadioButtonInfo
+                added   tRadioButtonListInfo
+                added   tfuiRadioButtonCallback
+                added   GfuiMenuCreateRadioButtonListControl()
 
+                added   GfuiMenuBoolToStr()
+                added   GfuiMenuControlGetBoolean()
+                
+                added   GfuiRadioButtonListCreate()
+                added   GfuiRadioButtonListSetSelected()
+                added   GfuiRadioButtonListGetSelected()
+                added   GfuiRadioButtonListSetText()
+                added   GfuiRadioButtonListSetTextColor()
+
+                added   GfuiRadioButtonCreate()
+                added   GfuiRadioButtonSelect()
+                added   GfuiRadioButtonSetText()
+                added   GfuiRadioButtonSetTextColor()
+                added   GfuiRadioButtonIsSelected()
+
+                added   GfuiDrawString(): overload
+                added   GfuiFontClass: expose to API
     main/
         main.cpp
+            added singletonfolder setup
+            added mediator shut down
     interfaces/
         playerpref.h
             added HM_ADRV_FILE define
@@ -52,8 +112,13 @@ Changed:
             added intervention sound volume xml parameter 
     modules/
         racing/standardgame
+            raceinit.cpp
+                changed reLoadSingleCar() to fix isHuman flag
+                changed ReInitCars() to fix isHuman flag
+                changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+
         sound/snddefault/
             CMakeLists.txt
                 added frontend
@@ -62,21 +127,30 @@ Changed:
                 added intervention sound initialization
                 added intervention sound volume setting
             OpenalSound.cpp
-                added check for playing state
-            OpenalSoundInterface.cpp
+                changed start(): track when the sound was started
+                changed resume(): added check if sound is actually paused
+                changed pause(): added check if sound is playing
+                changed update(): added check for playing state
+            OpenalSoundInterface.h
                 added UpdateInterventionSounds()
             OpenalSoundInterface.cpp
                 added UpdateInterventionSounds()
-                added update and starting of intervention sounds
+                changed update(): added update and starting of intervention sounds
+            Sound.h
+                added LastStart
+                added GetLastStart()
+            Sound.cpp
+                added GetLastStart()
             SoundInterface.cpp
-                added setInterventionSound()
+                included "IndicatorConfig.h"
+                added LoadIndicatorSounds()
                 added SetInterventionVolume()
                 added GetInterventionVolume()
-                changed SoundInterface(): added InterventionVolume member init
                 added Clamp() helper function
+                changed SoundInterface(): added InterventionVolume member init
             SoundInterface.h
-                added setInterventionSound()
-                added intervention_sounds map
+                added LoadIndicatorSounds()
+                added m_indicatorSounds vector
                 added SetInterventionVolume()
                 added GetInterventionVolume()
                 added InterventionVolume member
@@ -115,23 +189,111 @@ Changed:
             ssggraph/
                 CMakeLists.txt added connection to frontend module
                 grboard.cpp
-                    added   grDispIntervention()
-                    added   LoadInterventionTextures()
-                    changed grInitBoardCar() 
-                    changed refreshBoard()
+                    included "Mediator.h"
+                    included "IndicatorConfig.h"
+
+                    added   m_textures array
+
+                    added   DispIndicators()
+                    added   DispIndicatorIcon();
+                    added   DispIndicatorText();
+                    added   LoadIndicatorTextures()
+
+                    changed cGrBoard(): removed assignments of removed members
+                    changed ~cGrBoard(): removed deletes of removed members
+                    changed grInitBoardCar(): added loading of indicator textures
+                    changed refreshBoard(): removed deleted ui elements
+                    changed selectBoard(): removed cases for removed elements
+                    changed loadDefaults(): removed loads of parameters for removed elements
+                    changed grDispCounterBoard2(): removed gauges
+
+                    removed grDispGGraph()
+                    removed grDispEngineLeds()
+                    removed grDispCarBoard()
+                    removed grDispCarBoard1()
+                    removed grDispCarBoard2()
+                    removed grDispIndicators()
+                    removed grDispLeaderBoard()
+                    removed grDispLeaderBoardScroll()
+                    removed grDispLeaderBoardScrollLine()
+                    removed grDispDashboard()
+                    removed grDispArcade()
+                    removed grGenerateLeaderBoardEntry()
+                    removed trackMap member
+                    removed grGetSplitTime()
+                    removed grGetLapsTime()
+                    removed grSetupDrawingArea()
+                    removed getTrackMap()
+                    removed grShutdownBoardCar()
+
+                    remove all Dashboard and Leaderboard constants
+                    removed constants tracking the number of states of removed elements
+
                 grboard.h
-                    added grDispIntervention()  
+                    included <plib/ssg.h>
+                    included "IndicatorData.h"
+
+                    added   DispIndicators()
+                    added   DispIndicatorIcon();
+                    added   DispIndicatorText();
+                    added   LoadIndicatorTextures()
+
+                    removed grDispGGraph()
+                    removed grDispEngineLeds()
+                    removed grDispCarBoard()
+                    removed grDispCarBoard1()
+                    removed grDispCarBoard2()
+                    removed grDispIndicators()
+                    removed grDispLeaderBoard()
+                    removed grDispLeaderBoardScroll()
+                    removed grDispLeaderBoardScrollLine()
+                    removed grDispDashboard()
+                    removed grDispArcade()
+                    removed grGenerateLeaderBoardEntry()
+                    removed grGetSplitTime()
+                    removed grGetLapsTime()
+                    removed grSetupDrawingArea()
+                    removed getTrackMap()
+                    removed grShutdownBoardCar()
+
+                    removed boardFlag
+                    removed leaderFlag
+                    removed leaderNb
+                    removed GFlag
+                    removed counterFlag
+                    removed dashboardFlag
+                    removed arcadeFlag
+                    removed iStart
+                    removed iTimer
+                    removed iStringStart
+                    removed st 
+
+                    removed trackMap
+
+                    removed *ok_color_;
+                    removed *error_color_;
+                    removed *inactive_color_;
+                    removed *ahead_color_;
+                    removed *behind_color_;
+                    removed *arcade_color_;
+
+                grmain.cpp
+                    changed initView(): removed keybinds for removed hud elements
+                    changed shutdownCars(): removed unused shutdown board
+                    removed grSelectTrackMap()
+
+                grscreen.cpp
+                    removed selectTrackMap()
+
+                grscreen.h
+                    removed selectTrackMap()
 
 
-  data/
-    data/
-        CMakeLists.txt
-            added intervention folder
-        menu/
-            mainmenu.xml
-                added a back button
-            soundconfigmenu.xml
-                added controls for intervention sound volume
+  data/data/menu/
+    mainmenu.xml
+        added a back button
+    soundconfigmenu.xml
+        added controls for intervention sound volume
         
   cmake/
     checks.cmake

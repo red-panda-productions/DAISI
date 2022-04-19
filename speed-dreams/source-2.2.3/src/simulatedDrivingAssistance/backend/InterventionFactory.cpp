@@ -19,7 +19,6 @@ InterventionExecutor* InterventionFactory::CreateInterventionExecutor(Interventi
 	switch(p_type)
 	{
 	   CASE(INTERVENTION_TYPE_COMPLETE_TAKEOVER, InterventionExecutorAlwaysIntervene)
-	   CASE(INTERVENTION_TYPE_ASK_FOR, InterventionExecutorAskFor)
 	   CASE(INTERVENTION_TYPE_ONLY_SIGNALS, InterventionExecutorIndication)
 	   CASE(INTERVENTION_TYPE_SHARED_CONTROL, InterventionExecutorPerformWhenNeeded)
 	   default:

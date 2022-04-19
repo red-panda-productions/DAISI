@@ -468,7 +468,6 @@ int ReSituationUpdater::threadLoop()
 
         // 2) Check if time to terminate has come.
         if (_bTerminate)
-
             bEnd = true;
 
         // 3) If not time to terminate, and running, do the update job.
@@ -520,6 +519,7 @@ int ReSituationUpdater::threadLoop()
 
         // 5) Let the CPU take breath if possible (but after unlocking data !).
         SDL_Delay(KWaitDelayMS[(int)bRunning]);
+       
     }
     while (!bEnd);
 

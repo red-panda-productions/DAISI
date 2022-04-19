@@ -2,12 +2,41 @@
 #include "BlackBoxData.h"
 #include "../rppUtils/Random.hpp"
 
+struct TestSegments
+{
+    tTrackSeg* nextSegments;
+    int nextSegmentsCount;
+};
+
+TestSegments GenerateSegments()
+{
+    TestSegments testSegments;
+    return testSegments;
+}
+
+
+tCarElt GenerateCar(TestSegments& p_testSegments)
+{
+    Random random;
+    tCarElt car;
+    return car;
+}
+
+tSituation GenerateSituation()
+{
+    Random random;
+    tSituation situation;
+    return situation;
+}
+
+
 TEST(BlackBoxDataTests,ValueEqualityTest)
 {
 	Random random;
-	tCarElt car;
-	tSituation situation;
-	int tickCount = random.NextInt();
+    TestSegments testSegments = GenerateSegments();
+    tCarElt car = GenerateCar(testSegments);
+	tSituation situation = GenerateSituation();
+    unsigned long tickCount = random.NextInt();
 	// Assign values to car
 	car.info.wheel[0].rimRadius = random.NextFloat();
 	car.info.wheel[3].tireWidth = random.NextFloat();
@@ -27,7 +56,8 @@ TEST(BlackBoxDataTests,ValueEqualityTest)
 	situation.accelTime = random.NextFloat();
 	situation.raceInfo.fps = random.NextUInt();
 	situation.raceInfo.features = random.NextInt();
-	BlackBoxData data = BlackBoxData(&car, &situation, tickCount);
+	// Assign values to nextSegments
+	BlackBoxData data = BlackBoxData(&car, &situation, tickCount, testSegments.nextSegments, testSegments.nextSegmentsCount);
 	EXPECT_EQ(tickCount, data.TickCount);
 
 	EXPECT_EQ(car.info.wheel[0].rimRadius, data.Car.info.wheel[0].rimRadius);
@@ -54,14 +84,13 @@ TEST(BlackBoxDataTests,ValueEqualityTest)
 	EXPECT_EQ(situation.raceInfo.features, data.Situation.raceInfo.features);
 }
 
-TEST(BlackBoxDataTests,PointerInequalityTest)
+TEST(BlackBoxDataTests, PointerInequalityTest)
 {
-	Random random;
-	tCarElt car;
-	tSituation situation;
-	int tickCount = random.NextInt();
-	// Assign values to car
-	// Assign values to situation
-	BlackBoxData data = BlackBoxData(&car, &situation, tickCount);
-	EXPECT_NE(&tickCount, &data.TickCount);
+    Random random;
+    TestSegments testSegments = GenerateSegments();
+    tCarElt car = GenerateCar(testSegments);
+    tSituation situation = GenerateSituation();
+    unsigned long tickCount = random.NextInt();
+    BlackBoxData data(&car, &situation, tickCount, testSegments.nextSegments, testSegments.nextSegmentsCount);
+    EXPECT_NE(&tickCount, &data.TickCount);
 }

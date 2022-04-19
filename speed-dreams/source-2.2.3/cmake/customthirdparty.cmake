@@ -412,6 +412,18 @@ MACRO(SD_INSTALL_CUSTOM_3RDPARTY TARGET_NAME)
 	_FIND_3RDPARTY_DLL("${IPCLIB_LIBRARY}" "IPCLib" "" _DLL_PATHNAME)
 	LIST(APPEND _THIRDPARTY_DLL_PATHNAMES "${_DLL_PATHNAME}")
 
+	_FIND_3RDPARTY_DLL("${MYSQL_LIBCRYPTO_LIBRARY}" "libcrypto-1_1" "" _DLL_PATHNAME)
+	LIST(APPEND _THIRDPARTY_DLL_PATHNAMES "${_DLL_PATHNAME}")
+
+	_FIND_3RDPARTY_DLL("${MYSQL_LIBSSL_LIBRARY}" "libssl-1_1" "" _DLL_PATHNAME)
+	LIST(APPEND _THIRDPARTY_DLL_PATHNAMES "${_DLL_PATHNAME}")
+
+	_FIND_3RDPARTY_DLL("${MYSQL_CPPCONN8_LIBRARY}" "mysqlcppconn8-2-vs14" "" _DLL_PATHNAME)
+	LIST(APPEND _THIRDPARTY_DLL_PATHNAMES "${_DLL_PATHNAME}")
+
+	_FIND_3RDPARTY_DLL("${MYSQL_CPPCONN_LIBRARY}" "mysqlcppconn-9-vs14" "" _DLL_PATHNAME)
+	LIST(APPEND _THIRDPARTY_DLL_PATHNAMES "${_DLL_PATHNAME}")
+
 	# 2) Copy found 3rd party DLL files to the bin folder (for running without installing).
 	#MESSAGE(STATUS "3rdParty dependencies : Will install ${_THIRDPARTY_DLL_PATHNAMES}")
     SET(_NOINST_DIR "${CMAKE_BINARY_DIR}/${SD_BINDIR}")
@@ -421,7 +433,10 @@ MACRO(SD_INSTALL_CUSTOM_3RDPARTY TARGET_NAME)
     FOREACH(_DLL ${_THIRDPARTY_DLL_PATHNAMES})
       ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME} POST_BUILD
                          COMMAND ${CMAKE_COMMAND} -E echo Copying "${_DLL}" to "${_NOINST_DIR}"
-                         COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
+                         COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}" || 
+								${CMAKE_COMMAND} -E echo ERROR copying "${_DLL}" to "${_NOINST_DIR}" retrying... &&
+								${CMAKE_COMMAND} -E sleep 2 &&
+								${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
                          VERBATIM)
     ENDFOREACH()
 
@@ -448,7 +463,10 @@ MACRO(SD_INSTALL_CUSTOM_3RDPARTY TARGET_NAME)
 	FOREACH(_DLL ${_COMPILER_DLL_PATHNAMES})
 		ADD_CUSTOM_COMMAND(TARGET ${TARGET_NAME} POST_BUILD
                  		   COMMAND ${CMAKE_COMMAND} -E echo Copying "${_DLL}" to "${_NOINST_DIR}"
-                 		   COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
+                 		   COMMAND ${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}" || 
+								${CMAKE_COMMAND} -E echo ERROR copying "${_DLL}" to "${_NOINST_DIR}" retrying... &&
+								${CMAKE_COMMAND} -E sleep 2 &&
+								${CMAKE_COMMAND} -E copy "${_DLL}" "${_NOINST_DIR}"
                  		   VERBATIM)
 	ENDFOREACH()
 

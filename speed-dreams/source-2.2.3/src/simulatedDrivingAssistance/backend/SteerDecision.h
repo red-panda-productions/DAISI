@@ -5,7 +5,7 @@
 class SteerDecision : public IDecision
 {
 public:
-    float m_steerAmount;
+    float SteerAmount = 0;
 
     void RunIndicateCommands() override;
     void RunInterveneCommands() override;

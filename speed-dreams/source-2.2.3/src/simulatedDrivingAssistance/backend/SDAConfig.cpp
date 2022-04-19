@@ -44,6 +44,20 @@ InterventionType SDAConfig::GetInterventionType() const
     return m_interventionType;
 }
 
+/// @brief            Sets the participant control settings to p_pControl
+/// @param p_pControl The participant control settings
+void SDAConfig::SetPControlSettings(tParticipantControl p_pControl)
+{
+    m_pControl = p_pControl;
+}
+
+/// @brief  Returns the participant control settings
+/// @return The participant control settings
+tParticipantControl SDAConfig::GetPControlSettings() const
+{
+    return m_pControl;
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 void SDAConfig::SetMaxTime(int p_maxTime)
@@ -84,4 +98,19 @@ void SDAConfig::SetDataCollectionSettings(tDataToStore p_dataSetting)
 tDataToStore SDAConfig::GetDataCollectionSetting() const
 {
     return m_dataCollectionSetting;
+}
+
+/// @brief            Sets the filepath for the black box executable
+/// @param p_filePath A const char* representing the filepath of the black box executable
+void SDAConfig::SetBlackBoxFilePath(const char* p_filePath)
+{
+    // Sanity check that p_filePath is not too big is done before it is sent to this setter
+    strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, p_filePath);
+}
+
+/// @brief  Gets the filepath for the black box executable
+/// @return A const char* representing the file path for the black box executable
+const char* SDAConfig::GetBlackBoxFilePath() const
+{
+    return m_blackBoxFilePath;
 }

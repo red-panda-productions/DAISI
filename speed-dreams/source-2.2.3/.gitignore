@@ -6,7 +6,7 @@ CMakeSettings.json
 # Build output
 out/
 build/
-cmake-build-debug/
+cmake-build-*/
 
 # Test output
 Testing/
@@ -15,5 +15,18 @@ TestResults/
 # Singletons folder
 data/Singletons/*
 
+# Database config connections
+data/database_connection_settings.txt
+
 # Settings for Resharper
 Folder.DotSettings
+
+data/tracks/road/flo-experiment-track
+
+BackendCoverage.bat
+
+UnitUtilitiesCoverage.bat
+
+test_data
+
+temp/

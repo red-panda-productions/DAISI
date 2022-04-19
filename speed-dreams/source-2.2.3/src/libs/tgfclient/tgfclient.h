@@ -120,6 +120,9 @@ TGFCLIENT_API tScreenSize* GfScrGetDefaultSizes(int* pnSizes);
 #define GFUI_COMBOBOX	6
 #define GFUI_CHECKBOX	7
 #define GFUI_PROGRESSBAR 8
+// SIMULATED DRIVING ASSISTANCE CHANGE: added radiobutton and radiobuttonlist types
+#define GFUI_RADIOBUTTON     9
+#define GFUI_RADIOBUTTONLIST 10
 
 /* Alignment */
 #define GFUI_ALIGN_HMASK  0x03
@@ -268,11 +271,34 @@ typedef struct CheckBoxInfo
     void        *userData;      /**< Associated user data */
 } tCheckBoxInfo;
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added radiobutton information
+/// @brief Radio-button call-back information
+typedef struct RadioButtonInfo
+{
+    bool  Checked;  /**< Radio-button state */
+    int   Selected; /**< Radio-button-id selected from the parent radio-button-list */
+    void* UserData; /**< Associated user data */
+} tRadioButtonInfo;
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added radiobutton-list information
+/// @brief Radio-button-list call-back information
+typedef struct RadioButtonListInfo
+{
+    int   Amount;       /**< Number of radio buttons        */
+    int   Dist;         /**< Distance between radio buttons */
+    int   Selected;     /**< The radiobutton selected       */
+    bool  MinimumOfOne; /**< If at least one radiobutton has to be selected at all times */
+    void* UserData;     /**< Associated user data           */
+} tRadioButtonListInfo;
+
 typedef void (*tfuiCallback)(void * /* userData */);
 typedef void (*tfuiSBCallback)(tScrollBarInfo *);
 typedef int (*tfuiKeyCallback)(int key, int modifier, int state);  /**< return 1 to prevent normal key computing */
 typedef void (*tfuiComboboxCallback)(tComboBoxInfo *);
 typedef void (*tfuiCheckboxCallback)(tCheckBoxInfo *);
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: added radioButtonsCallback and tfuiRadioButtonListCallback typedef
+typedef void (*tfuiRadioButtonCallback)(tRadioButtonInfo*);
 
 
 /* Event loop callback functions (should be called explicitly if the corresponding
@@ -430,6 +456,9 @@ TGFCLIENT_API int GfuiVisibilitySet(void* scr, int id, int visible);
 TGFCLIENT_API int GfuiEnable(void* scr, int id, int flag);
 TGFCLIENT_API void GfuiUnSelectCurrent(void);
 
+// SIMULATED DRIVING ASSISTANCE: expose the GfuiFontClass to the API
+class TGFCLIENT_API GfuiFontClass;
+
 /* Font management */
 // Font Ids
 #define GFUI_FONT_BIG           0
@@ -450,6 +479,9 @@ TGFCLIENT_API void GfuiUnSelectCurrent(void);
 
 TGFCLIENT_API int  GfuiFontHeight(int font);
 TGFCLIENT_API int  GfuiFontWidth(int font, const char* text);
+
+// SIMULATED DRIVING ASSISTANCE: expose method to API.
+TGFCLIENT_API void GfuiDrawString(int p_x, int p_y, const char* p_string, GfuiFontClass* p_font, float* p_color);
 TGFCLIENT_API void GfuiDrawString(const char* text, float* fgColor, int font,
                                   int x, int y, int width = 0, int hAlign = GFUI_ALIGN_HL);
 
@@ -523,6 +555,28 @@ TGFCLIENT_API void GfuiCheckboxSetChecked(void* scr, int id, bool bChecked);
 TGFCLIENT_API void GfuiCheckboxSetText(void* scr, int id, const char *text);
 TGFCLIENT_API void GfuiCheckboxSetTextColor(void* scr, int id, const GfuiColor& color);
 TGFCLIENT_API bool GfuiCheckboxIsChecked(void* scr, int id);
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added radio button list functions and radio button functions
+/* Radio Button Lists */
+TGFCLIENT_API int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y,
+                                            int p_imageWidth, int p_imageHeight, const char** p_pszText,
+                                            int p_selected, int p_amount, int p_distance, bool p_minimumOfOne,
+                                            void* p_userData, tfuiRadioButtonCallback p_onChange,
+                                            void** p_userDataOnFocus, tfuiCallback* p_onFocus, tfuiCallback* p_onFocusLost);
+TGFCLIENT_API void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected);
+TGFCLIENT_API int GfuiRadioButtonListGetSelected(void* p_scr, int p_id);
+TGFCLIENT_API void GfuiRadioButtonListSetText(void* p_scr, int p_id, const char** p_texts);
+TGFCLIENT_API void GfuiRadioButtonListSetTextColor(void* p_scr, int p_id, const GfuiColor& p_color);
+
+/* Radio Buttons */
+TGFCLIENT_API int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_imageWidth, int p_imageHeight,
+                                        const char* p_pszText, int p_selected, int p_listId, int p_parentId,
+                                        void* p_userData, tfuiRadioButtonCallback p_onChange,
+                                        void* p_userDataOnFocus, tfuiCallback p_onFocus, tfuiCallback p_onFocusLost);
+TGFCLIENT_API void GfuiRadioButtonSelect(void* p_scr, int p_id, bool p_selected);
+TGFCLIENT_API void GfuiRadioButtonSetText(void* p_scr, int p_id, const char* p_text);
+TGFCLIENT_API void GfuiRadioButtonSetTextColor(void* p_scr, int p_id, const GfuiColor& p_color);
+TGFCLIENT_API bool GfuiRadioButtonIsSelected(void* p_scr, int p_id);
 
 
 TGFCLIENT_API void GfuiButtonSetText(void* scr, int id, const char* text);
@@ -631,12 +685,22 @@ TGFCLIENT_API int GfuiMenuCreateComboboxControl(void* hscr, void* hparm, const c
                                                 void* userData, tfuiComboboxCallback onChange);
 TGFCLIENT_API int GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,
                                                 void* userData, tfuiCheckboxCallback onChange);
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonListControl
+TGFCLIENT_API int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char* p_pszName,
+                                                       void* p_userData, tfuiRadioButtonCallback p_onChange);
+
 TGFCLIENT_API int GfuiMenuCreateProgressbarControl(void* hscr, void* hparm, const char* pszName);
 
 TGFCLIENT_API tdble GfuiMenuGetNumProperty(void* hparm, const char* pszName,
                                            tdble nDefVal, const char* pszUnit = 0);
 TGFCLIENT_API const char* GfuiMenuGetStrProperty(void* hparm, const char* pszName,
                                                  const char* pszDefVal);
+
+// SIMULATED DRIVING ASSISTANCE
+TGFCLIENT_API const char* GfuiMenuBoolToStr(bool p_bool);
+TGFCLIENT_API bool GfuiMenuControlGetBoolean(void* hparm, const char* pszPath, const char* pszFieldName, bool bDefault);
+
 
 /*****************************
  * Texture / image interface *

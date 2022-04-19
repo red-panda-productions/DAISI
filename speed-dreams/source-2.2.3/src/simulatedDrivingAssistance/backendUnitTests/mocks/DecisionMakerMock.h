@@ -1,19 +1,23 @@
 #pragma once
-#include "DriveSituation.h"
 #include "ConfigEnums.h"
+#include "raceman.h"
+#include "car.h"
+
 class DecisionMakerMock
 {
 public:
-	bool Decide(DriveSituation& driveSituation)
-	{
-		return Decision;
-	}
+    bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount) const
+    {
+        return Decision;
+    }
 
-	void ChangeSettings(InterventionType p_type)
-	{
-		Type = p_type;
-	}
+    void ChangeSettings(InterventionType p_type)
+    {
+        Type = p_type;
+    }
 
     InterventionType Type;
-	bool Decision;
+    bool Decision;
+
+    ~DecisionMakerMock() = default;
 };

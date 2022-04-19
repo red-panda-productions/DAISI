@@ -33,6 +33,33 @@ static tTrackSeg* CopySegment(tTrackSeg* p_seg)
 
 
     return copy;
+
+    // Sietze's copy segments:
+    /* bool skip = false;
+    tTrackSeg* seg = p_pub.trkPos.seg;
+    Car.pub.trkPos.seg = p_nextSegments;
+    if (p_nextSegmentsCount == 0 || p_nextSegments == nullptr || seg == nullptr)
+    {
+        Car.pub.trkPos.seg = nullptr;
+        skip = true;
+    }
+    for (int i = 0; i < p_nextSegmentsCount; i++)
+    {
+        if (skip) break;
+        p_nextSegments[i] = *seg;
+        p_nextSegments[i].next = &p_nextSegments[i + 1];
+
+        for (int j = 0; j < 4; j++)
+        {
+            p_nextSegments[i].vertex[j] = seg->vertex[j];
+        }
+
+        for (int j = 0; j < 7; j++)
+        {
+            p_nextSegments[i].angle[j] = seg->angle[j];
+        }
+        seg = seg->next;
+    }*/
 }
 
 /// @brief Deletes a track segment
@@ -65,8 +92,9 @@ static void DeleteSegment(tTrackSeg* p_seg)
 /// @param p_car       The car data in the simulation
 /// @param p_situation The environment data in the simulation
 /// @param p_tickCount The tick that this driving simulation is from
-
-BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, int p_tickCount) : TickCount(p_tickCount)
+/// @param p_nextSegments
+/// @param p_nextSegmentsCount
+BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount) : TickCount(p_tickCount)
 {
     // Any pointers are marked with 'Pointer' so we can check if we even want them
 

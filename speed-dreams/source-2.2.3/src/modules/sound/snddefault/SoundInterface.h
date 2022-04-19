@@ -21,12 +21,10 @@
 
 #include <plib/sg.h>
 #include <vector>
-#include <unordered_map>
 
 #include "Sound.h"
 #include "QSoundChar.h"
 #include "snddefault.h"
-#include "ConfigEnums.h"
 
 #define VOLUME_CUTOFF 0.001f
 
@@ -81,7 +79,9 @@ class SoundInterface {
 	Sound* bottom_crash_sound; ///< bang when crashing from a great height
 	Sound* backfire_sound; ///< one-off backfire sound
 	Sound* gear_change_sound; ///< sound when changing gears
-	std::unordered_map<InterventionAction, Sound*> intervention_sounds; ///< sounds for interventions
+
+    // SIMULATED DRIVING ASSISTANCE: array containing indicator sounds for every intervention action
+	std::vector<Sound*> m_indicatorSounds;
 
 	std::vector<Sound*> sound_list; ///< keeps track of sounds used
 	SoundPri* engpri; ///< the engine priority, used for sorting
@@ -141,10 +141,9 @@ class SoundInterface {
 	void setBottomCrashSound (const char* sound_name);
 	void setBackfireSound (const char* sound_name);
 	void setGearChangeSound (const char* sound_name);
-    // SIMULATED DRIVING ASSISTANCE: add setter for intervention sounds
-    void setInterventionSound (InterventionAction p_soundEvent, const char* p_soundSource,
-                               int p_flags = (ACTIVE_VOLUME|ACTIVE_PITCH),
-                               bool p_loop = false, bool p_staticPool = true);
+
+    // SIMULATED DRIVING ASSISTANCE
+    void LoadIndicatorSounds();
 
 	/// Update sound for a given observer.
 	virtual void update(CarSoundData** car_sound_data,
