@@ -548,14 +548,10 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // ApplyButton control
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
 
-    GfuiMenuDefaultKeysAdd(s_scrHandle);
-
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
-    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveSettings, nullptr);
-    GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, nullptr);
-    GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", nullptr, GfuiScreenShot, nullptr);
+    GfuiMenuDefaultKeysAdd(s_scrHandle);
 
     // Create random userId
     std::random_device rd;
