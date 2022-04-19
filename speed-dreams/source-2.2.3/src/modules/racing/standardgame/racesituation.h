@@ -82,7 +82,7 @@ private:
     //! The mutex for thread-safe access.
     struct SDL_mutex* _pMutex;
 
-    // ReSituationUpdater is a very good friend 8-D.
+    // ReSituationUpdater is a very good friend.
     friend class ReSituationUpdater;
 };
 

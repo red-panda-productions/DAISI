@@ -51,7 +51,6 @@ using std::string;
 static const string rgba[4] =
     { GFSCR_ATTR_RED, GFSCR_ATTR_GREEN, GFSCR_ATTR_BLUE, GFSCR_ATTR_ALPHA };
 
-static const int NB_COUNTERS = 3;
 static const int NB_DEBUG = 4;
 
 // Boards work on a OrthoCam with fixed height of 600, width flows
@@ -98,7 +97,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
   snprintf(path, sizeof(path), "%s/%d", GR_SCT_DISPMODE, id);
 
   debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, 1);
-  counterFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, 1);
   boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, 100);
   speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, 0);
 
@@ -107,7 +105,6 @@ void cGrBoard::loadDefaults(const tCarElt *curCar)
   if (strcmp(pszSpanSplit, GR_VAL_YES) && curCar->_driverType == RM_DRV_HUMAN) {
     snprintf(path, sizeof(path), "%s/%s", GR_SCT_DISPMODE, curCar->_name);
     debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, debugFlag);
-    counterFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, counterFlag);
     boardWidth  = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARDWIDTH, NULL, boardWidth);
     speedoRise  = (int)GfParmGetNum(grHandle, path, GR_ATT_SPEEDORISE, NULL, speedoRise);
   }
@@ -138,10 +135,6 @@ void cGrBoard::selectBoard(int val)
   snprintf(path, sizeof(path), "%s/%d", GR_SCT_DISPMODE, id);
 
   switch (val) {
-    case 1:
-      counterFlag = (counterFlag + 1) % NB_COUNTERS;
-      GfParmSetNum(grHandle, path, GR_ATT_COUNTER, (char*)NULL, (tdble)counterFlag);
-      break;
     case 3:
       debugFlag = (debugFlag + 1) % NB_DEBUG;
       GfParmSetNum(grHandle, path, GR_ATT_DEBUG, (char*)NULL, (tdble)debugFlag);
@@ -369,22 +362,6 @@ void cGrBoard::grDispCounterBoard2()
   }
 
   glTranslatef(-centerAnchor, -BOTTOM_ANCHOR, 0);
-
-  // Fuel and damage meter
-  if (counterFlag == 1) {
-    float *color;
-    if (car_->_fuel < 5.0f) {
-      color = danger_color_;    //red
-    } else {
-      color = emphasized_color_;    //yellow
-    }
-
-    grDrawGauge(centerAnchor + 140, BOTTOM_ANCHOR + 25, 100, color,
-                background_color_, car_->_fuel / car_->_tank, "F");
-    grDrawGauge(centerAnchor + 155, BOTTOM_ANCHOR + 25, 100, danger_color_, //red
-                background_color_, (tdble)(car_->_dammage) / grMaxDammage, "D");
-  }
-
   glTranslatef(0, -(speedoRise * TOP_ANCHOR / 100), 0);
 }  // grDispCounterBoard2
  
@@ -410,19 +387,17 @@ void cGrBoard::shutdown(void)
 void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                             const tCarElt *currCar, bool isCurrScreen)
 {
-    car_ = currCar;
-    if (isCurrScreen) {
-        grDispSplitScreenIndicator();
-    }
+    car_ = currCar;  
 
     // SIMULATED DRIVING ASSISTANCE: displays the current intervention indicators 
     DispIndicators();
- 
-    if (debugFlag)
-        grDispDebug(s, frameInfo);
 
-    if (counterFlag)
-        grDispCounterBoard2();
+    grDispCounterBoard2();
+
+    if (debugFlag) 
+        grDispDebug(s, frameInfo);
+    if (isCurrScreen) 
+        grDispSplitScreenIndicator();
 }
 
 // SIMULATED DRIVING ASSISTANCE
@@ -493,9 +468,9 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
     if (!p_data) return;
 
     GfuiDrawString(
-        p_data->Text, normal_color_, GFUI_FONT_LARGE_C, 
-        rightAnchor * p_data->ScrPos.X,
-        TOP_ANCHOR  * p_data->ScrPos.Y);
+        rightAnchor * p_data->ScrPos.X, 
+        TOP_ANCHOR * p_data->ScrPos.Y, 
+        p_data->Text, p_data->Font, normal_color_);
 }
 
 // SIMULATED DRIVING ASSISTANCE

@@ -5,7 +5,7 @@
 template <class Mediator>
 void BrakeDecision<Mediator>::RunIndicateCommands()
 {
-	if (m_brakeAmount < BRAKE_THRESHOLD) return;
+    if (BrakeAmount < BRAKE_THRESHOLD) return;
 
 	Mediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
 }

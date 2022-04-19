@@ -39,7 +39,6 @@ class cGrBoard
     const tCarElt* car_;
 
     int debugFlag;
-    int counterFlag;
     int boardWidth;
     int leftAnchor;
     int centerAnchor;

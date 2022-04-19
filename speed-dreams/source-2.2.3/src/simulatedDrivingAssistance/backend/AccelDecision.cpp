@@ -3,7 +3,6 @@
 
 void AccelDecision::RunIndicateCommands()
 {
-    
 }
 
 void AccelDecision::RunInterveneCommands()

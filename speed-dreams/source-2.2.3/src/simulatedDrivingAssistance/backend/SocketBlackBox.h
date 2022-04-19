@@ -29,16 +29,15 @@ public:
 
     void SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);
 
-	void DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);
+    void DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);
 
-    bool GetDecisions(tCarElt* p_car, tSituation* p_situation, int p_tickCount, DecisionTuple& p_decisions);
+    bool GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
 
     std::vector<std::string> VariablesToReceive;
 
 private:
-
     // map with function that create correct concrete decision
-    using decisionConvertFunction = void (*) (std::string&, DecisionTuple&);
+    using decisionConvertFunction = void (*)(std::string&, DecisionTuple&);
     std::unordered_map<std::string, decisionConvertFunction> m_variableDecisionMap;
 
     ServerSocket m_server;
@@ -47,8 +46,7 @@ private:
     BlackBoxData* m_currentData = nullptr;
 
     PointerManager m_pointerManager;
-
 };
 
 /// @brief The standard SocketBlackBox type
-#define SSocketBlackBox SocketBlackBox<BlackBoxData,SIPCPointerManager>
+#define SSocketBlackBox SocketBlackBox<BlackBoxData, SIPCPointerManager>

@@ -456,6 +456,9 @@ TGFCLIENT_API int GfuiVisibilitySet(void* scr, int id, int visible);
 TGFCLIENT_API int GfuiEnable(void* scr, int id, int flag);
 TGFCLIENT_API void GfuiUnSelectCurrent(void);
 
+// SIMULATED DRIVING ASSISTANCE: expose the GfuiFontClass to the API
+class TGFCLIENT_API GfuiFontClass;
+
 /* Font management */
 // Font Ids
 #define GFUI_FONT_BIG           0
@@ -476,6 +479,9 @@ TGFCLIENT_API void GfuiUnSelectCurrent(void);
 
 TGFCLIENT_API int  GfuiFontHeight(int font);
 TGFCLIENT_API int  GfuiFontWidth(int font, const char* text);
+
+// SIMULATED DRIVING ASSISTANCE: expose method to API.
+TGFCLIENT_API void GfuiDrawString(int p_x, int p_y, const char* p_string, GfuiFontClass* p_font, float* p_color);
 TGFCLIENT_API void GfuiDrawString(const char* text, float* fgColor, int font,
                                   int x, int y, int width = 0, int hAlign = GFUI_ALIGN_HL);
 

@@ -26,8 +26,7 @@ SET(_SOURCES
 
 SET(_INLINES
 	DecisionMaker.inl
-	FileDataStorage.inl
-	Mediator.inl
+        Mediator.inl
 	SocketBlackBox.inl
 	IPCPointerManager.inl)
 

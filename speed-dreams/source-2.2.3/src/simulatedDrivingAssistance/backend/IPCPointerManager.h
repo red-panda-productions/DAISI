@@ -19,7 +19,6 @@ public:
     tTrackSeg* GetSegmentPointer() const;
 
 private:
-
     boost::interprocess::shared_memory_object m_currentDataObject =
         boost::interprocess::shared_memory_object(boost::interprocess::open_or_create, "SDA_SHARED_MEMORY", boost::interprocess::read_write);
 
@@ -32,5 +31,3 @@ private:
 };
 
 #define SIPCPointerManager IPCPointerManager<BlackBoxData>
-
-

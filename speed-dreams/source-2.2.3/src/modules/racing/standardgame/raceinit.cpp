@@ -106,6 +106,8 @@ ReReset(void)
 // Race Engine cleanup
 void ReCleanup(void)
 {
+    // SIMULATED DRIVING ASSISTANCE: shut down updaters
+    ReShutdownUpdaters();
     ReSituation::terminate();
 
     if (!ReInfo)

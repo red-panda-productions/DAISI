@@ -6,7 +6,7 @@ template <class Mediator>
 class BrakeDecision : public IDecision
 {
 public:
-    float m_brakeAmount;
+    float BrakeAmount = 0;
 
     void RunIndicateCommands() override;
     void RunInterveneCommands() override;

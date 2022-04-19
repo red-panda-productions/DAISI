@@ -1,10 +1,15 @@
 #include "SQLDatabaseStorage.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
+#include "ConfigEnums.h"
 
 /// @brief reads input from input file, unless EOF has been reached
-#define READ_INPUT(p_inputFile, p_string) \
-    if (p_inputFile.eof()) {p_inputFile.close(); throw std::exception("Reached end of file prematurely");}\
+#define READ_INPUT(p_inputFile, p_string)                        \
+    if (p_inputFile.eof())                                       \
+    {                                                            \
+        p_inputFile.close();                                     \
+        throw std::exception("Reached end of file prematurely"); \
+    }                                                            \
     p_inputFile >> p_string;
 
 /// @brief executes sql statement
@@ -17,15 +22,15 @@
 
 /// @brief create sql insert ignore statement
 #define INSERT_IGNORE_INTO(p_tableName, p_headers, p_values) \
-  "INSERT IGNORE INTO " p_tableName "(" p_headers ") VALUES (" + p_values + ");"
+    "INSERT IGNORE INTO " p_tableName "(" p_headers ") VALUES (" + p_values + ");"
 
 /// @brief create sql insert statement
 #define INSERT_INTO(p_tableName, p_headers, p_values) \
-  "INSERT INTO " p_tableName "(" p_headers ") VALUES (" + p_values + ");"
+    "INSERT INTO " p_tableName "(" p_headers ") VALUES (" + p_values + ");"
 
 /// @brief executes sql statement to get latest inserted id in database with safety net
-#define SELECT_LAST_ID(p_id) \
-    m_resultSet = m_statement->executeQuery("SELECT LAST_INSERT_ID()");\
+#define SELECT_LAST_ID(p_id)                                            \
+    m_resultSet = m_statement->executeQuery("SELECT LAST_INSERT_ID()"); \
     while (m_resultSet->next()) { p_id = m_resultSet->getInt(1); };
 
 /// @brief get int from result set
@@ -36,7 +41,8 @@
 #define DECISIONS_AMOUNT 5
 
 /// @brief The constructor of the SQL database storage
-SQLDatabaseStorage::SQLDatabaseStorage() {
+SQLDatabaseStorage::SQLDatabaseStorage()
+{
     m_driver = nullptr;
     m_connection = nullptr;
     m_statement = nullptr;
@@ -93,9 +99,16 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
-    
-    try { m_connection = m_driver->connect(connection_properties);}
-    catch (std::exception& e) {std::cerr << "Could not open database" << std::endl; return false;}
+
+    try
+    {
+        m_connection = m_driver->connect(connection_properties);
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Could not open database" << std::endl;
+        return false;
+    }
 
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
@@ -116,160 +129,165 @@ bool SQLDatabaseStorage::OpenDatabase(
 }
 
 /// @brief Executes sql create statements to create all tables
+// TODO: update these to match the values of DataToStore in ConfigEnums
+//  The current setup uses Gamestate (which includes both car and environment data) for "Environment data" checkbox,
+//  UserInput for "Human data" and Decisions for "Intervention data",
+//  but there should be separate tables for environment, car and internal metadata.
 void SQLDatabaseStorage::CreateTables()
 {
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS Participant (\n"
-            "    participant_id INT NOT NULL,    \n"
-            "    \n"
-            "    CONSTRAINT participant_id_primary_key PRIMARY KEY (participant_id)\n"
-            ")\n")
+        "CREATE TABLE IF NOT EXISTS Participant (\n"
+        "    participant_id VARCHAR(255) NOT NULL,    \n"
+        "    \n"
+        "    CONSTRAINT participant_id_primary_key PRIMARY KEY (participant_id)\n"
+        ")\n")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS Blackbox (\n"
-            "    blackbox_id INT NOT NULL AUTO_INCREMENT,\n"
-            "    filename    VARCHAR(255)    NOT NULL,\n"
-            "    version     DATETIME(0)     NOT NULL,\n"
-            "    name        VARCHAR(255)    NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT blackbox_id_primary_key PRIMARY KEY (blackbox_id),\n"
-            "    \n"
-            "    CONSTRAINT file_version UNIQUE (filename, version)\n"
-            ")\n")
+        "CREATE TABLE IF NOT EXISTS Blackbox (\n"
+        "    blackbox_id INT NOT NULL AUTO_INCREMENT,\n"
+        "    filename    VARCHAR(255)    NOT NULL,\n"
+        "    version     DATETIME(0)     NOT NULL,\n"
+        "    name        VARCHAR(255)    NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT blackbox_id_primary_key PRIMARY KEY (blackbox_id),\n"
+        "    \n"
+        "    CONSTRAINT file_version UNIQUE (filename, version)\n"
+        ")\n")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS Environment (\n"
-            "    environment_id  INT             NOT NULL AUTO_INCREMENT,\n"
-            "    filename        VARCHAR(255)    NOT NULL,\n"
-            "    version         DATETIME(0)     NOT NULL,\n"
-            "    name            VARCHAR(255)    NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT environment_id_primary_key PRIMARY KEY (environment_id),\n"
-            "    \n"
-            "    CONSTRAINT file_version UNIQUE (filename, version)\n"
-            ")\n")
+        "CREATE TABLE IF NOT EXISTS Environment (\n"
+        "    environment_id  INT             NOT NULL AUTO_INCREMENT,\n"
+        "    filename        VARCHAR(255)    NOT NULL,\n"
+        "    version         INT             NOT NULL,\n"
+        "    name            VARCHAR(255)    NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT environment_id_primary_key PRIMARY KEY (environment_id),\n"
+        "    \n"
+        "    CONSTRAINT file_version UNIQUE (filename, version)\n"
+        ")\n")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS Settings (\n"
-            "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
-            "    intervention_mode   ENUM('Force', 'Ask', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
-            "    \n"
-            "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id)\n"
-            "    \n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS Settings (\n"
+        "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
+        "    intervention_mode   ENUM('Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
+        "    \n"
+        "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id),\n"
+        "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
+        "    \n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS Trial (\n"
-            "    trial_id        INT         NOT NULL AUTO_INCREMENT,\n"
-            "    trial_time      DATETIME(0) NOT NULL,\n"
-            "    participant_id  INT         NOT NULL,\n"
-            "    blackbox_id     INT         NOT NULL,\n"
-            "    environment_id  INT         NOT NULL,\n"
-            "    settings_id     INT         NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT trial_id_primary_key         PRIMARY KEY (trial_id),\n"
-            "    CONSTRAINT participant_id_foreign_key   FOREIGN KEY (participant_id) REFERENCES Participant(participant_id),\n"
-            "    CONSTRAINT blackbox_id_foreign_key      FOREIGN KEY (blackbox_id)    REFERENCES Blackbox(blackbox_id),\n"
-            "    CONSTRAINT environment_id_foreign_key   FOREIGN KEY (environment_id) REFERENCES Environment(environment_id),\n"
-            "    CONSTRAINT settings_id_foreign_key      FOREIGN KEY (settings_id)    REFERENCES Settings(settings_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS Trial (\n"
+        "    trial_id        INT         NOT NULL AUTO_INCREMENT,\n"
+        "    trial_time      DATETIME(0) NOT NULL,\n"
+        "    participant_id  VARCHAR(255) NOT NULL,\n"
+        "    blackbox_id     INT         NOT NULL,\n"
+        "    environment_id  INT         NOT NULL,\n"
+        "    settings_id     INT         NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT trial_id_primary_key         PRIMARY KEY (trial_id),\n"
+        "    CONSTRAINT participant_id_foreign_key   FOREIGN KEY (participant_id) REFERENCES Participant(participant_id),\n"
+        "    CONSTRAINT blackbox_id_foreign_key      FOREIGN KEY (blackbox_id)    REFERENCES Blackbox(blackbox_id),\n"
+        "    CONSTRAINT environment_id_foreign_key   FOREIGN KEY (environment_id) REFERENCES Environment(environment_id),\n"
+        "    CONSTRAINT settings_id_foreign_key      FOREIGN KEY (settings_id)    REFERENCES Settings(settings_id)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS TimeStep (\n"
-            "    trial_id        INT             NOT NULL,\n"
-            "    tick            BIGINT UNSIGNED NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT trial_tick_primary_key    PRIMARY KEY (trial_id, tick),\n"
-            "    CONSTRAINT trial_id_foreign_key      FOREIGN KEY (trial_id) REFERENCES Trial(trial_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS TimeStep (\n"
+        "    trial_id        INT             NOT NULL,\n"
+        "    tick            BIGINT UNSIGNED NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT trial_tick_primary_key    PRIMARY KEY (trial_id, tick),\n"
+        "    CONSTRAINT trial_id_foreign_key      FOREIGN KEY (trial_id) REFERENCES Trial(trial_id)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS GameState (\n"
-            "    game_state_id   INT             NOT NULL AUTO_INCREMENT,\n"
-            "    x               DOUBLE          NOT NULL,\n"
-            "    y               DOUBLE          NOT NULL,\n"
-            "    z               DOUBLE          NOT NULL,\n"
-            "    direction_x     DOUBLE          NOT NULL,\n"
-            "    direction_y     DOUBLE          NOT NULL,\n"
-            "    direction_z     DOUBLE          NOT NULL,\n"
-            "    speed           FLOAT           NOT NULL,\n"
-            "    acceleration    FLOAT           NOT NULL,\n"
-            "    gear            INT             NOT NULL,\n"
-            "    trial_id        INT             NOT NULL,\n"
-            "    tick            BIGINT UNSIGNED NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT game_state_id_primary_key PRIMARY KEY (game_state_id),\n"
-            "    CONSTRAINT game_state_time_step_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS GameState (\n"
+        "    game_state_id   INT             NOT NULL AUTO_INCREMENT,\n"
+        "    x               DOUBLE          NOT NULL,\n"
+        "    y               DOUBLE          NOT NULL,\n"
+        "    z               DOUBLE          NOT NULL,\n"
+        "    direction_x     DOUBLE          NOT NULL,\n"
+        "    direction_y     DOUBLE          NOT NULL,\n"
+        "    direction_z     DOUBLE          NOT NULL,\n"
+        "    speed           FLOAT           NOT NULL,\n"
+        "    acceleration    FLOAT           NOT NULL,\n"
+        "    gear            INT             NOT NULL,\n"
+        "    trial_id        INT             NOT NULL,\n"
+        "    tick            BIGINT UNSIGNED NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT game_state_id_primary_key PRIMARY KEY (game_state_id),\n"
+        "    CONSTRAINT game_state_time_step_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS UserInput (\n"
-            "    user_input_id   INT             NOT NULL AUTO_INCREMENT,\n"
-            "    steer           FLOAT           NOT NULL,\n"
-            "    brake           FLOAT           NOT NULL,\n"
-            "    gas             FLOAT           NOT NULL,\n"
-            "    clutch          FLOAT           NOT NULL,\n"
-            "    trial_id        INT             NOT NULL,\n"
-            "    tick            BIGINT UNSIGNED NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT user_input_id_primary_key PRIMARY KEY (user_input_id),\n"
-            "    CONSTRAINT user_input_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS UserInput (\n"
+        "    user_input_id   INT             NOT NULL AUTO_INCREMENT,\n"
+        "    steer           FLOAT           NOT NULL,\n"
+        "    brake           FLOAT           NOT NULL,\n"
+        "    gas             FLOAT           NOT NULL,\n"
+        "    clutch          FLOAT           NOT NULL,\n"
+        "    trial_id        INT             NOT NULL,\n"
+        "    tick            BIGINT UNSIGNED NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT user_input_id_primary_key PRIMARY KEY (user_input_id),\n"
+        "    CONSTRAINT user_input_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS Intervention (\n"
-            "    intervention_id     INT NOT NULL AUTO_INCREMENT,\n"
-            "    trial_id            INT NOT NULL,\n"
-            "    tick                BIGINT UNSIGNED NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT decision_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT intervention_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS Intervention (\n"
+        "    intervention_id     INT NOT NULL AUTO_INCREMENT,\n"
+        "    trial_id            INT NOT NULL,\n"
+        "    tick                BIGINT UNSIGNED NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT decision_primary_key PRIMARY KEY (intervention_id),\n"
+        "    CONSTRAINT intervention_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS SteerDecision (\n"
-            "    intervention_id     INT     NOT NULL,\n"
-            "    amount              FLOAT   NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT steer_id_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT steer_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS SteerDecision (\n"
+        "    intervention_id     INT     NOT NULL,\n"
+        "    amount              FLOAT   NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT steer_id_primary_key PRIMARY KEY (intervention_id),\n"
+        "    CONSTRAINT steer_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS BrakeDecision (\n"
-            "    intervention_id     INT     NOT NULL,\n"
-            "    amount              FLOAT   NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT brake_id_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT brake_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS BrakeDecision (\n"
+        "    intervention_id     INT     NOT NULL,\n"
+        "    amount              FLOAT   NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT brake_id_primary_key PRIMARY KEY (intervention_id),\n"
+        "    CONSTRAINT brake_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS LightsDecision (\n"
-            "    intervention_id     INT     NOT NULL,\n"
-            "    turn_lights_on      BOOLEAN NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT lights_id_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT lights_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS LightsDecision (\n"
+        "    intervention_id     INT     NOT NULL,\n"
+        "    turn_lights_on      BOOLEAN NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT lights_id_primary_key PRIMARY KEY (intervention_id),\n"
+        "    CONSTRAINT lights_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS AccelDecision (\n"
-            "    intervention_id     INT     NOT NULL,\n"
-            "    amount              FLOAT   NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT accel_id_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT accel_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS AccelDecision (\n"
+        "    intervention_id     INT     NOT NULL,\n"
+        "    amount              FLOAT   NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT accel_id_primary_key PRIMARY KEY (intervention_id),\n"
+        "    CONSTRAINT accel_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
+        ")")
 
     EXECUTE(
-            "CREATE TABLE IF NOT EXISTS GearDecision (\n"
-            "    intervention_id     INT     NOT NULL,\n"
-            "    gear                INT     NOT NULL,\n"
-            "    \n"
-            "    CONSTRAINT gear_id_primary_key PRIMARY KEY (intervention_id),\n"
-            "    CONSTRAINT gear_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-            ")")
+        "CREATE TABLE IF NOT EXISTS GearDecision (\n"
+        "    intervention_id     INT     NOT NULL,\n"
+        "    gear                INT     NOT NULL,\n"
+        "    \n"
+        "    CONSTRAINT gear_id_primary_key PRIMARY KEY (intervention_id),\n"
+        "    CONSTRAINT gear_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
+        ")")
 }
 
 /// @brief Inserts the data that stays the same during a trial. Includes participant, blackbox, environment, settings, and trial
@@ -316,16 +334,11 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // environment
     std::string environmentFileName;
     std::string environmentVersion;
-    std::string environmentVersionDate;
-    std::string environmentVersionTime;
     std::string environmentName;
 
     READ_INPUT(p_inputFile, environmentFileName);
-    READ_INPUT(p_inputFile, environmentVersionDate);
-    READ_INPUT(p_inputFile, environmentVersionTime);
+    READ_INPUT(p_inputFile, environmentVersion);
     READ_INPUT(p_inputFile, environmentName);
-
-    environmentVersion = environmentVersionDate + ' ' + environmentVersionTime;
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
@@ -336,20 +349,38 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     GET_INT_FROM_RESULTS(environmentId)
 
     // settings
+    // Saved as enum index, but since indices in our code and MySQL are not the same, perform conversion
     std::string interventionMode;
-
     READ_INPUT(p_inputFile, interventionMode);
-
-    values = "'" + interventionMode + "'";
+    switch (std::stoi(interventionMode))
+    {
+        case INTERVENTION_TYPE_NO_SIGNALS:
+            values = "'Off'";
+            break;
+        case INTERVENTION_TYPE_ONLY_SIGNALS:
+            values = "'Suggest'";
+            break;
+        case INTERVENTION_TYPE_SHARED_CONTROL:
+            values = "'Shared'";
+            break;
+        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
+            values = "'Force'";
+            break;
+        default:
+            throw std::exception("Invalid intervention type index read from buffer file");
+    }
 
     EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
-    EXECUTE_QUERY("SELECT LAST_INSERT_ID()")
+    EXECUTE_QUERY(
+        "SELECT settings_id FROM settings WHERE "
+        "intervention_mode = " +
+        values)
 
     int settingsId;
     GET_INT_FROM_RESULTS(settingsId);
 
     values = "'" + trialDate + ' ' + trialTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
-               std::to_string(settingsId) + "'";
+             std::to_string(settingsId) + "'";
 
     // trial
     EXECUTE(INSERT_INTO("trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
@@ -382,7 +413,8 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
     {
         saveUserInput = true;
     }
-    else hasReadTick = true;
+    else
+        hasReadTick = true;
 
     // The values are read as a string from p_inputFile, and used as a string in the sql statements,
     // therefore they are not converted to the type they actually are.
@@ -396,11 +428,16 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
             hasReadTick = false;
             tick = dataToSave;
         }
-        else {READ_INPUT(p_inputFile, tick)}
+        else
+        {
+            READ_INPUT(p_inputFile, tick)
+        }
+
+        if (tick == "END") break;
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
-        EXECUTE(INSERT_INTO("timestep",  "trial_id, tick", values))
+        EXECUTE(INSERT_INTO("timestep", "trial_id, tick", values))
 
         // gamestate
         if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
@@ -414,11 +451,12 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
             InsertDecisions(p_inputFile, p_trialId, tick);
             dataToSave.empty();
         }
-        else hasReadTick = true;
+        else
+            hasReadTick = true;
     }
 }
 
-void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick)
+void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
 {
     std::string values;
 
@@ -470,7 +508,7 @@ void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p
     EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
 }
 
-void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId,  const std::string& p_tick)
+void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
 {
     std::string values;
 
@@ -540,7 +578,8 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
 }
 
 /// @brief Close the connection to the database and clean up.
-void SQLDatabaseStorage::CloseDatabase() {
+void SQLDatabaseStorage::CloseDatabase()
+{
     m_statement->close();
     m_connection->close();
 
@@ -549,7 +588,7 @@ void SQLDatabaseStorage::CloseDatabase() {
     delete m_connection;
 }
 
-void SQLDatabaseStorage::Run(std::string p_inputFilePath)
+void SQLDatabaseStorage::Run(const std::string& p_inputFilePath)
 {
     std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_connection_settings.txt");
@@ -574,12 +613,20 @@ void SQLDatabaseStorage::Run(std::string p_inputFilePath)
     ifstream.close();
 
     int port;
-    try {port = std::stoi(portString);}
-    catch (std::exception& e) { throw std::exception("Port in database settings config file could not be converted to an int");}
+    try
+    {
+        port = std::stoi(portString);
+    }
+    catch (std::exception& e)
+    {
+        throw std::exception("Port in database settings config file could not be converted to an int");
+    }
 
     if (OpenDatabase(ip, port, username, password, schema))
     {
-        //StoreData([INPUT FILE PATH HERE]);
+        std::cout << "Writing local buffer file to database" << std::endl;
+        StoreData(p_inputFilePath);
         CloseDatabase();
+        std::cout << "Finished writing to database" << std::endl;
     }
 }

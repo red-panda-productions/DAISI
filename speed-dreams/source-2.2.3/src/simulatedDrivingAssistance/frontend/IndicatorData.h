@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConfigEnums.h"
+#include "guifont.h"
 
 /// @brief Represents a position on screen as percentages of the full screen.
 typedef struct ScreenPosition
@@ -13,6 +14,11 @@ typedef struct ScreenPosition
 typedef struct SoundData
 {
     const char* Path;
+    bool Looping;
+    /// @brief How often it should loop, in seconds.
+    float LoopInterval;
+    /// @brief True if last frame the sound was active
+    bool ActiveLastFrame;
 } tSoundData;
 
 /// @brief Stores data related to drawing a texture on the Hud.
@@ -27,16 +33,17 @@ typedef struct TextureData
 typedef struct TextData
 {
     const char* Text;
+    GfuiFontClass* Font;
     tScreenPosition ScrPos;
 } tTextData;
 
-/// @brief  Stores data belonging to each type of indicator. This is stored with 
-///         pointers to the data structs to deal with the fact that it is not required 
+/// @brief  Stores data belonging to each type of indicator. This is stored with
+///         pointers to the data structs to deal with the fact that it is not required
 ///         that all data is defined.
 typedef struct IndicatorData
 {
     InterventionAction Action;
-    tSoundData*   Sound;
+    tSoundData* Sound;
     tTextureData* Texture;
-    tTextData*    Text;
+    tTextData* Text;
 } tIndicatorData;

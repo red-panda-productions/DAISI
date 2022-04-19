@@ -1,65 +1,59 @@
 #pragma once
 #include "InterventionExecutorMock.h"
 #include "ConfigEnums.h"
+
 class ConfigMock
 {
 private:
-	InterventionType m_interventionType;
-	InterventionExecutorMock m_interventionExecutor;
+    InterventionType m_interventionType = 0;
+    InterventionExecutorMock m_interventionExecutor = InterventionExecutorMock();
+
 public:
-	InterventionExecutor* SetInterventionType(InterventionType p_intervention)
-	{
-		m_interventionType = p_intervention;
-		return &m_interventionExecutor;
-	}
+    InterventionExecutor* SetInterventionType(InterventionType p_intervention)
+    {
+        m_interventionType = p_intervention;
+        return &m_interventionExecutor;
+    }
 
-	InterventionType GetInterventionType()
-	{
-		return m_interventionType;
-	}
+    InterventionType GetInterventionType() const
+    {
+        return m_interventionType;
+    }
 
-	void SetDataCollectionSettings(bool* p_boolArray)
-	{
+    void SetDataCollectionSettings(bool* p_boolArray)
+    {
+    }
 
-	}
+    bool* GetDataCollectionSetting() const
+    {
+        return nullptr;
+    }
 
-	bool* GetDataCollectionSetting() const
-	{
-		return nullptr;
-	}
+    void SetTask(Task p_task)
+    {
+    }
 
-	void  SetTask(Task p_task)
-	{
+    void SetIndicatorSettings(bool* p_indicators)
+    {
+    }
 
-	}
+    bool* GetIndicatorSettings() const
+    {
+    }
 
-	void  SetIndicatorSettings(bool* p_indicators)
-	{
+    void SetMaxTime(int p_maxTime)
+    {
+    }
 
-	}
+    int GetMaxTime() const
+    {
+    }
 
-	bool* GetIndicatorSettings() const
-	{
+    void SetUserID(char* p_userID)
+    {
+    }
 
-	}
-
-	void  SetMaxTime(int p_maxTime)
-	{
-
-	}
-
-	int GetMaxTime() const
-	{
-
-	}
-
-	void  SetUserID(char* p_userID)
-	{
-
-	}
-
-	char* GetUserID() const
-	{
-
-	}
+    char* GetUserID() const
+    {
+    }
 };
