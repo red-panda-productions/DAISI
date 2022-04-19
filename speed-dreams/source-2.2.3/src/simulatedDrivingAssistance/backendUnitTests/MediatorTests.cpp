@@ -4,23 +4,22 @@
 #include "Mediator.h"
 #include "Mediator.inl"
 #include "mocks/DecisionMakerMock.h"
+#include "mocks/MediatorMock.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 #include "../rppUtils/RppUtils.hpp"
 
-#define TMediator Mediator<DecisionMakerMock>
-
-TMediator* TMediator::m_instance = nullptr;
+MockMediator* MockMediator::m_instance = nullptr;
 
 /// @brief Test if the distribution of the mediator works
 TEST(MediatorTest, GetDistributedMediatorTemplated)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    TMediator* mediator1 = TMediator::GetInstance();
-    TMediator* mediator2 = TMediator::GetInstance();
+    MockMediator* mediator1 = MockMediator::GetInstance();
+    MockMediator* mediator2 = MockMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
 }
 

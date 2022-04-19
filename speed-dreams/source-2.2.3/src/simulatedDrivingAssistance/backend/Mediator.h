@@ -52,4 +52,5 @@ public:
     tTrack* m_track = nullptr;
 };
 
+template <>
 SMediator* SMediator::m_instance = nullptr;

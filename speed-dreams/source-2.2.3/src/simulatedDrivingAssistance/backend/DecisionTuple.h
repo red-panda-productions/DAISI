@@ -2,9 +2,12 @@
 #include "BrakeDecision.h"
 #include "SteerDecision.h"
 #include "AccelDecision.h"
+#include "Mediator.h"
+
 #define DECISIONS_COUNT 3
 
 /// @brief A tuple that contains all decisions that can be made by an AI
+//template <class Mediator>
 struct DecisionTuple
 {
 public:
@@ -31,7 +34,8 @@ public:
 private:
     IDecision* buffer[DECISIONS_COUNT];
 
-    BrakeDecision m_brakeDecision;
+    template <class Mediator>
+    BrakeDecision<Mediator> m_brakeDecision;
     bool m_brakeActive = false;
     SteerDecision m_steerDecision;
     bool m_steerActive = false;
