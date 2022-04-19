@@ -16,10 +16,6 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, 
 {
     // create directory if it doesn't exist
     std::string dirPath = "..\\test_data\\" + p_dirName;
-    if (!GfDirExists(dirPath.c_str()))
-    {
-        GfDirCreate(dirPath.c_str());
-    }
 
     // create and open new recording file with current timestamp
     std::time_t t = std::time(nullptr);
