@@ -18,11 +18,12 @@
 Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, const int p_paramAmount)
 {
     // create directory if it doesn't exist
-    char *pValue;
+    char* pValue;
     size_t len;
     errno_t err = _dupenv_s(&pValue, &len, "APPDATA");
 
-    if(err) {
+    if (err)
+    {
         GfLogError("Error getting APPDATA environment variable: %d\n", err);
         return;
     }
