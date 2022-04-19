@@ -84,9 +84,8 @@ inline bool SetupSingletonsFolder()
     // set up singleton folder
     char directory[256];
     getcwd(directory, 256);
-    std::string workingDirecotory(directory);
-    workingDirecotory += "\\Singletons";
-    const char* wd = workingDirecotory.c_str();
+    std::string pathstring = path.string();
+    const char* wd = pathstring.c_str();
     struct stat info = {};
     int err = stat(wd, &info);
     if (err != 0 && err != -1)
