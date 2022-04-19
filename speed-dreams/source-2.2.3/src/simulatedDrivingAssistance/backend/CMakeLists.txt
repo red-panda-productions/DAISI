@@ -80,7 +80,3 @@ ADD_MYSQL_PACKAGE(backend)
 ADD_BOOST_PACKAGE(backend)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)
-
-INSTALL(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/test_data/BB_Recordings)
-
-FILE(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/test_data/BB_Recordings)
