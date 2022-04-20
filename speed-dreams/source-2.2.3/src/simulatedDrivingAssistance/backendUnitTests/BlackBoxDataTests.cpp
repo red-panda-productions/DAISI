@@ -10,7 +10,10 @@ struct TestSegments
 
 TestSegments GenerateSegments()
 {
+    Random random;
     TestSegments testSegments;
+    testSegments.nextSegmentsCount = random.NextInt(4);
+    testSegments.nextSegments = nullptr; //new tTrackSeg[testSegments.nextSegmentsCount];
     return testSegments;
 }
 
@@ -18,14 +21,31 @@ TestSegments GenerateSegments()
 tCarElt GenerateCar(TestSegments& p_testSegments)
 {
     Random random;
-    tCarElt car;
+    tCarElt car{};
+    car.info.wheel[0].rimRadius = random.NextFloat();
+    car.info.wheel[3].tireWidth = random.NextFloat();
+    car.pub.posMat[2][0] = random.NextFloat();
+    car.pub.posMat[0][3] = random.NextFloat();
+    car.race.commitBestLapTime = random.NextBool();
+    car.race.currentMinSpeedForLap = random.NextFloat();
+    car.priv.dashboardInstant[7].setup = new tCarSetupItem();
+    car.priv.collision_state.pos[0] = random.NextFloat();
+    car.setup.rideHeight[3].desired_value = random.NextFloat();
+    car.setup.FRLWeightRep.stepsize = random.NextInt();
+    car.setup.arbSpring[0].max = random.NextFloat();
+    car.pitcmd.fuel = random.NextFloat();
+    tCarPitCmd::TireChange tireChange[2] = {tCarPitCmd::NONE, tCarPitCmd::ALL};
+    car.pitcmd.tireChange = tireChange[random.NextInt(2)];
     return car;
 }
 
 tSituation GenerateSituation()
 {
     Random random;
-    tSituation situation;
+    tSituation situation{};
+    situation.accelTime = random.NextFloat();
+    situation.raceInfo.fps = random.NextUInt();
+    situation.raceInfo.features = random.NextInt();
     return situation;
 }
 
@@ -37,26 +57,6 @@ TEST(BlackBoxDataTests,ValueEqualityTest)
     tCarElt car = GenerateCar(testSegments);
 	tSituation situation = GenerateSituation();
     unsigned long tickCount = random.NextInt();
-	// Assign values to car
-	car.info.wheel[0].rimRadius = random.NextFloat();
-	car.info.wheel[3].tireWidth = random.NextFloat();
-	car.pub.posMat[2][0] = random.NextFloat();
-	car.pub.posMat[0][3] = random.NextFloat();
-	car.race.commitBestLapTime = random.NextBool();
-	car.race.currentMinSpeedForLap = random.NextFloat();
-	car.priv.dashboardInstant[7].setup = new tCarSetupItem();
-	car.priv.collision_state.pos[0] = random.NextFloat();
-	car.setup.rideHeight[3].desired_value = random.NextFloat();
-	car.setup.FRLWeightRep.stepsize = random.NextInt();
-	car.setup.arbSpring[0].max = random.NextFloat();
-	car.pitcmd.fuel = random.NextFloat();
-	tCarPitCmd::TireChange tireChange[2] = { tCarPitCmd::NONE, tCarPitCmd::ALL };
-	car.pitcmd.tireChange = tireChange[random.NextInt(2)];
-	// Assign values to situation
-	situation.accelTime = random.NextFloat();
-	situation.raceInfo.fps = random.NextUInt();
-	situation.raceInfo.features = random.NextInt();
-	// Assign values to nextSegments
 	BlackBoxData data = BlackBoxData(&car, &situation, tickCount, testSegments.nextSegments, testSegments.nextSegmentsCount);
 	EXPECT_EQ(tickCount, data.TickCount);
 
