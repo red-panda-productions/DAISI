@@ -27,8 +27,10 @@
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
 #define GFMNU_ATTR_PATH      "path"
 
+// Constant numbers
 #define INDICATOR_AMOUNT 3
 #define PCONTROL_AMOUNT  6
+#define MAX_TIME         1440
 
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT   "Choose Black Box: "
@@ -175,8 +177,8 @@ static void SetMaxTime(void*)
     if (*endptr != '\0')
         std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
 
-    if (m_maxTime > 1440)
-        m_maxTime = 1440;
+    if (m_maxTime > MAX_TIME)
+        m_maxTime = MAX_TIME;
     else if (m_maxTime < 0)
         m_maxTime = 0;
 
@@ -516,7 +518,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // ApplyButton control
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
-        
+
     // Task radio button controls
     m_taskControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_TASKS, nullptr, SelectTask);
 
