@@ -1,6 +1,5 @@
 #pragma once
 
-#include <experimental/filesystem>
 #include "ConfigEnums.h"
 #include "SDAConfig.h"
 #include "InterventionExecutor.h"
@@ -10,6 +9,9 @@
 #include "BlackBoxData.h"
 #include "SQLDatabaseStorage.h"
 #include "FileDataStorage.h"
+
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
