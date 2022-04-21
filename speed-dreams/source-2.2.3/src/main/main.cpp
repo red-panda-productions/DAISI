@@ -258,7 +258,10 @@ main(int argc, char *argv[])
 			// Game event loop (when it returns, it's simply because we are exiting).
 			pApp->eventLoop()();
 		}
-		
+
+                // SIMULATED DRIVING ASSISTANCE: safely shutdown the experiment
+                SMediator::GetInstance()->RaceStop();
+
 		// Shutdown and unload the user interface and race engine modules.
 		piUserItf->shutdown();
 		piRaceEngine->shutdown();
@@ -293,9 +296,6 @@ main(int argc, char *argv[])
 
 	#endif
 	// ... Use new Memory Manager
-
-	// SIMULATED DRIVING ASSISTANCE: safely shutdown the experiment
-	SMediator::GetInstance()->RaceStop();
 
 	return (piUserItf && piRaceEngine) ? 0 : 1;
 }
