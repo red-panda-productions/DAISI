@@ -99,6 +99,9 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
+    connection_properties["sslCA"] = "Certs/grepp_science_uu_nl_interm.pem";
+    connection_properties["sslCert"] = "Certs/grepp_science_uu_nl.pem";
+    connection_properties["sslKey"] = "Certs/grepp.science.uu_nl.key";
 
     try
     {
