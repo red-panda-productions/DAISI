@@ -35,6 +35,7 @@ public:
 private:
     Recorder* m_recorder = nullptr;
     FileDataStorage m_fileBufferStorage;
+    DecisionTuple m_decision;
 };
 
 /// @brief The standard type of the decisionMaker
