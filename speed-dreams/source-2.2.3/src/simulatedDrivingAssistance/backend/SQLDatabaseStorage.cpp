@@ -90,6 +90,14 @@ bool SQLDatabaseStorage::OpenDatabase(
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
+    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
+    std::string caFile("grepp_science_uu_nl_interm.pem");
+    std::string pubFile("grepp_science_uu_nl.pem");
+    std::string privFile("grepp.science.uu.nl.key");
+
+
+    if (!FindFileDirectory(certificatesPath, caFile)) throw std::exception("Could not find certificate folder");
+
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
     connection_properties["hostName"] = "tcp://" + p_hostName;
@@ -99,17 +107,18 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
-    connection_properties["sslCA"] = "Certs/grepp_science_uu_nl_interm.pem";
-    connection_properties["sslCert"] = "Certs/grepp_science_uu_nl.pem";
-    connection_properties["sslKey"] = "Certs/grepp.science.uu_nl.key";
+    connection_properties["sslCA"] = certificatesPath + "\\" + caFile;
+    connection_properties["sslCert"] = certificatesPath + "\\" + pubFile;
+    connection_properties["sslKey"] = certificatesPath + "\\" + privFile;
 
     try
     {
         m_connection = m_driver->connect(connection_properties);
+
     }
     catch (std::exception& e)
     {
-        std::cerr << "Could not open database" << std::endl;
+        std::cerr << "Could not open database" << e.what() << std::endl;
         return false;
     }
 

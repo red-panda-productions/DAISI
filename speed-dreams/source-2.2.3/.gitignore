@@ -22,7 +22,7 @@ data/database_connection_settings.txt
 Folder.DotSettings
 
 #certificates
-data/Certs/*
+data/certificates/*
 
 data/tracks/road/flo-experiment-track
 
