@@ -9,10 +9,22 @@
 
 #include "IndicatorConfig.h"
 
-/// @brief Initialize the indicator configuration.
-void IndicatorConfig::Initialize()
+/// @brief Loads the indicator data of every intervention action from the config.xml file.
+void IndicatorConfig::LoadIndicatorData(const char* p_path)
 {
-    LoadIndicatorData();
+    void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
+
+    // Load the indicator data for every intervention action
+    char path[PATH_BUF_SIZE];
+    for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
+    {
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
+        m_indicatorData[i] = {
+            (InterventionAction)i,
+            LoadSound(xmlHandle, std::string(path)),
+            LoadTexture(xmlHandle, std::string(path)),
+            LoadText(xmlHandle, std::string(path))};
+    }
 }
 
 /// @brief  Returns a vector of ALL indicator data
@@ -36,26 +48,6 @@ void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
     // TODO: add to the vector instead of overwriting it, this also requires
     //       a way to remove the indicator after some time has passed.
     m_activeIndicators = {m_indicatorData[p_action]};
-}
-
-/// @brief Loads the indicator data of every intervention action from the config.xml file.
-void IndicatorConfig::LoadIndicatorData()
-{
-    // Load intervention indicator texture from XML file (unchecked max p_path size: 256)
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    void* xmlHandle = GfParmReadFile(path, GFPARM_RMODE_STD);
-
-    // Load the indicator data for every intervention action
-    for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
-    {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
-        m_indicatorData[i] = {
-            (InterventionAction)i,
-            LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path)),
-            LoadText(xmlHandle, std::string(path))};
-    }
 }
 
 /// @brief          Loads the sound indicator data from the indicator config.xml
@@ -167,7 +159,6 @@ IndicatorConfig* IndicatorConfig::GetInstance()
         std::ofstream file(filepath);
         file << m_instance;
         file.close();
-        m_instance->Initialize();
         return m_instance;
     }
 

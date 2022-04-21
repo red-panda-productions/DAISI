@@ -5,6 +5,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
+#include "IndicatorConfig.h"
 #include <shobjidl.h>  // For Windows COM interface
 #include <locale>
 #include <codecvt>
@@ -248,6 +249,11 @@ static void SaveSettings(void* /* dummy */)
     mediator->SetMaxTime(m_maxTime);
     mediator->SetPControlSettings(m_pControl);
     mediator->SetBlackBoxFilePath(m_blackBoxFilePath);
+
+    // Load intervention indicator texture from XML file (unchecked max p_path size: 256)
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     // Save the encrypted userId in the SDAConfig
     size_t encryptedUserId = std::hash<std::string>{}(m_userId);
