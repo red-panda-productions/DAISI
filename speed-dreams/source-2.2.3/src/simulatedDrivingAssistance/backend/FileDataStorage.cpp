@@ -1,6 +1,8 @@
 #include <ostream>
 #include "FileDataStorage.h"
+
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+
 #include <experimental/filesystem>
 
 // Write a string to the stream, as the string in text format (without conversion)
@@ -12,7 +14,7 @@
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
 /// @param date Time to format and write to the stream.
-inline void WriteTime(std::ostream& p_stream, time_t p_date)
+inline void WriteTime(std::ostream &p_stream, time_t p_date)
 {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
@@ -36,17 +38,17 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
 /// @param p_interventionType Intervention type for the current race
 /// @return returns the path of the buffer file
 std::experimental::filesystem::path FileDataStorage::Initialize(
-        tDataToStore p_saveSettings,
-        const std::string& p_fileName,
-        const std::string& p_userId,
-        const std::time_t& p_trialStartTime,
-        const std::string& p_blackboxFilename,
-        const std::string& p_blackboxName,
-        const std::time_t& p_blackboxTime,
-        const std::string& p_environmentFilename,
-        const std::string& p_environmentName,
-        int p_environmentVersion,
-        InterventionType p_interventionType)
+    tDataToStore p_saveSettings,
+    const std::string &p_fileName,
+    const std::string &p_userId,
+    const std::time_t &p_trialStartTime,
+    const std::string &p_blackboxFilename,
+    const std::string &p_blackboxName,
+    const std::time_t &p_blackboxTime,
+    const std::string &p_environmentFilename,
+    const std::string &p_environmentName,
+    int p_environmentVersion,
+    InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
     std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
@@ -96,7 +98,7 @@ void FileDataStorage::Shutdown()
 /// @param p_car Current car status in Speed Dreams
 /// @param p_situation Current situation in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt *p_car, tSituation *p_situation, unsigned long p_timestamp)
 {
     WRITE_VAR(m_outputStream, p_timestamp);
     if (m_saveSettings.EnvironmentData)
@@ -125,7 +127,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
 /// @brief Save all decisions that were taken this tick
 /// @param p_decisions Tuple of decisions taken this tick
-void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
+void FileDataStorage::SaveDecisions(DecisionTuple &p_decisions)
 {
     if (!m_saveSettings.InterventionData) return;
 
