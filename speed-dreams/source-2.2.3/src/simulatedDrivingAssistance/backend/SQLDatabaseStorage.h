@@ -12,11 +12,13 @@ public:
     SQLDatabaseStorage();
     void Run(const std::string& p_inputFilePath);
     void StoreData(std::string p_inputFilePath) override;
+    void GetKeys(sql::ConnectOptionsMap p_connectionProperties);
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
                       const std::string& p_username,
                       const std::string& p_password,
-                      const std::string& p_schemaName);
+                      const std::string& p_schemaName,
+                      const std::string& p_useEncryption);
 
     void CloseDatabase();
 

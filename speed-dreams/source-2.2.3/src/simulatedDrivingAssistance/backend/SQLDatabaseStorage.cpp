@@ -73,30 +73,63 @@ void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
     inputFile.close();
 }
 
-/// @brief Connect to the specified database. Initialise the database with the proper tables if they don't exist yet.
-/// @param p_hostName Hostname of the database to connect to. Should be a TCP-IP address.
-/// @param p_port Port the database is located on on the host.
-/// @param p_username Username to connect with to the database.
-/// @param p_password Password to connect with to the database.
-/// @param p_schemaName Name of the database schema to use.
-/// @return returns true if connection to database has been made, false otherwise
+/// @brief                          gets the keys for secure database connection in the data/certificates folder
+///                                 and adds them to the connection properties
+///                                 name of the keys are set in the database_encryption_settings.txt file
+/// @param p_connectionProperties   SQL connection properties to which the keys are added.
+void SQLDatabaseStorage::GetKeys(sql::ConnectOptionsMap p_connectionProperties)
+{
+    std::string configPath(ROOT_FOLDER "\\data");
+    std::string configFile("database_encryption_settings.txt");
+
+    if (!FindFileDirectory(configPath, configFile)) 
+        throw std::exception("Could not find database encryption settings file");
+
+    std::ifstream ifstream(configPath + '\\' + configFile);
+    if (ifstream.fail()) throw std::exception("Could not open database encryption settings file");
+
+    std::string caName;
+    std::string pubName;
+    std::string privName;
+    READ_INPUT(ifstream, caName)
+    READ_INPUT(ifstream, pubName)
+    READ_INPUT(ifstream, privName)
+
+    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
+    std::string caFile(caName);
+    std::string pubFile(pubName);
+    std::string privFile(privName);
+
+
+    if (!FindFileDirectory(certificatesPath, caFile)) 
+        throw std::exception("Could not find certificate folder");
+
+    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caFile;
+    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubFile;
+    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privFile;
+}
+
+/// @brief                  Connect to the specified database.
+///                         Initialise the database with the proper tables if they don't exist yet.
+/// @param p_hostName       Hostname of the database to connect to. Should be a TCP-IP address.
+/// @param p_port           Port the database is located on on the host.
+/// @param p_username       Username to connect with to the database.
+/// @param p_password       Password to connect with to the database.
+/// @param p_schemaName     Name of the database schema to use.
+/// @param p_useEncryption  if encryption is used, "true" if used, otherwise its not used.
+/// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
     int p_port,
     const std::string& p_username,
     const std::string& p_password,
-    const std::string& p_schemaName)
+    const std::string& p_schemaName,
+    const std::string& p_useEncryption)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
-    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
-    std::string caFile("grepp_science_uu_nl_interm.pem");
-    std::string pubFile("grepp_science_uu_nl.pem");
-    std::string privFile("grepp.science.uu.nl.key");
 
-
-    if (!FindFileDirectory(certificatesPath, caFile)) throw std::exception("Could not find certificate folder");
 
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
@@ -107,9 +140,11 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
-    connection_properties["sslCA"] = certificatesPath + "\\" + caFile;
-    connection_properties["sslCert"] = certificatesPath + "\\" + pubFile;
-    connection_properties["sslKey"] = certificatesPath + "\\" + privFile;
+
+    if (p_useEncryption == "true")
+    {
+        GetKeys(connection_properties);
+    }
 
     try
     {
@@ -615,12 +650,14 @@ void SQLDatabaseStorage::Run(const std::string& p_inputFilePath)
     std::string username;
     std::string password;
     std::string schema;
+    std::string useSSL;
 
-    READ_INPUT(ifstream, ip);
-    READ_INPUT(ifstream, portString);
-    READ_INPUT(ifstream, username);
-    READ_INPUT(ifstream, password);
-    READ_INPUT(ifstream, schema);
+    READ_INPUT(ifstream, ip)
+    READ_INPUT(ifstream, portString)
+    READ_INPUT(ifstream, username)
+    READ_INPUT(ifstream, password)
+    READ_INPUT(ifstream, schema)
+    READ_INPUT(ifstream, useSSL)
 
     ifstream.close();
 
@@ -634,7 +671,7 @@ void SQLDatabaseStorage::Run(const std::string& p_inputFilePath)
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
 
-    if (OpenDatabase(ip, port, username, password, schema))
+    if (OpenDatabase(ip, port, username, password, schema, useSSL))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);

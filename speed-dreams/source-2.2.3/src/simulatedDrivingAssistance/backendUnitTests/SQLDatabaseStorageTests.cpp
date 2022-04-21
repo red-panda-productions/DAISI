@@ -9,8 +9,9 @@
 /// @param p_password password of database to connect to
 void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::string& p_password)
 {
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "root", p_password, "test"));
+    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "root", p_password, "test", "false"));
 }
+
 
 /// @brief Inserts test data in opened database
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage connected to the database
