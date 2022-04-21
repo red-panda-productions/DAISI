@@ -80,7 +80,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
     const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
 
-    if(decisionMade)
+    if (decisionMade)
     {
         m_fileBufferStorage.SaveDecisions(m_decision);
     }
