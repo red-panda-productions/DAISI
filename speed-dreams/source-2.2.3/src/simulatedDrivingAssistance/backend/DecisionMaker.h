@@ -1,4 +1,6 @@
 #pragma once
+
+#include <experimental/filesystem>
 #include "ConfigEnums.h"
 #include "SDAConfig.h"
 #include "InterventionExecutor.h"
@@ -34,6 +36,7 @@ public:
 
 private:
     Recorder* m_recorder = nullptr;
+    std::experimental::filesystem::path m_bufferFilePath;
     FileDataStorage m_fileBufferStorage;
     DecisionTuple m_decision;
 };
