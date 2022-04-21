@@ -77,6 +77,7 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
     {
         WRITE_STRING(m_outputStream, "UserInput");
     }
+    m_outputStream.flush();
 }
 
 /// @brief Shutdown the file data storage.
