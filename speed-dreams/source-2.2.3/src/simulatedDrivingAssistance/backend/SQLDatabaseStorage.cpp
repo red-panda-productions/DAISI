@@ -51,7 +51,7 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 
 /// @brief Creates a database and stores data from input file into the correct database structure
 /// @param p_inputFilePath path and name of input file
-void SQLDatabaseStorage::StoreData(const std::string p_inputFilePath)
+void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_inputFilePath)
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
@@ -588,7 +588,7 @@ void SQLDatabaseStorage::CloseDatabase()
     delete m_connection;
 }
 
-void SQLDatabaseStorage::Run(const std::string& p_inputFilePath)
+void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath)
 {
     std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_connection_settings.txt");

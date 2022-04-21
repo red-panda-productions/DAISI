@@ -34,23 +34,25 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
 /// @param p_environmentName Name of the current environment (e.g. "Espie Circuit")
 /// @param p_environmentVersion Version of the current environment
 /// @param p_interventionType Intervention type for the current race
-void FileDataStorage::Initialize(tDataToStore p_saveSettings,
-                                 const std::string& p_fileName,
-                                 const std::string& p_userId,
-                                 const std::time_t& p_trialStartTime,
-                                 const std::string& p_blackboxFilename,
-                                 const std::string& p_blackboxName,
-                                 const std::time_t& p_blackboxTime,
-                                 const std::string& p_environmentFilename,
-                                 const std::string& p_environmentName,
-                                 int p_environmentVersion,
-                                 InterventionType p_interventionType)
+/// @return returns the path of the buffer file
+std::experimental::filesystem::path FileDataStorage::Initialize(
+        tDataToStore p_saveSettings,
+        const std::string& p_fileName,
+        const std::string& p_userId,
+        const std::time_t& p_trialStartTime,
+        const std::string& p_blackboxFilename,
+        const std::string& p_blackboxName,
+        const std::time_t& p_blackboxTime,
+        const std::string& p_environmentFilename,
+        const std::string& p_environmentName,
+        int p_environmentVersion,
+        InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
-
     std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
     filePath.append(p_fileName);
     create_directories(filePath.parent_path());
+
     // Initialize member variables
     m_saveSettings = p_saveSettings;
     m_outputStream.open(filePath);
@@ -78,6 +80,8 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
         WRITE_STRING(m_outputStream, "UserInput");
     }
     m_outputStream.flush();
+
+    return filePath;
 }
 
 /// @brief Shutdown the file data storage.
