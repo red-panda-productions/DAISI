@@ -56,17 +56,17 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
     m_bufferFilePath = m_fileBufferStorage.Initialize(
-            Config.GetDataCollectionSetting(),
-            BUFFER_FILE_PATH,
-            Config.GetUserId(),
-            std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
-            blackBoxPath.filename().string(),
-            blackBoxPath.stem().string(),
-            std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
-            p_track->filename,
-            p_track->name,
-            p_track->version,
-            Config.GetInterventionType());
+        Config.GetDataCollectionSetting(),
+        BUFFER_FILE_PATH,
+        Config.GetUserId(),
+        std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
+        blackBoxPath.filename().string(),
+        blackBoxPath.stem().string(),
+        std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
+        p_track->filename,
+        p_track->name,
+        p_track->version,
+        Config.GetInterventionType());
 }
 
 /// @brief              Tries to get a decision from the black box
