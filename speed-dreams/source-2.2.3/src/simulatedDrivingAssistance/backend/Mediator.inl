@@ -143,13 +143,16 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     // Initialize the decision maker with the full path to the current black box executable
     m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB);
+    m_inRace = true;
 }
 
 /// @brief Tells the decisionmaker that the race has ended
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
+    if (!m_inRace) return;
     m_decisionMaker.RaceStop();
+    m_inRace = false;
 }
 
 /// @brief Creates a mediator instance if needed and returns it
