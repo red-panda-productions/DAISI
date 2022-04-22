@@ -4,6 +4,7 @@
 #include "../../libs/portability/portability.h"
 #include <iostream>
 #include <windows.h>
+#include <tgf.h>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -128,4 +129,32 @@ inline void StartExecutable(const std::string& p_executablePath)
                   nullptr,
                   &startupInformation,
                   &processInformation);
+}
+
+/// Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
+/// \param p_sdaFolder Reference to the variable to store the path in.
+/// This variable will contain the path to the SDA folder after running this function.
+/// \return true if the folder was successfully found
+inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
+{
+    // create directory if it doesn't exist
+    char* pValue;
+    size_t len;
+    errno_t err = _dupenv_s(&pValue, &len, "APPDATA");
+
+    if (err)
+    {
+        GfLogError("Error getting APPDATA environment variable: %d\n", err);
+        return false;
+    }
+
+    p_sdaFolder = std::experimental::filesystem::path(std::string(pValue, len)).append("sda");
+    std::string sdaFolderString = p_sdaFolder.string();
+
+    if (!GfDirExists(sdaFolderString.c_str()))
+    {
+        GfDirCreate(sdaFolderString.c_str());
+    }
+
+    return true;
 }

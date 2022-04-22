@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "Recorder.h"
+#include "../rppUtils/RppUtils.hpp"
 #include <tgf.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -8,19 +9,28 @@
 // Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY "test_test_data"
 
-#define ASSERT_FILE_CONTENTS(filename, contents)                               \
-    std::ifstream file("..\\test_data\\" TEST_DIRECTORY "\\" filename ".txt"); \
-    ASSERT_TRUE(file.is_open());                                               \
-    std::stringstream buffer;                                                  \
-    buffer << file.rdbuf();                                                    \
+#define ASSERT_FILE_CONTENTS(folder, filename, contents)                                    \
+    std::cout << "Reading file from " << folder << "\\" << filename << ".txt" << std::endl; \
+    std::ifstream file(folder + ("\\" filename ".txt"));                                    \
+    ASSERT_TRUE(file.is_open());                                                            \
+    std::stringstream buffer;                                                               \
+    buffer << file.rdbuf();                                                                 \
     ASSERT_STREQ(buffer.str().c_str(), contents);
+
+inline std::string GetTestingDirectory()
+{
+    std::experimental::filesystem::path sdaFolder;
+    if (!GetSdaFolder(sdaFolder)) throw std::exception("SDA folder not found");
+    return sdaFolder.append(TEST_DIRECTORY).string();
+}
 
 TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
 {
+    std::string folder = GetTestingDirectory();
     // Delete the existing test directory to ensure directories are properly created
-    if (std::experimental::filesystem::exists("..\\test_data\\" TEST_DIRECTORY))
+    if (std::experimental::filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all("..\\test_data\\" TEST_DIRECTORY);
+        std::experimental::filesystem::remove_all(folder);
     }
 
     // Create a recorder without storing any parameters
@@ -35,9 +45,9 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof());
 }
 
-
 TEST(RecorderTests, RecorderOneParamCompression)
 {
+    std::string folder = GetTestingDirectory();
     std::stringstream expected;
     Recorder recorder(TEST_DIRECTORY, "test_recorder_one_param_compression", 1);
     float inputs[1];
@@ -78,16 +88,20 @@ TEST(RecorderTests, RecorderOneParamCompression)
     recorder.WriteRecording(inputs, currentTime, true);
 
     // Check file contents
-    ASSERT_FILE_CONTENTS("test_recorder_one_param_compression", expected.str().c_str());
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_one_param_compression", expected.str().c_str());
 }
 
-TEST(RecorderTests, RecorderThreeParamCompression) {
+TEST(RecorderTests, RecorderThreeParamCompression)
+{
+    std::string folder = GetTestingDirectory();
     std::stringstream expected;
     Recorder recorder(TEST_DIRECTORY, "test_recorder_three_param_compression", 3);
     float inputs[3];
     double currentTime;
 
-    inputs[0] = -1.0f; inputs[1] = 0.0f; inputs[2] = 1.0f;
+    inputs[0] = -1.0f;
+    inputs[1] = 0.0f;
+    inputs[2] = 1.0f;
     currentTime = 0;
     expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
     recorder.WriteRecording(inputs, currentTime, false);
@@ -98,13 +112,16 @@ TEST(RecorderTests, RecorderThreeParamCompression) {
     recorder.WriteRecording(inputs, currentTime, false);
 
     // Writing all values differently with compression should write all values again
-    inputs[0] = 0.2f; inputs[1] = 0.3f; inputs[2] = 0.4f;
+    inputs[0] = 0.2f;
+    inputs[1] = 0.3f;
+    inputs[2] = 0.4f;
     currentTime = 1;
     expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
     recorder.WriteRecording(inputs, currentTime, true);
 
     // Writing a single value differently should write all values again
-    inputs[1] = std::nextafter(inputs[1], 1.0f);;
+    inputs[1] = std::nextafter(inputs[1], 1.0f);
+    ;
     currentTime = -1;
     expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
     recorder.WriteRecording(inputs, currentTime, true);
@@ -114,30 +131,34 @@ TEST(RecorderTests, RecorderThreeParamCompression) {
     recorder.WriteRecording(inputs, currentTime, true);
 
     // Check file contents
-    ASSERT_FILE_CONTENTS("test_recorder_three_param_compression", expected.str().c_str());
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_three_param_compression", expected.str().c_str());
 }
 
-TEST(RecorderTests, WriteOnlyTime) {
+TEST(RecorderTests, WriteOnlyTime)
+{
+    std::string folder = GetTestingDirectory();
     Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0);
     recorder.WriteRecording(nullptr, 0, false);
     recorder.WriteRecording(nullptr, 0.1, false);
     recorder.WriteRecording(nullptr, 1, false);
     recorder.WriteRecording(nullptr, -1, false);
-    ASSERT_FILE_CONTENTS("test_recorder_time_only", "0 \n0.1 \n1 \n-1 \n");
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", "0 \n0.1 \n1 \n-1 \n");
 }
 
-TEST(RecorderTests, WriteSameFileTwice) {
+TEST(RecorderTests, WriteSameFileTwice)
+{
+    std::string folder = GetTestingDirectory();
     // By using braces, we ensure the previous recorder's destructor is called as it goes out of scope
     {
         Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0);
         recorder.WriteRecording(nullptr, 0, false);
         recorder.WriteRecording(nullptr, 1, false);
-        ASSERT_FILE_CONTENTS("test_recorder_same_file_twice", "0 \n1 \n");
+        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", "0 \n1 \n");
     }
     // Write less timesteps the second time, such that simply overwriting the file will be caught by the test as well
     {
         Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0);
         recorder.WriteRecording(nullptr, 2, false);
-        ASSERT_FILE_CONTENTS("test_recorder_same_file_twice", "2 \n");
+        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", "2 \n");
     }
 }
