@@ -9,33 +9,34 @@
 
 
 #define NUM_OF_TESTS      100
-#define MAX_TEXT_LENGTH   64
+#define MAX_TEXT_LENGTH   64  
 #define TEST_XML_FILE     "test.xml"
 
 // Enum to help generating random indicator data
 // Enable multiple flags by doing FLAG1 | FLAG2 | FLAG3
-// Extract enabled flags by checking (flag & FLAG1), (flag & FLAG2), etc
-typedef unsigned int DataValidity;
-#define VALID                 0
-#define INVALID_SCR_POS       (1 << 0)
-#define INVALID_LOOP_INTERVAL (1 << 1)
+// Check enabled flags by evaluating (flag & FLAG1), (flag & FLAG2), etc. as boolean
+typedef unsigned int DataGeneration;
+#define VALID                 0         // Generates completely valid data
+#define CAN_GENERATE_NULL     (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
+#define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
+#define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
 
 
 /// @brief            Creates randomly generated sound data
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
 /// @return           The generated sound data
-tSoundData* CreateRandomSoundData(Random& p_rnd, DataValidity p_validity)
+tSoundData* CreateRandomSoundData(Random& p_rnd, DataGeneration p_gen)
 {
     // Chance to generate nullptr
-    if (p_rnd.NextInt(0, 5) == 0) return nullptr;
+    if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(p_rnd, 20)) return nullptr;
 
     // Otherwise generate random data object
     tSoundData* data = new SoundData;
     data->ActiveLastFrame = false;
     data->Looping = p_rnd.NextBool();
 
-    if (p_validity & INVALID_LOOP_INTERVAL)
+    if (p_gen & INVALID_LOOP_INTERVAL)
     {
         data->LoopInterval = p_rnd.NextFloat(-FLT_MAX, 0);
     }
@@ -55,9 +56,9 @@ tSoundData* CreateRandomSoundData(Random& p_rnd, DataValidity p_validity)
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
 /// @return           The generated screen position      
-tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataValidity p_validity)
+tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataGeneration p_gen)
 {
-    if (p_validity & INVALID_SCR_POS)
+    if (p_gen & INVALID_SCR_POS)
     {
         return {p_rnd.NextFloat(1.0f, FLT_MAX), p_rnd.NextFloat(1.0f, FLT_MAX)};
     }
@@ -68,10 +69,10 @@ tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataValidity p_validit
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
 /// @return           The generated texture data
-tTextureData* CreateRandomTextureData(Random& p_rnd, DataValidity p_validity)
+tTextureData* CreateRandomTextureData(Random& p_rnd, DataGeneration p_gen)
 {
     // Chance to generate nullptr
-    if (p_rnd.NextInt(0, 5) == 0) return nullptr;
+    if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(p_rnd, 20)) return nullptr;
 
     // Otherwise generate random data object
     tTextureData* data = new TextureData;
@@ -79,7 +80,7 @@ tTextureData* CreateRandomTextureData(Random& p_rnd, DataValidity p_validity)
     char* buf = new char[PATH_BUF_SIZE];
     GenerateRandomCharArray(buf, p_rnd.NextInt(0, PATH_BUF_SIZE - 1));
     data->Path = buf;
-    data->ScrPos = CreateRandomScreenPosition(p_rnd, p_validity);
+    data->ScrPos = CreateRandomScreenPosition(p_rnd, p_gen);
 
     return data;
 }
@@ -88,10 +89,10 @@ tTextureData* CreateRandomTextureData(Random& p_rnd, DataValidity p_validity)
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
 /// @return           The generated text data
-tTextData* CreateRandomTextData(Random& p_rnd, DataValidity p_validity)
+tTextData* CreateRandomTextData(Random& p_rnd, DataGeneration p_gen)
 {
     // Chance to generate nullptr
-    if (p_rnd.NextInt(0, 5) == 0) return nullptr;
+    if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(p_rnd, 20)) return nullptr;
 
     // Otherwise generate random data object
     tTextData* data = new tTextData;
@@ -100,7 +101,7 @@ tTextData* CreateRandomTextData(Random& p_rnd, DataValidity p_validity)
     GenerateRandomCharArray(buf, p_rnd.NextInt(0, MAX_TEXT_LENGTH - 1));
     data->Text = buf;
 
-    data->ScrPos = CreateRandomScreenPosition(p_rnd, p_validity);
+    data->ScrPos = CreateRandomScreenPosition(p_rnd, p_gen);
 
     // Cannot randomly create a font class, this would require to only store the path and font-size
     // in the indicator config and to load them in later, then we would be able to generate a random 
@@ -114,16 +115,16 @@ tTextData* CreateRandomTextData(Random& p_rnd, DataValidity p_validity)
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
 /// @return           The vector of generated indicator data
-std::vector<tIndicatorData> CreateRandomIndicatorData(Random& p_rnd, DataValidity p_validity)
+std::vector<tIndicatorData> CreateRandomIndicatorData(Random& p_rnd, DataGeneration p_gen)
 {
     std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
         data[i] = {
             (InterventionAction)i,
-            CreateRandomSoundData(p_rnd, p_validity),
-            CreateRandomTextureData(p_rnd, p_validity),
-            CreateRandomTextData(p_rnd, p_validity)
+            CreateRandomSoundData(p_rnd, p_gen),
+            CreateRandomTextureData(p_rnd, p_gen),
+            CreateRandomTextData(p_rnd, p_gen)
         };
     }
 
@@ -182,7 +183,7 @@ const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
 
 /// @brief           Asserts whether the loaded sound is equal to the generated random sound.
 /// @param loadedTxt The sound loaded into the indicator config
-/// @param rndTxt    The randomly generated sound.
+/// @param rndTxt    The randomly generated sound
 void AssertSound(tSoundData* loadedSnd, tSoundData* rndSnd)
 {
     // If the generated sound is null, only check whether the loaded sound is also null
@@ -201,7 +202,7 @@ void AssertSound(tSoundData* loadedSnd, tSoundData* rndSnd)
 
 /// @brief           Asserts whether the loaded texture is equal to the generated random texture.
 /// @param loadedTxt The texture loaded into the indicator config
-/// @param rndTxt    The randomly generated texture.
+/// @param rndTxt    The randomly generated texture
 void AssertTexture(tTextureData* loadedTex, tTextureData* rndTex)
 {
     // If the generated texture is null, only check whether the loaded texture is also null
@@ -218,7 +219,7 @@ void AssertTexture(tTextureData* loadedTex, tTextureData* rndTex)
 
 /// @brief           Asserts whether the loaded text is equal to the generated random text.
 /// @param loadedTxt The text loaded into the indicator config
-/// @param rndTxt    The randomly generated text.
+/// @param rndTxt    The randomly generated text
 void AssertText(tTextData* loadedTxt, tTextData* rndTxt)
 {
     // If the generated texture is null, only check whether the loaded texture is also null
@@ -233,20 +234,31 @@ void AssertText(tTextData* loadedTxt, tTextData* rndTxt)
     ASSERT_EQ(loadedTxt->ScrPos.Y, rndTxt->ScrPos.Y);
 }
 
+/// @brief                  Asserts whether the loaded indicator is equal to the generated indicator
+/// @param loadedIndicator  The indicator loaded into the indicator config
+/// @param rndIndicator     The randomly generated indicator
+void AssertIndicator(tIndicatorData loadedIndicator, tIndicatorData rndIndicator)
+{
+    ASSERT_EQ(loadedIndicator.Action, rndIndicator.Action);
+    AssertSound(loadedIndicator.Sound, rndIndicator.Sound);
+    AssertTexture(loadedIndicator.Texture, rndIndicator.Texture);
+    AssertText(loadedIndicator.Text, rndIndicator.Text);
+}
+
 /// @brief Creates a random indicator data object, writes this to an xml file, 
 ///        then reads in this xml file using IndicatorConfig::LoadIndicatorData
 ///        Asserts whether the loaded in data is equal to the randomly generated data.
-TEST(IndicatorConfigTests, LoadIndicatorDataTest)
+TEST(IndicatorConfigTests, LoadIndicatorDataFromXML)
 {
     // Gf module contains all the XML reading/writing functions.
-    GfInit();
+    GfInit(GF_LOGGING_DISABLE);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
-        // Create random valid indicator data and write it to xml
-        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(rnd, VALID);
+        // Create random valid indicator data with a chance to generate no sound/texture/text data
+        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(rnd, CAN_GENERATE_NULL);
         const char* filepath = WriteIndicatorDataToXml(rndData);
 
         // Load the created xml file into the indicator config and
@@ -255,17 +267,13 @@ TEST(IndicatorConfigTests, LoadIndicatorDataTest)
         std::vector<tIndicatorData> loadedData = IndicatorConfig::GetInstance()->GetIndicatorData();
         for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
-            ASSERT_EQ(loadedData[i].Action, rndData[i].Action);
-
-            AssertSound(loadedData[i].Sound, rndData[i].Sound);
-            AssertTexture(loadedData[i].Texture, rndData[i].Texture);
-            AssertText(loadedData[i].Text, rndData[i].Text);
+            AssertIndicator(loadedData[i], rndData[i]);
         }
     }
 }
 
 /// @brief Tests whether two configs point towards the same instance. 
-TEST(IndicatorConfigTests, IsSingletonIndicatorConfig)
+TEST(IndicatorConfigTests, Singleton)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     IndicatorConfig* config1 = IndicatorConfig::GetInstance();
@@ -277,7 +285,7 @@ TEST(IndicatorConfigTests, IsSingletonIndicatorConfig)
 TEST(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
 {
     // Gf module contains all the XML reading/writing functions.
-    GfInit();
+    GfInit(GF_LOGGING_DISABLE);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
@@ -295,7 +303,7 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
 TEST(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
 {
     // Gf module contains all the XML reading/writing functions.
-    GfInit();
+    GfInit(GF_LOGGING_DISABLE);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
@@ -306,5 +314,33 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
         const char* filepath = WriteIndicatorDataToXml(rndData);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::runtime_error);
+    }
+}
+
+/// @brief Tests whether the IndicatorConfig can activate an indicator and retrieve the correct values.
+TEST(IndicatorConfigTests, ActivateIndicator)
+{
+    // Gf module contains all the XML reading/writing functions.
+    GfInit(GF_LOGGING_DISABLE);
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random rnd;
+
+    for (int i = 0; i < NUM_OF_TESTS; i++)
+    {
+        // Create random valid indicator data
+        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(rnd, VALID);
+        const char* filepath = WriteIndicatorDataToXml(rndData);
+
+        // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
+        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
+        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        {
+            IndicatorConfig::GetInstance()->ActivateIndicator(i);
+            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+            // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
+            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
+            AssertIndicator(active[0], rndData[i]);
+        }
     }
 }
