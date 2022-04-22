@@ -12,8 +12,6 @@
 #include "mocks/FileDataStorageMock.h"
 #include "../rppUtils/RppUtils.hpp"
 
-
-
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock>
 
 /// @brief				 Tests if a decision can be made
@@ -61,7 +59,6 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsT
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
 
-
  TEST(DecisionMakerTests, InitializeTest){
     TDecisionMaker decisionMaker;
     tCarElt car;  // need data
@@ -89,12 +86,9 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSetting
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
 
-
-
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
 {
     TDecisionMaker decisionMaker;
-
     decisionMaker.SetDataCollectionSettings(p_dataToStore);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().EnvironmentData == p_dataToStore.EnvironmentData);
@@ -119,7 +113,6 @@ END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2,
 
 TEST(DecisionMakerTests, RaceStopTest){
     TDecisionMaker decisionMaker;
-
     decisionMaker.RaceStop();
 }
 
