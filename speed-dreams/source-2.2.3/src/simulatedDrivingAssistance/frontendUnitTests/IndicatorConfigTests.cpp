@@ -20,6 +20,7 @@ typedef unsigned int DataGeneration;
 #define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
 
+
 /// @brief            Creates randomly generated sound data
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
@@ -83,10 +84,10 @@ tTextureData* CreateRandomTextureData(Random& p_rnd, DataGeneration p_gen)
     return data;
 }
 
-/// @brief            Creates randomly generated text data
-/// @param p_rnd      The random generator reference to use
-/// @param p_validity The validity flags to use when generating data
-/// @return           The generated text data
+/// @brief       Creates randomly generated text data
+/// @param p_rnd The random generator reference to use
+/// @param p_gen The flags to use when generating data
+/// @return      The generated text data
 tTextData* CreateRandomTextData(Random& p_rnd, DataGeneration p_gen)
 {
     // Chance to generate nullptr
@@ -110,10 +111,10 @@ tTextData* CreateRandomTextData(Random& p_rnd, DataGeneration p_gen)
     return data;
 }
 
-/// @brief            Creates a vector of randomly generated indicator data
-/// @param p_rnd      The random generator reference to use
-/// @param p_validity The validity flags to use when generating data
-/// @return           The vector of generated indicator data
+/// @brief       Creates a vector of randomly generated indicator data
+/// @param p_rnd The random generator reference to use
+/// @param p_gen The flags to use when generating data
+/// @return      The vector of generated indicator data
 std::vector<tIndicatorData> CreateRandomIndicatorData(Random& p_rnd, DataGeneration p_gen)
 {
     std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
@@ -183,8 +184,8 @@ const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
 }
 
 /// @brief             Asserts whether the loaded sound is equal to the generated random sound.
-/// @param p_loadedTxt The sound loaded into the indicator config
-/// @param p_rndTxt    The randomly generated sound
+/// @param p_loadedSnd The sound loaded into the indicator config
+/// @param p_rndSnd    The randomly generated sound
 void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
 {
     // If the generated sound is null, only check whether the loaded sound is also null
@@ -202,8 +203,8 @@ void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
 }
 
 /// @brief             Asserts whether the loaded texture is equal to the generated random texture.
-/// @param p_loadedTxt The texture loaded into the indicator config
-/// @param p_rndTxt    The randomly generated texture
+/// @param p_loadedTex The texture loaded into the indicator config
+/// @param p_rndTex    The randomly generated texture
 void AssertTexture(tTextureData* p_loadedTex, tTextureData* p_rndTex)
 {
     // If the generated texture is null, only check whether the loaded texture is also null
