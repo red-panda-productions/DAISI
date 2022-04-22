@@ -82,7 +82,7 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
     std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_encryption_settings.txt");
 
-    if (!FindFileDirectory(configPath, configFile)) 
+    if (!FindFileDirectory(configPath, configFile))
         throw std::exception("Could not find database encryption settings file");
 
     std::ifstream ifstream(configPath + '\\' + configFile);
@@ -100,8 +100,7 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
     std::string pubFile(pubName);
     std::string privFile(privName);
 
-
-    if (!FindFileDirectory(certificatesPath, caFile)) 
+    if (!FindFileDirectory(certificatesPath, caFile))
         throw std::exception("Could not find certificate folder");
 
     p_connectionProperties["sslCA"] = certificatesPath + "\\" + caFile;
@@ -129,8 +128,6 @@ bool SQLDatabaseStorage::OpenDatabase(
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
-
-
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
     connection_properties["hostName"] = "tcp://" + p_hostName;
@@ -142,7 +139,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["sslEnforce"] = true;
 
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
-    if(p_useEncryption == "true")
+    if (p_useEncryption == "true")
     {
         PutKeys(connection_properties);
     }
@@ -150,7 +147,6 @@ bool SQLDatabaseStorage::OpenDatabase(
     try
     {
         m_connection = m_driver->connect(connection_properties);
-
     }
     catch (std::exception& e)
     {

@@ -12,7 +12,6 @@ void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::strin
     ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "root", p_password, "test", "false"));
 }
 
-
 /// @brief Inserts test data in opened database
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage connected to the database
 /// @param p_inputFile name of file with test data to insert
