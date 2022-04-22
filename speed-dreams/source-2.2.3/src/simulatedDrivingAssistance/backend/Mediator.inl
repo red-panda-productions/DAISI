@@ -159,7 +159,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 {
     // If the instance exists, return it.
     // Otherwise create the instance and store it for future calls.
-    if (m_instance) return m_instance;
+    if (m_instance) { return m_instance; }
 
     // Check if Mediator file exists
     struct stat info = {};
@@ -178,7 +178,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
         file.close();
         return m_instance;
     }
-
+    
     // File exists -> read pointer
     std::string pointerName("00000000");
     std::ifstream file(filepath);
@@ -188,3 +188,16 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
 }
+
+#ifdef TEST
+/// @brief   Sets m_instance to nullptr
+/// @returns The value of m_instance before being set to nullptr
+template <typename DecisionMaker>
+Mediator<DecisionMaker>* Mediator<DecisionMaker>::RemoveInstance()
+{
+    Mediator* mediator = m_instance;
+    m_instance = nullptr;
+    return mediator;
+}
+#endif
+
