@@ -73,6 +73,8 @@ void InitializeTest(bool p_recordBB) {
     track.name = "tjoeptjoeptjap";
     track.version = 0;
 
+    decisionMaker.Config.SetUserID("1");
+
     std::string path = ROOT_FOLDER "\\data\\blackbox\\";
     ASSERT_TRUE(FindFileDirectory(path, "Blackbox.exe"));
     path = path + "Blackbox.exe";
