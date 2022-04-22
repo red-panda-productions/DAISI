@@ -1,3 +1,3 @@
 grepp_science_uu_nl_interm.pem
 grepp_science_uu_nl.pem
-grepp.science.uu_nl.key
+grepp.science.uu.nl.key
