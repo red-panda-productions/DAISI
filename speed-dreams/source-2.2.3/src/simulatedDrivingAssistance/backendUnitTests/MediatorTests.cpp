@@ -79,7 +79,7 @@ TEST(MediatorTest, ReadFromFile)
 {
     SMediator::GetInstance();
     SMediator* oldMediator = SMediator::RemoveInstance();  // Makes sure we can't get into the if (m_instance) block
-    SMediator* fakeMediator = (SMediator*)malloc(sizeof (SMediator));
+    SMediator* fakeMediator = (SMediator*)malloc(sizeof(SMediator));
     EXPECT_TRUE(WriteMediator(fakeMediator));
     SMediator* mediator = SMediator::GetInstance();
     EXPECT_EQ(fakeMediator, mediator);
