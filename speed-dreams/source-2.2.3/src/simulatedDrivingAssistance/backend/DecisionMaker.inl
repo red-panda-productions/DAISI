@@ -105,6 +105,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
+    delete InterventionExecutor;
     InterventionExecutor = Config.SetInterventionType(p_dataSetting);
 }
 
