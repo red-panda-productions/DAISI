@@ -39,7 +39,6 @@ public:
     static Mediator* RemoveInstance();
 #endif
 
-
     /// @brief Removes copy constructor for singleton behaviour
     Mediator(Mediator const&) = delete;
     /// @brief Removes assigment for singleton behaviour

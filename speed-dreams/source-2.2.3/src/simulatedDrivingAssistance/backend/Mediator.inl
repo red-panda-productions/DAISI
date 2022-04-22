@@ -181,7 +181,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
         file.close();
         return m_instance;
     }
-    
+
     // File exists -> read pointer
     std::string pointerName("00000000");
     std::ifstream file(filepath);
@@ -203,4 +203,3 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::RemoveInstance()
     return mediator;
 }
 #endif
-

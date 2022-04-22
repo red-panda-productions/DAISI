@@ -57,7 +57,9 @@ TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTest, (IN
 bool WriteMediator(SMediator* p_mediator)
 {
     EXPECT_TRUE(SetupSingletonsFolder());
-    struct stat info{};
+    struct stat info
+    {
+    };
     std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
     path.append("Singletons\\Mediator");
     std::string pathstring = path.string();
@@ -70,14 +72,14 @@ bool WriteMediator(SMediator* p_mediator)
         file.close();
         return true;
     }
-    return false; // If we get here, SetupSingletonsFolder() already failed
+    return false;  // If we get here, SetupSingletonsFolder() already failed
 }
 
 TEST(MediatorTest, ReadFromFile)
 {
     SMediator::GetInstance();
-    SMediator* oldMediator = SMediator::RemoveInstance(); // Makes sure we can't get into the if (m_instance) block
-    SMediator* fakeMediator = (SMediator*)malloc(sizeof SMediator); 
+    SMediator* oldMediator = SMediator::RemoveInstance();  // Makes sure we can't get into the if (m_instance) block
+    SMediator* fakeMediator = (SMediator*)malloc(sizeof (SMediator));
     EXPECT_TRUE(WriteMediator(fakeMediator));
     SMediator* mediator = SMediator::GetInstance();
     EXPECT_EQ(fakeMediator, mediator);
