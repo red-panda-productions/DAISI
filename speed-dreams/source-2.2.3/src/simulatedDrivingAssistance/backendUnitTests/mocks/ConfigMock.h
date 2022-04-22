@@ -7,6 +7,9 @@ class ConfigMock
 private:
     InterventionType m_interventionType = 0;
     InterventionExecutorMock m_interventionExecutor = InterventionExecutorMock();
+    DataToStore m_dataToStore;
+    char* m_userID;
+    bool* m_indicators;
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)
@@ -20,13 +23,14 @@ public:
         return m_interventionType;
     }
 
-    void SetDataCollectionSettings(bool* p_boolArray)
+    void SetDataCollectionSettings(DataToStore p_dataToStore)
     {
+        m_dataToStore = p_dataToStore;
     }
 
-    bool* GetDataCollectionSetting() const
+    DataToStore GetDataCollectionSetting() const
     {
-        return nullptr;
+        return m_dataToStore;
     }
 
     void SetTask(Task p_task)
@@ -35,10 +39,12 @@ public:
 
     void SetIndicatorSettings(bool* p_indicators)
     {
+        m_indicators = p_indicators;
     }
 
     bool* GetIndicatorSettings() const
     {
+        return m_indicators;
     }
 
     void SetMaxTime(int p_maxTime)
@@ -51,9 +57,11 @@ public:
 
     void SetUserID(char* p_userID)
     {
+        m_userID = p_userID;
     }
 
-    char* GetUserID() const
+    char* GetUserId() const
     {
+        return m_userID;
     }
 };

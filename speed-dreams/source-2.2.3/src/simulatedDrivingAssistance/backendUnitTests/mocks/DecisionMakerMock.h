@@ -17,6 +17,7 @@ public:
     }
 
     InterventionType Type;
+    FileDataStorage m_fileBufferStorage;
     bool Decision;
 
     ~DecisionMakerMock() = default;

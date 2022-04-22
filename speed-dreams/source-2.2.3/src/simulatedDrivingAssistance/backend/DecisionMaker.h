@@ -12,7 +12,7 @@
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
 /// @tparam SDAConfig      The config type
-template <typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
 class DecisionMaker
 {
 public:
@@ -30,12 +30,14 @@ public:
     InterventionExecutor* InterventionExecutor = nullptr;
     SocketBlackBox BlackBox;
 
+    FileDataStorage* GetFileDataStorage();
+
     ~DecisionMaker();
 
 private:
-    Recorder* m_recorder = nullptr;
     FileDataStorage m_fileBufferStorage;
+    Recorder* m_recorder = nullptr;
 };
 
 /// @brief The standard type of the decisionMaker
-#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig>
+#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig, FileDataStorage>

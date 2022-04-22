@@ -6,21 +6,22 @@
 #include "../rppUtils/RppUtils.hpp"
 
 /// @brief  Creates an implementation of a decision maker
-#define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2)                                                                 \
-    template void DecisionMaker<type1, type2>::Initialize(tCarElt* p_initialCar,                                           \
+#define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2, type3)                                                                 \
+    template void DecisionMaker<type1, type2, type3>::Initialize(tCarElt* p_initialCar,                                           \
                                                           tSituation* p_initialSituation,                                  \
                                                           tTrack* p_track,                                                 \
                                                           const std::string& p_blackBoxExecutablePath,                     \
                                                           bool p_recordBB,                                                 \
                                                           BlackBoxData* p_testSituations,                                  \
                                                           int p_testAmount);                                               \
-    template bool DecisionMaker<type1, type2>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
-    template void DecisionMaker<type1, type2>::ChangeSettings(InterventionType p_dataSetting);                             \
-    template void DecisionMaker<type1, type2>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
-    template void DecisionMaker<type1, type2>::RaceStop();                                                                 \
-    template DecisionMaker<type1, type2>::~DecisionMaker();
+    template bool DecisionMaker<type1, type2, type3>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
+    template void DecisionMaker<type1, type2, type3>::ChangeSettings(InterventionType p_dataSetting);                             \
+    template void DecisionMaker<type1, type2, type3>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
+    template void DecisionMaker<type1, type2, type3>::RaceStop();                                                                 \
+    template DecisionMaker<type1, type2, type3>::~DecisionMaker();                                                                \
+    template FileDataStorage* DecisionMaker<type1, type2, type3>::GetFileDataStorage();                                             
 
-#define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
+#define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>
 #define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
@@ -33,47 +34,59 @@
 /// Path is assumed to refer to an existing executable file
 /// @param  p_testSituations   The test situations
 /// @param  p_testAmount       The amount of tests
-template <typename SocketBlackBox, typename SDAConfig>
-void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
-                                                          tSituation* p_initialSituation,
-                                                          tTrack* p_track,
-                                                          const std::string& p_blackBoxExecutablePath,
-                                                          bool p_recordBB,
-                                                          BlackBoxData* p_testSituations,
-                                                          int p_testAmount)
-{
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
+void DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>::Initialize(tCarElt* p_initialCar,
+                                                                          tSituation* p_initialSituation,
+                                                                          tTrack* p_track,
+                                                                          const std::string& p_blackBoxExecutablePath,
+                                                                          bool p_recordBB,
+                                                                          BlackBoxData* p_testSituations,
+                                                                          int p_testAmount)
+                {
 #if !defined(TEST)
-    if (p_recordBB)
-    {
-        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
+    if (p_recordBB)                                                     //
+    {                                                                   //
+        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);   //
     }
+    StartExecutable(p_blackBoxExecutablePath);
 #endif
 
-    StartExecutable(p_blackBoxExecutablePath);
 
-    BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
-    BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
+    BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);  //
+    BlackBox.Initialize(initialData, p_testSituations, p_testAmount);           //  
 
-    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
-    m_fileBufferStorage.Initialize(Config.GetDataCollectionSetting(),
+    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);  //
+
+    tDataToStore data = Config.GetDataCollectionSetting();
+    char* id = Config.GetUserId();
+    std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::string fname2 = blackBoxPath.filename().string();
+    std::string path1 = blackBoxPath.stem().string();
+    std::time_t lastwrite =std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath));
+    char* fName = p_track->filename;
+    const char* namename = p_track->name;
+    int ver = p_track->version;
+    unsigned int type = Config.GetInterventionType();
+
+    m_fileBufferStorage.Initialize(data,  //
                                    BUFFER_FILE_PATH,
-                                   Config.GetUserId(),
-                                   std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
-                                   blackBoxPath.filename().string(),
-                                   blackBoxPath.stem().string(),
-                                   std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
-                                   p_track->filename,
-                                   p_track->name,
-                                   p_track->version,
-                                   Config.GetInterventionType());
-}
+                                   id,
+                                   now,
+                                   fname2,
+                                   path1,
+                                   lastwrite,
+                                   fName,
+                                   namename,
+                                   ver,
+                                   type);
+                }
 
 /// @brief              Tries to get a decision from the black box
 /// @param  p_car       The current car
 /// @param  p_situation The current situation
 /// @param  p_tickCount The current tick count
 /// @return             Whether a decision was made
-template <typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
     m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
@@ -89,11 +102,11 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
-#if !defined(TEST)
-    if (m_recorder)
-    {
-        const float decisionValues[2] = {decision.GetBrake(), decision.GetSteer()};
-        m_recorder->WriteRecording(decisionValues, p_tickCount, false);
+#if !defined(TEST)                                          //
+    if (m_recorder)                                         //
+    {       
+        const float decisionValues[2] = {decision.GetBrake(), decision.GetSteer()}; //
+        m_recorder->WriteRecording(decisionValues, p_tickCount, false);             //
     }
 #endif
 
@@ -102,7 +115,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
 /// @brief                Changes the settings of how decisions should be made
 /// @param  p_dataSetting The new type of interventions
-template <typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
     InterventionExecutor = Config.SetInterventionType(p_dataSetting);
@@ -110,24 +123,30 @@ void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 
 /// @brief         Changes the settings of what data should be collected
 /// @param  p_type The new data collection settings
-template <typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
-    Config.SetDataCollectionSettings(p_dataSetting);
+    Config.SetDataCollectionSettings(p_dataSetting);            //
 }
 
-template <typename SocketBlackBox, typename SDAConfig>
-DecisionMaker<SocketBlackBox, SDAConfig>::~DecisionMaker()
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
+DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>::~DecisionMaker()
 {
     delete m_recorder;
 }
 
 /// @brief When the race stops, the simulation data collected will be stored in the database
-template <typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
 void TEMP_DECISIONMAKER::RaceStop()
 {
-    BlackBox.Shutdown();
-    m_fileBufferStorage.Shutdown();
-    SQLDatabaseStorage sqlDatabaseStorage;
-    sqlDatabaseStorage.Run(BUFFER_FILE_PATH);
+    BlackBox.Shutdown();                                    //
+    m_fileBufferStorage.Shutdown();                         //
+    SQLDatabaseStorage sqlDatabaseStorage;                  //
+    sqlDatabaseStorage.Run(BUFFER_FILE_PATH);               //
+}
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
+FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
+{
+    return &m_fileBufferStorage;
 }
