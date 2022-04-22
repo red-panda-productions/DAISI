@@ -372,8 +372,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     values = "'" + blackboxFileName + "','" + blackboxVersion + "','" + blackboxName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("blackbox", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT blackbox_id FROM blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersion + "'")
+    EXECUTE(INSERT_IGNORE_INTO("Blackbox", "filename, version, name", values))
+    EXECUTE_QUERY("SELECT blackbox_id FROM Blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersion + "'")
 
     int blackboxId;
     GET_INT_FROM_RESULTS(blackboxId)
@@ -389,8 +389,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("environment", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT environment_id FROM environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
+    EXECUTE(INSERT_IGNORE_INTO("Environment", "filename, version, name", values))
+    EXECUTE_QUERY("SELECT environment_id FROM Environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
 
     int environmentId;
     GET_INT_FROM_RESULTS(environmentId)
@@ -417,9 +417,9 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
             throw std::exception("Invalid intervention type index read from buffer file");
     }
 
-    EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
+    EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))
     EXECUTE_QUERY(
-        "SELECT settings_id FROM settings WHERE "
+        "SELECT settings_id FROM Settings WHERE "
         "intervention_mode = " +
         values)
 
@@ -430,7 +430,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
              std::to_string(settingsId) + "'";
 
     // trial
-    EXECUTE(INSERT_INTO("trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
+    EXECUTE(INSERT_INTO("Trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()");
 
     int trialId;
@@ -484,7 +484,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
-        EXECUTE(INSERT_INTO("timestep", "trial_id, tick", values))
+        EXECUTE(INSERT_INTO("TimeStep", "trial_id, tick", values))
 
         // gamestate
         if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
@@ -552,7 +552,7 @@ void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p
     values.append(p_tick);
     values.append("'");
 
-    EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
+    EXECUTE(INSERT_INTO("GameState", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
 }
 
 void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
@@ -570,7 +570,7 @@ void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p
     READ_INPUT(p_inputFile, clutch);
 
     values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "','" + std::to_string(p_trialId) + "','" + p_tick + "'";
-    EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch, trial_id, tick", values));
+    EXECUTE(INSERT_INTO("UserInput", "steer, brake, gas, clutch, trial_id, tick", values));
 }
 
 /// @brief Loops through the input file and inserts all decisions that the black box has made
@@ -585,7 +585,7 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
     int decisionsRead = 0;
     while (decision != "NONE" && decisionsRead++ < DECISIONS_AMOUNT)
     {
-        m_statement->execute(INSERT_INTO("intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
+        m_statement->execute(INSERT_INTO("Intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
         int decisionId;
         SELECT_LAST_ID(decisionId)
 
@@ -593,31 +593,31 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
         {
             std::string amount;
             READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("steerdecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            EXECUTE(INSERT_INTO("SteerDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "BrakeDecision")
         {
             std::string amount;
             READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("brakedecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            EXECUTE(INSERT_INTO("BrakeDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "AccelDecision")
         {
             std::string amount;
             READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("acceldecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            EXECUTE(INSERT_INTO("AccelDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "GearDecision")
         {
             std::string gear;
             READ_INPUT(p_inputFile, gear);
-            EXECUTE(INSERT_INTO("geardecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
+            EXECUTE(INSERT_INTO("GearDecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
         }
         else if (decision == "LightsDecision")
         {
             std::string lightsOn;
             READ_INPUT(p_inputFile, lightsOn);
-            EXECUTE(INSERT_INTO("lightsdecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
+            EXECUTE(INSERT_INTO("LightsDecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
         }
 
         READ_INPUT(p_inputFile, decision);
