@@ -21,7 +21,7 @@
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
-#define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
+#define BUFFER_FILE_PATH   "race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
