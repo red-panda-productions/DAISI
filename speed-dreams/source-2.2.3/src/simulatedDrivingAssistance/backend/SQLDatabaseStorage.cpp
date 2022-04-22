@@ -73,11 +73,11 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
     inputFile.close();
 }
 
-/// @brief                          gets the keys for secure database connection in the data/certificates folder
-///                                 and adds them to the connection properties
-///                                 name of the keys are set in the database_encryption_settings.txt file
+/// @brief  gets the keys for secure database connection in the data/certificates folder
+///         and adds them to the connection properties
+///         name of the keys are set in the database_encryption_settings.txt file
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
-void SQLDatabaseStorage::GetKeys(sql::ConnectOptionsMap p_connectionProperties)
+void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
 {
     std::string configPath(ROOT_FOLDER "\\data");
     std::string configFile("database_encryption_settings.txt");
@@ -116,7 +116,7 @@ void SQLDatabaseStorage::GetKeys(sql::ConnectOptionsMap p_connectionProperties)
 /// @param p_username       Username to connect with to the database.
 /// @param p_password       Password to connect with to the database.
 /// @param p_schemaName     Name of the database schema to use.
-/// @param p_useEncryption  if encryption is used, "true" if used, otherwise its not used.
+/// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
 /// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
@@ -141,7 +141,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
-    if (p_useEncryption == "true")
+    if (std::tolower(p_useEncryption) == "true")
     {
         GetKeys(connection_properties);
     }
