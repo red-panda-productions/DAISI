@@ -37,10 +37,10 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     Recorder recorder(TEST_DIRECTORY, "constructor_creates_file", 0);
 
     // Ensure file is created with the proper name
-    ASSERT_TRUE(std::experimental::filesystem::exists("..\\test_data\\" TEST_DIRECTORY "\\constructor_creates_file.txt"));
+    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file.txt"));
 
     // Ensure the file is empty
-    std::ifstream file("..\\test_data\\" TEST_DIRECTORY "\\constructor_creates_file.txt");
+    std::ifstream file(folder + "\\constructor_creates_file.txt");
     ASSERT_TRUE(file.is_open());
     ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof());
 }
