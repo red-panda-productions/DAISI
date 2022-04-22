@@ -124,7 +124,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_username,
     const std::string& p_password,
     const std::string& p_schemaName,
-    const std::string& p_useEncryption)
+    std::string p_useEncryption)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -141,9 +141,10 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
-    if (std::tolower(p_useEncryption) == "true")
+    transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
+    if(p_useEncryption == "true")
     {
-        GetKeys(connection_properties);
+        PutKeys(connection_properties);
     }
 
     try
