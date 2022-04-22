@@ -618,7 +618,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     m_pControl = SMediator::GetInstance()->GetPControlSettings();
     if (m_pControl.RecordSession) {
-        recorder = new Recorder("user_recordings", "userRecording", PARAM_AMOUNT);
+        recorder = new Recorder("user_recordings", "userRecording%Y%m%d-%H%M%S", PARAM_AMOUNT);
     }
     const int idx = index - 1;
 
