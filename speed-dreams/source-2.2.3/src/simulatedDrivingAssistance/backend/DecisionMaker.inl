@@ -57,28 +57,28 @@ void DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>::Initialize(tCarE
 
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);  //
 
-    tDataToStore data = Config.GetDataCollectionSetting();
-    char* id = Config.GetUserId();
-    std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::string fname2 = blackBoxPath.filename().string();
-    std::string path1 = blackBoxPath.stem().string();
+    tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
+    char* userId = Config.GetUserId();
+    std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::string fileName = blackBoxPath.filename().string();
+    std::string path = blackBoxPath.stem().string();
     std::time_t lastwrite =std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath));
-    char* fName = p_track->filename;
-    const char* namename = p_track->name;
-    int ver = p_track->version;
-    unsigned int type = Config.GetInterventionType();
+    char* trackFileName = p_track->filename;
+    const char* trackname = p_track->name;
+    int trackversion = p_track->version;
+    unsigned int interventiontype = Config.GetInterventionType();
 
-    m_fileBufferStorage.Initialize(data,  //
+    m_fileBufferStorage.Initialize(dataCollectionSetting,  //
                                    BUFFER_FILE_PATH,
-                                   id,
-                                   now,
-                                   fname2,
-                                   path1,
+                                   userId,
+                                   currentTime,
+                                   fileName,
+                                   path,
                                    lastwrite,
-                                   fName,
-                                   namename,
-                                   ver,
-                                   type);
+                                   trackFileName,
+                                   trackname,
+                                   trackversion,
+                                   interventiontype);
                 }
 
 /// @brief              Tries to get a decision from the black box

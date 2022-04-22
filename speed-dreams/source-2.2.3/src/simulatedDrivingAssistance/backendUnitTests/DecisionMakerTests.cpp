@@ -62,23 +62,23 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, 
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
 
 
-void InitializeTest(bool p_recordBB) {
+ TEST(DecisionMakerTests, InitializeTest){
     TDecisionMaker decisionMaker;
     tCarElt car;  // need data
     tSituation situation;
     situation.deltaTime = 108;
     car.pub.speed = 144;
     tTrack track;
-    track.filename = "bliepblapbloep";
-    track.name = "tjoeptjoeptjap";
+    track.filename = "trackfile";
+    track.name = "track_1";
     track.version = 0;
 
-    decisionMaker.Config.SetUserID("1");
+    decisionMaker.Config.SetUserId("1");
 
     std::string path = ROOT_FOLDER "\\data\\blackbox\\";
     ASSERT_TRUE(FindFileDirectory(path, "Blackbox.exe"));
     path = path + "Blackbox.exe";
-    decisionMaker.Initialize(&car, &situation, &track, path, p_recordBB);
+    decisionMaker.Initialize(&car, &situation, &track, path, true);
     
     SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&decisionMaker.BlackBox);
     BlackBoxData* blackboxDataMock = mockCheck->GetBlackBoxData();
@@ -89,8 +89,6 @@ void InitializeTest(bool p_recordBB) {
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
 
-TEST_CASE(DecisionMakerTests, InitializeTestTrue, InitializeTest, (true));
-TEST_CASE(DecisionMakerTests, InitializeTestFalse, InitializeTest, (false));
 
 
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
@@ -119,3 +117,14 @@ BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
 END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2, arr, 2);
 
+TEST(DecisionMakerTests, RaceStopTest){
+    TDecisionMaker decisionMaker;
+
+    decisionMaker.RaceStop();
+}
+
+TEST(DecisionMakerTests, GetFileDataStorageTest)
+{
+    TDecisionMaker decisionMaker;
+    FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
+}

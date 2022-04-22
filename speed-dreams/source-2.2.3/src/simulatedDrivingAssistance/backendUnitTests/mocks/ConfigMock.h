@@ -55,7 +55,7 @@ public:
     {
     }
 
-    void SetUserID(char* p_userID)
+    void SetUserId(char* p_userID)
     {
         m_userID = p_userID;
     }
