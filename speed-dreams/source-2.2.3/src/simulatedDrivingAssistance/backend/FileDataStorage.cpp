@@ -14,7 +14,7 @@
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
 /// @param date Time to format and write to the stream.
-inline void WriteTime(std::ostream &p_stream, time_t p_date)
+inline void WriteTime(std::ostream& p_stream, time_t p_date)
 {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
@@ -39,14 +39,14 @@ inline void WriteTime(std::ostream &p_stream, time_t p_date)
 /// @return returns the path of the buffer file
 std::experimental::filesystem::path FileDataStorage::Initialize(
     tDataToStore p_saveSettings,
-    const std::string &p_fileName,
-    const std::string &p_userId,
-    const std::time_t &p_trialStartTime,
-    const std::string &p_blackboxFilename,
-    const std::string &p_blackboxName,
-    const std::time_t &p_blackboxTime,
-    const std::string &p_environmentFilename,
-    const std::string &p_environmentName,
+    const std::string& p_fileName,
+    const std::string& p_userId,
+    const std::time_t& p_trialStartTime,
+    const std::string& p_blackboxFilename,
+    const std::string& p_blackboxName,
+    const std::time_t& p_blackboxTime,
+    const std::string& p_environmentFilename,
+    const std::string& p_environmentName,
     int p_environmentVersion,
     InterventionType p_interventionType)
 {
@@ -83,7 +83,7 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     }
     m_outputStream.flush();
 
-    return filePath;
+    return {filePath};
 }
 
 /// @brief Shutdown the file data storage.

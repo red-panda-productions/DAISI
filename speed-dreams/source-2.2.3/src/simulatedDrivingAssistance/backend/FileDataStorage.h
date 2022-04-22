@@ -19,22 +19,22 @@ private:
 public:
     std::experimental::filesystem::path Initialize(
         tDataToStore p_saveSettings,
-        const std::string &p_fileName,
-        const std::string &p_userId,
-        const std::time_t &p_trialStartTime,
-        const std::string &p_blackboxFilename,
-        const std::string &p_blackboxName,
-        const std::time_t &p_blackboxTime,
-        const std::string &p_environmentFilename,
-        const std::string &p_environmentName,
+        const std::string& p_fileName,
+        const std::string& p_userId,
+        const std::time_t& p_trialStartTime,
+        const std::string& p_blackboxFilename,
+        const std::string& p_blackboxName,
+        const std::time_t& p_blackboxTime,
+        const std::string& p_environmentFilename,
+        const std::string& p_environmentName,
         int p_environmentVersion,
         InterventionType p_interventionType);
 
     void Shutdown();
 
-    void Save(tCarElt *p_car, tSituation *p_situation, unsigned long p_timestamp);
+    void Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp);
 
-    void SaveDecisions(DecisionTuple &p_decisions);
+    void SaveDecisions(DecisionTuple& p_decisions);
 };
 
 /// @brief Standard implementation of the file data storage
