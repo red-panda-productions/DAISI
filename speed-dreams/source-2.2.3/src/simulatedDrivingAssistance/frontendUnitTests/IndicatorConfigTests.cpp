@@ -188,37 +188,37 @@ const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
 /// @brief           Asserts whether the loaded sound is equal to the generated random sound.
 /// @param loadedTxt The sound loaded into the indicator config
 /// @param rndTxt    The randomly generated sound
-void AssertSound(tSoundData* loadedSnd, tSoundData* rndSnd)
+void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
 {
     // If the generated sound is null, only check whether the loaded sound is also null
-    if (!rndSnd)
+    if (!p_rndSnd)
     {
-        ASSERT_EQ(loadedSnd, rndSnd);
+        ASSERT_EQ(p_loadedSnd, p_rndSnd);
         return;
     }
 
     char* rndSndFullPath = new char[PATH_BUF_SIZE];
-    snprintf(rndSndFullPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), rndSnd->Path);
-    ASSERT_STREQ(loadedSnd->Path, rndSndFullPath);
-    ASSERT_EQ(loadedSnd->Looping, rndSnd->Looping);
-    ASSERT_EQ(loadedSnd->LoopInterval, rndSnd->LoopInterval);
+    snprintf(rndSndFullPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), p_rndSnd->Path);
+    ASSERT_STREQ(p_loadedSnd->Path, rndSndFullPath);
+    ASSERT_EQ(p_loadedSnd->Looping, p_rndSnd->Looping);
+    ASSERT_EQ(p_loadedSnd->LoopInterval, p_rndSnd->LoopInterval);
 }
 
 /// @brief           Asserts whether the loaded texture is equal to the generated random texture.
 /// @param loadedTxt The texture loaded into the indicator config
 /// @param rndTxt    The randomly generated texture
-void AssertTexture(tTextureData* loadedTex, tTextureData* rndTex)
+void AssertTexture(tTextureData* p_loadedTex, tTextureData* p_rndTex)
 {
     // If the generated texture is null, only check whether the loaded texture is also null
-    if (!rndTex)
+    if (!p_rndTex)
     {
-        ASSERT_EQ(loadedTex, rndTex);
+        ASSERT_EQ(p_loadedTex, p_rndTex);
         return;
     }
 
-    ASSERT_STREQ(loadedTex->Path, rndTex->Path);
-    ASSERT_EQ(loadedTex->ScrPos.X, rndTex->ScrPos.X);
-    ASSERT_EQ(loadedTex->ScrPos.Y, rndTex->ScrPos.Y);
+    ASSERT_STREQ(p_loadedTex->Path, p_rndTex->Path);
+    ASSERT_EQ(p_loadedTex->ScrPos.X, p_rndTex->ScrPos.X);
+    ASSERT_EQ(p_loadedTex->ScrPos.Y, p_rndTex->ScrPos.Y);
 }
 
 /// @brief           Asserts whether the loaded text is equal to the generated random text.
@@ -239,14 +239,14 @@ void AssertText(tTextData* loadedTxt, tTextData* rndTxt)
 }
 
 /// @brief                  Asserts whether the loaded indicator is equal to the generated indicator
-/// @param loadedIndicator  The indicator loaded into the indicator config
-/// @param rndIndicator     The randomly generated indicator
-void AssertIndicator(tIndicatorData loadedIndicator, tIndicatorData rndIndicator)
+/// @param p_loadedIndicator  The indicator loaded into the indicator config
+/// @param p_rndIndicator     The randomly generated indicator
+void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndicator)
 {
-    ASSERT_EQ(loadedIndicator.Action, rndIndicator.Action);
-    AssertSound(loadedIndicator.Sound, rndIndicator.Sound);
-    AssertTexture(loadedIndicator.Texture, rndIndicator.Texture);
-    AssertText(loadedIndicator.Text, rndIndicator.Text);
+    ASSERT_EQ(p_loadedIndicator.Action, p_rndIndicator.Action);
+    AssertSound(p_loadedIndicator.Sound, p_rndIndicator.Sound);
+    AssertTexture(p_loadedIndicator.Texture, p_rndIndicator.Texture);
+    AssertText(p_loadedIndicator.Text, p_rndIndicator.Text);
 }
 
 /// @brief Creates a random indicator data object, writes this to an xml file, 
