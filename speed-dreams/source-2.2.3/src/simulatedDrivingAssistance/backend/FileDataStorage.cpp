@@ -47,7 +47,9 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
                                  InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
-    std::experimental::filesystem::path filePath = std::experimental::filesystem::path(p_fileName);
+
+    std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
+    filePath.append(p_fileName);
     create_directories(filePath.parent_path());
     // Initialize member variables
     m_saveSettings = p_saveSettings;
@@ -75,6 +77,7 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
     {
         WRITE_STRING(m_outputStream, "UserInput");
     }
+    m_outputStream.flush();
 }
 
 /// @brief Shutdown the file data storage.

@@ -27,8 +27,10 @@
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
 #define GFMNU_ATTR_PATH      "path"
 
+// Constant numbers
 #define INDICATOR_AMOUNT 3
 #define PCONTROL_AMOUNT  6
+#define MAX_TIME         1440
 
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT   "Choose Black Box: "
@@ -170,11 +172,15 @@ static void SelectBBRecorderOnOff(tCheckBoxInfo* p_info)
 static void SetMaxTime(void*)
 {
     char* val = GfuiEditboxGetString(s_scrHandle, m_maxTimeControl);
-    sscanf(val, "%d", &m_maxTime);
-    if (m_maxTime > 1440.0f)
-        m_maxTime = 1440.0f;
-    else if (m_maxTime < 0.0f)
-        m_maxTime = 0.0f;
+    char* endptr;
+    m_maxTime = (int)strtol(val, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
+
+    if (m_maxTime > MAX_TIME)
+        m_maxTime = MAX_TIME;
+    else if (m_maxTime < 0)
+        m_maxTime = 0;
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -272,8 +278,8 @@ static void SaveSettings(void* /* dummy */)
 /// @returns The default black box button text, plus the filename of the file represented by the path, ignoring any directories
 std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 {
-    int lastDirectoryIndex = 0;
-    for (int i = p_path.size() - 1; i >= 0; i--)
+    unsigned int lastDirectoryIndex = 0;
+    for (unsigned int i = p_path.size() - 1; i >= 0; i--)
     {
         if (p_path[i] != '\\') { continue; }
         lastDirectoryIndex = i;
@@ -285,13 +291,13 @@ std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, m_task);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, (int)m_task);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[0], m_indicators.Audio);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[1], m_indicators.Icon);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[2], m_indicators.Text);
 
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, m_interventionType);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, (int)m_interventionType);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlGas);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlInterventionToggle);
@@ -510,10 +516,14 @@ void* ResearcherMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // Choose black box control
-    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
+    // ApplyButton control
+    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+
     // Task radio button controls
     m_taskControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_TASKS, nullptr, SelectTask);
+
+    // Choose black box control
+    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
@@ -527,8 +537,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_ENVIRONMENT, nullptr, SelectEnvironment);
 
     // Participant-Control checkboxes controls
-    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS, nullptr, SelectControlGas);
-    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
+    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
+    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS, nullptr, SelectControlGas);
     m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING, nullptr, SelectControlSteering);
 
     // Other options checkbox controls
@@ -540,15 +550,10 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
-    // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
-
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
-    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveSettings, nullptr);
-    GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, nullptr);
-    GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", nullptr, GfuiScreenShot, nullptr);
+    GfuiMenuDefaultKeysAdd(s_scrHandle);
 
     // Create random userId
     std::random_device rd;
@@ -564,7 +569,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
 /// @brief  Activates the researcher menu screen
 /// @return 0 if successful, otherwise -1
-int ResearcherMenuRun(void)
+int ResearcherMenuRun()
 {
     GfuiScreenActivate(s_scrHandle);
 

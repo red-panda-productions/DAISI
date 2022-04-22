@@ -1,3 +1,5 @@
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "FileDataStorage.h"
@@ -49,8 +51,12 @@ TEST(FileDataStorageTests, NoStorageTimestampZero)
     fileDataStorage.Save(nullptr, nullptr, 0);
     fileDataStorage.Shutdown();
 
+    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
+    path.append(TEST_FILE_PATH);
+    std::string stringpath = path.string();
+
     // Read the written file
-    std::ifstream reader(TEST_FILE_PATH);
+    std::ifstream reader(stringpath.c_str());
     std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
     reader.close();
 

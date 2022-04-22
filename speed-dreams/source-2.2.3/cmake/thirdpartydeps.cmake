@@ -602,7 +602,7 @@ IF(OPEN_CPP_COVERAGE)
 
     MESSAGE(STATUS "Created ${BAT_NAME} for code coverage. Run with ./${BAT_NAME}.bat in ${COVERAGE_OUTPUT_FOLDER}")
 ELSE(OPEN_CPP_COVERAGE)
-  MESSAGE(WARN "OpenCppCoverage not found; no code coverage will be calculated")
+  MESSAGE(WARNING "OpenCppCoverage not found; no code coverage will be calculated")
 ENDIF(OPEN_CPP_COVERAGE)
 
 ENDMACRO(CREATE_OPEN_CPP_COVERAGE_BAT SOURCE_DIR CUR_BINARY_DIR BAT_NAME EXE_NAME EXCLUDED_FILES EXCLUDED_LINES)
