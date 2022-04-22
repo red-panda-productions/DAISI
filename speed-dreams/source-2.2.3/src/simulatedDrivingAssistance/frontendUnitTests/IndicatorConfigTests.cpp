@@ -7,10 +7,9 @@
 #include "TestUtils.h"
 #include "IndicatorConfig.h"
 
-
-#define NUM_OF_TESTS      100
-#define MAX_TEXT_LENGTH   64  
-#define TEST_XML_FILE     "test.xml"
+#define NUM_OF_TESTS    100
+#define MAX_TEXT_LENGTH 64
+#define TEST_XML_FILE   "test.xml"
 
 // Enum to help generating random indicator data
 // Enable multiple flags by doing FLAG1 | FLAG2 | FLAG3
@@ -20,7 +19,6 @@ typedef unsigned int DataGeneration;
 #define CAN_GENERATE_NULL     (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
 #define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
-
 
 /// @brief            Creates randomly generated sound data
 /// @param p_rnd      The random generator reference to use
@@ -55,7 +53,7 @@ tSoundData* CreateRandomSoundData(Random& p_rnd, DataGeneration p_gen)
 /// @brief            Creates randomly generated screen positions
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
-/// @return           The generated screen position      
+/// @return           The generated screen position
 tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataGeneration p_gen)
 {
     if (p_gen & INVALID_SCR_POS)
@@ -104,8 +102,8 @@ tTextData* CreateRandomTextData(Random& p_rnd, DataGeneration p_gen)
     data->ScrPos = CreateRandomScreenPosition(p_rnd, p_gen);
 
     // Cannot randomly create a font class, this would require to only store the path and font-size
-    // in the indicator config and to load them in later, then we would be able to generate a random 
-    // path and font-size here. However, currently the IndicatorConfig immediatly loads the Font object, 
+    // in the indicator config and to load them in later, then we would be able to generate a random
+    // path and font-size here. However, currently the IndicatorConfig immediatly loads the Font object,
     // which has no font name and/or members for font size.
     data->Font = nullptr;
 
@@ -125,8 +123,7 @@ std::vector<tIndicatorData> CreateRandomIndicatorData(Random& p_rnd, DataGenerat
             (InterventionAction)i,
             CreateRandomSoundData(p_rnd, p_gen),
             CreateRandomTextureData(p_rnd, p_gen),
-            CreateRandomTextData(p_rnd, p_gen)
-        };
+            CreateRandomTextData(p_rnd, p_gen)};
     }
 
     return data;
@@ -169,7 +166,7 @@ const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
         if (data.Text)
         {
             snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
-            GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);            
+            GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);
             GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Text->ScrPos.X);
             GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Text->ScrPos.Y);
 
@@ -185,9 +182,9 @@ const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
     return path;
 }
 
-/// @brief           Asserts whether the loaded sound is equal to the generated random sound.
-/// @param loadedTxt The sound loaded into the indicator config
-/// @param rndTxt    The randomly generated sound
+/// @brief             Asserts whether the loaded sound is equal to the generated random sound.
+/// @param p_loadedTxt The sound loaded into the indicator config
+/// @param p_rndTxt    The randomly generated sound
 void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
 {
     // If the generated sound is null, only check whether the loaded sound is also null
@@ -204,9 +201,9 @@ void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
     ASSERT_EQ(p_loadedSnd->LoopInterval, p_rndSnd->LoopInterval);
 }
 
-/// @brief           Asserts whether the loaded texture is equal to the generated random texture.
-/// @param loadedTxt The texture loaded into the indicator config
-/// @param rndTxt    The randomly generated texture
+/// @brief             Asserts whether the loaded texture is equal to the generated random texture.
+/// @param p_loadedTxt The texture loaded into the indicator config
+/// @param p_rndTxt    The randomly generated texture
 void AssertTexture(tTextureData* p_loadedTex, tTextureData* p_rndTex)
 {
     // If the generated texture is null, only check whether the loaded texture is also null
@@ -221,24 +218,24 @@ void AssertTexture(tTextureData* p_loadedTex, tTextureData* p_rndTex)
     ASSERT_EQ(p_loadedTex->ScrPos.Y, p_rndTex->ScrPos.Y);
 }
 
-/// @brief           Asserts whether the loaded text is equal to the generated random text.
-/// @param loadedTxt The text loaded into the indicator config
-/// @param rndTxt    The randomly generated text
-void AssertText(tTextData* loadedTxt, tTextData* rndTxt)
+/// @brief             Asserts whether the loaded text is equal to the generated random text.
+/// @param p_loadedTxt The text loaded into the indicator config
+/// @param p_rndTxt    The randomly generated text
+void AssertText(tTextData* p_loadedTxt, tTextData* p_rndTxt)
 {
     // If the generated texture is null, only check whether the loaded texture is also null
-    if (!rndTxt)
+    if (!p_rndTxt)
     {
-        ASSERT_EQ(loadedTxt, rndTxt);
+        ASSERT_EQ(p_loadedTxt, p_rndTxt);
         return;
     }
 
-    ASSERT_STREQ(loadedTxt->Text, rndTxt->Text);
-    ASSERT_EQ(loadedTxt->ScrPos.X, rndTxt->ScrPos.X);
-    ASSERT_EQ(loadedTxt->ScrPos.Y, rndTxt->ScrPos.Y);
+    ASSERT_STREQ(p_loadedTxt->Text, p_rndTxt->Text);
+    ASSERT_EQ(p_loadedTxt->ScrPos.X, p_rndTxt->ScrPos.X);
+    ASSERT_EQ(p_loadedTxt->ScrPos.Y, p_rndTxt->ScrPos.Y);
 }
 
-/// @brief                  Asserts whether the loaded indicator is equal to the generated indicator
+/// @brief                    Asserts whether the loaded indicator is equal to the generated indicator
 /// @param p_loadedIndicator  The indicator loaded into the indicator config
 /// @param p_rndIndicator     The randomly generated indicator
 void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndicator)
@@ -249,7 +246,7 @@ void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndic
     AssertText(p_loadedIndicator.Text, p_rndIndicator.Text);
 }
 
-/// @brief Creates a random indicator data object, writes this to an xml file, 
+/// @brief Creates a random indicator data object, writes this to an xml file,
 ///        then reads in this xml file using IndicatorConfig::LoadIndicatorData
 ///        Asserts whether the loaded in data is equal to the randomly generated data.
 TEST(IndicatorConfigTests, LoadIndicatorDataFromXML)
@@ -277,7 +274,7 @@ TEST(IndicatorConfigTests, LoadIndicatorDataFromXML)
     }
 }
 
-/// @brief Tests whether two configs point towards the same instance. 
+/// @brief Tests whether two configs point towards the same instance.
 TEST(IndicatorConfigTests, Singleton)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
@@ -305,7 +302,7 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
     }
 }
 
-/// @brief Tests whether the IndicatorConfig correctly throws an error for invalid loop intervals 
+/// @brief Tests whether the IndicatorConfig correctly throws an error for invalid loop intervals
 TEST(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
 {
     // Gf module contains all the XML reading/writing functions.
