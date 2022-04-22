@@ -105,7 +105,8 @@ tTextData* CreateRandomTextData(Random& p_rnd, DataGeneration p_gen)
 
     // Cannot randomly create a font class, this would require to only store the path and font-size
     // in the indicator config and to load them in later, then we would be able to generate a random 
-    // path and font-size here.
+    // path and font-size here. However, currently the IndicatorConfig immediatly loads the Font object, 
+    // which has no font name and/or members for font size.
     data->Font = nullptr;
 
     return data;
@@ -168,11 +169,14 @@ const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
         if (data.Text)
         {
             snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
-            GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);
-            GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_FONT, nullptr);
-            GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_FONT_SIZE, nullptr, 10);
+            GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);            
             GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Text->ScrPos.X);
             GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Text->ScrPos.Y);
+
+            // Write a valid font to not have errors when loading, but isn't actually asserted later
+            // See the comment in CreateRandomTextData for more info.
+            GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_FONT, "b5.glf");
+            GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_FONT_SIZE, nullptr, 10);
         }
     }
 
@@ -252,6 +256,7 @@ TEST(IndicatorConfigTests, LoadIndicatorDataFromXML)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
+    GfSetDataDir(SD_DATADIR_SRC);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
@@ -286,6 +291,7 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
+    GfSetDataDir(SD_DATADIR_SRC);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
@@ -304,6 +310,7 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
+    GfSetDataDir(SD_DATADIR_SRC);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
@@ -322,6 +329,7 @@ TEST(IndicatorConfigTests, ActivateIndicator)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
+    GfSetDataDir(SD_DATADIR_SRC);
     ASSERT_TRUE(SetupSingletonsFolder());
     Random rnd;
 
