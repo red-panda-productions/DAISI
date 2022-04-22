@@ -78,26 +78,27 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 {
     m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
 
-    DecisionTuple decision;
+    const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
 
-    if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) return false;
-
-    m_fileBufferStorage.SaveDecisions(decision);
+    if (decisionMade)
+    {
+        m_fileBufferStorage.SaveDecisions(m_decision);
+    }
 
     int decisionCount = 0;
-    IDecision** decisions = decision.GetActiveDecisions(decisionCount);
+    IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
 #if !defined(TEST)
     if (m_recorder)
     {
-        const float decisionValues[2] = {decision.GetBrake(), decision.GetSteer()};
+        const float decisionValues[2] = {m_decision.GetBrake(), m_decision.GetSteer()};
         m_recorder->WriteRecording(decisionValues, p_tickCount, false);
     }
 #endif
 
-    return true;
+    return decisionMade;
 }
 
 /// @brief                Changes the settings of how decisions should be made

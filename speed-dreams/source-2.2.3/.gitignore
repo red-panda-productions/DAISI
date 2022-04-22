@@ -28,6 +28,8 @@ data/tracks/road/flo-experiment-track
 
 BackendCoverage.bat
 
+FrontendCoverage.bat
+
 UnitUtilitiesCoverage.bat
 
 test_data
