@@ -17,7 +17,7 @@ public:
                       const std::string& p_username,
                       const std::string& p_password,
                       const std::string& p_schemaName,
-                      const std::string& p_useEncryption);
+                      std::string p_useEncryption);
 
     void CloseDatabase();
 
