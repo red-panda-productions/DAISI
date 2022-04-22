@@ -52,4 +52,4 @@ gtest_discover_tests(frontendUnitTests DISCOVERY_TIMEOUT 600)
 
 #Code coverage
 SET(FRONTEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/frontend")
-CREATE_OPEN_CPP_COVERAGE_BAT("FrontendCoverage" "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe" "${FRONTEND_SOURCE_DIR}" "" "")
+CREATE_OPEN_CPP_COVERAGE_BAT("FrontendCoverage" "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe" "${FRONTEND_SOURCE_DIR}" "" ".*@NOCOVERAGE.*")

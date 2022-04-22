@@ -162,14 +162,14 @@ IndicatorConfig* IndicatorConfig::GetInstance()
         return m_instance;
     }
 
-    // File exists -> read pointer
-    std::string pointerName("00000000");
-    std::ifstream file(filepath);
-    getline(file, pointerName);
-    file.close();
-    int pointerValue = stoi(pointerName, nullptr, 16);
-    m_instance = (IndicatorConfig*)pointerValue;
-    return m_instance;
+    // File exists -> read pointer                      // Only hit when instances are created in multiple modules, which is impossible in the testing environment.
+    std::string pointerName("00000000");                // @NOCOVERAGE
+    std::ifstream file(filepath);                       // @NOCOVERAGE
+    getline(file, pointerName);                         // @NOCOVERAGE
+    file.close();                                       // @NOCOVERAGE
+    int pointerValue = stoi(pointerName, nullptr, 16);  // @NOCOVERAGE
+    m_instance = (IndicatorConfig*)pointerValue;        // @NOCOVERAGE
+    return m_instance;                                  // @NOCOVERAGE
 }
 
 IndicatorConfig* IndicatorConfig::m_instance = nullptr;
