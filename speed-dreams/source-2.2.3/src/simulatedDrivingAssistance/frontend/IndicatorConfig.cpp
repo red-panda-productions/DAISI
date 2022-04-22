@@ -126,7 +126,7 @@ tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
 
     const char* fontFile = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_FONT, "");
-    int fontSize = (int)GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_FONT_SIZE, "pt", 10.0);
+    int fontSize = (int)GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_FONT_SIZE, nullptr, 10.0);
 
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, "%sdata/fonts/%s", GfDataDir(), fontFile);
