@@ -6,10 +6,10 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-// Directory to store test files in when testing the recorder (relative to the test_data folder)
+/// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY "test_test_data"
 
-// Assert the contents of [filename] located in [folder] match the string [contents]
+/// @brief Assert the contents of [filename] located in [folder] match the string [contents]
 #define ASSERT_FILE_CONTENTS(folder, filename, contents)                                    \
     std::cout << "Reading file from " << folder << "\\" << filename << ".txt" << std::endl; \
     std::ifstream file(folder + ("\\" filename ".txt"));                                    \
@@ -18,8 +18,8 @@
     buffer << file.rdbuf();                                                                 \
     ASSERT_STREQ(buffer.str().c_str(), contents);
 
-/// Get the directory to use for storing test files
-/// \return Path to the testing directory (without trailing backslash)
+/// @brief Get the directory to use for storing test files
+/// @return Path to the testing directory (without trailing backslash)
 inline std::string GetTestingDirectory()
 {
     std::experimental::filesystem::path sdaFolder;
@@ -27,7 +27,7 @@ inline std::string GetTestingDirectory()
     return sdaFolder.append(TEST_DIRECTORY).string();
 }
 
-// Test whether the Recorder succesfully creates the recording file and its directory
+/// @brief Test whether the Recorder succesfully creates the recording file and its directory
 TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
 {
     std::string folder = GetTestingDirectory();
@@ -49,7 +49,14 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof());
 }
 
-// Test the recorder with a single parameter, for different compression options and scenarios
+/// @brief Test the recorder with a single parameter, for different compression options and scenarios
+/// Scenarios that are tested are:
+/// - Does the recorder properly write the first line?
+/// - Does the recorder properly write a line with the same value without compression?
+/// - Does the recorder properly write a line with a different value without compression?
+/// - Does the recorder properly skip a line with the same value with compression?
+/// - Does the recorder properly write a line with a different value with compression?
+/// - Does the recorder properly write a line with a minimally different value with compression?
 TEST(RecorderTests, RecorderOneParamCompression)
 {
     std::string folder = GetTestingDirectory();
@@ -96,7 +103,12 @@ TEST(RecorderTests, RecorderOneParamCompression)
     ASSERT_FILE_CONTENTS(folder, "test_recorder_one_param_compression", expected.str().c_str());
 }
 
-// Test the recorder with three parameters, for different compression options and scenarios
+/// @brief Test the recorder with three parameters, for different compression options and scenarios
+/// Scenarios that are tested are:
+/// - Does the recorder properly write the first line?
+/// - Does the recorder properly write a line when all values are the same without compression?
+/// - Does the recorder properly write a line when all values are different with compression?
+/// - Does the recorder properly write a line when a single value is different with compression?
 TEST(RecorderTests, RecorderThreeParamCompression)
 {
     std::string folder = GetTestingDirectory();
@@ -139,7 +151,7 @@ TEST(RecorderTests, RecorderThreeParamCompression)
     ASSERT_FILE_CONTENTS(folder, "test_recorder_three_param_compression", expected.str().c_str());
 }
 
-// Test the recorder without any values, only the timestamps
+/// @brief Test the recorder without any values, only the timestamps
 TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
@@ -151,8 +163,8 @@ TEST(RecorderTests, WriteOnlyTime)
     ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", "0 \n0.1 \n1 \n-1 \n");
 }
 
-// Test whether the recorder can safely write to the same file twice.
-// Ensures the file is fully cleared and rewritten, such that only a single recording is ever stored in the file
+/// @brief Test whether the recorder can safely write to the same file twice.
+/// Ensures the file is fully cleared and rewritten, such that only a single recording is ever stored in the file
 TEST(RecorderTests, WriteSameFileTwice)
 {
     std::string folder = GetTestingDirectory();
