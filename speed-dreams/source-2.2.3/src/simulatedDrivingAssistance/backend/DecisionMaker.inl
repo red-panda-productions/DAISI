@@ -54,6 +54,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>::Initialize(tCarE
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 
+    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -103,7 +104,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 #if !defined(TEST)                                                                   //@NOCOVERAGE
     if (m_recorder)                                                                  //@NOCOVERAGE
     {                                                                                //@NOCOVERAGE
-        const float decisionValues[2] = {decision.GetBrake(), decision.GetSteer()};  //@NOCOVERAGE
+        const float decisionValues[2] = {m_decision.GetBrake(), m_decision.GetSteer()};  //@NOCOVERAGE
         m_recorder->WriteRecording(decisionValues, p_tickCount, false);              //@NOCOVERAGE
     }                                                                                //@NOCOVERAGE
 #endif
