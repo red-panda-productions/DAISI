@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ConfigEnums.h"
 #include "SDAConfig.h"
 #include "InterventionExecutor.h"
@@ -8,6 +9,9 @@
 #include "BlackBoxData.h"
 #include "SQLDatabaseStorage.h"
 #include "FileDataStorage.h"
+
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
 
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
@@ -35,8 +39,10 @@ public:
     ~DecisionMaker();
 
 private:
-    FileDataStorage m_fileBufferStorage;
     Recorder* m_recorder = nullptr;
+    std::experimental::filesystem::path m_bufferFilePath;
+    FileDataStorage m_fileBufferStorage;
+    DecisionTuple m_decision;
 };
 
 /// @brief The standard type of the decisionMaker

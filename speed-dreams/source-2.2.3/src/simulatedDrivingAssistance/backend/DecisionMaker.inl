@@ -22,7 +22,7 @@
     template FileDataStorage* DecisionMaker<type1, type2, type3>::GetFileDataStorage();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>
-#define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
+#define BUFFER_FILE_PATH   "race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -53,8 +53,6 @@ void DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>::Initialize(tCarE
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
-
-    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
 
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();
@@ -90,14 +88,15 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 {
     m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
 
-    DecisionTuple decision;
+    const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
 
-    if (!BlackBox.GetDecisions(p_car, p_situation, p_tickCount, decision)) return false;
-
-    m_fileBufferStorage.SaveDecisions(decision);
+    if (decisionMade)
+    {
+        m_fileBufferStorage.SaveDecisions(m_decision);
+    }
 
     int decisionCount = 0;
-    IDecision** decisions = decision.GetActiveDecisions(decisionCount);
+    IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
@@ -109,7 +108,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     }                                                                                //@NOCOVERAGE
 #endif
 
-    return true;
+    return decisionMade;
 }
 
 /// @brief                Changes the settings of how decisions should be made
@@ -117,6 +116,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
+    delete InterventionExecutor;
     InterventionExecutor = Config.SetInterventionType(p_dataSetting);
 }
 
@@ -141,7 +141,7 @@ void TEMP_DECISIONMAKER::RaceStop()
     BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
     SQLDatabaseStorage sqlDatabaseStorage;
-    sqlDatabaseStorage.Run(BUFFER_FILE_PATH);
+    sqlDatabaseStorage.Run(m_bufferFilePath);
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage>
