@@ -72,9 +72,9 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSetting
 
     decisionMaker.Config.SetUserId("1");
 
-    std::string findFilePath = ROOT_FOLDER "\\data\\blackbox\\";
+    std::string findFilePath = ROOT_FOLDER "\\data\\blackbox";
     ASSERT_TRUE(FindFileDirectory(findFilePath, "Blackbox.exe"));
-    std::string bbPath = findFilePath.append("Blackbox.exe");
+    std::string bbPath = findFilePath.append("\\Blackbox.exe");
     decisionMaker.Initialize(&car, &situation, &track, bbPath, true);
     
     SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&decisionMaker.BlackBox);
