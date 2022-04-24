@@ -5,6 +5,23 @@
 #define BYTE   uint8_t
 #define USHORT uint16_t
 
+
+#define SHORT_MAXIMUM_VALUE 65535
+#define SHORT_MAX_VALUE 65536
+
+#define BOOL_BITS 1
+#define BYTE_BITS 8
+#define SHORT_BITS 16
+#define INT_BITS 32
+
+#define RANDOM_NUMBER_BYTES INT_BITS
+
+#define BOOL_AMOUNT (RANDOM_NUMBER_BYTES / BOOL_BITS)
+#define BYTE_AMOUNT (RANDOM_NUMBER_BYTES / BYTE_BITS)
+#define SHORT_AMOUNT (RANDOM_NUMBER_BYTES / SHORT_BITS)
+#define INT_AMOUNT (RANDOM_NUMBER_BYTES / INT_BITS)
+
+
 /// @brief Creates random numbers
 class Random
 {
@@ -12,13 +29,13 @@ public:
     /// @return A random float
     float NextFloat()
     {
-        return static_cast<float>(NextUShort()) / 65536.0f;
+        return static_cast<float>(NextUShort()) / SHORT_MAX_VALUE;
     }
 
     /// @return A random float with a maximum
     float NextFloat(float p_max)
     {
-        return static_cast<float>(NextUShort()) / (65536.0f / p_max);
+        return static_cast<float>(NextUShort()) / (SHORT_MAX_VALUE / p_max);
     }
 
     /// @return A random float between a max and a min
@@ -30,7 +47,7 @@ public:
     /// @return A random float with a max value (included)
     float NextFloatIncl(float p_max)
     {
-        return static_cast<float>(NextUShort()) / (65535.0f / p_max);
+        return static_cast<float>(NextUShort()) / (SHORT_MAXIMUM_VALUE / p_max);
     }
 
     /// @return A random float between a max (included) and a min
@@ -42,15 +59,15 @@ public:
     /// @return A random byte
     BYTE NextByte()
     {
-        if (m_bytes >= 4) RefreshByte();
-        return static_cast<BYTE>((m_byteRandom >> (8 * m_bytes++)) & 0xFF);
+        if (m_bytes >= BYTE_AMOUNT) RefreshByte();
+        return static_cast<BYTE>((m_byteRandom >> (BYTE_BITS * m_bytes++)) & 0xFF);
     }
 
     /// @return A random byte with a maximum
     BYTE NextByte(BYTE p_max)
     {
-        if (m_bytes >= 4) RefreshByte();
-        return static_cast<BYTE>(((m_byteRandom >> (8 * m_bytes++)) & 0xFF) % p_max);
+        if (m_bytes >= BYTE_AMOUNT) RefreshByte();
+        return static_cast<BYTE>(((m_byteRandom >> (BYTE_BITS * m_bytes++)) & 0xFF) % p_max);
     }
 
     /// @return A random byte between a maximum and a minimum
@@ -62,15 +79,15 @@ public:
     /// @return A random ushort
     USHORT NextUShort()
     {
-        if (m_shorts >= 2) RefreshShort();
-        return static_cast<USHORT>((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<USHORT>((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF);
     }
 
     /// @return A random ushort with a maximum
     USHORT NextUShort(USHORT p_max)
     {
-        if (m_shorts >= 2) RefreshShort();
-        return static_cast<USHORT>(((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<USHORT>(((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF) % p_max);
     }
 
     /// @return A random ushort between a maximum and a minimum
@@ -82,15 +99,15 @@ public:
     /// @return A random short
     short NextShort()
     {
-        if (m_shorts >= 2) RefreshShort();
-        return static_cast<short>((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<short>((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF);
     }
 
     /// @return A random short with a maximum
     short NextShort(short p_max)
     {
-        if (m_shorts >= 2) RefreshShort();
-        return static_cast<short>(((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<short>(((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF) % p_max);
     }
 
     /// @return A random short between a maximum and a minimum
@@ -142,8 +159,8 @@ public:
     /// @return A random bool
     bool NextBool()
     {
-        if (m_bools >= 32) RefreshBool();
-        return (m_boolRandom & (1UL << m_bools++)) > 0;
+        if (m_bools >= BOOL_AMOUNT) RefreshBool();
+        return (m_boolRandom & (1U << m_bools++)) > 0;
     }
 
     /// @brief Creates a random number generator
