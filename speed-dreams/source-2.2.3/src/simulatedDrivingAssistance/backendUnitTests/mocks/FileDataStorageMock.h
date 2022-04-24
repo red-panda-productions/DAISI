@@ -27,14 +27,8 @@ public:
         int p_environmentVersion,
         InterventionType p_interventionType) {
         m_saveSettings = p_saveSettings;
-        //m_fileName = p_fileName;
-        //m_userId = p_userId;
         m_trialStartTime = p_trialStartTime;
-        //m_blackboxFilename = p_blackboxFilename;
-        //m_blackboxName = p_blackboxName;
         m_blackboxTime = p_blackboxTime;
-        //m_environmentFilename = p_environmentFilename;
-        //m_environmentName = p_environmentName;
         m_environmentVersion = p_environmentVersion;
         m_interventionType = p_interventionType;
     }

@@ -97,14 +97,15 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().MetaData == p_dataToStore.MetaData);
 }
 
-void DoSetDataCollectionTest(bool b1, bool b2, bool b3, bool b4, bool b5) {
-    DataToStore data;
-    data.CarData = b1;
-    data.EnvironmentData = b2;
-    data.HumanData = b3;
-    data.InterventionData = b4;
-    data.MetaData = b5;
-    SetDataCollectionSettingsTest(data);
+void DoSetDataCollectionTest(bool p_carData, bool p_environmentData, bool p_humanData, bool p_interventionData, bool p_metaData)
+{
+    DataToStore dataSettings;
+    dataSettings.CarData = p_carData;
+    dataSettings.EnvironmentData = p_environmentData;
+    dataSettings.HumanData = p_humanData;
+    dataSettings.InterventionData = p_interventionData;
+    dataSettings.MetaData = p_metaData;
+    SetDataCollectionSettingsTest(dataSettings);
 }
 
 BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
