@@ -627,11 +627,16 @@ IF(OPEN_CPP_COVERAGE)
 
     STRING(CONCAT EXPORT "${EXPORT_TYPE}:" "${SOURCEDIR}\\${EXPORTPATH}")
 
+    IF(INCLUDE_COVERAGE)
+        SET(INPUT_COVERAGE "--input_coverage=${INCLUDE_COVERAGE}")
+    ENDIF(INCLUDE_COVERAGE)
+
+
     FILE(GENERATE OUTPUT ${CMAKE_SOURCE_DIR}/${BAT_NAME}.bat
         CONTENT
             "@echo off
             cd /d ${CURRENTBINARYDIR}
-            \"${OPEN_CPP_COVERAGE}\" --sources=${CURRENTSOURCEDIR} --input_coverage=${INCLUDE_COVERAGE} --export_type=${EXPORT} ${EXCLUDEDSOURCES} --excluded_line_regex ${EXCLUDED_LINES} -- ${EXEPATH}")
+            \"${OPEN_CPP_COVERAGE}\" --sources=${CURRENTSOURCEDIR} ${INCLUDE_COVERAGE}  --export_type=${EXPORT} ${EXCLUDEDSOURCES} --excluded_line_regex ${EXCLUDED_LINES} -- ${EXEPATH}")
 
     MESSAGE(STATUS "Created ${BAT_NAME} for code coverage on Github Actions. Run with ./${BAT_NAME}.bat in ${CMAKE_SOURCE_DIR}")
 ELSE(OPEN_CPP_COVERAGE)
