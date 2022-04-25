@@ -20,10 +20,10 @@ typedef unsigned int DataGeneration;
 #define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
 
-/// @brief            Creates randomly generated sound data
-/// @param p_rnd      The random generator reference to use
-/// @param p_validity The validity flags to use when generating data
-/// @return           The generated sound data
+/// @brief       Creates randomly generated sound data
+/// @param p_rnd The random generator reference to use
+/// @param p_gen The flags to use when generating data
+/// @return      The generated sound data
 tSoundData* CreateRandomSoundData(Random& p_rnd, DataGeneration p_gen)
 {
     // Chance to generate nullptr
@@ -50,10 +50,10 @@ tSoundData* CreateRandomSoundData(Random& p_rnd, DataGeneration p_gen)
     return data;
 }
 
-/// @brief            Creates randomly generated screen positions
-/// @param p_rnd      The random generator reference to use
-/// @param p_validity The validity flags to use when generating data
-/// @return           The generated screen position
+/// @brief       Creates randomly generated screen positions
+/// @param p_rnd The random generator reference to use
+/// @param p_gen The flags to use when generating data
+/// @return      The generated screen position
 tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataGeneration p_gen)
 {
     if (p_gen & INVALID_SCR_POS)
@@ -63,10 +63,10 @@ tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataGeneration p_gen)
     return {p_rnd.NextFloatIncl(0, 1.0f), p_rnd.NextFloatIncl(0, 1.0f)};
 }
 
-/// @brief            Creates randomly generated texture data
-/// @param p_rnd      The random generator reference to use
-/// @param p_validity The validity flags to use when generating data
-/// @return           The generated texture data
+/// @brief       Creates randomly generated texture data
+/// @param p_rnd The random generator reference to use
+/// @param p_gen The flags to use when generating data
+/// @return      The generated texture data
 tTextureData* CreateRandomTextureData(Random& p_rnd, DataGeneration p_gen)
 {
     // Chance to generate nullptr

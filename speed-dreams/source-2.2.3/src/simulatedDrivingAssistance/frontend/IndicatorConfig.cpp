@@ -9,7 +9,8 @@
 
 #include "IndicatorConfig.h"
 
-/// @brief Loads the indicator data of every intervention action from config file in the given path
+/// @brief        Loads the indicator data of every intervention action from config file in the given path
+/// @param p_path The path to the XML file containing the indicator data to load
 void IndicatorConfig::LoadIndicatorData(const char* p_path)
 {
     void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
