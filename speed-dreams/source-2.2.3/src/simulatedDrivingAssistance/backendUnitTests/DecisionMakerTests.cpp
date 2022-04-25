@@ -74,10 +74,11 @@ void InitializeTest (TDecisionMaker& p_decisionMaker)
 
     p_decisionMaker.Config.SetUserId("1");
 
-    std::string findFilePath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
-    chdir(SD_DATADIR);
-    ASSERT_TRUE(FindFileDirectory(findFilePath, "Blackbox.exe"));
-    std::string bbPath = findFilePath.append("\\Blackbox.exe");
+    std::string findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
+    std::cout << SD_DATADIR_SRC << std::endl;
+    chdir(SD_DATADIR_SRC);
+    ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
+    std::string bbPath = findfilepath.append("\\blackbox.exe");
     p_decisionMaker.Initialize(&car, &situation, &track, bbPath, true);
 
     SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&p_decisionMaker.BlackBox);
