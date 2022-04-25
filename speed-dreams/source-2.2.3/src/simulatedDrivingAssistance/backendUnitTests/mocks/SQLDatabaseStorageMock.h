@@ -7,9 +7,13 @@
 #include "VariableStore.h"
 
 /// @brief A class that can store data to a SQL database
-class SQLDatabaseStorageMock: IDataStorage
+class SQLDatabaseStorageMock : IDataStorage
 {
 public:
+    SQLDatabaseStorageMock()
+    {
+        m_inputFilePath = "";
+    }
     void Run(const std::experimental::filesystem::path& p_inputFilePath)
     {
         m_inputFilePath = p_inputFilePath;
@@ -18,22 +22,25 @@ public:
         
         VariableStore::GetInstance().variables[0] = static_cast<void*>(path);
     }
-    void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override;
+    void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override
+    {
+        
+    }
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
                       const std::string& p_username,
                       const std::string& p_password,
-                      const std::string& p_schemaName);
+                      const std::string& p_schemaName){};
 
-    void CloseDatabase();
-    std::experimental::filesystem::path& m_inputFilePath;
+    void CloseDatabase(){}
+    std::experimental::filesystem::path m_inputFilePath;
 private:
-    void CreateTables();
-    int InsertInitialData(std::ifstream& p_inputFile);
-    void InsertSimulationData(std::ifstream& p_inputFile, int p_trialId);
-    void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
+    void CreateTables(){};
+    int InsertInitialData(std::ifstream& p_inputFile){};
+    void InsertSimulationData(std::ifstream& p_inputFile, int p_trialId){};
+    void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick){};
+    void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick){};
+    void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick){};
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

@@ -35,6 +35,8 @@ public:
     SocketBlackBox BlackBox;
 
     FileDataStorage* GetFileDataStorage();
+    std::experimental::filesystem::path* GetBufferFilePath();
+
 
     ~DecisionMaker();
 

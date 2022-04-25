@@ -127,6 +127,7 @@ TEST(DecisionMakerTests, RaceStopTest){
     chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop());
     std::experimental::filesystem::path path = *static_cast<std::experimental::filesystem::path*>(VariableStore::GetInstance().variables[0]);
+    ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
 }
 
 TEST(DecisionMakerTests, GetFileDataStorageTest)
