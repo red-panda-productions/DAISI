@@ -11,10 +11,11 @@
 #include "mocks/DecisionMakerMock.h"
 #include  <config.h>
 #include "mocks/FileDataStorageMock.h"
+#include "mocks/SQLDatabaseStorageMock.h"
 #include "portability.h"
 #include "../rppUtils/RppUtils.hpp"
 
-#define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock>
+#define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock>
 
 /// @brief				 Tests if a decision can be made
 /// @param  p_isDecision Whether the black box made a decision
