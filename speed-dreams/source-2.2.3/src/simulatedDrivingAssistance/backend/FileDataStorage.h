@@ -33,6 +33,9 @@ public:
 
     void Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp);
     void SaveDecisions(DecisionTuple& p_decisions);
+    void SetLocalTime(bool p_localTime);
+private:
+    bool m_localTime = false;
 };
 
 /// @brief Standard implementation of the file data storage

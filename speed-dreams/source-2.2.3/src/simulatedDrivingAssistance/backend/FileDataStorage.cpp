@@ -12,12 +12,17 @@
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
 /// @param date Time to format and write to the stream.
-inline void WriteTime(std::ostream& p_stream, time_t p_date)
+/// @param p_localTime boolean of whether to write the time in the timezone of the device. If false, uses GMT/UTC time.
+inline void WriteTime(std::ostream& p_stream, time_t p_date, bool p_localTime)
 {
     // "YYYY-MM-DD hh:mm:ss" is 19 characters, finishing with a nullpointer makes 20.
     // Thus allocate space for 20 characters.
     char buffer[20];
-    strftime(buffer, 20, "%F %T", gmtime(&p_date));
+
+    // Determine time based on localTime setting
+    std::tm* time = p_localTime ? localtime(&p_date) : gmtime(&p_date);
+
+    strftime(buffer, 20, "%F %T", time);
     p_stream << buffer << "\n";
 }
 
@@ -57,10 +62,10 @@ void FileDataStorage::Initialize(tDataToStore p_saveSettings,
 
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
-    WriteTime(m_outputStream, p_trialStartTime);
+    WriteTime(m_outputStream, p_trialStartTime, m_localTime);
     // Black box data
     WRITE_STRING(m_outputStream, p_blackboxFilename);
-    WriteTime(m_outputStream, p_blackboxTime);
+    WriteTime(m_outputStream, p_blackboxTime, m_localTime);
     WRITE_STRING(m_outputStream, p_blackboxName);
     // Environment data
     WRITE_STRING(m_outputStream, p_environmentFilename);
@@ -152,4 +157,11 @@ void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
         WRITE_VAR(m_outputStream, p_decisions.GetLights());
     }
     WRITE_STRING(m_outputStream, "NONE");
+}
+
+/// @brief Set whether to write dates and times in local time (dependent on the current timezone of the device) or in UTC/GMT time.
+/// @param p_localTime boolean of whether to write times in the timezone of the device. If false, uses GMT/UTC time.
+void FileDataStorage::SetLocalTime(bool p_localTime)
+{
+    m_localTime = p_localTime;
 }
