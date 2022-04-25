@@ -5,15 +5,14 @@
 #include "mocks/InterventionExecutorMock.h"
 #include "mocks/ConfigMock.h"
 #include "TestUtils.h"
-#include "Recorder.h"
 #include "car.h"
 #include "raceman.h"
-#include "mocks/DecisionMakerMock.h"
 #include  <config.h>
 #include "mocks/FileDataStorageMock.h"
 #include "mocks/SQLDatabaseStorageMock.h"
 #include "portability.h"
 #include "../rppUtils/RppUtils.hpp"
+#include "VariableStore.h"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock>
 
@@ -127,6 +126,7 @@ TEST(DecisionMakerTests, RaceStopTest){
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop());
+    std::experimental::filesystem::path path = *((std::experimental::filesystem::path*)VariableStore::GetInstance().variables[0]);
 }
 
 TEST(DecisionMakerTests, GetFileDataStorageTest)

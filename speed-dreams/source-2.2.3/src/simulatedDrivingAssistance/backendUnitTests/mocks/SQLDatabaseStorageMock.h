@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <fstream>
 #include "mysql/jdbc.h"
+#include "VariableStore.h"
 
 /// @brief A class that can store data to a SQL database
 class SQLDatabaseStorageMock: IDataStorage
@@ -12,7 +13,11 @@ public:
     void Run(const std::experimental::filesystem::path& p_inputFilePath)
     {
         m_inputFilePath = p_inputFilePath;
-    };
+
+        const auto path = new std::experimental::filesystem::path(p_inputFilePath);
+        
+        VariableStore::GetInstance().variables[0] = static_cast<void*>(path);
+    }
     void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override;
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
