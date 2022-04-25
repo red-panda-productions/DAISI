@@ -9,7 +9,9 @@
 #include "car.h"
 #include "raceman.h"
 #include "mocks/DecisionMakerMock.h"
+#include  <config.h>
 #include "mocks/FileDataStorageMock.h"
+#include "portability.h"
 #include "../rppUtils/RppUtils.hpp"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock>
@@ -73,6 +75,7 @@ void InitializeTest (TDecisionMaker& p_decisionMaker)
     p_decisionMaker.Config.SetUserId("1");
 
     std::string findFilePath = ROOT_FOLDER "\\data\\blackbox";
+    chdir(SD_DATADIR);
     ASSERT_TRUE(FindFileDirectory(findFilePath, "Blackbox.exe"));
     std::string bbPath = findFilePath.append("\\Blackbox.exe");
     p_decisionMaker.Initialize(&car, &situation, &track, bbPath, true);
