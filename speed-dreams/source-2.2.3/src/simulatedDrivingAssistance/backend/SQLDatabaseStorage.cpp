@@ -595,8 +595,12 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
 
     if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
 
+    std::cout << "found file" << std::endl;
+
     std::ifstream ifstream(configPath + '\\' + configFile);
     if (ifstream.fail()) throw std::exception("Could not open database settings file");
+
+    std::cout << "ifstream opened" << std::endl;
 
     std::string ip;
     std::string portString;
@@ -609,6 +613,8 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     READ_INPUT(ifstream, username);
     READ_INPUT(ifstream, password);
     READ_INPUT(ifstream, schema);
+
+    std::cout << "read stuff" << std::endl;
 
     ifstream.close();
 
