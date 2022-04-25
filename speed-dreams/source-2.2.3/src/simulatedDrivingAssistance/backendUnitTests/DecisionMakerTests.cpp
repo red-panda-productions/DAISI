@@ -124,7 +124,7 @@ END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2,
 TEST(DecisionMakerTests, RaceStopTest){
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
-
+    chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop());
 }
 
