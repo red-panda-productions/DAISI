@@ -131,10 +131,10 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
-/// Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
-/// \param p_sdaFolder Reference to the variable to store the path in.
+/// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
+/// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
-/// \return true if the folder was successfully found
+/// @return true if the folder was successfully found
 inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 {
     // create directory if it doesn't exist
