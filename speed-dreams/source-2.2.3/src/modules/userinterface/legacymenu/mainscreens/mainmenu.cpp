@@ -124,10 +124,11 @@ MainMenuInit(bool SupportsHumanDrivers)
 		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", NULL, GoBack);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
+
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
 
     GfParmReleaseHandle(menuDescHdle);
 
