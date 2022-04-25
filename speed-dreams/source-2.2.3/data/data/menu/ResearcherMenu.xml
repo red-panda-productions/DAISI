@@ -233,7 +233,6 @@
         <section name="MaxTimeEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="16"/>
-            <attstr name="tip" val="Set the maximum simulation time"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="180"/>
             <attnum name="width" val="50"/>
@@ -246,7 +245,6 @@
         <section name="UserIdEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
-            <attstr name="tip" val="Give the user an ID"/>
             <attnum name="x" val="70"/>
             <attnum name="y" val="150"/>
             <attnum name="width" val="150"/>
@@ -351,6 +349,7 @@
             <attnum name="x" val="80"/>
             <attnum name="y" val="180"/>
             <attstr name="text" val="Max Time"/>
+            <attstr name="tip" val="Set the maximum simulation time"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
@@ -361,6 +360,7 @@
             <attnum name="x" val="20"/>
             <attnum name="y" val="150"/>
             <attstr name="text" val="User ID"/>
+            <attstr name="tip" val="Give the user an ID"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
