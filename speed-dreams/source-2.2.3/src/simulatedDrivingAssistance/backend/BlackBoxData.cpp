@@ -27,7 +27,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     Car.pub = p_pub;
     
     tTrackSeg* seg = p_pub.trkPos.seg;
-    bool skip = p_nextSegmentsCount == 0 || !p_nextSegments || !seg;
+    bool skip = !p_nextSegments || !seg;
     Car.pub.trkPos.seg = skip ? nullptr : p_nextSegments;
     for (int i = 0; i < p_nextSegmentsCount; i++)
     {
