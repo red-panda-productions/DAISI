@@ -12,15 +12,15 @@ class SQLDatabaseStorageMock : IDataStorage
 public:
     SQLDatabaseStorageMock()
     {
-        m_inputFilePath = "";
+        InputFilePath = "";
     }
     void Run(const std::experimental::filesystem::path& p_inputFilePath)
     {
-        m_inputFilePath = p_inputFilePath;
+        InputFilePath = p_inputFilePath;
 
         const auto path = new std::experimental::filesystem::path(p_inputFilePath);
 
-        VariableStore::GetInstance().variables[0] = static_cast<void*>(path);
+        VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);
     }
     void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override
     {
@@ -32,7 +32,7 @@ public:
                       const std::string& p_schemaName){};
 
     void CloseDatabase() {}
-    std::experimental::filesystem::path m_inputFilePath;
+    std::experimental::filesystem::path InputFilePath;
 
 private:
     void CreateTables(){};
@@ -41,9 +41,4 @@ private:
     void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick){};
     void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick){};
     void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick){};
-
-    sql::Driver* m_driver;
-    sql::Connection* m_connection;
-    sql::Statement* m_statement;
-    sql::ResultSet* m_resultSet;
 };

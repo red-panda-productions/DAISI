@@ -1,6 +1,7 @@
 #pragma once
 #include "ConfigEnums.h"
 #include "raceman.h"
+#include "FileDataStorage.h"
 #include "car.h"
 
 class DecisionMakerMock
@@ -17,7 +18,7 @@ public:
     }
 
     InterventionType Type;
-    FileDataStorage m_fileBufferStorage;
+    FileDataStorage FileBufferStorage;
     bool Decision;
 
     ~DecisionMakerMock() = default;

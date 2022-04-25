@@ -85,7 +85,7 @@ void InitializeTest(TDecisionMaker& p_decisionMaker)
     BlackBoxData* blackboxDataMock = mockCheck->GetBlackBoxData();
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
-    ASSERT_TRUE(storage->m_environmentVersion == track.version);
+    ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
@@ -107,14 +107,14 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().MetaData == p_dataToStore.MetaData);
 }
 
-void DoSetDataCollectionTest(bool p_carData, bool p_environmentData, bool p_humanData, bool p_interventionData, bool p_metaData)
+void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData, bool p_metaData)
 {
-    DataToStore dataSettings;
-    dataSettings.CarData = p_carData;
-    dataSettings.EnvironmentData = p_environmentData;
-    dataSettings.HumanData = p_humanData;
-    dataSettings.InterventionData = p_interventionData;
-    dataSettings.MetaData = p_metaData;
+    DataToStore dataSettings = {
+        p_environmentData,
+        p_carData,
+        p_humanData,
+        p_interventionData,
+        p_metaData};
     SetDataCollectionSettingsTest(dataSettings);
 }
 
@@ -128,7 +128,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop());
-    std::experimental::filesystem::path path = *static_cast<std::experimental::filesystem::path*>(VariableStore::GetInstance().variables[0]);
+    std::experimental::filesystem::path path = *static_cast<std::experimental::filesystem::path*>(VariableStore::GetInstance().Variables[0]);
     ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
 }
 

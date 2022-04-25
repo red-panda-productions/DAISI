@@ -6,7 +6,7 @@ class VariableStore
 public:
     static VariableStore& GetInstance();
 
-    void* variables[20] = {};
+    void* Variables[20] = {};
 
 private:
     VariableStore();

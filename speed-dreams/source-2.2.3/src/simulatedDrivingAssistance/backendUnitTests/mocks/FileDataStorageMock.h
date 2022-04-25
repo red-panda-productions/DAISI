@@ -4,6 +4,7 @@
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
+#include "experimental/filesystem"
 
 /// @brief               A class that can store data to a file
 /// @tparam BlackBoxData The data that needs to be stored
@@ -27,27 +28,20 @@ public:
                                                    int p_environmentVersion,
                                                    InterventionType p_interventionType)
     {
-        m_saveSettings = p_saveSettings;
-        m_trialStartTime = p_trialStartTime;
-        m_blackboxTime = p_blackboxTime;
-        m_environmentVersion = p_environmentVersion;
-        m_interventionType = p_interventionType;
+        SaveSettings = p_saveSettings;
+        TrialStartTime = p_trialStartTime;
+        BlackboxTime = p_blackboxTime;
+        EnvironmentVersion = p_environmentVersion;
+        InterventionType = p_interventionType;
         std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
         filePath.append(p_fileName);
         return {filePath};
     }
-
-    tDataToStore m_saveSettings;
-    // const std::string& m_fileName;
-    // const std::string& m_userId;
-    time_t m_trialStartTime;
-    // const std::string& m_blackboxFilename;
-    // const std::string& m_blackboxName;
-    time_t m_blackboxTime;
-    // const std::string& m_environmentFilename;
-    // const std::string& m_environmentName;
-    int m_environmentVersion;
-    InterventionType m_interventionType;
+    tDataToStore SaveSettings;
+    time_t TrialStartTime;
+    time_t BlackboxTime;
+    int EnvironmentVersion;
+    InterventionType InterventionType;
 
     void Shutdown()
     {

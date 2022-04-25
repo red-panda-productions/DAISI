@@ -4,15 +4,15 @@
 /// @return The singleton instance
 VariableStore& VariableStore::GetInstance()
 {
-    static VariableStore instance;
+    static VariableStore Instance;
 
-    return instance;
+    return Instance;
 }
 
 VariableStore::VariableStore()
 {
     for (int i = 0; i < 20; i++)
     {
-        variables[i] = nullptr;
+        Variables[i] = nullptr;
     }
 }

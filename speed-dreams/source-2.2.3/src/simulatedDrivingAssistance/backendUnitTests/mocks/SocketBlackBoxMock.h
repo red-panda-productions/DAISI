@@ -14,7 +14,7 @@ public:
 
     void Initialize(BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)
     {
-        m_initialDriveSituation = &p_initialDriveSituation;
+        InitialDriveSituation = &p_initialDriveSituation;
     }
 
     void Initialize()
@@ -34,10 +34,10 @@ public:
 
     BlackBoxData* GetBlackBoxData() const
     {
-        return m_initialDriveSituation;
+        return InitialDriveSituation;
     }
 
     bool IsDecision = false;
-    BlackBoxData* m_initialDriveSituation = nullptr;
+    BlackBoxData* InitialDriveSituation = nullptr;
     DecisionTuple Decisions;
 };
