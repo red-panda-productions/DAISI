@@ -16,6 +16,16 @@ public:
 
     void SetLightCmd(bool p_light) const;
 
+    float GetSteerCmd() const;
+
+    float GetAccelCmd() const;
+
+    float GetBrakeCmd() const;
+
+    float GetClutchCmd() const;
+
+    float GetLightCmd() const;
+
     void ShowIntervention(InterventionAction p_element) const;
 
     void SetCar(tCarElt* p_car);
