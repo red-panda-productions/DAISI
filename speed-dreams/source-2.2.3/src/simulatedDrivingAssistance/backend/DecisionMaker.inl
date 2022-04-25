@@ -45,7 +45,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 #if !defined(TEST)
     if (p_recordBB)
     {
-        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
+        m_recorder = new Recorder("BB_Recordings", "bbRecording%Y%m%d-%H%M%S", 2);
     }
 #endif
 

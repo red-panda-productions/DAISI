@@ -618,7 +618,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
     // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
     m_pControl = SMediator::GetInstance()->GetPControlSettings();
     if (m_pControl.RecordSession) {
-        recorder = new Recorder("user_recordings", "userRecording", PARAM_AMOUNT);
+        recorder = new Recorder("user_recordings", "userRecording%Y%m%d-%H%M%S", PARAM_AMOUNT);
     }
     const int idx = index - 1;
 
@@ -778,7 +778,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         }//KEYBOARD
 
     }//for i
-    
+
 #if SDL_FORCEFEEDBACK
    	//initialize the force feedback
 	forceFeedback.readConfiguration(car->_carName);
@@ -1087,7 +1087,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         // pow used to indicate the polarity of 'more turn'
         if (cmd[CMD_LEFTSTEER].pow > 0)
             ax0 = ax0 - cmd[CMD_LEFTSTEER].deadZone;
-        else 
+        else
             ax0 = 1 - ax0 - cmd[CMD_LEFTSTEER].deadZone;
 
         if (ax0 < 0) ax0 = 0;
@@ -1153,7 +1153,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             if (leftSteer < 0.0) leftSteer = 0.0;
         }
 #endif
-        
+
         HCtx[idx]->prevLeftSteer = leftSteer;
         break;
     default:
@@ -1176,7 +1176,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         // pow used to indicate the polarity of 'more turn'
         if (cmd[CMD_RIGHTSTEER].pow > 0)
             ax0 = ax0 - cmd[CMD_RIGHTSTEER].deadZone;
-        else 
+        else
             ax0 = 1 - ax0 - cmd[CMD_RIGHTSTEER].deadZone;
 
         if (ax0 < 0) ax0 = 0;
@@ -1250,13 +1250,13 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     car->_steerCmd = leftSteer + rightSteer;
-    
+
 #if SDL_FORCEFEEDBACK
 
 	//send force feedback effect to the wheel
 	//dont' even try to do it if steer command is on a keyboard because it somehow manage to crash (unable to identify the joystic to send FF to?)
 	if(cmd[CMD_LEFTSTEER].type != GFCTRL_TYPE_KEYBOARD){
-		//                     v<-  this controller detenction does not make ->v 
+		//                     v<-  this controller detenction does not make ->v
 		//                     v<-  sense to me                              ->v
         HCtx[idx]->lastForceFeedbackIndex = int((cmd[CMD_LEFTSTEER].val) / GFCTRL_JOY_NUMBER);
         HCtx[idx]->lastForceFeedbackLevel = forceFeedback.updateForce(car, s);
@@ -1283,7 +1283,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             || (cmd[CMD_RIGHTGLANCE].type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->button[cmd[CMD_RIGHTGLANCE].val])
             || (cmd[CMD_RIGHTGLANCE].type == GFCTRL_TYPE_KEYBOARD && keyInfo[lookUpKeyMap(cmd[CMD_RIGHTGLANCE].val)].state)
             || (cmd[CMD_RIGHTGLANCE].type == GFCTRL_TYPE_JOY_ATOB && cmd[CMD_RIGHTGLANCE].deadZone != 0))
-    { 
+    {
         newGlance = newGlance + GLANCERATE * s->deltaTime;
     	if (newGlance > 0.5) newGlance=0.5;
     } else if (cmd[CMD_RIGHTGLANCE].type == GFCTRL_TYPE_JOY_AXIS && joyInfo->ax[cmd[CMD_RIGHTGLANCE].val] > cmd[CMD_RIGHTGLANCE].min)
@@ -1328,10 +1328,10 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             || (cmd[CMD_DASHB_NEXT].type == GFCTRL_TYPE_JOY_ATOB && cmd[CMD_DASHB_NEXT].deadZone != 0))
     {
         car->_dashboardActiveItem++;
-        if (car->_dashboardActiveItem >= car->_dashboardInstantNb + car->_dashboardRequestNb) 
+        if (car->_dashboardActiveItem >= car->_dashboardInstantNb + car->_dashboardRequestNb)
             {car->_dashboardActiveItem = 0;}
     }
-    
+
     if ((cmd[CMD_DASHB_PREV].type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[cmd[CMD_DASHB_PREV].val])
             || (cmd[CMD_DASHB_PREV].type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgedn[cmd[CMD_DASHB_PREV].val])
             || (cmd[CMD_DASHB_PREV].type == GFCTRL_TYPE_KEYBOARD && keyInfo[lookUpKeyMap(cmd[CMD_DASHB_PREV].val)].edgeDn)
@@ -1341,7 +1341,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         if (car->_dashboardActiveItem < 0)
             {car->_dashboardActiveItem = car->_dashboardInstantNb + car->_dashboardRequestNb - 1;}
     }
-    
+
     tDashboardItem *item;
     if (car->_dashboardActiveItem < car->_dashboardInstantNb) {
         item = &(car->_dashboardInstant[car->_dashboardActiveItem]);
@@ -1373,7 +1373,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             car->ctrl.setupChangeCmd = item;
         }
     }
-    
+
     if ((cmd[CMD_DASHB_DEC].type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[cmd[CMD_DASHB_DEC].val])
             || (cmd[CMD_DASHB_DEC].type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgedn[cmd[CMD_DASHB_DEC].val])
             || (cmd[CMD_DASHB_DEC].type == GFCTRL_TYPE_KEYBOARD && keyInfo[lookUpKeyMap(cmd[CMD_DASHB_DEC].val)].edgeDn)
@@ -1399,8 +1399,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             car->ctrl.setupChangeCmd = item;
         }
     }
-    
-    
+
+
     switch (cmd[CMD_BRAKE].type) {
     case GFCTRL_TYPE_JOY_AXIS:
         brake = joyInfo->ax[cmd[CMD_BRAKE].val];
@@ -1738,7 +1738,7 @@ static void common_brake(const int idx, tCarElt* car, tSituation *s)
         if (HCtx[idx]->useESP)
         {
             float DriftAngle = atan2(car->_speed_Y,car->_speed_X) - car->_yaw;
-            FLOAT_NORM_PI_PI(DriftAngle);            
+            FLOAT_NORM_PI_PI(DriftAngle);
 
             if (DriftAngle > 4.0/180.0*PI)
             {
@@ -1777,10 +1777,10 @@ static void common_brake(const int idx, tCarElt* car, tSituation *s)
             }
 
             car->ctrl.singleWheelBrakeMode = 1;
-            car->ctrl.brakeFrontRightCmd = (float) (car->_brakeCmd * HCtx[idx]->brakeRep * HCtx[idx]->brakeRight * HCtx[idx]->brakeFront); 
-            car->ctrl.brakeFrontLeftCmd = (float) (car->_brakeCmd * HCtx[idx]->brakeRep * HCtx[idx]->brakeLeft * HCtx[idx]->brakeFront); 
-            car->ctrl.brakeRearRightCmd = (float) (car->_brakeCmd * (1 - HCtx[idx]->brakeRep) * HCtx[idx]->brakeRight * HCtx[idx]->brakeRear); 
-            car->ctrl.brakeRearLeftCmd = (float) (car->_brakeCmd * (1 - HCtx[idx]->brakeRep) * HCtx[idx]->brakeLeft * HCtx[idx]->brakeRear); 
+            car->ctrl.brakeFrontRightCmd = (float) (car->_brakeCmd * HCtx[idx]->brakeRep * HCtx[idx]->brakeRight * HCtx[idx]->brakeFront);
+            car->ctrl.brakeFrontLeftCmd = (float) (car->_brakeCmd * HCtx[idx]->brakeRep * HCtx[idx]->brakeLeft * HCtx[idx]->brakeFront);
+            car->ctrl.brakeRearRightCmd = (float) (car->_brakeCmd * (1 - HCtx[idx]->brakeRep) * HCtx[idx]->brakeRight * HCtx[idx]->brakeRear);
+            car->ctrl.brakeRearLeftCmd = (float) (car->_brakeCmd * (1 - HCtx[idx]->brakeRep) * HCtx[idx]->brakeLeft * HCtx[idx]->brakeRear);
         }
         else
             car->ctrl.singleWheelBrakeMode = 0;
@@ -2144,7 +2144,7 @@ int HumanDriver::pit_cmd(int index, tCarElt* car, tSituation *s)
 
     //car->_pitRepair = (int)car->_dammage;
     car->_pitRepair = car->setup.reqRepair.desired_value;
-    
+
     if (car->setup.reqPenalty.desired_value > 0.9) {
         car->_pitStopType = RM_PIT_STOPANDGO;
     } else {
@@ -2389,7 +2389,7 @@ void HumanDriver::human_prefs(const int robot_index, int player_index)
        cmdCtrl[CMD_GEAR_1].type = GFCTRL_TYPE_NOT_AFFECTED;
     }
 
-    
+
 }
 
 HumanDriver::HumanDriver(const char *robotname)
