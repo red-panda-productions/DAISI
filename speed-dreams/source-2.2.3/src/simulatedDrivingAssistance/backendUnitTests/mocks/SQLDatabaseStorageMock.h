@@ -19,12 +19,11 @@ public:
         m_inputFilePath = p_inputFilePath;
 
         const auto path = new std::experimental::filesystem::path(p_inputFilePath);
-        
+
         VariableStore::GetInstance().variables[0] = static_cast<void*>(path);
     }
     void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override
     {
-        
     }
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
@@ -32,8 +31,9 @@ public:
                       const std::string& p_password,
                       const std::string& p_schemaName){};
 
-    void CloseDatabase(){}
+    void CloseDatabase() {}
     std::experimental::filesystem::path m_inputFilePath;
+
 private:
     void CreateTables(){};
     int InsertInitialData(std::ifstream& p_inputFile){};

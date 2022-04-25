@@ -7,7 +7,7 @@
 #include "TestUtils.h"
 #include "car.h"
 #include "raceman.h"
-#include  <config.h>
+#include <config.h>
 #include "mocks/FileDataStorageMock.h"
 #include "mocks/SQLDatabaseStorageMock.h"
 #include "portability.h"
@@ -61,7 +61,7 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsT
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
 
-void InitializeTest (TDecisionMaker& p_decisionMaker)
+void InitializeTest(TDecisionMaker& p_decisionMaker)
 {
     tCarElt car;  // need data
     tSituation situation;
@@ -90,7 +90,8 @@ void InitializeTest (TDecisionMaker& p_decisionMaker)
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
 
- TEST(DecisionMakerTests, InitializeTest){
+TEST(DecisionMakerTests, InitializeTest)
+{
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
 }
@@ -121,7 +122,8 @@ BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
 END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2, arr, 2);
 
-TEST(DecisionMakerTests, RaceStopTest){
+TEST(DecisionMakerTests, RaceStopTest)
+{
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);

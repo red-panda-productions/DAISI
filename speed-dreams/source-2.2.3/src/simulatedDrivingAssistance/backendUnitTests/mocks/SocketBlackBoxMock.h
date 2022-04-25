@@ -19,13 +19,10 @@ public:
 
     void Initialize()
     {
-
     }
 
-    
     void Shutdown()
     {
-
     }
 
     bool GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions) const
@@ -37,7 +34,6 @@ public:
 
     BlackBoxData* GetBlackBoxData() const
     {
-
         return m_initialDriveSituation;
     }
 

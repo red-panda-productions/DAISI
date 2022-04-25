@@ -7,9 +7,9 @@ public:
     static VariableStore& GetInstance();
 
     void* variables[20] = {};
+
 private:
     VariableStore();
-
 
 public:
     VariableStore(VariableStore const&) = delete;
