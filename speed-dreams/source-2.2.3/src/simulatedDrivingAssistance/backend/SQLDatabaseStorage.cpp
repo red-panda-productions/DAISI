@@ -2,6 +2,7 @@
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
 #include "ConfigEnums.h"
+#include <config.h>
 
 /// @brief reads input from input file, unless EOF has been reached
 #define READ_INPUT(p_inputFile, p_string)                        \
@@ -79,7 +80,7 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
 void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
 {
-    std::string configPath(ROOT_FOLDER "\\data");
+    std::string configPath(SD_DATADIR_SRC);
     std::string configFile("database_encryption_settings.txt");
 
     if (!FindFileDirectory(configPath, configFile))
@@ -95,7 +96,7 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
     READ_INPUT(ifstream, pubName)
     READ_INPUT(ifstream, privName)
 
-    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
+    std::string certificatesPath(SD_DATADIR_SRC "\\certificates");
     std::string caFile(caName);
     std::string pubFile(pubName);
     std::string privFile(privName);
@@ -632,14 +633,15 @@ void SQLDatabaseStorage::CloseDatabase()
     delete m_connection;
 }
 
-void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath)
+void SQLDatabaseStorage::Run( const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
-    std::string configPath(ROOT_FOLDER "\\data");
+
+    std::string configPath(SD_DATADIR_SRC + p_dirPath);
     std::string configFile("database_connection_settings.txt");
 
     if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
 
-    std::ifstream ifstream(configPath + '\\' + configFile);
+    std::ifstream ifstream(configPath + '/' + configFile);
     if (ifstream.fail()) throw std::exception("Could not open database settings file");
 
     std::string ip;
