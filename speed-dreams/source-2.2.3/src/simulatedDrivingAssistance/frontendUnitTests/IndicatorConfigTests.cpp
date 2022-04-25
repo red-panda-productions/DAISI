@@ -50,6 +50,14 @@ tSoundData* CreateRandomSoundData(Random& p_rnd, DataGeneration p_gen)
     return data;
 }
 
+/// @brief       Creates a random invalid screen coordinate in the range [-FLOAT_MAX..0][1..FLOAT_MAX]
+/// @param p_rnd The random generator reference to use
+/// @return      The invalid screen coordinate.
+float CreateInvalidScreenCoord(Random& p_rnd)
+{
+    return (p_rnd.NextBool()) ? p_rnd.NextFloat(1.0f, FLT_MAX) : p_rnd.NextFloat(-FLT_MAX, 0);
+}
+
 /// @brief       Creates randomly generated screen positions
 /// @param p_rnd The random generator reference to use
 /// @param p_gen The flags to use when generating data
@@ -58,7 +66,7 @@ tScreenPosition CreateRandomScreenPosition(Random& p_rnd, DataGeneration p_gen)
 {
     if (p_gen & INVALID_SCR_POS)
     {
-        return {p_rnd.NextFloat(1.0f, FLT_MAX), p_rnd.NextFloat(1.0f, FLT_MAX)};
+        return {CreateInvalidScreenCoord(p_rnd), CreateInvalidScreenCoord(p_rnd)};
     }
     return {p_rnd.NextFloatIncl(0, 1.0f), p_rnd.NextFloatIncl(0, 1.0f)};
 }
