@@ -59,8 +59,8 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsT
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
 
- TEST(DecisionMakerTests, InitializeTest){
-    TDecisionMaker decisionMaker;
+void InitializeTest (TDecisionMaker& p_decisionMaker)
+{
     tCarElt car;  // need data
     tSituation situation;
     situation.deltaTime = 108;
@@ -70,20 +70,25 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSetting
     track.name = "track_1";
     track.version = 0;
 
-    decisionMaker.Config.SetUserId("1");
+    p_decisionMaker.Config.SetUserId("1");
 
     std::string findFilePath = ROOT_FOLDER "\\data\\blackbox";
     ASSERT_TRUE(FindFileDirectory(findFilePath, "Blackbox.exe"));
     std::string bbPath = findFilePath.append("\\Blackbox.exe");
-    decisionMaker.Initialize(&car, &situation, &track, bbPath, true);
-    
-    SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&decisionMaker.BlackBox);
+    p_decisionMaker.Initialize(&car, &situation, &track, bbPath, true);
+
+    SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&p_decisionMaker.BlackBox);
     BlackBoxData* blackboxDataMock = mockCheck->GetBlackBoxData();
-    FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
+    FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     ASSERT_TRUE(storage->m_environmentVersion == track.version);
     ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
+}
+
+ TEST(DecisionMakerTests, InitializeTest){
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker);
 }
 
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
@@ -114,7 +119,9 @@ END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2,
 
 TEST(DecisionMakerTests, RaceStopTest){
     TDecisionMaker decisionMaker;
-    decisionMaker.RaceStop();
+    InitializeTest(decisionMaker);
+
+    ASSERT_NO_THROW(decisionMaker.RaceStop());
 }
 
 TEST(DecisionMakerTests, GetFileDataStorageTest)
