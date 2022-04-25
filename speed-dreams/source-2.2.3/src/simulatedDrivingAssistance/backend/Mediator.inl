@@ -142,7 +142,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
     std::cout << blackBoxFilePath << std::endl;
 
-     // Load indicators from XML used for assisting the human with visual/audio indicators.
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);

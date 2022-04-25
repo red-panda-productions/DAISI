@@ -20,7 +20,6 @@ typedef unsigned int DataGeneration;
 #define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
 
-
 /// @brief            Creates randomly generated sound data
 /// @param p_rnd      The random generator reference to use
 /// @param p_validity The validity flags to use when generating data
