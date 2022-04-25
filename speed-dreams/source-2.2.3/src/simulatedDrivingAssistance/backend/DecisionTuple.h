@@ -6,7 +6,7 @@
 #define DECISIONS_COUNT 3
 
 /// @brief A tuple that contains all decisions that can be made by an AI
-//template <class Mediator>
+// template <class Mediator>
 struct DecisionTuple
 {
 public:
