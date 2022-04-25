@@ -20,6 +20,7 @@ static void GfuiSelected(void* p_idv)
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
     GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->ParentControl, -1);
+    GfuiUnSelectCurrent();
 
     if (radioButton->OnChange)
         radioButton->OnChange(radioButton->Info);
@@ -36,6 +37,7 @@ static void GfuiNotSelected(void* p_idv)
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
     GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->ParentControl, radioButton->NrInList);
+    GfuiUnSelectCurrent();
 
     if (radioButton->OnChange)
         radioButton->OnChange(radioButton->Info);
