@@ -46,6 +46,44 @@ tCarElt GenerateCar(TestSegments& p_testSegments)
     RAND_NAME(car.info.teamname, MAX_NAME_LEN)
     RAND_NAME(car.info.carName, MAX_NAME_LEN)
     RAND_NAME(car.info.category, MAX_NAME_LEN)
+    car.info.raceNumber = random.NextInt();
+    car.info.startRank = random.NextInt();
+    car.info.driverType = random.NextInt();
+    car.info.networkplayer = random.NextInt();
+    car.info.skillLevel = random.NextInt(4);
+    for (int i = 0; i < 3; i++)
+    {
+        car.info.iconColor[i] = random.NextFloat();
+    }
+    RAND_T3D(car.info.dimension)
+    RAND_T3D(car.info.drvPos)
+    RAND_T3D(car.info.bonnetPos)
+    car.info.tank = random.NextFloat();
+    car.info.steerLock = random.NextFloat();
+    RAND_T3D(car.info.statGC)
+    for (int i = 0; i < 4; i++)
+    {
+        car.info.wheel[i].rimRadius = random.NextFloat();
+        car.info.wheel[i].tireHeight = random.NextFloat();
+        car.info.wheel[i].tireWidth = random.NextFloat();
+        car.info.wheel[i].brakeDiskRadius = random.NextFloat();
+        car.info.wheel[i].wheelRadius = random.NextFloat();
+    }
+    car.info.visualAttr.exhaustNb = random.NextInt();
+    for (int j = 0; j < 1; j++)
+    {
+        RAND_T3D(car.info.visualAttr.exhaustPos[j])
+    }
+    car.info.visualAttr.exhaustPower = random.NextFloat();
+    RAND_NAME(car.info.masterModel, MAX_NAME_LEN)
+    RAND_NAME(car.info.skinName, MAX_NAME_LEN)
+    int possibleSkinTargets[] = {RM_CAR_SKIN_TARGET_WHOLE_LIVERY, RM_CAR_SKIN_TARGET_3D_WHEELS, RM_CAR_SKIN_TARGET_INTERIOR,
+                                 RM_CAR_SKIN_TARGET_BOARD, RM_CAR_SKIN_TARGET_DRIVER, RM_CAR_SKIN_TARGET_PIT_DOOR};
+    car.info.skinTargets = 0;
+    for (int i = 0; i < 6; i++)
+    {
+        car.info.skinTargets |= possibleSkinTargets[i] * random.NextBool();
+    }
     return car;
 }
 
