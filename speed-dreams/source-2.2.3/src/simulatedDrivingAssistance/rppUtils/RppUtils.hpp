@@ -71,7 +71,10 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 inline bool SetupSingletonsFolder()
 {
     std::error_code errorCode;
-    std::experimental::filesystem::remove_all("Singletons", errorCode);
+
+    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
+    path.append("Singletons");
+    std::experimental::filesystem::remove_all(path, errorCode);
     if (errorCode.value() != 0)
     {
         std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
@@ -81,9 +84,8 @@ inline bool SetupSingletonsFolder()
     // set up singleton folder
     char directory[256];
     getcwd(directory, 256);
-    std::string workingDirecotory(directory);
-    workingDirecotory += "\\Singletons";
-    const char* wd = workingDirecotory.c_str();
+    std::string pathstring = path.string();
+    const char* wd = pathstring.c_str();
     struct stat info = {};
     int err = stat(wd, &info);
     if (err != 0 && err != -1)

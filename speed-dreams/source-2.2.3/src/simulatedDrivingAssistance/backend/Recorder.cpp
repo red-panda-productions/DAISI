@@ -3,6 +3,9 @@
 #include <sstream>
 #include <tgf.h>
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
+
 /// @brief					Constructor of Recording,
 ///							creates a file with the current date and time,
 ///							opens file in binary and appending mode
@@ -15,10 +18,33 @@
 Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, const int p_paramAmount)
 {
     // create directory if it doesn't exist
-    std::string dirPath = "..\\test_data\\" + p_dirName;
-    if (!GfDirExists(dirPath.c_str()))
+    char* pValue;
+    size_t len;
+    errno_t err = _dupenv_s(&pValue, &len, "APPDATA");
+
+    if (err)
     {
-        GfDirCreate(dirPath.c_str());
+        GfLogError("Error getting APPDATA environment variable: %d\n", err);
+        return;
+    }
+
+    auto sdaFolder = std::experimental::filesystem::path(std::string(pValue, len))
+                         .append("sda");
+
+    std::string sdaFolderString = sdaFolder.string();
+
+    if (!GfDirExists(sdaFolderString.c_str()))
+    {
+        GfDirCreate(sdaFolderString.c_str());
+    }
+
+    auto recordingsFolder = sdaFolder.append(p_dirName);
+
+    std::string recordingsFolderString = recordingsFolder.string();
+
+    if (!GfDirExists(recordingsFolderString.c_str()))
+    {
+        GfDirCreate(recordingsFolderString.c_str());
     }
 
     // create and open new recording file with current timestamp
@@ -26,8 +52,8 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileName, 
     std::tm tm = *std::localtime(&t);
     std::stringstream buffer;
     buffer << std::put_time(&tm, "%Y%m%d-%H%M%S");
-    std::string path = dirPath + "\\" + p_fileName + buffer.str() + ".txt";
-    m_recordingFile.open(path, std::ios::binary | std::ios::app);
+    auto fileName = recordingsFolder.append(p_fileName + buffer.str() + ".txt");
+    m_recordingFile.open(fileName, std::ios::binary | std::ios::app);
 
     m_paramAmount = p_paramAmount;
     // initialize previous input with impossible values

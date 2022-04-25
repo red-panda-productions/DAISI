@@ -5,9 +5,8 @@
 #include "gui.h"
 #include "guifont.h"
 
-
 /// @brief Initializes the radio button
-void GfuiRadioButtonInit(void) { }
+void GfuiRadioButtonInit() {}
 
 /// @brief       Function to call when a selected radiobutton is clicked
 /// @param p_idv The RadioButton object id
@@ -55,7 +54,7 @@ void GfuiRadioButtonSelect(void* p_scr, int p_id, bool p_selected)
 
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
-    radioButton->Info->Checked  = p_selected;
+    radioButton->Info->Checked = p_selected;
     radioButton->Info->Selected = p_selected ? radioButton->NrInList : -1;
     GfuiVisibilitySet(p_scr, radioButton->SelectedControl, p_selected);
     GfuiVisibilitySet(p_scr, radioButton->NotSelectedControl, !p_selected);
@@ -93,13 +92,13 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
 
     radioButton = &(object->u.radiobutton);
     radioButton->OnChange = p_onChange;
-    radioButton->Info     = new tRadioButtonInfo;
-    radioButton->Info->Checked  = p_selected == p_listId;
+    radioButton->Info = new tRadioButtonInfo;
+    radioButton->Info->Checked = p_selected == p_listId;
     radioButton->Info->Selected = p_selected;
     radioButton->Info->UserData = p_userData;
-    radioButton->NrInList       = p_listId;
-    radioButton->ParentControl  = p_parentId;
-    radioButton->Scr            = p_scr;
+    radioButton->NrInList = p_listId;
+    radioButton->ParentControl = p_parentId;
+    radioButton->Scr = p_scr;
 
     // Initialize the checked and unchecked button children.
     // Warning: All the images are supposed to be the same size.
@@ -107,14 +106,14 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
     //       (otherwise multiple frees at release time ...).
     radioButton->SelectedControl =
         GfuiGrButtonCreate(p_scr, "data/img/radio-checked.png", "data/img/radio-checked.png",
-                           "data/img/radio-checked.png", "data/img/radio-checked.png",
+                           "data/img/radio-checked-focused.png", "data/img/radio-checked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
                            (void*)(long)(object->id), GfuiSelected,
                            p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
     radioButton->NotSelectedControl =
         GfuiGrButtonCreate(p_scr, "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
-                           "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
+                           "data/img/radio-unchecked-focused.png", "data/img/radio-unchecked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
                            (void*)(long)(object->id), GfuiNotSelected,
                            p_userDataOnFocus, p_onFocus, p_onFocusLost);
@@ -125,7 +124,7 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
     if (height < selectedButton->height)
         height = selectedButton->height;
 
-        // Fix button p_y coordinate if text is higher than the buttons
+    // Fix button p_y coordinate if text is higher than the buttons
     else
     {
         tGfuiGrButton* notSelectedButton = &(gfuiGetObject(p_scr, radioButton->NotSelectedControl)->u.grbutton);
@@ -146,10 +145,10 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
     const int xl = p_x + p_imageWidth + hPadding;
     int yl = p_y;
     if (height > gfuiFont[p_font]->getHeight())
-        yl += (height -  gfuiFont[p_font]->getHeight()) / 2;
+        yl += (height - gfuiFont[p_font]->getHeight()) / 2;
 
     radioButton->LabelControl =
-        GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, strlen(p_pszText));
+        GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(p_pszText));
 
     gfuiAddObject(screen, object);
 
@@ -212,8 +211,7 @@ bool GfuiRadioButtonIsSelected(void* p_scr, int p_id)
 
 /// @brief       Frees the pointer to the RadioButton object
 /// @param p_obj The RadioButton object
-void GfuiReleaseRadioButton(tGfuiObject* obj)
+void GfuiReleaseRadioButton(tGfuiObject* p_obj)
 {
-    free(obj);
+    free(p_obj);
 }
-
