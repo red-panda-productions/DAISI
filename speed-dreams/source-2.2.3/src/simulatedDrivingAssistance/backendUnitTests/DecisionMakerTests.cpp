@@ -119,7 +119,9 @@ END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2,
 
 TEST(DecisionMakerTests, RaceStopTest){
     TDecisionMaker decisionMaker;
-    decisionMaker.RaceStop();
+    InitializeTest(decisionMaker);
+
+    ASSERT_NO_THROW(decisionMaker.RaceStop());
 }
 
 TEST(DecisionMakerTests, GetFileDataStorageTest)
