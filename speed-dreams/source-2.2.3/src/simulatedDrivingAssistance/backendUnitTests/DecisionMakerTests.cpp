@@ -74,7 +74,7 @@ void InitializeTest (TDecisionMaker& p_decisionMaker)
 
     p_decisionMaker.Config.SetUserId("1");
 
-    std::string findFilePath = ROOT_FOLDER "\\data\\blackbox";
+    std::string findFilePath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
     chdir(SD_DATADIR);
     ASSERT_TRUE(FindFileDirectory(findFilePath, "Blackbox.exe"));
     std::string bbPath = findFilePath.append("\\Blackbox.exe");
