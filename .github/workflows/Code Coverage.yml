@@ -41,10 +41,18 @@ jobs:
       shell: bash
       run: cmake --build . --config Debug
 
-    - name: Run code coverage
+    - name: Run code coverage UnitUtilities
+      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+      run: .\UnitUtilitiesCoverage.bat
+
+    - name: Run code coverage Frontend
+      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+      run: .\FrontendCoverage.bat
+    
+    - name: Run code coverage Backend
       working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
       run: .\BackendCoverage.bat
-    
+
     - name: Create code coverage report
       uses: 5monkeys/cobertura-action@master
       with:
