@@ -34,6 +34,7 @@ SET(_SOURCES MsgpackDeserializeTests.cpp
         SQLDatabaseStorageTests.cpp
         BlackBoxDataTests.cpp
         DecisionsTests.cpp
+        RecorderTests.cpp
         )
 
 SET(_HEADERS MsgpackSerializeTests.h

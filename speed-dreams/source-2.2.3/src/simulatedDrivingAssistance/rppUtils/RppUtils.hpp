@@ -4,6 +4,7 @@
 #include "../../libs/portability/portability.h"
 #include <iostream>
 #include <windows.h>
+#include <tgf.h>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -71,7 +72,10 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 inline bool SetupSingletonsFolder()
 {
     std::error_code errorCode;
-    std::experimental::filesystem::remove_all("Singletons", errorCode);
+
+    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
+    path.append("Singletons");
+    std::experimental::filesystem::remove_all(path, errorCode);
     if (errorCode.value() != 0)
     {
         std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
@@ -81,9 +85,8 @@ inline bool SetupSingletonsFolder()
     // set up singleton folder
     char directory[256];
     getcwd(directory, 256);
-    std::string workingDirecotory(directory);
-    workingDirecotory += "\\Singletons";
-    const char* wd = workingDirecotory.c_str();
+    std::string pathstring = path.string();
+    const char* wd = pathstring.c_str();
     struct stat info = {};
     int err = stat(wd, &info);
     if (err != 0 && err != -1)
@@ -126,4 +129,32 @@ inline void StartExecutable(const std::string& p_executablePath)
                   nullptr,
                   &startupInformation,
                   &processInformation);
+}
+
+/// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
+/// @param p_sdaFolder Reference to the variable to store the path in.
+/// This variable will contain the path to the SDA folder after running this function.
+/// @return true if the folder was successfully found
+inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
+{
+    // create directory if it doesn't exist
+    char* pValue;
+    size_t len;
+    errno_t err = _dupenv_s(&pValue, &len, "APPDATA");
+
+    if (err)
+    {
+        GfLogError("Error getting APPDATA environment variable: %d\n", err);
+        return false;
+    }
+
+    p_sdaFolder = std::experimental::filesystem::path(std::string(pValue, len)).append("sda");
+    std::string sdaFolderString = p_sdaFolder.string();
+
+    if (!GfDirExists(sdaFolderString.c_str()))
+    {
+        GfDirCreate(sdaFolderString.c_str());
+    }
+
+    return true;
 }
