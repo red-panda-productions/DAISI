@@ -15,7 +15,7 @@ private:
     std::ofstream m_outputStream;
 
 public:
-    void Initialize(tDataToStore p_saveSettings,
+    std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,
         const std::string& p_fileName,
         const std::string& p_userId,
         const std::time_t& p_trialStartTime,
@@ -31,6 +31,9 @@ public:
         m_blackboxTime = p_blackboxTime;
         m_environmentVersion = p_environmentVersion;
         m_interventionType = p_interventionType;
+        std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
+        filePath.append(p_fileName);
+        return {filePath};
     }
 
     tDataToStore m_saveSettings;

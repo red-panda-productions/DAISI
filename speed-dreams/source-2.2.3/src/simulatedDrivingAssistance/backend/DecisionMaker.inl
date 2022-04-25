@@ -66,7 +66,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage>::Initialize(tCarE
     int trackversion = p_track->version;
     unsigned int interventiontype = Config.GetInterventionType();
 
-    m_fileBufferStorage.Initialize(dataCollectionSetting,
+    m_bufferFilePath = m_fileBufferStorage.Initialize(dataCollectionSetting,
                                    BUFFER_FILE_PATH,
                                    userId,
                                    currentTime,
