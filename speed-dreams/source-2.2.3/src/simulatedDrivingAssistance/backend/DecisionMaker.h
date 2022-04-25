@@ -37,7 +37,6 @@ public:
     FileDataStorage* GetFileDataStorage();
     std::experimental::filesystem::path* GetBufferFilePath();
 
-
     ~DecisionMaker();
 
 private:
