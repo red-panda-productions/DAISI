@@ -21,7 +21,7 @@
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
-#define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
+#define BUFFER_FILE_PATH   "race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -45,7 +45,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 #if !defined(TEST)
     if (p_recordBB)
     {
-        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
+        m_recorder = new Recorder("BB_Recordings", "bbRecording%Y%m%d-%H%M%S", 2);
     }
 #endif
 
@@ -55,20 +55,18 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
-    const std::time_t& trialStartTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    const std::time_t& blackboxFileTime = std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath));
-
-    m_fileBufferStorage.Initialize(Config.GetDataCollectionSetting(),
-                                   BUFFER_FILE_PATH,
-                                   Config.GetUserId(),
-                                   trialStartTime,
-                                   blackBoxPath.filename().string(),
-                                   blackBoxPath.stem().string(),
-                                   blackboxFileTime,
-                                   p_track->filename,
-                                   p_track->name,
-                                   p_track->version,
-                                   Config.GetInterventionType());
+    m_bufferFilePath = m_fileBufferStorage.Initialize(
+        Config.GetDataCollectionSetting(),
+        BUFFER_FILE_PATH,
+        Config.GetUserId(),
+        std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()),
+        blackBoxPath.filename().string(),
+        blackBoxPath.stem().string(),
+        std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath)),
+        p_track->filename,
+        p_track->name,
+        p_track->version,
+        Config.GetInterventionType());
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -134,5 +132,5 @@ void TEMP_DECISIONMAKER::RaceStop()
     BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
     SQLDatabaseStorage sqlDatabaseStorage;
-    sqlDatabaseStorage.Run(BUFFER_FILE_PATH);
+    sqlDatabaseStorage.Run(m_bufferFilePath);
 }
