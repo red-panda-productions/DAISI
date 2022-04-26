@@ -3,8 +3,13 @@
 #include "ConfigEnums.h"
 #include <tgf.h>
 #include <Recorder.h>
+
+#include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+
 Recorder* recorder;
 #define PARAMAMOUNT 16
+
+#define RECORDING_NAME "userRecording20220426-133633"
 
 const float Driver::SHIFT = 0.9;         /* [-] (% of rpmredline) */
 const float Driver::SHIFT_MARGIN = 4.0;  /* [m/s] */
@@ -29,8 +34,14 @@ Driver::Driver(int p_index, const char* p_name) : m_index(p_index) {
 /// @param p_carParmHandle
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
-    //m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
+    std::experimental::filesystem::path sdaFolder;
+    if (!GetSdaFolder(sdaFolder)) return;
+    sdaFolder.append("user_recordings").append(RECORDING_NAME);
 
+    //m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
+    *p_carParmHandle = GfParmReadFile(std::experimental::filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD, true);
+
+    m_replayFile.open(sdaFolder.append(USER_INPUT_RECORDING_FILE_NAME).string().c_str());
     //SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
@@ -42,7 +53,6 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
     //recorder = new Recorder("user_recordings", "userRecording", PARAMAMOUNT);
 
     //m_humanDriver.new_race(m_index, p_car, p_situation);
-    m_replayFile.open("..\\test_data\\user_recordings\\userRecording20220407-100812.txt");
     std::string inputTime;
     m_replayFile >> inputTime;
     m_inputTime = std::stod(inputTime);

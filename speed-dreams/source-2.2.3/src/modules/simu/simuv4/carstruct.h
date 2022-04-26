@@ -144,7 +144,15 @@ typedef struct
 #else
 
 #define CHECK_VAR(_var_, _msg_)
-#define CHECK(_car_)
+
+#define CHECK(car) \
+  out_log << "pos: " << std::fixed << std::setprecision(20) << car->DynGC.pos.x << " " << std::fixed << std::setprecision(20)<< car->DynGC.pos.y << " " << std::fixed << std::setprecision(20) << car->DynGC.pos.z << std::endl; \
+  out_log << "vel: " << std::fixed << std::setprecision(20) << car->DynGC.vel.x << " " << std::fixed << std::setprecision(20)<< car->DynGC.vel.y << " " << std::fixed << std::setprecision(20) << car->DynGC.vel.z << std::endl; \
+  out_log << "acc: " << std::fixed << std::setprecision(20) << car->DynGC.acc.x << " " << std::fixed << std::setprecision(20)<< car->DynGC.acc.y << " " << std::fixed << std::setprecision(20) << car->DynGC.acc.z << std::endl;
+
+#define CALL_AND_LOG(func) \
+  out_log << #func << std::endl; \
+  func;
 
 #endif
 

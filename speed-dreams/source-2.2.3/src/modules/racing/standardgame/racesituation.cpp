@@ -57,7 +57,6 @@
 #include "racenetwork.h"
 
 
-
 // The singleton.
 ReSituation* ReSituation::_pSelf = 0;
 
@@ -337,9 +336,6 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
             if ((s->cars[i]->_state & RM_CAR_STATE_NO_SIMU) == 0) {
                 robot = s->cars[i]->robot;
                 if (replayReplay == 0) {
-                    std::cout << s->cars[i]->pub.DynGC.pos.x << " " << s->cars[i]->pub.DynGC.pos.y << " " << s->cars[i]->pub.DynGC.pos.z << std::endl;
-                   // std::cout << s->cars[i]->pub.DynGC.vel.x << " " << s->cars[i]->pub.DynGC.vel.y << " " << s->cars[i]->pub.DynGC.vel.z << std::endl;
-                   // std::cout << s->cars[i]->pub.DynGC.acc.x << " " << s->cars[i]->pub.DynGC.acc.y << " " << s->cars[i]->pub.DynGC.acc.z << std::endl;
                     robot->rbDrive(robot->index, s->cars[i], s);
                 }
             }

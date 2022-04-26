@@ -18,9 +18,13 @@ Added:
         CmakeList.txt
         Driver.cpp
         Driver.h
-    libs/tgfclient/
-        GuiRadioButton.cpp
-        GuiRadioButtonList.cpp
+    libs/
+        tgf/
+            params.cpp
+                Modified xmlGetOuputLine to write floats with full precision.
+        tgfclient/
+            GuiRadioButton.cpp
+            GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
         ResearcherMenu.h
         ResearcherMenu.cpp

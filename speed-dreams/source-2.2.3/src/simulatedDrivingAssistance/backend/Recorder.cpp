@@ -4,9 +4,6 @@
 #include <tgf.h>
 #include "../rppUtils/RppUtils.hpp"
 
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
 /// @brief  Constructor of Recording,
 ///	    	creates a file with the current date and time,
 ///	    	opens file in binary and appending mode
@@ -26,13 +23,17 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileNamePa
         GfDirCreate(recordingsFolderString.c_str());
     }
 
-    // create and open new recording file with current timestamp
+    // create a new recording directory with current timestamp
     std::time_t t = std::time(nullptr);
     std::tm tm = *std::localtime(&t);
     std::stringstream buffer;
     buffer << std::put_time(&tm, p_fileNamePattern.c_str());
-    std::experimental::filesystem::path path = recordingsFolder.append(buffer.str() + ".txt");
+    recordingsFolder.append(buffer.str());
+    m_recordingDir = std::experimental::filesystem::path(recordingsFolder);
+    create_directories(m_recordingDir);
+
     // Open the file with truncate on, such that if the file was already in use any existing content will be discarded
+    std::experimental::filesystem::path path = recordingsFolder.append(USER_INPUT_RECORDING_FILE_NAME);
     m_recordingFile.open(path, std::ios::binary | std::ios::trunc);
     std::cout << "Writing recording file to " << path << std::endl;
 
@@ -51,6 +52,12 @@ Recorder::~Recorder()
     m_recordingFile.close();
 }
 
+/// @brief Write the settings of the car being recorded to the recording.
+/// @param p_carElt The handle to the car settings.
+void Recorder::WriteCar(const tCarElt* p_carElt) {
+    GfParmWriteFile(std::experimental::filesystem::path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(), p_carElt->_carHandle, p_carElt->info.name);
+}
+
 /// @brief  Writes a float array to the m_recordingFile,
 ///	    	with the current time of the simulation.
 ///	    	Can do compression if p_compression is true,
@@ -61,7 +68,6 @@ Recorder::~Recorder()
 /// @param p_compression    boolean value if compression is done
 void Recorder::WriteRecording(const float* p_input, const double p_currentTime, const bool p_compression)
 {
-
 	// doesn't write if the input is the same as the previous time
 	// if p_compression is true
 	if (p_compression && CheckSameInput(p_input)) return;
@@ -71,7 +77,7 @@ void Recorder::WriteRecording(const float* p_input, const double p_currentTime, 
 		// update previous input
 		m_prevInput[i] = p_input[i];
 		// write to file
-		m_recordingFile << std::fixed <<std::setprecision(20) << p_input[i] << " ";
+		m_recordingFile << std::fixed << std::setprecision(20) << p_input[i] << " ";
 	}
 	m_recordingFile << std::endl;
 }

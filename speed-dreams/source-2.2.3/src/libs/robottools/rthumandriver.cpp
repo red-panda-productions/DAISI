@@ -74,8 +74,6 @@ tParticipantControl m_pControl;
 #include <Recorder.h>
 Recorder* recorder;
 
-
-
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 #endif
@@ -621,6 +619,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
     m_pControl = SMediator::GetInstance()->GetPControlSettings();
     if (m_pControl.RecordSession) {
         recorder = new Recorder("user_recordings", "userRecording%Y%m%d-%H%M%S", PARAM_AMOUNT);
+        recorder->WriteCar(car);
     }
     const int idx = index - 1;
 
@@ -2116,19 +2115,19 @@ void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
             car->_accelCmd,
             car->_brakeCmd,
             car->_steerCmd,
-            car->_gearCmd,
+            static_cast<float>(car->_gearCmd),
             car->_clutchCmd,
-            car->_raceCmd,
-            car->_lightCmd,
-            car->_ebrakeCmd,
+            static_cast<float>(car->_raceCmd),
+            static_cast<float>(car->_lightCmd),
+            static_cast<float>(car->_ebrakeCmd),
             car->_brakeFLCmd,
             car->_brakeFRCmd,
             car->_brakeRLCmd,
             car->_brakeRRCmd,
             car->_wingFCmd,
             car->_wingRCmd,
-            car->_telemetryMode,
-            car->_singleWheelBrakeMode};
+            static_cast<float>(car->_telemetryMode),
+            static_cast<float>(car->_singleWheelBrakeMode)};
         recorder->WriteRecording(inputs, s->currentTime, false);
     }
 }
