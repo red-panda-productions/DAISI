@@ -4,12 +4,13 @@
 #include "Mediator.h"
 #include "Mediator.inl"
 #include "mocks/DecisionMakerMock.h"
-#include "mocks/MediatorMock.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 #include "../rppUtils/RppUtils.hpp"
+
+#define MockMediator Mediator<DecisionMakerMock>
 
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
