@@ -5,9 +5,6 @@
 #include "DecisionMaker.h"
 #include "CarController.h"
 
-/// @brief The standard type of the mediator
-#define SMediator Mediator<SDecisionMaker>
-
 /// @brief			      The Main communication between the front- and backend
 /// @tparam DecisionMaker The decisionMaker type
 template <typename DecisionMaker>
@@ -59,6 +56,9 @@ private:
     tTrack* m_track = nullptr;
     bool m_inRace = false;  // Whether the game is currently in a race
 };
+
+/// @brief The standard type of the mediator
+#define SMediator Mediator<SDecisionMaker>
 
 template <>
 SMediator* SMediator::m_instance = nullptr;
