@@ -67,7 +67,6 @@ static char* gfLocalDir = 0;
 static char* gfLibDir = 0;
 static char* gfDataDir = 0;
 static char* gfBinDir = 0;
-static bool GfInitialized = false;
 
 /*
  * Function
@@ -489,7 +488,6 @@ char * _tgf_win_strdup(const char * str)
  */
 void GfInit(bool bWithLogging)
 {
-	if (GfInitialized) return;
     gfTraceInit(bWithLogging);
 
 	gfDirInit();
@@ -552,7 +550,6 @@ void GfInit(bool bWithLogging)
     GfLogInfo("Linking against SDL version %d.%d.%d.\n",
        linked.major, linked.minor, linked.patch);
 #endif
-	GfInitialized = true;
 }
 
 

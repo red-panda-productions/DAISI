@@ -15,7 +15,6 @@ void InitializeMediator()
     GfInit();
     GfSetDataDir(SD_DATADIR_SRC);
     SetupSingletonsFolder();
-    
 
     tCarElt car;
     car.ctrl.brakeCmd = 0;
@@ -35,9 +34,8 @@ void InitializeMediator()
 /// @brief Tests if all decisions do their RunInterveneCommand correctly
 TEST(DecisionsTest, RunInterveneDecisions)
 {
-    
     InitializeMediator();
-    
+
     Random random;
 
     BrakeDecision brakeDecision;

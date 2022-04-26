@@ -68,7 +68,7 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 
 inline std::experimental::filesystem::path SingletonsFilePath()
 {
-    return { std::experimental::filesystem::temp_directory_path().append("Singletons")};
+    return {std::experimental::filesystem::temp_directory_path().append("Singletons")};
 }
 
 inline int DeleteSingletonsFolder()
@@ -114,8 +114,6 @@ inline bool SetupSingletonsFolder()
 
     return true;
 }
-
-
 
 /// @brief Start running a separate executable with no command-line arguments
 /// @param p_executablePath The path to the executable.
