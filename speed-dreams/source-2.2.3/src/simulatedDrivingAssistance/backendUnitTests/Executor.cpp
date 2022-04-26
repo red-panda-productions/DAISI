@@ -22,19 +22,19 @@ void InterventionExecutorTest(unsigned int p_INTERVENTION_TYPE)
 
     InterventionExecutor* intervention = config.SetInterventionType(p_INTERVENTION_TYPE);  // determines the interventiontype that will be run
 
-    // fill an array with the same referenceo f length decisionCount (used to check if it runs through all decisions correctly)
+    //fill an array with the same reference of length decisionCount (used to check if it runs through all decisions correctly)
     IDecision** decisionmocks = new IDecision*[decisionCount];
     for (int i = 0; i < decisionCount; i++) { decisionmocks[i] = &dmock; }
 
     // Run the RunDecision code of the interventiontype.
     intervention->RunDecision(decisionmocks, decisionCount);
 
-    // no signals will not sent indicators or interventions so both will return always 0
+    // INTERVENTION_TYPE_NO_SIGNALS will not send indicators or interventions so both will return 0
     if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_NO_SIGNALS) decisionCount = 0;
     ASSERT_EQ(dmock.indicate, decisionCount);
 
-    // only signals will not sent interventions so that will always be 0.
-    if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_ONLY_SIGNALS) decisionCount = 0;
+    // INTERVENTION_TYPE_ONLY_SIGNALS will not send interventions so that will be 0.
+    if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_ONLY_SIGNALS) decisionCount = 0; 
     ASSERT_EQ(dmock.intervene, decisionCount);
 }
 
