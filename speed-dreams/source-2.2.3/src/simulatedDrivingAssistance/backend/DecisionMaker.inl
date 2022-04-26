@@ -127,7 +127,7 @@ void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage>
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
-    Config.SetDataCollectionSettings(p_dataSetting);  //
+    Config.SetDataCollectionSettings(p_dataSetting);
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage>

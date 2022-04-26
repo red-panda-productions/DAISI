@@ -624,12 +624,9 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
 
     if (OpenDatabase(ip, port, username, password, schema))
     {
-        std::cout << "database if" << std::endl;
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);
-        std::cout << "stored" << std::endl;
         CloseDatabase();
-        std::cout << "closed" << std::endl;
         std::cout << "Finished writing to database" << std::endl;
     }
 }

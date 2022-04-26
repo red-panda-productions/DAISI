@@ -61,6 +61,8 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsT
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
 
+/// @brief				 Tests if the decision maker can be initialized
+/// @param  p_decisionMaker the decision maker that will be initialized
 void InitializeTest(TDecisionMaker& p_decisionMaker)
 {
     tCarElt car;  // need data
@@ -90,12 +92,15 @@ void InitializeTest(TDecisionMaker& p_decisionMaker)
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
 
+/// @brief Runs the initialize test function
 TEST(DecisionMakerTests, InitializeTest)
 {
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
 }
 
+/// @brief				 Tests if the data collection settings can be set correctly
+/// @param  p_dataToStore data settings that will be set.
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
 {
     TDecisionMaker decisionMaker;
@@ -107,6 +112,8 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().MetaData == p_dataToStore.MetaData);
 }
 
+/// @brief				 Performs the data collection test with the given parameters
+/// @param  p_environmentData, p_carData, p_humanData , p_interventionData, p_metaData are the individual data settings
 void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData, bool p_metaData)
 {
     DataToStore dataSettings = {
@@ -118,10 +125,12 @@ void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_huma
     SetDataCollectionSettingsTest(dataSettings);
 }
 
+/// @brief Does the SetDataCollectionSettingsTest with all possible boolean combinations
 BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
 END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2, arr, 2);
 
+/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct path
 TEST(DecisionMakerTests, RaceStopTest)
 {
     TDecisionMaker decisionMaker;
@@ -132,6 +141,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
 }
 
+/// @brief Tests if the GetFileDataStorage correctly gets the variable
 TEST(DecisionMakerTests, GetFileDataStorageTest)
 {
     TDecisionMaker decisionMaker;
