@@ -75,11 +75,12 @@ void CatchDatabaseError(const std::string& p_password, const char* p_inputFile)
     TestCatchIncorrectTestData(sqlDatabaseStorage, p_inputFile);
 }
 
+/// @brief  Tries to find the database settings file
+///         but wont find it, since there is no directory
 TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the directory doesn't exist.
+
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "test_data"), std::exception)
     {
         ASSERT_STREQ("Could not find database settings file", e.what());
@@ -87,7 +88,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
 
 }
 
-
+/// @brief  Tries to find the database settings file
+///         but wont find it, since there is a directory
+///         but no settings file in that directory
 TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -99,6 +102,8 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
     }
 }
 
+/// @brief  Tries to convert the port to integer
+///         but it is a string in the settingsfile of the stringPort dir.
 TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -109,6 +114,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
     }
 }
 
+/// @brief  Connects to the database, if the settings in test_data/correctSettings
+///         has the correct password, otherwise it has the same
+///         coverage path as TestDatabaseRunIncorrect
 TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -117,6 +125,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", "test_data\\correctSettings"));
 }
 
+/// @brief  Tries to connect to the database but fails
+///         since the settingsfile in testdata/incorrectSettings has the
+///         incorrect password
 TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -126,9 +137,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     sqlDatabaseStorage.Run("test_file.txt", "test_data\\incorrectSettings");
     std::string output = testing::internal::GetCapturedStderr();
     ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
-    
 }
 
+/// @brief test for crash when there is no certificates folder
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -138,10 +149,11 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
     }
 }
 
+/// @brief tests for crash when there is no "database_encryption_settings.txt"file
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("database_connection_settings.txt", "\\test_data\\remote\\noEncryption"), std::exception)
+    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\noEncryption"), std::exception)
     {
         ASSERT_STREQ("Could not find database encryption settings file", e.what());
     }
@@ -149,6 +161,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 }
 
 #define YOUR_PASSWORD [YOUR PASSWORD]
+//
 //TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"));
 //TEST_CASE(SQLDatabaseStorageTests, TimeDatabase, DatabaseTimeTest, (YOUR_PASSWORD, "test_file.txt"))
 //TEST_CASE(SQLDatabaseStorageTests, NoUserInput, DatabaseTimeTest, (YOUR_PASSWORD, "test_noUserInput.txt"))

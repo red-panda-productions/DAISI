@@ -80,6 +80,7 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @brief  gets the keys for secure database connection in the data/certificates folder
 ///         and adds them to the connection properties
 ///         name of the keys are set in the database_encryption_settings.txt file
+/// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
 void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap p_connectionProperties)
 {
@@ -116,6 +117,8 @@ void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptio
 /// @param p_password       Password to connect with to the database.
 /// @param p_schemaName     Name of the database schema to use.
 /// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
+/// @param p_dirPath        optional: path relative to the datafolder in which the
+///                         "database_encryption_settings.txt" file is located
 /// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
@@ -633,12 +636,22 @@ void SQLDatabaseStorage::CloseDatabase()
     delete m_connection;
 }
 
+/// @brief  Runs the database connection by finding the "database_connection_settings.txt" file
+///         getting the connection properties out of that file
+///         opening the database, storing the data of the bufferfile
+///         and closing the database
+/// @param  p_inputFilePath     path for the buffer file, the content of which is written to the database
+/// @param  p_dirPath           optional parameter: path after the data folder
+///                             for "database_connection_settings.txt" file
+///                             and if applicable the "database_encryption_settings.txt".
+///                             if left out path will be data folder
 void SQLDatabaseStorage::Run( const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     std::string configPath("data\\" + p_dirPath);
     std::string configFile("database_connection_settings.txt");
 
-    if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
+    if (!FindFileDirectory(configPath, configFile)) 
+        throw std::exception("Could not find database settings file");
 
     std::ifstream ifstream(configPath + '\\' + configFile);
 
