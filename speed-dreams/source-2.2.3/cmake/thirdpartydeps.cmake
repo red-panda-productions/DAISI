@@ -617,8 +617,6 @@ IF(OPEN_CPP_COVERAGE)
     STRING(REGEX REPLACE "/" "\\\\" BINARYDIR ${CMAKE_BINARY_DIR})
     STRING(REGEX REPLACE "/" "\\\\" EXEPATH ${EXE_PATH})
     STRING(REGEX REPLACE "/" "\\\\" EXPORTPATH ${EXPORT_PATH})
-    
-
 
     #Creates the excluded sources string
     SET(EXCLUDEDSOURCES "")
@@ -635,7 +633,6 @@ IF(OPEN_CPP_COVERAGE)
         MESSAGE(STATUS "SET INPUT COVERAGE ${INCLUDE_COVERAGE} OF ${BAT_NAME} TO ${INCLUDECOVERAGE}")
     ENDIF(NOT "${INCLUDE_COVERAGE}" STREQUAL "")
 
-
     FILE(GENERATE OUTPUT ${CMAKE_SOURCE_DIR}/${BAT_NAME}.bat
         CONTENT
             "@echo off
@@ -643,9 +640,8 @@ IF(OPEN_CPP_COVERAGE)
             \"${OPEN_CPP_COVERAGE}\" --sources=${CURRENTSOURCEDIR} ${INCLUDECOVERAGE} --export_type=${EXPORT} ${EXCLUDEDSOURCES} --excluded_line_regex ${EXCLUDED_LINES} -- ${EXEPATH}")
 
     MESSAGE(STATUS "Created ${BAT_NAME} for code coverage on Github Actions. Run with ./${BAT_NAME}.bat in ${CMAKE_SOURCE_DIR}")
-    MESSAGE(STATUS "\"${OPEN_CPP_COVERAGE}\" --sources=${CURRENTSOURCEDIR} ${INCLUDECOVERAGE} --export_type=${EXPORT} ${EXCLUDEDSOURCES} --excluded_line_regex ${EXCLUDED_LINES} -- ${EXEPATH}")
 ELSE(OPEN_CPP_COVERAGE)
-  MESSAGE(WARNING "OpenCppCoverage not found; no code coverage will be calculated")
+    MESSAGE(WARNING "OpenCppCoverage not found; no code coverage will be calculated")
 ENDIF(OPEN_CPP_COVERAGE)
 
 ENDMACRO(CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB SOURCE_DIR CUR_BINARY_DIR BAT_NAME EXE_NAME EXCLUDED_FILES EXCLUDED_LINES)
