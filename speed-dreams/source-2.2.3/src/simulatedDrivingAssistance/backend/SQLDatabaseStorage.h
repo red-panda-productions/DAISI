@@ -17,7 +17,8 @@ public:
                       const std::string& p_username,
                       const std::string& p_password,
                       const std::string& p_schemaName,
-                      std::string p_useEncryption);
+                      std::string p_useEncryption,
+                      const std::string& p_dirPath = "");
 
     void CloseDatabase();
 
@@ -28,7 +29,7 @@ private:
     void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void PutKeys(sql::ConnectOptionsMap p_connectionProperties);
+    void PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap p_connectionProperties);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

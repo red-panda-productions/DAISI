@@ -5,7 +5,7 @@
 #include "../rppUtils/RppUtils.hpp"
 #include "gmock/gmock-matchers.h"
 
-#define YOUR_PASSWORD "MySQLNameojs1!"
+
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
 /// @param p_password password of database to connect to
@@ -19,7 +19,7 @@ void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::strin
 /// @param p_inputFile name of file with test data to insert
 void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
-    std::string path(ROOT_FOLDER "\\test_data\\testSimulationData");
+    std::string path("data\\test_data\\testSimulationData");
     if (!FindFileDirectory(path, p_inputFile)) throw std::exception("Can't find test files");
 
     ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile));
@@ -30,10 +30,13 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 /// @param p_inputFile name of file with test data to insert
 void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
-    std::string path(ROOT_FOLDER "\\test_data\\testSimulationData");
-    if (!FindFileDirectory(path, p_inputFile)) throw std::exception("Can't find test files");
+    std::string path("data\\test_data\\testSimulationData");
+    FindFileDirectory(path, p_inputFile);// throw std::exception("Can't find test files");
 
-    ASSERT_THROW(p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile), std::exception);
+    testing::internal::CaptureStderr();
+    p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile);
+    std::string output = testing::internal::GetCapturedStderr();
+    ASSERT_THAT(output, testing::HasSubstr("[MYSQL] internal dberror: "));
 }
 
 /// @brief Closes the database
@@ -77,7 +80,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "/test_data"), std::exception)
+    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "test_data"), std::exception)
     {
         ASSERT_STREQ("Could not find database settings file", e.what());
     }
@@ -100,7 +103,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when the port is not an integer
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "test_data/stringPort"), std::exception)
+    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "test_data\\stringPort"), std::exception)
     {
         ASSERT_STREQ("Port in database settings config file could not be converted to an int", e.what());
     }
@@ -111,28 +114,49 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt"), std::exception)
-    {
-        ASSERT_THAT(e.what(), testing::HasSubstr("Could not open database"));
-    }
+    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", "test_data\\correctSettings"));
+}
+
+TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
+{
+    SQLDatabaseStorage sqlDatabaseStorage;
+    // Tests for an exception when it can't find the settings file
+    // because the directory doesn't exist.
+    testing::internal::CaptureStderr();
+    sqlDatabaseStorage.Run("test_file.txt", "test_data\\incorrectSettings");
+    std::string output = testing::internal::GetCapturedStderr();
+    ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
+    
 }
 
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_THROW(sqlDatabaseStorage.Run("database_connection_settings.txt", "\\test_data\\remote"), std::exception);
+    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\noCertDir"), std::exception)
+    {
+        ASSERT_STREQ("Could not find certificate folder", e.what());
+    }
 }
 
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 {
     SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_THROW(sqlDatabaseStorage.Run("database_connection_settings.txt", "\\test_data\\remote\\noEncryption"), std::exception);
+    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("database_connection_settings.txt", "\\test_data\\remote\\noEncryption"), std::exception)
+    {
+        ASSERT_STREQ("Could not find database encryption settings file", e.what());
+    }
+
 }
 
+#define YOUR_PASSWORD [YOUR PASSWORD]
 //TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"));
 //TEST_CASE(SQLDatabaseStorageTests, TimeDatabase, DatabaseTimeTest, (YOUR_PASSWORD, "test_file.txt"))
 //TEST_CASE(SQLDatabaseStorageTests, NoUserInput, DatabaseTimeTest, (YOUR_PASSWORD, "test_noUserInput.txt"))
 //TEST_CASE(SQLDatabaseStorageTests, NoGameState, DatabaseTimeTest, (YOUR_PASSWORD, "test_noGameState.txt"))
 //TEST_CASE(SQLDatabaseStorageTests, NoDecisions, DatabaseTest, (YOUR_PASSWORD, "test_noDecisions.txt"))
+//TEST_CASE(SQLDatabaseStorageTests, NoGameStateYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noGameStateYesData.txt"))
+//TEST_CASE(SQLDatabaseStorageTests, NoUserInputYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noUserInputYesData.txt"))
 //TEST_CASE(SQLDatabaseStorageTests, CatchLightsQuery, CatchDatabaseError, (YOUR_PASSWORD, "test_wrongLightsValue.txt"))
 //TEST_CASE(SQLDatabaseStorageTests, CatchPrematureEOF, CatchDatabaseError, (YOUR_PASSWORD, "test_prematureEOF.txt"))
+//TEST_CASE(SQLDatabaseStorageTests, NonExistingInterventionMode, CatchDatabaseError, (YOUR_PASSWORD, "test_nonExistingInterventionMode.txt"))
+//TEST_CASE(SQLDatabaseStorageTests, NonExistingInputFile, CatchDatabaseError, (YOUR_PASSWORD, "nonExistingTestFile"))

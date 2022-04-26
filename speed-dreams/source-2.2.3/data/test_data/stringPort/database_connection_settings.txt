@@ -1,0 +1,6 @@
+127.0.0.1
+geenIntPort
+root
+PASSWORD
+sda_schema
+false

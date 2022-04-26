@@ -11,5 +11,21 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestDatabaseRunStringPort&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestDatabaseRunCorrect&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestDatabaseRunDirNoFile&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestDatabaseRunNoDir&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestRemoteDatabaseNoEncFile&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestRemoteDatabaseNoCertDir&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.InitialiseDatabase&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TimeDatabase&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoUserInput&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoGameState&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoDecisions&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.CatchLightsQuery&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.CatchPrematureEOF&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NonExistingInterventionMode&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NonExistingInputFile&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestDatabaseRunIncorrect&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoUserInputYesData&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoGameStateYesData&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

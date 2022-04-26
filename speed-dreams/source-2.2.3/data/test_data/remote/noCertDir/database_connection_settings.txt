@@ -1,0 +1,6 @@
+127.0.0.1
+3306
+root
+PASSWORD
+sda_schema
+true
