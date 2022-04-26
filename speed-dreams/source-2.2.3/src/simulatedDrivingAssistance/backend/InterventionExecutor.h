@@ -9,4 +9,6 @@ public:
     /// @param  p_decisions     The decisions that were made
     /// @param  p_decisionCount The amount of decisions
     virtual void RunDecision(IDecision** p_decisions, int p_decisionCount) = 0;
+
+    virtual ~InterventionExecutor() = default;
 };
