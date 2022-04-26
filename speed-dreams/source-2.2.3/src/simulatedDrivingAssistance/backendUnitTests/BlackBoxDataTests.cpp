@@ -28,13 +28,18 @@
     RAND_TPOSD((a).vel) \
     RAND_TPOSD((a).acc)
 
-#define RAND_TCARSETUPITEM(a) \
-(a).value = random.NextFloat(); \
-(a).min = random.NextFloat(); \
-(a).max = random.NextFloat(); \
-(a).desired_value = random.NextFloat(); \
-(a).stepsize = random.NextFloat(); \
-(a).changed = random.NextBool();
+#define RAND_TCARSETUPITEM(a)               \
+    (a).value = random.NextFloat();         \
+    (a).min = random.NextFloat();           \
+    (a).max = random.NextFloat();           \
+    (a).desired_value = random.NextFloat(); \
+    (a).stepsize = random.NextFloat();      \
+    (a).changed = random.NextBool();
+
+#define RAND_TDASHBOARDITEM(a)       \
+    (a).type = random.NextInt();     \
+    (a).setup = new tCarSetupItem(); \
+    RAND_TCARSETUPITEM(*(a).setup)
 
 #define COMP_ELEM(a, b, c)     \
     if ((c))                   \
@@ -196,6 +201,99 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     car.race.wrongWayTime = random.NextFloat();
 
     // Assign values to car.priv
+    car.priv.paramsHandle = nullptr;  // COPY IMPLEMENTED, NO IDEA ON WHAT CONTENTS WOULD BE FOR GENERATION
+    car.priv.carHandle = nullptr;     // AS THESE ARE VOID POINTERS
+    car.priv.driverIndex = random.NextInt();
+    car.priv.moduleIndex = random.NextInt();
+    RAND_NAME(car.priv.modName, MAX_NAME_LEN)
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TPOSD(car.priv.wheel[i].relPos)
+        car.priv.wheel[i].spinVel = random.NextFloat();
+        car.priv.wheel[i].brakeTemp = random.NextFloat();
+        car.priv.wheel[i].state = random.NextInt();
+        car.priv.wheel[i].seg = nullptr;  // COPY NOT IMPLEMENTED
+        car.priv.wheel[i].rollRes = random.NextFloat();
+        car.priv.wheel[i].temp_in = random.NextFloat();
+        car.priv.wheel[i].temp_mid = random.NextFloat();
+        car.priv.wheel[i].temp_out = random.NextFloat();
+        car.priv.wheel[i].temp_opt = random.NextFloat();
+        car.priv.wheel[i].condition = random.NextFloat();
+        car.priv.wheel[i].treadDepth = random.NextFloat();
+        car.priv.wheel[i].critTreadDepth = random.NextFloat();
+        car.priv.wheel[i].slipNorm = random.NextFloat();
+        car.priv.wheel[i].slipOpt = random.NextFloat();
+        car.priv.wheel[i].slipSide = random.NextFloat();
+        car.priv.wheel[i].slipAccel = random.NextFloat();
+        car.priv.wheel[i].Fx = random.NextFloat();
+        car.priv.wheel[i].Fy = random.NextFloat();
+        car.priv.wheel[i].Fz = random.NextFloat();
+        car.priv.wheel[i].effectiveMu = random.NextFloat();
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TPOSD(car.priv.corner[i])
+    }
+    car.priv.gear = random.NextInt(MAX_GEARS);
+    car.priv.gearNext = car.priv.gear + 1;
+    car.priv.fuel = random.NextFloat();
+    car.priv.fuel_consumption_total = random.NextFloat();
+    car.priv.fuel_consumption_instant = random.NextFloat();
+    car.priv.enginerpm = random.NextFloat();
+    car.priv.enginerpmRedLine = random.NextFloat();
+    car.priv.enginerpmMax = random.NextFloat();
+    car.priv.enginerpmMaxTq = random.NextFloat();
+    car.priv.enginerpmMaxPw = random.NextFloat();
+    car.priv.engineMaxTq = random.NextFloat();
+    car.priv.engineMaxPw = random.NextFloat();
+    for (int i = 0; i < MAX_GEARS; i++)
+    {
+        car.priv.gearRatio[i] = random.NextFloat();
+    }
+    car.priv.gearNb = random.NextInt();
+    car.priv.gearOffset = random.NextInt();
+    for (int i = 0; i < 4; i++)
+    {
+        car.priv.skid[i] = random.NextFloat();
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        car.priv.reaction[i] = random.NextFloat();
+    }
+    car.priv.collision = random.NextInt();
+    car.priv.simcollision = random.NextInt();
+    car.priv.smoke = random.NextFloat();
+    RAND_T3D(car.priv.normal)
+    RAND_T3D(car.priv.collpos)
+    car.priv.dammage = random.NextInt();
+    car.priv.debug = random.NextInt();
+    car.priv.collision_state.collision_count = random.NextInt();
+    for (int i = 0; i < 3; i++)
+    {
+        car.priv.collision_state.pos[i] = random.NextFloat();
+        car.priv.collision_state.force[i] = random.NextFloat();
+    }
+    car.priv.localPressure = random.NextFloat();
+    car.priv.memoryPool.newTrack = nullptr;  // COPY NOT IMPLEMENTED
+    car.priv.memoryPool.newRace = nullptr;   // COPY NOT IMPLEMENTED
+    car.priv.memoryPool.endRace = nullptr;   // COPY NOT IMPLEMENTED
+    car.priv.memoryPool.shutdown = nullptr;  // COPY NOT IMPLEMENTED
+    car.priv.driveSkill = random.NextFloat(10);
+    car.priv.steerTqCenter = random.NextFloat();
+    car.priv.steerTqAlign = random.NextFloat();
+    for (int i = 0; i < NR_DI_INSTANT; i++)
+    {
+        RAND_TDASHBOARDITEM(car.priv.dashboardInstant[i])
+    }
+    car.priv.dashboardInstantNb = random.NextInt();
+    for (int i = 0; i < NR_DI_REQUEST; i++)
+    {
+        RAND_TDASHBOARDITEM(car.priv.dashboardRequest[i])
+    }
+    car.priv.dashboardRequestNb = random.NextInt();
+    car.priv.dashboardActiveItem = random.NextInt();
+
+    // Assign values to car.ctrl
 
     return car;
 }
@@ -204,6 +302,14 @@ void DestroyCar(tCarElt& p_car)
 {
     delete p_car.race.bestSplitTime;
     delete p_car.race.curSplitTime;
+    for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
+    {
+        delete p_car.race.pit->car[i];  // COPY NOT IMPLEMENTED
+    }
+    delete p_car.race.pit->pos.seg;  // COPY NOT IMPLEMENTED
+    delete p_car.race.pit;
+    delete p_car.race.penaltyList.tqh_first;  // COPY NOT IMPLEMENTED
+    delete p_car.race.penaltyList.tqh_last;   // COPY NOT IMPLEMENTED
 }
 
 tSituation GenerateSituation()

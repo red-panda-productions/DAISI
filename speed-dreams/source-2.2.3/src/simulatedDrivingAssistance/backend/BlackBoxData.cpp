@@ -60,7 +60,12 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     {
         Car.priv.wheel[i].seg = nullptr;  // TODO (maybe)  // Pointer
     }
-    // TODO memoryPool (maybe)
+    // TODO memoryPool (maybe) 
+    Car.priv.memoryPool.newTrack = nullptr;
+    Car.priv.memoryPool.newRace = nullptr;
+    Car.priv.memoryPool.endRace = nullptr;
+    Car.priv.memoryPool.shutdown = nullptr;
+    // Pointer
     for (int i = 0; i < NR_DI_INSTANT; i++)
     {
         Car.priv.dashboardInstant[i].setup = p_priv.dashboardInstant[i].setup ? new tCarSetupItem(*p_priv.dashboardInstant[i].setup) : nullptr;  // Pointer
