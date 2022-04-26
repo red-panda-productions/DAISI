@@ -635,9 +635,12 @@ void SQLDatabaseStorage::CloseDatabase()
 
 void SQLDatabaseStorage::Run( const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
-
-    std::string configPath(SD_DATADIR_SRC + p_dirPath);
+    std::string dataDir(SD_DATADIR_SRC);
+    dataDir.pop_back();
+    //std::replace(dataDir.begin(), dataDir.end(), '/', "\\");
+    std::string configPath(dataDir + p_dirPath);
     std::string configFile("database_connection_settings.txt");
+    ROOT_FOLDER;
 
     if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
 

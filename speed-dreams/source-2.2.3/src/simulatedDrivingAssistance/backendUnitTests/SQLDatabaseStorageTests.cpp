@@ -111,9 +111,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data"), std::exception)
+    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt"), std::exception)
     {
-        ASSERT_STREQ("Could not find database settings file", e.what());
+        ASSERT_THAT(e.what(), testing::HasSubstr("Could not open database"));
     }
 }
 
