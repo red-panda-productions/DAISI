@@ -11,7 +11,7 @@ VariableStore& VariableStore::GetInstance()
 
 VariableStore::VariableStore()
 {
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < VARIABLE_STORE_LENGTH; i++)
     {
         Variables[i] = nullptr;
     }

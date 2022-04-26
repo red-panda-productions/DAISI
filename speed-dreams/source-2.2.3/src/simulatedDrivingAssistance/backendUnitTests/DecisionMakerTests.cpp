@@ -80,13 +80,14 @@ void InitializeTest(TDecisionMaker& p_decisionMaker)
     std::cout << SD_DATADIR_SRC << std::endl;
     chdir(SD_DATADIR_SRC);
     ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
-    std::string bbPath = findfilepath.append("\\blackbox.exe");
-    p_decisionMaker.Initialize(&car, &situation, &track, bbPath, true);
+    findfilepath.append("\\blackbox.exe");
+    p_decisionMaker.Initialize(&car, &situation, &track, findfilepath, true);
 
     SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&p_decisionMaker.BlackBox);
     BlackBoxData* blackboxDataMock = mockCheck->GetBlackBoxData();
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
+    //TODO make comparer for car, track and situation so the entire object can be compared
     ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
