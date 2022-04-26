@@ -136,4 +136,5 @@ TEST(DecisionMakerTests, GetFileDataStorageTest)
 {
     TDecisionMaker decisionMaker;
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
+    ASSERT_FALSE(storage == nullptr);
 }
