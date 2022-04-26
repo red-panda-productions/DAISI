@@ -57,7 +57,9 @@ TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTest, (IN
 bool WriteMediator(SMediator* p_mediator)
 {
     EXPECT_TRUE(SetupSingletonsFolder());
-    struct stat info;
+    struct stat info
+    {
+    };
     std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
     path.append("Singletons\\Mediator");
     std::string pathstring = path.string();
