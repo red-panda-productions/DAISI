@@ -78,6 +78,8 @@ TEST(MediatorTest, ReadFromFile)
     SMediator* fakeMediator = new SMediator();
     EXPECT_TRUE(WriteMediator(fakeMediator));
     SMediator* mediator = SMediator::GetInstance();
-    EXPECT_EQ(fakeMediator, mediator);
+    EXPECT_EQ(fakeMediator, mediator);  // This is only possible if GetInstance() reads from a file, which covers the last bit of code in Mediator.inl.
+                                        // OpenCppCoverage will say it's not, and that the test fails,
+                                        // but that's because they don't seem to run each test in a completely fresh environment
     delete fakeMediator;
 }
