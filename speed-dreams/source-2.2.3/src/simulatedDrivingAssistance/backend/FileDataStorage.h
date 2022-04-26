@@ -36,6 +36,7 @@ public:
 
     void SaveDecisions(DecisionTuple& p_decisions);
     void SetLocalTime(bool p_localTime);
+
 private:
     bool m_localTime = false;
 };
