@@ -34,7 +34,7 @@ void InterventionExecutorTest(unsigned int p_INTERVENTION_TYPE)
     if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_NO_SIGNALS) decisionCount = 0;
     ASSERT_EQ(dmock.indicate, decisionCount);
 
-    // only signals will not sent interventions so that will always be 0.
+    // INTERVENTION_TYPE_ONLY_SIGNALS will not send interventions so that will be 0.
     if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_ONLY_SIGNALS) decisionCount = 0; 
     ASSERT_EQ(dmock.intervene, decisionCount);
 }
