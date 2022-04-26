@@ -15,6 +15,6 @@ public:
         intervene++;
     }
 
-    int indicate = 0; //int variable that checks if an indicator should be shown
-    int intervene = 0; //int variable that checks if an intervention should happen
+    int indicate = 0;   // int variable that checks if an indicator should be shown
+    int intervene = 0;  // int variable that checks if an intervention should happen
 };
