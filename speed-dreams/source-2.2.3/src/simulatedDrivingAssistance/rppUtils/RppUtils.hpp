@@ -66,22 +66,33 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
     return false;
 }
 
+inline std::experimental::filesystem::path SingletonsFilePath()
+{
+    return { std::experimental::filesystem::temp_directory_path().append("Singletons")};
+}
+
+inline int DeleteSingletonsFolder()
+{
+    std::error_code errorCode;
+
+    std::experimental::filesystem::path path = SingletonsFilePath();
+    remove_all(path, errorCode);
+    if (errorCode.value() != 0)
+    {
+        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
+        return errorCode.value();
+    }
+    return 0;
+}
+
 /// @brief  Makes sure there is an empty singletons folder to be used by Singleton classes.
 ///         Needs to be called once at the start of a method with any GetInstance() calls.
 /// @return Boolean indicating whether the setup succeeded or not
 inline bool SetupSingletonsFolder()
 {
-    std::error_code errorCode;
+    DeleteSingletonsFolder();
 
-    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
-    path.append("Singletons");
-    std::experimental::filesystem::remove_all(path, errorCode);
-    if (errorCode.value() != 0)
-    {
-        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
-        return false;
-    }
-
+    auto path = SingletonsFilePath();
     // set up singleton folder
     char directory[256];
     getcwd(directory, 256);
@@ -103,6 +114,8 @@ inline bool SetupSingletonsFolder()
 
     return true;
 }
+
+
 
 /// @brief Start running a separate executable with no command-line arguments
 /// @param p_executablePath The path to the executable.
