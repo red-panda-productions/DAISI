@@ -24,7 +24,7 @@ public:
 
     float GetClutchCmd() const;
 
-    float GetLightCmd() const;
+    int GetLightCmd() const;
 
     void ShowIntervention(InterventionAction p_element) const;
 

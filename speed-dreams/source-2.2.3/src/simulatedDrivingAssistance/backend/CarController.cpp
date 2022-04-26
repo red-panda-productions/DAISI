@@ -66,7 +66,7 @@ float CarController::GetClutchCmd() const
 {
     return m_car->ctrl.clutchCmd;
 }
-float CarController::GetLightCmd() const
+int CarController::GetLightCmd() const
 {
     return m_car->ctrl.lightCmd;
 }

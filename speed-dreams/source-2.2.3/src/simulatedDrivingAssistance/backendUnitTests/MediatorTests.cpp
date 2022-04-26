@@ -12,6 +12,7 @@
 
 #define MockMediator Mediator<DecisionMakerMock>
 
+template <>
 MockMediator* MockMediator::m_instance = nullptr;
 
 /// @brief Test if the distribution of the mediator works
