@@ -21,7 +21,7 @@
     template DecisionMaker<type1, type2>::~DecisionMaker();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig>
-#define BUFFER_FILE_PATH   "..\\temp\\race_data_buffer.txt"
+#define BUFFER_FILE_PATH   "race_data_buffer.txt"
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -45,7 +45,7 @@ void DecisionMaker<SocketBlackBox, SDAConfig>::Initialize(tCarElt* p_initialCar,
 #if !defined(TEST)
     if (p_recordBB)
     {
-        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);
+        m_recorder = new Recorder("BB_Recordings", "bbRecording%Y%m%d-%H%M%S", 2);
     }
 #endif
 
@@ -107,6 +107,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 template <typename SocketBlackBox, typename SDAConfig>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
+    delete InterventionExecutor;
     InterventionExecutor = Config.SetInterventionType(p_dataSetting);
 }
 

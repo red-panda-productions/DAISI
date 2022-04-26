@@ -99,7 +99,7 @@ void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptio
     READ_INPUT(ifstream, pubName)
     READ_INPUT(ifstream, privName)
 
-    std::string certificatesPath(SD_DATADIR_SRC "\\certificates");
+    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
 
     if (!FindFileDirectory(certificatesPath, caName))
         throw std::exception("Could not find certificate folder");

@@ -1,5 +1,5 @@
 #pragma once
-#pragma comment(lib,"ws2_32.lib")
+#pragma comment(lib, "ws2_32.lib")
 #include "ipclib_export.h"
 #include <WinSock2.h>
 #include "Socket.h"
@@ -9,18 +9,18 @@
 class IPCLIB_EXPORT ClientSocket : public Socket
 {
 public:
-	ClientSocket(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
+    explicit ClientSocket(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
 
-	int Initialize();
+    int Initialize();
 
-	int SendData(const char* p_data, const int p_size) const;
+    int SendData(const char* p_data, int p_size) const;
 
-	void Disconnect();
+    void Disconnect();
 
-	~ClientSocket();
+    ~ClientSocket();
 
 private:
-	struct sockaddr_in m_server;
-	PCWSTR m_ip;
-	int m_port;
+    struct sockaddr_in m_server;
+    PCWSTR m_ip;
+    int m_port;
 };
