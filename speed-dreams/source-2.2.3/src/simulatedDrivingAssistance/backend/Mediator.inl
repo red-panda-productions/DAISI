@@ -5,6 +5,9 @@
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
+
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                      \
     template InterventionType Mediator<type>::GetInterventionType();                                                              \
@@ -140,13 +143,16 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     // Initialize the decision maker with the full path to the current black box executable
     m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB);
+    m_inRace = true;
 }
 
 /// @brief Tells the decisionmaker that the race has ended
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
+    if (!m_inRace) return;
     m_decisionMaker.RaceStop();
+    m_inRace = false;
 }
 
 /// @brief Creates a mediator instance if needed and returns it
@@ -159,19 +165,18 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     if (m_instance) return m_instance;
 
     // Check if Mediator file exists
-    struct stat info;
-    char workingDir[256];
-    if (getcwd(workingDir, 256) == nullptr)
-        throw std::exception("[Mediator] Working dir not found");
-    std::string workingDirectory(workingDir);
-    workingDirectory += "\\Singletons\\Mediator";
-    const char* filepath = workingDirectory.c_str();
+    struct stat info = {};
+
+    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
+    path.append("Singletons\\Mediator");
+    std::string pathstring = path.string();
+    const char* filepath = pathstring.c_str();
     int err = stat(filepath, &info);
     if (err == -1)
     {
         // File does not exist -> create pointer
         m_instance = new Mediator();
-        std::ofstream file("Singletons/Mediator");
+        std::ofstream file(filepath);
         file << m_instance;
         file.close();
         return m_instance;
@@ -179,7 +184,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 
     // File exists -> read pointer
     std::string pointerName("00000000");
-    std::ifstream file("Singletons/Mediator");
+    std::ifstream file(filepath);
     getline(file, pointerName);
     file.close();
     int pointerValue = stoi(pointerName, nullptr, 16);

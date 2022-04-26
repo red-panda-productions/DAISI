@@ -21,9 +21,14 @@ data/database_connection_settings.txt
 # Settings for Resharper
 Folder.DotSettings
 
+#certificates
+data/certificates/*
+
 data/tracks/road/flo-experiment-track
 
 BackendCoverage.bat
+
+FrontendCoverage.bat
 
 UnitUtilitiesCoverage.bat
 

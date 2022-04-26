@@ -3,9 +3,8 @@
 #include "tgfclient.h"
 #include "gui.h"
 
-
 /// @brief Initializes the radio button list
-void GfuiRadioButtonListInit(void) { }
+void GfuiRadioButtonListInit() {}
 
 /// @brief                   Creates a RadioButtonList object
 /// @param p_scr             The current screen
@@ -45,10 +44,10 @@ int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y, int p_i
     radioButtonList->ButtonControls = new int[p_amount];
 
     radioButtonList->Info = new tRadioButtonListInfo;
-    radioButtonList->Info->UserData     = p_userData;
-    radioButtonList->Info->Selected     = p_selected;
-    radioButtonList->Info->Amount       = p_amount;
-    radioButtonList->Info->Dist         = p_distance;
+    radioButtonList->Info->UserData = p_userData;
+    radioButtonList->Info->Selected = p_selected;
+    radioButtonList->Info->Amount = p_amount;
+    radioButtonList->Info->Dist = p_distance;
     radioButtonList->Info->MinimumOfOne = p_minimumOfOne;
 
     // Initialize the radiobutton children
@@ -118,7 +117,6 @@ void GfuiRadioButtonListSetSelected(void* p_scr, int p_id, int p_selected)
         GfuiRadioButtonSelect(p_scr, radioButtonList->ButtonControls[i], radioButton->NrInList == p_selected);
     }
 }
-
 
 /// @brief       Return the radiobutton selected value
 /// @param p_scr The current screen
