@@ -159,9 +159,9 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
     }
 }
 
-/// @brief Tests whether it will throw no exception 
-/// @param  
-/// @param  
+/// @brief  Tests whether it will throw no exception when there is an encryption file
+///         a settings file and a certificates folder with fake certificates, named in the
+///         encryption file
 TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
     SQLDatabaseStorage sqlDatabaseStorage;

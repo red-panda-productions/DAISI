@@ -81,6 +81,7 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 ///         and adds them to the connection properties
 ///         name of the keys are set in the database_encryption_settings.txt file
 /// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
+///                                 needs "\\" in front of it
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
 void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap p_connectionProperties)
 {
