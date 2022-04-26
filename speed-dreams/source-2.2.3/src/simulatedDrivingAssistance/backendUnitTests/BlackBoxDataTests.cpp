@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "BlackBoxData.h"
+#include "robot.h"
 #include "../rppUtils/Random.hpp"
 
 #define RAND_NAME(a, b)                   \
@@ -484,6 +485,29 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     RAND_TCARSETUPITEM(car.setup.reqTireset)
     RAND_TCARSETUPITEM(car.setup.reqPenalty)
 
+    // Assign values to car.pitdmd
+    car.pitcmd.fuel = random.NextFloat();
+    car.pitcmd.repair = random.NextInt();
+    car.pitcmd.stopType = random.NextInt(2);
+    car.pitcmd.setupChanged = random.NextBool();
+    CarPitCmd::TireChange possibleTireChanges[] = {CarPitCmd::NONE, CarPitCmd::ALL};
+    car.pitcmd.tireChange = possibleTireChanges[random.NextInt(2)];
+
+    // Assign values to car.robot
+    car.robot = new RobotItf();
+    car.robot->rbNewTrack = nullptr;  // COPY IMPLEMENTED, NO IDEA ON WHAT CONTENTS WOULD BE FOR GENERATION
+    car.robot->rbNewRace = nullptr;   // AS ALL OF THESE NULLPTR'S ARE VOID POINTERS
+    car.robot->rbPauseRace = nullptr;
+    car.robot->rbResumeRace = nullptr;
+    car.robot->rbEndRace = nullptr;
+    car.robot->rbDrive = nullptr;
+    car.robot->rbPitCmd = nullptr;
+    car.robot->rbShutdown = nullptr;
+    car.robot->index = random.NextInt();
+
+    // Assign value to car.next ~not yet at least~
+    car.next = nullptr; // COPY NOT IMPLEMENTED
+
     return car;
 }
 
@@ -509,6 +533,7 @@ void DestroyCar(tCarElt& p_car)
     }
     delete p_car.ctrl.setupChangeCmd->setup;
     delete p_car.ctrl.setupChangeCmd;
+    delete p_car.robot;
 }
 
 tSituation GenerateSituation()
