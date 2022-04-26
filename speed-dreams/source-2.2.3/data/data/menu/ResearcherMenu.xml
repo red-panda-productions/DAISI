@@ -290,7 +290,6 @@
             <attnum name="y" val="400"/>
             <attstr name="text" val="Task"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -300,7 +299,6 @@
             <attnum name="y" val="400"/>
             <attstr name="text" val="Indicator"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -310,7 +308,6 @@
             <attnum name="y" val="400"/>
             <attstr name="text" val="Intervention Type"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -320,7 +317,6 @@
             <attnum name="y" val="400"/>
             <attstr name="text" val="Environment"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -330,7 +326,6 @@
             <attnum name="y" val="400"/>
             <attstr name="text" val="Participant Control"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -340,7 +335,6 @@
             <attnum name="y" val="250"/>
             <attstr name="text" val="Other options"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -351,7 +345,6 @@
             <attstr name="text" val="Max Time"/>
             <attstr name="tip" val="Set the maximum simulation time"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
@@ -362,7 +355,6 @@
             <attstr name="text" val="User ID"/>
             <attstr name="tip" val="Give the user an ID"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
