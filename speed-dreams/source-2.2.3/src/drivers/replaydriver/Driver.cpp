@@ -8,9 +8,6 @@
 
 #define RECORDING_NAME "userRecording20220426-140251"
 
-const float Driver::SHIFT = 0.9;         /* [-] (% of rpmredline) */
-const float Driver::SHIFT_MARGIN = 4.0;  /* [m/s] */
-
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
 /// @param p_index The driver's index (starting from 1)
