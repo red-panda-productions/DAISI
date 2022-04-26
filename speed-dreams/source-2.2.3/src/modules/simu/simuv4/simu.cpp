@@ -519,11 +519,6 @@ SimCarTelemetry(int nCarIndex, bool bOn)
     SimTelemetry = bOn ? nCarIndex : -1;
 }
 
-#include <fstream>
-#include <iomanip>
-
-std::ofstream out_log("../temp/debug/out.log");
-
 void
 SimUpdate(tSituation *s, double deltaTime)
 {
@@ -619,17 +614,17 @@ SimUpdate(tSituation *s, double deltaTime)
 
             for (i = 0; i < 4; i++)
             {
-              CALL_AND_LOG(SimWheelUpdateForce(car, i));
+              SimWheelUpdateForce(car, i);
             }
             CHECK(car);
 
-            CALL_AND_LOG(SimTransmissionUpdate(car));
+            SimTransmissionUpdate(car);
             CHECK(car);
 
-            CALL_AND_LOG(SimWheelUpdateRotation(car));
+            SimWheelUpdateRotation(car);
             CHECK(car);
 
-            CALL_AND_LOG(SimCarUpdate(car, s));
+            SimCarUpdate(car, s);
             CHECK(car);
         }
         else
@@ -639,13 +634,13 @@ SimUpdate(tSituation *s, double deltaTime)
         }
     }
 
-    CALL_AND_LOG(SimCarCollideCars(s));
+    SimCarCollideCars(s);
 
     /* printf ("%f - ", s->currentTime); */
 
     for (ncar = 0; ncar < s->_ncars; ncar++)
     {
-        CALL_AND_LOG(car = &(SimCarTable[ncar]));
+        car = &(SimCarTable[ncar]);
         CHECK(car);
         carElt = car->carElt;
 
@@ -684,11 +679,6 @@ SimUpdate(tSituation *s, double deltaTime)
         carElt->_steerTqAlign = car->wheel[FRNT_RGT].torqueAlign + car->wheel[FRNT_LFT].torqueAlign;
 
     }
-
-    out_log << s->cars[0]->pub.DynGC.pos.x << " " << s->cars[0]->pub.DynGC.pos.y << " " << s->cars[0]->pub.DynGC.pos.z << std::endl;
-    out_log << s->cars[0]->pub.DynGC.vel.x << " " << s->cars[0]->pub.DynGC.vel.y << " " << s->cars[0]->pub.DynGC.vel.z << std::endl;
-    out_log << s->cars[0]->pub.DynGC.acc.x << " " << s->cars[0]->pub.DynGC.acc.y << " " << s->cars[0]->pub.DynGC.acc.z << std::endl;
-
 }
 
 void

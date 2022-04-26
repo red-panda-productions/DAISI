@@ -30,12 +30,6 @@ static const char *SuspSect[4] = {SECT_FRNTRGTSUSP, SECT_FRNTLFTSUSP, SECT_REARR
 // The "Simu" logger instance
 GfLogger* PLogSimu = 0;
 
-
-#include <fstream>
-#include <iomanip>
-
-extern std::ofstream out_log;
-
 void
 SimCarConfig(tCar *car)
 {
@@ -520,8 +514,6 @@ SimCarReConfig(tCar *car)
 	}
 }
 
-#define LOG_VAR(var) out_log << #var << ": "<< std::fixed << std::setprecision(20) << var << std::endl;
-
 static void
 SimCarUpdateForces(tCar *car)
 {
@@ -534,35 +526,21 @@ SimCarUpdateForces(tCar *car)
 	tdble	desiredF, desiredTq;
 	
 	Cosz = car->Cosz = cos(car->DynGCg.pos.az);
-        out_log << "Cosz: " << std::fixed << std::setprecision(20)<< Cosz << std::endl;
 	Sinz = car->Sinz = sin(car->DynGCg.pos.az);
-        out_log << "Sinz: " << std::fixed << std::setprecision(20)<< Sinz << std::endl;
-	
+
 	car->preDynGC = car->DynGCg;
 	
 	/* total mass */
 	m = car->mass + car->fuel;
-        out_log << "car->mass: " << std::fixed << std::setprecision(20)<< car->mass << std::endl;
-        out_log << "car->fuel: " << std::fixed << std::setprecision(20)<< car->fuel << std::endl;
-        out_log << "Mass: " << std::fixed << std::setprecision(20)<< m << std::endl;
-        minv = (tdble) (1.0 / m);
+    minv = (tdble) (1.0 / m);
 	w = -m * G;
-        out_log << "W: " << std::fixed << std::setprecision(20)<< w << std::endl;
-
-        out_log << std::fixed << std::setprecision(20)<< car->wheel[FRNT_RGT].zRoad << std::endl;
-        out_log << std::fixed << std::setprecision(20)<< car->wheel[FRNT_LFT].zRoad << std::endl;
-        out_log << std::fixed << std::setprecision(20)<< car->wheel[REAR_RGT].zRoad << std::endl;
-        out_log << std::fixed << std::setprecision(20)<< car->wheel[REAR_LFT].zRoad << std::endl;
-        out_log << std::fixed << std::setprecision(20)<< car->wheelbase << std::endl;
 
 	/* Weight */
 	SinTheta = (tdble) ((-car->wheel[FRNT_RGT].zRoad - car->wheel[FRNT_LFT].zRoad
 		+ car->wheel[REAR_RGT].zRoad + car->wheel[REAR_LFT].zRoad) / (2.0 * car->wheelbase));
-        out_log << "SinTheta: "<< std::fixed << std::setprecision(20) << SinTheta << std::endl;
 	F.F.x = -w * SinTheta;
 	SinTheta = (tdble) ((-car->wheel[FRNT_RGT].zRoad - car->wheel[REAR_RGT].zRoad
 		+ car->wheel[FRNT_LFT].zRoad + car->wheel[REAR_LFT].zRoad) / (2.0 * car->wheeltrack));
-        out_log << "SinTheta: "<< std::fixed << std::setprecision(20) << SinTheta << std::endl;
 	F.F.y = -w * SinTheta;
 	F.F.z = (tdble) (w - (F.F.x*F.F.x + F.F.y*F.F.y)/(2.0*w));/*Taylor-polinom of sqrt(w^2-F.F.x^2-F.F.y^2)*/
 	F.M.x = F.M.y = F.M.z = 0;
@@ -585,11 +563,6 @@ SimCarUpdateForces(tCar *car)
 		F.M.z += car->wheel[i].torques.z;
 	}
 
-        out_log << "marker1" << std::endl;
-        LOG_VAR(F.F.x)
-        LOG_VAR(F.F.y)
-        LOG_VAR(F.F.z)
-
 	/* Aero Drag */
 	F.F.x += car->aero.drag;
 	
@@ -602,12 +575,7 @@ SimCarUpdateForces(tCar *car)
 	F.M.y -= (car->wing[i].forces.z + car->aero.lift[i]) * car->wing[i].staticPos.x +
 		car->wing[i].forces.x * car->wing[i].staticPos.z;
 	}
-        out_log << "marker2" << std::endl;
 
-        LOG_VAR(F.F.x)
-        LOG_VAR(F.F.y)
-        LOG_VAR(F.F.z)
-	
 	/* Rolling Resistance */
 	v = car->DynGC.vel.xy;
 	R = 0;
@@ -629,11 +597,6 @@ SimCarUpdateForces(tCar *car)
 	Rx = Rv * car->DynGC.vel.x;
 	Ry = Rv * car->DynGC.vel.y;
 
-        out_log << "marker3" << std::endl;
-        LOG_VAR(F.F.x)
-        LOG_VAR(F.F.y)
-        LOG_VAR(F.F.z)
-
 	F.F.x -= Rx;
 	F.F.y -= Ry;
 	
@@ -644,56 +607,31 @@ SimCarUpdateForces(tCar *car)
 	}
 	F.M.z -= Rm;
 
-        out_log << "marker4" << std::endl;
-        LOG_VAR(F.F.x)
-        LOG_VAR(F.F.y)
-        LOG_VAR(F.F.z)
-
-        LOG_VAR(car->features)
-        LOG_VAR((car->features & FEAT_SLOWGRIP))
-        LOG_VAR((v < 0.1))
-        LOG_VAR(v)
 	/* simulate sticking when car almost stationary */
 	if ((car->features & FEAT_SLOWGRIP) && ( v < 0.1 ) ) {
 		w = -w; //make it positive
-                LOG_VAR(w)
 		/* desired force to stop sideway slide */
 		desiredF = - m * car->DynGC.vel.y / SimDeltaTime;
-                LOG_VAR(desiredF)
 		if ( (fabs(desiredF - F.F.y)) < w ) {F.F.y = desiredF;}
 		else if ( (desiredF - F.F.y) > 0.0 ) {F.F.y += w;}
 		else {F.F.y -= w;}
-                LOG_VAR(F.F.y)
-                LOG_VAR(car->DynGC.vel.az)
-                LOG_VAR(car->Iinv.z)
-                LOG_VAR(SimDeltaTime)
 
 		/* desired torque to stop yaw */
 		desiredTq = - car->DynGC.vel.az / ( SimDeltaTime * car->Iinv.z );
-                LOG_VAR(desiredTq)
 		if ( (fabs(desiredTq - F.M.z)) < 0.5 * w * car->wheelbase) {F.M.z = desiredTq;}
 		else if ( (desiredTq - F.M.z) > 0.0 ) {F.M.z += 0.5f * w * car->wheelbase;}
 		else {F.M.z -= 0.5f * w * car->wheelbase;}
-                LOG_VAR(F.M.z)
 		/* desired force to really stop the car when braking to 0 */
 		if ( ((car->ctrl->brakeCmd > 0.05) || (car->ctrl->ebrakeCmd > 0.1) || (car->ctrl->brakeFrontLeftCmd > 0.02)
 		  || (car->ctrl->brakeFrontRightCmd > 0.02) || (car->ctrl->brakeRearLeftCmd > 0.02) || (car->ctrl->brakeRearRightCmd > 0.02) )
 		  && (car->ctrl->accelCmd * car->transmission.clutch.transferValue < 0.05) && (fabs(car->DynGC.vel.x) < 0.02) ) {
 			desiredF = - m * car->DynGC.vel.x / SimDeltaTime;
-                        LOG_VAR(desiredF)
 			w *= 0.5;
-                        LOG_VAR(w)
 			if ( (fabs(desiredF - F.F.x)) < w ) {F.F.x = desiredF;}
 			else if ( (desiredF - F.F.x) > 0.0 ) {F.F.x += w;}
 			else {F.F.x -= w;}
-                        LOG_VAR(F.F.x)
 		}
 	}
-
-        out_log << "marker5" << std::endl;
-        LOG_VAR(F.F.x)
-        LOG_VAR(F.F.y)
-        LOG_VAR(F.F.z)
 
 	/* compute accelerations */
 	car->DynGC.acc.x = F.F.x * minv;
@@ -1015,17 +953,17 @@ SimTelemetryOut(tCar *car)
 void
 SimCarUpdate(tCar *car, tSituation * /* s */)
 {
-    CALL_AND_LOG(SimCarUpdateForces(car));
+    SimCarUpdateForces(car);
 	CHECK(car);
-    CALL_AND_LOG(SimCarUpdateSpeed(car));
+    SimCarUpdateSpeed(car);
 	CHECK(car);
-	CALL_AND_LOG(SimCarUpdateCornerPos(car));
+	SimCarUpdateCornerPos(car);
 	CHECK(car);
-	CALL_AND_LOG(SimCarUpdatePos(car));
+	SimCarUpdatePos(car);
 	CHECK(car);
-	CALL_AND_LOG(SimCarCollideZ(car));
+	SimCarCollideZ(car);
 	CHECK(car);
-	CALL_AND_LOG(SimCarCollideXYScene(car));
+	SimCarCollideXYScene(car);
 	CHECK(car);
 	
 	/* update car->carElt->setup.reqRepair with damage */
