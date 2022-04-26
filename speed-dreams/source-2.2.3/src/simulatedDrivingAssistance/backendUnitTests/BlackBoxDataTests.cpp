@@ -294,6 +294,33 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     car.priv.dashboardActiveItem = random.NextInt();
 
     // Assign values to car.ctrl
+    car.ctrl.steer = random.NextFloat();
+    car.ctrl.accelCmd = random.NextFloat();
+    car.ctrl.brakeCmd = random.NextFloat();
+    car.ctrl.clutchCmd = random.NextFloat();
+    car.ctrl.brakeFrontLeftCmd = random.NextFloat();
+    car.ctrl.brakeFrontRightCmd = random.NextFloat();
+    car.ctrl.brakeRearLeftCmd = random.NextFloat();
+    car.ctrl.brakeRearRightCmd = random.NextFloat();
+    car.ctrl.wingFrontCmd = random.NextFloat();
+    car.ctrl.wingRearCmd = random.NextFloat();
+    car.ctrl.reserved1 = random.NextFloat();
+    car.ctrl.reserved2 = random.NextFloat();
+    car.ctrl.gear = random.NextInt(-1, MAX_GEARS - 1);
+    car.ctrl.raceCmd = random.NextInt(2);
+    car.ctrl.lightCmd = random.NextInt();
+    car.ctrl.ebrakeCmd = random.NextInt();
+    car.ctrl.wingControlMode = random.NextInt(3);
+    car.ctrl.singleWheelBrakeMode = random.NextInt(2);
+    car.ctrl.switch3 = random.NextInt();
+    car.ctrl.telemetryMode = random.NextInt(2);
+    for (int j = 0; j < 4; j++)
+    {
+        RAND_NAME(car.ctrl.msg[j], RM_CMD_MAX_MSG_SIZE)
+        car.ctrl.msgColor[j] = random.NextFloat();
+    }
+    car.ctrl.setupChangeCmd = new tDashboardItem();
+    RAND_TDASHBOARDITEM(*car.ctrl.setupChangeCmd)
 
     return car;
 }
@@ -310,6 +337,16 @@ void DestroyCar(tCarElt& p_car)
     delete p_car.race.pit;
     delete p_car.race.penaltyList.tqh_first;  // COPY NOT IMPLEMENTED
     delete p_car.race.penaltyList.tqh_last;   // COPY NOT IMPLEMENTED
+    for (int i = 0; i < NR_DI_INSTANT; i++)
+    {
+        delete p_car.priv.dashboardInstant[i].setup;
+    }
+    for (int i = 0; i < NR_DI_REQUEST; i++)
+    {
+        delete p_car.priv.dashboardRequest[i].setup;
+    }
+    delete p_car.ctrl.setupChangeCmd->setup;
+    delete p_car.ctrl.setupChangeCmd;
 }
 
 tSituation GenerateSituation()
