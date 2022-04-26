@@ -65,7 +65,7 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSetting
 /// @param  p_decisionMaker the decision maker that will be initialized
 void InitializeTest(TDecisionMaker& p_decisionMaker)
 {
-    tCarElt car;  // need data
+    tCarElt car;
     tSituation situation;
     situation.deltaTime = 108;
     car.pub.speed = 144;
