@@ -84,13 +84,13 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
 void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap p_connectionProperties)
 {
-    std::string configPath("data\\" + p_dirPath);
-    std::string configFile("database_encryption_settings.txt");
+    std::string encryptionPath("data" + p_dirPath);
+    std::string encryptionFile("database_encryption_settings.txt");
 
-    if (!FindFileDirectory(configPath, configFile))
+    if (!FindFileDirectory(encryptionPath, encryptionFile))
         throw std::exception("Could not find database encryption settings file");
 
-    std::ifstream ifstream(configPath + '\\' + configFile);
+    std::ifstream ifstream(encryptionPath + '\\' + encryptionFile);
 
     std::string caName;
     std::string pubName;
@@ -99,7 +99,7 @@ void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptio
     READ_INPUT(ifstream, pubName)
     READ_INPUT(ifstream, privName)
 
-    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
+    std::string certificatesPath("data" + p_dirPath + "\\certificates");
 
     if (!FindFileDirectory(certificatesPath, caName))
         throw std::exception("Could not find certificate folder");
@@ -119,6 +119,7 @@ void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptio
 /// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
 /// @param p_dirPath        optional: path relative to the datafolder in which the
 ///                         "database_encryption_settings.txt" file is located
+///                         needs "\\" in front
 /// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
@@ -644,10 +645,11 @@ void SQLDatabaseStorage::CloseDatabase()
 /// @param  p_dirPath           optional parameter: path after the data folder
 ///                             for "database_connection_settings.txt" file
 ///                             and if applicable the "database_encryption_settings.txt".
+///                             needs "\\" in front
 ///                             if left out path will be data folder
 void SQLDatabaseStorage::Run( const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
-    std::string configPath("data\\" + p_dirPath);
+    std::string configPath("data" + p_dirPath);
     std::string configFile("database_connection_settings.txt");
 
     if (!FindFileDirectory(configPath, configFile)) 
