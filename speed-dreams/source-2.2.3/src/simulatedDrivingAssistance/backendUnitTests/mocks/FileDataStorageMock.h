@@ -4,6 +4,8 @@
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
+
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
 
 /// @brief               A class that can store data to a file
