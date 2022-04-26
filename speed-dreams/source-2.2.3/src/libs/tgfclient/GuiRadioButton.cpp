@@ -148,7 +148,8 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
         yl += (height - gfuiFont[p_font]->getHeight()) / 2;
 
     radioButton->LabelControl =
-        GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(p_pszText));
+        GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(p_pszText),
+                        nullptr, nullptr, p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
     gfuiAddObject(screen, object);
 
