@@ -14,7 +14,48 @@
     (a).y = random.NextFloat(); \
     (a).z = random.NextFloat();
 
-// For structure elements where the copy is not implemented, no implementation is given for the generation either, not are there any checks related to that element
+#define RAND_TPOSD(a)            \
+    (a).x = random.NextFloat();  \
+    (a).y = random.NextFloat();  \
+    (a).z = random.NextFloat();  \
+    (a).xy = random.NextFloat(); \
+    (a).ax = random.NextFloat(); \
+    (a).ay = random.NextFloat(); \
+    (a).az = random.NextFloat();
+
+#define RAND_TDYNPT(a)  \
+    RAND_TPOSD((a).pos) \
+    RAND_TPOSD((a).vel) \
+    RAND_TPOSD((a).acc)
+
+#define RAND_TCARSETUPITEM(a) \
+(a).value = random.NextFloat(); \
+(a).min = random.NextFloat(); \
+(a).max = random.NextFloat(); \
+(a).desired_value = random.NextFloat(); \
+(a).stepsize = random.NextFloat(); \
+(a).changed = random.NextBool();
+
+#define COMP_ELEM(a, b, c)     \
+    if ((c))                   \
+    {                          \
+        EXPECT_EQ((a), (b));   \
+    }                          \
+    else                       \
+    {                          \
+        EXPECT_NE(&(a), &(b)); \
+    }
+
+// Doesn't actually do a.trkPos.seg, that is left to whatever desires a trkPos to determine how they want that
+#define RAND_TRKPOS(a)                 \
+    (a).type = random.NextInt(3);      \
+    (a).toStart = random.NextFloat();  \
+    (a).toRight = random.NextFloat();  \
+    (a).toMiddle = random.NextFloat(); \
+    (a).toLeft = random.NextFloat();
+
+// For structure elements where the copy is not implemented, no implementation is given for the generation either,
+// nor are there any checks related to that element
 
 struct TestSegments
 {
@@ -35,10 +76,11 @@ void DestroySegments(TestSegments& p_testSegments)
 {
 }
 
-tCarElt GenerateCar(TestSegments& p_testSegments)
+tCarElt Generatecar(TestSegments& p_testSegments)
 {
     Random random;
     tCarElt car{};
+
     // Assign to car.info
     RAND_NAME(car.info.name, MAX_NAME_LEN)
     RAND_NAME(car.info.sname, MAX_NAME_LEN)
@@ -84,11 +126,84 @@ tCarElt GenerateCar(TestSegments& p_testSegments)
     {
         car.info.skinTargets |= possibleSkinTargets[i] * random.NextBool();
     }
+
+    // Assign to car.pub
+    RAND_TDYNPT(car.pub.DynGC)
+    RAND_TDYNPT(car.pub.DynGCg)
+    car.pub.speed = random.NextFloat();
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            car.pub.posMat[i][j] = random.NextFloat();
+        }
+    }
+    // TODO car.pub.trkPos.seg
+    RAND_TRKPOS(car.pub.trkPos)
+    int possibleStates[] = {RM_CAR_STATE_FINISH, RM_CAR_STATE_FINISH, RM_CAR_STATE_DNF, RM_CAR_STATE_PULLUP, RM_CAR_STATE_PULLSIDE, RM_CAR_STATE_PULLDN,
+                            RM_CAR_STATE_OUT, RM_CAR_STATE_NO_SIMU, RM_CAR_STATE_BROKEN, RM_CAR_STATE_OUTOFGAS, RM_CAR_STATE_ELIMINATED,
+                            RM_CAR_STATE_ENDRACE_CALLED, RM_CAR_STATE_SIMU_NO_MOVE};
+    car.pub.state = possibleStates[random.NextInt(13)];
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TPOSD(car.pub.corner[i])
+    }
+    car.pub.glance = random.NextFloat();
+    car.pub.oldglance = random.NextFloat();
+
+    // Assign values to car.race
+    car.race.bestLapTime = random.NextFloat();
+    car.race.commitBestLapTime = random.NextBool();
+    car.race.bestSplitTime = new double(random.NextFloat());
+    car.race.deltaBestLapTime = random.NextFloat();
+    car.race.curLapTime = random.NextFloat();
+    car.race.curSplitTime = new double(random.NextFloat());
+    car.race.lastLapTime = random.NextFloat();
+    car.race.curTime = random.NextFloat();
+    car.race.topSpeed = random.NextFloat();
+    car.race.currentMinSpeedForLap = random.NextFloat();
+    car.race.laps = random.NextInt();
+    car.race.bestLap = random.NextInt();
+    car.race.nbPitStops = random.NextInt();
+    car.race.remainingLaps = random.NextInt();
+    car.race.pos = random.NextInt();
+    car.race.timeBehindLeader = random.NextFloat();
+    car.race.lapsBehindLeader = random.NextInt();
+    car.race.timeBehindPrev = random.NextFloat();
+    car.race.timeBeforeNext = random.NextFloat();
+    car.race.distRaced = random.NextFloat();
+    car.race.distFromStartLine = random.NextFloat();
+    car.race.currentSector = random.NextInt();
+    car.race.nbSectors = random.NextInt(car.race.currentSector + 1);
+    car.race.trackLength = random.NextFloat();
+    car.race.scheduledEventTime = random.NextFloat();
+    car.race.pit = new tTrackOwnPit();
+    car.race.pit->pos.seg = nullptr;  // COPY NOT IMPLEMENTED
+    RAND_TRKPOS(car.race.pit->pos)
+    car.race.pit->pitCarIndex = random.NextInt(-1, 4);
+    car.race.pit->lmin = random.NextFloat();
+    car.race.pit->lmax = random.NextFloat();
+    for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
+    {
+        car.race.pit->car[i] = nullptr;  // COPY NOT IMPLEMENTED
+    }
+    car.race.pit->freeCarIndex = car.race.pit->pitCarIndex + 1;
+    car.race.event = random.NextInt();
+    car.race.penaltyList.tqh_first = nullptr;  // COPY NOT IMPLEMENTED
+    car.race.penaltyList.tqh_last = nullptr;   // COPY NOT IMPLEMENTED
+    car.race.penaltyTime = random.NextFloat();
+    car.race.prevFromStartLine = random.NextFloat();
+    car.race.wrongWayTime = random.NextFloat();
+
+    // Assign values to car.priv
+
     return car;
 }
 
 void DestroyCar(tCarElt& p_car)
 {
+    delete p_car.race.bestSplitTime;
+    delete p_car.race.curSplitTime;
 }
 
 tSituation GenerateSituation()
@@ -118,15 +233,16 @@ void DestroySituation(tSituation& p_situation)
     // Empty body as the only ptr is not implemented
 }
 
-class BlackBoxDataTest : public ::testing::Test
+class BlackBoxDataTestFixture : public ::testing::Test, public testing::WithParamInterface<bool>
 {
 protected:
     void SetUp() override
     {
         Random random;
         testSegments = GenerateSegments();
-        car = GenerateCar(testSegments);
+        car = Generatecar(testSegments);
         situation = GenerateSituation();
+        tickCount = random.NextInt();
     }
 
     TestSegments testSegments;
@@ -142,42 +258,13 @@ protected:
     }
 };
 
-TEST_F(BlackBoxDataTest, ValueEqualityTest)
+/// @brief          Tests whether elements are the correct value or pointer
+/// @param p_eqOrNe true: test for equality of values, false: test for inequality of pointers to the values
+TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
-    BlackBoxData data = BlackBoxData(&car, &situation, tickCount, testSegments.nextSegments, testSegments.nextSegmentsCount);
-    EXPECT_EQ(tickCount, data.TickCount);
-
-    EXPECT_EQ(car.info.wheel[0].rimRadius, data.Car.info.wheel[0].rimRadius);
-    EXPECT_EQ(car.info.wheel[3].tireWidth, data.Car.info.wheel[3].tireWidth);
-
-    EXPECT_EQ(car.pub.posMat[2][0], data.Car.pub.posMat[2][0]);
-    EXPECT_EQ(car.pub.posMat[0][3], data.Car.pub.posMat[0][3]);
-
-    EXPECT_EQ(car.race.commitBestLapTime, data.Car.race.commitBestLapTime);
-    EXPECT_EQ(car.race.currentMinSpeedForLap, data.Car.race.currentMinSpeedForLap);
-
-    EXPECT_EQ(car.priv.collision_state.pos[0], data.Car.priv.collision_state.pos[0]);
-    delete car.priv.dashboardInstant[7].setup;
-
-    EXPECT_EQ(car.setup.rideHeight[3].desired_value, data.Car.setup.rideHeight[3].desired_value);
-    EXPECT_EQ(car.setup.FRLWeightRep.stepsize, data.Car.setup.FRLWeightRep.stepsize);
-    EXPECT_EQ(car.setup.arbSpring[0].max, data.Car.setup.arbSpring[0].max);
-
-    EXPECT_EQ(car.pitcmd.fuel, data.Car.pitcmd.fuel);
-    EXPECT_EQ(car.pitcmd.tireChange, data.Car.pitcmd.tireChange);
-
-    EXPECT_EQ(situation.accelTime, data.Situation.accelTime);
-    EXPECT_EQ(situation.raceInfo.fps, data.Situation.raceInfo.fps);
-    EXPECT_EQ(situation.raceInfo.features, data.Situation.raceInfo.features);
-}
-
-TEST_F(BlackBoxDataTest, PointerInequalityTest)
-{
-    Random random;
-    TestSegments testSegments = GenerateSegments();
-    tCarElt car = GenerateCar(testSegments);
-    tSituation situation = GenerateSituation();
-    unsigned long tickCount = random.NextInt();
+    bool p_eqOrNe = GetParam();
     BlackBoxData data(&car, &situation, tickCount, testSegments.nextSegments, testSegments.nextSegmentsCount);
-    EXPECT_NE(&tickCount, &data.TickCount);
+    COMP_ELEM(car.index, data.Car.index, p_eqOrNe)
 }
+
+INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
