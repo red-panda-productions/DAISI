@@ -30,7 +30,7 @@ void InterventionExecutorTest(unsigned int p_INTERVENTION_TYPE)
     //Run the RunDecision code of the interventiontype.
     intervention->RunDecision(decisionmocks, decisionCount);
 
-    // no signals will not sent indicators or interventions so both will return always 0
+    // INTERVENTION_TYPE_NO_SIGNALS will not send indicators or interventions so both will return 0
     if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_NO_SIGNALS) decisionCount = 0;
     ASSERT_EQ(dmock.indicate, decisionCount);
 
