@@ -8,13 +8,9 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
 
-/// @brief               A class that can store data to a file
-/// @tparam BlackBoxData The data that needs to be stored
 class FileDataStorageMock
 {
 private:
-    /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
-    /// @brief Output filestreams to write data to, should be initialized through @link FileDataStorage::Initialize
     std::ofstream m_outputStream;
 
 public:
