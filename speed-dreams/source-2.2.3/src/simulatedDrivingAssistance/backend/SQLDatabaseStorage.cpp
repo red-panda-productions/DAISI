@@ -96,16 +96,13 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
     READ_INPUT(ifstream, privName)
 
     std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
-    std::string caFile(caName);
-    std::string pubFile(pubName);
-    std::string privFile(privName);
 
-    if (!FindFileDirectory(certificatesPath, caFile))
+    if (!FindFileDirectory(certificatesPath, caName))
         throw std::exception("Could not find certificate folder");
 
-    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caFile;
-    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubFile;
-    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privFile;
+    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caName;
+    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubName;
+    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privName;
 }
 
 /// @brief                  Connect to the specified database.
