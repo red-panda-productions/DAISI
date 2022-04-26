@@ -83,8 +83,7 @@ void InitializeTest(TDecisionMaker& p_decisionMaker)
     findfilepath.append("\\blackbox.exe");
     p_decisionMaker.Initialize(&car, &situation, &track, findfilepath, true);
 
-    SocketBlackBoxMock* mockCheck = dynamic_cast<SocketBlackBoxMock*>(&p_decisionMaker.BlackBox);
-    BlackBoxData* blackboxDataMock = mockCheck->GetBlackBoxData();
+    BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
