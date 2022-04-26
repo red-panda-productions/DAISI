@@ -5,7 +5,6 @@
 #include "../rppUtils/RppUtils.hpp"
 #include "gmock/gmock-matchers.h"
 
-
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
 /// @param p_password password of database to connect to
@@ -31,7 +30,7 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
     std::string path("data\\test_data\\testSimulationData");
-    FindFileDirectory(path, p_inputFile);// throw std::exception("Can't find test files");
+    FindFileDirectory(path, p_inputFile);  // throw std::exception("Can't find test files");
 
     testing::internal::CaptureStderr();
     p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile);
@@ -85,7 +84,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
     {
         ASSERT_STREQ("Could not find database settings file", e.what());
     }
-
 }
 
 /// @brief  Tries to find the database settings file

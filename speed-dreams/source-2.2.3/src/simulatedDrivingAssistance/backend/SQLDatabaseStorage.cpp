@@ -648,12 +648,12 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             and if applicable the "database_encryption_settings.txt".
 ///                             needs "\\" in front
 ///                             if left out path will be data folder
-void SQLDatabaseStorage::Run( const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
+void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     std::string configPath("data" + p_dirPath);
     std::string configFile("database_connection_settings.txt");
 
-    if (!FindFileDirectory(configPath, configFile)) 
+    if (!FindFileDirectory(configPath, configFile))
         throw std::exception("Could not find database settings file");
 
     std::ifstream ifstream(configPath + '\\' + configFile);
