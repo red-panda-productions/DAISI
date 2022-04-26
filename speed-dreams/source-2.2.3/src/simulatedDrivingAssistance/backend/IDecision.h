@@ -9,4 +9,6 @@ public:
 
     /// @brief Can intervene the simulation
     virtual void RunInterveneCommands() = 0;
+
+    virtual ~IDecision() = default;
 };

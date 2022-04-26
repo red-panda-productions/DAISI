@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
-#include "DecisionTuple.h"
 #include "tgf.h"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
@@ -8,8 +7,8 @@
 #include "mocks/DecisionMock.h"
 
 /// @brief                      framework for a test that checks if a mode get run
-/// @param p_INTERVENTION_TYPE  parameter that determines the mode.
-void InterventionExecutorTest(unsigned int p_INTERVENTION_TYPE)
+/// @param p_interventionType  parameter that determines the mode.
+void InterventionExecutorTest(unsigned int p_interventionType)
 {
     DecisionMock dmock;  // mock of a decision
     Random random;
@@ -20,7 +19,7 @@ void InterventionExecutorTest(unsigned int p_INTERVENTION_TYPE)
     GfInit(true);
     SDAConfig config;
 
-    InterventionExecutor* intervention = config.SetInterventionType(p_INTERVENTION_TYPE);  // determines the interventiontype that will be run
+    InterventionExecutor* intervention = config.SetInterventionType(p_interventionType);  // determines the interventiontype that will be run
 
     // fill an array with the same reference of length decisionCount (used to check if it runs through all decisions correctly)
     IDecision** decisionmocks = new IDecision*[decisionCount];
@@ -30,12 +29,12 @@ void InterventionExecutorTest(unsigned int p_INTERVENTION_TYPE)
     intervention->RunDecision(decisionmocks, decisionCount);
 
     // INTERVENTION_TYPE_NO_SIGNALS will not send indicators or interventions so both will return 0
-    if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_NO_SIGNALS) decisionCount = 0;
-    ASSERT_EQ(dmock.indicate, decisionCount);
+    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) decisionCount = 0;
+    ASSERT_EQ(dmock.Indicate, decisionCount);
 
     // INTERVENTION_TYPE_ONLY_SIGNALS will not send interventions so that will be 0.
-    if (p_INTERVENTION_TYPE == INTERVENTION_TYPE_ONLY_SIGNALS) decisionCount = 0;
-    ASSERT_EQ(dmock.intervene, decisionCount);
+    if (p_interventionType == INTERVENTION_TYPE_ONLY_SIGNALS) decisionCount = 0;
+    ASSERT_EQ(dmock.Intervene, decisionCount);
 }
 
 TEST_CASE(ExecutorTest, NoIntervention, InterventionExecutorTest, (INTERVENTION_TYPE_NO_SIGNALS));          // tests no signals

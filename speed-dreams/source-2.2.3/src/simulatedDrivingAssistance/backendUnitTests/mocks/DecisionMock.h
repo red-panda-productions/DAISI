@@ -1,4 +1,5 @@
 #pragma once
+#include "IDecision.h"
 
 class DecisionMock : public IDecision
 {
@@ -6,15 +7,15 @@ public:
     // @brief    increases the indicate integer variable by 1
     void RunIndicateCommands() override
     {
-        indicate++;
+        Indicate++;
     }
 
     // @brief    increases the intervene integer variable by 1
     void RunInterveneCommands() override
     {
-        intervene++;
+        Intervene++;
     }
 
-    int indicate = 0;   // int variable that checks if an indicator should be shown
-    int intervene = 0;  // int variable that checks if an intervention should happen
+    int Indicate = 0;   // int variable that checks if an indicator should be shown
+    int Intervene = 0;  // int variable that checks if an intervention should happen
 };
