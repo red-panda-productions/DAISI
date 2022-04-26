@@ -36,6 +36,7 @@ Recorder::Recorder(const std::string& p_dirName, const std::string& p_fileNamePa
     std::experimental::filesystem::path path = recordingsFolder.append(USER_INPUT_RECORDING_FILE_NAME);
     m_recordingFile.open(path, std::ios::binary | std::ios::trunc);
     std::cout << "Writing recording file to " << path << std::endl;
+    m_recordingFile << std::fixed << std::setprecision(20);
 
     m_paramAmount = p_paramAmount;
     // initialize previous input with impossible values. This ensures the first actual values are always written when compression is enabled.
@@ -77,7 +78,7 @@ void Recorder::WriteRecording(const float* p_input, const double p_currentTime, 
 		// update previous input
 		m_prevInput[i] = p_input[i];
 		// write to file
-		m_recordingFile << std::fixed << std::setprecision(20) << p_input[i] << " ";
+		m_recordingFile << p_input[i] << " ";
 	}
 	m_recordingFile << std::endl;
 }
