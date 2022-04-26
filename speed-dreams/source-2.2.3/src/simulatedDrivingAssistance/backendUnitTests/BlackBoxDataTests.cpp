@@ -52,6 +52,7 @@
     }
 
 // Doesn't actually do a.trkPos.seg, that is left to whatever desires a trkPos to determine how they want that
+// as exclusively the copy for p_car.pub.seg is implemented
 #define RAND_TRKPOS(a)                 \
     (a).type = random.NextInt(3);      \
     (a).toStart = random.NextFloat();  \
@@ -322,6 +323,167 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     car.ctrl.setupChangeCmd = new tDashboardItem();
     RAND_TDASHBOARDITEM(*car.ctrl.setupChangeCmd)
 
+    // Assign values to car.setup
+    RAND_TCARSETUPITEM(car.setup.FRWeightRep)
+    RAND_TCARSETUPITEM(car.setup.FRLWeightRep)
+    RAND_TCARSETUPITEM(car.setup.RRLWeightRep)
+    RAND_TCARSETUPITEM(car.setup.fuel)
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.wingAngle[i])
+    }
+    RAND_TCARSETUPITEM(car.setup.revsLimiter)
+    for (int i = 0; i < MAX_GEARS; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.gearRatio[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        car.setup.differentialType[i] = random.NextInt();
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialRatio[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialMinTqBias[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialMaxTqBias[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialViscosity[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialLockingTq[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialMaxSlipBias[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.differentialCoastMaxSlipBias[i])
+    }
+    RAND_TCARSETUPITEM(car.setup.steerLock)
+    RAND_TCARSETUPITEM(car.setup.brakeRepartition)
+    RAND_TCARSETUPITEM(car.setup.brakePressure)
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.rideHeight[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.toe[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.camber[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.tirePressure[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.tireOpLoad[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.arbSpring[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.arbBellcrank[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveSpring[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveBellcrank[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveInertance[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveFastBump[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveSlowBump[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveBumpLvel[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveFastRebound[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveSlowRebound[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.heaveReboundLvel[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspSpring[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspBellcrank[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspInertance[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspCourse[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspPacker[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspFastBump[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspSlowBump[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspBumpLvel[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspFastRebound[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspSlowRebound[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_TCARSETUPITEM(car.setup.suspReboundLvel[i])
+    }
+    RAND_TCARSETUPITEM(car.setup.reqRepair)
+    RAND_TCARSETUPITEM(car.setup.reqTireset)
+    RAND_TCARSETUPITEM(car.setup.reqPenalty)
+
     return car;
 }
 
@@ -373,7 +535,7 @@ tSituation GenerateSituation()
 
 void DestroySituation(tSituation& p_situation)
 {
-    // Empty body as the only ptr is not implemented
+    delete p_situation.cars; // COPY NOT IMPLEMENTED
 }
 
 class BlackBoxDataTestFixture : public ::testing::Test, public testing::WithParamInterface<bool>
