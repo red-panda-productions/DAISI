@@ -34,7 +34,7 @@ SET(_SOURCES MsgpackDeserializeTests.cpp
         SQLDatabaseStorageTests.cpp
         BlackBoxDataTests.cpp
         DecisionsTests.cpp
-        Executor.cpp
+        ExecutorTests.cpp
         RecorderTests.cpp
         )
 
