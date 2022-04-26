@@ -36,7 +36,7 @@ public:
 
     static Mediator* GetInstance();
 #ifdef TEST
-    static Mediator* RemoveInstance();
+    Mediator() = default;
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour
@@ -47,7 +47,9 @@ public:
     CarController CarController;
 
 private:
+#ifndef TEST
     Mediator() = default;
+#endif
     static Mediator<DecisionMaker>* m_instance;
 
     DecisionMaker m_decisionMaker;
