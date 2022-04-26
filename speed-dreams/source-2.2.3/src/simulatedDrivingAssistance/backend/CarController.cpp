@@ -50,3 +50,23 @@ void CarController::SetCar(tCarElt* p_car)
 {
     m_car = p_car;
 }
+float CarController::GetSteerCmd() const
+{
+    return m_car->ctrl.steer;
+}
+float CarController::GetAccelCmd() const
+{
+    return m_car->ctrl.accelCmd;
+}
+float CarController::GetBrakeCmd() const
+{
+    return m_car->ctrl.brakeCmd;
+}
+float CarController::GetClutchCmd() const
+{
+    return m_car->ctrl.clutchCmd;
+}
+int CarController::GetLightCmd() const
+{
+    return m_car->ctrl.lightCmd;
+}
