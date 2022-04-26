@@ -81,7 +81,18 @@ TEST(DecisionTests, BrakeRunIndicateTest)
 
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    ASSERT_EQ(activeIndicators[0].Action, 3);
+    // if the break amount is above the BRAKE_THRESHOLD defined in BrakeDecision.cpp, INTERVENTION_ACTION_BRAKE indicator should be active
+    ASSERT_EQ(activeIndicators.size(), 1);
+    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+
+    brakeDecision.BrakeAmount = 0;
+    brakeDecision.RunIndicateCommands();
+
+    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+    // if the break amount is below the BRAKE_THRESHOLD defined in BrakeDecision.cpp, no indicator should have been changed
+    ASSERT_EQ(activeIndicators.size(), 1);
+    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
 }
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
@@ -97,6 +108,7 @@ TEST(DecisionsTest, SteerRunIndicateTests)
     // TODO: Update to have multiple indicators when indicator code is updated
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
+    ASSERT_EQ(activeIndicators.size(), 1);
     ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
 
     steerDecision.SteerAmount = 1;
@@ -104,6 +116,7 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 
     activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
+    ASSERT_EQ(activeIndicators.size(), 1);
     ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
 }
 
@@ -118,4 +131,6 @@ TEST(DecisionsTest, AccelRunIndicateTests)
     accelDecision.RunIndicateCommands();
 
     // TODO: Ensure this works when it gets implemented
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    ASSERT_EQ(activeIndicators.size(), 0);
 }
