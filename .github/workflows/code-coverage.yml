@@ -34,7 +34,7 @@ jobs:
 
     - name: Configure CMake
       shell: bash
-      run: cmake -DOPTION_GITHUB_ACTIONS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_FLAGS_DEBUG='/MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_CXX_FLAGS_RELWITHDEBINFO='/MD /Z7 /O2 /Ob1 /DNDEBUG' -DCMAKE_C_FLAGS_DEBUG='/MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_C_FLAGS_RELWITHDEBINFO='/MD /Z7 /O2 /Ob1 /DNDEBUG' -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
+      run: cmake -DOPTION_GITHUB_ACTIONS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_CXX_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -DCMAKE_C_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_C_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
