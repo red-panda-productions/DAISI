@@ -30,7 +30,7 @@ TEST(UtilsTests, RandomCharArray)
         }
         if (equal)
         {
-            TestStringEqual(buffer, buffer2, r);
+            TestStringEqual(buffer, buffer2, r); //@NOCOVERAGE, the chance is astronomically small, but can happen
         }
         for (int j = 0; j < 256; j++)
         {
@@ -96,14 +96,16 @@ TEST(UtilsTests, PairwiseLimitTest)
 /// @return			    Whether the tuple is covered
 bool IsTupleCovered(std::vector<TestCaseInfo>* p_testCases, FeatureTuple& p_tuple)
 {
+    bool covered = false;
     for (int i = 0; i < p_testCases->size(); i++)
     {
         if (p_testCases->at(i).IsTupleCovered(p_tuple))
         {
-            return true;
+            covered = true;
+            break;
         }
     }
-    return false;
+    return covered;
 }
 
 /// @brief Tests if all tuples are covered by the test cases generated from a generator
