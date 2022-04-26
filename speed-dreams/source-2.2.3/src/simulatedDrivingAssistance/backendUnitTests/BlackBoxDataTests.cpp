@@ -42,6 +42,7 @@
     (a).setup = new tCarSetupItem(); \
     RAND_TCARSETUPITEM(*(a).setup)
 
+// These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
 #define COMP_ELEM(a, b, c)     \
     if ((c))                   \
     {                          \
@@ -70,17 +71,87 @@ struct TestSegments
     int nextSegmentsCount;
 };
 
+tTrackSeg GenerateSegment()
+{
+    Random random;
+    tTrackSeg segment = {};
+    segment.name = new char[MAX_NAME_LEN];
+    RAND_NAME(segment.name, MAX_NAME_LEN)
+    segment.id = random.NextInt();
+    segment.type = random.NextInt(1, 4);
+    segment.type2 = random.NextInt(1, 6);
+    segment.style = random.NextInt(5);
+    segment.length = random.NextFloat();
+    segment.width = random.NextFloat();
+    segment.startWidth = random.NextFloat();
+    segment.endWidth = random.NextFloat();
+    segment.lgfromstart = random.NextFloat();
+    segment.radius = random.NextFloat();
+    segment.radiusr = random.NextFloat();
+    segment.radiusl = random.NextFloat();
+    segment.arc = random.NextFloat();
+    RAND_T3D(segment.center)
+    for (int i = 0; i < 4; i++)
+    {
+        RAND_T3D(segment.vertex[i])
+    }
+    for (int i = 0; i < 7; i++)
+    {
+        segment.angle[i] = random.NextFloat();
+    }
+    segment.sin = random.NextFloat(-1, 1);
+    segment.cos = random.NextFloat(-1, 1);
+    segment.Kzl = random.NextFloat();
+    segment.Kzw = random.NextFloat();
+    segment.Kyl = random.NextFloat();
+    RAND_T3D(segment.rgtSideNormal)
+    segment.envIndex = random.NextInt();
+    segment.height = random.NextFloat();
+    segment.raceInfo = random.NextInt(1024);
+    segment.DoVfactor = random.NextFloat();
+    segment.ext = nullptr;      // COPY NOT IMPLEMENTED
+    segment.surface = nullptr;  // COPY NOT IMPLEMENTED
+    for (int i = 0; i < 2; i++)
+    {
+        segment.barrier[i] = nullptr;  // COPY NOT IMPLEMENTED
+    }
+    segment.cam = nullptr;  // COPY NOT IMPLEMENTED
+    segment.next = nullptr;
+    segment.prev = nullptr;
+
+    return segment;
+}
+
 TestSegments GenerateSegments()
 {
     Random random;
     TestSegments testSegments;
-    testSegments.nextSegmentsCount = random.NextInt(4);
-    testSegments.nextSegments = nullptr;  //new tTrackSeg[testSegments.nextSegmentsCount];
+#define MAX_TESTSEGMENT_COUNT 16
+    testSegments.nextSegmentsCount = random.NextInt(1, MAX_TESTSEGMENT_COUNT);
+    testSegments.nextSegments = new tTrackSeg[testSegments.nextSegmentsCount];
+    testSegments.nextSegments[0] = GenerateSegment();
+    for (int i = 1; i < testSegments.nextSegmentsCount; i++)
+    {
+        testSegments.nextSegments[i] = GenerateSegment();
+        testSegments.nextSegments[i - 1].next = &testSegments.nextSegments[i];
+        testSegments.nextSegments[i].prev = &testSegments.nextSegments[0];
+    }
     return testSegments;
 }
 
 void DestroySegments(TestSegments& p_testSegments)
 {
+    for (int i = 0; i < p_testSegments.nextSegmentsCount; i++)
+    {
+        // With the current copy implementation, the copies of the segments are written to the same location as they are copied from
+        delete[] p_testSegments.nextSegments[i].name;  // DEEP COPY NOT IMPLEMENTED; IF IT WERE, DUE TO THE ABOVE, IT WOULD LEAK MEMORY
+        delete p_testSegments.nextSegments[i].ext;     // COPY NOT IMPLEMENTED
+        for (int j = 0; j < 2; j++)
+        {
+            delete p_testSegments.nextSegments[i].barrier[j];  // COPY NOT IMPLEMENTED
+        }
+        delete p_testSegments.nextSegments[i].cam;  // COPY NOT IMPLEMENTED
+    }
 }
 
 tCarElt Generatecar(TestSegments& p_testSegments)
@@ -145,7 +216,7 @@ tCarElt Generatecar(TestSegments& p_testSegments)
             car.pub.posMat[i][j] = random.NextFloat();
         }
     }
-    // TODO car.pub.trkPos.seg
+    car.pub.trkPos.seg = p_testSegments.nextSegments;
     RAND_TRKPOS(car.pub.trkPos)
     int possibleStates[] = {RM_CAR_STATE_FINISH, RM_CAR_STATE_FINISH, RM_CAR_STATE_DNF, RM_CAR_STATE_PULLUP, RM_CAR_STATE_PULLSIDE, RM_CAR_STATE_PULLDN,
                             RM_CAR_STATE_OUT, RM_CAR_STATE_NO_SIMU, RM_CAR_STATE_BROKEN, RM_CAR_STATE_OUTOFGAS, RM_CAR_STATE_ELIMINATED,
@@ -506,7 +577,7 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     car.robot->index = random.NextInt();
 
     // Assign value to car.next ~not yet at least~
-    car.next = nullptr; // COPY NOT IMPLEMENTED
+    car.next = nullptr;  // COPY NOT IMPLEMENTED
 
     return car;
 }
@@ -560,7 +631,7 @@ tSituation GenerateSituation()
 
 void DestroySituation(tSituation& p_situation)
 {
-    delete p_situation.cars; // COPY NOT IMPLEMENTED
+    delete p_situation.cars;  // COPY NOT IMPLEMENTED
 }
 
 class BlackBoxDataTestFixture : public ::testing::Test, public testing::WithParamInterface<bool>
@@ -593,8 +664,23 @@ protected:
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
     bool p_eqOrNe = GetParam();
-    BlackBoxData data(&car, &situation, tickCount, testSegments.nextSegments, testSegments.nextSegmentsCount);
+    tTrackSeg* segments = new tTrackSeg[testSegments.nextSegmentsCount];
+    BlackBoxData data(&car, &situation, tickCount, segments, testSegments.nextSegmentsCount);
+    // Compare car.index
     COMP_ELEM(car.index, data.Car.index, p_eqOrNe)
+    // Compare car.info
+    // Compare car.pub (no deep compare trkPos.seg)
+    // Compare car.race
+    // Compare car.priv
+    // Compare car.ctrl
+    // Compare car.setup
+    // Compare car.pitcmd
+    // Compare car.robot
+    // COPY NOT IMPLEMENTED FOR car.next
+    // Compare situation
+    // Compare testSegments.nextSegments vs segments
+
+    delete[] segments;
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));

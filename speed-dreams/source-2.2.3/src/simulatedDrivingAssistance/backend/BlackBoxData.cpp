@@ -6,8 +6,8 @@
 /// @param p_car       The car data in the simulation
 /// @param p_situation The environment data in the simulation
 /// @param p_tickCount The tick that this driving simulation is from
-/// @param p_nextSegments
-/// @param p_nextSegmentsCount
+/// @param p_nextSegments      Segment pointer to store the copied segments in
+/// @param p_nextSegmentsCount Amount of segments to copy
 BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
     : TickCount(p_tickCount)
 {
@@ -26,13 +26,19 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     tTrackSeg* seg = p_pub.trkPos.seg;
     bool skip = !p_nextSegments || !seg;
     Car.pub.trkPos.seg = skip ? nullptr : p_nextSegments;
-    for (int i = 0; i < p_nextSegmentsCount; i++)
+    if (!skip)
+    {
+        Car.pub.trkPos.seg[0] = *seg;
+        seg = seg->next;
+    }
+    for (int i = 1; i < p_nextSegmentsCount; i++)
     {
         if (skip) break;
         // Does not make a deep copy of seg.name, seg.ext, seg.surface, seg.barrier[], seg.cam;
-        // Deep copies of seg.next AND seg.prev would lead to circles: assign to seg.next, then give it value in
+        // Deep copies of seg.next AND seg.prev would lead to circles: give it value in the loop, and assign the relevant pointers
         p_nextSegments[i] = *seg;
-        p_nextSegments[i].next = &p_nextSegments[i + 1];
+        p_nextSegments[i - 1].next = &p_nextSegments[i];
+        p_nextSegments[i].prev = &p_nextSegments[i - 1];
         seg = seg->next;
     }
 
@@ -60,7 +66,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     {
         Car.priv.wheel[i].seg = nullptr;  // TODO (maybe)  // Pointer
     }
-    // TODO memoryPool (maybe) 
+    // TODO memoryPool (maybe)
     Car.priv.memoryPool.newTrack = nullptr;
     Car.priv.memoryPool.newRace = nullptr;
     Car.priv.memoryPool.endRace = nullptr;
@@ -107,8 +113,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
 BlackBoxData::~BlackBoxData()
 {
-    // None of these are assigned a value other than nullptr so far, but deleting a nullptr is harmless
-    // We don't actually create any new pointers for Car.pub.seg, so there's nothing to delete
+    // Some of these are copied, other are just nullptr, but deleting a nullptr is harmless
     delete Car.race.bestSplitTime;
     delete Car.race.curSplitTime;
     if (Car.race.pit)
