@@ -59,9 +59,7 @@ TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTest, (IN
 /// @param p_mediator The mediator pointer to write to the file
 bool WriteMediator(SMediator* p_mediator)
 {
-    struct stat info
-    {
-    };
+    struct stat info = {};
     std::experimental::filesystem::path path = SingletonsFilePath();
     path.append("Mediator");
     std::string pathstring = path.string();
