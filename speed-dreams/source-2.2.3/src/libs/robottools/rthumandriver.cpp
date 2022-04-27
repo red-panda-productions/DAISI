@@ -405,7 +405,6 @@ int HumanDriver::count_drivers()
  */
 int HumanDriver::initialize(tModInfo *modInfo, tfModPrivInit InitFuncPt)
 {
-
 	if (NbDrivers <= 0) {
         GfOut("human : No human driver registered, or moduleMaxInterfaces() was not called (NbDrivers=%d)\n", NbDrivers);
         return -1;

@@ -18,11 +18,7 @@ Added:
         CmakeList.txt
         Driver.cpp
         Driver.h
-    libs/
-        tgf/
-            params.cpp
-                Modified xmlGetOuputLine to write floats with full precision.
-        tgfclient/
+    libs/tgfclient/
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
@@ -52,19 +48,23 @@ Changed:
   src/
     libs/
         robottools/
-            rtHumanDriver.cpp
+            humandriver.h
                 included Recorder.h
-                included ConfigEnums.h
-                included Mediator.h
+                added m_recorder
+                added SetRecorder
+            rtHumanDriver.cpp
                 changed new_race()
-                changed common_drive()
+                changed drive_at()
                 changed shutdown()
-                added   tParticipantControl var
+                added   SetRecorder()
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
+        tgf/
+            params.cpp
+                Modified xmlGetOuputLine to write floats with full precision.
         tgfclient/
             gui.h
                 added   tGfuiRadioButtonList

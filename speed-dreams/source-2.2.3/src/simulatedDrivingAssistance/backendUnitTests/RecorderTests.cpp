@@ -11,20 +11,20 @@
 #define TEST_CAR_FILE_NAME "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
-#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents) {                                  \
+#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents) {                       \
     std::cout << "Reading file from " << (folder + (recordingName "\\" filename)) << std::endl; \
-    std::ifstream file(folder + ("\\" recordingName "\\" filename));            \
-    ASSERT_TRUE(file.is_open());                                                            \
-    std::stringstream buffer;                                                               \
-    buffer << file.rdbuf();                                                                 \
-    ASSERT_STREQ(buffer.str().c_str(), contents);                                           \
+    std::ifstream file(folder + ("\\" recordingName "\\" filename));                            \
+    ASSERT_TRUE(file.is_open());                                                                \
+    std::stringstream buffer;                                                                   \
+    buffer << file.rdbuf();                                                                     \
+    ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
 }
 
 /// @brief Assert that the file at the given path is empty
-#define ASSERT_FILE_EMPTY(path) { \
-    std::ifstream file(path); \
-    ASSERT_TRUE(file.is_open()); \
-    ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof());                              \
+#define ASSERT_FILE_EMPTY(path) {                                  \
+    std::ifstream file(path);                                      \
+    ASSERT_TRUE(file.is_open());                                   \
+    ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof()); \
 }
 
 /// @brief Get the directory to use for storing test files
