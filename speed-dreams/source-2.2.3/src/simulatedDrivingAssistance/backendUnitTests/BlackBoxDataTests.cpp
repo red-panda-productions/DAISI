@@ -51,6 +51,9 @@
     (a).toMiddle = random.NextFloat(); \
     (a).toLeft = random.NextFloat();
 
+// Sadly, structs don't have an (==) operator by default. We're either typing those somewhere else and using them here,
+// or just comparing them here element-wise. Either way we're going to create a long comparison
+
 // These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
 #define COMP_ELEM(a, b)        \
     if ((p_eqOrNe))            \
@@ -781,13 +784,13 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     // Compare car.race
     COMP_ELEM(car.race.bestLapTime, data.Car.race.bestLapTime)
     COMP_ELEM(car.race.commitBestLapTime, data.Car.race.commitBestLapTime)
-    if (car.race.bestSplitTime)
+    if (car.race.bestSplitTime && data.Car.race.bestSplitTime)
     {
         COMP_ELEM(*car.race.bestSplitTime, *data.Car.race.bestSplitTime)
     }
     COMP_ELEM(car.race.deltaBestLapTime, data.Car.race.deltaBestLapTime)
     COMP_ELEM(car.race.curLapTime, data.Car.race.curLapTime)
-    if (car.race.curSplitTime)
+    if (car.race.curSplitTime && data.Car.race.curSplitTime)
     {
         COMP_ELEM(*car.race.curSplitTime, *data.Car.race.curSplitTime)
     }
@@ -810,7 +813,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(car.race.nbSectors, data.Car.race.nbSectors)
     COMP_ELEM(car.race.trackLength, data.Car.race.trackLength)
     COMP_ELEM(car.race.scheduledEventTime, data.Car.race.scheduledEventTime)
-    if (car.race.pit)
+    if (car.race.pit && data.Car.race.pit)
     {
         COMP_TRKPOS(car.race.pit->pos, data.Car.race.pit->pos)
         COMP_ELEM(car.race.pit->pitCarIndex, data.Car.race.pit->pitCarIndex)
@@ -921,11 +924,63 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
             COMP_TCARSETUPITEM(*car.priv.dashboardRequest[i].setup, *data.Car.priv.dashboardRequest[i].setup)
         }
     }
-    COMP_ELEM(car.priv.dashboardRequestNb, data.Car.priv.dashboardInstantNb)
+    COMP_ELEM(car.priv.dashboardRequestNb, data.Car.priv.dashboardRequestNb)
     COMP_ELEM(car.priv.dashboardActiveItem, data.Car.priv.dashboardActiveItem)
 
     // Compare car.ctrl
+    COMP_ELEM(car.ctrl.steer, data.Car.ctrl.steer)
+    COMP_ELEM(car.ctrl.accelCmd, data.Car.ctrl.accelCmd)
+    COMP_ELEM(car.ctrl.brakeCmd, data.Car.ctrl.brakeCmd)
+    COMP_ELEM(car.ctrl.clutchCmd, data.Car.ctrl.clutchCmd)
+    COMP_ELEM(car.ctrl.brakeFrontRightCmd, data.Car.ctrl.brakeFrontRightCmd)
+    COMP_ELEM(car.ctrl.brakeFrontLeftCmd, data.Car.ctrl.brakeFrontLeftCmd)
+    COMP_ELEM(car.ctrl.brakeRearRightCmd, data.Car.ctrl.brakeRearRightCmd)
+    COMP_ELEM(car.ctrl.brakeRearLeftCmd, data.Car.ctrl.brakeRearLeftCmd)
+    COMP_ELEM(car.ctrl.wingFrontCmd, data.Car.ctrl.wingFrontCmd)
+    COMP_ELEM(car.ctrl.wingRearCmd, data.Car.ctrl.wingRearCmd)
+    COMP_ELEM(car.ctrl.reserved1, data.Car.ctrl.reserved1)
+    COMP_ELEM(car.ctrl.reserved2, data.Car.ctrl.reserved2)
+    COMP_ELEM(car.ctrl.gear, data.Car.ctrl.gear)
+    COMP_ELEM(car.ctrl.raceCmd, data.Car.ctrl.raceCmd)
+    COMP_ELEM(car.ctrl.lightCmd, data.Car.ctrl.lightCmd)
+    COMP_ELEM(car.ctrl.ebrakeCmd, data.Car.ctrl.ebrakeCmd)
+    COMP_ELEM(car.ctrl.wingControlMode, data.Car.ctrl.wingControlMode)
+    COMP_ELEM(car.ctrl.singleWheelBrakeMode, data.Car.ctrl.singleWheelBrakeMode)
+    COMP_ELEM(car.ctrl.switch3, data.Car.ctrl.switch3)
+    COMP_ELEM(car.ctrl.telemetryMode, data.Car.ctrl.telemetryMode)
+    for (int  i = 0; i < 4; i++)
+    {
+        COMP_NAME(car.ctrl.msg[i], data.Car.ctrl.msg[i])
+        COMP_ELEM(car.ctrl.msgColor[i], data.Car.ctrl.msgColor[i])
+    }
+    if (car.ctrl.setupChangeCmd && data.Car.ctrl.setupChangeCmd)
+    {
+        COMP_ELEM(car.ctrl.setupChangeCmd->type, data.Car.ctrl.setupChangeCmd->type)
+        if (car.ctrl.setupChangeCmd->setup && data.Car.ctrl.setupChangeCmd->setup)
+        {
+            COMP_TCARSETUPITEM(*car.ctrl.setupChangeCmd->setup, *data.Car.ctrl.setupChangeCmd->setup)
+        }
+    }
+
     // Compare car.setup
+    COMP_TCARSETUPITEM(car.setup.FRWeightRep, data.Car.setup.FRWeightRep)
+    COMP_TCARSETUPITEM(car.setup.FRLWeightRep, data.Car.setup.FRLWeightRep)
+    COMP_TCARSETUPITEM(car.setup.RRLWeightRep, data.Car.setup.RRLWeightRep)
+    COMP_TCARSETUPITEM(car.setup.fuel, data.Car.setup.fuel)
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.wingAngle[i], data.Car.setup.wingAngle[i])
+    }
+    COMP_TCARSETUPITEM(car.setup.revsLimiter, data.Car.setup.revsLimiter)
+    for (int i = 0; i < MAX_GEARS; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.gearRatio[i], data.Car.setup.gearRatio[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_ELEM(car.setup.differentialType[i], data.Car.setup.differentialType[i])
+    }
+
     // Compare car.pitcmd
     // Compare car.robot
     // COPY NOT IMPLEMENTED FOR car.next
@@ -950,5 +1005,10 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
     for (int i = 0; i < NR_DI_REQUEST; i++)
     {
         EXPECT_NE(car.priv.dashboardRequest[i].setup, data.Car.priv.dashboardRequest[i].setup);
+    }
+    EXPECT_NE(car.ctrl.setupChangeCmd, data.Car.ctrl.setupChangeCmd);
+    if (car.ctrl.setupChangeCmd && data.Car.ctrl.setupChangeCmd)
+    {
+        EXPECT_NE(car.ctrl.setupChangeCmd->setup, data.Car.ctrl.setupChangeCmd->setup);
     }
 }
