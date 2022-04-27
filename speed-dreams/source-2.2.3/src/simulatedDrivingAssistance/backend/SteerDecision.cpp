@@ -1,8 +1,6 @@
 #include "SteerDecision.h"
 #include "Mediator.h"
 
-#define SDA_STEERING_THRESHOLD 0.04f
-
 void SteerDecision::RunIndicateCommands()
 {
     if (SteerAmount < -SDA_STEERING_THRESHOLD)
