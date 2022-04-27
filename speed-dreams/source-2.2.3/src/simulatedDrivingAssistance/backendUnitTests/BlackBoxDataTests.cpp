@@ -42,17 +42,6 @@
     (a).setup = new tCarSetupItem(); \
     RAND_TCARSETUPITEM(*(a).setup)
 
-// These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
-#define COMP_ELEM(a, b, c)     \
-    if ((c))                   \
-    {                          \
-        EXPECT_EQ((a), (b));   \
-    }                          \
-    else                       \
-    {                          \
-        EXPECT_NE(&(a), &(b)); \
-    }
-
 // Doesn't actually do a.trkPos.seg, that is left to whatever desires a trkPos to determine how they want that
 // as exclusively the copy for p_car.pub.seg is implemented
 #define RAND_TRKPOS(a)                 \
@@ -61,6 +50,61 @@
     (a).toRight = random.NextFloat();  \
     (a).toMiddle = random.NextFloat(); \
     (a).toLeft = random.NextFloat();
+
+// These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
+#define COMP_ELEM(a, b)        \
+    if ((p_eqOrNe))            \
+    {                          \
+        EXPECT_EQ((a), (b));   \
+    }                          \
+    else                       \
+    {                          \
+        EXPECT_NE(&(a), &(b)); \
+    }
+
+#define COMP_NAME(a, b)                 \
+    if ((p_eqOrNe))                     \
+    {                                   \
+        EXPECT_EQ(strcmp((a), (b)), 0); \
+    }                                   \
+    else                                \
+    {                                   \
+        EXPECT_NE(&(a), &(b));          \
+    }
+
+#define COMP_T3D(a, b)      \
+    COMP_ELEM((a).x, (b).x) \
+    COMP_ELEM((a).y, (b).y) \
+    COMP_ELEM((a).z, (b).z)
+
+#define COMP_TPOSD(a, b)      \
+    COMP_ELEM((a).x, (b).x)   \
+    COMP_ELEM((a).y, (b).y)   \
+    COMP_ELEM((a).z, (b).z)   \
+    COMP_ELEM((a).xy, (b).xy) \
+    COMP_ELEM((a).ax, (b).ax) \
+    COMP_ELEM((a).ay, (b).ay) \
+    COMP_ELEM((a).az, (b).az)
+
+#define COMP_TDYNPT(a, b)        \
+    COMP_TPOSD((a).pos, (b).pos) \
+    COMP_TPOSD((a).vel, (b).vel) \
+    COMP_TPOSD((a).acc, (b).acc)
+
+#define COMP_TCARSETUPITEM(a, b)                    \
+    COMP_ELEM((a).value(b).value)                   \
+    COMP_ELEM((a).min, (b).min)                     \
+    COMP_ELEM((a).max, (b).max)                     \
+    COMP_ELEM((a).desired_value, (b).desired_value) \
+    COMP_ELEM((a).stepsize, (b).stepsize)           \
+    COMP_ELEM((a).changed, (b).changed)
+
+#define COMP_TRKPOS(a, b)                 \
+    COMP_ELEM((a).type, (b).type)         \
+    COMP_ELEM((a).toStart, (b).toStart)   \
+    COMP_ELEM((a).toRight, (b).toRight)   \
+    COMP_ELEM((a).toMiddle, (b).toMiddle) \
+    COMP_ELEM((a).toLeft, (b).toLeft)
 
 // For structure elements where the copy is not implemented, no implementation is given for the generation either,
 // nor are there any checks related to that element
@@ -644,9 +688,11 @@ protected:
         car = Generatecar(testSegments);
         situation = GenerateSituation();
         tickCount = random.NextInt();
+        segments = new tTrackSeg[testSegments.nextSegmentsCount];
     }
 
     TestSegments testSegments;
+    tTrackSeg* segments;
     tCarElt car;
     tSituation situation;
     unsigned long tickCount;
@@ -656,6 +702,7 @@ protected:
         DestroySituation(situation);
         DestroyCar(car);
         DestroySegments(testSegments);
+        delete[] segments;
     }
 };
 
@@ -664,11 +711,54 @@ protected:
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
     bool p_eqOrNe = GetParam();
-    tTrackSeg* segments = new tTrackSeg[testSegments.nextSegmentsCount];
     BlackBoxData data(&car, &situation, tickCount, segments, testSegments.nextSegmentsCount);
+
+    // Compare tickCount
+    COMP_ELEM(tickCount, data.TickCount)
+
     // Compare car.index
-    COMP_ELEM(car.index, data.Car.index, p_eqOrNe)
+    COMP_ELEM(car.index, data.Car.index)
+
     // Compare car.info
+    COMP_NAME(car.info.name, data.Car.info.name)
+    COMP_NAME(car.info.sname, data.Car.info.sname)
+    COMP_NAME(car.info.codename, data.Car.info.codename)
+    COMP_NAME(car.info.teamname, data.Car.info.teamname)
+    COMP_NAME(car.info.carName, data.Car.info.carName)
+    COMP_NAME(car.info.category, data.Car.info.category)
+    COMP_ELEM(car.info.raceNumber, data.Car.info.raceNumber)
+    COMP_ELEM(car.info.startRank, data.Car.info.startRank)
+    COMP_ELEM(car.info.driverType, data.Car.info.driverType)
+    COMP_ELEM(car.info.networkplayer, data.Car.info.networkplayer)
+    COMP_ELEM(car.info.skillLevel, data.Car.info.skillLevel)
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_ELEM(car.info.iconColor[i], data.Car.info.iconColor[i])
+    }
+    COMP_T3D(car.info.dimension, data.Car.info.dimension)
+    COMP_T3D(car.info.drvPos, data.Car.info.drvPos)
+    COMP_T3D(car.info.bonnetPos, data.Car.info.bonnetPos)
+    COMP_ELEM(car.info.tank, data.Car.info.tank)
+    COMP_ELEM(car.info.steerLock, data.Car.info.steerLock)
+    COMP_T3D(car.info.statGC, data.Car.info.statGC)
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_ELEM(car.info.wheel[i].rimRadius, data.Car.info.wheel[i].rimRadius)
+        COMP_ELEM(car.info.wheel[i].tireHeight, data.Car.info.wheel[i].tireHeight)
+        COMP_ELEM(car.info.wheel[i].tireWidth, data.Car.info.wheel[i].tireWidth)
+        COMP_ELEM(car.info.wheel[i].brakeDiskRadius, data.Car.info.wheel[i].brakeDiskRadius)
+        COMP_ELEM(car.info.wheel[i].wheelRadius, data.Car.info.wheel[i].wheelRadius)
+    }
+    COMP_ELEM(car.info.visualAttr.exhaustNb, data.Car.info.visualAttr.exhaustNb)
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_T3D(car.info.visualAttr.exhaustPos[i], data.Car.info.visualAttr.exhaustPos[i])
+    }
+    COMP_ELEM(car.info.visualAttr.exhaustPower, data.Car.info.visualAttr.exhaustPower)
+    COMP_NAME(car.info.masterModel, data.Car.info.masterModel)
+    COMP_NAME(car.info.skinName, data.Car.info.skinName)
+    COMP_ELEM(car.info.skinTargets, data.Car.info.skinTargets)
+
     // Compare car.pub (no deep compare trkPos.seg)
     // Compare car.race
     // Compare car.priv
@@ -679,8 +769,6 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     // COPY NOT IMPLEMENTED FOR car.next
     // Compare situation
     // Compare testSegments.nextSegments vs segments
-
-    delete[] segments;
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
