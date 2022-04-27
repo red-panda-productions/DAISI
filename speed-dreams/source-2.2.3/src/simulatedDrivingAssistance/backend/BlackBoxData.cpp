@@ -9,11 +9,9 @@
 /// @param p_nextSegments      Segment pointer to store the copied segments in
 /// @param p_nextSegmentsCount Amount of segments to copy
 BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
-    : TickCount(p_tickCount)
+    : Car({}), Situation({}), TickCount(p_tickCount)
 {
     // Any pointers are marked with 'Pointer' so we can check if we even want them
-    Car = {};
-    Situation = {};
 
     Car.index = p_car->index;
 
