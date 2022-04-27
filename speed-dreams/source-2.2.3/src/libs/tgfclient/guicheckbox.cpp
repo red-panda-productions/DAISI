@@ -90,6 +90,7 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	checkbox->pInfo->userData = userData;
 	checkbox->scr = scr;
 
+        // SIMULATED DRIVING ASSISTANCE CHANGE: made focused images checked-focused and unchecked-focused
 	// Initialize the checked and unchecked button children.
 	// Warning: All the images are supposed to be the same size.
 	// TODO: Make graphic properties XML-customizable (images, ...)
@@ -97,14 +98,14 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	//       (otherwise multiple frees at release time ...).
 	checkbox->checkId =
 		GfuiGrButtonCreate(scr, "data/img/checked.png", "data/img/checked.png",
-						   "data/img/checked.png", "data/img/checked.png",
+						   "data/img/checked-focused.png", "data/img/checked.png",
 						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
 						   (void*)(long)(object->id), gfuiChecked,
 						   userDataOnFocus, onFocus, onFocusLost);
 
 	checkbox->uncheckId =
 		GfuiGrButtonCreate(scr, "data/img/unchecked.png", "data/img/unchecked.png",
-						   "data/img/unchecked.png", "data/img/unchecked.png",
+						   "data/img/unchecked-focused.png", "data/img/unchecked.png",
 						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
 						   (void*)(long)(object->id), gfuiUnchecked, 0, 0, 0);
 

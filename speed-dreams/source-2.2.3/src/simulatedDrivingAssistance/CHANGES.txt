@@ -30,7 +30,11 @@ Added:
     data/
         img/
             radio-checked.png
+            radio-checked-focused.png
             radio-unchecked.png
+            radio-unchecked-focused.png
+            checked-focused.png
+            unchecked-focused.png
         indicators/
             *
         menu/
@@ -69,6 +73,8 @@ Changed:
                 added   GfuiReleaseRadioButtonList()
                 added   GfuiReleaseRadioButton()
                 changed GfuiObject
+            guicheckbox.cpp
+                changed GfuiCheckboxCreate: added focused images
             guimenu.cpp
                 added   GfuiMenuCreateRadioButtonListControl
                 added   GfuiMenuBoolToStr()

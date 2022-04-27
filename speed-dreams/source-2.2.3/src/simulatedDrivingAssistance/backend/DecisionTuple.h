@@ -2,6 +2,7 @@
 #include "BrakeDecision.h"
 #include "SteerDecision.h"
 #include "AccelDecision.h"
+
 #define DECISIONS_COUNT 3
 
 /// @brief A tuple that contains all decisions that can be made by an AI

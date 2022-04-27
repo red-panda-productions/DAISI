@@ -169,10 +169,10 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
 
     GfParmReleaseHandle(param);
-    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveSettings, nullptr);
+
+    // Keyboard button controls
+    GfuiMenuDefaultKeysAdd(s_scrHandle);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, nullptr);
-    GfuiAddKey(s_scrHandle, GFUIK_F1, "Help", s_scrHandle, GfuiHelpScreen, nullptr);
-    GfuiAddKey(s_scrHandle, GFUIK_F12, "Screen-Shot", nullptr, GfuiScreenShot, nullptr);
 
     return s_scrHandle;
 }
