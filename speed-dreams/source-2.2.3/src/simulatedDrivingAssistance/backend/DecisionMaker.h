@@ -18,7 +18,7 @@
 /// @brief                 A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox The SocketBlackBox type
 /// @tparam SDAConfig      The config type
-template <typename SocketBlackBox, typename SDAConfig>
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage>
 class DecisionMaker
 {
 public:
@@ -36,6 +36,9 @@ public:
     InterventionExecutor* InterventionExecutor = nullptr;
     SocketBlackBox BlackBox;
 
+    FileDataStorage* GetFileDataStorage();
+    std::experimental::filesystem::path* GetBufferFilePath();
+
     ~DecisionMaker();
 
 private:
@@ -46,4 +49,4 @@ private:
 };
 
 /// @brief The standard type of the decisionMaker
-#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig>
+#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage>
