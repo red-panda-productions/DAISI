@@ -7,10 +7,13 @@
 #include "../rppUtils/Random.hpp"
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
+#include <config.h>
 
 /// @brief Initialize SMediator with a car which values are set to 0
 void InitializeMediator()
 {
+    GfInit();
+    GfSetDataDir(SD_DATADIR_SRC);
     SetupSingletonsFolder();
 
     tCarElt car;
@@ -73,8 +76,6 @@ TEST(DecisionsTest, RunInterveneDecisions)
 TEST(DecisionTests, BrakeRunIndicateTest)
 {
     InitializeMediator();
-    GfInit();
-
     BrakeDecision brakeDecision;
     brakeDecision.BrakeAmount = 1;
     brakeDecision.RunIndicateCommands();
@@ -99,8 +100,6 @@ TEST(DecisionTests, BrakeRunIndicateTest)
 TEST(DecisionsTest, SteerRunIndicateTests)
 {
     InitializeMediator();
-    GfInit();
-
     SteerDecision steerDecision;
     steerDecision.SteerAmount = -1;
     steerDecision.RunIndicateCommands();
@@ -123,8 +122,8 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST(DecisionsTest, AccelRunIndicateTests)
 {
+    IndicatorConfig::ClearInstance();
     InitializeMediator();
-    GfInit();
 
     AccelDecision accelDecision;
     accelDecision.AccelAmount = 1;
