@@ -92,7 +92,7 @@
     COMP_TPOSD((a).acc, (b).acc)
 
 #define COMP_TCARSETUPITEM(a, b)                    \
-    COMP_ELEM((a).value(b).value)                   \
+    COMP_ELEM((a).value, (b).value)                 \
     COMP_ELEM((a).min, (b).min)                     \
     COMP_ELEM((a).max, (b).max)                     \
     COMP_ELEM((a).desired_value, (b).desired_value) \
@@ -817,7 +817,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
         COMP_ELEM(car.race.pit->lmin, data.Car.race.pit->lmin)
         COMP_ELEM(car.race.pit->lmax, data.Car.race.pit->lmax)
         COMP_ELEM(car.race.pit->freeCarIndex, data.Car.race.pit->freeCarIndex)
-        for (int i = 0 ; i < TR_PIT_MAXCARPERPIT; i++)
+        for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
         {
             // COPY NOT IMPLEMENTED for car.race.pit->car
         }
@@ -829,6 +829,101 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(car.race.wrongWayTime, data.Car.race.wrongWayTime)
 
     // Compare car.priv
+    COMP_ELEM(car.priv.driverIndex, data.Car.priv.driverIndex)
+    COMP_ELEM(car.priv.moduleIndex, data.Car.priv.moduleIndex)
+    COMP_NAME(car.priv.modName, data.Car.priv.modName)
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TPOSD(car.priv.wheel[i].relPos, data.Car.priv.wheel[i].relPos)
+        COMP_ELEM(car.priv.wheel[i].spinVel, data.Car.priv.wheel[i].spinVel)
+        COMP_ELEM(car.priv.wheel[i].brakeTemp, data.Car.priv.wheel[i].brakeTemp)
+        COMP_ELEM(car.priv.wheel[i].state, data.Car.priv.wheel[i].state)
+        // COPY NOT IMPLEMENTED for car.priv.wheel[i].seg
+        COMP_ELEM(car.priv.wheel[i].rollRes, data.Car.priv.wheel[i].rollRes)
+        COMP_ELEM(car.priv.wheel[i].temp_in, data.Car.priv.wheel[i].temp_in)
+        COMP_ELEM(car.priv.wheel[i].temp_mid, data.Car.priv.wheel[i].temp_mid)
+        COMP_ELEM(car.priv.wheel[i].temp_out, data.Car.priv.wheel[i].temp_out)
+        COMP_ELEM(car.priv.wheel[i].temp_opt, data.Car.priv.wheel[i].temp_opt)
+        COMP_ELEM(car.priv.wheel[i].condition, data.Car.priv.wheel[i].condition)
+        COMP_ELEM(car.priv.wheel[i].treadDepth, data.Car.priv.wheel[i].treadDepth)
+        COMP_ELEM(car.priv.wheel[i].critTreadDepth, data.Car.priv.wheel[i].critTreadDepth)
+        COMP_ELEM(car.priv.wheel[i].slipNorm, data.Car.priv.wheel[i].slipNorm)
+        COMP_ELEM(car.priv.wheel[i].slipOpt, data.Car.priv.wheel[i].slipOpt)
+        COMP_ELEM(car.priv.wheel[i].slipSide, data.Car.priv.wheel[i].slipSide)
+        COMP_ELEM(car.priv.wheel[i].slipAccel, data.Car.priv.wheel[i].slipAccel)
+        COMP_ELEM(car.priv.wheel[i].Fx, data.Car.priv.wheel[i].Fx)
+        COMP_ELEM(car.priv.wheel[i].Fy, data.Car.priv.wheel[i].Fy)
+        COMP_ELEM(car.priv.wheel[i].Fz, data.Car.priv.wheel[i].Fz)
+        COMP_ELEM(car.priv.wheel[i].effectiveMu, data.Car.priv.wheel[i].effectiveMu)
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TPOSD(car.priv.corner[i], data.Car.priv.corner[i])
+    }
+    COMP_ELEM(car.priv.gear, data.Car.priv.gear)
+    COMP_ELEM(car.priv.gearNext, data.Car.priv.gearNext)
+    COMP_ELEM(car.priv.fuel, data.Car.priv.fuel)
+    COMP_ELEM(car.priv.fuel_consumption_total, data.Car.priv.fuel_consumption_total)
+    COMP_ELEM(car.priv.fuel_consumption_instant, data.Car.priv.fuel_consumption_instant)
+    COMP_ELEM(car.priv.enginerpm, data.Car.priv.enginerpm)
+    COMP_ELEM(car.priv.enginerpmRedLine, data.Car.priv.enginerpmRedLine)
+    COMP_ELEM(car.priv.enginerpmMax, data.Car.priv.enginerpmMax)
+    COMP_ELEM(car.priv.enginerpmMaxTq, data.Car.priv.enginerpmMaxTq)
+    COMP_ELEM(car.priv.enginerpmMaxPw, data.Car.priv.enginerpmMaxPw)
+    COMP_ELEM(car.priv.engineMaxTq, data.Car.priv.engineMaxTq)
+    COMP_ELEM(car.priv.engineMaxPw, data.Car.priv.engineMaxPw)
+    for (int i = 0; i < MAX_GEARS; i++)
+    {
+        COMP_ELEM(car.priv.gearRatio[i], data.Car.priv.gearRatio[i])
+    }
+    COMP_ELEM(car.priv.gearNb, data.Car.priv.gearNb)
+    COMP_ELEM(car.priv.gearOffset, data.Car.priv.gearOffset)
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_ELEM(car.priv.skid[i], data.Car.priv.skid[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_ELEM(car.priv.reaction[i], data.Car.priv.reaction[i])
+    }
+    COMP_ELEM(car.priv.collision, data.Car.priv.collision)
+    COMP_ELEM(car.priv.simcollision, data.Car.priv.simcollision)
+    COMP_ELEM(car.priv.smoke, data.Car.priv.smoke)
+    COMP_T3D(car.priv.normal, data.Car.priv.normal)
+    COMP_T3D(car.priv.collpos, data.Car.priv.collpos)
+    COMP_ELEM(car.priv.dammage, data.Car.priv.dammage)
+    COMP_ELEM(car.priv.debug, data.Car.priv.debug)
+    COMP_ELEM(car.priv.collision_state.collision_count, data.Car.priv.collision_state.collision_count)
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_ELEM(car.priv.collision_state.pos[i], data.Car.priv.collision_state.pos[i])
+        COMP_ELEM(car.priv.collision_state.force[i], data.Car.priv.collision_state.force[i])
+    }
+    COMP_ELEM(car.priv.localPressure, data.Car.priv.localPressure)
+    // COPY NOT IMPLEMENTED FOR car.priv.memoryPool
+    COMP_ELEM(car.priv.driveSkill, data.Car.priv.driveSkill)
+    COMP_ELEM(car.priv.steerTqCenter, data.Car.priv.steerTqCenter)
+    COMP_ELEM(car.priv.steerTqAlign, data.Car.priv.steerTqAlign)
+    for (int i = 0; i < NR_DI_INSTANT; i++)
+    {
+        COMP_ELEM(car.priv.dashboardInstant[i].type, data.Car.priv.dashboardInstant[i].type)
+        if (car.priv.dashboardInstant[i].setup)
+        {
+            COMP_TCARSETUPITEM(*car.priv.dashboardInstant[i].setup, *data.Car.priv.dashboardInstant[i].setup)
+        }
+    }
+    COMP_ELEM(car.priv.dashboardInstantNb, data.Car.priv.dashboardInstantNb)
+    for (int i = 0; i < NR_DI_REQUEST; i++)
+    {
+        COMP_ELEM(car.priv.dashboardRequest[i].type, data.Car.priv.dashboardRequest[i].type)
+        if (car.priv.dashboardRequest[i].setup)
+        {
+            COMP_TCARSETUPITEM(*car.priv.dashboardRequest[i].setup, *data.Car.priv.dashboardRequest[i].setup)
+        }
+    }
+    COMP_ELEM(car.priv.dashboardRequestNb, data.Car.priv.dashboardInstantNb)
+    COMP_ELEM(car.priv.dashboardActiveItem, data.Car.priv.dashboardActiveItem)
+
     // Compare car.ctrl
     // Compare car.setup
     // Compare car.pitcmd
@@ -848,4 +943,12 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
     EXPECT_NE(car.race.bestSplitTime, data.Car.race.bestSplitTime);
     EXPECT_NE(car.race.curSplitTime, data.Car.race.curSplitTime);
     EXPECT_NE(car.race.pit, data.Car.race.pit);
+    for (int i = 0; i < NR_DI_INSTANT; i++)
+    {
+        EXPECT_NE(car.priv.dashboardInstant[i].setup, data.Car.priv.dashboardInstant[i].setup);
+    }
+    for (int i = 0; i < NR_DI_REQUEST; i++)
+    {
+        EXPECT_NE(car.priv.dashboardRequest[i].setup, data.Car.priv.dashboardRequest[i].setup);
+    }
 }
