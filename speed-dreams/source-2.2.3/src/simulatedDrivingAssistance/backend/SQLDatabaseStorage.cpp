@@ -137,37 +137,19 @@ bool SQLDatabaseStorage::OpenDatabase(
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
 
-    std::cout << "hostname" << std::endl;
     connection_properties["hostName"] = "tcp://" + p_hostName;
-
-    std::cout << "userName" << std::endl;
     connection_properties["userName"] = p_username;
-
-    std::cout << "password" << std::endl;
     connection_properties["password"] = p_password;
-
-    std::cout << "port" << std::endl;
     connection_properties["port"] = p_port;
-
-    std::cout << "OPT_RECONNECT" << std::endl;
     connection_properties["OPT_RECONNECT"] = true;
-
-    std::cout << "CLIENT_MULTI_STATEMENTS" << std::endl;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
-
-    std::cout << "sslEnforce" << std::endl;
     connection_properties["sslEnforce"] = true;
-
-    std::cout << "encryption" << std::endl;
 
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
     if (p_useEncryption == "true")
     {
-        std::cout << "using encryption" << std::endl;
         PutKeys(p_dirPath, connection_properties);
     }
-
-    std::cout << "connecting" << std::endl;
 
     try
     {
@@ -179,8 +161,6 @@ bool SQLDatabaseStorage::OpenDatabase(
         return false;
     }
 
-    std::cout << "creating statement" << std::endl;
-
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
 
@@ -188,16 +168,11 @@ bool SQLDatabaseStorage::OpenDatabase(
     m_statement->close();
     delete m_statement;
 
-    std::cout << "set schema" << std::endl;
-
     // Set the correct database schema
     m_connection->setSchema(p_schemaName);
 
-    std::cout << "creating statement 2" << std::endl;
     // Create a (reusable) statement
     m_statement = m_connection->createStatement();
-
-    std::cout << "creating tables" << std::endl;
     CreateTables();
 
     return true;
@@ -699,8 +674,6 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
 
     ifstream.close();
 
-    std::cout << "read stream" << std::endl;
-
     int port;
     try
     {
@@ -718,6 +691,4 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
         CloseDatabase();
         std::cout << "Finished writing to database" << std::endl;
     }
-
-    std::cout << "finalized database" << std::endl;
 }
