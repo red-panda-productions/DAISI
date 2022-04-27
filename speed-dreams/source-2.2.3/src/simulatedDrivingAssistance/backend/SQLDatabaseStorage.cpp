@@ -131,22 +131,31 @@ bool SQLDatabaseStorage::OpenDatabase(
     std::string p_useEncryption,
     const std::string& p_dirPath)
 {
-
-    std::cout << "init" << std::endl;
-
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
-    std::cout << "properties" << std::endl;
-
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
+
+    std::cout << "hostname" << std::endl;
     connection_properties["hostName"] = "tcp://" + p_hostName;
+
+    std::cout << "userName" << std::endl;
     connection_properties["userName"] = p_username;
+
+    std::cout << "password" << std::endl;
     connection_properties["password"] = p_password;
+
+    std::cout << "port" << std::endl;
     connection_properties["port"] = p_port;
+
+    std::cout << "OPT_RECONNECT" << std::endl;
     connection_properties["OPT_RECONNECT"] = true;
+
+    std::cout << "CLIENT_MULTI_STATEMENTS" << std::endl;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
+
+    std::cout << "sslEnforce" << std::endl;
     connection_properties["sslEnforce"] = true;
 
     std::cout << "encryption" << std::endl;
