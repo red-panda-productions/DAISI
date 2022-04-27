@@ -30,7 +30,7 @@ TEST(UtilsTests, RandomCharArray)
         }
         if (equal)
         {
-            TestStringEqual(buffer, buffer2, r); //@NOCOVERAGE, the chance is astronomically small, but can happen
+            TestStringEqual(buffer, buffer2, r);  //@NOCOVERAGE, the chance is astronomically small, but can happen
         }
         for (int j = 0; j < 256; j++)
         {
