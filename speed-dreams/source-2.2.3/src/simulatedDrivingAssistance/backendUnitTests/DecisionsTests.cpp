@@ -76,7 +76,6 @@ TEST(DecisionsTest, RunInterveneDecisions)
 TEST(DecisionTests, BrakeRunIndicateTest)
 {
     InitializeMediator();
-    GfInit();
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
@@ -107,7 +106,6 @@ TEST(DecisionTests, BrakeRunIndicateTest)
 TEST(DecisionsTest, SteerRunIndicateTests)
 {
     InitializeMediator();
-    GfInit();
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
