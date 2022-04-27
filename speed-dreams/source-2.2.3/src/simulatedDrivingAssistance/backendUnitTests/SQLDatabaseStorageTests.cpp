@@ -4,7 +4,8 @@
 #include "SQLDatabaseStorage.h"
 #include "../rppUtils/RppUtils.hpp"
 #include "gmock/gmock-matchers.h"
-
+#include <portability.h>
+#include <config.h>
 
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
@@ -79,6 +80,7 @@ void CatchDatabaseError(const std::string& p_password, const char* p_inputFile)
 ///         but wont find it, since there is no directory
 TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
 
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "test_data"), std::exception)
@@ -93,6 +95,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
 ///         but no settings file in that directory
 TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the settings file doesn't exist.
@@ -106,6 +109,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
 ///         but it is a string in the settingsfile of the stringPort dir.
 TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when the port is not an integer
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "test_data\\stringPort"), std::exception)
@@ -119,6 +123,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 ///         coverage path as TestDatabaseRunIncorrect
 TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
@@ -130,6 +135,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 ///         incorrect password
 TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
@@ -152,6 +158,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 /// @brief tests for crash when there is no "database_encryption_settings.txt"file
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\noEncryption"), std::exception)
     {
