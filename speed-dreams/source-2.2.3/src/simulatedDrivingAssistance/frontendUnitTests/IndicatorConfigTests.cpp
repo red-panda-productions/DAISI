@@ -22,8 +22,10 @@ typedef unsigned int DataGeneration;
 
 class IndicatorConfigTests : public ::testing::Test
 {
+private:
+    Random m_rnd;
+
 protected:
-    Random Rnd;
 
     /// @brief Setup Gf module to have access to its XML reading/writing functions
     ///        Creates the random number generator to be used during the test and log its seed.
@@ -32,8 +34,8 @@ protected:
         GfInit(GF_LOGGING_DISABLE);
         GfSetDataDir(SD_DATADIR_SRC);
         ASSERT_TRUE(SetupSingletonsFolder());
-        Rnd = Random();
-        GTEST_COUT << "Random Seed: " << Rnd.GetSeed() << std::endl;
+        m_rnd = Random();
+        GTEST_COUT << "Random Seed: " << m_rnd.GetSeed() << std::endl;
     }
 
     /// @brief       Creates randomly generated sound data
@@ -42,24 +44,24 @@ protected:
     tSoundData* CreateRandomSoundData(DataGeneration p_gen)
     {
         // Chance to generate nullptr
-        if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(Rnd, 20)) return nullptr;
+        if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(m_rnd, 20)) return nullptr;
 
         // Otherwise generate random data object
         tSoundData* data = new SoundData;
         data->ActiveLastFrame = false;
-        data->Looping = Rnd.NextBool();
+        data->Looping = m_rnd.NextBool();
 
         if (p_gen & INVALID_LOOP_INTERVAL)
         {
-            data->LoopInterval = Rnd.NextFloat(-FLT_MAX, 0);
+            data->LoopInterval = m_rnd.NextFloat(-FLT_MAX, 0);
         }
         else
         {
-            data->LoopInterval = Rnd.NextFloat(0, FLT_MAX);
+            data->LoopInterval = m_rnd.NextFloat(0, FLT_MAX);
         }
 
         char* buf = new char[PATH_BUF_SIZE];
-        GenerateRandomCharArray(buf, Rnd.NextInt(0, PATH_BUF_SIZE - 1));
+        GenerateRandomCharArray(buf, m_rnd.NextInt(0, PATH_BUF_SIZE - 1));
         data->Path = buf;
 
         return data;
@@ -69,7 +71,7 @@ protected:
     /// @return The invalid screen coordinate.
     float CreateInvalidScreenCoord()
     {
-        return (Rnd.NextBool()) ? Rnd.NextFloat(1.0f, FLT_MAX) : Rnd.NextFloat(-FLT_MAX, 0);
+        return (m_rnd.NextBool()) ? m_rnd.NextFloat(1.0f, FLT_MAX) : m_rnd.NextFloat(-FLT_MAX, 0);
     }
 
     /// @brief       Creates randomly generated screen positions
@@ -81,7 +83,7 @@ protected:
         {
             return {CreateInvalidScreenCoord(), CreateInvalidScreenCoord()};
         }
-        return {Rnd.NextFloatIncl(0, 1.0f), Rnd.NextFloatIncl(0, 1.0f)};
+        return {m_rnd.NextFloatIncl(0, 1.0f), m_rnd.NextFloatIncl(0, 1.0f)};
     }
 
     /// @brief       Creates randomly generated texture data
@@ -90,13 +92,13 @@ protected:
     tTextureData* CreateRandomTextureData(DataGeneration p_gen)
     {
         // Chance to generate nullptr
-        if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(Rnd, 20)) return nullptr;
+        if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(m_rnd, 20)) return nullptr;
 
         // Otherwise generate random data object
         tTextureData* data = new TextureData;
 
         char* buf = new char[PATH_BUF_SIZE];
-        GenerateRandomCharArray(buf, Rnd.NextInt(0, PATH_BUF_SIZE - 1));
+        GenerateRandomCharArray(buf, m_rnd.NextInt(0, PATH_BUF_SIZE - 1));
         data->Path = buf;
         data->ScrPos = CreateRandomScreenPosition(p_gen);
 
@@ -109,13 +111,13 @@ protected:
     tTextData* CreateRandomTextData(DataGeneration p_gen)
     {
         // Chance to generate nullptr
-        if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(Rnd, 20)) return nullptr;
+        if (p_gen & CAN_GENERATE_NULL && SucceedWithChance(m_rnd, 20)) return nullptr;
 
         // Otherwise generate random data object
         tTextData* data = new tTextData;
 
         char* buf = new char[MAX_TEXT_LENGTH];
-        GenerateRandomCharArray(buf, Rnd.NextInt(0, MAX_TEXT_LENGTH - 1));
+        GenerateRandomCharArray(buf, m_rnd.NextInt(0, MAX_TEXT_LENGTH - 1));
         data->Text = buf;
 
         data->ScrPos = CreateRandomScreenPosition(p_gen);
@@ -130,7 +132,6 @@ protected:
     }
 
     /// @brief       Creates a vector of randomly generated indicator data
-    /// @param Rnd The random generator reference to use
     /// @param p_gen The flags to use when generating data
     /// @return      The vector of generated indicator data
     std::vector<tIndicatorData> CreateRandomIndicatorData(DataGeneration p_gen)
