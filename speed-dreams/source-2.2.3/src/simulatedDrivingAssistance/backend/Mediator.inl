@@ -173,8 +173,8 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     // Check if Mediator file exists
     struct stat info = {};
 
-    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
-    path.append("Singletons\\Mediator");
+    std::experimental::filesystem::path path = SingletonsFilePath();
+    path.append("Mediator");
     std::string pathstring = path.string();
     const char* filepath = pathstring.c_str();
     int err = stat(filepath, &info);

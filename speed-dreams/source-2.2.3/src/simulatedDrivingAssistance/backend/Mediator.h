@@ -32,6 +32,15 @@ public:
     tParticipantControl GetPControlSettings();
 
     static Mediator* GetInstance();
+#ifdef TEST
+    Mediator() = default;
+
+    static void ClearInstance()
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    }
+#endif
 
     /// @brief Removes copy constructor for singleton behaviour
     Mediator(Mediator const&) = delete;
@@ -41,7 +50,9 @@ public:
     CarController CarController;
 
 private:
+#ifndef TEST
     Mediator() = default;
+#endif
     static Mediator<DecisionMaker>* m_instance;
 
     DecisionMaker m_decisionMaker;
