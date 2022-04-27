@@ -39,7 +39,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     Random random;
 
     BrakeDecision brakeDecision;
-    float controlBrakeAmount = random.NextFloat();
+    float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
     brakeDecision.RunInterveneCommands();
 
@@ -57,7 +57,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
-    float controlSteerAmount = random.NextFloat();
+    float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
     steerDecision.SteerAmount = controlSteerAmount;
     steerDecision.RunInterveneCommands();
 
