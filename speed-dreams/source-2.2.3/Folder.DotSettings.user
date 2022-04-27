@@ -27,5 +27,7 @@
     &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestDatabaseRunIncorrect&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoUserInputYesData&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.NoGameStateYesData&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestRemoteCorrect&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;GTest::DB94C55F-6B9A-4AAE-80D7-29FD8153E6B5::::SQLDatabaseStorageTests.TestRemoteCorrectFakeCert&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
