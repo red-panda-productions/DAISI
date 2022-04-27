@@ -710,7 +710,8 @@ protected:
 };
 
 /// @brief          Tests whether elements are the correct value or pointer
-/// @param p_eqOrNe true: test for equality of values, false: test for inequality of pointers within the structs
+/// @param p_eqOrNe true: test for equality of values,
+///                 false: test for inequality of pointers within the structs (that we don't have two stucture elements that map to the same memory location)
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
     bool p_eqOrNe = GetParam();
@@ -774,6 +775,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
         }
     }
     COMP_TRKPOS(car.pub.trkPos, data.Car.pub.trkPos)
+    COMP_ELEM(segments, data.Car.pub.trkPos.seg)
     for (int i = 0; i < 4; i++)
     {
         COMP_TPOSD(car.pub.corner[i], data.Car.pub.corner[i])
@@ -1131,13 +1133,79 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(car.pitcmd.tireChange, data.Car.pitcmd.tireChange)
 
     // Compare car.robot
+    if (car.robot && data.Car.robot)
+    {
+        COMP_ELEM(car.robot->index, data.Car.robot->index)
+    }
+
     // COPY NOT IMPLEMENTED FOR car.next
+
     // Compare situation
-    // Compare testSegments.nextSegments vs segments
+    COMP_ELEM(situation.raceInfo.ncars, data.Situation.raceInfo.ncars)
+    COMP_ELEM(situation.raceInfo.totLaps, data.Situation.raceInfo.totLaps)
+    COMP_ELEM(situation.raceInfo.extraLaps, data.Situation.raceInfo.extraLaps)
+    COMP_ELEM(situation.raceInfo.totTime, data.Situation.raceInfo.totTime)
+    COMP_ELEM(situation.raceInfo.state, data.Situation.raceInfo.state)
+    COMP_ELEM(situation.raceInfo.type, data.Situation.raceInfo.type)
+    COMP_ELEM(situation.raceInfo.maxDammage, data.Situation.raceInfo.maxDammage)
+    COMP_ELEM(situation.raceInfo.fps, data.Situation.raceInfo.fps)
+    COMP_ELEM(situation.raceInfo.features, data.Situation.raceInfo.features)
+    COMP_ELEM(situation.deltaTime, data.Situation.deltaTime)
+    COMP_ELEM(situation.currentTime, data.Situation.currentTime)
+    COMP_ELEM(situation.accelTime, data.Situation.accelTime)
+    COMP_ELEM(situation.nbPlayers, data.Situation.nbPlayers)
+    // COPY NOT IMPLEMENTED FOR situation.cars
+
+    // Compare car.pub.trkPos.seg vs segments
+    if (car.pub.trkPos.seg && segments)
+    {
+        for (int i = 0; i < testSegments.nextSegmentsCount; i++)
+        {
+            tTrackSeg segOrig = car.pub.trkPos.seg[i];
+            tTrackSeg segCopy = segments[i];
+            // DEEP COPY NOT IMPLEMENTED FOR seg.name
+            COMP_ELEM(segOrig.id, segCopy.id)
+            COMP_ELEM(segOrig.type, segCopy.type)
+            COMP_ELEM(segOrig.type2, segCopy.type2)
+            COMP_ELEM(segOrig.style, segCopy.style)
+            COMP_ELEM(segOrig.length, segCopy.length)
+            COMP_ELEM(segOrig.width, segCopy.width)
+            COMP_ELEM(segOrig.startWidth, segCopy.startWidth)
+            COMP_ELEM(segOrig.endWidth, segCopy.endWidth)
+            COMP_ELEM(segOrig.lgfromstart, segCopy.lgfromstart)
+            COMP_ELEM(segOrig.radius, segCopy.radius)
+            COMP_ELEM(segOrig.radiusr, segCopy.radiusr)
+            COMP_ELEM(segOrig.radiusl, segCopy.radiusl)
+            COMP_ELEM(segOrig.arc, segCopy.arc)
+            COMP_T3D(segOrig.center, segCopy.center)
+            for (int i = 0; i < 4; i++)
+            {
+                COMP_T3D(segOrig.vertex[i], segCopy.vertex[i])
+            }
+            for (int i = 0; i < 7; i++)
+            {
+                COMP_ELEM(segOrig.angle[i], segCopy.angle[i])
+            }
+            COMP_ELEM(segOrig.sin, segCopy.sin)
+            COMP_ELEM(segOrig.cos, segCopy.cos)
+            COMP_ELEM(segOrig.Kzl, segCopy.Kzl)
+            COMP_ELEM(segOrig.Kzw, segCopy.Kzw)
+            COMP_ELEM(segOrig.Kyl, segCopy.Kyl)
+            COMP_T3D(segOrig.rgtSideNormal, segCopy.rgtSideNormal)
+            COMP_ELEM(segOrig.envIndex, segCopy.envIndex)
+            COMP_ELEM(segOrig.height, segCopy.height)
+            COMP_ELEM(segOrig.raceInfo, segCopy.raceInfo)
+            COMP_ELEM(segOrig.DoVfactor, segCopy.DoVfactor)
+            // COPY NOT IMPLEMENTED FOR seg.ext, seg.surface, seg.barrier, seg.cam
+            if (segOrig.next) segOrig = *segOrig.next;
+            if (segCopy.next) segCopy = *segCopy.next;
+        }
+    }
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
 
+/// @brief Tests whether elements that are pointers have actually been copied into a new pointer 
 TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 {
     BlackBoxData data(&car, &situation, tickCount, segments, testSegments.nextSegmentsCount);
@@ -1159,4 +1227,5 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
     {
         EXPECT_NE(car.ctrl.setupChangeCmd->setup, data.Car.ctrl.setupChangeCmd->setup);
     }
+    EXPECT_NE(car.robot, data.Car.robot);
 }
