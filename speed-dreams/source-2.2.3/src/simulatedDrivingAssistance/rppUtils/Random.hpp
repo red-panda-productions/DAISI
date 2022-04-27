@@ -161,6 +161,8 @@ public:
         return (m_boolRandom & (1U << m_bools++)) > 0;
     }
 
+    /// @brief  Retrieves the seed that is used by the generator
+    /// @return The random generator seed.
     long long GetSeed()
     {
         return m_seed;
