@@ -219,6 +219,7 @@ TestSegments GenerateSegments()
 {
     Random random;
     TestSegments testSegments = {};
+    // Main application uses 10 as its p_nextSegmentsCount (SocketBlackBox::GetDecisions()), so test around that range, not excessively more
 #define MAX_TESTSEGMENT_COUNT 16
     testSegments.NextSegmentsCount = random.NextInt(1, MAX_TESTSEGMENT_COUNT);
     testSegments.NextSegments = new tTrackSeg[testSegments.NextSegmentsCount];
@@ -1300,7 +1301,7 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 }
 
 /// @brief Tests whether BlackBoxData() indeed throws if it receives invalid input
-TEST_F(BlackBoxDataTestFixture, ExceptionsTest)
+TEST_F(BlackBoxDataTestFixture, ExceptionsThrownTest)
 {
     ASSERT_THROW(BlackBoxData(nullptr, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount), std::invalid_argument);
     ASSERT_THROW(BlackBoxData(&Car, nullptr, TickCount, Segments, TestSegments.NextSegmentsCount), std::invalid_argument);
