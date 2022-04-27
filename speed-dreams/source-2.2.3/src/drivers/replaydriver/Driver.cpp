@@ -23,7 +23,7 @@ Driver::Driver(int p_index, const char* p_name)
 /// @param p_carHandle
 /// @param p_carParmHandle
 /// @param p_situation The current race situation
-void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) : m_recorder(nullptr)
 {
     std::experimental::filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;

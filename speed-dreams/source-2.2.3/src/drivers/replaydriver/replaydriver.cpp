@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Driver.h"
 
-static const int MaxBotAmount = 1;
+static const int s_maxBotAmount = 1;
 
 static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
 static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation);
@@ -15,7 +15,7 @@ static void Shutdown(int p_index);
 
 /// @brief All the replay drivers.
 /// Since it's technically possible to have more than 1 bot of the same type in a race it needs to be an array.
-static Driver* s_drivers[MaxBotAmount];
+static Driver* s_drivers[s_maxBotAmount];
 
 /// @brief Find the driver with the given index and return it. Taking into account that we save drivers 0-based but the index is 1-based
 /// @param p_index The index of the driver to find
