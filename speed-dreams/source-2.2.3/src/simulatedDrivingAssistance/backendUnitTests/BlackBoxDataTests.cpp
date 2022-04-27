@@ -1124,6 +1124,12 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_TCARSETUPITEM(car.setup.reqPenalty, data.Car.setup.reqPenalty)
 
     // Compare car.pitcmd
+    COMP_ELEM(car.pitcmd.fuel, data.Car.pitcmd.fuel)
+    COMP_ELEM(car.pitcmd.repair, data.Car.pitcmd.repair)
+    COMP_ELEM(car.pitcmd.stopType, data.Car.pitcmd.stopType)
+    COMP_ELEM(car.pitcmd.setupChanged, data.Car.pitcmd.setupChanged)
+    COMP_ELEM(car.pitcmd.tireChange, data.Car.pitcmd.tireChange)
+
     // Compare car.robot
     // COPY NOT IMPLEMENTED FOR car.next
     // Compare situation
