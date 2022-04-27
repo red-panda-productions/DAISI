@@ -32,6 +32,13 @@ public:
     tParticipantControl GetPControlSettings();
 
     static Mediator* GetInstance();
+#ifdef TEST
+    static void ClearInstance()
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    }
+#endif
 
     /// @brief Removes copy constructor for singleton behaviour
     Mediator(Mediator const&) = delete;

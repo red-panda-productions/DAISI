@@ -6,6 +6,8 @@
 #include <windows.h>
 #include <tgf.h>
 
+#include "Random.hpp"
+
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -66,22 +68,37 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
     return false;
 }
 
+/// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
+/// @returns The filepath to the singletons folder
+inline std::experimental::filesystem::path SingletonsFilePath()
+{
+    return {std::experimental::filesystem::temp_directory_path().append("Singletons")};
+}
+
+/// @brief   Deletes the contents of the singletons folder
+/// @returns An int encoding whether the action succeeded
+inline int DeleteSingletonsFolder()
+{
+    std::error_code errorCode;
+
+    std::experimental::filesystem::path path = SingletonsFilePath();
+    remove_all(path, errorCode);
+    if (errorCode.value() != 0)
+    {
+        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
+        return errorCode.value();
+    }
+    return 0;
+}
+
 /// @brief  Makes sure there is an empty singletons folder to be used by Singleton classes.
 ///         Needs to be called once at the start of a method with any GetInstance() calls.
 /// @return Boolean indicating whether the setup succeeded or not
 inline bool SetupSingletonsFolder()
 {
-    std::error_code errorCode;
+    DeleteSingletonsFolder();
 
-    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
-    path.append("Singletons");
-    std::experimental::filesystem::remove_all(path, errorCode);
-    if (errorCode.value() != 0)
-    {
-        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
-        return false;
-    }
-
+    auto path = SingletonsFilePath();
     // set up singleton folder
     char directory[256];
     getcwd(directory, 256);
@@ -129,6 +146,15 @@ inline void StartExecutable(const std::string& p_executablePath)
                   nullptr,
                   &startupInformation,
                   &processInformation);
+}
+
+/// @brief          Returns true with certain chance
+/// @param p_rnd    The random generator reference to use
+/// @param p_chance The chance to succeed [0-100]
+/// @return         Boolean indicating succes or not.
+inline bool SucceedWithChance(Random& p_rnd, int p_chance)
+{
+    return p_rnd.NextInt(0, 100) < p_chance;
 }
 
 /// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
