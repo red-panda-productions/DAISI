@@ -18,7 +18,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     if (!p_situation) throw std::invalid_argument("p_situation cannot be null");
     if (p_nextSegmentsCount < 0) throw std::invalid_argument("amount of segments cannot be less than 0");
 
-    // Any pointers are marked with 'Pointer' so we can check if we even want them
+    // Any pointers are marked with 'Pointer' so we can check if we even want them:
+    // For now, the answer is no for all of them but car.pub.trkPos.seg
 
     Car.index = p_car->index;
 
@@ -51,17 +52,9 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 
     // Copy p_car.race
     Car.race = p_car->race;
-    Car.race.bestSplitTime = p_car->race.bestSplitTime ? new double(*p_car->race.bestSplitTime) : nullptr;  // Pointer
-    Car.race.curSplitTime = p_car->race.curSplitTime ? new double(*p_car->race.curSplitTime) : nullptr;     // Pointer
-    Car.race.pit = p_car->race.pit ? new tTrackOwnPit(*p_car->race.pit) : nullptr;                          // Pointer
-    if (p_car->race.pit)
-    {
-        Car.race.pit->pos.seg = nullptr;  // TODO (maybe)  // Pointer
-        for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
-        {
-            Car.race.pit->car[i] = nullptr;  // TODO (maybe) // Pointer
-        }
-    }
+    Car.race.bestSplitTime = nullptr;          // Pointer
+    Car.race.curSplitTime = nullptr;           // Pointer
+    Car.race.pit = nullptr;                    // Pointer
     Car.race.penaltyList.tqh_first = nullptr;  // TODO (maybe) // Pointer
     Car.race.penaltyList.tqh_last = nullptr;   // TODO (maybe) // Pointer
 
@@ -79,21 +72,17 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     // Pointer
     for (int i = 0; i < NR_DI_INSTANT; i++)
     {
-        Car.priv.dashboardInstant[i].setup = p_car->priv.dashboardInstant[i].setup ? new tCarSetupItem(*p_car->priv.dashboardInstant[i].setup) : nullptr;  // Pointer
+        Car.priv.dashboardInstant[i].setup = nullptr;  // Pointer
     }
     for (int i = 0; i < NR_DI_REQUEST; i++)
     {
-        Car.priv.dashboardRequest[i].setup = p_car->priv.dashboardRequest[i].setup ? new tCarSetupItem(*p_car->priv.dashboardRequest[i].setup) : nullptr;  // Pointer
+        Car.priv.dashboardRequest[i].setup = nullptr;  // Pointer
     }
 
     // Copy p_car.ctrl
     Car.ctrl = p_car->ctrl;
     Car.ctrl.setupChangeCmd = nullptr;
-    if (p_car->ctrl.setupChangeCmd)  // Pointer
-    {
-        Car.ctrl.setupChangeCmd = new tDashboardItem(*p_car->ctrl.setupChangeCmd);
-        Car.ctrl.setupChangeCmd->setup = p_car->ctrl.setupChangeCmd->setup ? new tCarSetupItem(*p_car->ctrl.setupChangeCmd->setup) : nullptr;  // Pointer
-    }
+    Car.ctrl.setupChangeCmd = nullptr;
 
     // Copy p_car.setup
     Car.setup = p_car->setup;
@@ -102,7 +91,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     Car.pitcmd = p_car->pitcmd;
 
     // Copy p_car.robot
-    Car.robot = p_car->robot ? new RobotItf(*p_car->robot) : nullptr;  // Pointer
+    Car.robot = nullptr;  // Pointer
 
     // Copy p_car.next
     Car.next = nullptr;  // TODO (maybe) // Pointer
@@ -115,17 +104,10 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
 BlackBoxData::~BlackBoxData()
 {
     // Some of these are copied, other are just nullptr, but deleting a nullptr is harmless
+    // As of 27-4-'22, none of these are copied anymore and all are nullptr.
     delete Car.race.bestSplitTime;
     delete Car.race.curSplitTime;
-    if (Car.race.pit)
-    {
-        delete Car.race.pit->pos.seg;  // TODO (only if copying this to begin with)
-        for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
-        {
-            delete Car.race.pit->car[i];  // TODO (only if copying these to begin with)
-        }
-    }
-    delete Car.race.pit;
+    delete Car.race.pit;  // Rest of this copy not implemented
     // TODO penaltyList
     for (int i = 0; i < 4; i++)
     {
@@ -140,11 +122,7 @@ BlackBoxData::~BlackBoxData()
     {
         delete Car.priv.dashboardRequest[i].setup;
     }
-    if (Car.ctrl.setupChangeCmd)
-    {
-        delete Car.ctrl.setupChangeCmd->setup;
-    }
-    delete Car.ctrl.setupChangeCmd;
+    delete Car.ctrl.setupChangeCmd;  // Rest of this copy not implemented
     delete Car.robot;
     delete Car.next;        // TODO (only if copying this to begin with)
     delete Situation.cars;  // TODO (only if copying these to begin with)

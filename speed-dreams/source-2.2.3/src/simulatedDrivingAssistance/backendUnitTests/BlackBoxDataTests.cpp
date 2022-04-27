@@ -50,10 +50,9 @@
 
 /// @brief   Generates a random tDashboardItem
 /// @param a The identifier of a tDashboardItem to randomize
-#define RAND_TDASHBOARDITEM(a)       \
-    (a).type = random.NextInt();     \
-    (a).setup = new tCarSetupItem(); \
-    RAND_TCARSETUPITEM(*(a).setup)
+#define RAND_TDASHBOARDITEM(a)   \
+    (a).type = random.NextInt(); \
+    (a).setup = nullptr;
 
 /// @brief   Generates a random tTrkLocPos
 /// @param a The identifier of a tTrkLocPos to randomize
@@ -166,8 +165,7 @@ tTrackSeg GenerateSegment()
 {
     Random random;
     tTrackSeg segment = {};
-    segment.name = new char[MAX_NAME_LEN];
-    RAND_NAME(segment.name, MAX_NAME_LEN)
+    segment.name = nullptr;  // COPY NOT IMPLEMENTED
     segment.id = random.NextInt();
     segment.type = random.NextInt(1, 4);
     segment.type2 = random.NextInt(1, 6);
@@ -331,10 +329,10 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     // Assign values to car.race
     car.race.bestLapTime = random.NextFloat();
     car.race.commitBestLapTime = random.NextBool();
-    car.race.bestSplitTime = new double(random.NextFloat());
+    car.race.bestSplitTime = nullptr;  // COPY NOT IMPLEMENTED
     car.race.deltaBestLapTime = random.NextFloat();
     car.race.curLapTime = random.NextFloat();
-    car.race.curSplitTime = new double(random.NextFloat());
+    car.race.curSplitTime = nullptr;  // COPY NOT IMPLEMENTED
     car.race.lastLapTime = random.NextFloat();
     car.race.curTime = random.NextFloat();
     car.race.topSpeed = random.NextFloat();
@@ -354,17 +352,7 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     car.race.nbSectors = random.NextInt(car.race.currentSector + 1);
     car.race.trackLength = random.NextFloat();
     car.race.scheduledEventTime = random.NextFloat();
-    car.race.pit = new tTrackOwnPit();
-    car.race.pit->pos.seg = nullptr;  // COPY NOT IMPLEMENTED
-    RAND_TRKPOS(car.race.pit->pos)
-    car.race.pit->pitCarIndex = random.NextInt(-1, 4);
-    car.race.pit->lmin = random.NextFloat();
-    car.race.pit->lmax = random.NextFloat();
-    for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
-    {
-        car.race.pit->car[i] = nullptr;  // COPY NOT IMPLEMENTED
-    }
-    car.race.pit->freeCarIndex = car.race.pit->pitCarIndex + 1;
+    car.race.pit = nullptr;  // COPY NOT IMPLEMENTED
     car.race.event = random.NextInt();
     car.race.penaltyList.tqh_first = nullptr;  // COPY NOT IMPLEMENTED
     car.race.penaltyList.tqh_last = nullptr;   // COPY NOT IMPLEMENTED
@@ -491,8 +479,7 @@ tCarElt Generatecar(TestSegments& p_testSegments)
         RAND_NAME(car.ctrl.msg[j], RM_CMD_MAX_MSG_SIZE)
         car.ctrl.msgColor[j] = random.NextFloat();
     }
-    car.ctrl.setupChangeCmd = new tDashboardItem();
-    RAND_TDASHBOARDITEM(*car.ctrl.setupChangeCmd)
+    car.ctrl.setupChangeCmd = nullptr;  // COPY NOT IMPLEMENTED
 
     // Assign values to car.setup
     RAND_TCARSETUPITEM(car.setup.FRWeightRep)
@@ -664,16 +651,7 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     car.pitcmd.tireChange = possibleTireChanges[random.NextInt(2)];
 
     // Assign values to car.robot
-    car.robot = new RobotItf();
-    car.robot->rbNewTrack = nullptr;  // COPY IMPLEMENTED, NO IDEA ON WHAT CONTENTS WOULD BE FOR GENERATION
-    car.robot->rbNewRace = nullptr;   // AS ALL OF THESE NULLPTR'S ARE VOID POINTERS
-    car.robot->rbPauseRace = nullptr;
-    car.robot->rbResumeRace = nullptr;
-    car.robot->rbEndRace = nullptr;
-    car.robot->rbDrive = nullptr;
-    car.robot->rbPitCmd = nullptr;
-    car.robot->rbShutdown = nullptr;
-    car.robot->index = random.NextInt();
+    car.robot = nullptr;  // COPY NOT IMPLEMENTED
 
     // Assign value to car.next ~not yet at least~
     car.next = nullptr;  // COPY NOT IMPLEMENTED
@@ -685,27 +663,21 @@ tCarElt Generatecar(TestSegments& p_testSegments)
 /// @param p_car The car to destory
 void DestroyCar(tCarElt& p_car)
 {
-    delete p_car.race.bestSplitTime;
-    delete p_car.race.curSplitTime;
-    for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
-    {
-        delete p_car.race.pit->car[i];  // COPY NOT IMPLEMENTED
-    }
-    delete p_car.race.pit->pos.seg;  // COPY NOT IMPLEMENTED
-    delete p_car.race.pit;
+    delete p_car.race.bestSplitTime;          // COPY NOT IMPLEMENTED
+    delete p_car.race.curSplitTime;           // COPY NOT IMPLEMENTED
+    delete p_car.race.pit;                    // COPY NOT IMPLEMENTED
     delete p_car.race.penaltyList.tqh_first;  // COPY NOT IMPLEMENTED
     delete p_car.race.penaltyList.tqh_last;   // COPY NOT IMPLEMENTED
     for (int i = 0; i < NR_DI_INSTANT; i++)
     {
-        delete p_car.priv.dashboardInstant[i].setup;
+        delete p_car.priv.dashboardInstant[i].setup;  // COPY NOT IMPLEMENTED
     }
     for (int i = 0; i < NR_DI_REQUEST; i++)
     {
-        delete p_car.priv.dashboardRequest[i].setup;
+        delete p_car.priv.dashboardRequest[i].setup;  // COPY NOT IMPLEMENTED
     }
-    delete p_car.ctrl.setupChangeCmd->setup;
-    delete p_car.ctrl.setupChangeCmd;
-    delete p_car.robot;
+    delete p_car.ctrl.setupChangeCmd;  // COPY NOT IMPLEMENTED
+    delete p_car.robot;                // COPY NOT IMPLEMENTED
 }
 
 /// @brief Gives a random situation
@@ -845,16 +817,10 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     // Compare car.race
     COMP_ELEM(Car.race.bestLapTime, data.Car.race.bestLapTime)
     COMP_ELEM(Car.race.commitBestLapTime, data.Car.race.commitBestLapTime)
-    if (Car.race.bestSplitTime && data.Car.race.bestSplitTime)
-    {
-        COMP_ELEM(*Car.race.bestSplitTime, *data.Car.race.bestSplitTime)
-    }
+    // COPY NOT IMPLEMENTED FOR car.race.bestSplitTime
     COMP_ELEM(Car.race.deltaBestLapTime, data.Car.race.deltaBestLapTime)
     COMP_ELEM(Car.race.curLapTime, data.Car.race.curLapTime)
-    if (Car.race.curSplitTime && data.Car.race.curSplitTime)
-    {
-        COMP_ELEM(*Car.race.curSplitTime, *data.Car.race.curSplitTime)
-    }
+    // COPY NOT IMPLEMENTED FOR car.race.curSplitTime
     COMP_ELEM(Car.race.lastLapTime, data.Car.race.lastLapTime)
     COMP_ELEM(Car.race.curTime, data.Car.race.curTime)
     COMP_ELEM(Car.race.topSpeed, data.Car.race.topSpeed)
@@ -874,18 +840,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(Car.race.nbSectors, data.Car.race.nbSectors)
     COMP_ELEM(Car.race.trackLength, data.Car.race.trackLength)
     COMP_ELEM(Car.race.scheduledEventTime, data.Car.race.scheduledEventTime)
-    if (Car.race.pit && data.Car.race.pit)
-    {
-        COMP_TRKPOS(Car.race.pit->pos, data.Car.race.pit->pos)
-        COMP_ELEM(Car.race.pit->pitCarIndex, data.Car.race.pit->pitCarIndex)
-        COMP_ELEM(Car.race.pit->lmin, data.Car.race.pit->lmin)
-        COMP_ELEM(Car.race.pit->lmax, data.Car.race.pit->lmax)
-        COMP_ELEM(Car.race.pit->freeCarIndex, data.Car.race.pit->freeCarIndex)
-        for (int i = 0; i < TR_PIT_MAXCARPERPIT; i++)
-        {
-            // COPY NOT IMPLEMENTED for car.race.pit->car
-        }
-    }
+    // COPY NOT IMPLEMENTED FOR car.race.pit
     COMP_ELEM(Car.race.event, data.Car.race.event)
     // COPY NOT IMPLEMENTED for car.race.penaltyList
     COMP_ELEM(Car.race.penaltyTime, data.Car.race.penaltyTime)
@@ -971,19 +926,13 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     for (int i = 0; i < NR_DI_INSTANT; i++)
     {
         COMP_ELEM(Car.priv.dashboardInstant[i].type, data.Car.priv.dashboardInstant[i].type)
-        if (Car.priv.dashboardInstant[i].setup)
-        {
-            COMP_TCARSETUPITEM(*Car.priv.dashboardInstant[i].setup, *data.Car.priv.dashboardInstant[i].setup)
-        }
+        // COPY NOT IMPLEMENTED FOR dashboardItem.setup
     }
     COMP_ELEM(Car.priv.dashboardInstantNb, data.Car.priv.dashboardInstantNb)
     for (int i = 0; i < NR_DI_REQUEST; i++)
     {
         COMP_ELEM(Car.priv.dashboardRequest[i].type, data.Car.priv.dashboardRequest[i].type)
-        if (Car.priv.dashboardRequest[i].setup)
-        {
-            COMP_TCARSETUPITEM(*Car.priv.dashboardRequest[i].setup, *data.Car.priv.dashboardRequest[i].setup)
-        }
+        // COPY NOT IMPLEMENTED FOR dashboardItem.setup
     }
     COMP_ELEM(Car.priv.dashboardRequestNb, data.Car.priv.dashboardRequestNb)
     COMP_ELEM(Car.priv.dashboardActiveItem, data.Car.priv.dashboardActiveItem)
@@ -1014,14 +963,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
         COMP_NAME(Car.ctrl.msg[i], data.Car.ctrl.msg[i])
         COMP_ELEM(Car.ctrl.msgColor[i], data.Car.ctrl.msgColor[i])
     }
-    if (Car.ctrl.setupChangeCmd && data.Car.ctrl.setupChangeCmd)
-    {
-        COMP_ELEM(Car.ctrl.setupChangeCmd->type, data.Car.ctrl.setupChangeCmd->type)
-        if (Car.ctrl.setupChangeCmd->setup && data.Car.ctrl.setupChangeCmd->setup)
-        {
-            COMP_TCARSETUPITEM(*Car.ctrl.setupChangeCmd->setup, *data.Car.ctrl.setupChangeCmd->setup)
-        }
-    }
+    // COPY NOT IMPLEMENTED FOR car.ctrl.setupChangeCmd
 
     // Compare car.setup
     COMP_TCARSETUPITEM(Car.setup.FRWeightRep, data.Car.setup.FRWeightRep)
@@ -1191,11 +1133,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(Car.pitcmd.setupChanged, data.Car.pitcmd.setupChanged)
     COMP_ELEM(Car.pitcmd.tireChange, data.Car.pitcmd.tireChange)
 
-    // Compare car.robot
-    if (Car.robot && data.Car.robot)
-    {
-        COMP_ELEM(Car.robot->index, data.Car.robot->index)
-    }
+    // COPY NOT IMPLEMENTED FOR car.robot
 
     // COPY NOT IMPLEMENTED FOR car.next
 
@@ -1270,23 +1208,6 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
     BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount);
 
     EXPECT_NE(Car.pub.trkPos.seg, data.Car.pub.trkPos.seg);
-    EXPECT_NE(Car.race.bestSplitTime, data.Car.race.bestSplitTime);
-    EXPECT_NE(Car.race.curSplitTime, data.Car.race.curSplitTime);
-    EXPECT_NE(Car.race.pit, data.Car.race.pit);
-    for (int i = 0; i < NR_DI_INSTANT; i++)
-    {
-        EXPECT_NE(Car.priv.dashboardInstant[i].setup, data.Car.priv.dashboardInstant[i].setup);
-    }
-    for (int i = 0; i < NR_DI_REQUEST; i++)
-    {
-        EXPECT_NE(Car.priv.dashboardRequest[i].setup, data.Car.priv.dashboardRequest[i].setup);
-    }
-    EXPECT_NE(Car.ctrl.setupChangeCmd, data.Car.ctrl.setupChangeCmd);
-    if (Car.ctrl.setupChangeCmd && data.Car.ctrl.setupChangeCmd)
-    {
-        EXPECT_NE(Car.ctrl.setupChangeCmd->setup, data.Car.ctrl.setupChangeCmd->setup);
-    }
-    EXPECT_NE(Car.robot, data.Car.robot);
     if (Car.pub.trkPos.seg && Segments)
     {
         tTrackSeg* segOrig = &Car.pub.trkPos.seg[0];
