@@ -12,6 +12,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     : TickCount(p_tickCount)
 {
     // Any pointers are marked with 'Pointer' so we can check if we even want them
+    Car = {};
+    Situation = {};
 
     Car.index = p_car->index;
 
