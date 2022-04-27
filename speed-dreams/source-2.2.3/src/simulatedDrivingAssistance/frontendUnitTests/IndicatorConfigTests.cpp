@@ -20,6 +20,22 @@ typedef unsigned int DataGeneration;
 #define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
 
+class IndicatorConfigTests : public ::testing::Test
+{
+protected:
+    Random m_rnd;
+    long long m_seed = 1000;
+
+    void SetUp() override
+    {
+        GfInit(GF_LOGGING_DISABLE);
+        GfSetDataDir(SD_DATADIR_SRC);
+        ASSERT_TRUE(SetupSingletonsFolder());
+        std::cout << "Test Seed: " << m_seed << std::endl;
+        m_rnd = Random(m_seed);
+    }
+};
+
 /// @brief       Creates randomly generated sound data
 /// @param p_rnd The random generator reference to use
 /// @param p_gen The flags to use when generating data
@@ -249,7 +265,7 @@ void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndic
 /// @brief Creates a random indicator data object, writes this to an xml file,
 ///        then reads in this xml file using IndicatorConfig::LoadIndicatorData
 ///        Asserts whether the loaded in data is equal to the randomly generated data.
-TEST(IndicatorConfigTests, LoadIndicatorDataFromXML)
+TEST_F(IndicatorConfigTests, LoadIndicatorDataFromXML)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
@@ -275,7 +291,7 @@ TEST(IndicatorConfigTests, LoadIndicatorDataFromXML)
 }
 
 /// @brief Tests whether two configs point towards the same instance.
-TEST(IndicatorConfigTests, Singleton)
+TEST_F(IndicatorConfigTests, Singleton)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     IndicatorConfig* config1 = IndicatorConfig::GetInstance();
@@ -284,18 +300,18 @@ TEST(IndicatorConfigTests, Singleton)
 }
 
 /// @brief Tests whether the IndicatorConfig correctly throws an error for invalid screen positions
-TEST(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
-{
+TEST_F(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
+ {
     // Gf module contains all the XML reading/writing functions.
-    GfInit(GF_LOGGING_DISABLE);
+    /*GfInit(GF_LOGGING_DISABLE);
     GfSetDataDir(SD_DATADIR_SRC);
     ASSERT_TRUE(SetupSingletonsFolder());
-    Random rnd;
+    Random rnd;*/
 
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
         // Create random indicator data with invalid screen positions and write it to xml
-        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(rnd, INVALID_SCR_POS);
+        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(m_rnd, INVALID_SCR_POS);
         const char* filepath = WriteIndicatorDataToXml(rndData);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::out_of_range);
@@ -303,7 +319,7 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
 }
 
 /// @brief Tests whether the IndicatorConfig correctly throws an error for invalid loop intervals
-TEST(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
+TEST_F(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
@@ -322,7 +338,7 @@ TEST(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
 }
 
 /// @brief Tests whether the IndicatorConfig can activate an indicator and retrieve the correct values.
-TEST(IndicatorConfigTests, ActivateIndicator)
+TEST_F(IndicatorConfigTests, ActivateIndicator)
 {
     // Gf module contains all the XML reading/writing functions.
     GfInit(GF_LOGGING_DISABLE);
