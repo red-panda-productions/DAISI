@@ -3,6 +3,7 @@
 
 void AccelDecision::RunIndicateCommands()
 {
+    // TODO: Implement acceleration indication
 }
 
 void AccelDecision::RunInterveneCommands()

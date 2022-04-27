@@ -65,6 +65,8 @@ Changed:
         tgf/
             params.cpp
                 Modified xmlGetOuputLine to write floats with full precision.
+            tgf.h
+                added GF_LOGGING_ENABLE and GF_LOGGING_DISABLE macro's for clearer code
         tgfclient/
             gui.h
                 added   tGfuiRadioButtonList

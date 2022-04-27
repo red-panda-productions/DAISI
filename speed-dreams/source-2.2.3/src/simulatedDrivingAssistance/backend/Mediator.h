@@ -6,9 +6,6 @@
 #include "CarController.h"
 #include "Recorder.h"
 
-/// @brief The standard type of the mediator
-#define SMediator Mediator<SDecisionMaker>
-
 /// @brief			      The Main communication between the front- and backend
 /// @tparam DecisionMaker The decisionMaker type
 template <typename DecisionMaker>
@@ -36,6 +33,13 @@ public:
     tParticipantControl GetPControlSettings();
 
     static Mediator* GetInstance();
+#ifdef TEST
+    static void ClearInstance()
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    }
+#endif
 
     /// @brief Removes copy constructor for singleton behaviour
     Mediator(Mediator const&) = delete;
@@ -55,6 +59,9 @@ private:
     tTrack* m_track = nullptr;
     bool m_inRace = false;  // Whether the game is currently in a race
 };
+
+/// @brief The standard type of the mediator
+#define SMediator Mediator<SDecisionMaker>
 
 template <>
 SMediator* SMediator::m_instance = nullptr;

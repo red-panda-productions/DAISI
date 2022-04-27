@@ -6,6 +6,9 @@
 #include "PairWiseTestGenerator.h"
 /// A big header file that contains functions that can be used in unit tests
 
+// Log additional info during tests with GTEST_COUT << "your message" << std::endl;
+#define GTEST_COUT std::cerr << "[INFO] "
+
 /// @brief        Executes a statement, and fails if it takes longer than the secs parameter
 /// @param p_secs The timeout parameter
 /// @param p_stmt The statement to be executed
@@ -40,7 +43,7 @@ inline void TestStringEqual(const char* p_msg1, const char* p_msg2, int p_size)
 
 /// @brief				   Generates a random char array
 /// @param  p_dataBuffer   The buffer for the array
-/// @param  p_stringLength The length of the random array
+/// @param  p_stringLength The length of the random array must be strictly smaller than the buffer size
 inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
 {
     for (int i = 0; i < p_stringLength; i++)

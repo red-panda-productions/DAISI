@@ -33,6 +33,8 @@ SET(_SOURCES MsgpackDeserializeTests.cpp
         FileDataStorageTests.cpp
         SQLDatabaseStorageTests.cpp
         BlackBoxDataTests.cpp
+        DecisionsTests.cpp
+        ExecutorTests.cpp
         RecorderTests.cpp
         )
 
@@ -47,8 +49,8 @@ SET(_MOCK_HEADERS
     mocks/SocketBlackBoxMock.h
     mocks/ConfigMock.h
     mocks/PointerManagerMock.h
-    mocks/DecisionMakerMock.h)
-
+    mocks/DecisionMakerMock.h
+        )
 
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 

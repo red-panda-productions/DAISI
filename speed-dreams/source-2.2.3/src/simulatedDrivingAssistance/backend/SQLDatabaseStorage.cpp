@@ -73,19 +73,54 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
     inputFile.close();
 }
 
-/// @brief Connect to the specified database. Initialise the database with the proper tables if they don't exist yet.
-/// @param p_hostName Hostname of the database to connect to. Should be a TCP-IP address.
-/// @param p_port Port the database is located on on the host.
-/// @param p_username Username to connect with to the database.
-/// @param p_password Password to connect with to the database.
-/// @param p_schemaName Name of the database schema to use.
-/// @return returns true if connection to database has been made, false otherwise
+/// @brief  gets the keys for secure database connection in the data/certificates folder
+///         and adds them to the connection properties
+///         name of the keys are set in the database_encryption_settings.txt file
+/// @param p_connectionProperties   SQL connection properties to which the keys are added.
+void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
+{
+    std::string configPath(ROOT_FOLDER "\\data");
+    std::string configFile("database_encryption_settings.txt");
+
+    if (!FindFileDirectory(configPath, configFile))
+        throw std::exception("Could not find database encryption settings file");
+
+    std::ifstream ifstream(configPath + '\\' + configFile);
+    if (ifstream.fail()) throw std::exception("Could not open database encryption settings file");
+
+    std::string caName;
+    std::string pubName;
+    std::string privName;
+    READ_INPUT(ifstream, caName)
+    READ_INPUT(ifstream, pubName)
+    READ_INPUT(ifstream, privName)
+
+    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
+
+    if (!FindFileDirectory(certificatesPath, caName))
+        throw std::exception("Could not find certificate folder");
+
+    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caName;
+    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubName;
+    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privName;
+}
+
+/// @brief                  Connect to the specified database.
+///                         Initialise the database with the proper tables if they don't exist yet.
+/// @param p_hostName       Hostname of the database to connect to. Should be a TCP-IP address.
+/// @param p_port           Port the database is located on on the host.
+/// @param p_username       Username to connect with to the database.
+/// @param p_password       Password to connect with to the database.
+/// @param p_schemaName     Name of the database schema to use.
+/// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
+/// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
     int p_port,
     const std::string& p_username,
     const std::string& p_password,
-    const std::string& p_schemaName)
+    const std::string& p_schemaName,
+    std::string p_useEncryption)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -100,13 +135,19 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
+    transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
+    if (p_useEncryption == "true")
+    {
+        PutKeys(connection_properties);
+    }
+
     try
     {
         m_connection = m_driver->connect(connection_properties);
     }
     catch (std::exception& e)
     {
-        std::cerr << "Could not open database" << std::endl;
+        std::cerr << "Could not open database" << e.what() << std::endl;
         return false;
     }
 
@@ -325,8 +366,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     values = "'" + blackboxFileName + "','" + blackboxVersion + "','" + blackboxName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("blackbox", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT blackbox_id FROM blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersion + "'")
+    EXECUTE(INSERT_IGNORE_INTO("Blackbox", "filename, version, name", values))
+    EXECUTE_QUERY("SELECT blackbox_id FROM Blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersion + "'")
 
     int blackboxId;
     GET_INT_FROM_RESULTS(blackboxId)
@@ -342,8 +383,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("environment", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT environment_id FROM environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
+    EXECUTE(INSERT_IGNORE_INTO("Environment", "filename, version, name", values))
+    EXECUTE_QUERY("SELECT environment_id FROM Environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
 
     int environmentId;
     GET_INT_FROM_RESULTS(environmentId)
@@ -370,9 +411,9 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
             throw std::exception("Invalid intervention type index read from buffer file");
     }
 
-    EXECUTE(INSERT_IGNORE_INTO("settings", "intervention_mode", values))
+    EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))
     EXECUTE_QUERY(
-        "SELECT settings_id FROM settings WHERE "
+        "SELECT settings_id FROM Settings WHERE "
         "intervention_mode = " +
         values)
 
@@ -383,7 +424,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
              std::to_string(settingsId) + "'";
 
     // trial
-    EXECUTE(INSERT_INTO("trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
+    EXECUTE(INSERT_INTO("Trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()");
 
     int trialId;
@@ -437,7 +478,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
 
         values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
 
-        EXECUTE(INSERT_INTO("timestep", "trial_id, tick", values))
+        EXECUTE(INSERT_INTO("TimeStep", "trial_id, tick", values))
 
         // gamestate
         if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
@@ -505,7 +546,7 @@ void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p
     values.append(p_tick);
     values.append("'");
 
-    EXECUTE(INSERT_INTO("gamestate", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
+    EXECUTE(INSERT_INTO("GameState", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
 }
 
 void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
@@ -523,7 +564,7 @@ void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p
     READ_INPUT(p_inputFile, clutch);
 
     values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "','" + std::to_string(p_trialId) + "','" + p_tick + "'";
-    EXECUTE(INSERT_INTO("userinput", "steer, brake, gas, clutch, trial_id, tick", values));
+    EXECUTE(INSERT_INTO("UserInput", "steer, brake, gas, clutch, trial_id, tick", values));
 }
 
 /// @brief Loops through the input file and inserts all decisions that the black box has made
@@ -538,7 +579,7 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
     int decisionsRead = 0;
     while (decision != "NONE" && decisionsRead++ < DECISIONS_AMOUNT)
     {
-        m_statement->execute(INSERT_INTO("intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
+        m_statement->execute(INSERT_INTO("Intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
         int decisionId;
         SELECT_LAST_ID(decisionId)
 
@@ -546,31 +587,31 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
         {
             std::string amount;
             READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("steerdecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            EXECUTE(INSERT_INTO("SteerDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "BrakeDecision")
         {
             std::string amount;
             READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("brakedecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            EXECUTE(INSERT_INTO("BrakeDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "AccelDecision")
         {
             std::string amount;
             READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("acceldecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            EXECUTE(INSERT_INTO("AccelDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
         }
         else if (decision == "GearDecision")
         {
             std::string gear;
             READ_INPUT(p_inputFile, gear);
-            EXECUTE(INSERT_INTO("geardecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
+            EXECUTE(INSERT_INTO("GearDecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
         }
         else if (decision == "LightsDecision")
         {
             std::string lightsOn;
             READ_INPUT(p_inputFile, lightsOn);
-            EXECUTE(INSERT_INTO("lightsdecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
+            EXECUTE(INSERT_INTO("LightsDecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
         }
 
         READ_INPUT(p_inputFile, decision);
@@ -603,12 +644,14 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     std::string username;
     std::string password;
     std::string schema;
+    std::string useSSL;
 
-    READ_INPUT(ifstream, ip);
-    READ_INPUT(ifstream, portString);
-    READ_INPUT(ifstream, username);
-    READ_INPUT(ifstream, password);
-    READ_INPUT(ifstream, schema);
+    READ_INPUT(ifstream, ip)
+    READ_INPUT(ifstream, portString)
+    READ_INPUT(ifstream, username)
+    READ_INPUT(ifstream, password)
+    READ_INPUT(ifstream, schema)
+    READ_INPUT(ifstream, useSSL)
 
     ifstream.close();
 
@@ -622,7 +665,7 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
 
-    if (OpenDatabase(ip, port, username, password, schema))
+    if (OpenDatabase(ip, port, username, password, schema, useSSL))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);

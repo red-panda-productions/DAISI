@@ -180,6 +180,11 @@ typedef struct Forces
 /******************************
  * Gaming framework managment *
  ******************************/
+
+// SIMULATED DRIVING ASSISTANCE: add clear macro's to enable/disable logging
+#define GF_LOGGING_ENABLE  true
+#define GF_LOGGING_DISABLE false
+
 TGF_API void GfInit(bool bWithLogging = true);
 TGF_API void GfShutdown(void);
 TGF_API void GfTraceShutdown(void);
