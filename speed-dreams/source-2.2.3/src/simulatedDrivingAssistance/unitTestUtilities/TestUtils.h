@@ -6,6 +6,9 @@
 #include "PairWiseTestGenerator.h"
 /// A big header file that contains functions that can be used in unit tests
 
+// Log additional info during tests with GTEST_COUT << "your message" << std::endl;
+#define GTEST_COUT std::cerr << "[INFO] "
+
 /// @brief        Executes a statement, and fails if it takes longer than the secs parameter
 /// @param p_secs The timeout parameter
 /// @param p_stmt The statement to be executed
