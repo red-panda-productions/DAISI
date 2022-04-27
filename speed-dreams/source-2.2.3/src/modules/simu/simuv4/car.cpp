@@ -514,6 +514,7 @@ SimCarReConfig(tCar *car)
 	}
 }
 
+
 static void
 SimCarUpdateForces(tCar *car)
 {
@@ -527,14 +528,14 @@ SimCarUpdateForces(tCar *car)
 	
 	Cosz = car->Cosz = cos(car->DynGCg.pos.az);
 	Sinz = car->Sinz = sin(car->DynGCg.pos.az);
-
+	
 	car->preDynGC = car->DynGCg;
 	
 	/* total mass */
 	m = car->mass + car->fuel;
-    minv = (tdble) (1.0 / m);
+	minv = (tdble) (1.0 / m);
 	w = -m * G;
-
+	
 	/* Weight */
 	SinTheta = (tdble) ((-car->wheel[FRNT_RGT].zRoad - car->wheel[FRNT_LFT].zRoad
 		+ car->wheel[REAR_RGT].zRoad + car->wheel[REAR_LFT].zRoad) / (2.0 * car->wheelbase));
@@ -575,7 +576,7 @@ SimCarUpdateForces(tCar *car)
 	F.M.y -= (car->wing[i].forces.z + car->aero.lift[i]) * car->wing[i].staticPos.x +
 		car->wing[i].forces.x * car->wing[i].staticPos.z;
 	}
-
+	
 	/* Rolling Resistance */
 	v = car->DynGC.vel.xy;
 	R = 0;
@@ -606,7 +607,7 @@ SimCarUpdateForces(tCar *car)
 		Rm = (tdble) (SIGN(car->DynGCg.vel.az) * R * car->wheelbase / 2.0);
 	}
 	F.M.z -= Rm;
-
+	
 	/* simulate sticking when car almost stationary */
 	if ((car->features & FEAT_SLOWGRIP) && ( v < 0.1 ) ) {
 		w = -w; //make it positive
@@ -615,7 +616,6 @@ SimCarUpdateForces(tCar *car)
 		if ( (fabs(desiredF - F.F.y)) < w ) {F.F.y = desiredF;}
 		else if ( (desiredF - F.F.y) > 0.0 ) {F.F.y += w;}
 		else {F.F.y -= w;}
-
 		/* desired torque to stop yaw */
 		desiredTq = - car->DynGC.vel.az / ( SimDeltaTime * car->Iinv.z );
 		if ( (fabs(desiredTq - F.M.z)) < 0.5 * w * car->wheelbase) {F.M.z = desiredTq;}
@@ -953,9 +953,9 @@ SimTelemetryOut(tCar *car)
 void
 SimCarUpdate(tCar *car, tSituation * /* s */)
 {
-    SimCarUpdateForces(car);
+	SimCarUpdateForces(car);
 	CHECK(car);
-    SimCarUpdateSpeed(car);
+	SimCarUpdateSpeed(car);
 	CHECK(car);
 	SimCarUpdateCornerPos(car);
 	CHECK(car);
