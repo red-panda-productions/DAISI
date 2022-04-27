@@ -12,8 +12,8 @@
                                                                         tTrack* p_track,                                                 \
                                                                         const std::string& p_blackBoxExecutablePath,                     \
                                                                         Recorder* p_recordBB,                                            \
-                                                          BlackBoxData* p_testSituations,                                  \
-                                                          int p_testAmount);                                               \
+                                                                        BlackBoxData* p_testSituations,                                  \
+                                                                        int p_testAmount);                                               \
     template bool DecisionMaker<type1, type2, type3, type4>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
@@ -47,7 +47,7 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
     m_recorder = p_recorder;
 
 #if !defined(TEST)
-    StartExecutable(p_blackBoxExecutablePath); // @NOCOVERAGE
+    StartExecutable(p_blackBoxExecutablePath);  // @NOCOVERAGE
 #endif
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
