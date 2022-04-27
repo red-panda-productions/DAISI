@@ -28,7 +28,6 @@ private:
     Random m_rnd;
 
 protected:
-
     /// @brief Setup Gf module to have access to its XML reading/writing functions
     ///        Creates the random number generator to be used during the test and log its seed.
     void SetUp() override
@@ -344,7 +343,6 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
 class IndicatorConfigSingletonTests : public ::testing::Test
 {
 protected:
-
     /// @brief Ensures that there is a clean version of the IndicatorConfig to run tests on.
     void SetUp() override
     {
