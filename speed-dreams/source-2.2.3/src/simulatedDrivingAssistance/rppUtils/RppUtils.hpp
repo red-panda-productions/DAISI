@@ -66,11 +66,15 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
     return false;
 }
 
+/// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
+/// @returns The filepath to the singletons folder
 inline std::experimental::filesystem::path SingletonsFilePath()
 {
     return {std::experimental::filesystem::temp_directory_path().append("Singletons")};
 }
 
+/// @brief   Deletes the contents of the singletons folder
+/// @returns An int encoding whether the action succeeded
 inline int DeleteSingletonsFolder()
 {
     std::error_code errorCode;
