@@ -6,8 +6,8 @@
 #include <experimental/filesystem>
 
 #define USER_INPUT_RECORDING_FILE_NAME "recording.txt"
-#define DECISIONS_RECORDING_FILE_NAME "decisions.txt"
-#define CAR_SETTINGS_FILE_NAME "car.xml"
+#define DECISIONS_RECORDING_FILE_NAME  "decisions.txt"
+#define CAR_SETTINGS_FILE_NAME         "car.xml"
 
 /// @brief A class that can record the input of a player for integration tests
 class Recorder

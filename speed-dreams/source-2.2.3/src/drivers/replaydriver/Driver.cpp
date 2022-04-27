@@ -12,7 +12,9 @@
 /// Make sure the human driver is initialized and ready to drive.
 /// @param p_index The driver's index (starting from 1)
 /// @param p_name The driver's name
-Driver::Driver(int p_index, const char* p_name) : m_index(p_index) {
+Driver::Driver(int p_index, const char* p_name)
+    : m_index(p_index)
+{
 }
 
 /// @brief Initialize the driver with the given track.
@@ -21,7 +23,8 @@ Driver::Driver(int p_index, const char* p_name) : m_index(p_index) {
 /// @param p_carHandle
 /// @param p_carParmHandle
 /// @param p_situation The current race situation
-void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
+void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+{
     std::experimental::filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
     sdaFolder.append("user_recordings").append(RECORDING_NAME);
@@ -39,7 +42,8 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// it opens te replay file and sets the time of the first input
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
+void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
+{
     std::string inputTime;
     m_replayFile >> inputTime;
     m_inputTime = std::stod(inputTime);
@@ -50,7 +54,8 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation) {
 /// It ends the race if the file is done
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
+void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
+{
     std::string accelString;
     m_replayFile >> accelString;
     float accel = std::stof(accelString);
@@ -120,9 +125,12 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
     std::string inputTime;
     m_replayFile >> inputTime;
 
-    if (m_replayFile.eof()) {
+    if (m_replayFile.eof())
+    {
         p_situation->raceInfo.state = RM_RACE_ENDED;
-    } else {
+    }
+    else
+    {
         m_inputTime = std::stod(inputTime);
     }
 
@@ -132,35 +140,41 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
 /// @brief Pause the current race.
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::PauseRace(tCarElt* p_car, tSituation* p_situation) {
+void Driver::PauseRace(tCarElt* p_car, tSituation* p_situation)
+{
 }
 
 /// @brief Resume the current race.
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::ResumeRace(tCarElt* p_car, tSituation* p_situation) {
+void Driver::ResumeRace(tCarElt* p_car, tSituation* p_situation)
+{
 }
 
 /// @brief Called when a pit stop starts
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 /// @return The pit stop command either ROB_PIT_IM or ROB_PIT_MENU
-int Driver::PitCmd(tCarElt* p_car, tSituation* p_situation) {
+int Driver::PitCmd(tCarElt* p_car, tSituation* p_situation)
+{
     return 0;
 }
 
 /// @brief End the current race.
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-void Driver::EndRace(tCarElt* p_car, tSituation* p_situation) {
+void Driver::EndRace(tCarElt* p_car, tSituation* p_situation)
+{
 }
 
 /// @brief Shutdown the driver.
 /// Also tell the mediator the race has ended.
-void Driver::Shutdown() {
+void Driver::Shutdown()
+{
     SMediator::GetInstance()->RaceStop();
 }
 
 /// @brief Terminate the driver.
-void Driver::Terminate() {
+void Driver::Terminate()
+{
 }

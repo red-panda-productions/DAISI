@@ -7,25 +7,27 @@
 #include <experimental/filesystem>
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
-#define TEST_DIRECTORY "test_test_data"
+#define TEST_DIRECTORY     "test_test_data"
 #define TEST_CAR_FILE_NAME "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
-#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents) {                       \
-    std::cout << "Reading file from " << (folder + (recordingName "\\" filename)) << std::endl; \
-    std::ifstream file(folder + ("\\" recordingName "\\" filename));                            \
-    ASSERT_TRUE(file.is_open());                                                                \
-    std::stringstream buffer;                                                                   \
-    buffer << file.rdbuf();                                                                     \
-    ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
-}
+#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
+    {                                                                                               \
+        std::cout << "Reading file from " << (folder + (recordingName "\\" filename)) << std::endl; \
+        std::ifstream file(folder + ("\\" recordingName "\\" filename));                            \
+        ASSERT_TRUE(file.is_open());                                                                \
+        std::stringstream buffer;                                                                   \
+        buffer << file.rdbuf();                                                                     \
+        ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
+    }
 
 /// @brief Assert that the file at the given path is empty
-#define ASSERT_FILE_EMPTY(path) {                                  \
-    std::ifstream file(path);                                      \
-    ASSERT_TRUE(file.is_open());                                   \
-    ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof()); \
-}
+#define ASSERT_FILE_EMPTY(path)                                        \
+    {                                                                  \
+        std::ifstream file(path);                                      \
+        ASSERT_TRUE(file.is_open());                                   \
+        ASSERT_TRUE(file.peek() == std::ifstream::traits_type::eof()); \
+    }
 
 /// @brief Get the directory to use for storing test files
 /// @return Path to the testing directory (without trailing backslash)
@@ -180,16 +182,16 @@ TEST(RecorderTests, WriteOnlyTime)
     recorder.WriteDecisions(nullptr, 95875);
 
     ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", USER_INPUT_RECORDING_FILE_NAME,
-                                                            "0.00000000000000000000 \n"
-                                                            "0.10000000000000000555 \n"
-                                                            "1.00000000000000000000 \n"
-                                                            "-1.00000000000000000000 \n")
+                         "0.00000000000000000000 \n"
+                         "0.10000000000000000555 \n"
+                         "1.00000000000000000000 \n"
+                         "-1.00000000000000000000 \n")
 
     ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME,
-                                                            "0.00000000000000000000 \n"
-                                                            "3.00000000000000000000 \n"
-                                                            "435.00000000000000000000 \n"
-                                                            "95875.00000000000000000000 \n")
+                         "0.00000000000000000000 \n"
+                         "3.00000000000000000000 \n"
+                         "435.00000000000000000000 \n"
+                         "95875.00000000000000000000 \n")
 }
 
 /// @brief Test whether the recorder can safely write to the same file twice.
@@ -202,8 +204,9 @@ TEST(RecorderTests, WriteSameFileTwice)
         Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0);
         recorder.WriteUserInput(nullptr, 0);
         recorder.WriteUserInput(nullptr, 1);
-        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, "0.00000000000000000000 \n"
-                                                                      "1.00000000000000000000 \n");
+        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME,
+                             "0.00000000000000000000 \n"
+                             "1.00000000000000000000 \n");
     }
     // Write less timesteps the second time, such that simply overwriting the file will be caught by the test as well
     {
@@ -226,7 +229,8 @@ TEST(RecorderTests, WriteCarTests)
 
     // Find the car xml
     std::string path = "test_data";
-    if(!FindFileDirectory(path, TEST_CAR_FILE_NAME)) {
+    if (!FindFileDirectory(path, TEST_CAR_FILE_NAME))
+    {
         throw std::exception("Could not find test_car.xml.");
     }
     path.append("/" TEST_CAR_FILE_NAME);
@@ -234,7 +238,8 @@ TEST(RecorderTests, WriteCarTests)
     // Load the car xml
     auto carHandle = GfParmReadFile(path.c_str(), 0, true);
 
-    if(carHandle == nullptr) {
+    if (carHandle == nullptr)
+    {
         throw std::exception("Could not load test_car.xml.");
     }
 

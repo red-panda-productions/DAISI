@@ -9,21 +9,21 @@
 #include <experimental/filesystem>
 
 /// @brief Creates an implementation of the mediator
-#define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                      \
-    template InterventionType Mediator<type>::GetInterventionType();                                                              \
-    template tIndicator Mediator<type>::GetIndicatorSettings();                                                                   \
-    template tParticipantControl Mediator<type>::GetPControlSettings();                                                           \
-    template void Mediator<type>::SetTask(Task p_task);                                                                           \
-    template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                  \
-    template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                   \
-    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                            \
-    template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                      \
-    template void Mediator<type>::SetUserId(char* p_userId);                                                                      \
-    template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                          \
-    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                    \
-    template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                             \
+#define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
+    template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
+    template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
+    template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
+    template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
+    template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
+    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                                                  \
+    template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
+    template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
+    template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
+    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
+    template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
-    template void Mediator<type>::RaceStop();                                                                                     \
+    template void Mediator<type>::RaceStop();                                                                                                           \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
