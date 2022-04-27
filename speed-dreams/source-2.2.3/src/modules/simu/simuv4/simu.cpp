@@ -614,7 +614,7 @@ SimUpdate(tSituation *s, double deltaTime)
 
             for (i = 0; i < 4; i++)
             {
-              SimWheelUpdateForce(car, i);
+                SimWheelUpdateForce(car, i);
             }
             CHECK(car);
 

@@ -144,8 +144,7 @@ typedef struct
 #else
 
 #define CHECK_VAR(_var_, _msg_)
-
-#define CHECK(car)
+#define CHECK(_car_)
 
 #endif
 
