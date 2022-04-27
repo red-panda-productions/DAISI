@@ -15,8 +15,7 @@
         auto stmt_future = completed.get_future();                                             \
         std::thread([&](std::promise<bool>& completed) {                                       \
             p_stmt;                                                                            \
-            completed.set_value(true);                                                         \
-        },                                                                                     \
+            completed.set_value(true); },                                    \
                     std::ref(completed))                                                       \
             .detach();                                                                         \
         if (stmt_future.wait_for(std::chrono::seconds(p_secs)) == std::future_status::timeout) \
