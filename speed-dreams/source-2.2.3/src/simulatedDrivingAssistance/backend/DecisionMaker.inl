@@ -45,7 +45,10 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
                                     int p_testAmount)
 {
     m_recorder = p_recorder;
-    StartExecutable(p_blackBoxExecutablePath);
+
+#if !defined(TEST)
+    StartExecutable(p_blackBoxExecutablePath); // @NOCOVERAGE
+#endif
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
