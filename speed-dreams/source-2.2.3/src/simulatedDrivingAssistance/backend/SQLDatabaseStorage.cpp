@@ -679,6 +679,8 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
 
     ifstream.close();
 
+    std::cout << "read stream" << std::endl;
+
     int port;
     try
     {
@@ -689,6 +691,8 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
 
+    std::cout << "read port" << std::endl;
+
     if (OpenDatabase(ip, port, username, password, schema, useSSL, p_dirPath))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
@@ -696,4 +700,6 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
         CloseDatabase();
         std::cout << "Finished writing to database" << std::endl;
     }
+
+    std::cout << "finalized database" << std::endl;
 }
