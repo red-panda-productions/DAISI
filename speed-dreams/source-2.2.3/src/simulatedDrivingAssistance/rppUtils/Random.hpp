@@ -162,7 +162,7 @@ public:
 
     /// @brief  Retrieves the seed that is used by the generator
     /// @return The random generator seed.
-    long long GetSeed()
+    long long GetSeed() const
     {
         return m_seed;
     }
