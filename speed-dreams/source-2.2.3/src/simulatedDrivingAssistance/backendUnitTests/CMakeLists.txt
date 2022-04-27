@@ -76,12 +76,11 @@ gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 #Code coverage
 SET(BACKEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/backend")
 
-
 SET(BAT_NAME "BackendCoverage")
 SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe")
 SET(SOURCE_DIR "${BACKEND_SOURCE_DIR}")
 SET(EXCLUDED_SOURCES "${BACKEND_SOURCE_DIR}/IPCPointerManager.h;${BACKEND_SOURCE_DIR}/IPCPointerManager.inl")
-SET(EXCLUDED_LINE "")
+SET(EXCLUDED_LINE ".*@NOCOVERAGE.*")
 
 IF(OPTION_GITHUB_ACTIONS)
     CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "cobertura" "BackendCoverage.xml" "FrontendCoverage.cov")
