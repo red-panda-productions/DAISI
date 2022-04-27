@@ -161,6 +161,11 @@ public:
         return (m_boolRandom & (1U << m_bools++)) > 0;
     }
 
+    long long GetSeed()
+    {
+        return m_seed;
+    }
+
     /// @brief Creates a random number generator
     Random()
         : m_bytes(0),
@@ -169,7 +174,8 @@ public:
           m_bools(0)
     {
         std::random_device rd;
-        new (&m_generator) std::mt19937_64(rd());
+        m_seed = rd();
+        new (&m_generator) std::mt19937_64(m_seed);
 
         m_byteRandom = m_dis(m_generator);
         m_shortRandom = m_dis(m_generator);
@@ -184,6 +190,7 @@ public:
           m_shorts(0),
           m_ints(0),
           m_bools(0),
+          m_seed(p_seed),
           m_generator(p_seed)
     {
         m_byteRandom = m_dis(m_generator);
@@ -228,6 +235,8 @@ private:
 
     unsigned int m_boolRandom;
     int m_bools;
+
+    long long m_seed;
 
     std::uniform_int_distribution<int> m_dis;
     std::mt19937_64 m_generator;
