@@ -8,6 +8,7 @@
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY "test_test_data"
+#define TEST_CAR_FILE_NAME "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
 #define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents) {                                  \
@@ -210,4 +211,48 @@ TEST(RecorderTests, WriteSameFileTwice)
         recorder.WriteUserInput(nullptr, 2);
         ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, "2.00000000000000000000 \n");
     }
+}
+
+TEST(RecorderTests, CompressionWithoutPreviousState)
+{
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_compression_without_previous_state", 0, 0);
+    std::ofstream file;
+    ASSERT_THROW(recorder.WriteRecording(nullptr, 0, file, 0, true, nullptr), std::exception);
+}
+
+TEST(RecorderTests, WriteCarTests)
+{
+    GfInit(false);
+
+    // Find the car xml
+    std::string path = "test_data";
+    if(!FindFileDirectory(path, TEST_CAR_FILE_NAME)) {
+        throw std::exception("Could not find test_car.xml.");
+    }
+    path.append("/" TEST_CAR_FILE_NAME);
+
+    // Load the car xml
+    auto carHandle = GfParmReadFile(path.c_str(), 0, true);
+
+    if(carHandle == nullptr) {
+        throw std::exception("Could not load test_car.xml.");
+    }
+
+    // Set the car handle to the just loaded xml file
+    tCarElt carElt{};
+    carElt.priv.carHandle = carHandle;
+    strcpy(carElt.info.name, "Test Car");
+
+    // Create a recorder
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_car", 0, 0);
+
+    // Write the car data
+    recorder.WriteCar(&carElt);
+
+    // Check the contents of the file
+    std::ifstream originalFile(path);
+    std::stringstream originalBuffer;
+    originalBuffer << originalFile.rdbuf();
+    std::string folder = GetTestingDirectory();
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_car", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
 }
