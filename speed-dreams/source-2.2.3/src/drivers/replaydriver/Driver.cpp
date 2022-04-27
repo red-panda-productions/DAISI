@@ -13,7 +13,7 @@
 /// @param p_index The driver's index (starting from 1)
 /// @param p_name The driver's name
 Driver::Driver(int p_index, const char* p_name)
-    : m_index(p_index)
+    : m_index(p_index), m_inputTime(0)
 {
 }
 
