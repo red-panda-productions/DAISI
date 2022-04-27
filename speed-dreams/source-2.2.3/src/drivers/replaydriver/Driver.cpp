@@ -127,7 +127,6 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation) {
     }
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);
-
 }
 
 /// @brief Pause the current race.

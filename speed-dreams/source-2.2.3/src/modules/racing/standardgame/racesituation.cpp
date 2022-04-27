@@ -44,7 +44,6 @@
 #include <replay.h>
 #ifdef WEBSERVER
 #include <webserver.h>
-#include <iostream>
 #endif //WEBSERVER
 
 #include "standardgame.h"

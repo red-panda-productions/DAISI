@@ -12,4 +12,4 @@ ROBOT_MODULE(NAME ${ROBOT_NAME} VERSION 1.0.0 SOVERSION 1.0.0
 
 ADD_SDLIB_LIBRARY(${ROBOT_NAME} robottools tgfclient backend)
 
-# For data associated to the robot module, see data/drivers/assistedhuman/CMakeLists.txt
+# For data associated to the robot module, see data/drivers/replaydriver/CMakeLists.txt
