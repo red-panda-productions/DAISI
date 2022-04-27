@@ -20,7 +20,9 @@ typedef unsigned int DataGeneration;
 #define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
 
-class IndicatorConfigTests : public ::testing::Test
+/// @brief Test Fixture for testing the loading of indicatorconfig data
+///        Handles the Setup for every test and logs the seed used to generate random data.
+class IndicatorConfigLoadingTests : public ::testing::Test
 {
 private:
     Random m_rnd;
@@ -270,7 +272,7 @@ protected:
 /// @brief Creates a random indicator data object, writes this to an xml file,
 ///        then reads in this xml file using IndicatorConfig::LoadIndicatorData
 ///        Asserts whether the loaded in data is equal to the randomly generated data.
-TEST_F(IndicatorConfigTests, LoadIndicatorDataFromXML)
+TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
@@ -289,17 +291,8 @@ TEST_F(IndicatorConfigTests, LoadIndicatorDataFromXML)
     }
 }
 
-/// @brief Tests whether two configs point towards the same instance.
-TEST_F(IndicatorConfigTests, Singleton)
-{
-    ASSERT_TRUE(SetupSingletonsFolder());
-    IndicatorConfig* config1 = IndicatorConfig::GetInstance();
-    IndicatorConfig* config2 = IndicatorConfig::GetInstance();
-    ASSERT_EQ(config1, config2);
-}
-
 /// @brief Tests whether the IndicatorConfig correctly throws an error for invalid screen positions
-TEST_F(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
+TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidScreenPosition)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
@@ -312,7 +305,7 @@ TEST_F(IndicatorConfigTests, ThrowExceptionInvalidScreenPosition)
 }
 
 /// @brief Tests whether the IndicatorConfig correctly throws an error for invalid loop intervals
-TEST_F(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
+TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidLoopInterval)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
@@ -325,7 +318,7 @@ TEST_F(IndicatorConfigTests, ThrowExceptionInvalidLoopInterval)
 }
 
 /// @brief Tests whether the IndicatorConfig can activate an indicator and retrieve the correct values.
-TEST_F(IndicatorConfigTests, ActivateIndicator)
+TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
@@ -345,4 +338,38 @@ TEST_F(IndicatorConfigTests, ActivateIndicator)
             AssertIndicator(active[0], rndData[i]);
         }
     }
+}
+
+/// @brief Test Fixture for testing the indicatorconfig singleton properties
+class IndicatorConfigSingletonTests : public ::testing::Test
+{
+protected:
+
+    /// @brief Ensures that there is a clean version of the IndicatorConfig to run tests on.
+    void SetUp() override
+    {
+        IndicatorConfig::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+    }
+};
+
+/// @brief Tests whether two configs point towards the same instance.
+TEST_F(IndicatorConfigSingletonTests, SingletonInstance)
+{
+    IndicatorConfig* config1 = IndicatorConfig::GetInstance();
+    IndicatorConfig* config2 = IndicatorConfig::GetInstance();
+    ASSERT_EQ(config1, config2);
+}
+
+/// @brief Tests whether two configs from different modules point to the same instance.
+///        This requires the instance pointer to be stored and read from a file.
+TEST_F(IndicatorConfigSingletonTests, SingletonInstanceFromFile)
+{
+    // Create first instance, which also stores it into the file.
+    IndicatorConfig* config1 = IndicatorConfig::GetInstance();
+
+    // By clearing the instance but not the singletons folder, it forces the next instance to be retreived from the file.
+    IndicatorConfig::ClearInstance();
+    IndicatorConfig* config2 = IndicatorConfig::GetInstance();
+    ASSERT_EQ(config1, config2);
 }
