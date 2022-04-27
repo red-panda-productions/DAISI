@@ -707,7 +707,7 @@ protected:
 };
 
 /// @brief          Tests whether elements are the correct value or pointer
-/// @param p_eqOrNe true: test for equality of values, false: test for inequality of pointers to the values
+/// @param p_eqOrNe true: test for equality of values, false: test for inequality of pointers within the structs
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
     bool p_eqOrNe = GetParam();
@@ -759,7 +759,25 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_NAME(car.info.skinName, data.Car.info.skinName)
     COMP_ELEM(car.info.skinTargets, data.Car.info.skinTargets)
 
-    // Compare car.pub (no deep compare trkPos.seg)
+    // Compare car.pub (no deep compare of trkPos.seg)
+    COMP_TDYNPT(car.pub.DynGC, data.Car.pub.DynGC)
+    COMP_TDYNPT(car.pub.DynGCg, data.Car.pub.DynGCg)
+    COMP_ELEM(car.pub.speed, data.Car.pub.speed)
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            COMP_ELEM(car.pub.posMat[i][j], data.Car.pub.posMat[i][j])
+        }
+    }
+    COMP_TRKPOS(car.pub.trkPos, data.Car.pub.trkPos)
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TPOSD(car.pub.corner[i], data.Car.pub.corner[i])
+    }
+    COMP_ELEM(car.pub.glance, data.Car.pub.glance)
+    COMP_ELEM(car.pub.oldglance, data.Car.pub.oldglance)
+
     // Compare car.race
     // Compare car.priv
     // Compare car.ctrl
@@ -772,3 +790,10 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
+
+TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
+{
+    BlackBoxData data(&car, &situation, tickCount, segments, testSegments.nextSegmentsCount);
+
+    EXPECT_NE(car.pub.trkPos.seg, data.Car.pub.trkPos.seg);
+}
