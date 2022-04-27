@@ -131,8 +131,13 @@ bool SQLDatabaseStorage::OpenDatabase(
     std::string p_useEncryption,
     const std::string& p_dirPath)
 {
+
+    std::cout << "init" << std::endl;
+
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
+
+    std::cout << "properties" << std::endl;
 
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
@@ -144,11 +149,16 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
+    std::cout << "encryption" << std::endl;
+
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
     if (p_useEncryption == "true")
     {
+        std::cout << "using encryption" << std::endl;
         PutKeys(p_dirPath, connection_properties);
     }
+
+    std::cout << "connecting" << std::endl;
 
     try
     {
@@ -160,6 +170,8 @@ bool SQLDatabaseStorage::OpenDatabase(
         return false;
     }
 
+    std::cout << "creating statement" << std::endl;
+
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
 
@@ -167,12 +179,16 @@ bool SQLDatabaseStorage::OpenDatabase(
     m_statement->close();
     delete m_statement;
 
+    std::cout << "set schema" << std::endl;
+
     // Set the correct database schema
     m_connection->setSchema(p_schemaName);
 
+    std::cout << "creating statement 2" << std::endl;
     // Create a (reusable) statement
     m_statement = m_connection->createStatement();
 
+    std::cout << "creating tables" << std::endl;
     CreateTables();
 
     return true;
@@ -656,12 +672,7 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     if (!FindFileDirectory(configPath, configFile))
         throw std::exception("Could not find database settings file");
 
-    std::cout << "found path " << configPath << '\\' << configFile << std::endl;
-
     std::ifstream ifstream(configPath + '\\' + configFile);
-
-    std::cout << "opened stream" << std::endl;
-
 
     std::string ip;
     std::string portString;
@@ -690,8 +701,6 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     {
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
-
-    std::cout << "read port" << std::endl;
 
     if (OpenDatabase(ip, port, username, password, schema, useSSL, p_dirPath))
     {
