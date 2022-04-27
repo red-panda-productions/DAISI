@@ -3,6 +3,9 @@
 #include "robot.h"
 #include "../rppUtils/Random.hpp"
 
+/// @brief   Generates a random name; guarantees the last character is '\0', although one could pop up earlier
+/// @param a The array to generate the name in
+/// @param b The length of the array
 #define RAND_NAME(a, b)                   \
     for (int i = 0; i < (b)-1; i++)       \
     {                                     \
@@ -10,11 +13,15 @@
     }                                     \
     (a)[(b)-1] = '\0';
 
+/// @brief   Generates a random t3D
+/// @param a The identifier of a t3D to randomize
 #define RAND_T3D(a)             \
     (a).x = random.NextFloat(); \
     (a).y = random.NextFloat(); \
     (a).z = random.NextFloat();
 
+/// @brief   Generates a random tPosd
+/// @param a The identifier of a tPosd to randomize
 #define RAND_TPOSD(a)            \
     (a).x = random.NextFloat();  \
     (a).y = random.NextFloat();  \
@@ -24,11 +31,15 @@
     (a).ay = random.NextFloat(); \
     (a).az = random.NextFloat();
 
+/// @brief   Generates a random tDynPt
+/// @param a The identifier of a tDynPt to randomize
 #define RAND_TDYNPT(a)  \
     RAND_TPOSD((a).pos) \
     RAND_TPOSD((a).vel) \
     RAND_TPOSD((a).acc)
 
+/// @brief   Generates a random tCarSetupItem
+/// @param a The identifier of a tCarSetupItem to randomize
 #define RAND_TCARSETUPITEM(a)               \
     (a).value = random.NextFloat();         \
     (a).min = random.NextFloat();           \
@@ -37,13 +48,17 @@
     (a).stepsize = random.NextFloat();      \
     (a).changed = random.NextBool();
 
+/// @brief   Generates a random tDashboardItem
+/// @param a The identifier of a tDashboardItem to randomize
 #define RAND_TDASHBOARDITEM(a)       \
     (a).type = random.NextInt();     \
     (a).setup = new tCarSetupItem(); \
     RAND_TCARSETUPITEM(*(a).setup)
 
-// Doesn't actually do a.trkPos.seg, that is left to whatever desires a trkPos to determine how they want that
-// as exclusively the copy for p_car.pub.seg is implemented
+/// @brief   Generates a random tTrkLocPos
+/// @param a The identifier of a tTrkLocPos to randomize
+/// @note    Doesn't actually do a.seg, that is left to whatever desires a tTrkLocPos to determine how they want that
+/// as exclusively the copy for p_car.pub.seg is implemented
 #define RAND_TRKPOS(a)                 \
     (a).type = random.NextInt(3);      \
     (a).toStart = random.NextFloat();  \
@@ -54,7 +69,12 @@
 // Sadly, structs don't have an (==) operator by default. We're either typing those somewhere else and using them here,
 // or just comparing them here element-wise. Either way we're going to create a long comparison
 
-// These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
+/// @brief          Performs a test on two elements that are elementary
+/// @param a        Identifier of the first element
+/// @param b        Identifier of the second element
+/// @param p_eqOrNe A bool defined in the environment this define in is called that determines
+/// whether to compare the values of the identifiers or the pointers of the identifiers
+/// @note           These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
 #define COMP_ELEM(a, b)        \
     if ((p_eqOrNe))            \
     {                          \
@@ -65,6 +85,12 @@
         EXPECT_NE(&(a), &(b)); \
     }
 
+/// @brief          Performs a test on two char*
+/// @param a        Identifier of the first char*
+/// @param b        Identifier of the second char*
+/// @param p_eqOrNe A bool defined in the environment this define in is called that determines
+/// whether to string compare the values of the identifiers or to compare pointers of the identifiers
+/// @note These are EXPECTS instead of ASSERTS as there are pointers created during a test and these need to be deleted
 #define COMP_NAME(a, b)                 \
     if ((p_eqOrNe))                     \
     {                                   \
@@ -75,11 +101,17 @@
         EXPECT_NE(&(a), &(b));          \
     }
 
+/// @brief   Performs a test on two t3D elements
+/// @param a Identifier of the first element
+/// @param b Identifier of the second element
 #define COMP_T3D(a, b)      \
     COMP_ELEM((a).x, (b).x) \
     COMP_ELEM((a).y, (b).y) \
     COMP_ELEM((a).z, (b).z)
 
+/// @brief   Performs a test on two tPosd elements
+/// @param a Identifier of the first element
+/// @param b Identifier of the second element
 #define COMP_TPOSD(a, b)      \
     COMP_ELEM((a).x, (b).x)   \
     COMP_ELEM((a).y, (b).y)   \
@@ -89,11 +121,17 @@
     COMP_ELEM((a).ay, (b).ay) \
     COMP_ELEM((a).az, (b).az)
 
+/// @brief   Performs a test on two tDynPt elements
+/// @param a Identifier of the first element
+/// @param b Identifier of the second element
 #define COMP_TDYNPT(a, b)        \
     COMP_TPOSD((a).pos, (b).pos) \
     COMP_TPOSD((a).vel, (b).vel) \
     COMP_TPOSD((a).acc, (b).acc)
 
+/// @brief   Performs a test on two tCarSetupItem element
+/// @param a Identifier of the first element
+/// @param b Identifier of the second element
 #define COMP_TCARSETUPITEM(a, b)                    \
     COMP_ELEM((a).value, (b).value)                 \
     COMP_ELEM((a).min, (b).min)                     \
@@ -102,6 +140,10 @@
     COMP_ELEM((a).stepsize, (b).stepsize)           \
     COMP_ELEM((a).changed, (b).changed)
 
+/// @brief   Performs a test on two tTrkLocPos element
+/// @param a Identifier of the first element
+/// @param b Identifier of the second element
+/// @note    Much like RAND_TRKPOS, this ignores a.seg and b.seg
 #define COMP_TRKPOS(a, b)                 \
     COMP_ELEM((a).type, (b).type)         \
     COMP_ELEM((a).toStart, (b).toStart)   \
@@ -118,6 +160,8 @@ struct TestSegments
     int NextSegmentsCount;
 };
 
+/// @brief Generates a random segment
+/// @returns A tTrackSeg
 tTrackSeg GenerateSegment()
 {
     Random random;
@@ -169,6 +213,8 @@ tTrackSeg GenerateSegment()
     return segment;
 }
 
+/// @brief Generates a series of random segments
+/// @returns A TestSegments containing an pointer of segments, as well as the length of the array following the pointer
 TestSegments GenerateSegments()
 {
     Random random;
@@ -186,6 +232,8 @@ TestSegments GenerateSegments()
     return testSegments;
 }
 
+/// @brief Deletes the generated pointers in the given set of segments
+/// @param p_testSegments The TestSegments to destroy
 void DestroySegments(TestSegments& p_testSegments)
 {
     for (int i = 0; i < p_testSegments.NextSegmentsCount; i++)
@@ -201,6 +249,9 @@ void DestroySegments(TestSegments& p_testSegments)
     }
 }
 
+/// @brief Generates a random car
+/// @param p_testSegments A set of earlier obtained segments to put in retval.car.pub.trkPos.seg
+/// @returns A tCarElt
 tCarElt Generatecar(TestSegments& p_testSegments)
 {
     Random random;
@@ -629,6 +680,8 @@ tCarElt Generatecar(TestSegments& p_testSegments)
     return car;
 }
 
+/// @brief Deletes the generated pointers in a given car
+/// @param p_car The car to destory
 void DestroyCar(tCarElt& p_car)
 {
     delete p_car.race.bestSplitTime;
@@ -654,6 +707,8 @@ void DestroyCar(tCarElt& p_car)
     delete p_car.robot;
 }
 
+/// @brief Gives a random situation
+/// @returns A tSituation
 tSituation GenerateSituation()
 {
     Random random;
@@ -676,11 +731,14 @@ tSituation GenerateSituation()
     return situation;
 }
 
+/// @brief Deletes the generated pointers for a given situation
+/// @param p_situation The situation to destory
 void DestroySituation(tSituation& p_situation)
 {
     delete p_situation.cars;  // COPY NOT IMPLEMENTED
 }
 
+/// @brief A testing fixture so there is less code duplication in test cases
 class BlackBoxDataTestFixture : public ::testing::Test, public testing::WithParamInterface<bool>
 {
 protected:
@@ -1239,4 +1297,12 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
             segCopy = (*segCopy).next;
         }
     }
+}
+
+/// @brief Tests whether BlackBoxData() indeed throws if it receives invalid input
+TEST_F(BlackBoxDataTestFixture, ExceptionsTest)
+{
+    ASSERT_THROW(BlackBoxData(nullptr, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(&Car, nullptr, TickCount, Segments, TestSegments.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(&Car, &Situation, TickCount, Segments, -TestSegments.NextSegmentsCount), std::invalid_argument);
 }
