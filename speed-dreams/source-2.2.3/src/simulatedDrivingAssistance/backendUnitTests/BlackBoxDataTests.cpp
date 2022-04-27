@@ -779,6 +779,55 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(car.pub.oldglance, data.Car.pub.oldglance)
 
     // Compare car.race
+    COMP_ELEM(car.race.bestLapTime, data.Car.race.bestLapTime)
+    COMP_ELEM(car.race.commitBestLapTime, data.Car.race.commitBestLapTime)
+    if (car.race.bestSplitTime)
+    {
+        COMP_ELEM(*car.race.bestSplitTime, *data.Car.race.bestSplitTime)
+    }
+    COMP_ELEM(car.race.deltaBestLapTime, data.Car.race.deltaBestLapTime)
+    COMP_ELEM(car.race.curLapTime, data.Car.race.curLapTime)
+    if (car.race.curSplitTime)
+    {
+        COMP_ELEM(*car.race.curSplitTime, *data.Car.race.curSplitTime)
+    }
+    COMP_ELEM(car.race.lastLapTime, data.Car.race.lastLapTime)
+    COMP_ELEM(car.race.curTime, data.Car.race.curTime)
+    COMP_ELEM(car.race.topSpeed, data.Car.race.topSpeed)
+    COMP_ELEM(car.race.currentMinSpeedForLap, data.Car.race.currentMinSpeedForLap)
+    COMP_ELEM(car.race.laps, data.Car.race.laps)
+    COMP_ELEM(car.race.bestLap, data.Car.race.bestLap)
+    COMP_ELEM(car.race.nbPitStops, data.Car.race.nbPitStops)
+    COMP_ELEM(car.race.remainingLaps, data.Car.race.remainingLaps)
+    COMP_ELEM(car.race.pos, data.Car.race.pos)
+    COMP_ELEM(car.race.timeBehindLeader, data.Car.race.timeBehindLeader)
+    COMP_ELEM(car.race.lapsBehindLeader, data.Car.race.lapsBehindLeader)
+    COMP_ELEM(car.race.timeBehindPrev, data.Car.race.timeBehindPrev)
+    COMP_ELEM(car.race.timeBeforeNext, data.Car.race.timeBeforeNext)
+    COMP_ELEM(car.race.distRaced, data.Car.race.distRaced)
+    COMP_ELEM(car.race.distFromStartLine, data.Car.race.distFromStartLine)
+    COMP_ELEM(car.race.currentSector, data.Car.race.currentSector)
+    COMP_ELEM(car.race.nbSectors, data.Car.race.nbSectors)
+    COMP_ELEM(car.race.trackLength, data.Car.race.trackLength)
+    COMP_ELEM(car.race.scheduledEventTime, data.Car.race.scheduledEventTime)
+    if (car.race.pit)
+    {
+        COMP_TRKPOS(car.race.pit->pos, data.Car.race.pit->pos)
+        COMP_ELEM(car.race.pit->pitCarIndex, data.Car.race.pit->pitCarIndex)
+        COMP_ELEM(car.race.pit->lmin, data.Car.race.pit->lmin)
+        COMP_ELEM(car.race.pit->lmax, data.Car.race.pit->lmax)
+        COMP_ELEM(car.race.pit->freeCarIndex, data.Car.race.pit->freeCarIndex)
+        for (int i = 0 ; i < TR_PIT_MAXCARPERPIT; i++)
+        {
+            // COPY NOT IMPLEMENTED for car.race.pit->car
+        }
+    }
+    COMP_ELEM(car.race.event, data.Car.race.event)
+    // COPY NOT IMPLEMENTED for car.race.penaltyList
+    COMP_ELEM(car.race.penaltyTime, data.Car.race.penaltyTime)
+    COMP_ELEM(car.race.prevFromStartLine, data.Car.race.prevFromStartLine)
+    COMP_ELEM(car.race.wrongWayTime, data.Car.race.wrongWayTime)
+
     // Compare car.priv
     // Compare car.ctrl
     // Compare car.setup
@@ -796,4 +845,7 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
     BlackBoxData data(&car, &situation, tickCount, segments, testSegments.nextSegmentsCount);
 
     EXPECT_NE(car.pub.trkPos.seg, data.Car.pub.trkPos.seg);
+    EXPECT_NE(car.race.bestSplitTime, data.Car.race.bestSplitTime);
+    EXPECT_NE(car.race.curSplitTime, data.Car.race.curSplitTime);
+    EXPECT_NE(car.race.pit, data.Car.race.pit);
 }
