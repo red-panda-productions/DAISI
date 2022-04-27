@@ -8,6 +8,7 @@
 #include <experimental/filesystem>
 
 #include "IndicatorConfig.h"
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief Initialize the indicator configuration.
 void IndicatorConfig::Initialize()
@@ -155,8 +156,8 @@ IndicatorConfig* IndicatorConfig::GetInstance()
     // Check if IndicatorConfig file exists
     struct stat info = {};
 
-    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
-    path.append("Singletons\\IndicatorConfig");
+    std::experimental::filesystem::path path = SingletonsFilePath();
+    path.append("IndicatorConfig");
     std::string pathstring = path.string();
     const char* filepath = pathstring.c_str();
     int err = stat(filepath, &info);
