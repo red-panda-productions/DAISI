@@ -22,7 +22,7 @@
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                          \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                    \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                             \
-    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation); \
+    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                     \
     template Mediator<type>* Mediator<type>::GetInstance();
 
@@ -131,8 +131,9 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 /// @param  p_carHandle     A car handle (from speed dreams)
 /// @param  p_carParmHandle A car parameter handle (from speed dreams)
 /// @param  p_situation     The current situation
+/// @param  p_recorder      The recorder to use if recording is enabled
 template <typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder)
 {
     m_track = p_track;
     tCarElt car;
@@ -142,7 +143,8 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     std::cout << blackBoxFilePath << std::endl;
 
     // Initialize the decision maker with the full path to the current black box executable
-    m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB);
+    // If recording is disabled a nullptr is passed
+    m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
     m_inRace = true;
 }
 

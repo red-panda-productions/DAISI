@@ -19,6 +19,10 @@
 
 #include <robot.h>
 #include "robottools.h"
+// SIMULATED DRIVING ASSISTANCE: Add recorder
+#include "Recorder.h"
+
+#define USER_INPUT_RECORD_PARAM_AMOUNT 16
 
 class ROBOTTOOLS_API HumanDriver
 {
@@ -42,11 +46,20 @@ public:
     virtual void read_prefs(int index);
     bool uses_at(int index);
 
+    // SIMULATED DRIVING ASSISTANCE: Add set recorder
+    /// @brief Set the recorder to use
+    /// @param p_recorder The recorder to use
+    void SetRecorder(Recorder* p_recorder);
+
 protected:
     void human_prefs(const int robot_index, int player_index);
 
 private:
     const char *robotname;
+
+    // SIMULATED DRIVING ASSISTANCE: Add recorder
+    /// @brief The recorder to use
+    Recorder* m_recorder;
 };
 
 #endif

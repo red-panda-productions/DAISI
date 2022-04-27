@@ -22,9 +22,19 @@ Driver::Driver(int p_index, const char* p_name) : m_index(p_index), m_humanDrive
 /// @param p_carParmHandle
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
-    m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
+    auto participantSettings = SMediator::GetInstance()->GetPControlSettings();
 
-    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
+    if(participantSettings.BBRecordSession || participantSettings.RecordSession) {
+        m_recorder = new Recorder("user_recordings",
+                                  "userRecording%Y%m%d-%H%M%S",
+                                  USER_INPUT_RECORD_PARAM_AMOUNT,
+                                  DECISION_RECORD_PARAM_AMOUNT);
+    }
+
+    m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
+    m_humanDriver.SetRecorder(participantSettings.RecordSession ? m_recorder : nullptr);
+
+    SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation, m_recorder);
 }
 
 /// @brief Start a new race.
@@ -82,6 +92,7 @@ void Driver::EndRace(tCarElt* p_car, tSituation* p_situation) {
 void Driver::Shutdown() {
     m_humanDriver.shutdown(m_index);
     SMediator::GetInstance()->RaceStop();
+    delete m_recorder;
 }
 
 /// @brief Terminate the driver.
