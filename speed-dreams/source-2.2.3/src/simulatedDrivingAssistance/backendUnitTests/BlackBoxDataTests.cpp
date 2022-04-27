@@ -980,6 +980,148 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     {
         COMP_ELEM(car.setup.differentialType[i], data.Car.setup.differentialType[i])
     }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialRatio[i], data.Car.setup.differentialRatio[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialMinTqBias[i], data.Car.setup.differentialMinTqBias[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialMaxTqBias[i], data.Car.setup.differentialMaxTqBias[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialViscosity[i], data.Car.setup.differentialViscosity[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialLockingTq[i], data.Car.setup.differentialLockingTq[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialMaxSlipBias[i], data.Car.setup.differentialMaxSlipBias[i])
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.differentialCoastMaxSlipBias[i], data.Car.setup.differentialCoastMaxSlipBias[i])
+    }
+    COMP_TCARSETUPITEM(car.setup.steerLock, data.Car.setup.steerLock)
+    COMP_TCARSETUPITEM(car.setup.brakeRepartition, data.Car.setup.brakeRepartition)
+    COMP_TCARSETUPITEM(car.setup.brakePressure, data.Car.setup.brakePressure)
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.rideHeight[i], data.Car.setup.rideHeight[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.toe[i], data.Car.setup.toe[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.camber[i], data.Car.setup.camber[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.tirePressure[i], data.Car.setup.tirePressure[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.tireOpLoad[i], data.Car.setup.tireOpLoad[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.arbSpring[i], data.Car.setup.arbSpring[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.arbBellcrank[i], data.Car.setup.arbBellcrank[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveSpring[i], data.Car.setup.heaveSpring[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveBellcrank[i], data.Car.setup.heaveBellcrank[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveInertance[i], data.Car.setup.heaveInertance[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveFastBump[i], data.Car.setup.heaveFastBump[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveSlowBump[i], data.Car.setup.heaveSlowBump[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveBumpLvel[i], data.Car.setup.heaveBumpLvel[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveFastRebound[i], data.Car.setup.heaveFastRebound[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveSlowRebound[i], data.Car.setup.heaveSlowRebound[i])
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.heaveReboundLvel[i], data.Car.setup.heaveReboundLvel[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspSpring[i], data.Car.setup.suspSpring[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspBellcrank[i], data.Car.setup.suspBellcrank[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspInertance[i], data.Car.setup.suspInertance[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspCourse[i], data.Car.setup.suspCourse[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspPacker[i], data.Car.setup.suspPacker[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspFastBump[i], data.Car.setup.suspFastBump[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspSlowBump[i], data.Car.setup.suspSlowBump[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspBumpLvel[i], data.Car.setup.suspBumpLvel[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspFastRebound[i], data.Car.setup.suspFastRebound[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspSlowRebound[i], data.Car.setup.suspSlowRebound[i])
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TCARSETUPITEM(car.setup.suspReboundLvel[i], data.Car.setup.suspReboundLvel[i])
+    }
+    COMP_TCARSETUPITEM(car.setup.reqRepair, data.Car.setup.reqRepair)
+    COMP_TCARSETUPITEM(car.setup.reqTireset, data.Car.setup.reqTireset)
+    COMP_TCARSETUPITEM(car.setup.reqPenalty, data.Car.setup.reqPenalty)
 
     // Compare car.pitcmd
     // Compare car.robot
