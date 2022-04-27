@@ -1159,46 +1159,46 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     // Compare car.pub.trkPos.seg vs segments
     if (car.pub.trkPos.seg && segments)
     {
+        tTrackSeg* segOrig = &car.pub.trkPos.seg[0];
+        tTrackSeg* segCopy = &segments[0];
         for (int i = 0; i < testSegments.nextSegmentsCount; i++)
         {
-            tTrackSeg segOrig = car.pub.trkPos.seg[i];
-            tTrackSeg segCopy = segments[i];
             // DEEP COPY NOT IMPLEMENTED FOR seg.name
-            COMP_ELEM(segOrig.id, segCopy.id)
-            COMP_ELEM(segOrig.type, segCopy.type)
-            COMP_ELEM(segOrig.type2, segCopy.type2)
-            COMP_ELEM(segOrig.style, segCopy.style)
-            COMP_ELEM(segOrig.length, segCopy.length)
-            COMP_ELEM(segOrig.width, segCopy.width)
-            COMP_ELEM(segOrig.startWidth, segCopy.startWidth)
-            COMP_ELEM(segOrig.endWidth, segCopy.endWidth)
-            COMP_ELEM(segOrig.lgfromstart, segCopy.lgfromstart)
-            COMP_ELEM(segOrig.radius, segCopy.radius)
-            COMP_ELEM(segOrig.radiusr, segCopy.radiusr)
-            COMP_ELEM(segOrig.radiusl, segCopy.radiusl)
-            COMP_ELEM(segOrig.arc, segCopy.arc)
-            COMP_T3D(segOrig.center, segCopy.center)
+            COMP_ELEM((*segOrig).id, (*segCopy).id)
+            COMP_ELEM((*segOrig).type, (*segCopy).type)
+            COMP_ELEM((*segOrig).type2, (*segCopy).type2)
+            COMP_ELEM((*segOrig).style, (*segCopy).style)
+            COMP_ELEM((*segOrig).length, (*segCopy).length)
+            COMP_ELEM((*segOrig).width, (*segCopy).width)
+            COMP_ELEM((*segOrig).startWidth, (*segCopy).startWidth)
+            COMP_ELEM((*segOrig).endWidth, (*segCopy).endWidth)
+            COMP_ELEM((*segOrig).lgfromstart, (*segCopy).lgfromstart)
+            COMP_ELEM((*segOrig).radius, (*segCopy).radius)
+            COMP_ELEM((*segOrig).radiusr, (*segCopy).radiusr)
+            COMP_ELEM((*segOrig).radiusl, (*segCopy).radiusl)
+            COMP_ELEM((*segOrig).arc, (*segCopy).arc)
+            COMP_T3D((*segOrig).center, (*segCopy).center)
             for (int i = 0; i < 4; i++)
             {
-                COMP_T3D(segOrig.vertex[i], segCopy.vertex[i])
+                COMP_T3D((*segOrig).vertex[i], (*segCopy).vertex[i])
             }
             for (int i = 0; i < 7; i++)
             {
-                COMP_ELEM(segOrig.angle[i], segCopy.angle[i])
+                COMP_ELEM((*segOrig).angle[i], (*segCopy).angle[i])
             }
-            COMP_ELEM(segOrig.sin, segCopy.sin)
-            COMP_ELEM(segOrig.cos, segCopy.cos)
-            COMP_ELEM(segOrig.Kzl, segCopy.Kzl)
-            COMP_ELEM(segOrig.Kzw, segCopy.Kzw)
-            COMP_ELEM(segOrig.Kyl, segCopy.Kyl)
-            COMP_T3D(segOrig.rgtSideNormal, segCopy.rgtSideNormal)
-            COMP_ELEM(segOrig.envIndex, segCopy.envIndex)
-            COMP_ELEM(segOrig.height, segCopy.height)
-            COMP_ELEM(segOrig.raceInfo, segCopy.raceInfo)
-            COMP_ELEM(segOrig.DoVfactor, segCopy.DoVfactor)
+            COMP_ELEM((*segOrig).sin, (*segCopy).sin)
+            COMP_ELEM((*segOrig).cos, (*segCopy).cos)
+            COMP_ELEM((*segOrig).Kzl, (*segCopy).Kzl)
+            COMP_ELEM((*segOrig).Kzw, (*segCopy).Kzw)
+            COMP_ELEM((*segOrig).Kyl, (*segCopy).Kyl)
+            COMP_T3D((*segOrig).rgtSideNormal, (*segCopy).rgtSideNormal)
+            COMP_ELEM((*segOrig).envIndex, (*segCopy).envIndex)
+            COMP_ELEM((*segOrig).height, (*segCopy).height)
+            COMP_ELEM((*segOrig).raceInfo, (*segCopy).raceInfo)
+            COMP_ELEM((*segOrig).DoVfactor, (*segCopy).DoVfactor)
             // COPY NOT IMPLEMENTED FOR seg.ext, seg.surface, seg.barrier, seg.cam
-            if (segOrig.next) segOrig = *segOrig.next;
-            if (segCopy.next) segCopy = *segCopy.next;
+            segOrig = (*segOrig).next;
+            segCopy = (*segCopy).next;
         }
     }
 }
