@@ -6,6 +6,8 @@
 #include <windows.h>
 #include <tgf.h>
 
+#include "Random.hpp"
+
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -144,6 +146,15 @@ inline void StartExecutable(const std::string& p_executablePath)
                   nullptr,
                   &startupInformation,
                   &processInformation);
+}
+
+/// @brief          Returns true with certain chance
+/// @param p_rnd    The random generator reference to use
+/// @param p_chance The chance to succeed [0-100]
+/// @return         Boolean indicating succes or not.
+inline bool SucceedWithChance(Random& p_rnd, int p_chance)
+{
+    return p_rnd.NextInt(0, 100) < p_chance;
 }
 
 /// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
