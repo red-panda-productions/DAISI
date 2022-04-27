@@ -7,7 +7,7 @@
 /// @param p_index The driver's index (starting from 1)
 /// @param p_name The driver's name
 Driver::Driver(int p_index, const char* p_name)
-    : m_index(p_index), m_humanDriver(p_name)
+    : m_index(p_index), m_humanDriver(p_name), m_recorder(nullptr)
 {
     m_humanDriver.count_drivers();
     m_humanDriver.init_context(p_index);
