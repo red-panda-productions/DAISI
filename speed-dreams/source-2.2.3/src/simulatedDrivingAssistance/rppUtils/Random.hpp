@@ -5,8 +5,7 @@
 #define BYTE   uint8_t
 #define USHORT uint16_t
 
-#define SHORT_MAXIMUM_VALUE 65535
-#define SHORT_MAX_VALUE     65536
+#define USHRT_MAX_PLUS_ONE (USHRT_MAX + 1)
 
 #define BOOL_BITS  1
 #define BYTE_BITS  8
@@ -27,13 +26,13 @@ public:
     /// @return A random float
     float NextFloat()
     {
-        return static_cast<float>(NextUShort()) / SHORT_MAX_VALUE;
+        return static_cast<float>(NextUShort()) / USHRT_MAX_PLUS_ONE;
     }
 
     /// @return A random float with a maximum
     float NextFloat(float p_max)
     {
-        return static_cast<float>(NextUShort()) / (SHORT_MAX_VALUE / p_max);
+        return static_cast<float>(NextUShort()) / (USHRT_MAX_PLUS_ONE / p_max);
     }
 
     /// @return A random float between a max and a min
@@ -45,7 +44,7 @@ public:
     /// @return A random float with a max value (included)
     float NextFloatIncl(float p_max)
     {
-        return static_cast<float>(NextUShort()) / (SHORT_MAXIMUM_VALUE / p_max);
+        return static_cast<float>(NextUShort()) / (USHRT_MAX / p_max);
     }
 
     /// @return A random float between a max (included) and a min
