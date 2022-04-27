@@ -10,18 +10,18 @@
 #include <experimental/filesystem>
 #include "../rppUtils/RppUtils.hpp"
 
-#define TMediator Mediator<DecisionMakerMock>
+#define MockMediator Mediator<DecisionMakerMock>
 
 template <>
-TMediator* TMediator::m_instance = nullptr;
+MockMediator* MockMediator::m_instance = nullptr;
 
 /// @brief Test if the distribution of the mediator works
 TEST(MediatorTest, GetDistributedMediatorTemplated)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    TMediator* mediator1 = TMediator::GetInstance();
-    TMediator* mediator2 = TMediator::GetInstance();
+    MockMediator* mediator1 = MockMediator::GetInstance();
+    MockMediator* mediator2 = MockMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
 }
 
