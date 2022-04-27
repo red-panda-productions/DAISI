@@ -4,6 +4,7 @@
 #include <portability.h>
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
+#include "IndicatorConfig.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -140,6 +141,11 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
     std::cout << blackBoxFilePath << std::endl;
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     // Initialize the decision maker with the full path to the current black box executable
     m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB);

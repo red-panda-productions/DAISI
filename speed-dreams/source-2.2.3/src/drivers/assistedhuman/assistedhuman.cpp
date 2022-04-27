@@ -20,13 +20,15 @@ static Driver* s_drivers[s_maxBotAmount];
 /// @brief Find the driver with the given index and return it. Taking into account that we save drivers 0-based but the index is 1-based
 /// @param p_index The index of the driver to find
 /// @return The driver with the given index
-inline static Driver* GetDriver(int p_index) {
+inline static Driver* GetDriver(int p_index)
+{
     return s_drivers[p_index - 1];
 }
 
 #ifdef _WIN32
 /* Must be present under MS Windows */
-BOOL WINAPI DllEntryPoint(HINSTANCE p_hDLL, DWORD p_dwReason, LPVOID p_reserved) {
+BOOL WINAPI DllEntryPoint(HINSTANCE p_hDLL, DWORD p_dwReason, LPVOID p_reserved)
+{
     return TRUE;
 }
 #endif
@@ -36,8 +38,9 @@ BOOL WINAPI DllEntryPoint(HINSTANCE p_hDLL, DWORD p_dwReason, LPVOID p_reserved)
 /// @param p_index The index of the driver to create
 /// @param p_pt The pointer to the tRobotItf which will have its fields set to pointers to our functions
 /// @return 0 if no error occurs, 1 if an error does occur
-static int InitFuncPt(int p_index, void* p_pt) {
-    auto* itf = (tRobotItf*) p_pt;
+static int InitFuncPt(int p_index, void* p_pt)
+{
+    auto* itf = (tRobotItf*)p_pt;
 
     itf->rbNewTrack = InitTrack;
 
@@ -71,7 +74,8 @@ static int InitFuncPt(int p_index, void* p_pt) {
 /// @param p_welcomeIn Information about the run-time environment
 /// @param p_welcomeOut Set information about the module on this object
 /// @return 0 if no error occurs, 1 if an error does occur
-extern "C" int moduleWelcome(const tModWelcomeIn* p_welcomeIn, tModWelcomeOut* p_welcomeOut) {
+extern "C" int moduleWelcome(const tModWelcomeIn* p_welcomeIn, tModWelcomeOut* p_welcomeOut)
+{
     p_welcomeOut->maxNbItf = 1;
 
     return 0;
@@ -85,7 +89,8 @@ extern "C" int moduleWelcome(const tModWelcomeIn* p_welcomeIn, tModWelcomeOut* p
 ///  - Module framework version
 /// @param p_modInfo Pointer to the array of modInfos to populate
 /// @return 0 if no error occurs, 1 if an error does occur
-extern "C" int moduleInitialize(tModInfo* p_modInfo) {
+extern "C" int moduleInitialize(tModInfo* p_modInfo)
+{
     p_modInfo->name = "assisted human";
     p_modInfo->desc = "Human driver with assistant";
     p_modInfo->fctInit = InitFuncPt;
@@ -97,8 +102,10 @@ extern "C" int moduleInitialize(tModInfo* p_modInfo) {
 
 /// @brief Terminate the module and all drivers
 /// @return 0 if no error occurs, 1 if an error does occur
-extern "C" int moduleTerminate() {
-    for (const auto& driver : s_drivers) {
+extern "C" int moduleTerminate()
+{
+    for (const auto& driver : s_drivers)
+    {
         driver->Terminate();
     }
 
@@ -111,10 +118,11 @@ extern "C" int moduleTerminate() {
 /// @brief Find the driver with the given index and initialize it with the given track.
 /// @param p_index The index of the driver to initialize
 /// @param p_track The track that is being initialized
-/// @param p_carHandle 
-/// @param p_carParmHandle 
+/// @param p_carHandle
+/// @param p_carParmHandle
 /// @param p_situation The current race situation
-static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation) {
+static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+{
     GetDriver(p_index)->InitTrack(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
@@ -122,7 +130,8 @@ static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_
 /// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation)
+{
     GetDriver(p_index)->NewRace(p_car, p_situation);
 }
 
@@ -130,7 +139,8 @@ static void NewRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation)
+{
     GetDriver(p_index)->PauseRace(p_car, p_situation);
 }
 
@@ -138,7 +148,8 @@ static void PauseRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation)
+{
     GetDriver(p_index)->ResumeRace(p_car, p_situation);
 }
 
@@ -146,7 +157,8 @@ static void ResumeRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
+static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation)
+{
     GetDriver(p_index)->EndRace(p_car, p_situation);
 }
 
@@ -154,16 +166,19 @@ static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation) {
 /// @param p_index The index of the driver
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
-static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation) {
+static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation)
+{
     GetDriver(p_index)->Drive(p_car, p_situation);
 }
 
-static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation) {
+static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation)
+{
     return GetDriver(p_index)->PitCmd(p_car, p_situation);
 }
 
 /// @brief Shutdown the driver with the given index.
 /// @param p_index The index of the driver
-static void Shutdown(const int p_index) {
+static void Shutdown(const int p_index)
+{
     GetDriver(p_index)->Shutdown();
 }

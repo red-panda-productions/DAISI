@@ -76,6 +76,12 @@ TEST(DecisionsTest, RunInterveneDecisions)
 TEST(DecisionTests, BrakeRunIndicateTest)
 {
     InitializeMediator();
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+
     BrakeDecision brakeDecision;
     brakeDecision.BrakeAmount = 1;
     brakeDecision.RunIndicateCommands();
@@ -100,6 +106,12 @@ TEST(DecisionTests, BrakeRunIndicateTest)
 TEST(DecisionsTest, SteerRunIndicateTests)
 {
     InitializeMediator();
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+
     SteerDecision steerDecision;
     steerDecision.SteerAmount = -1;
     steerDecision.RunIndicateCommands();

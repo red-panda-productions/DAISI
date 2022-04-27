@@ -5,6 +5,20 @@
 #define BYTE   uint8_t
 #define USHORT uint16_t
 
+#define USHRT_MAX_PLUS_ONE (USHRT_MAX + 1)
+
+#define BOOL_BITS  1
+#define BYTE_BITS  8
+#define SHORT_BITS 16
+#define INT_BITS   32
+
+#define RANDOM_NUMBER_BYTES INT_BITS
+
+#define BOOL_AMOUNT  (RANDOM_NUMBER_BYTES / BOOL_BITS)
+#define BYTE_AMOUNT  (RANDOM_NUMBER_BYTES / BYTE_BITS)
+#define SHORT_AMOUNT (RANDOM_NUMBER_BYTES / SHORT_BITS)
+#define INT_AMOUNT   (RANDOM_NUMBER_BYTES / INT_BITS)
+
 /// @brief Creates random numbers
 class Random
 {
@@ -12,13 +26,13 @@ public:
     /// @return A random float
     float NextFloat()
     {
-        return static_cast<float>(NextUShort()) / 65536.0f;
+        return static_cast<float>(NextUShort()) / USHRT_MAX_PLUS_ONE;
     }
 
     /// @return A random float with a maximum
     float NextFloat(float p_max)
     {
-        return static_cast<float>(NextUShort()) / (65536.0f / p_max);
+        return static_cast<float>(NextUShort()) / (USHRT_MAX_PLUS_ONE / p_max);
     }
 
     /// @return A random float between a max and a min
@@ -27,18 +41,30 @@ public:
         return NextFloat(p_max - p_min) + p_min;
     }
 
+    /// @return A random float with a max value (included)
+    float NextFloatIncl(float p_max)
+    {
+        return static_cast<float>(NextUShort()) / (USHRT_MAX / p_max);
+    }
+
+    /// @return A random float between a max (included) and a min
+    float NextFloatIncl(float p_min, float p_max)
+    {
+        return NextFloatIncl(p_max - p_min) + p_min;
+    }
+
     /// @return A random byte
     BYTE NextByte()
     {
-        if (m_bytes >= 8) RefreshByte();
-        return static_cast<BYTE>((m_byteRandom >> (8 * m_bytes++)) & 0xFF);
+        if (m_bytes >= BYTE_AMOUNT) RefreshByte();
+        return static_cast<BYTE>((m_byteRandom >> (BYTE_BITS * m_bytes++)) & 0xFF);
     }
 
     /// @return A random byte with a maximum
     BYTE NextByte(BYTE p_max)
     {
-        if (m_bytes >= 8) RefreshByte();
-        return static_cast<BYTE>(((m_byteRandom >> (8 * m_bytes++)) & 0xFF) % p_max);
+        if (m_bytes >= BYTE_AMOUNT) RefreshByte();
+        return static_cast<BYTE>(((m_byteRandom >> (BYTE_BITS * m_bytes++)) & 0xFF) % p_max);
     }
 
     /// @return A random byte between a maximum and a minimum
@@ -50,15 +76,15 @@ public:
     /// @return A random ushort
     USHORT NextUShort()
     {
-        if (m_shorts >= 4) RefreshShort();
-        return static_cast<USHORT>((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<USHORT>((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF);
     }
 
     /// @return A random ushort with a maximum
     USHORT NextUShort(USHORT p_max)
     {
-        if (m_shorts >= 4) RefreshShort();
-        return static_cast<USHORT>(((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<USHORT>(((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF) % p_max);
     }
 
     /// @return A random ushort between a maximum and a minimum
@@ -70,15 +96,15 @@ public:
     /// @return A random short
     short NextShort()
     {
-        if (m_shorts >= 4) RefreshShort();
-        return static_cast<short>((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<short>((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF);
     }
 
     /// @return A random short with a maximum
     short NextShort(short p_max)
     {
-        if (m_shorts >= 4) RefreshShort();
-        return static_cast<short>(((m_shortRandom >> (16 * m_shorts++)) & 0xFFFF) % p_max);
+        if (m_shorts >= SHORT_AMOUNT) RefreshShort();
+        return static_cast<short>(((m_shortRandom >> (SHORT_BITS * m_shorts++)) & 0xFFFF) % p_max);
     }
 
     /// @return A random short between a maximum and a minimum
@@ -90,15 +116,15 @@ public:
     /// @return A random int
     int NextInt()
     {
-        if (m_ints >= 2) RefreshInt();
-        return static_cast<int>((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF);
+        RefreshInt();
+        return m_intRandom;
     }
 
     /// @return A random int with a maximum
     int NextInt(int p_max)
     {
-        if (m_ints >= 2) RefreshInt();
-        return static_cast<int>(((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max);
+        RefreshInt();
+        return m_intRandom % p_max;
     }
 
     /// @return A random int between a maximum and a minimum
@@ -110,15 +136,15 @@ public:
     /// @return A random uint
     unsigned int NextUInt()
     {
-        if (m_ints >= 2) RefreshInt();
-        return static_cast<unsigned int>((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF);
+        RefreshInt();
+        return static_cast<unsigned int>(m_intRandom);
     }
 
     /// @return A random uint with a maximum
     unsigned int NextUInt(unsigned int p_max)
     {
-        if (m_ints >= 2) RefreshInt();
-        return static_cast<unsigned int>(((m_intRandom >> (32 * m_ints++)) & 0xFFFFFFFF) % p_max);
+        RefreshInt();
+        return static_cast<unsigned int>(m_intRandom) % p_max;
     }
 
     /// @return A random uint between a maximum and a minimum
@@ -130,8 +156,15 @@ public:
     /// @return A random bool
     bool NextBool()
     {
-        if (m_bools >= 64) RefreshBool();
-        return (m_boolRandom & (1UL << m_bools++)) > 0;
+        if (m_bools >= BOOL_AMOUNT) RefreshBool();
+        return (m_boolRandom & (1U << m_bools++)) > 0;
+    }
+
+    /// @brief  Retrieves the seed that is used by the generator
+    /// @return The random generator seed.
+    long long GetSeed() const
+    {
+        return m_seed;
     }
 
     /// @brief Creates a random number generator
@@ -142,7 +175,8 @@ public:
           m_bools(0)
     {
         std::random_device rd;
-        new (&m_generator) std::mt19937_64(rd());
+        m_seed = rd();
+        new (&m_generator) std::mt19937_64(m_seed);
 
         m_byteRandom = m_dis(m_generator);
         m_shortRandom = m_dis(m_generator);
@@ -157,6 +191,7 @@ public:
           m_shorts(0),
           m_ints(0),
           m_bools(0),
+          m_seed(p_seed),
           m_generator(p_seed)
     {
         m_byteRandom = m_dis(m_generator);
@@ -190,18 +225,20 @@ private:
         m_bools = 0;
     }
 
-    long m_byteRandom;
+    int m_byteRandom;
     int m_bytes;  // bytes and shorts are promoted to ints when doing ++
 
-    long m_shortRandom;
+    int m_shortRandom;
     int m_shorts;
 
-    long m_intRandom;
+    int m_intRandom;
     int m_ints;
 
-    unsigned long m_boolRandom;
+    unsigned int m_boolRandom;
     int m_bools;
 
-    std::uniform_int_distribution<long> m_dis;
+    long long m_seed;
+
+    std::uniform_int_distribution<int> m_dis;
     std::mt19937_64 m_generator;
 };

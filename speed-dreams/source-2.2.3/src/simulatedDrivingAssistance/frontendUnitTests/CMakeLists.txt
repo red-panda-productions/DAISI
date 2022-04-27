@@ -5,6 +5,12 @@ ADD_INTERFACE_INCLUDEDIR()
 ADD_PLIB_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient frontend)
 
+IF(OPTION_SDL2)
+    ADD_SDL2_INCLUDEDIR()
+ELSE(OPTION_SDL2)
+    ADD_SDL_INCLUDEDIR()
+ENDIF(OPTION_SDL2)
+
 ENABLE_TESTING()
 
 set(INSTALL_GTEST OFF)
@@ -46,4 +52,4 @@ gtest_discover_tests(frontendUnitTests DISCOVERY_TIMEOUT 600)
 
 #Code coverage
 SET(FRONTEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/frontend")
-CREATE_OPEN_CPP_COVERAGE_BAT("FrontendCoverage" "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe" "${FRONTEND_SOURCE_DIR}" "" "")
+CREATE_OPEN_CPP_COVERAGE_BAT("FrontendCoverage" "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe" "${FRONTEND_SOURCE_DIR}" "" ".*@NOCOVERAGE.*")
