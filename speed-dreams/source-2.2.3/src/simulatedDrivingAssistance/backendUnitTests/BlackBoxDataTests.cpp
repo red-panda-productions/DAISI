@@ -950,7 +950,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     COMP_ELEM(car.ctrl.singleWheelBrakeMode, data.Car.ctrl.singleWheelBrakeMode)
     COMP_ELEM(car.ctrl.switch3, data.Car.ctrl.switch3)
     COMP_ELEM(car.ctrl.telemetryMode, data.Car.ctrl.telemetryMode)
-    for (int  i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
         COMP_NAME(car.ctrl.msg[i], data.Car.ctrl.msg[i])
         COMP_ELEM(car.ctrl.msgColor[i], data.Car.ctrl.msgColor[i])
@@ -1205,7 +1205,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
 
-/// @brief Tests whether elements that are pointers have actually been copied into a new pointer 
+/// @brief Tests whether elements that are pointers have actually been copied into a new pointer
 TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 {
     BlackBoxData data(&car, &situation, tickCount, segments, testSegments.nextSegmentsCount);
