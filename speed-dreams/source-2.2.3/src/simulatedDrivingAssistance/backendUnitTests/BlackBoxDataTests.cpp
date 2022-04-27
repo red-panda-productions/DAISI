@@ -1228,4 +1228,15 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
         EXPECT_NE(car.ctrl.setupChangeCmd->setup, data.Car.ctrl.setupChangeCmd->setup);
     }
     EXPECT_NE(car.robot, data.Car.robot);
+    if (car.pub.trkPos.seg && segments)
+    {
+        tTrackSeg* segOrig = &car.pub.trkPos.seg[0];
+        tTrackSeg* segCopy = &segments[0];
+        for (int i = 0; i < testSegments.nextSegmentsCount; i++)
+        {
+            EXPECT_NE(segOrig, segCopy);
+            segOrig = (*segOrig).next;
+            segCopy = (*segCopy).next;
+        }
+    }
 }
