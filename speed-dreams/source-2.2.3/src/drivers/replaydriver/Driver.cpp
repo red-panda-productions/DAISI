@@ -6,7 +6,7 @@
 
 #include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
 
-#define RECORDING_NAME "userRecording20220426-140251"
+#define RECORDING_NAME "userRecording20220429-002706"
 
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
@@ -44,9 +44,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 {
-    std::string inputTime;
-    m_replayFile >> inputTime;
-    m_inputTime = std::stod(inputTime);
+    m_replayFile >> bits(m_inputTime);
 }
 
 /// @brief Update the car's controls based on recording at that currentTime.
@@ -56,55 +54,41 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
-    std::string accelString;
-    m_replayFile >> accelString;
-    float accel = std::stof(accelString);
-    std::string brakeString;
-    m_replayFile >> brakeString;
-    float brake = std::stof(brakeString);
-    std::string steerString;
-    m_replayFile >> steerString;
-    float steer = std::stof(steerString);
-    std::string gearString;
-    m_replayFile >> gearString;
-    float gear = std::stof(gearString);
-    std::string clutchString;
-    m_replayFile >> clutchString;
-    float clutch = std::stof(clutchString);
+    float accel;
+    float brake;
+    float steer;
+    float gear;
+    float clutch;
 
-    std::string raceCmdString;
-    m_replayFile >> raceCmdString;
-    float raceCmd = std::stof(raceCmdString);
-    std::string lightCmdString;
-    m_replayFile >> lightCmdString;
-    float lightCmd = std::stof(lightCmdString);
-    std::string ebrakeCmdString;
-    m_replayFile >> ebrakeCmdString;
-    float ebrakeCmd = std::stof(ebrakeCmdString);
-    std::string brakeFLCmdString;
-    m_replayFile >> brakeFLCmdString;
-    float brakeFLCmd = std::stof(brakeFLCmdString);
-    std::string brakeFRCmdString;
-    m_replayFile >> brakeFRCmdString;
-    float brakeFRCmd = std::stof(brakeFRCmdString);
-    std::string brakeRLCmdString;
-    m_replayFile >> brakeRLCmdString;
-    float brakeRLCmd = std::stof(brakeRLCmdString);
-    std::string brakeRRCmdString;
-    m_replayFile >> brakeRRCmdString;
-    float brakeRRCmd = std::stof(brakeRRCmdString);
-    std::string wingFCmdString;
-    m_replayFile >> wingFCmdString;
-    float wingFCmd = std::stof(wingFCmdString);
-    std::string wingRCmdString;
-    m_replayFile >> wingRCmdString;
-    float wingRCmd = std::stof(wingRCmdString);
-    std::string telemetryModeString;
-    m_replayFile >> telemetryModeString;
-    float telemetryMode = std::stof(telemetryModeString);
-    std::string singleWheelBrakeModeString;
-    m_replayFile >> singleWheelBrakeModeString;
-    float singleWheelBrakeMode = std::stof(singleWheelBrakeModeString);
+    m_replayFile >> bits(accel);
+    m_replayFile >> bits(brake);
+    m_replayFile >> bits(steer);
+    m_replayFile >> bits(gear);
+    m_replayFile >> bits(clutch);
+
+    float raceCmd;
+    float lightCmd;
+    float ebrakeCmd;
+    float brakeFLCmd;
+    float brakeFRCmd;
+    float brakeRLCmd;
+    float brakeRRCmd;
+    float wingFCmd;
+    float wingRCmd;
+    float telemetryMode;
+    float singleWheelBrakeMode;
+
+    m_replayFile >> bits(raceCmd);
+    m_replayFile >> bits(lightCmd);
+    m_replayFile >> bits(ebrakeCmd);
+    m_replayFile >> bits(brakeFLCmd);
+    m_replayFile >> bits(brakeFRCmd);
+    m_replayFile >> bits(brakeRLCmd);
+    m_replayFile >> bits(brakeRRCmd);
+    m_replayFile >> bits(wingFCmd);
+    m_replayFile >> bits(wingRCmd);
+    m_replayFile >> bits(telemetryMode);
+    m_replayFile >> bits(singleWheelBrakeMode);
 
     p_car->_accelCmd = accel;
     p_car->_brakeCmd = brake;
@@ -129,9 +113,7 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     }
     else
     {
-        std::string inputTime;
-        m_replayFile >> inputTime;
-        m_inputTime = std::stod(inputTime);
+        m_replayFile >> bits(m_inputTime);
     }
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);

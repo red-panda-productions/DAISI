@@ -77,7 +77,7 @@ void Recorder::WriteCar(const tCarElt* p_carElt)
 /// @param p_userInput User input to write, should be an array >= m_userParamAmount
 /// @param p_timestamp Timestamp at which the user input occurred
 /// @param p_useCompression Whether to use compression while writing
-void Recorder::WriteUserInput(const float* p_userInput, const double p_timestamp, const bool p_useCompression)
+void Recorder::WriteUserInput(const float* p_userInput, double p_timestamp, const bool p_useCompression)
 {
     WriteRecording(p_userInput,
                    p_timestamp,
@@ -107,7 +107,7 @@ void Recorder::WriteDecisions(const float* p_decisions, const unsigned long p_ti
 /// @param p_useCompression boolean value if compression is done
 /// @param p_prevInput      the previous input, used for compression, length should be p_paramAmount and not nullptr if p_useCompression is true.
 void Recorder::WriteRecording(const float* p_input,
-                              const double p_currentTime,
+                              double p_currentTime,
                               std::ofstream& p_file,
                               const int p_paramAmount,
                               bool p_useCompression,
@@ -121,7 +121,7 @@ void Recorder::WriteRecording(const float* p_input,
     // doesn't write if the input is the same as the previous time
     // if p_compression is true
     if (p_useCompression && CheckSameInput(p_input, p_prevInput, p_paramAmount)) return;
-    p_file << p_currentTime << " ";
+    p_file << bits(p_currentTime);
     for (int i = 0; i < p_paramAmount; i++)
     {
         // update previous input
@@ -131,9 +131,9 @@ void Recorder::WriteRecording(const float* p_input,
         }
 
         // write to file
-        p_file << p_input[i] << " ";
+        p_file << bits(p_input[i]);
     }
-    p_file << std::endl;
+    p_file.flush();
 }
 
 /// @brief				    Checks if the input is the same as the previous input

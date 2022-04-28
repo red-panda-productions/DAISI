@@ -184,3 +184,37 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 
     return true;
 }
+
+/// @brief The following functions are used to write binary values to files.
+///        Cannot write strings (though this can be added)
+template <typename TYPE>
+struct Bits
+{
+    TYPE t;
+};
+
+template <typename TYPE>
+static inline Bits<TYPE&> bits(TYPE& t)
+{
+    return Bits<TYPE&>{t};
+}
+
+template <typename TYPE>
+static inline Bits<const TYPE&> bits(const TYPE& t)
+{
+    return Bits<const TYPE&>{t};
+}
+
+template <typename TYPE>
+static inline std::istream& operator>>(std::istream& in, Bits<TYPE&> b)
+{
+    return in.read(reinterpret_cast<char*>(&b.t), sizeof(TYPE));
+}
+
+template <typename TYPE>
+static inline std::ostream& operator<<(std::ostream& out, Bits<TYPE&> const b)
+{
+    // reinterpret_cast is for pointer conversion
+    // static_cast is for compatible pointer conversion
+    return out.write(reinterpret_cast<const char*>(&(b.t)), sizeof(TYPE));
+}
