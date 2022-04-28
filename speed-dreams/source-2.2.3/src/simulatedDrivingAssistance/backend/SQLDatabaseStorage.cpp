@@ -137,7 +137,11 @@ bool SQLDatabaseStorage::OpenDatabase(
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap* connection_properties = new sql::ConnectOptionsMap();
 
-    connection_properties->emplace("hostName", "tcp://" + p_hostName);
+    sql::SQLString hostName("hostName");
+    sql::ConnectPropertyVal hostNameVal("tcp://" + p_hostName);
+    connection_properties->emplace(hostName, hostNameVal);
+
+    std::cout << "passed hostname" << std::endl;
     connection_properties->emplace("userName", p_username);
     connection_properties->emplace("password", p_password);
     connection_properties->emplace("port", p_port);
