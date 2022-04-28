@@ -45,7 +45,7 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Delete the existing test directory to ensure directories are properly created
     if (std::experimental::filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all(folder);  //@NODCOVERAGE, this folder never exists on github
+        std::experimental::filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
     }
 
     // Create a recorder without storing any parameters
