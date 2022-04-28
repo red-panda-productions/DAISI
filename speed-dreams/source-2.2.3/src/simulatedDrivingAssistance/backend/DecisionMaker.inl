@@ -11,7 +11,7 @@
                                                                         tSituation* p_initialSituation,                                  \
                                                                         tTrack* p_track,                                                 \
                                                                         const std::string& p_blackBoxExecutablePath,                     \
-                                                                        bool p_recordBB,                                                 \
+                                                                        Recorder* p_recordBB,                                            \
                                                                         BlackBoxData* p_testSituations,                                  \
                                                                         int p_testAmount);                                               \
     template bool DecisionMaker<type1, type2, type3, type4>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
@@ -28,7 +28,7 @@
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
 /// @param  p_initialSituation The initial situation
-/// @param  p_recordBB         If the blackbox decisions will be recorded
+/// @param  p_recorder         If not nullptr all blackbox decisions will be recorded using this recorder
 /// @param  p_blackBoxExecutablePath The path to the black box executable.
 /// Should either be an absolute path or relative to the current directory.
 /// Path must include file extension; no default extension is assumed.
@@ -40,16 +40,14 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
                                     tSituation* p_initialSituation,
                                     tTrack* p_track,
                                     const std::string& p_blackBoxExecutablePath,
-                                    bool p_recordBB,
+                                    Recorder* p_recorder,
                                     BlackBoxData* p_testSituations,
                                     int p_testAmount)
 {
+    m_recorder = p_recorder;
+
 #if !defined(TEST)
-    if (p_recordBB)                                                    // @NOCOVERAGE
-    {                                                                  // @NOCOVERAGE
-        m_recorder = new Recorder("BB_Recordings", "bbRecording", 2);  // @NOCOVERAGE
-    }                                                                  // @NOCOVERAGE
-    StartExecutable(p_blackBoxExecutablePath);                         // @NOCOVERAGE
+    StartExecutable(p_blackBoxExecutablePath);  // @NOCOVERAGE
 #endif
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
@@ -102,13 +100,11 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
-#if !defined(TEST)                                                                       //@NOCOVERAGE
-    if (m_recorder)                                                                      //@NOCOVERAGE
-    {                                                                                    //@NOCOVERAGE
-        const float decisionValues[2] = {m_decision.GetBrake(), m_decision.GetSteer()};  //@NOCOVERAGE
-        m_recorder->WriteRecording(decisionValues, p_tickCount, false);                  //@NOCOVERAGE
-    }                                                                                    //@NOCOVERAGE
-#endif
+    if (m_recorder)
+    {
+        const float decisionValues[DECISION_RECORD_PARAM_AMOUNT] = {m_decision.GetBrake(), m_decision.GetSteer()};
+        m_recorder->WriteDecisions(decisionValues, p_tickCount);
+    }
 
     return decisionMade;
 }
@@ -133,7 +129,6 @@ void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage>
 TEMP_DECISIONMAKER::~DecisionMaker()
 {
-    delete m_recorder;
 }
 
 /// @brief When the race stops, the simulation data collected will be stored in the database
@@ -144,6 +139,7 @@ void TEMP_DECISIONMAKER::RaceStop()
     m_fileBufferStorage.Shutdown();
     SQLDatabaseStorage sqlDatabaseStorage;
     sqlDatabaseStorage.Run(m_bufferFilePath);
+    m_recorder = nullptr;
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage>

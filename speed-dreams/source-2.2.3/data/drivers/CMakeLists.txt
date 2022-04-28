@@ -4,6 +4,7 @@ INCLUDE(../../cmake/macros.cmake)
 SD_ADD_SUBDIRECTORY(assistedhuman)
 SD_ADD_SUBDIRECTORY(human)
 SD_ADD_SUBDIRECTORY(networkhuman)
+SD_ADD_SUBDIRECTORY(replaydriver)
 
 SD_ADD_SUBDIRECTORY(dandroid_36GP)
 SD_ADD_SUBDIRECTORY(dandroid_67GP)
