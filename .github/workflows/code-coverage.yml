@@ -62,6 +62,5 @@ jobs:
         fail_below_threshold: true
         show_missing: true
         link_missing_lines: true
-        skip_covered: false
         report_name: 'code coverage report'
       
