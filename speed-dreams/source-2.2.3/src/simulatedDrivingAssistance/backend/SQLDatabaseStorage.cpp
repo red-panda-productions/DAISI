@@ -135,7 +135,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     m_driver = sql::mysql::get_mysql_driver_instance();
 
     // Set connection options, and connect to the database
-    sql::ConnectOptionsMap connection_properties;
+    sql::ConnectOptionsMap connection_properties = sql::ConnectOptionsMap();
 
     connection_properties["hostName"] = "tcp://" + p_hostName;
     connection_properties["userName"] = p_username;

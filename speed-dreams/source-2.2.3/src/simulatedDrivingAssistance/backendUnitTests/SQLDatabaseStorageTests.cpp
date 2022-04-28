@@ -147,6 +147,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 /// @brief test for crash when there is no certificates folder
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\noCertDir"), std::exception)
     {
@@ -170,6 +171,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 ///         encryption file
 TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\correctRemote"));
 }
