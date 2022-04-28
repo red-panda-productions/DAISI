@@ -138,7 +138,8 @@ bool SQLDatabaseStorage::OpenDatabase(
     sql::ConnectOptionsMap* connection_properties = new sql::ConnectOptionsMap();
 
     std::cout << "hostnameString" << std::endl;
-    sql::SQLString hostName("hostName");
+    sql::SQLString()
+    sql::SQLString hostName(std::string("hostName"));
     std::cout << "hostnameVal" << std::endl;
     sql::ConnectPropertyVal hostNameVal("tcp://" + p_hostName);
     std::cout << "hostname" << std::endl;
