@@ -39,7 +39,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 }
 
 /// @brief Start a new race.
-/// it opens te replay file and sets the time of the first input
+/// it opens the replay file and sets the time of the first input
 /// @param p_car The car the driver controls
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
@@ -122,8 +122,6 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     p_car->_wingRCmd = wingRCmd;
     p_car->_telemetryMode = static_cast<int>(telemetryMode);
     p_car->_singleWheelBrakeMode = static_cast<int>(singleWheelBrakeMode);
-    std::string inputTime;
-    m_replayFile >> inputTime;
 
     if (m_replayFile.eof())
     {
@@ -131,6 +129,8 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     }
     else
     {
+        std::string inputTime;
+        m_replayFile >> inputTime;
         m_inputTime = std::stod(inputTime);
     }
 
