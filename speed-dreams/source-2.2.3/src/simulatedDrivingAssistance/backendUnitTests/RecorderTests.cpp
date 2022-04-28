@@ -45,7 +45,7 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Delete the existing test directory to ensure directories are properly created
     if (std::experimental::filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all(folder);
+        std::experimental::filesystem::remove_all(folder);  //@NODCOVERAGE, this folder never exists on github
     }
 
     // Create a recorder without storing any parameters
@@ -231,7 +231,7 @@ TEST(RecorderTests, WriteCarTests)
     std::string path = "test_data";
     if (!FindFileDirectory(path, TEST_CAR_FILE_NAME))
     {
-        throw std::exception("Could not find test_car.xml.");
+        throw std::exception("Could not find test_car.xml.");  // @NOCOVERAGE, should always be available
     }
     path.append("/" TEST_CAR_FILE_NAME);
 
@@ -240,7 +240,7 @@ TEST(RecorderTests, WriteCarTests)
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml.");
+        throw std::exception("Could not load test_car.xml.");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
