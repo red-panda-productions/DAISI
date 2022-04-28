@@ -83,7 +83,7 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
 ///                                 needs "\\" in front of it
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
-void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap p_connectionProperties)
+void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap& p_connectionProperties)
 {
     std::string encryptionPath("data" + p_dirPath);
     std::string encryptionFile("database_encryption_settings.txt");
@@ -105,9 +105,9 @@ void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptio
     if (!FindFileDirectory(certificatesPath, caName))
         throw std::exception("Could not find certificate folder");
 
-    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caName;
-    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubName;
-    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privName;
+    p_connectionProperties.emplace("sslCA", certificatesPath + "\\" + caName);
+    p_connectionProperties.emplace("sslCert", certificatesPath + "\\" + pubName);
+    p_connectionProperties.emplace("sslKey", certificatesPath + "\\" + privName);
 }
 
 /// @brief                  Connect to the specified database.
@@ -135,25 +135,26 @@ bool SQLDatabaseStorage::OpenDatabase(
     m_driver = sql::mysql::get_mysql_driver_instance();
 
     // Set connection options, and connect to the database
-    sql::ConnectOptionsMap connection_properties = sql::ConnectOptionsMap();
+    sql::ConnectOptionsMap* connection_properties = new sql::ConnectOptionsMap();
 
-    connection_properties["hostName"] = "tcp://" + p_hostName;
-    connection_properties["userName"] = p_username;
-    connection_properties["password"] = p_password;
-    connection_properties["port"] = p_port;
-    connection_properties["OPT_RECONNECT"] = true;
-    connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
-    connection_properties["sslEnforce"] = true;
+    connection_properties->emplace("hostName", "tcp://" + p_hostName);
+    connection_properties->emplace("userName", p_username);
+    connection_properties->emplace("password", p_password);
+    connection_properties->emplace("port", p_port);
+    connection_properties->emplace("OPT_RECONNECT", true);
+    connection_properties->emplace("CLIENT_MULTI_STATEMENTS", false);
+    connection_properties->emplace("sslEnforce", true);
+
 
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
     if (p_useEncryption == "true")
     {
-        PutKeys(p_dirPath, connection_properties);
+        PutKeys(p_dirPath, *connection_properties);
     }
 
     try
     {
-        m_connection = m_driver->connect(connection_properties);
+        m_connection = m_driver->connect(*connection_properties);
     }
     catch (std::exception& e)
     {
