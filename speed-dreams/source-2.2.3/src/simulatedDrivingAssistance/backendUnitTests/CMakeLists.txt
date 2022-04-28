@@ -25,15 +25,17 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-SET(_SOURCES MsgpackDeserializeTests.cpp
-        MediatorTests.cpp
-        FactoryTests.cpp
-        DecisionMakerTests.cpp
+SET(_SOURCES BlackBoxDataTests.cpp
         ConfigTests.cpp
+        DecisionMakerTests.cpp
+        DecisionsTests.cpp
+        ExecutorTests.cpp
+        FactoryTests.cpp
         FileDataStorageTests.cpp
-        SQLDatabaseStorageTests.cpp
-        BlackBoxDataTests.cpp
+        MediatorTests.cpp
+        MsgpackDeserializeTests.cpp
         RecorderTests.cpp
+        SQLDatabaseStorageTests.cpp
         )
 
 SET(_HEADERS MsgpackSerializeTests.h
