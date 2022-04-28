@@ -4,6 +4,7 @@
 #include "raceman.h"
 #include "DecisionMaker.h"
 #include "CarController.h"
+#include "Recorder.h"
 
 /// @brief			      The Main communication between the front- and backend
 /// @tparam DecisionMaker The decisionMaker type
@@ -12,7 +13,7 @@ class Mediator
 {
 public:
     void DriveTick(tCarElt* p_car, tSituation* p_situation);
-    void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
+    void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
 
     void SetTask(Task p_task);

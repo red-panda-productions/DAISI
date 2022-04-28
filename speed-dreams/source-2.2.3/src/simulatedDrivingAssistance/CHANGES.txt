@@ -19,8 +19,8 @@ Added:
         Driver.cpp
         Driver.h
     libs/tgfclient/
-        GuiRadioButton.cpp
-        GuiRadioButtonList.cpp
+            GuiRadioButton.cpp
+            GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
         ResearcherMenu.h
         ResearcherMenu.cpp
@@ -48,20 +48,23 @@ Changed:
   src/
     libs/
         robottools/
-            rtHumanDriver.cpp
+            humandriver.h
                 included Recorder.h
-                included ConfigEnums.h
-                included Mediator.h
+                added m_recorder
+                added SetRecorder
+            rtHumanDriver.cpp
                 changed new_race()
-                changed common_drive()
+                changed drive_at()
                 changed shutdown()
-                added   tParticipantControl var
+                added   SetRecorder()
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
         tgf/
+            params.cpp
+                Modified xmlGetOuputLine to write floats with full precision.
             tgf.h
                 added GF_LOGGING_ENABLE and GF_LOGGING_DISABLE macro's for clearer code
         tgfclient/

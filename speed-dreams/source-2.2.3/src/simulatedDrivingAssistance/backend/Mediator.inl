@@ -10,21 +10,21 @@
 #include <experimental/filesystem>
 
 /// @brief Creates an implementation of the mediator
-#define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                      \
-    template InterventionType Mediator<type>::GetInterventionType();                                                              \
-    template tIndicator Mediator<type>::GetIndicatorSettings();                                                                   \
-    template tParticipantControl Mediator<type>::GetPControlSettings();                                                           \
-    template void Mediator<type>::SetTask(Task p_task);                                                                           \
-    template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                  \
-    template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                   \
-    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                            \
-    template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                      \
-    template void Mediator<type>::SetUserId(char* p_userId);                                                                      \
-    template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                          \
-    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                    \
-    template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                             \
-    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation); \
-    template void Mediator<type>::RaceStop();                                                                                     \
+#define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
+    template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
+    template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
+    template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
+    template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
+    template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
+    template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                                                  \
+    template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
+    template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
+    template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
+    template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
+    template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
+    template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
+    template void Mediator<type>::RaceStop();                                                                                                           \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
@@ -132,8 +132,9 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 /// @param  p_carHandle     A car handle (from speed dreams)
 /// @param  p_carParmHandle A car parameter handle (from speed dreams)
 /// @param  p_situation     The current situation
+/// @param  p_recorder      The recorder to use if recording is enabled
 template <typename DecisionMaker>
-void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
+void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder)
 {
     m_track = p_track;
     tCarElt car;
@@ -148,7 +149,8 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     // Initialize the decision maker with the full path to the current black box executable
-    m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB);
+    // If recording is disabled a nullptr is passed
+    m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
     m_inRace = true;
 }
 

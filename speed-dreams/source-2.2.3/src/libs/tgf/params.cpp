@@ -1561,24 +1561,25 @@ xmlGetOuputLine (struct parmHandle *parmHandle, char *buffer, int /* size */, bo
 			    s += sprintf (s, " unit=\"%s\"",curParam->unit);
 			}
 
+            // SIMULATED DRIVING ASSISTANCE: Use %f instead of %g to avoid rounding errors
 			if (((forceMinMax) || (curParam->min != curParam->valnum)) && (curParam->min != -FLT_MAX)) 
 		    {
-				s += sprintf (s, " min=\"%g\"",
+				s += sprintf (s, " min=\"%f\"",
 				GfParmSI2Unit (curParam->unit, curParam->min));
 		    }
 
 		    if (((forceMinMax) || (curParam->max != curParam->valnum)) && (curParam->max != FLT_MAX)) 
 		    {
-				s += sprintf (s, " max=\"%g\"", 
+				s += sprintf (s, " max=\"%f\"",
 				GfParmSI2Unit (curParam->unit, curParam->max));
 		    }
 
 			if (curParam->unit)
 			{
-			    s += sprintf (s, " val=\"%g\"/>\n",	GfParmSI2Unit (curParam->unit, curParam->valnum));
+			    s += sprintf (s, " val=\"%f\"/>\n",	GfParmSI2Unit (curParam->unit, curParam->valnum));
 			} else 
 			{
-			    s += sprintf (s, " val=\"%g\"/>\n", curParam->valnum);
+			    s += sprintf (s, " val=\"%f\"/>\n", curParam->valnum);
 			}
 			outCtrl->curParam = GF_TAILQ_NEXT (curParam, linkParam);
 			return 1;
