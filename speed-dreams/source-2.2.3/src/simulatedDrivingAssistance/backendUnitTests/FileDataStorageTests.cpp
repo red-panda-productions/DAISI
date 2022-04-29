@@ -198,7 +198,8 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
     if (p_doSteer) decisions.SetSteer(random.NextFloat());
     if (p_doBrake) decisions.SetBrake(random.NextFloat());
     if (p_doAccel) decisions.SetAccel(random.NextFloat());
-    // TODO: Gear and Lights are not yet implemented in DecisionTuple and thus cannot be properly used for FileDataStorage
+    if (p_doGear) decisions.SetGear(random.NextInt());
+    if (p_doLights) decisions.SetLights(random.NextBool());
 
     // Save any tick
     GET_RANDOM_TICKCOUNT;
@@ -223,6 +224,16 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
         {
             expected << "AccelDecision\n"
                      << std::to_string(decisions.GetAccel()) << "\n";
+        }
+        if (p_doGear)
+        {
+            expected << "GearDecision\n"
+                     << std::to_string(decisions.GetGear()) << "\n";
+        }
+        if (p_doLights)
+        {
+            expected << "LightsDecision\n"
+                     << std::to_string(decisions.GetLights()) << "\n";
         }
         expected << "NONE\n";
     }
