@@ -115,27 +115,27 @@ void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected
     if (p_doSteer)
     {
         p_expected << "SteerDecision\n"
-                 << std::to_string(p_decisions.GetSteer()) << "\n";
+                   << std::to_string(p_decisions.GetSteer()) << "\n";
     }
     if (p_doBrake)
     {
         p_expected << "BrakeDecision\n"
-                 << std::to_string(p_decisions.GetBrake()) << "\n";
+                   << std::to_string(p_decisions.GetBrake()) << "\n";
     }
     if (p_doAccel)
     {
         p_expected << "AccelDecision\n"
-                 << std::to_string(p_decisions.GetAccel()) << "\n";
+                   << std::to_string(p_decisions.GetAccel()) << "\n";
     }
     if (p_doGear)
     {
         p_expected << "GearDecision\n"
-                 << std::to_string(p_decisions.GetGear()) << "\n";
+                   << std::to_string(p_decisions.GetGear()) << "\n";
     }
     if (p_doLights)
     {
         p_expected << "LightsDecision\n"
-                 << std::to_string(p_decisions.GetLights()) << "\n";
+                   << std::to_string(p_decisions.GetLights()) << "\n";
     }
     p_expected << "NONE\n";
 }
