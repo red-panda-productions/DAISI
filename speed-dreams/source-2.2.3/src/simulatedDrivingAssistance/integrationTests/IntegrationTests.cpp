@@ -12,12 +12,13 @@
 #define CAR_FILE       "car.xml"
 #define DECISIONS_FILE "decisions.txt"
 #define RECORDING_FILE "recording.txt"
+#define BB_FILE        "bbfile.txt"
 
 #define CAR_ARG       "--carxml="
 #define DECISIONS_ARG "--decisions="
 #define RECORDING_ARG "--recording="
 
-#define BB_FILE_ARG "--bbfile="
+#define BB_ARG "--bbfile="
 
 class IntegrationTests : public testing::TestWithParam<std::string>
 {
@@ -28,6 +29,7 @@ void RunTest(const std::string& p_path)
     std::experimental::filesystem::path carxml;
     std::experimental::filesystem::path decisions;
     std::experimental::filesystem::path recording;
+    std::experimental::filesystem::path bbfile;
 
     for (const auto& entry : std::experimental::filesystem::directory_iterator(p_path))
     {
@@ -47,12 +49,18 @@ void RunTest(const std::string& p_path)
         if (name == RECORDING_FILE)
         {
             recording = file;
+            continue;
+        }
+        if (name == BB_FILE)
+        {
+            bbfile = file;
         }
     }
 
     ASSERT_EQ(carxml.filename(), CAR_FILE);
     ASSERT_EQ(decisions.filename(), DECISIONS_FILE);
     ASSERT_EQ(recording.filename(), RECORDING_FILE);
+    ASSERT_EQ(bbfile.filename(), BB_FILE);
 
     std::stringstream args;
     args << CAR_ARG << carxml;
