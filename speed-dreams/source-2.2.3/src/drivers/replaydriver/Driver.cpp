@@ -34,7 +34,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
                        GFPARM_RMODE_STD,
                        true);
 
-    m_replayFile.open(sdaFolder.append(USER_INPUT_RECORDING_FILE_NAME).string().c_str());
+    m_replayFile.open(sdaFolder.append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
