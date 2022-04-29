@@ -1,0 +1,4 @@
+@echo off
+            cd /d C:\Users\nouth\Documents\Universiteit\SoftwareProject\projects\speed-dreams\source-2.2.3\cmake-build-debug\src\simulatedDrivingAssistance\rppUtilsTests
+            "C:/Program Files (x86)/OpenCppCoverage/OpenCppCoverage.exe" --sources=C:\Users\nouth\Documents\Universiteit\SoftwareProject\projects\speed-dreams\source-2.2.3\src\simulatedDrivingAssistance\rppUtils --export_type=html:C:\Users\nouth\Documents\Universiteit\SoftwareProject\projects\speed-dreams\source-2.2.3\cmake-build-debug\src\simulatedDrivingAssistance\rppUtilsTests\RppUtilsCoverage  --excluded_line_regex .*@NOCOVERAGE.* -- C:\Users\nouth\Documents\Universiteit\SoftwareProject\projects\speed-dreams\source-2.2.3\cmake-build-debug\bin\rppUtilsTests.exe
+            @start C:\Users\nouth\Documents\Universiteit\SoftwareProject\projects\speed-dreams\source-2.2.3\cmake-build-debug\src\simulatedDrivingAssistance\rppUtilsTests\RppUtilsCoverage\index.html
