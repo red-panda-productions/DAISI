@@ -82,22 +82,22 @@ inline std::string GetTimeAsString(time_t p_date)
 }
 
 /// @brief Generate a random DecisionTuple containing the decisions given
-/// @param random Random generator to use for determining values
+/// @param p_random Random generator to use for determining values
 /// @param p_doSteer Whether the DecisionTuple should include a Steer Decision
 /// @param p_doBrake Whether the DecisionTuple should include a Brake Decision
 /// @param p_doAccel Whether the DecisionTuple should include a Accel Decision
 /// @param p_doGear Whether the DecisionTuple should include a Gear Decision
 /// @param p_doLights Whether the DecisionTuple should include a Lights Decision
 /// @return A random DecisionTuple containing the decisions as determined by the parameters
-DecisionTuple GenerateDecisions(Random& random, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
     // Generate a random decision based on parameters
     DecisionTuple decisions;
-    if (p_doSteer) decisions.SetSteer(random.NextFloat());
-    if (p_doBrake) decisions.SetBrake(random.NextFloat());
-    if (p_doAccel) decisions.SetAccel(random.NextFloat());
-    if (p_doGear) decisions.SetGear(random.NextInt());
-    if (p_doLights) decisions.SetLights(random.NextBool());
+    if (p_doSteer) decisions.SetSteer(p_random.NextFloat());
+    if (p_doBrake) decisions.SetBrake(p_random.NextFloat());
+    if (p_doAccel) decisions.SetAccel(p_random.NextFloat());
+    if (p_doGear) decisions.SetGear(p_random.NextInt());
+    if (p_doLights) decisions.SetLights(p_random.NextBool());
     return decisions;
 }
 
@@ -109,35 +109,35 @@ DecisionTuple GenerateDecisions(Random& random, bool p_doSteer, bool p_doBrake, 
 /// @param p_doAccel Whether a Accel decision  should be written
 /// @param p_doGear Whether a Gear decision  should be written
 /// @param p_doLights Whether a Lights decision  should be written
-void WriteExpectedDecisions(DecisionTuple& decisions, std::ostream& expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
-    expected << "Decisions\n";
+    p_expected << "Decisions\n";
     if (p_doSteer)
     {
-        expected << "SteerDecision\n"
-                 << std::to_string(decisions.GetSteer()) << "\n";
+        p_expected << "SteerDecision\n"
+                 << std::to_string(p_decisions.GetSteer()) << "\n";
     }
     if (p_doBrake)
     {
-        expected << "BrakeDecision\n"
-                 << std::to_string(decisions.GetBrake()) << "\n";
+        p_expected << "BrakeDecision\n"
+                 << std::to_string(p_decisions.GetBrake()) << "\n";
     }
     if (p_doAccel)
     {
-        expected << "AccelDecision\n"
-                 << std::to_string(decisions.GetAccel()) << "\n";
+        p_expected << "AccelDecision\n"
+                 << std::to_string(p_decisions.GetAccel()) << "\n";
     }
     if (p_doGear)
     {
-        expected << "GearDecision\n"
-                 << std::to_string(decisions.GetGear()) << "\n";
+        p_expected << "GearDecision\n"
+                 << std::to_string(p_decisions.GetGear()) << "\n";
     }
     if (p_doLights)
     {
-        expected << "LightsDecision\n"
-                 << std::to_string(decisions.GetLights()) << "\n";
+        p_expected << "LightsDecision\n"
+                 << std::to_string(p_decisions.GetLights()) << "\n";
     }
-    expected << "NONE\n";
+    p_expected << "NONE\n";
 }
 
 // Values written at the top of a file initialised with the dummy parameters above
