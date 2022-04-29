@@ -7,6 +7,8 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
 
+namespace filesystem = std::experimental::filesystem;
+
 #define SD_EXECUTABLE "speed-dreams-2.exe"
 
 #define CAR_FILE       "car.xml"
@@ -24,66 +26,97 @@ class IntegrationTests : public testing::TestWithParam<std::string>
 {
 };
 
-void RunTest(const std::string& p_path)
+void CheckFiles(const std::string& p_path, filesystem::path& p_carxml, filesystem::path& p_decisions, filesystem::path& p_recording, filesystem::path& p_bbfile)
 {
-    std::experimental::filesystem::path carxml;
-    std::experimental::filesystem::path decisions;
-    std::experimental::filesystem::path recording;
-    std::experimental::filesystem::path bbfile;
-
     for (const auto& entry : std::experimental::filesystem::directory_iterator(p_path))
     {
-        std::experimental::filesystem::path file = entry.path();
-        std::experimental::filesystem::path filename = file.filename();
+        filesystem::path file = entry.path();
+        filesystem::path filename = file.filename();
         std::string name = filename.string();
         if (name == CAR_FILE)
         {
-            carxml = file;
+            p_carxml = file;
             continue;
         }
         if (name == DECISIONS_FILE)
         {
-            decisions = file;
+            p_decisions = file;
             continue;
         }
         if (name == RECORDING_FILE)
         {
-            recording = file;
+            p_recording = file;
             continue;
         }
         if (name == BB_FILE)
         {
-            bbfile = file;
+            p_bbfile = file;
         }
     }
 
-    ASSERT_EQ(carxml.filename(), CAR_FILE);
-    ASSERT_EQ(decisions.filename(), DECISIONS_FILE);
-    ASSERT_EQ(recording.filename(), RECORDING_FILE);
-    ASSERT_EQ(bbfile.filename(), BB_FILE);
+    ASSERT_EQ(p_carxml.filename(), CAR_FILE);
+    ASSERT_EQ(p_decisions.filename(), DECISIONS_FILE);
+    ASSERT_EQ(p_recording.filename(), RECORDING_FILE);
+    ASSERT_EQ(p_bbfile.filename(), BB_FILE);
+}
 
+std::string GenerateSimulationArguments(const filesystem::path& p_carxml, const filesystem::path& p_decisions, const filesystem::path& p_recording)
+{
     std::stringstream args;
-    args << CAR_ARG << carxml;
+    args << CAR_ARG << p_carxml;
     args << " ";
-    args << DECISIONS_ARG << decisions;
+    args << DECISIONS_ARG << p_decisions;
     args << " ";
-    args << RECORDING_ARG << recording;
+    args << RECORDING_ARG << p_recording;
 
-    std::string argsstring = args.str();
+    return {args.str()};
+}
 
-    PROCESS_INFORMATION processInformation;
-    StartProcess(SD_EXECUTABLE, argsstring.c_str(), processInformation);
+std::string GenerateBBArguments(const filesystem::path& p_bbfile)
+{
+    std::stringstream args;
 
-    WaitForSingleObject(processInformation.hProcess, INFINITE);
+    args << BB_ARG << p_bbfile;
+
+    return {args.str()};
+}
+
+void CheckProcess(PROCESS_INFORMATION p_processInformation)
+{
+    WaitForSingleObject(p_processInformation.hProcess, INFINITE);
 
     DWORD exitCode;
 
-    GetExitCodeProcess(processInformation.hProcess, &exitCode);
+    GetExitCodeProcess(p_processInformation.hProcess, &exitCode);
 
-    CloseHandle(processInformation.hProcess);
-    CloseHandle(processInformation.hThread);
+    CloseHandle(p_processInformation.hProcess);
+    CloseHandle(p_processInformation.hThread);
 
     ASSERT_TRUE(exitCode == 0);
+}
+
+void RunTest(const std::string& p_path)
+{
+    filesystem::path carxml;
+    filesystem::path decisions;
+    filesystem::path recording;
+    filesystem::path bbfile;
+
+    CheckFiles(p_path, carxml, decisions, recording, bbfile);
+
+    std::string simulationArgs = GenerateSimulationArguments(carxml, decisions, recording);
+
+    PROCESS_INFORMATION simulationInfo;
+    StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo);
+
+    std::string bbArgs = GenerateBBArguments(bbfile);
+
+    PROCESS_INFORMATION bbInfo;
+    StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo);
+
+    CheckProcess(simulationInfo);
+
+    CheckProcess(bbInfo);
 }
 
 TEST_P(IntegrationTests, IntegrationTest)
