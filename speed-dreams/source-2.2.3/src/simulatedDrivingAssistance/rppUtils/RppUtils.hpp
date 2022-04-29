@@ -131,6 +131,11 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    WinExec(p_command, p_showCommand);
+}
+
 /// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
 /// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
