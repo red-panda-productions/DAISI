@@ -4,23 +4,31 @@
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
-#define TEST_FILE_PATH "testDataStorage.txt"
 
-// Get dummy time variables. These set the trial to have started now,
-//  the black box to have been created yesterday, and the environment last year.
+/// @brief The file directory to use for writing test files to, relative to the OS's Temp folder.
+/// This directory should be allowed to be deleted by tests.
+#define TEST_FILE_DIR "testDataStorageDir"
+
+/// @brief The filename to use for writing test files to.
+#define TEST_FILE_NAME "testDataStorage.txt"
+
+/// @brief Get dummy time variables. These set the trial to have started now,
+///  the black box to have been created yesterday, and the environment last year.
 #define GET_DUMMY_TIMES                                                           \
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now(); \
     std::time_t timeSimStart = std::chrono::system_clock::to_time_t(now);         \
-    std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24))  // Dummy parameters to use to quickly initialise a FileDataStorage system.
-#define DUMMY_INITIALISATION_PARAMETERS TEST_FILE_PATH,                \
-                                        "Player1",                     \
-                                        timeSimStart,                  \
-                                        "notABlackBox.exe",            \
-                                        "Really just a string",        \
-                                        timeBlackBox,                  \
-                                        "environmentAlsoFake.xml",     \
-                                        "Name of a dummy environment", \
-                                        0,                             \
+    std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24))
+
+/// @brief Dummy parameters to use to quickly initialise a FileDataStorage system.
+#define DUMMY_INITIALISATION_PARAMETERS TEST_FILE_DIR "/" TEST_FILE_NAME, \
+                                        "Player1",                        \
+                                        timeSimStart,                     \
+                                        "notABlackBox.exe",               \
+                                        "Really just a string",           \
+                                        timeBlackBox,                     \
+                                        "environmentAlsoFake.xml",        \
+                                        "Name of a dummy environment",    \
+                                        0,                                \
                                         INTERVENTION_TYPE_ONLY_SIGNALS
 
 /// @brief Get an unsigned long variable "tickCount" with a random value
@@ -81,7 +89,7 @@ inline std::string GetTimeAsString(time_t p_date)
 /// @param p_doGear Whether the DecisionTuple should include a Gear Decision
 /// @param p_doLights Whether the DecisionTuple should include a Lights Decision
 /// @return A random DecisionTuple containing the decisions as determined by the parameters
-DecisionTuple GenerateDecisions(Random &random, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+DecisionTuple GenerateDecisions(Random& random, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
     // Generate a random decision based on parameters
     DecisionTuple decisions;
@@ -101,7 +109,8 @@ DecisionTuple GenerateDecisions(Random &random, bool p_doSteer, bool p_doBrake, 
 /// @param p_doAccel Whether a Accel decision  should be written
 /// @param p_doGear Whether a Gear decision  should be written
 /// @param p_doLights Whether a Lights decision  should be written
-void WriteExpectedDecisions(DecisionTuple& decisions, std::ostream& expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights) {
+void WriteExpectedDecisions(DecisionTuple& decisions, std::ostream& expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+{
     expected << "Decisions\n";
     if (p_doSteer)
     {
@@ -134,32 +143,43 @@ void WriteExpectedDecisions(DecisionTuple& decisions, std::ostream& expected, bo
 // Values written at the top of a file initialised with the dummy parameters above
 #define DUMMY_INITIALISATION_FILE_ENTRIES ("Player1\n" + GetTimeAsString(timeSimStart) + "\nnotABlackBox.exe\n" + GetTimeAsString(timeBlackBox) + "\nReally just a string\nenvironmentAlsoFake.xml\n0\nName of a dummy environment\n" + std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) + "\n")
 
-// Run a single test on the data storage system, containing no data except for the driver's name and the zero timestamp.
-TEST(FileDataStorageTests, NoStorageTimestampZero)
+/// @brief Run the FileDataStorage saving only minimal data and ensure the file is correct and located in the correct directory
+/// @param p_numberOfTicks How many ticks to save (default 1)
+void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
     // Initialise class, read+write no values
     DataToStore params = {false, false, false, false, false};
 
     GET_DUMMY_TIMES;
+    std::stringstream expected;
 
-    // Write a file with dummy initialization data, save timestamp 0, and shut down
+    // Write a file with dummy initialization data, save timestamp 0 as many times as needed, and shut down
     FileDataStorage fileDataStorage;
-    fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    fileDataStorage.Save(nullptr, nullptr, 0);
+    std::experimental::filesystem::path actualPath = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
+
+    for (int i = 0; i < p_numberOfTicks; i++)
+    {
+        fileDataStorage.Save(nullptr, nullptr, 0);
+        expected << "0\n";
+    }
     fileDataStorage.Shutdown();
+    expected << "END";
 
     // Check if the file is truly written to the Windows temporary directory
     std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
-    path.append(TEST_FILE_PATH);
-    std::string stringpath = path.string();
+    path.append(TEST_FILE_DIR);
+    path.append(TEST_FILE_NAME);
+    std::string expectedPath = path.string();
+    ASSERT_STREQ(expectedPath.c_str(), actualPath.string().c_str());
 
     // Read the written file
-    std::ifstream reader(stringpath.c_str());
+    std::ifstream reader(actualPath.c_str());
     std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
     reader.close();
 
     // Check contents
-    ASSERT_EQ(fileContents, DUMMY_INITIALISATION_FILE_ENTRIES + "0\nEND");
+    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
 }
 
 /// @brief Test the data storage system's Save function over 3 timesteps with certain modules enabled.
@@ -227,7 +247,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
     reader.close();
 
     // Check contents
-    ASSERT_EQ(fileContents, expected.str());
+    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
 }
 
 /// @brief Run the @link #TestDataStorageSave(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
@@ -278,7 +298,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
     reader.close();
 
     // Check contents
-    ASSERT_EQ(fileContents, expected.str());
+    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
 }
 
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved but none are made
@@ -357,5 +377,31 @@ TEST(FileDataStorageTests, DecisionsAfterData)
     reader.close();
 
     // Check contents
-    ASSERT_EQ(fileContents, expected.str());
+    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
+}
+
+/// @brief Test that the FileDataStorage creates the file and directory it should write to if the directory does not yet exist
+TEST(FileDataStorageTests, CreatesFileDirectoryIfNotExists)
+{
+    // Delete the existing test directory to ensure directories are properly created
+    if (std::experimental::filesystem::exists(TEST_FILE_DIR))
+    {
+        std::experimental::filesystem::remove_all(TEST_FILE_DIR);  // NOCOVERAGE: deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
+    }
+
+    TestNoStorageWithTimestamps();
+}
+
+/// @brief Test that the FileDataStorage works properly when the same file is written to twice.
+TEST(FileDataStorageTests, WriteSameFileTwice)
+{
+    // Write less data the second time, to ensure data is cleared and not simply overwritten
+    TestNoStorageWithTimestamps(2);
+    TestNoStorageWithTimestamps(1);
+}
+
+/// @brief Test that the FileDataStorage works properly when we only write the initial data and no ticks
+TEST(FileDataStorageTests, WriteNoTicks)
+{
+    TestNoStorageWithTimestamps(0);
 }
