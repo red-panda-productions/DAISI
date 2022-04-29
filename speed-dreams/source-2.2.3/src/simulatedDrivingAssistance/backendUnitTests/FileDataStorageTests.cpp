@@ -46,6 +46,22 @@
 /// @brief Get a tSituation variable "situation" and fill it with random data for variables relevant to the FileDataStorage system.
 #define GET_RANDOM_SITUATION tSituation situation = {};  // Currently no variables of tSituation are used yet
 
+/// @brief Write to a stream variable "expected" the data expected to be seen in a file when environment is stored
+#define WRITE_EXPECTED_ENVIRONMENT expected << std::to_string(car.pub.DynGCg.pos.x) << "\n"  \
+                                            << std::to_string(car.pub.DynGCg.pos.y) << "\n"  \
+                                            << std::to_string(car.pub.DynGCg.pos.z) << "\n"  \
+                                            << std::to_string(car.pub.DynGCg.pos.ax) << "\n" \
+                                            << std::to_string(car.pub.DynGCg.pos.ay) << "\n" \
+                                            << std::to_string(car.pub.DynGCg.pos.az) << "\n" \
+                                            << std::to_string(car.pub.DynGC.vel.x) << "\n"   \
+                                            << std::to_string(car.pub.DynGC.acc.x) << "\n"   \
+                                            << std::to_string(car.priv.gear) << "\n";
+
+#define WRITE_EXPECTED_CONTROLS expected << std::to_string(car.ctrl.steer) << "\n"    \
+                                         << std::to_string(car.ctrl.brakeCmd) << "\n" \
+                                         << std::to_string(car.ctrl.accelCmd) << "\n" \
+                                         << std::to_string(car.ctrl.clutchCmd) << "\n"
+
 /// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
 /// @param date Time to format and write to the stream.
 inline std::string GetTimeAsString(time_t p_date)
@@ -55,6 +71,64 @@ inline std::string GetTimeAsString(time_t p_date)
     char buffer[20];
     strftime(buffer, 20, "%F %T", gmtime(&p_date));
     return buffer;
+}
+
+/// @brief Generate a random DecisionTuple containing the decisions given
+/// @param random Random generator to use for determining values
+/// @param p_doSteer Whether the DecisionTuple should include a Steer Decision
+/// @param p_doBrake Whether the DecisionTuple should include a Brake Decision
+/// @param p_doAccel Whether the DecisionTuple should include a Accel Decision
+/// @param p_doGear Whether the DecisionTuple should include a Gear Decision
+/// @param p_doLights Whether the DecisionTuple should include a Lights Decision
+/// @return A random DecisionTuple containing the decisions as determined by the parameters
+DecisionTuple GenerateDecisions(Random &random, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+{
+    // Generate a random decision based on parameters
+    DecisionTuple decisions;
+    if (p_doSteer) decisions.SetSteer(random.NextFloat());
+    if (p_doBrake) decisions.SetBrake(random.NextFloat());
+    if (p_doAccel) decisions.SetAccel(random.NextFloat());
+    if (p_doGear) decisions.SetGear(random.NextInt());
+    if (p_doLights) decisions.SetLights(random.NextBool());
+    return decisions;
+}
+
+/// @brief Write to a stream the data expected to be seen in a file when decisions are stored
+/// @param decisions The tuple containing the decision data
+/// @param expected The stream containing the expected values of the file
+/// @param p_doSteer Whether a Steer decision  should be written
+/// @param p_doBrake Whether a Brake decision  should be written
+/// @param p_doAccel Whether a Accel decision  should be written
+/// @param p_doGear Whether a Gear decision  should be written
+/// @param p_doLights Whether a Lights decision  should be written
+void WriteExpectedDecisions(DecisionTuple& decisions, std::ostream& expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights) {
+    expected << "Decisions\n";
+    if (p_doSteer)
+    {
+        expected << "SteerDecision\n"
+                 << std::to_string(decisions.GetSteer()) << "\n";
+    }
+    if (p_doBrake)
+    {
+        expected << "BrakeDecision\n"
+                 << std::to_string(decisions.GetBrake()) << "\n";
+    }
+    if (p_doAccel)
+    {
+        expected << "AccelDecision\n"
+                 << std::to_string(decisions.GetAccel()) << "\n";
+    }
+    if (p_doGear)
+    {
+        expected << "GearDecision\n"
+                 << std::to_string(decisions.GetGear()) << "\n";
+    }
+    if (p_doLights)
+    {
+        expected << "LightsDecision\n"
+                 << std::to_string(decisions.GetLights()) << "\n";
+    }
+    expected << "NONE\n";
 }
 
 // Values written at the top of a file initialised with the dummy parameters above
@@ -135,22 +209,11 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
         expected << std::to_string(tickCount) << "\n";
         if (p_storeEnvironment)
         {
-            expected << std::to_string(car.pub.DynGCg.pos.x) << "\n"
-                     << std::to_string(car.pub.DynGCg.pos.y) << "\n"
-                     << std::to_string(car.pub.DynGCg.pos.z) << "\n"
-                     << std::to_string(car.pub.DynGCg.pos.ax) << "\n"
-                     << std::to_string(car.pub.DynGCg.pos.ay) << "\n"
-                     << std::to_string(car.pub.DynGCg.pos.az) << "\n"
-                     << std::to_string(car.pub.DynGC.vel.x) << "\n"
-                     << std::to_string(car.pub.DynGC.acc.x) << "\n"
-                     << std::to_string(car.priv.gear) << "\n";
+            WRITE_EXPECTED_ENVIRONMENT;
         }
         if (p_storeControls)
         {
-            expected << std::to_string(car.ctrl.steer) << "\n"
-                     << std::to_string(car.ctrl.brakeCmd) << "\n"
-                     << std::to_string(car.ctrl.accelCmd) << "\n"
-                     << std::to_string(car.ctrl.clutchCmd) << "\n";
+            WRITE_EXPECTED_CONTROLS;
         }
     }
 
@@ -193,13 +256,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
     std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
 
-    // Generate a random decision based on parameters
-    DecisionTuple decisions;
-    if (p_doSteer) decisions.SetSteer(random.NextFloat());
-    if (p_doBrake) decisions.SetBrake(random.NextFloat());
-    if (p_doAccel) decisions.SetAccel(random.NextFloat());
-    if (p_doGear) decisions.SetGear(random.NextInt());
-    if (p_doLights) decisions.SetLights(random.NextBool());
+    DecisionTuple decisions = GenerateDecisions(random, p_doSteer, p_doBrake, p_doAccel, p_doGear, p_doLights);
 
     // Save any tick
     GET_RANDOM_TICKCOUNT;
@@ -209,33 +266,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
 
     if (p_storeDecisions)
     {
-        expected << "Decisions\n";
-        if (p_doSteer)
-        {
-            expected << "SteerDecision\n"
-                     << std::to_string(decisions.GetSteer()) << "\n";
-        }
-        if (p_doBrake)
-        {
-            expected << "BrakeDecision\n"
-                     << std::to_string(decisions.GetBrake()) << "\n";
-        }
-        if (p_doAccel)
-        {
-            expected << "AccelDecision\n"
-                     << std::to_string(decisions.GetAccel()) << "\n";
-        }
-        if (p_doGear)
-        {
-            expected << "GearDecision\n"
-                     << std::to_string(decisions.GetGear()) << "\n";
-        }
-        if (p_doLights)
-        {
-            expected << "LightsDecision\n"
-                     << std::to_string(decisions.GetLights()) << "\n";
-        }
-        expected << "NONE\n";
+        WriteExpectedDecisions(decisions, expected, p_doSteer, p_doBrake, p_doAccel, p_doGear, p_doLights);
     }
     // Finish the buffer file
     expected << "END";
@@ -280,4 +311,51 @@ TEST(FileDataStorageTests, DecisionsCombinations)
     bool alwaysTrue[1]{true};
     bool booleans[2]{true, false};
     PairWiseTest(TestDataStorageSaveDecisions, alwaysTrue, 1, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
+}
+
+/// @brief Test writing decisions after data to ensure the order is as expected
+TEST(FileDataStorageTests, DecisionsAfterData)
+{
+    Random random;
+    tDataToStore params = {
+        true,
+        true,
+        true,
+        true,
+        true};
+    FileDataStorage fileDataStorage;
+
+    // Create a string to save all intended random data to
+    std::stringstream expected;
+
+    // Initialise buffer file
+    GET_DUMMY_TIMES;
+    std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    expected << DUMMY_INITIALISATION_FILE_ENTRIES << "GameState\nUserInput\n";
+
+    // Generate and write data
+    GET_RANDOM_TICKCOUNT;
+    GET_RANDOM_CAR;
+    GET_RANDOM_SITUATION;
+    fileDataStorage.Save(&car, &situation, tickCount);
+    expected << std::to_string(tickCount) << "\n";
+    WRITE_EXPECTED_ENVIRONMENT;
+    WRITE_EXPECTED_CONTROLS;
+
+    // Generate and write decisions
+    DecisionTuple decisions = GenerateDecisions(random, true, true, true, true, true);
+    fileDataStorage.SaveDecisions(decisions);
+    WriteExpectedDecisions(decisions, expected, true, true, true, true, true);
+
+    // Finish the buffer file
+    expected << "END";
+    fileDataStorage.Shutdown();
+
+    // Read the written file
+    std::ifstream reader(path);
+    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
+    reader.close();
+
+    // Check contents
+    ASSERT_EQ(fileContents, expected.str());
 }
