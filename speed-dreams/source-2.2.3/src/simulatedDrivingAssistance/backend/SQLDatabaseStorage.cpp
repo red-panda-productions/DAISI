@@ -137,6 +137,8 @@ bool SQLDatabaseStorage::OpenDatabase(
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap* connection_properties = new sql::ConnectOptionsMap();
 
+    
+
     std::cout << "hostnameString" << std::endl;
     sql::SQLString hostName(std::string("hostName"));
     std::cout << "hostnameVal" << std::endl;
@@ -151,9 +153,9 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     std::cout << "hostNameVariantImpl" << std::endl;
 
-    sql::Variant variant(hostNameValSQLString);
+    auto* variant = new sql::Variant(hostNameValSQLString);
 
-     std::cout << "hostNameVariant" << std::endl;
+    std::cout << "hostNameVariant" << std::endl;
 
     sql::ConnectPropertyVal hostNameVal(hostNameValSQLString);
     std::cout << "hostname" << std::endl;
