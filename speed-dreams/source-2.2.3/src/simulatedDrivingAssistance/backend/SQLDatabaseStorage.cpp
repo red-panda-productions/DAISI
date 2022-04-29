@@ -144,7 +144,6 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
-
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
     if (p_useEncryption == "true")
     {
