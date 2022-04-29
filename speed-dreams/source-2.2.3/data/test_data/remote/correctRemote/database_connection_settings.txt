@@ -1,6 +1,6 @@
 127.0.0.1
 3306
-root
+SDATest
 PASSWORD
-sda_schema
+sda_test
 true

@@ -1,6 +1,6 @@
 127.0.0.1
 3306
-root
-PASSWORD
-sda_schema
+SDATest
+PASSWORD123
+sda_test
 false

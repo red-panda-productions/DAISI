@@ -105,9 +105,9 @@ void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptio
     if (!FindFileDirectory(certificatesPath, caName))
         throw std::exception("Could not find certificate folder");
 
-    p_connectionProperties.emplace("sslCA", certificatesPath + "\\" + caName);
-    p_connectionProperties.emplace("sslCert", certificatesPath + "\\" + pubName);
-    p_connectionProperties.emplace("sslKey", certificatesPath + "\\" + privName);
+    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caName;
+    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubName;
+    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privName;
 }
 
 /// @brief                  Connect to the specified database.
@@ -135,50 +135,25 @@ bool SQLDatabaseStorage::OpenDatabase(
     m_driver = sql::mysql::get_mysql_driver_instance();
 
     // Set connection options, and connect to the database
-    sql::ConnectOptionsMap* connection_properties = new sql::ConnectOptionsMap();
-
-    
-
-    std::cout << "hostnameString" << std::endl;
-    sql::SQLString hostName(std::string("hostName"));
-    std::cout << "hostnameVal" << std::endl;
-    std::string hostNameValString("tcp://" + p_hostName);
-    std::cout << "hostNameValString" << std::endl;
-
-    sql::SQLString hostNameValSQLString(hostNameValString);
-
-    std::cout << "hostNameValSQLString" << std::endl;
-
-    sql::VariantImpl<sql::SQLString> variantimpl(hostNameValSQLString);
-
-    std::cout << "hostNameVariantImpl" << std::endl;
-
-    auto* variant = new sql::Variant(hostNameValSQLString);
-
-    std::cout << "hostNameVariant" << std::endl;
-
-    sql::ConnectPropertyVal hostNameVal(hostNameValSQLString);
-    std::cout << "hostname" << std::endl;
-    connection_properties->emplace(hostName, hostNameVal);
-    std::cout << "passed hostname" << std::endl;
-
-    connection_properties->emplace("userName", p_username);
-    connection_properties->emplace("password", p_password);
-    connection_properties->emplace("port", p_port);
-    connection_properties->emplace("OPT_RECONNECT", true);
-    connection_properties->emplace("CLIENT_MULTI_STATEMENTS", false);
-    connection_properties->emplace("sslEnforce", true);
+    sql::ConnectOptionsMap connection_properties;
+    connection_properties["hostName"] = "tcp://" + p_hostName;
+    connection_properties["userName"] = p_username;
+    connection_properties["password"] = p_password;
+    connection_properties["port"] = p_port;
+    connection_properties["OPT_RECONNECT"] = true;
+    connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
+    connection_properties["sslEnforce"] = true;
 
 
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
     if (p_useEncryption == "true")
     {
-        PutKeys(p_dirPath, *connection_properties);
+        PutKeys(p_dirPath, connection_properties);
     }
 
     try
     {
-        m_connection = m_driver->connect(*connection_properties);
+        m_connection = m_driver->connect(connection_properties);
     }
     catch (std::exception& e)
     {
