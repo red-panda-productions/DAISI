@@ -35,3 +35,5 @@ UnitUtilitiesCoverage.bat
 test_data
 
 temp/
+
+src/simulatedDrivingAssistance/integrationTests/IntegrationTestConfig.h

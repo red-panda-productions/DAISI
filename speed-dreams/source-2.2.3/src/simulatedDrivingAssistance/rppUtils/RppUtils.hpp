@@ -123,15 +123,16 @@ inline bool SetupSingletonsFolder()
 
 /// @brief Start running a separate executable with no command-line arguments
 /// @param p_executablePath The path to the executable.
+/// @param p_args           The arguments for the executable
 ///// Should either be an absolute path or relative to the current directory.
 ///// Path must include file extension; no default extension is assumed.
 ///// Path is assumed to refer to an existing executable file
-inline void StartExecutable(const std::string& p_executablePath)
+inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
     // WARNING: This method of starting a process is Windows-exclusive.
     // Add a different method to run a process here if a Linux build is planned.
 
-    LPSTR args = _strdup("");                                       // Create an empty string of arguments for process
+    LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
     PROCESS_INFORMATION processInformation;                         // Allocate space for PROCESS_INFORMATION
     // Start the process. Nullpointers correspond to default values for this method.
@@ -146,6 +147,24 @@ inline void StartExecutable(const std::string& p_executablePath)
                   nullptr,
                   &startupInformation,
                   &processInformation);
+}
+
+inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation)
+{
+    LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
+    STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
+    // Start the process. Nullpointers correspond to default values for this method.
+    // Inherit handles is not necessary for our use case and is thus false.
+    CreateProcess(p_executablePath.c_str(),
+                  args,
+                  nullptr,
+                  nullptr,
+                  false,
+                  0,
+                  nullptr,
+                  nullptr,
+                  &startupInformation,
+                  &p_processInformation);
 }
 
 /// @brief          Returns true with certain chance
