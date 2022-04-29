@@ -142,7 +142,12 @@ bool SQLDatabaseStorage::OpenDatabase(
     std::cout << "hostnameVal" << std::endl;
     std::string hostNameValString("tcp://" + p_hostName);
     std::cout << "hostNameValString" << std::endl;
-    sql::ConnectPropertyVal hostNameVal(hostNameValString);
+
+    sql::SQLString hostNameValSQLString(hostNameValString);
+
+    std::cout << "hostNameValSQLString" << std::endl;
+
+    sql::ConnectPropertyVal hostNameVal(hostNameValSQLString);
     std::cout << "hostname" << std::endl;
     connection_properties->emplace(hostName, hostNameVal);
     std::cout << "passed hostname" << std::endl;
