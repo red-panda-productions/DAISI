@@ -1,9 +1,6 @@
 name: CI Pipeline Tests
 
 on:
-  push:
-    branches: [ main ]
-
   # Allow manually triggering from the actions tab
   workflow_dispatch:
 
