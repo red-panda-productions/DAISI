@@ -190,31 +190,31 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 template <typename TYPE>
 struct Bits
 {
-    TYPE t;
+    TYPE T;
 };
 
 template <typename TYPE>
-static inline Bits<TYPE&> bits(TYPE& t)
+static inline Bits<TYPE&> bits(TYPE& p_t)
 {
-    return Bits<TYPE&>{t};
+    return Bits<TYPE&>{p_t};
 }
 
 template <typename TYPE>
-static inline Bits<const TYPE&> bits(const TYPE& t)
+static inline Bits<const TYPE&> bits(const TYPE& p_t)
 {
-    return Bits<const TYPE&>{t};
+    return Bits<const TYPE&>{p_t};
 }
 
 template <typename TYPE>
-static inline std::istream& operator>>(std::istream& in, Bits<TYPE&> b)
+static inline std::istream& operator>>(std::istream& p_in, Bits<TYPE&> p_b)
 {
-    return in.read(reinterpret_cast<char*>(&b.t), sizeof(TYPE));
+    return p_in.read(reinterpret_cast<char*>(&p_b.T), sizeof(TYPE));
 }
 
 template <typename TYPE>
-static inline std::ostream& operator<<(std::ostream& out, Bits<TYPE&> const b)
+static inline std::ostream& operator<<(std::ostream& p_out, Bits<TYPE&> const p_b)
 {
     // reinterpret_cast is for pointer conversion
     // static_cast is for compatible pointer conversion
-    return out.write(reinterpret_cast<const char*>(&(b.t)), sizeof(TYPE));
+    return p_out.write(reinterpret_cast<const char*>(&(p_b.T)), sizeof(TYPE));
 }
