@@ -18,7 +18,30 @@
         ASSERT_TRUE(file.is_open());                                                                \
         std::stringstream buffer;                                                                   \
         buffer << file.rdbuf();                                                                     \
+        std::cout << buffer.str() << std::endl;                                                     \
         ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
+    }
+
+/// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
+#define ASSERT_BINARY_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
+    {                                                                                                      \
+        std::cout << "Reading binary file from " << (folder + (recordingName "\\" filename)) << std::endl; \
+        std::ifstream file(folder + ("\\" recordingName "\\" filename));                                   \
+        ASSERT_TRUE(file.is_open());                                                                       \
+        std::stringstream buffer;                                                                          \
+        buffer << file.rdbuf();                                                                            \
+        file.close();                                                                                      \
+        ASSERT_TRUE(!file.is_open());                                                                      \
+        ASSERT_EQ(buffer.str().size(), contents.str().size());                                             \
+        for (int i = 0; i < buffer.str().size(); i++)                                                      \
+        {                                                                                                  \
+            char controlByte;                                                                              \
+            char testByte;                                                                                 \
+            contents >> bits(controlByte);                                                                 \
+            buffer >> bits(testByte);                                                                      \
+            std::cout << "Checking... " << testByte << " == " << controlByte << std::endl;                 \
+            ASSERT_EQ(testByte, controlByte);                                                              \
+        }                                                                                                  \
     }
 
 /// @brief Assert that the file at the given path is empty
@@ -76,8 +99,6 @@ TEST(RecorderTests, RecorderOneParamCompression)
     float inputs[1];
     double currentTime;
 
-    expected << std::fixed << std::setprecision(20);
-
     inputs[0] = 0.1f;
     currentTime = 0;
     expected << bits(currentTime) << bits(inputs[0]);
@@ -113,7 +134,7 @@ TEST(RecorderTests, RecorderOneParamCompression)
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Check file contents
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_one_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str());
+    ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_one_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected);
 }
 
 /// @brief Test the recorder with three parameters, for different compression options and scenarios
@@ -126,7 +147,6 @@ TEST(RecorderTests, RecorderThreeParamCompression)
 {
     std::string folder = GetTestingDirectory();
     std::stringstream expected;
-    expected << std::fixed << std::setprecision(20);
 
     Recorder recorder(TEST_DIRECTORY, "test_recorder_three_param_compression", 3, 0);
     float inputs[3];
@@ -163,7 +183,7 @@ TEST(RecorderTests, RecorderThreeParamCompression)
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Check file contents
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_three_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str());
+    ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_three_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected);
 }
 
 /// @brief Test the recorder without any values, only the timestamps
@@ -181,19 +201,17 @@ TEST(RecorderTests, WriteOnlyTime)
     recorder.WriteDecisions(nullptr, 435);
     recorder.WriteDecisions(nullptr, 95875);
 
-    std::stringstream expected;
-    expected << std::fixed << std::setprecision(20);
+    std::stringstream expectedUserInput;
 
-    expected << bits(0) << bits(2) << bits(1) << bits(6.9);
+    expectedUserInput << bits(0.0) << bits(2.0) << bits(1.0) << bits(6.9);
 
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str())
+    ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_time_only", USER_INPUT_RECORDING_FILE_NAME, expectedUserInput)
 
-    expected.clear();
-    expected.str() = "";
+    std::stringstream expectedDecisions;
 
-    expected << bits(0) << bits(3) << bits(435) << bits(95875);
+    expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
 
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expected.str().c_str());
+    ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
 }
 
 /// @brief Test whether the recorder can safely write to the same file twice.
@@ -208,11 +226,10 @@ TEST(RecorderTests, WriteSameFileTwice)
         recorder.WriteUserInput(nullptr, 1);
 
         std::stringstream expected;
-        expected << std::fixed << std::setprecision(20);
 
         expected << bits(0.0) << bits(1.0);
 
-        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str());
+        ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected);
     }
     // Write less timesteps the second time, such that simply overwriting the file will be caught by the test as well
     {
@@ -220,11 +237,10 @@ TEST(RecorderTests, WriteSameFileTwice)
         recorder.WriteUserInput(nullptr, 2);
 
         std::stringstream expected;
-        expected << std::fixed << std::setprecision(20);
 
         expected << bits(2.0);
 
-        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str());
+        ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected);
     }
 }
 
@@ -271,5 +287,5 @@ TEST(RecorderTests, WriteCarTests)
     std::stringstream originalBuffer;
     originalBuffer << originalFile.rdbuf();
     std::string folder = GetTestingDirectory();
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_car", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
+    ASSERT_BINARY_FILE_CONTENTS(folder, "test_recorder_car", CAR_SETTINGS_FILE_NAME, originalBuffer);
 }
