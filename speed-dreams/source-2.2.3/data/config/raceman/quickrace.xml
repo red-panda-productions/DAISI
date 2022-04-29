@@ -74,6 +74,11 @@
       <attnum name="idx" val="1"/>
       <attstr name="module" val="assistedhuman"/>
     </section>
+
+    <section name="2">
+	    <attnum name="idx" val="3"/>
+	    <attstr name="module" val="replaydriver"/>
+    </section>
   </section>
 
   <section name="Configuration">

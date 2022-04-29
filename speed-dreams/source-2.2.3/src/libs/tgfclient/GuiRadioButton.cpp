@@ -19,6 +19,7 @@ static void GfuiSelected(void* p_idv)
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
     GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->ParentControl, -1);
+    GfuiUnSelectCurrent();
 
     if (radioButton->OnChange)
         radioButton->OnChange(radioButton->Info);
@@ -35,6 +36,7 @@ static void GfuiNotSelected(void* p_idv)
     tGfuiRadioButton* radioButton = &(object->u.radiobutton);
 
     GfuiRadioButtonListSetSelected(GfuiScreen, radioButton->ParentControl, radioButton->NrInList);
+    GfuiUnSelectCurrent();
 
     if (radioButton->OnChange)
         radioButton->OnChange(radioButton->Info);
@@ -113,7 +115,8 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
         GfuiGrButtonCreate(p_scr, "data/img/radio-unchecked.png", "data/img/radio-unchecked.png",
                            "data/img/radio-unchecked-focused.png", "data/img/radio-unchecked.png",
                            p_x, p_y, p_imageWidth, p_imageHeight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
-                           (void*)(long)(object->id), GfuiNotSelected, nullptr, nullptr, nullptr);
+                           (void*)(long)(object->id), GfuiNotSelected,
+                           p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
     // Compute total height (text or buttons)
     tGfuiGrButton* selectedButton = &(gfuiGetObject(p_scr, radioButton->SelectedControl)->u.grbutton);
@@ -145,7 +148,8 @@ int GfuiRadioButtonCreate(void* p_scr, int p_font, int p_x, int p_y, int p_image
         yl += (height - gfuiFont[p_font]->getHeight()) / 2;
 
     radioButton->LabelControl =
-        GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(p_pszText));
+        GfuiLabelCreate(p_scr, p_pszText, p_font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(p_pszText),
+                        nullptr, nullptr, p_userDataOnFocus, p_onFocus, p_onFocusLost);
 
     gfuiAddObject(screen, object);
 

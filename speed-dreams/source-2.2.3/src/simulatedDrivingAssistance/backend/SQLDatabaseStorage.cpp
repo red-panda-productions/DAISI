@@ -188,7 +188,6 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
-
     EXECUTE("CREATE DATABASE IF NOT EXISTS " + p_schemaName)
     m_statement->close();
     delete m_statement;
@@ -198,6 +197,11 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     // Create a (reusable) statement
     m_statement = m_connection->createStatement();
+
+    // Our system will always use UTC times. Ensure the database knows this as well.
+    EXECUTE("SET @@session.time_zone='+00:00';");
+
+    // Ensure all tables are created
     CreateTables();
 
     return true;

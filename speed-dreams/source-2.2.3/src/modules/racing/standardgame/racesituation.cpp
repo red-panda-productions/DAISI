@@ -56,7 +56,6 @@
 #include "racenetwork.h"
 
 
-
 // The singleton.
 ReSituation* ReSituation::_pSelf = 0;
 

@@ -90,7 +90,7 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	checkbox->pInfo->userData = userData;
 	checkbox->scr = scr;
 
-        // SIMULATED DRIVING ASSISTANCE CHANGE: made focused images checked-focused and unchecked-focused
+	// SIMULATED DRIVING ASSISTANCE CHANGE: added onFocus to unchecked Radiobuttons and focused images: checked-focused and unchecked-focused
 	// Initialize the checked and unchecked button children.
 	// Warning: All the images are supposed to be the same size.
 	// TODO: Make graphic properties XML-customizable (images, ...)
@@ -107,7 +107,8 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 		GfuiGrButtonCreate(scr, "data/img/unchecked.png", "data/img/unchecked.png",
 						   "data/img/unchecked-focused.png", "data/img/unchecked.png",
 						   x, y, imagewidth, imageheight, GFUI_MIRROR_NONE, false, GFUI_MOUSE_UP,
-						   (void*)(long)(object->id), gfuiUnchecked, 0, 0, 0);
+						   (void*)(long)(object->id), gfuiUnchecked, 
+						   userDataOnFocus, onFocus, onFocusLost);
 
 	// Compute total height (text or buttons)
 	tGfuiGrButton* pCheckedBut = &(gfuiGetObject(scr, checkbox->checkId)->u.grbutton);
@@ -138,10 +139,12 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	if (height > gfuiFont[font]->getHeight())
 		yl += (height -  gfuiFont[font]->getHeight()) / 2;
 
-	checkbox->labelId =
-		GfuiLabelCreate(scr, pszText, font, xl, yl, 0, GFUI_ALIGN_HL, strlen(pszText));
+        // SIMULATED DRIVING ASSISTANCE CHANGE: added the hint to the label
+        checkbox->labelId =
+            GfuiLabelCreate(scr, pszText, font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(pszText),
+                            nullptr, nullptr, userDataOnFocus, onFocus, onFocusLost);
 
-    gfuiAddObject(screen, object);
+        gfuiAddObject(screen, object);
 
 	GfuiCheckboxSetChecked(scr, object->id, bChecked);
 
