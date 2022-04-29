@@ -52,6 +52,7 @@ void TestCloseDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage)
 /// @param p_inputFile test data to store
 void DatabaseTest(const std::string& p_password, const char* p_inputFile)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     TestOpenDatabase(sqlDatabaseStorage, p_password);
     TestInsertTestData(sqlDatabaseStorage, p_inputFile);
@@ -63,6 +64,7 @@ void DatabaseTest(const std::string& p_password, const char* p_inputFile)
 /// @param p_inputFile test data to store
 void DatabaseTimeTest(const std::string& p_password, const char* p_inputFile)
 {
+    chdir(SD_DATADIR_SRC);
     ASSERT_DURATION_LE(2, DatabaseTest(p_password, p_inputFile))
 }
 
@@ -71,6 +73,7 @@ void DatabaseTimeTest(const std::string& p_password, const char* p_inputFile)
 /// @param p_inputFile test data to store
 void CatchDatabaseError(const std::string& p_password, const char* p_inputFile)
 {
+    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     TestOpenDatabase(sqlDatabaseStorage, p_password);
     TestCatchIncorrectTestData(sqlDatabaseStorage, p_inputFile);
