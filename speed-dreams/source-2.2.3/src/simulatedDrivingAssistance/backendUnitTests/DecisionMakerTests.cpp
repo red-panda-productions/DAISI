@@ -5,11 +5,16 @@
 #include "mocks/InterventionExecutorMock.h"
 #include "mocks/ConfigMock.h"
 #include "TestUtils.h"
-#include "Recorder.h"
 #include "car.h"
 #include "raceman.h"
+#include <config.h>
+#include "mocks/FileDataStorageMock.h"
+#include "mocks/SQLDatabaseStorageMock.h"
+#include "portability.h"
+#include "../rppUtils/RppUtils.hpp"
+#include "VariableStore.h"
 
-#define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock>
+#define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock>
 
 /// @brief				 Tests if a decision can be made
 /// @param  p_isDecision Whether the black box made a decision
@@ -55,3 +60,91 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTe
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
+
+/// @brief				 Tests if the decision maker can be initialized
+/// @param  p_decisionMaker the decision maker that will be initialized
+void InitializeTest(TDecisionMaker& p_decisionMaker)
+{
+    tCarElt car;
+    tSituation situation;
+    situation.deltaTime = 108;
+    car.pub.speed = 144;
+    tTrack track;
+    track.filename = "trackfile";
+    track.name = "track_1";
+    track.version = 0;
+
+    p_decisionMaker.Config.SetUserId("1");
+
+    std::string findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
+    std::cout << SD_DATADIR_SRC << std::endl;
+    chdir(SD_DATADIR_SRC);
+    ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
+    findfilepath.append("\\blackbox.exe");
+    p_decisionMaker.Initialize(&car, &situation, &track, findfilepath, nullptr);
+
+    BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
+    FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
+
+    // TODO make comparer for car, track and situation so the entire object can be compared
+    ASSERT_TRUE(storage->EnvironmentVersion == track.version);
+    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
+    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
+}
+
+/// @brief Runs the initialize test function
+TEST(DecisionMakerTests, InitializeTest)
+{
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker);
+}
+
+/// @brief				 Tests if the data collection settings can be set correctly
+/// @param  p_dataToStore data settings that will be set.
+void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
+{
+    TDecisionMaker decisionMaker;
+    decisionMaker.SetDataCollectionSettings(p_dataToStore);
+    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
+    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().EnvironmentData == p_dataToStore.EnvironmentData);
+    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().HumanData == p_dataToStore.HumanData);
+    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().InterventionData == p_dataToStore.InterventionData);
+    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().MetaData == p_dataToStore.MetaData);
+}
+
+/// @brief				 Performs the data collection test with the given parameters
+/// @param  p_environmentData, p_carData, p_humanData , p_interventionData, p_metaData are the individual data settings
+void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData, bool p_metaData)
+{
+    DataToStore dataSettings = {
+        p_environmentData,
+        p_carData,
+        p_humanData,
+        p_interventionData,
+        p_metaData};
+    SetDataCollectionSettingsTest(dataSettings);
+}
+
+/// @brief Does the SetDataCollectionSettingsTest with all possible boolean combinations
+BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
+bool arr[2]{false, true};
+END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2, arr, 2);
+
+/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct path
+TEST(DecisionMakerTests, RaceStopTest)
+{
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker);
+    chdir(SD_DATADIR_SRC);
+    ASSERT_NO_THROW(decisionMaker.RaceStop());
+    std::experimental::filesystem::path path = *static_cast<std::experimental::filesystem::path*>(VariableStore::GetInstance().Variables[0]);
+    ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
+}
+
+/// @brief Tests if the GetFileDataStorage correctly gets the variable
+TEST(DecisionMakerTests, GetFileDataStorageTest)
+{
+    TDecisionMaker decisionMaker;
+    FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
+    ASSERT_FALSE(storage == nullptr);
+}

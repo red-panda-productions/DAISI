@@ -7,10 +7,13 @@
 #include "../rppUtils/Random.hpp"
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
+#include <config.h>
 
 /// @brief Initialize SMediator with a car which values are set to 0
 void InitializeMediator()
 {
+    GfInit();
+    GfSetDataDir(SD_DATADIR_SRC);
     SetupSingletonsFolder();
 
     tCarElt car;
@@ -36,7 +39,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     Random random;
 
     BrakeDecision brakeDecision;
-    float controlBrakeAmount = random.NextFloat();
+    float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
     brakeDecision.RunInterveneCommands();
 
@@ -54,7 +57,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
-    float controlSteerAmount = random.NextFloat();
+    float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
     steerDecision.SteerAmount = controlSteerAmount;
     steerDecision.RunInterveneCommands();
 
@@ -73,7 +76,11 @@ TEST(DecisionsTest, RunInterveneDecisions)
 TEST(DecisionTests, BrakeRunIndicateTest)
 {
     InitializeMediator();
-    GfInit();
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     BrakeDecision brakeDecision;
     brakeDecision.BrakeAmount = 1;
@@ -99,7 +106,11 @@ TEST(DecisionTests, BrakeRunIndicateTest)
 TEST(DecisionsTest, SteerRunIndicateTests)
 {
     InitializeMediator();
-    GfInit();
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     SteerDecision steerDecision;
     steerDecision.SteerAmount = -1;
@@ -123,8 +134,8 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST(DecisionsTest, AccelRunIndicateTests)
 {
+    IndicatorConfig::ClearInstance();
     InitializeMediator();
-    GfInit();
 
     AccelDecision accelDecision;
     accelDecision.AccelAmount = 1;

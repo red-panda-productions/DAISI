@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Driver.h"
 
-static const int s_maxBotAmount = 1;
+#define MAX_BOT_AMOUNT 1
 
 static void InitTrack(int p_index, tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
 static void Drive(int p_index, tCarElt* p_car, tSituation* p_situation);
@@ -13,9 +13,9 @@ static void EndRace(int p_index, tCarElt* p_car, tSituation* p_situation);
 static int PitCmd(int p_index, tCarElt* p_car, tSituation* p_situation);
 static void Shutdown(int p_index);
 
-/// @brief All the assisted human drivers.
+/// @brief All the replay drivers.
 /// Since it's technically possible to have more than 1 bot of the same type in a race it needs to be an array.
-static Driver* s_drivers[s_maxBotAmount];
+static Driver* s_drivers[MAX_BOT_AMOUNT];
 
 /// @brief Find the driver with the given index and return it. Taking into account that we save drivers 0-based but the index is 1-based
 /// @param p_index The index of the driver to find
@@ -55,7 +55,7 @@ static int InitFuncPt(int p_index, void* p_pt)
     itf->index = p_index;
 
     // Create the driver, speed-dreams counts from 1 so subtract 1 from the index to get the array index.
-    s_drivers[p_index - 1] = new Driver(p_index, "assistedhuman");
+    s_drivers[p_index - 1] = new Driver(p_index, "replaydriver");
 
     return 0;
 }
@@ -91,8 +91,8 @@ extern "C" int moduleWelcome(const tModWelcomeIn* p_welcomeIn, tModWelcomeOut* p
 /// @return 0 if no error occurs, 1 if an error does occur
 extern "C" int moduleInitialize(tModInfo* p_modInfo)
 {
-    p_modInfo->name = "assisted human";
-    p_modInfo->desc = "Human driver with assistant";
+    p_modInfo->name = "replay driver";
+    p_modInfo->desc = "replay driver";
     p_modInfo->fctInit = InitFuncPt;
     p_modInfo->index = 1;
     p_modInfo->gfId = 0;

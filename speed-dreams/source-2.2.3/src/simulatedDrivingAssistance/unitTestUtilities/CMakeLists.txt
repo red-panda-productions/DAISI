@@ -13,13 +13,15 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-SET(_SOURCES PairWiseTestGenerator.cpp)
+SET(_SOURCES PairWiseTestGenerator.cpp 
+			 VariableStore.cpp)
 
 SET(_INLINES PairWiseTestGenerator.inl)
 
 SET(_HEADERS TestUtils.h
 			 ../rppUtils/Random.hpp
-			 PairWiseTestGenerator.h)
+			 PairWiseTestGenerator.h
+			 VariableStore.h)
 
 SD_ADD_LIBRARY(unitTestUtilities STATIC ${_INLINES} ${_SOURCES} ${_HEADERS} )
 SET_TARGET_PROPERTIES(unitTestUtilities PROPERTIES LINKER_LANGUAGE CXX)
