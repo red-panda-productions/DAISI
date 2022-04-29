@@ -32,4 +32,3 @@ private:
     int m_userParamAmount;
     int m_decisionParamAmount;
 };
-

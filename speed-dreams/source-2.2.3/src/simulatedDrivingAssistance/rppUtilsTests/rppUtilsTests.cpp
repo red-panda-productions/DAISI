@@ -9,7 +9,6 @@ TEST(RppUtilsTests, SaveAsBitsTest)
 
     Random random;
 
-
     int controlInt = random.NextInt();
     float controlFloat = random.NextFloat();
     unsigned long controlUlong = random.NextUInt();
