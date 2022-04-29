@@ -35,7 +35,7 @@ jobs:
       uses: Fettpet/setup-mysql@v1
       with:
         mysql-version: 8.0
-        username: test
+        username: SDATest
         password: PASSWORD
 
     - uses: ilammy/msvc-dev-cmd@v1
