@@ -149,7 +149,11 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     sql::VariantImpl<sql::SQLString> variantimpl(hostNameValSQLString);
 
-    std::cout << "hostNameVariant" << std::endl;
+    std::cout << "hostNameVariantImpl" << std::endl;
+
+    sql::Variant variant(hostNameValSQLString);
+
+     std::cout << "hostNameVariant" << std::endl;
 
     sql::ConnectPropertyVal hostNameVal(hostNameValSQLString);
     std::cout << "hostname" << std::endl;
