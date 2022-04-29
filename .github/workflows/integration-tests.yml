@@ -1,8 +1,13 @@
 name: CI Pipeline Tests
 
 on:
+  # Run everyday at 3 am
+  schedule:
+  - cron: "0 3 * * *"
+
   # Allow manually triggering from the actions tab
   workflow_dispatch:
+
 
 
 env:
