@@ -95,6 +95,14 @@ void Recorder::WriteDecisions(const float* p_decisions, const unsigned long p_ti
     WriteRecording(p_decisions, p_timestamp, m_decisionsRecordingFile, m_decisionParamAmount, false, nullptr);
 }
 
+#define CREATE_WRITE_RECORDING_DEFINITION(type)                           \
+    template void Recorder::WriteRecording<type>(const float* p_input,    \
+                                                 type p_currentTime,      \
+                                                 std::ofstream& p_file,   \
+                                                 const int p_paramAmount, \
+                                                 bool p_useCompression,   \
+                                                 float* p_prevInput);
+
 /// @brief  Writes a float array to the m_recordingFile,
 ///	    	with the current time of the simulation.
 ///	    	Can do compression if p_compression is true,
@@ -106,8 +114,9 @@ void Recorder::WriteDecisions(const float* p_decisions, const unsigned long p_ti
 /// @param p_paramAmount    Amount of parameters to write, should be <= size of p_input
 /// @param p_useCompression boolean value if compression is done
 /// @param p_prevInput      the previous input, used for compression, length should be p_paramAmount and not nullptr if p_useCompression is true.
+template <typename TIME>
 void Recorder::WriteRecording(const float* p_input,
-                              double p_currentTime,
+                              TIME p_currentTime,
                               std::ofstream& p_file,
                               const int p_paramAmount,
                               bool p_useCompression,
@@ -135,6 +144,10 @@ void Recorder::WriteRecording(const float* p_input,
     }
     p_file.flush();
 }
+
+CREATE_WRITE_RECORDING_DEFINITION(int)
+CREATE_WRITE_RECORDING_DEFINITION(unsigned long)
+CREATE_WRITE_RECORDING_DEFINITION(double)
 
 /// @brief				    Checks if the input is the same as the previous input
 /// @param p_input		    The new input that should be recorded.

@@ -1,0 +1,4 @@
+@echo off
+            cd /d E:\source\repos\SimulatedDrivingAssistanceSystem\speed-dreams\source-2.2.3\out\build\x86-Debug\src\simulatedDrivingAssistance\rppUtilsTests
+            "E:/OpenCppCoverage/OpenCppCoverage.exe" --sources=E:\source\repos\SimulatedDrivingAssistanceSystem\speed-dreams\source-2.2.3\src\simulatedDrivingAssistance\rppUtils --export_type=html:E:\source\repos\SimulatedDrivingAssistanceSystem\speed-dreams\source-2.2.3\out\build\x86-Debug\src\simulatedDrivingAssistance\rppUtilsTests\RppUtilsCoverage  --excluded_line_regex .*@NOCOVERAGE.* -- E:\source\repos\SimulatedDrivingAssistanceSystem\speed-dreams\source-2.2.3\out\build\x86-Debug\bin\rppUtilsTests.exe
+            @start E:\source\repos\SimulatedDrivingAssistanceSystem\speed-dreams\source-2.2.3\out\build\x86-Debug\src\simulatedDrivingAssistance\rppUtilsTests\RppUtilsCoverage\index.html
