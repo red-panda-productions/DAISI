@@ -94,24 +94,23 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
     if (decisionMade)
     {
-        std::cout << "Tickcount: " << p_tickCount << std::endl;
         m_fileBufferStorage.SaveDecisions(m_decision);
+
+        if (m_recorder)
+        {
+            const float decisionValues[DECISION_RECORD_PARAM_AMOUNT] =
+                {m_decision.GetSteer(),
+                 m_decision.GetBrake(),
+                 m_decision.GetAccel(),
+                 m_decision.GetGear()};
+            m_recorder->WriteDecisions(decisionValues, p_tickCount);
+        }
     }
 
     int decisionCount = 0;
     IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
-
-    if (m_recorder)
-    {
-        const float decisionValues[DECISION_RECORD_PARAM_AMOUNT] =
-            {m_decision.GetSteer(),
-             m_decision.GetBrake(),
-             m_decision.GetAccel(),
-             m_decision.GetGear()};
-        m_recorder->WriteDecisions(decisionValues, p_tickCount);
-    }
 
     return decisionMade;
 }

@@ -46,6 +46,8 @@ private:
     BlackBoxData* m_currentData = nullptr;
 
     PointerManager m_pointerManager;
+
+    bool m_asyncConnection = false;
 };
 
 /// @brief The standard SocketBlackBox type

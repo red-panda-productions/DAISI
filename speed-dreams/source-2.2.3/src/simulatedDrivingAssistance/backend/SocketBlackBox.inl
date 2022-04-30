@@ -56,6 +56,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     if (p_connectAsync)
     {
         m_server.ConnectAsync();
+        m_asyncConnection = true;
         std::cout << "a";
     }
     std::cout << "sync" << std::endl;
@@ -173,7 +174,10 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
 template <class BlackBoxData, class PointerManager>
 bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
 {
-    if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
+    if (!m_asyncConnection)
+        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    else if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE))
+        return false;
     msgpack::sbuffer sbuffer;
 
     delete m_currentData;
