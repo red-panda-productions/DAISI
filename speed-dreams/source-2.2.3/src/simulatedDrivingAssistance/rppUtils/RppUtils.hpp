@@ -185,6 +185,27 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
     return true;
 }
 
+/// @brief Assert the contents of the binary file in filePath match the binary stream contents
+#define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
+    {                                                                        \
+        std::cout << "Reading binary file from " << (filePath) << std::endl; \
+        std::ifstream file(filePath);                                        \
+        ASSERT_TRUE(file.is_open());                                         \
+        std::stringstream buffer;                                            \
+        buffer << file.rdbuf();                                              \
+        file.close();                                                        \
+        ASSERT_TRUE(!file.is_open());                                        \
+        ASSERT_EQ(buffer.str().size(), (contents).str().size());             \
+        for (int i = 0; i < buffer.str().size(); i++)                        \
+        {                                                                    \
+            char controlByte;                                                \
+            char testByte;                                                   \
+            (contents) >> bits(controlByte);                                 \
+            buffer >> bits(testByte);                                        \
+            ASSERT_EQ(testByte, controlByte);                                \
+        }                                                                    \
+    }
+
 /// @brief The following functions are used to write binary values to files.
 ///        Cannot write strings (though this can be added)
 template <typename TYPE>
