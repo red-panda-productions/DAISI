@@ -102,7 +102,11 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
     if (m_recorder)
     {
-        const float decisionValues[DECISION_RECORD_PARAM_AMOUNT] = {m_decision.GetBrake(), m_decision.GetSteer()};
+        const float decisionValues[DECISION_RECORD_PARAM_AMOUNT] =
+            {m_decision.GetSteer(),
+             m_decision.GetBrake(),
+             m_decision.GetAccel(),
+             m_decision.GetGear()};
         m_recorder->WriteDecisions(decisionValues, p_tickCount);
     }
 
