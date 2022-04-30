@@ -35,10 +35,10 @@ void BlackBoxSide()
     Random random;
     BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
     BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
-    BlackBoxDataMock situations[2]{ mock, exampleSituation };
+    BlackBoxDataMock situations[2]{mock, exampleSituation};
 
     /// intializes the black box with 2 tests
-    bb.Initialize(mock, situations, 2);
+    bb.Initialize(true, mock, situations, 2);
     DecisionTuple decisions;
 
     tCarElt car;
@@ -71,10 +71,10 @@ TEST(SocketBlackBoxTests, SocketTest)
     // creates a connection between the black box and a client
     SETUP(BlackBoxSide)
 
-        std::vector<std::string> order = {
-            "ACTIONORDER",
-            "Steer",
-            "Brake" };
+    std::vector<std::string> order = {
+        "ACTIONORDER",
+        "Steer",
+        "Brake"};
 
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
@@ -106,7 +106,7 @@ TEST(SocketBlackBoxTests, SocketTest)
     // send back result of test 1
     std::vector<std::string> action{
         std::to_string(STEER_VALUE),
-        std::to_string(BRAKE_VALUE) };
+        std::to_string(BRAKE_VALUE)};
     sbuffer.clear();
     msgpack::pack(sbuffer, action);
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
@@ -171,26 +171,26 @@ TEST(SocketBlackBoxTests, NoOrderSend)
 {
     SETUP(FailingBlackBox)
 
-        std::vector<std::string> order = {
-            "Speed",
-            "TopSpeed",
-            "Gear",
-            "Headlights",
-            "SteerCmd",
-            "AccelCmd",
-            "BrakeCmd",
-            "ClutchCmd",
-            "Offroad",
-            "ToMiddle",
-            "ToLeft",
-            "ToRight",
-            "ToStart",
-            "TimeOfDay",
-            "Clouds",
-            "Rain",
-            "ACTIONORDER",
-            "Steer",
-            "Brake" };
+    std::vector<std::string> order = {
+        "Speed",
+        "TopSpeed",
+        "Gear",
+        "Headlights",
+        "SteerCmd",
+        "AccelCmd",
+        "BrakeCmd",
+        "ClutchCmd",
+        "Offroad",
+        "ToMiddle",
+        "ToLeft",
+        "ToRight",
+        "ToStart",
+        "TimeOfDay",
+        "Clouds",
+        "Rain",
+        "ACTIONORDER",
+        "Steer",
+        "Brake"};
 
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
@@ -203,26 +203,26 @@ TEST(SocketBlackBoxTests, NoActionOrderSend)
 {
     SETUP(FailingBlackBox)
 
-        std::vector<std::string> order = {
-            "DATAORDER",
-            "Speed",
-            "TopSpeed",
-            "Gear",
-            "Headlights",
-            "SteerCmd",
-            "AccelCmd",
-            "BrakeCmd",
-            "ClutchCmd",
-            "Offroad",
-            "ToMiddle",
-            "ToLeft",
-            "ToRight",
-            "ToStart",
-            "TimeOfDay",
-            "Clouds",
-            "Rain",
-            "Steer",
-            "Brake" };
+    std::vector<std::string> order = {
+        "DATAORDER",
+        "Speed",
+        "TopSpeed",
+        "Gear",
+        "Headlights",
+        "SteerCmd",
+        "AccelCmd",
+        "BrakeCmd",
+        "ClutchCmd",
+        "Offroad",
+        "ToMiddle",
+        "ToLeft",
+        "ToRight",
+        "ToStart",
+        "TimeOfDay",
+        "Clouds",
+        "Rain",
+        "Steer",
+        "Brake"};
 
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
