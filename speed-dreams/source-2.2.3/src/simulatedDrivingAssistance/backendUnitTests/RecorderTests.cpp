@@ -12,7 +12,7 @@
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
 #define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
-        ASSERT_BINARY_FILE_CONTENTS(folder + ("\\" recordingName "\\" filename), contents)
+    ASSERT_BINARY_FILE_CONTENTS(folder + ("\\" recordingName "\\" filename), contents)
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
 #define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
