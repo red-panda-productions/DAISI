@@ -1,4 +1,4 @@
-name: CI Pipeline Tests
+name: CI Pipeline Integration Tests
 
 on:
   # Run everyday at 3 am
