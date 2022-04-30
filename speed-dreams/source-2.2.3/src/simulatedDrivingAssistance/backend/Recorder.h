@@ -18,7 +18,9 @@ public:
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
     void WriteDecisions(const float* p_decisions, unsigned long p_timestamp);
-    static void WriteRecording(const float* p_input, double p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
+
+    template <typename TIME>
+    void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
 private:
     static bool CheckSameInput(const float* p_input, const float* p_prevInput, int p_paramAmount);
