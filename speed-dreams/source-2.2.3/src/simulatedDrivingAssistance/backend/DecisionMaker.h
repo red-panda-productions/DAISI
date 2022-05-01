@@ -24,7 +24,7 @@ class DecisionMaker
 public:
     SDAConfig Config;
 
-    void Initialize(bool p_connectAsync, tCarElt* p_initialCar, tSituation* p_initialSituation, tTrack* p_track, const std::string& p_blackBoxExecutablePath,
+    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, tTrack* p_track, const std::string& p_blackBoxExecutablePath,
                     Recorder* p_recorder, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
 
     bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount);

@@ -20,6 +20,7 @@ private:
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+    bool m_asyncConnection = true;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -47,4 +48,6 @@ public:
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType GetInterventionType() const;
+
+    bool GetSyncOption() const;
 };

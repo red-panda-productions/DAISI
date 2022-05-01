@@ -114,3 +114,10 @@ const char* SDAConfig::GetBlackBoxFilePath() const
 {
     return m_blackBoxFilePath;
 }
+
+/// @brief Gets the blackbox connection sync option
+/// @return False if sync, true if async
+bool SDAConfig::GetSyncOption() const
+{
+    return m_asyncConnection;
+}

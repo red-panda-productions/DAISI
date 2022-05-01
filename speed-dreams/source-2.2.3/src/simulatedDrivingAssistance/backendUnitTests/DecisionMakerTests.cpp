@@ -81,7 +81,7 @@ void InitializeTest(TDecisionMaker& p_decisionMaker)
     chdir(SD_DATADIR_SRC);
     ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
     findfilepath.append("\\blackbox.exe");
-    p_decisionMaker.Initialize(true, &car, &situation, &track, findfilepath, nullptr);
+    p_decisionMaker.Initialize(&car, &situation, &track, findfilepath, nullptr);
 
     BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
