@@ -115,6 +115,13 @@ const char* SDAConfig::GetBlackBoxFilePath() const
     return m_blackBoxFilePath;
 }
 
+/// @brief Set m_asyncConnection to p_asyncConnection
+/// @param p_asyncConnection value to set m_asyncConnection to
+void SDAConfig::SetSyncOption(bool p_asyncConnection)
+{
+    m_asyncConnection = p_asyncConnection;
+}
+
 /// @brief Gets the blackbox connection sync option
 /// @return False if sync, true if async
 bool SDAConfig::GetSyncOption() const

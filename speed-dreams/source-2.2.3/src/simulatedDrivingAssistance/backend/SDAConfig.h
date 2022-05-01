@@ -49,5 +49,6 @@ public:
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType GetInterventionType() const;
 
+    void SetSyncOption(bool p_asyncConnection);
     bool GetSyncOption() const;
 };
