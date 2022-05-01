@@ -312,7 +312,6 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved but none are made
 TEST_CASE(FileDataStorageTests, DecisionsNoneStored, TestDataStorageSaveDecisions, (true, false, false, false, false, false))
 
-
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved and all decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsAllStored, TestDataStorageSaveDecisions, (true, true, true, true, true, true))
 
@@ -348,7 +347,9 @@ TEST(FileDataStorageTests, DecisionsAfterData)
     // Initialise buffer file
     GET_DUMMY_TIMES;
     std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES << "GameState" << std::endl << "UserInput" << std::endl;
+    expected << DUMMY_INITIALISATION_FILE_ENTRIES
+             << "GameState" << std::endl
+             << "UserInput" << std::endl;
 
     // Generate and write data
     GET_RANDOM_TICKCOUNT;
