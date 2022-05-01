@@ -55,20 +55,20 @@
 #define GET_RANDOM_SITUATION tSituation situation = {};  // Currently no variables of tSituation are used yet
 
 /// @brief Write to a stream variable "expected" the data expected to be seen in a file when environment is stored
-#define WRITE_EXPECTED_ENVIRONMENT expected << std::to_string(car.pub.DynGCg.pos.x) << "\n"  \
-                                            << std::to_string(car.pub.DynGCg.pos.y) << "\n"  \
-                                            << std::to_string(car.pub.DynGCg.pos.z) << "\n"  \
-                                            << std::to_string(car.pub.DynGCg.pos.ax) << "\n" \
-                                            << std::to_string(car.pub.DynGCg.pos.ay) << "\n" \
-                                            << std::to_string(car.pub.DynGCg.pos.az) << "\n" \
-                                            << std::to_string(car.pub.DynGC.vel.x) << "\n"   \
-                                            << std::to_string(car.pub.DynGC.acc.x) << "\n"   \
-                                            << std::to_string(car.priv.gear) << "\n";
+#define WRITE_EXPECTED_ENVIRONMENT expected << std::to_string(car.pub.DynGCg.pos.x) << std::endl  \
+                                            << std::to_string(car.pub.DynGCg.pos.y) << std::endl  \
+                                            << std::to_string(car.pub.DynGCg.pos.z) << std::endl  \
+                                            << std::to_string(car.pub.DynGCg.pos.ax) << std::endl \
+                                            << std::to_string(car.pub.DynGCg.pos.ay) << std::endl \
+                                            << std::to_string(car.pub.DynGCg.pos.az) << std::endl \
+                                            << std::to_string(car.pub.DynGC.vel.x) << std::endl   \
+                                            << std::to_string(car.pub.DynGC.acc.x) << std::endl   \
+                                            << std::to_string(car.priv.gear) << std::endl;
 
-#define WRITE_EXPECTED_CONTROLS expected << std::to_string(car.ctrl.steer) << "\n"    \
-                                         << std::to_string(car.ctrl.brakeCmd) << "\n" \
-                                         << std::to_string(car.ctrl.accelCmd) << "\n" \
-                                         << std::to_string(car.ctrl.clutchCmd) << "\n"
+#define WRITE_EXPECTED_CONTROLS expected << std::to_string(car.ctrl.steer) << std::endl    \
+                                         << std::to_string(car.ctrl.brakeCmd) << std::endl \
+                                         << std::to_string(car.ctrl.accelCmd) << std::endl \
+                                         << std::to_string(car.ctrl.clutchCmd) << std::endl
 
 /// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
 /// @param date Time to format and write to the stream.
@@ -111,37 +111,45 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
 /// @param p_doLights Whether a Lights decision  should be written
 void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
-    p_expected << "Decisions\n";
+    p_expected << "Decisions" << std::endl;
     if (p_doSteer)
     {
-        p_expected << "SteerDecision\n"
-                   << std::to_string(p_decisions.GetSteer()) << "\n";
+        p_expected << "SteerDecision" << std::endl
+                   << std::to_string(p_decisions.GetSteer()) << std::endl;
     }
     if (p_doBrake)
     {
-        p_expected << "BrakeDecision\n"
-                   << std::to_string(p_decisions.GetBrake()) << "\n";
+        p_expected << "BrakeDecision" << std::endl
+                   << std::to_string(p_decisions.GetBrake()) << std::endl;
     }
     if (p_doAccel)
     {
-        p_expected << "AccelDecision\n"
-                   << std::to_string(p_decisions.GetAccel()) << "\n";
+        p_expected << "AccelDecision" << std::endl
+                   << std::to_string(p_decisions.GetAccel()) << std::endl;
     }
     if (p_doGear)
     {
-        p_expected << "GearDecision\n"
-                   << std::to_string(p_decisions.GetGear()) << "\n";
+        p_expected << "GearDecision" << std::endl
+                   << std::to_string(p_decisions.GetGear()) << std::endl;
     }
     if (p_doLights)
     {
-        p_expected << "LightsDecision\n"
-                   << std::to_string(p_decisions.GetLights()) << "\n";
+        p_expected << "LightsDecision" << std::endl
+                   << std::to_string(p_decisions.GetLights()) << std::endl;
     }
-    p_expected << "NONE\n";
+    p_expected << "NONE" << std::endl;
 }
 
 // Values written at the top of a file initialised with the dummy parameters above
-#define DUMMY_INITIALISATION_FILE_ENTRIES ("Player1\n" + GetTimeAsString(timeSimStart) + "\nnotABlackBox.exe\n" + GetTimeAsString(timeBlackBox) + "\nReally just a string\nenvironmentAlsoFake.xml\n0\nName of a dummy environment\n" + std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) + "\n")
+#define DUMMY_INITIALISATION_FILE_ENTRIES "Player1" << std::endl                                  \
+                                                    << GetTimeAsString(timeSimStart) << std::endl \
+                                                    << "notABlackBox.exe" << std::endl            \
+                                                    << GetTimeAsString(timeBlackBox) << std::endl \
+                                                    << "Really just a string" << std::endl        \
+                                                    << "environmentAlsoFake.xml" << std::endl     \
+                                                    << "0" << std::endl                           \
+                                                    << "Name of a dummy environment" << std::endl \
+                                                    << std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) << std::endl
 
 /// @brief Run the FileDataStorage saving only minimal data and ensure the file is correct and located in the correct directory
 /// @param p_numberOfTicks How many ticks to save (default 1)
@@ -161,7 +169,7 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
     for (int i = 0; i < p_numberOfTicks; i++)
     {
         fileDataStorage.Save(nullptr, nullptr, 0);
-        expected << "0\n";
+        expected << "0" << std::endl;
     }
     fileDataStorage.Shutdown();
     expected << "END";
@@ -210,11 +218,11 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
     if (p_storeEnvironment)
     {
-        expected << "GameState\n";
+        expected << "GameState" << std::endl;
     }
     if (p_storeControls)
     {
-        expected << "UserInput\n";
+        expected << "UserInput" << std::endl;
     }
 
     for (int i = 0; i < 3; i++)
@@ -226,7 +234,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
         fileDataStorage.Save(&car, &situation, tickCount);
 
         // Define our expectations
-        expected << std::to_string(tickCount) << "\n";
+        expected << std::to_string(tickCount) << std::endl;
         if (p_storeEnvironment)
         {
             WRITE_EXPECTED_ENVIRONMENT;
@@ -281,7 +289,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
     // Save any tick
     GET_RANDOM_TICKCOUNT;
     fileDataStorage.Save(nullptr, nullptr, tickCount);
-    expected << std::to_string(tickCount) << "\n";
+    expected << std::to_string(tickCount) << std::endl;
     fileDataStorage.SaveDecisions(decisions);
 
     if (p_storeDecisions)
@@ -351,14 +359,14 @@ TEST(FileDataStorageTests, DecisionsAfterData)
     // Initialise buffer file
     GET_DUMMY_TIMES;
     std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES << "GameState\nUserInput\n";
+    expected << DUMMY_INITIALISATION_FILE_ENTRIES << "GameState" << std::endl << "UserInput" << std::endl;
 
     // Generate and write data
     GET_RANDOM_TICKCOUNT;
     GET_RANDOM_CAR;
     GET_RANDOM_SITUATION;
     fileDataStorage.Save(&car, &situation, tickCount);
-    expected << std::to_string(tickCount) << "\n";
+    expected << std::to_string(tickCount) << std::endl;
     WRITE_EXPECTED_ENVIRONMENT;
     WRITE_EXPECTED_CONTROLS;
 
