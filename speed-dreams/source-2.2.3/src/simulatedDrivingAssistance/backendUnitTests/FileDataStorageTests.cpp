@@ -310,28 +310,17 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
 }
 
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved but none are made
-TEST(FileDataStorageTests, DecisionsNoneStored)
-{
-    TestDataStorageSaveDecisions(true, false, false, false, false, false);
-}
+TEST_CASE(FileDataStorageTests, DecisionsNoneStored, TestDataStorageSaveDecisions, (true, false, false, false, false, false))
+
 
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved and all decisions are made
-TEST(FileDataStorageTests, DecisionsAllStored)
-{
-    TestDataStorageSaveDecisions(true, true, true, true, true, true);
-}
+TEST_CASE(FileDataStorageTests, DecisionsAllStored, TestDataStorageSaveDecisions, (true, true, true, true, true, true))
 
 /// @brief Test whether the FileDataStorage stores properly when decisions should not be saved and none are made
-TEST(FileDataStorageTests, DecisionsDisabledNoDecisions)
-{
-    TestDataStorageSaveDecisions(false, false, false, false, false, false);
-}
+TEST_CASE(FileDataStorageTests, DecisionsDisabledNoDecisions, TestDataStorageSaveDecisions, (false, false, false, false, false, false))
 
 /// @brief Test whether the FileDataStorage stores properly when decisions should not be saved but all decisions are made
-TEST(FileDataStorageTests, DecisionsDisabledAllDecisions)
-{
-    TestDataStorageSaveDecisions(false, true, true, true, true, true);
-}
+TEST_CASE(FileDataStorageTests, DecisionsDisabledAllDecisions, TestDataStorageSaveDecisions, (false, true, true, true, true, true))
 
 /// @brief Test whether the FileDataStorage stores properly for every combination of decision made
 TEST(FileDataStorageTests, DecisionsCombinations)
@@ -409,7 +398,4 @@ TEST(FileDataStorageTests, WriteSameFileTwice)
 }
 
 /// @brief Test that the FileDataStorage works properly when we only write the initial data and no ticks
-TEST(FileDataStorageTests, WriteNoTicks)
-{
-    TestNoStorageWithTimestamps(0);
-}
+TEST_CASE(FileDataStorageTests, WriteNoTicks, TestNoStorageWithTimestamps, (0))
