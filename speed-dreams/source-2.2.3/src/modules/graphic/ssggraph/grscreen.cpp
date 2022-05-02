@@ -32,9 +32,14 @@
 #include "grrain.h"
 #include "grutil.h"
 
+#include "Mediator.h"
+
 static char buf[1024];
 static char path[1024];
 static char path2[1024];
+
+// SIMULATED DRIVING ASSISTANCE: store the last intervention type for toggling on/off
+InterventionType m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
 
 cGrScreen::cGrScreen(int myid)
 {
@@ -94,6 +99,14 @@ cGrScreen::selectBoard(const long brd)
     board->selectBoard(brd);
 }
 
+// SIMULATED DRIVING ASSISTANCE
+/// @brief Toggles the interventions on/off (so between the selected type and NO_SIGNALS)
+void cGrScreen::ToggleIntervention()
+{
+    InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+    SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
+    m_prevIntervention = currentType;
+}
 
 int cGrScreen::isInScreen(int x, int y)
 {
