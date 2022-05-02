@@ -21,7 +21,7 @@ public:
     ~Recorder();
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const DecisionTuple& p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
 
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
