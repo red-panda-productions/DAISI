@@ -104,7 +104,7 @@ void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const unsigned l
             p_decisions->GetAccel(),
             p_decisions->GetBrake(),
             static_cast<float>(p_decisions->GetGear())};
-    WriteRecording(decisionValues, p_timestamp, m_decisionsRecordingFile, m_decisionParamAmount, false, nullptr);
+    WriteRecording(decisionValues, p_timestamp, m_decisionsRecordingFile, DECISION_RECORD_PARAM_AMOUNT, false, nullptr);
 }
 
 #define CREATE_WRITE_RECORDING_DEFINITION(type)                           \
