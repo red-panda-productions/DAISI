@@ -90,13 +90,13 @@ void Recorder::WriteUserInput(const float* p_userInput, double p_timestamp, cons
 /// @brief Write decision data to the output file
 /// @param p_userInput Decision data to write, should be an array >= m_decisionParamAmount
 /// @param p_timestamp Timestamp at which the decision data occured
-void Recorder::WriteDecisions(DecisionTuple p_decisions, const unsigned long p_timestamp)
+void Recorder::WriteDecisions(const DecisionTuple& p_decisions, const unsigned long p_timestamp)
 {
-    const float decisionValues[4] =
+    const float decisionValues[DECISION_RECORD_PARAM_AMOUNT] =
         {p_decisions.GetSteer(),
          p_decisions.GetBrake(),
          p_decisions.GetAccel(),
-         p_decisions.GetGear()};
+         static_cast<float>(p_decisions.GetGear())};
     WriteRecording(decisionValues, p_timestamp, m_decisionsRecordingFile, m_decisionParamAmount, false, nullptr);
 }
 

@@ -13,8 +13,6 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-#define DECISION_RECORD_PARAM_AMOUNT 4
-
 /// @brief                     A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox     The SocketBlackBox type
 /// @tparam SDAConfig          The config type

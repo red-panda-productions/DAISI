@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <car.h>
+#include "DecisionTuple.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -13,11 +14,9 @@
 class RecorderMock
 {
 public:
-    RecorderMock(){};
-    ~RecorderMock(){};
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(DecisionTuple p_decisions, unsigned long p_timestamp)
+    void WriteDecisions(const DecisionTuple& p_decisions, unsigned long p_timestamp)
     {
         CurrentDecisions = p_decisions;
         CurrentTimestamp = p_timestamp;

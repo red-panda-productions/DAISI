@@ -14,7 +14,6 @@ private:
     std::ofstream m_outputStream;
 
 public:
-    FileDataStorageMock(){};
     std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,
                                                    const std::string& p_fileName,
                                                    const std::string& p_userId,
@@ -55,7 +54,6 @@ public:
     {
         SavedDecisions = &p_decisions;
     }
-
 };
 
 /// @brief Standard implementation of the file data storage
