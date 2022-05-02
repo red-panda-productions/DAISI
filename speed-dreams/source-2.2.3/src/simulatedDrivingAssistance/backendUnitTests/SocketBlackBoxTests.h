@@ -91,10 +91,10 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 }
 
 /// @brief Tests an entire run of the framework
-void SocketTest(void (*blackboxFunction)())
+void SocketTest(void (*p_blackboxFunction)())
 {
     // creates a connection between the black box and a client
-    SETUP(blackboxFunction)
+    SETUP(p_blackboxFunction)
 
     std::vector<std::string> order = {
         "ACTIONORDER",
