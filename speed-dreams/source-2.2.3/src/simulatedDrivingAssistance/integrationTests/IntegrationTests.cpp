@@ -22,7 +22,6 @@ namespace filesystem = std::experimental::filesystem;
 
 #define BB_ARG "--bbfile "
 
-
 /// @brief              Checks if all files for an integration test are present in the folder
 ///                     and returns the path to all files if they are present
 /// @param  p_path      The path to the folder
@@ -108,7 +107,7 @@ void CheckProcess(PROCESS_INFORMATION p_processInformation)
 
     ASSERT_TRUE(exitCode == 0);
 
-    //extra exit codes can be added here
+    // extra exit codes can be added here
 }
 
 /// @brief         Runs an integration test
