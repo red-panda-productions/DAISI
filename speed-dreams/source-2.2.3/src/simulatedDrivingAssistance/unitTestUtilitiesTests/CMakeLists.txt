@@ -50,4 +50,4 @@ ADD_SDLIB_LIBRARY(unitTestUtilitiesTests tgf tgfclient portability backend front
 include(GoogleTest)
 gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)
 
-CREATE_OPEN_CPP_COVERAGE_BAT("UnitUtilitiesCoverage" "${CMAKE_CURRENT_BINARY_DIR}/unitTestUtilitiesTests.exe" "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities" "" "\".*@NOCOVERAGE.*| *\\\\} *\"")
+CREATE_OPEN_CPP_COVERAGE_BAT("UnitUtilitiesCoverage" "${CMAKE_BINARY_DIR}/bin/unitTestUtilitiesTests.exe" "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities" "" "\".*@NOCOVERAGE.*| *\\\\} *\"")
