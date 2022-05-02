@@ -193,7 +193,7 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 #define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
     {                                                                        \
         std::cout << "Reading binary file from " << (filePath) << std::endl; \
-        std::ifstream file(filePath);                                        \
+        std::ifstream file(filePath, std::ios::binary);                      \
         ASSERT_TRUE(file.is_open());                                         \
         std::stringstream buffer;                                            \
         buffer << file.rdbuf();                                              \

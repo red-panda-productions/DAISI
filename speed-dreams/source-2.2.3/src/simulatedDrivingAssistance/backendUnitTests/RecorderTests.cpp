@@ -181,12 +181,6 @@ TEST(RecorderTests, WriteOnlyTime)
     recorder.WriteUserInput(nullptr, 2, false);
     recorder.WriteUserInput(nullptr, 1, false);
     recorder.WriteUserInput(nullptr, 6.9, false);
-  
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0);
-    recorder.WriteUserInput(nullptr, 0);
-    recorder.WriteUserInput(nullptr, 2);
-    recorder.WriteUserInput(nullptr, 1);
-    recorder.WriteUserInput(nullptr, 6.9
 
     recorder.WriteDecisions(tuple, 0);
     recorder.WriteDecisions(tuple, 3);
@@ -253,16 +247,18 @@ TEST(RecorderTests, WriteDecisions)
     std::string folder = GetTestingDirectory();
     std::stringstream expectedDecisionsData;
 
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 2, 0);
-    float decisions[2];
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 4, 0);
     unsigned long timestamp = 0;
 
     for (int i = 0; i < 10; i++)
     {
-        decisions[0] = random.NextFloat(0, 1);
-        decisions[1] = random.NextFloat(0, 1);
-        expectedDecisionsData << bits(timestamp) << bits(decisions[0]) << bits(decisions[1]);
-        recorder.WriteDecisions(decisions, timestamp++);
+        DecisionTuple decisionTuple;
+        decisionTuple.SetAccel(random.NextFloat(0, 1));
+        decisionTuple.SetBrake(random.NextFloat(0, 1));
+        decisionTuple.SetGear(random.NextInt(0, 10));
+        decisionTuple.SetSteer(random.NextFloat(0, 1));
+        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetBrake()) << bits(decisionTuple.GetAccel()) << bits(static_cast<float>(decisionTuple.GetGear()));
+        recorder.WriteDecisions(decisionTuple, timestamp++);
     }
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_decisions", DECISIONS_RECORDING_FILE_NAME, expectedDecisionsData);

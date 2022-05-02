@@ -5,6 +5,8 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+#include "DecisionTuple.h"
+
 #define USER_INPUT_RECORDING_FILE_NAME      "recording.txt"
 #define DECISIONS_RECORDING_FILE_NAME       "decisions.txt"
 #define SIMULATION_DATA_RECORDING_FILE_NAME "simulation_data.txt"
