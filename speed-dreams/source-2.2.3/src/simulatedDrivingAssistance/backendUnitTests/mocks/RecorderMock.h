@@ -17,14 +17,14 @@ public:
     ~RecorderMock(){};
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const float* p_decisions, unsigned long p_timestamp)
+    void WriteDecisions(DecisionTuple p_decisions, unsigned long p_timestamp)
     {
         CurrentDecisions = p_decisions;
         CurrentTimestamp = p_timestamp;
     };
     static void WriteRecording(const float* p_input, double p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
-    const float* CurrentDecisions;
+    DecisionTuple CurrentDecisions;
     long CurrentTimestamp;
 
 private:

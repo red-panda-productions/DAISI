@@ -170,16 +170,17 @@ TEST(RecorderTests, RecorderThreeParamCompression)
 TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
+    DecisionTuple tuple;
     Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0);
     recorder.WriteUserInput(nullptr, 0);
     recorder.WriteUserInput(nullptr, 0.1);
     recorder.WriteUserInput(nullptr, 1);
     recorder.WriteUserInput(nullptr, -1);
 
-    recorder.WriteDecisions(nullptr, 0);
-    recorder.WriteDecisions(nullptr, 3);
-    recorder.WriteDecisions(nullptr, 435);
-    recorder.WriteDecisions(nullptr, 95875);
+    recorder.WriteDecisions(tuple, 0);
+    recorder.WriteDecisions(tuple, 3);
+    recorder.WriteDecisions(tuple, 435);
+    recorder.WriteDecisions(tuple, 95875);
 
     ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", USER_INPUT_RECORDING_FILE_NAME,
                          "0.00000000000000000000 \n"

@@ -5,6 +5,8 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+#include "DecisionTuple.h"
+
 #define USER_INPUT_RECORDING_FILE_NAME "recording.txt"
 #define DECISIONS_RECORDING_FILE_NAME  "decisions.txt"
 #define CAR_SETTINGS_FILE_NAME         "car.xml"
@@ -17,7 +19,7 @@ public:
     ~Recorder();
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const float* p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(DecisionTuple p_decisions, unsigned long p_timestamp);
     static void WriteRecording(const float* p_input, double p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
 private:
