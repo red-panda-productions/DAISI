@@ -91,6 +91,7 @@ TEST(CarControllerTests, LightTests)
 
 void ShowInterventionTest(InterventionAction p_action)
 {
+    IndicatorConfig::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     CarController carController;
 
