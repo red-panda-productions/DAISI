@@ -70,7 +70,7 @@
 
 /// @brief Generates a random segment
 /// @returns A tTrackSeg
-tTrackSeg Generator::GenerateSegment()
+tTrackSeg GeneratorUtils::GenerateSegment()
 {
     Random random;
     tTrackSeg segment = {};
@@ -122,7 +122,7 @@ tTrackSeg Generator::GenerateSegment()
 
 /// @brief Generates a series of random segments
 /// @returns A TestSegments containing an pointer of segments, as well as the length of the array following the pointer
-TestSegments Generator::GenerateSegments()
+TestSegments GeneratorUtils::GenerateSegments()
 {
     Random random;
     TestSegments testSegments = {};
@@ -142,7 +142,7 @@ TestSegments Generator::GenerateSegments()
 
 /// @brief Deletes the generated pointers in the given set of segments
 /// @param p_segments The TestSegments to destroy
-void Generator::DestroySegments(TestSegments& p_segments)
+void GeneratorUtils::DestroySegments(TestSegments& p_segments)
 {
     for (int i = 0; i < p_segments.NextSegmentsCount; i++)
     {
@@ -160,7 +160,7 @@ void Generator::DestroySegments(TestSegments& p_segments)
 /// @brief Generates a random car
 /// @param p_segments A set of earlier obtained segments to put in retval.car.pub.trkPos.seg
 /// @returns A tCarElt
-tCarElt Generator::GenerateCar(TestSegments& p_segments)
+tCarElt GeneratorUtils::GenerateCar(TestSegments& p_segments)
 {
     Random random;
     tCarElt car{};
@@ -570,7 +570,7 @@ tCarElt Generator::GenerateCar(TestSegments& p_segments)
 
 /// @brief Deletes the generated pointers in a given car
 /// @param p_car The car to destory
-void Generator::DestroyCar(tCarElt& p_car)
+void GeneratorUtils::DestroyCar(tCarElt& p_car)
 {
     delete p_car.race.bestSplitTime;          // COPY NOT IMPLEMENTED
     delete p_car.race.curSplitTime;           // COPY NOT IMPLEMENTED
@@ -591,7 +591,7 @@ void Generator::DestroyCar(tCarElt& p_car)
 
 /// @brief Gives a random situation
 /// @returns A tSituation
-tSituation Generator::GenerateSituation()
+tSituation GeneratorUtils::GenerateSituation()
 {
     Random random;
     tSituation situation{};
@@ -615,7 +615,7 @@ tSituation Generator::GenerateSituation()
 
 /// @brief Deletes the generated pointers for a given situation
 /// @param p_situation The situation to destory
-void Generator::DestroySituation(tSituation& p_situation)
+void GeneratorUtils::DestroySituation(tSituation& p_situation)
 {
     delete p_situation.cars;  // COPY NOT IMPLEMENTED
 }

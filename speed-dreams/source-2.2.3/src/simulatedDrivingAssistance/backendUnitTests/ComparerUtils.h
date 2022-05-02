@@ -2,7 +2,7 @@
 #include "car.h"
 #include "raceman.h"
 
-class Comparer
+class ComparerUtils
 {
 public:
     static void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe);

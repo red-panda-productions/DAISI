@@ -8,7 +8,7 @@ struct TestSegments
     int NextSegmentsCount;
 };
 
-class Generator
+class GeneratorUtils
 {
 public:
     static tTrackSeg GenerateSegment();

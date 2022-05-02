@@ -93,7 +93,7 @@
 /// @param p_eqOrNe Whether to compare cars for equality by values (true) or inequality of pointers (false)
 /// (the latter is only really relevant for testing BlackBoxData() works)
 /// @returns        Whether all elements of the cars are equal
-void Comparer::CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe)
+void ComparerUtils::CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe)
 {
     bool res = true;
     // Compare car.index
@@ -488,7 +488,7 @@ void Comparer::CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe)
 /// @param p_eqOrNe     Whether to compare situations for equality by values (true) or inequality of pointers (false)
 /// (the latter is only really relevant for testing BlackBoxData() works)
 /// @returns            Whether all elements of the situations are equal
-void Comparer::CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_eqOrNe)
+void ComparerUtils::CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_eqOrNe)
 {
     COMP_ELEM(p_situation1.raceInfo.ncars, p_situation2.raceInfo.ncars)
     COMP_ELEM(p_situation1.raceInfo.totLaps, p_situation2.raceInfo.totLaps)
@@ -513,7 +513,7 @@ void Comparer::CompareSituations(tSituation& p_situation1, tSituation& p_situati
 /// @param p_eqOrNe        Whether to compare segments for equality by values (true) or inequality of pointers (false)
 /// (the latter is only really relevant for testing BlackBoxData() works)
 /// @returns               Whether all elements of the segments are equal
-void Comparer::CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segmentsCount, bool p_eqOrNe)
+void ComparerUtils::CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segmentsCount, bool p_eqOrNe)
 {
     if (p_segments1 && p_segments2)
     {
