@@ -26,7 +26,6 @@
 #define BUFFER_FILE_PATH   "race_data_buffer.txt"
 #define MAX_ULONG          4294967295
 
-
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
 /// @param  p_initialSituation The initial situation
