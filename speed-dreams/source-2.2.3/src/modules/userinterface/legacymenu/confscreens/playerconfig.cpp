@@ -643,7 +643,7 @@ onConfControls(void * /* dummy */ )
         ReloadValues = 0;
 
         curPlayerIdx = (unsigned)(CurrPlayer - PlayersInfo.begin()) + 1;
-		GfuiScreenActivate(ControlMenuInit(ScrHandle, PrefHdle, curPlayerIdx, (*CurrPlayer)->gearChangeMode(), 0));
+		GfuiScreenActivate(ControlMenuInit(ScrHandle, PrefHdle, curPlayerIdx, (*CurrPlayer)->gearChangeMode(), 1));
     }
 }
 

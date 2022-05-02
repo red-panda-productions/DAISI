@@ -118,7 +118,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "race", NULL, onRaceSelectMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
 	if (SupportsHumanDrivers)
 		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);

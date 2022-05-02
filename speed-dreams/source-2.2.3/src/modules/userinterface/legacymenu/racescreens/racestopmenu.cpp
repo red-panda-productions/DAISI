@@ -400,46 +400,16 @@ RmStopRaceMenu()
     buttonRole[i] = "abort";
     screen[i++] = rmAbortRaceHookInit();
 
-#if 1
-    // get current driver
-    j = (int)GfParmGetNum(grHandle, GR_SCT_DISPMODE, GR_ATT_CUR_SCREEN, NULL, 0.0);
-    snprintf(buf, sizeof(buf), "%s/%d", GR_SCT_DISPMODE, j);
-    cur_name = GfParmGetStr(grHandle, buf, GR_ATT_CUR_DRV, "not found");
-    GfLogInfo("Current driver (on active split screen) is '%s'\n", cur_name);
-
-    // Attempt to find a human driver
-    for (j=0; ; j++) {
-        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j+1);
-        human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
-        assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
-
-        if (strlen(human_test_name) == 0 && strlen(assisted_test_name) == 0) break;
-
-        if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0) {
-            GfLogInfo("Matching human driver found, setting index to %d.\n", j+1);
-            curPlayerIdx = j+1;
-
-            buttonRole[i] = "controls";
-            screen[i++] = rmControlsHookInit();
-
-#if SDL_FORCEFEEDBACK
-            buttonRole[i] = "forcefeedback";
-            screen[i++] = rmForceFeedbackConfigHookInit();
-            break;
-#endif
-        }
-    }
-#endif
-
     buttonRole[i] = "quit";
     screen[i++] = rmQuitHookInit();
 
+    // SIMULATED DRIVING ASSISTANCE: removed controls and forcefeedback menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
                buttonRole[1], screen[1],
                buttonRole[2], screen[2],
                buttonRole[3], screen[3],
-               buttonRole[4], screen[4],
-               buttonRole[5], screen[5],
+               0, 0,
+               0, 0,
                buttonRole[6], screen[6]);
 }
 
