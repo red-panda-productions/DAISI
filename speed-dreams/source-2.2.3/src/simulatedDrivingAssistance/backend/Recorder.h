@@ -5,9 +5,13 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+#include "DecisionTuple.h"
+
 #define USER_INPUT_RECORDING_FILE_NAME "recording.txt"
 #define DECISIONS_RECORDING_FILE_NAME  "decisions.txt"
 #define CAR_SETTINGS_FILE_NAME         "car.xml"
+
+#define DECISION_RECORD_PARAM_AMOUNT 4
 
 /// @brief A class that can record the input of a player for integration tests
 class Recorder
@@ -17,7 +21,7 @@ public:
     ~Recorder();
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const float* p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(const DecisionTuple& p_decisions, unsigned long p_timestamp);
 
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
