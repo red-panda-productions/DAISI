@@ -79,8 +79,10 @@ void DecisionTest(bool p_isDecision)
 
     RecorderMock* recorder = decisionMaker.GetRecorder();
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
-    ASSERT_EQ(recorder->CurrentDecisions[0], storage->SavedDecisions->GetBrake());
-    ASSERT_EQ(recorder->CurrentDecisions[1], storage->SavedDecisions->GetSteer());
+    ASSERT_EQ(recorder->CurrentDecisions[0], storage->SavedDecisions->GetSteer());
+    ASSERT_EQ(recorder->CurrentDecisions[1], storage->SavedDecisions->GetBrake());
+    ASSERT_EQ(recorder->CurrentDecisions[2], storage->SavedDecisions->GetAccel());
+    ASSERT_EQ(recorder->CurrentDecisions[3], storage->SavedDecisions->GetGear());
     ASSERT_EQ(recorder->CurrentTimestamp, 0);
     InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
     ASSERT_FALSE(mock == nullptr);
