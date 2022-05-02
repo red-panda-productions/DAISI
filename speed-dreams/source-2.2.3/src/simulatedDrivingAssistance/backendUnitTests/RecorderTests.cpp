@@ -174,7 +174,7 @@ TEST(RecorderTests, RecorderThreeParamCompression)
 TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
-  
+
     DecisionTuple tuple;
     Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0, 0);
     recorder.WriteUserInput(nullptr, 0, false);
