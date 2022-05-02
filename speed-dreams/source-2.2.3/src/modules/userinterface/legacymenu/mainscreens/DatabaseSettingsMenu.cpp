@@ -1,22 +1,18 @@
 #include <tgfclient.h>
-#include <random>
-#include <forcefeedback.h>
 #include "guimenu.h"
 #include "legacymenu.h"
-#include "Mediator.h"
-#include "ResearcherMenu.h"
-#include <shobjidl.h>  // For Windows COM interface
-#include <locale>
-#include <codecvt>
+#include "DatabaseSettingsMenu.h"
 
 // Parameters used in the xml files
+#define PRM_USERNAME         "UsernameEdit"
+#define PRM_PASSWORD         "PasswordEdit"
+#define PRM_URL              "UrlEdit"
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
 static void* s_nextHandle = nullptr;
 
 // GUI settings Id's
-
 
 // Username
 char m_username[32];
@@ -29,9 +25,6 @@ int m_passwordControl;
 // Username
 char m_url[512];
 int m_urlControl;
-
-// Apply Button
-int m_applyButton;
 
 /// @brief Handle input in the userId textbox
 static void SetUsername(void*)
@@ -109,9 +102,10 @@ static void SynchronizeControls()
 /// @param p_param The configuration xml file handle
 static void LoadDefaultSettings()
 {
-    m_username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
-    m_password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
-    m_url = GfuiEditboxGetString(s_scrHandle, m_urlControl);
+
+    sprintf(m_username, "%d", GfuiEditboxGetString(s_scrHandle, m_usernameControl));
+    sprintf(m_password, "%d", GfuiEditboxGetString(s_scrHandle, m_passwordControl));
+    sprintf(m_url, "%d", GfuiEditboxGetString(s_scrHandle, m_urlControl));
 }
 
 /// @brief        Loads the settings from the config file into the internal variables
@@ -121,9 +115,9 @@ static void LoadConfigSettings(void* p_param)
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
 
     // Set the max time setting from the xml file
-    m_username = GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr);
-    m_password = GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr);
-    m_url = GfParmGetStr(p_param, PRM_URL, GFMNU_ATTR_TEXT, nullptr);
+    sprintf(m_username, "%d", GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_password, "%d", GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_url, "%d", GfParmGetStr(p_param, PRM_URL, GFMNU_ATTR_TEXT, nullptr));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
@@ -149,25 +143,26 @@ static void OnActivate(void* /* dummy */)
 /// @brief            Initializes the researcher menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The researcherMenu scrHandle
-void* ResearcherMenuInit(void* p_nextMenu)
+void* DatabaseSettingsMenuInit(void* p_nextMenu)
 {
     // Return if screen already created
+    // Screen already created
     if (s_scrHandle) return s_scrHandle;
 
-    // Otherwise, create the screen
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
+                                   
     s_nextHandle = p_nextMenu;
 
     void* param = GfuiMenuLoad("DatabaseSettingsMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
 
     // Textbox controls
-    m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetMaxTime);
-    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetUserId);
+    m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsername);
+    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPassword);
     m_urlControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_URL, nullptr, nullptr, SetUrl);
 
     GfParmReleaseHandle(param);

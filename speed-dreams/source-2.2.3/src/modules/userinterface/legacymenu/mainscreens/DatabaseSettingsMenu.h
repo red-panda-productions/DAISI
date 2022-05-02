@@ -1,3 +1,3 @@
 #pragma once
 
-extern void* DatabaseSettingsMenuInit(void* p_nextMenu);
+extern void *DatabaseSettingsMenuInit(void* p_nextMenu);
