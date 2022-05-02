@@ -184,3 +184,58 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 
     return true;
 }
+
+/// @brief Assert the contents of the binary file in filePath match the binary stream contents
+#define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
+    {                                                                        \
+        std::cout << "Reading binary file from " << (filePath) << std::endl; \
+        std::ifstream file(filePath);                                        \
+        ASSERT_TRUE(file.is_open());                                         \
+        std::stringstream buffer;                                            \
+        buffer << file.rdbuf();                                              \
+        file.close();                                                        \
+        ASSERT_TRUE(!file.is_open());                                        \
+        ASSERT_EQ(buffer.str().size(), (contents).str().size());             \
+        for (int i = 0; i < buffer.str().size(); i++)                        \
+        {                                                                    \
+            char controlByte;                                                \
+            char testByte;                                                   \
+            (contents) >> bits(controlByte);                                 \
+            buffer >> bits(testByte);                                        \
+            ASSERT_EQ(testByte, controlByte);                                \
+        }                                                                    \
+    }
+
+/// @brief The following functions are used to write binary values to files.
+///        Cannot write strings (though this can be added)
+template <typename TYPE>
+struct Bits
+{
+    TYPE T;
+};
+
+template <typename TYPE>
+static inline Bits<TYPE&> bits(TYPE& p_t)
+{
+    return Bits<TYPE&>{p_t};
+}
+
+template <typename TYPE>
+static inline Bits<const TYPE&> bits(const TYPE& p_t)
+{
+    return Bits<const TYPE&>{p_t};
+}
+
+template <typename TYPE>
+static inline std::istream& operator>>(std::istream& p_in, Bits<TYPE&> p_b)
+{
+    return p_in.read(reinterpret_cast<char*>(&p_b.T), sizeof(TYPE));
+}
+
+template <typename TYPE>
+static inline std::ostream& operator<<(std::ostream& p_out, Bits<TYPE&> const p_b)
+{
+    // reinterpret_cast is for pointer conversion
+    // static_cast is for compatible pointer conversion
+    return p_out.write(reinterpret_cast<const char*>(&(p_b.T)), sizeof(TYPE));
+}

@@ -25,7 +25,7 @@ public:
 
     float GetSteer() const;
 
-    float GetGear() const;
+    int GetGear() const;
 
     float GetAccel() const;
 
