@@ -10,6 +10,8 @@
 #define SIMULATION_DATA_RECORDING_FILE_NAME "simulation_data.txt"
 #define CAR_SETTINGS_FILE_NAME              "car.xml"
 
+#define DECISION_RECORD_PARAM_AMOUNT 4
+
 /// @brief A class that can record the input of a player for integration tests
 class Recorder
 {
@@ -18,7 +20,7 @@ public:
     ~Recorder();
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const float* p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(const DecisionTuple& p_decisions, unsigned long p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);
 
     template <typename TIME>
