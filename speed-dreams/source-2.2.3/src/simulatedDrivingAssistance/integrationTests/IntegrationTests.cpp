@@ -22,10 +22,14 @@ namespace filesystem = std::experimental::filesystem;
 
 #define BB_ARG "--bbfile "
 
-class IntegrationTests : public testing::TestWithParam<std::string>
-{
-};
 
+/// @brief              Checks if all files for an integration test are present in the folder
+///                     and returns the path to all files if they are present
+/// @param  p_path      The path to the folder
+/// @param  p_carxml    The path to the car.xml file
+/// @param  p_decisions The path to the decisions file
+/// @param  p_recording The path to the recording file
+/// @param  p_bbfile    The path to the black box recording file
 void CheckFiles(const std::string& p_path, filesystem::path& p_carxml, filesystem::path& p_decisions, filesystem::path& p_recording, filesystem::path& p_bbfile)
 {
     for (const auto& entry : std::experimental::filesystem::directory_iterator(p_path))
@@ -60,6 +64,11 @@ void CheckFiles(const std::string& p_path, filesystem::path& p_carxml, filesyste
     ASSERT_EQ(p_bbfile.filename(), BB_FILE);
 }
 
+/// @brief               Generates arguments for the simulation executable
+/// @param  p_carxml     The path to the car.xml file
+/// @param  p_decisions  The path to the decisions file
+/// @param  p_recording  The path to the recording file
+/// @return              The arguments
 std::string GenerateSimulationArguments(const filesystem::path& p_carxml, const filesystem::path& p_decisions, const filesystem::path& p_recording)
 {
     std::stringstream args;
@@ -72,6 +81,9 @@ std::string GenerateSimulationArguments(const filesystem::path& p_carxml, const 
     return {args.str()};
 }
 
+/// @brief           Generates arguments for the black box executable
+/// @param  p_bbfile The path to the black box recording file
+/// @return          The arguments
 std::string GenerateBBArguments(const filesystem::path& p_bbfile)
 {
     std::stringstream args;
@@ -81,6 +93,8 @@ std::string GenerateBBArguments(const filesystem::path& p_bbfile)
     return {args.str()};
 }
 
+/// @brief                       Checks and waits on a process until it exits
+/// @param  p_processInformation The information handle
 void CheckProcess(PROCESS_INFORMATION p_processInformation)
 {
     WaitForSingleObject(p_processInformation.hProcess, INFINITE);
@@ -93,8 +107,12 @@ void CheckProcess(PROCESS_INFORMATION p_processInformation)
     CloseHandle(p_processInformation.hThread);
 
     ASSERT_TRUE(exitCode == 0);
+
+    //extra exit codes can be added here
 }
 
+/// @brief         Runs an integration test
+/// @param  p_path The path to the integration test folder
 void RunTest(const std::string& p_path)
 {
     filesystem::path carxml;
@@ -119,11 +137,19 @@ void RunTest(const std::string& p_path)
     CheckProcess(bbInfo);
 }
 
+/// @brief The class that instantiates the different integration tests
+class IntegrationTests : public testing::TestWithParam<std::string>
+{
+};
+
+/// @brief The parameterized test, with all of the information needed for an integration test
 TEST_P(IntegrationTests, IntegrationTest)
 {
     RunTest(GetParam());
 }
 
+/// @brief                  Instantiates the parameterized test
+/// INTEGRATION_TESTS_PATHS A CMake generated list of paths to different integration tests
 INSTANTIATE_TEST_CASE_P(
     GeneralAndSpecial,
     IntegrationTests,
