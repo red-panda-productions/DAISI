@@ -51,12 +51,20 @@ void DecisionTuple::SetSteer(float p_steerValue)
 
 void DecisionTuple::SetGear(int p_gearValue)
 {
+    // TODO: When a GearDecision is created, set its value here
+    m_gearActive = true;
 }
 
 void DecisionTuple::SetAccel(float p_accelValue)
 {
     m_accelDecision.AccelAmount = p_accelValue;
     m_accelActive = true;
+}
+
+void DecisionTuple::SetLights(bool p_lightsValue)
+{
+    // TODO: When a LightsDecision is created, set its value here
+    m_lightsActive = true;
 }
 
 /// @brief  Gets the brake value
@@ -75,6 +83,7 @@ float DecisionTuple::GetSteer() const
 
 int DecisionTuple::GetGear() const
 {
+    // TODO: When a GearDecision is created, get its value here
     return 0;
 }
 
@@ -87,6 +96,7 @@ float DecisionTuple::GetAccel() const
 /// @return True if the headlights should be on, False if the headlights should be off
 bool DecisionTuple::GetLights() const
 {
+    // TODO: When a LightsDecision is created, get its value here
     return false;
 }
 
@@ -108,7 +118,7 @@ bool DecisionTuple::ContainsSteer() const
 /// @return True if tuple contains a gear shift decision
 bool DecisionTuple::ContainsGear() const
 {
-    return false;
+    return m_gearActive;
 }
 
 /// @brief Gets whether this tuple contains an acceleration decision
@@ -122,5 +132,5 @@ bool DecisionTuple::ContainsAccel() const
 /// @return True if tuple contains a headlights decision
 bool DecisionTuple::ContainsLights() const
 {
-    return false;
+    return m_lightsActive;
 }
