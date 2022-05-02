@@ -24,6 +24,8 @@
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage>
 #define BUFFER_FILE_PATH   "race_data_buffer.txt"
+#define MAX_ULONG          4294967295
+
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialCar       The initial car
@@ -50,7 +52,7 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
     StartExecutable(p_blackBoxExecutablePath);  // @NOCOVERAGE
 #endif
 
-    BlackBoxData initialData(p_initialCar, p_initialSituation, 0, nullptr, 0);
+    BlackBoxData initialData(p_initialCar, p_initialSituation, MAX_ULONG, nullptr, 0);
     BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
 
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
