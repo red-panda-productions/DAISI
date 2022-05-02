@@ -46,8 +46,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     m_variableDecisionMap["Accel"] = CONVERT_TO_ACCEL_DECISION;
 }
 
-/// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
-/// @param p_initialBlackBoxData  The initial drive situation
+/// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
+/// @param p_connectAsync True if blackbox will run async (not waiting for response), false if sync (wait for response)
+/// @param p_initialBlackBoxData The initial drive situation
+/// @param p_tests Control data used in tests
+/// @param p_amountOfTests Amount of tests in p_tests
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests)
 {
@@ -55,7 +58,6 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     std::cout << "Connecting ";
     if (p_connectAsync)
     {
-        m_server.ConnectAsync();
         m_asyncConnection = true;
         std::cout << "a";
     }
@@ -170,7 +172,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
 /// @param p_car       Car to base decisions off.
 /// @param p_situation Situation to base decisions off.
 /// @param p_tickCount The current tick count.
-/// @return returns decision array.
+/// @param p_decisions Decision tuple to store decisions in
+/// @return returns true if a decision is made, else false (will always return true if connection is not async)
 template <class BlackBoxData, class PointerManager>
 bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
 {
