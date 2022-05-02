@@ -1,5 +1,16 @@
 project(unitTestUtilitiesTests)
 
+ADD_INTERFACE_INCLUDEDIR()
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
+
+IF(OPTION_SDL2)
+    ADD_SDL2_INCLUDEDIR()
+ELSE(OPTION_SDL2)
+    ADD_SDL_INCLUDEDIR()
+ENDIF(OPTION_SDL2)
+
+ADD_PLIB_INCLUDEDIR()
+
 ENABLE_TESTING()
 
 set(INSTALL_GTEST OFF)
@@ -14,15 +25,27 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 
-add_executable(
-  unitTestUtilitiesTests "UtilsTests.cpp")
+SET(_SOURCES UtilsTests.cpp
+             ComparerUtilsTests.cpp
+             )
+
+SET(_HEADERS 
+             )
+
+SET(_MOCK_SOURCES )
+
+SET(_MOCK_HEADERS )
+
+
+SD_ADD_EXECUTABLE(unitTestUtilitiesTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
+
 target_link_libraries(
   unitTestUtilitiesTests #moet het zelfde zijn
   unitTestUtilities
   gtest_main
 )
 
-target_include_directories(unitTestUtilitiesTests PUBLIC "../unitTestUtilities")
+ADD_SDLIB_LIBRARY(unitTestUtilitiesTests tgf tgfclient portability backend frontend unitTestUtilities)
 
 include(GoogleTest)
 gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)

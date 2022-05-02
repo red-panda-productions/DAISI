@@ -34,15 +34,10 @@ SET(_SOURCES MsgpackDeserializeTests.cpp
         SQLDatabaseStorageTests.cpp
         BlackBoxDataTests.cpp
         RecorderTests.cpp
-        ComparerUtilsTests.cpp
-            ComparerUtils.cpp
-            GeneratorUtils.cpp
         )
 
 SET(_HEADERS MsgpackSerializeTests.h
     SocketBlackBoxTests.h
-    ComparerUtils.h
-    GeneratorUtils.h
     )
 
 SET(_MOCK_SOURCES "")
