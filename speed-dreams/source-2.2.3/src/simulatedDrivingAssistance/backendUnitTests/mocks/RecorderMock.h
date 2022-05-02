@@ -24,7 +24,7 @@ public:
     static void WriteRecording(const float* p_input, double p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
     DecisionTuple CurrentDecisions;
-    long CurrentTimestamp;
+    unsigned long CurrentTimestamp;
 
 private:
     static bool CheckSameInput(const float* p_input, const float* p_prevInput, int p_paramAmount);
