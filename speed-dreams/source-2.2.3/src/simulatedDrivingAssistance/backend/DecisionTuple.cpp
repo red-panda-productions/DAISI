@@ -73,7 +73,7 @@ float DecisionTuple::GetSteer() const
     return m_steerDecision.SteerAmount;
 }
 
-float DecisionTuple::GetGear() const
+int DecisionTuple::GetGear() const
 {
     return 0;
 }
