@@ -29,7 +29,7 @@
     ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
 /// @brief The black box side of the test, as these tests have to run in parallel
-void BlackBoxSide()
+void BlackBoxSideAsync()
 {
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> bb;
     Random random;
@@ -37,7 +37,7 @@ void BlackBoxSide()
     BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
     BlackBoxDataMock situations[2]{mock, exampleSituation};
 
-    /// intializes the black box with 2 tests
+    /// intializes the black box with 2 tests and async
     bb.Initialize(true, mock, situations, 2);
     DecisionTuple decisions;
 
@@ -58,6 +58,31 @@ void BlackBoxSide()
     bb.Shutdown();
 }
 
+void BlackBoxSideSync()
+{
+    SocketBlackBox<BlackBoxDataMock, PointerManagerMock> bb;
+    Random random;
+    BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
+    BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
+    BlackBoxDataMock situations[2]{mock, exampleSituation};
+
+    /// intializes the black box with 2 tests and sync connection
+    bb.Initialize(false, mock, situations, 2);
+    DecisionTuple decisions;
+
+    tCarElt car;
+    tSituation situation;
+    // It should always return true because it waits for a decision
+    ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
+
+    // check the result
+    ASSERT_ALMOST_EQ(decisions.GetSteer(), STEER_VALUE, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisions.GetBrake(), BRAKE_VALUE, TOLERANCE);
+
+    // shut the server down
+    bb.Shutdown();
+}
+
 /// @brief					 Tests if the parsed drivesituation is the same as the target
 /// @param  p_driveSituation Parsed drive situation
 /// @param  p_target		 The target
@@ -66,10 +91,10 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 }
 
 /// @brief Tests an entire run of the framework
-TEST(SocketBlackBoxTests, SocketTest)
+void SocketTest(void (*blackboxFunction)())
 {
     // creates a connection between the black box and a client
-    SETUP(BlackBoxSide)
+    SETUP(blackboxFunction)
 
     std::vector<std::string> order = {
         "ACTIONORDER",
@@ -160,10 +185,13 @@ TEST(SocketBlackBoxTests, SocketTest)
     client.Disconnect();
 }
 
+TEST_CASE(SocketBlackBoxTests, SocketTestAsync, SocketTest, (&BlackBoxSideAsync))
+TEST_CASE(SocketBlackBoxTests, SocketTestSync, SocketTest, (&BlackBoxSideSync))
+
 /// @brief this black box side should fail
 void FailingBlackBox()
 {
-    ASSERT_THROW(BlackBoxSide(), std::exception);
+    ASSERT_THROW(BlackBoxSideAsync(), std::exception);
 }
 
 /// @brief Tests what happens when no order is sent
