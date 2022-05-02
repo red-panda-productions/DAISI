@@ -175,17 +175,16 @@ TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
 
-    DecisionTuple tuple;
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0);
     recorder.WriteUserInput(nullptr, 0, false);
     recorder.WriteUserInput(nullptr, 2, false);
     recorder.WriteUserInput(nullptr, 1, false);
     recorder.WriteUserInput(nullptr, 6.9, false);
 
-    recorder.WriteDecisions(tuple, 0);
-    recorder.WriteDecisions(tuple, 3);
-    recorder.WriteDecisions(tuple, 435);
-    recorder.WriteDecisions(tuple, 95875);
+    recorder.WriteDecisions(nullptr, 0);
+    recorder.WriteDecisions(nullptr, 3);
+    recorder.WriteDecisions(nullptr, 435);
+    recorder.WriteDecisions(nullptr, 95875);
 
     recorder.WriteSimulationData(nullptr, 0.0, false);
     recorder.WriteSimulationData(nullptr, 7.87, false);

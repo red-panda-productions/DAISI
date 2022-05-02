@@ -22,7 +22,7 @@ public:
     ~Recorder();
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const DecisionTuple& p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);
 
     template <typename TIME>
