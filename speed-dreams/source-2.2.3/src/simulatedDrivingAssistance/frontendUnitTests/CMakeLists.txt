@@ -57,7 +57,7 @@ SET(BAT_NAME "FrontendCoverage")
 SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe")
 SET(SOURCE_DIR "${FRONTEND_SOURCE_DIR}")
 SET(EXCLUDED_SOURCES "")
-SET(EXCLUDED_LINE "\".*@NOCOVERAGE.*| *\\\\} *\"")
+SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
 
 IF(OPTION_GITHUB_ACTIONS)
     CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "FrontendCoverage.cov" "UnitTestCoverage.cov")

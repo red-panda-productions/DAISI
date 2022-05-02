@@ -31,7 +31,7 @@ SET(BAT_NAME "UnitUtilitiesCoverage")
 SET(EXE_PATH "${CMAKE_CURRENT_BINARY_DIR}/unitTestUtilitiesTests.exe")
 SET(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities")
 SET(EXCLUDED_SOURCES "")
-SET(EXCLUDED_LINE "\".*@NOCOVERAGE.*| *\\\\} *\"")
+SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
 
 IF(OPTION_GITHUB_ACTIONS)
     CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "UnitTestCoverage.cov" "")
