@@ -193,7 +193,7 @@
 
 	<section name="2">
 		<attstr name="type" val="background image"/>
-		<attstr name="image" val="data/img/splash-main.jpg"/>
+		<attstr name="image" val="data/img/Main-menu.png"/>
 	</section>
 
 	<section name="3">
