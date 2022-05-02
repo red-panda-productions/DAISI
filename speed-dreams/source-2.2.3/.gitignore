@@ -32,8 +32,11 @@ FrontendCoverage.bat
 
 UnitUtilitiesCoverage.bat
 
-test_data
+Folder.DotSettings.user
 
 temp/
 
 src/simulatedDrivingAssistance/integrationTests/IntegrationTestConfig.h
+
+RppUtilsCoverage.bat
+

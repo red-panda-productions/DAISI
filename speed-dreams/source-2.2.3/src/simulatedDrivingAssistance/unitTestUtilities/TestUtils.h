@@ -16,9 +16,11 @@
     {                                                                                          \
         std::promise<bool> completed;                                                          \
         auto stmt_future = completed.get_future();                                             \
-        std::thread([&](std::promise<bool>& completed) { \
-    p_stmt; \
-    completed.set_value(true); }, std::ref(completed)).detach();     \
+        std::thread([&](std::promise<bool>& completed) {                                       \
+            p_stmt;                                                                            \
+            completed.set_value(true); },                                    \
+                    std::ref(completed))                                                       \
+            .detach();                                                                         \
         if (stmt_future.wait_for(std::chrono::seconds(p_secs)) == std::future_status::timeout) \
             GTEST_FATAL_FAILURE_("       timed out (> " #p_secs                                \
                                  " seconds). Check code for infinite loops");                  \
@@ -287,3 +289,35 @@ inline void PairWiseTest(void (*p_func)(T1, T2, T3, T4, T5, T6, T7, T8), T1* p_i
         p_func(p_input1[Features[0]], p_input2[Features[1]], p_input3[Features[2]], p_input4[Features[3]], p_input5[Features[4]], p_input6[Features[5]], p_input7[Features[6]], p_input8[Features[7]]);
     }
 }
+
+///
+/// @brief          ASSERT_THROW with the possibility to check the output message
+///                 from: https://stackoverflow.com/questions/23270078/test-a-specific-exception-type-is-thrown-and-the-exception-has-the-right-propert/66260986#66260986
+///                 usage:
+///                 ASSERT_THROW_WHAT(foo(), MyException)
+///                 {
+///                     ASSERT_STREQ("Cucumber overflow", e.msg());
+///                 }
+/// @param statement            the function that throws an exception
+/// @param expected_exception   the exception that is thrown
+///
+#define ASSERT_THROW_WHAT(statement, expected_exception)                                                                                  \
+    std::exception_ptr _exceptionPtr;                                                                                                     \
+    try                                                                                                                                   \
+    {                                                                                                                                     \
+        (statement);                                                                                                                      \
+        FAIL() << "Expected: " #statement " throws an exception of type " #expected_exception ".\n  Actual: it throws nothing.";          \
+    }                                                                                                                                     \
+    catch (expected_exception const&)                                                                                                     \
+    {                                                                                                                                     \
+        _exceptionPtr = std::current_exception();                                                                                         \
+    }                                                                                                                                     \
+    catch (...)                                                                                                                           \
+    {                                                                                                                                     \
+        FAIL() << "Expected: " #statement " throws an exception of type " #expected_exception ".\n  Actual: it throws a different type."; \
+    }                                                                                                                                     \
+    try                                                                                                                                   \
+    {                                                                                                                                     \
+        std::rethrow_exception(_exceptionPtr);                                                                                            \
+    }                                                                                                                                     \
+    catch (expected_exception const& e)
