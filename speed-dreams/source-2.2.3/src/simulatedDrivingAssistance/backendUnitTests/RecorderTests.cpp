@@ -54,7 +54,7 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     }
 
     // Create a recorder without storing any parameters
-    Recorder recorder(TEST_DIRECTORY, "constructor_creates_file", 0, 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "constructor_creates_file", 0, 0);
 
     // Ensure file is created with the proper name
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
@@ -79,7 +79,7 @@ TEST(RecorderTests, RecorderOneParamCompression)
 {
     std::string folder = GetTestingDirectory();
     std::stringstream expected;
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_one_param_compression", 1, 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_one_param_compression", 1, 0);
     float inputs[1];
     double currentTime;
 
@@ -132,7 +132,7 @@ TEST(RecorderTests, RecorderThreeParamCompression)
     std::string folder = GetTestingDirectory();
     std::stringstream expected;
 
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_three_param_compression", 3, 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_three_param_compression", 3, 0);
     float inputs[3];
     double currentTime;
 
@@ -217,7 +217,7 @@ TEST(RecorderTests, WriteSameFileTwice)
     std::string folder = GetTestingDirectory();
     // By using braces, we ensure the previous recorder's destructor is called as it goes out of scope
     {
-        Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0, 0);
+        Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0);
         recorder.WriteUserInput(nullptr, 0);
         recorder.WriteUserInput(nullptr, 1);
 
@@ -229,7 +229,7 @@ TEST(RecorderTests, WriteSameFileTwice)
     }
     // Write less timesteps the second time, such that simply overwriting the file will be caught by the test as well
     {
-        Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0, 0);
+        Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0);
         recorder.WriteUserInput(nullptr, 2);
 
         std::stringstream expected;
@@ -246,7 +246,7 @@ TEST(RecorderTests, WriteDecisions)
     std::string folder = GetTestingDirectory();
     std::stringstream expectedDecisionsData;
 
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 4, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 0);
     unsigned long timestamp = 0;
 
     for (int i = 0; i < 10; i++)
@@ -256,8 +256,8 @@ TEST(RecorderTests, WriteDecisions)
         decisionTuple.SetBrake(random.NextFloat(0, 1));
         decisionTuple.SetGear(random.NextInt(0, 10));
         decisionTuple.SetSteer(random.NextFloat(0, 1));
-        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetBrake()) << bits(decisionTuple.GetAccel()) << bits(static_cast<float>(decisionTuple.GetGear()));
-        recorder.WriteDecisions(decisionTuple, timestamp++);
+        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetAccel()) << bits(decisionTuple.GetBrake()) << bits(static_cast<float>(decisionTuple.GetGear()));
+        recorder.WriteDecisions(&decisionTuple, timestamp++);
     }
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_decisions", DECISIONS_RECORDING_FILE_NAME, expectedDecisionsData);
@@ -269,7 +269,7 @@ TEST(RecorderTests, WriteSimulationData)
     std::string folder = GetTestingDirectory();
     std::stringstream expectedSimulationData;
 
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_simulation_data", 0, 0, 3);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_simulation_data", 0, 3);
     float simulationData[3];
     double timestamp = 0;
 
@@ -288,7 +288,7 @@ TEST(RecorderTests, WriteSimulationData)
 
 TEST(RecorderTests, CompressionWithoutPreviousState)
 {
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_compression_without_previous_state", 0, 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_compression_without_previous_state", 0, 0);
     std::ofstream file;
     ASSERT_THROW(recorder.WriteRecording(nullptr, 0, file, 0, true, nullptr), std::exception);
 }
@@ -319,7 +319,7 @@ TEST(RecorderTests, WriteCarTests)
     strcpy(carElt.info.name, "Test Car");
 
     // Create a recorder
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_car", 0, 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_car", 0, 0);
 
     // Write the car data
     recorder.WriteCar(&carElt);

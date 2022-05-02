@@ -18,7 +18,7 @@
 class Recorder
 {
 public:
-    Recorder(const std::string& p_dirName, const std::string& p_fileName, int p_userParamAmount, int p_decisionParamAmount, int p_simulationDataParamAmount);
+    Recorder(const std::string& p_dirName, const std::string& p_fileName, int p_userParamAmount, int p_simulationDataParamAmount);
     ~Recorder();
     void WriteCar(const tCarElt* p_carElt);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
@@ -38,6 +38,5 @@ private:
     float* m_prevUserInput;
     float* m_prevSimulationData;
     int m_userParamAmount;
-    int m_decisionParamAmount;
     int m_simulationDataParamAmount;
 };

@@ -26,14 +26,12 @@ void CreateRecordingFile(const std::experimental::filesystem::path& p_recordings
 /// @param p_dirName	        the name of the directory that needs to be placed in the SDA appdata directory.
 /// @param p_fileNamePattern    the pattern for the output file name, as taken by std::put_time, without file extension
 /// @param p_userParamAmount	the amount of parameters that are saved for every line of user inputs.
-/// @param p_decisionParamAmount	the amount of parameters that are saved for every line of decision parameters.
 /// @param p_simulationDataParamAmount	the amount of parameters that are saved for every line of simulation data.
 Recorder::Recorder(const std::string& p_dirName,
                    const std::string& p_fileNamePattern,
                    int p_userParamAmount,
-                   int p_decisionParamAmount,
                    int p_simulationDataParamAmount)
-    : m_userParamAmount(p_userParamAmount), m_decisionParamAmount(p_decisionParamAmount), m_simulationDataParamAmount(p_simulationDataParamAmount)
+    : m_userParamAmount(p_userParamAmount), m_simulationDataParamAmount(p_simulationDataParamAmount)
 {
     std::experimental::filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
