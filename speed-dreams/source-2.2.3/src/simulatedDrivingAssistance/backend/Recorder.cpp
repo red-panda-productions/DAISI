@@ -77,6 +77,7 @@ Recorder::~Recorder()
     delete[] m_prevSimulationData;
     m_userInputRecordingFile.close();
     m_decisionsRecordingFile.close();
+    m_simulationDataRecordingFile.close();
 }
 
 /// @brief Write the settings of the car being recorded to the recording.
