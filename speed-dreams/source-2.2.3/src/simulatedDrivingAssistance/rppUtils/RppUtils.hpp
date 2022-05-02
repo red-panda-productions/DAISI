@@ -148,6 +148,10 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    WinExec(p_command, p_showCommand);
+}
 /// @brief          Returns true with certain chance
 /// @param p_rnd    The random generator reference to use
 /// @param p_chance The chance to succeed [0-100]
