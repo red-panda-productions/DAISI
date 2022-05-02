@@ -16,11 +16,11 @@ namespace filesystem = std::experimental::filesystem;
 #define RECORDING_FILE "recording.txt"
 #define BB_FILE        "bbfile.txt"
 
-#define CAR_ARG       "--carxml="
-#define DECISIONS_ARG "--decisions="
-#define RECORDING_ARG "--recording="
+#define CAR_ARG       "--carxml "
+#define DECISIONS_ARG "--decisions "
+#define RECORDING_ARG "--recording "
 
-#define BB_ARG "--bbfile="
+#define BB_ARG "--bbfile "
 
 class IntegrationTests : public testing::TestWithParam<std::string>
 {
