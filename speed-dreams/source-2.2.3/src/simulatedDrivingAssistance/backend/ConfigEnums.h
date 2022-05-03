@@ -24,6 +24,8 @@ typedef unsigned int InterventionType;
 #define INTERVENTION_TYPE_SHARED_CONTROL    2
 #define INTERVENTION_TYPE_COMPLETE_TAKEOVER 3
 
+#define NUM_INTERVENTION_TYPES 4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
