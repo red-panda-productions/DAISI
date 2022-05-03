@@ -21,6 +21,7 @@
 
 #include <racescreens.h>
 #include <playerconfig.h>
+#include <controlconfig.h>
 
 #include "mainmenu.h"
 #include "exitmenu.h"
@@ -39,7 +40,7 @@ onPlayerConfigMenuActivate(void* /* dummy */)
        is pressed, and not only once at the Main menu initialization,
        because the previous menu has to be saved (ESC, Back) and because it can be this menu,
        as well as the Raceman menu */
-    GfuiScreenActivate(PlayerConfigMenuInit(MenuHandle));
+    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
 }
 
 static void

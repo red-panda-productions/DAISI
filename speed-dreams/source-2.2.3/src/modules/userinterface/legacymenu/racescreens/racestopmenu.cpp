@@ -152,7 +152,7 @@ rmControlsHookActivate(void * /* dummy */)
         gearChangeMode = GEAR_MODE_SEQ;
     }
 
-    GfuiScreenActivate(ControlMenuInit(hscreen, prHandle, curPlayerIdx, gearChangeMode, 1));
+    GfuiScreenActivate(ControlMenuInit(hscreen, 1));
 #endif
 }
 

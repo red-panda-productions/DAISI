@@ -648,7 +648,7 @@ onConfControls(void* /* dummy */)
 		ReloadValues = 0;
 
 		curPlayerIdx = (unsigned)(CurrPlayer - PlayersInfo.begin()) + 1;
-		GfuiScreenActivate(ControlMenuInit(PrevScrHandle, PrefHdle, curPlayerIdx, (*CurrPlayer)->gearChangeMode(), 1));
+		GfuiScreenActivate(ControlMenuInit(PrevScrHandle,  1));
 	}
 }
 
@@ -1057,7 +1057,7 @@ onActivate(void* dummy)
 	}
 
 	/* Display editable fields values */
-	refreshEditVal();
+	//refreshEditVal();
 	onConfControls(dummy);
 }
 
