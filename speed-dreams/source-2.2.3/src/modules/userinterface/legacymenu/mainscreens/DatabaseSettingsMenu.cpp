@@ -15,11 +15,11 @@ static void* s_nextHandle = nullptr;
 // GUI settings Id's
 
 // Username
-char m_username[32];
+char m_username[128];
 int m_usernameControl;
 
 // Password
-char m_password[32];
+char m_password[128];
 int m_passwordControl;
 
 // Username
@@ -89,12 +89,12 @@ static void SaveSettings(void* /* dummy */)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    char buf[32];
-    sprintf(buf, "%d", m_username);
+    char buf[128];
+    sprintf(buf, m_username);
     GfuiEditboxSetString(s_scrHandle, m_usernameControl, buf);
-    sprintf(buf, "%d", m_password);
+    sprintf(buf, m_password);
     GfuiEditboxSetString(s_scrHandle, m_passwordControl, buf);
-    sprintf(buf, "%d", m_url);
+    sprintf(buf, m_url);
     GfuiEditboxSetString(s_scrHandle, m_urlControl, buf);
 }
 
@@ -115,9 +115,9 @@ static void LoadConfigSettings(void* p_param)
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
 
     // Set the max time setting from the xml file
-    sprintf(m_username, "%d", GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_password, "%d", GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_url, "%d", GfParmGetStr(p_param, PRM_URL, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_username, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_password,  GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_url, GfParmGetStr(p_param, PRM_URL, GFMNU_ATTR_TEXT, nullptr));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
