@@ -189,6 +189,17 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
     return true;
 }
 
+#define BOOL_TRUE_STRING  "true"
+#define BOOL_FALSE_STRING "false"
+
+/// @brief Convert a boolean to a string
+/// @param p_boolean The boolean to convert to a string
+/// @return The string representing the boolean value
+inline const char* BoolToString(const bool p_boolean)
+{
+    return p_boolean ? BOOL_TRUE_STRING : BOOL_FALSE_STRING;
+}
+
 /// @brief Assert the contents of the binary file in filePath match the binary stream contents
 #define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
     {                                                                        \
