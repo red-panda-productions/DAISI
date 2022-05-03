@@ -42,7 +42,7 @@ void AccelTest(CarController p_carController, float p_accel)
 
 /// @brief                 Tests the brake parameter of a car controller
 /// @param p_carController The car controller
-/// @param p_steer         The brake value
+/// @param p_brake         The brake value
 void BrakeTest(CarController p_carController, float p_brake)
 {
     float start = p_carController.GetCar()->ctrl.brakeCmd;
