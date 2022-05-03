@@ -25,16 +25,19 @@ Driver::Driver(int p_index, const char* p_name)
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
-    std::experimental::filesystem::path sdaFolder;
+    namespace filesystem = std::experimental::filesystem;
+
+    filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
     sdaFolder.append("user_recordings").append(RECORDING_NAME);
 
     *p_carParmHandle =
-        GfParmReadFile(std::experimental::filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
+        GfParmReadFile(filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                        GFPARM_RMODE_STD,
                        true);
 
-    m_replayFile.open(sdaFolder.append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
+    m_replayFile.open(filesystem::path(sdaFolder).append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
+    m_recordedSimulationData.open(filesystem::path(sdaFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
@@ -47,6 +50,59 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
     m_replayFile >> bits(m_inputTime);
 }
 
+/// @brief Validate whether the current simulation data matches the recorded simulation data.
+/// @param p_car The current state of the car
+/// @param p_simulationDataFile The recorded simulation data file
+void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
+{
+    double currentTime;
+    tPosd posG{};
+    tPosd velG{};
+    tPosd accG{};
+    tPosd pos{};
+    tPosd vel{};
+    tPosd acc{};
+
+    p_simulationDataFile >> bits(currentTime);
+    p_simulationDataFile >> bits(posG.x);
+    p_simulationDataFile >> bits(posG.y);
+    p_simulationDataFile >> bits(posG.z);
+    p_simulationDataFile >> bits(velG.x);
+    p_simulationDataFile >> bits(velG.y);
+    p_simulationDataFile >> bits(velG.z);
+    p_simulationDataFile >> bits(accG.x);
+    p_simulationDataFile >> bits(accG.y);
+    p_simulationDataFile >> bits(accG.z);
+    p_simulationDataFile >> bits(pos.x);
+    p_simulationDataFile >> bits(pos.y);
+    p_simulationDataFile >> bits(pos.z);
+    p_simulationDataFile >> bits(vel.x);
+    p_simulationDataFile >> bits(vel.y);
+    p_simulationDataFile >> bits(vel.z);
+    p_simulationDataFile >> bits(acc.x);
+    p_simulationDataFile >> bits(acc.y);
+    p_simulationDataFile >> bits(acc.z);
+
+    assert(p_car->pub.DynGCg.pos.x == posG.x);
+    assert(p_car->pub.DynGCg.pos.y == posG.y);
+    assert(p_car->pub.DynGCg.pos.z == posG.z);
+    assert(p_car->pub.DynGCg.vel.x == velG.x);
+    assert(p_car->pub.DynGCg.vel.y == velG.y);
+    assert(p_car->pub.DynGCg.vel.z == velG.z);
+    assert(p_car->pub.DynGCg.acc.x == accG.x);
+    assert(p_car->pub.DynGCg.acc.y == accG.y);
+    assert(p_car->pub.DynGCg.acc.z == accG.z);
+    assert(p_car->pub.DynGC.pos.x == pos.x);
+    assert(p_car->pub.DynGC.pos.y == pos.y);
+    assert(p_car->pub.DynGC.pos.z == pos.z);
+    assert(p_car->pub.DynGC.vel.x == vel.x);
+    assert(p_car->pub.DynGC.vel.y == vel.y);
+    assert(p_car->pub.DynGC.vel.z == vel.z);
+    assert(p_car->pub.DynGC.acc.x == acc.x);
+    assert(p_car->pub.DynGC.acc.y == acc.y);
+    assert(p_car->pub.DynGC.acc.z == acc.z);
+}
+
 /// @brief Update the car's controls based on recording at that currentTime.
 /// It then gets input from the black-box, which changes the input as well
 /// It ends the race if the file is done
@@ -54,6 +110,8 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
+    ValidateSimulationData(p_car, m_recordedSimulationData);
+
     float accel;
     float brake;
     float steer;
