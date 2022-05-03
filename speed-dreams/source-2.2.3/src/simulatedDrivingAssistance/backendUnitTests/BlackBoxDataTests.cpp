@@ -59,7 +59,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     }
 
     // Compare car
-    ComparerUtils::CompareCars(Car, data.Car, p_eqOrNe, false);
+    ComparerUtils::CompareCars(Car, data.Car, p_eqOrNe);
     if (p_eqOrNe)
     {
         EXPECT_EQ(Segments, data.Car.pub.trkPos.seg);
@@ -70,10 +70,10 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     }
 
     // Compare situation
-    ComparerUtils::CompareSituations(Situation, data.Situation, p_eqOrNe, false);
+    ComparerUtils::CompareSituations(Situation, data.Situation, p_eqOrNe);
 
     // Compare car.pub.trkPos.seg vs segments
-    ComparerUtils::CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_eqOrNe, false);
+    ComparerUtils::CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_eqOrNe);
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
