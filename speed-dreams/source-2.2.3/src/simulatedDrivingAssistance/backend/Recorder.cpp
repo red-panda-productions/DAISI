@@ -4,6 +4,8 @@
 #include <tgf.h>
 #include "../rppUtils/RppUtils.hpp"
 
+namespace filesystem = std::experimental::filesystem;
+
 /// @brief Create a file to record the data to. Truncate if the file already exists.
 /// @param p_recordingsFolder The folder to place the file in
 /// @param p_decisionsRecordingFile  The stream to open the file on
@@ -11,11 +13,9 @@
 void CreateRecordingFile(const std::experimental::filesystem::path& p_recordingsFolder, std::ofstream& p_decisionsRecordingFile, const char* p_fileName)
 {
     // Open the files with truncate on, such that if the file was already in use any existing content will be discarded
-    using std::experimental::filesystem::path;
-    path filePath = path(p_recordingsFolder).append(p_fileName);
+    filesystem::path filePath = filesystem::path(p_recordingsFolder).append(p_fileName);
     std::cout << "Writing decisions to " << filePath << std::endl;
     p_decisionsRecordingFile.open(filePath, std::ios::binary | std::ios::trunc);
-    p_decisionsRecordingFile << std::fixed << std::setprecision(20);
 }
 
 /// @brief  Constructor of Recording,

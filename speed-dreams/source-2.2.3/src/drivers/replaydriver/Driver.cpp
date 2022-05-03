@@ -25,18 +25,19 @@ Driver::Driver(int p_index, const char* p_name)
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
-    using std::experimental::filesystem::path;
-    path sdaFolder;
+    namespace filesystem = std::experimental::filesystem;
+
+    filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
     sdaFolder.append("user_recordings").append(RECORDING_NAME);
 
     *p_carParmHandle =
-        GfParmReadFile(path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
+        GfParmReadFile(filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                        GFPARM_RMODE_STD,
                        true);
 
-    m_replayFile.open(path(sdaFolder).append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
-    m_recordedSimulationData.open(path(sdaFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
+    m_replayFile.open(filesystem::path(sdaFolder).append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
+    m_recordedSimulationData.open(filesystem::path(sdaFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
