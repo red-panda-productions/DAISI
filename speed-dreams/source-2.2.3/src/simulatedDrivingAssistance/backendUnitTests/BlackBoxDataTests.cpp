@@ -18,9 +18,9 @@ protected:
     void SetUp() override
     {
         Random random;
-        TestSegments = GeneratorUtils::GenerateSegments();
-        Car = GeneratorUtils::GenerateCar(TestSegments);
-        Situation = GeneratorUtils::GenerateSituation();
+        TestSegments = GenerateSegments();
+        Car = GenerateCar(TestSegments);
+        Situation = GenerateSituation();
         TickCount = random.NextInt();
         Segments = new tTrackSeg[TestSegments.NextSegmentsCount];
     }
@@ -33,9 +33,9 @@ protected:
 
     void TearDown() override
     {
-        GeneratorUtils::DestroySituation(Situation);
-        GeneratorUtils::DestroyCar(Car);
-        GeneratorUtils::DestroySegments(TestSegments);
+        DestroySituation(Situation);
+        DestroyCar(Car);
+        DestroySegments(TestSegments);
         delete[] Segments;
     }
 };
@@ -59,7 +59,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     }
 
     // Compare car
-    ComparerUtils::CompareCars(Car, data.Car, p_eqOrNe);
+    CompareCars(Car, data.Car, p_eqOrNe);
     if (p_eqOrNe)
     {
         EXPECT_EQ(Segments, data.Car.pub.trkPos.seg);
@@ -70,10 +70,10 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     }
 
     // Compare situation
-    ComparerUtils::CompareSituations(Situation, data.Situation, p_eqOrNe);
+    CompareSituations(Situation, data.Situation, p_eqOrNe);
 
     // Compare car.pub.trkPos.seg vs segments
-    ComparerUtils::CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_eqOrNe);
+    CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_eqOrNe);
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));

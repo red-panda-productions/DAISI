@@ -16,12 +16,8 @@
         EXPECT_GE(failures.size(), 1);                                                                                                             \
     }
 
-class ComparerUtils
-{
-public:
-    static void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe);
+void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe);
 
-    static void CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_eqOrNe);
+void CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_eqOrNe);
 
-    static void CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segmentsCount, bool p_eqOrNe);
-};
+void CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segmentsCount, bool p_eqOrNe);
