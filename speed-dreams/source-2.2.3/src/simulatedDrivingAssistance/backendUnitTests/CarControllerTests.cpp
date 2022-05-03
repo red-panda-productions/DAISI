@@ -52,7 +52,7 @@ void BrakeTest(CarController p_carController, float p_brake)
 
 /// @brief                 Tests the clutch parameter of a car controller
 /// @param p_carController The car controller
-/// @param p_steer         The clutch value
+/// @param p_clutch        The clutch value
 void ClutchTest(CarController p_carController, float p_clutch)
 {
     p_carController.SetClutchCmd(p_clutch);
