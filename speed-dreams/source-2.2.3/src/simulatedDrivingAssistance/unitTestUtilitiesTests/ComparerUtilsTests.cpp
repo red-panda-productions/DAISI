@@ -38,8 +38,8 @@ TEST(ComparerUtilsTests, EmptyCompare)
     CompareCars(car1, car2, false);                                                                                  // Test pointer inequality
     CompareSituations(situation1, situation2, true);                                                                 // Test value equality
     CompareSituations(situation1, situation2, false);                                                                // Test pointer inequality
-    CompareSegments(segments1, segments2, SEGMENT_COUNT_TEST, true);                                                   // Test value equality
-    CompareSegments(segments1, segments2, SEGMENT_COUNT_TEST, false);                                                  // Test pointer inequality
+    CompareSegments(segments1, segments2, SEGMENT_COUNT_TEST, true);                                                 // Test value equality
+    CompareSegments(segments1, segments2, SEGMENT_COUNT_TEST, false);                                                // Test pointer inequality
 }
 
 /// @brief Tests whether comparisons work correctly between randomly-generated structs
@@ -118,10 +118,10 @@ TEST(ComparerUtilsTests, CompareEmptyWithSelf)
         segments1[i - 1].next = &segments1[i];
     }
 
-    CompareCars(car1, car1, true);                                                    // Test value equality
-    INVERT_COMP_TEST(CompareCars(car1, car1, false))                                  // Test pointer equality
-    CompareSituations(situation1, situation1, true);                                  // Test value equality
-    INVERT_COMP_TEST(CompareSituations(situation1, situation1, false))                // Test pointer equality
+    CompareCars(car1, car1, true);                                                      // Test value equality
+    INVERT_COMP_TEST(CompareCars(car1, car1, false))                                    // Test pointer equality
+    CompareSituations(situation1, situation1, true);                                    // Test value equality
+    INVERT_COMP_TEST(CompareSituations(situation1, situation1, false))                  // Test pointer equality
     CompareSegments(segments1, segments1, SEGMENT_COUNT_TEST, true);                    // Test value equality
     INVERT_COMP_TEST(CompareSegments(segments1, segments1, SEGMENT_COUNT_TEST, false))  // Test pointer equality
 }
