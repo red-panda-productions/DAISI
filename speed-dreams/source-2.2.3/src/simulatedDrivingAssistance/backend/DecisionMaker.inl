@@ -98,7 +98,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
         if (m_recorder)
         {
-            m_recorder->WriteDecisions(m_decision, p_tickCount);
+            m_recorder->WriteDecisions(&m_decision, p_tickCount);
         }
     }
 
