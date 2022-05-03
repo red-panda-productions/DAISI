@@ -156,14 +156,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
         throw std::exception("Number of variables received does not match number of expected variables to receive");
     for (int i = 0; i < VariablesToReceive.size(); i++)
     {
-        try
-        {
-            m_variableDecisionMap.at(VariablesToReceive[i])(resultVec.at(i), p_decisionTuple);
-        }
-        catch (std::exception& e)
-        {
-            throw e;
-        }
+        m_variableDecisionMap.at(VariablesToReceive[i])(resultVec.at(i), p_decisionTuple);
     }
 }
 
