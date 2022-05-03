@@ -643,7 +643,7 @@ onConfControls(void * /* dummy */ )
         ReloadValues = 0;
 
         curPlayerIdx = (unsigned)(CurrPlayer - PlayersInfo.begin()) + 1;
-		GfuiScreenActivate(ControlMenuInit(ScrHandle, PrefHdle, curPlayerIdx, (*CurrPlayer)->gearChangeMode(), 1));
+		GfuiScreenActivate(ControlMenuInit(PrevScrHandle, PrefHdle, curPlayerIdx, (*CurrPlayer)->gearChangeMode(), 1));
     }
 }
 
@@ -1025,7 +1025,7 @@ onChangeGearChange(void *vp)
 }
 
 static void
-onActivate(void * /* dummy */)
+onActivate(void * dummy)
 {
     if (ReloadValues) {
 	  
@@ -1034,11 +1034,11 @@ onActivate(void * /* dummy */)
 
 		/* Initialize current player and select it */
 		CurrPlayer = PlayersInfo.begin();
-		GfuiScrollListSetSelectedElement(ScrHandle, ScrollList, 0);
     }
 	
     /* Display editable fields values */
     refreshEditVal();
+	onConfControls(dummy);
 }
 
 void *
