@@ -605,7 +605,7 @@ void HumanDriver::init_track(int index,
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: Save car when a race starts
+    // SIMULATED DRIVING ASSISTANCE: Save initial run settings
     if (m_recorder) {
         auto mediator = SMediator::GetInstance();
         tIndicator indicatorSettings = mediator->GetIndicatorSettings();
