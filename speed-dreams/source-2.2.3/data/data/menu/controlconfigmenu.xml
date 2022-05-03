@@ -724,6 +724,44 @@
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFCC00"/>
 	</section>
+<!-- Gear shifting mode chooser left/right buttons -->
+<section name="gearleftarrow">
+	<attstr name="type" val="image button"/>
+	<attnum name="width" val="24"/>
+	<attnum name="height" val="24"/>
+	<attstr name="tip" val=""/>
+	<attnum name="x" val="155"/>
+	<attnum name="y" val="260"/>
+	<attstr name="disabled image" val="data/img/arrow-left-top-disabled.png"/>
+	<attstr name="enabled image" val="data/img/arrow-left-top.png"/>
+	<attstr name="focused image" val="data/img/arrow-left-top-focused.png"/>
+	<attstr name="pushed image" val="data/img/arrow-left-top-pushed.png"/>
+</section>
+<section name="gearrightarrow">
+	<attstr name="type" val="image button"/>
+	<attnum name="width" val="24"/>
+	<attnum name="height" val="24"/>
+	<attstr name="tip" val=""/>
+	<attnum name="x" val="340"/>
+	<attnum name="y" val="260"/>
+	<attstr name="disabled image" val="data/img/arrow-right-top-disabled.png"/>
+	<attstr name="enabled image" val="data/img/arrow-right-top.png"/>
+	<attstr name="focused image" val="data/img/arrow-right-top-focused.png"/>
+	<attstr name="pushed image" val="data/img/arrow-right-top-pushed.png"/>
+</section>
+
+<!-- Gear shifting mode showing (auto, sequential, grid) -->
+<section name="geartext">
+	<attstr name="type" val="label"/>
+	<attstr name="tip" val="Choose your gear shifting mode"/>
+	<attnum name="max len" val="15"/>
+	<attnum name="x" val="185"/>
+	<attnum name="y" val="264"/>
+	<attnum name="width" val="150"/>
+	<attstr name="h align" val="center"/>
+	<attstr name="color" val="0xFFFFFF"/>
+	<attstr name="font" val="medium"/>
+</section>
 
 <!-- Row under -->
 	<section name="Steer Sensitivity">
@@ -881,6 +919,16 @@
 		<attnum name="width" val="450"/>
 		<attnum name="height" val="20"/>
 		<attstr name="image" val="data/img/head-controlconfig.png"/>
+	</section>
+	<section name="4">
+		<attstr name="type" val="label"/>
+		<attstr name="text" val="Gear change:"/>
+		<attnum name="x" val="20"/>
+		<attnum name="y" val="264"/>
+		<attstr name="color" val="0xFFFFFF"/>
+		<attstr name="h align" val="right"/>
+		<attnum name="width" val="110"/>
+		<attstr name="font" val="small_t"/>
 	</section>
 
 	</section>

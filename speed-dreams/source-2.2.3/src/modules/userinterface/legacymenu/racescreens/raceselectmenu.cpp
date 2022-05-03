@@ -50,7 +50,7 @@ rmOnActivate(void * /* dummy */)
 {
 	GfLogTrace("Entering Race Mode Select menu\n");
 
-    LmRaceEngine().reset();
+	LmRaceEngine().reset();
 }
 
 /* Exit from Race engine */

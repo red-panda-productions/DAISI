@@ -34,7 +34,7 @@
 
 	-->
 
-	<section name="PracticeButton">
+	<!--<section name="PracticeButton">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>	  	  
 		<attstr name="text" val="Practice"/>
@@ -54,7 +54,7 @@
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
+	</section>-->
 
 	<!-- second button for STANDARDGAME only -->
 	<section name="QuickButton">
@@ -79,7 +79,7 @@
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
 
-	<!-- second button for GENPAROPTV1 only -->
+	<!-- second button for GENPAROPTV1 only --><!--
 	<section name="OptimizationMTButton">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>	  
@@ -227,7 +227,7 @@
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
+	</section>-->
 
 	<section name="BackButton">
 		<attstr name="type" val="text button"/>
