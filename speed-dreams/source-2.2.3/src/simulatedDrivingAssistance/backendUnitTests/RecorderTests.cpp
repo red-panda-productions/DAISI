@@ -297,7 +297,8 @@ TEST(RecorderTests, WriteRunSettingsTests)
 {
     namespace filesystem = std::experimental::filesystem;
 
-    Random random(0x534732);
+    Random random;
+    GTEST_COUT << "Random Seed: " << random.GetSeed() << std::endl;
 
     GfInit(false);
 
@@ -328,7 +329,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     // Write the car data
     tTrack track{};
     track.filename = new char[64];
-    strcpy(track.filename, "supper/track/2.xml");
+    GenerateRandomCharArray(track.filename, 63);
     tIndicator indicators;
     indicators.Audio = random.NextBool();
     indicators.Icon = random.NextBool();
