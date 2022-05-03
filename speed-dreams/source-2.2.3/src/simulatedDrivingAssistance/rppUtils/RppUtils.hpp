@@ -189,7 +189,7 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
     return true;
 }
 
-#define BOOL_TRUE_STRING "true"
+#define BOOL_TRUE_STRING  "true"
 #define BOOL_FALSE_STRING "false"
 
 /// @brief Convert a boolean to a string
