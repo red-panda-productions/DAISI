@@ -32,7 +32,7 @@ void SteerTest(CarController p_carController, float p_steer)
 
 /// @brief                 Tests the acceleration parameter of a car controller
 /// @param p_carController The car controller
-/// @param p_steer         The acceleration value
+/// @param p_accel         The acceleration value
 void AccelTest(CarController p_carController, float p_accel)
 {
     float start = p_carController.GetCar()->ctrl.accelCmd;
