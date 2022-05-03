@@ -21,6 +21,7 @@
 
 #include <racescreens.h>
 #include <playerconfig.h>
+#include <controlconfig.h>
 
 #include "mainmenu.h"
 #include "exitmenu.h"
@@ -29,17 +30,22 @@
 #include "DataSelectionMenu.h"
 
 
+
 static void *MenuHandle = 0;
 
 
 static void
-onPlayerConfigMenuActivate(void * /* dummy */)
+onControlConfigMenuActivate(void * /* dummy */)
 {
-    /* Here, we need to call OptionOptionInit each time the firing button
-       is pressed, and not only once at the Main menu initialization,
-       because the previous menu has to be saved (ESC, Back) and because it can be this menu,
-       as well as the Raceman menu */
-    GfuiScreenActivate(PlayerConfigMenuInit(MenuHandle));
+    unsigned curPlayerIdx;
+
+    if (CurrPlayer != PlayersInfo.end()) {
+
+        ReloadValues = 0;
+
+        curPlayerIdx = (unsigned)1;
+        GfuiScreenActivate(ControlMenuInit(MenuHandle, PrefHdle, curPlayerIdx, 1, 1));
+    }
 }
 
 static void
@@ -121,7 +127,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
 	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
+		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlConfigMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
