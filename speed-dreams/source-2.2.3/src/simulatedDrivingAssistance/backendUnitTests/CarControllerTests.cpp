@@ -61,7 +61,7 @@ void ClutchTest(CarController p_carController, float p_clutch)
 
 /// @brief                 Tests the lights parameter of a car controller
 /// @param p_carController The car controller
-/// @param p_steer         The lights value
+/// @param p_lights        The lights value
 void LightTest(CarController p_carController, bool p_lights)
 {
     p_carController.SetLightCmd(p_lights);
