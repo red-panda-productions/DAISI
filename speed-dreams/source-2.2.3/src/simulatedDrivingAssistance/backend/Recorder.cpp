@@ -59,7 +59,7 @@ Recorder::Recorder(const std::string& p_dirName,
     m_prevUserInput = new float[m_userParamAmount];
     for (int i = 0; i < m_userParamAmount; i++)
     {
-        m_prevUserInput[i] = 2.0f;  // 2.0f is impossible user input
+        m_prevUserInput[i] = NAN;
     }
 
     m_prevSimulationData = new float[m_simulationDataParamAmount];
