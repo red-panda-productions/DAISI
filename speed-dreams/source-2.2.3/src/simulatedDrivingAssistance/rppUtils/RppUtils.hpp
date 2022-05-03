@@ -148,6 +148,10 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    WinExec(p_command, p_showCommand);
+}
 /// @brief          Returns true with certain chance
 /// @param p_rnd    The random generator reference to use
 /// @param p_chance The chance to succeed [0-100]
@@ -189,7 +193,7 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 #define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
     {                                                                        \
         std::cout << "Reading binary file from " << (filePath) << std::endl; \
-        std::ifstream file(filePath);                                        \
+        std::ifstream file(filePath, std::ios::binary);                      \
         ASSERT_TRUE(file.is_open());                                         \
         std::stringstream buffer;                                            \
         buffer << file.rdbuf();                                              \

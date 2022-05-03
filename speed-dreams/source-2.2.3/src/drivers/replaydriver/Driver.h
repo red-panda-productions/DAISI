@@ -24,5 +24,6 @@ private:
     // The driver's index
     int m_index;
     std::ifstream m_replayFile;
+    std::ifstream m_recordedSimulationData;
     double m_inputTime;
 };
