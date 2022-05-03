@@ -20,7 +20,6 @@
 
 #include <isoundengine.h>
 
-#include <playerconfig.h>
 #include <controlconfig.h>
 
 #include "legacymenu.h"

@@ -41,7 +41,7 @@
 #include <drivers.h>
 #include <network.h>
 
-#include <playerconfig.h>
+#include <controlconfig.h>
 #include <playerpref.h>
 #include <hostsettingsmenu.h>
 

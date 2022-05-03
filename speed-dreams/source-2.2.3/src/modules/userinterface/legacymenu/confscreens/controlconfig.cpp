@@ -152,11 +152,11 @@ typedef struct tInfo
 
 } tInfo;
 
-struct PlayerInfo
+struct tPlayerInfo
 {
 public:
 
-    PlayerInfo(const char* name = HumanDriverModuleName, const char* dispname = 0,
+    tPlayerInfo(const char* name = HumanDriverModuleName, const char* dispname = 0,
         const char* defcarname = 0, int racenumber = 0, int skilllevel = 0,
         float* color = 0,
         tGearChangeMode gearchangemode = GEAR_MODE_AUTO, int autoreverse = 0,
@@ -181,7 +181,7 @@ public:
         _color[3] = color ? color[3] : 1.0;
     }
 
-    PlayerInfo(const PlayerInfo& src)
+    tPlayerInfo(const tPlayerInfo& src)
     {
         _info.name = 0;
         setName(src._info.name);
@@ -245,7 +245,7 @@ public:
     void setSkillLevel(int skillLevel) { _skilllevel = skillLevel; }
     void setAutoReverse(int autoReverse) { _autoreverse = autoReverse; }
 
-    ~PlayerInfo()
+    ~tPlayerInfo()
     {
         if (_info.dispname)
             delete[] _info.dispname;
@@ -289,7 +289,7 @@ private:
 };
 
 /* The human driver (= player) info list */
-typedef std::deque<PlayerInfo*> tPlayerInfoList;
+typedef std::deque<tPlayerInfo*> tPlayerInfoList;
 static tPlayerInfoList PlayersInfo;
 
 /* The currently selected player (PlayersInfo.end() if none) */
@@ -833,7 +833,7 @@ GenPlayerList(void)
             color[1] = (float)GfParmGetNum(PlayerHdle, sstring, ROB_ATTR_GREEN, (char*)NULL, 1.0);;
             color[2] = (float)GfParmGetNum(PlayerHdle, sstring, ROB_ATTR_BLUE, (char*)NULL, 0.5);;
             color[3] = 1.0;
-            PlayersInfo.push_back(new PlayerInfo(HumanDriverModuleName, // Driver module name
+            PlayersInfo.push_back(new tPlayerInfo(HumanDriverModuleName, // Driver module name
                 driver,  // Player (display) name
                 defaultCar, // Default car name.
                 racenumber, // Race number

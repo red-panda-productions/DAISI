@@ -38,7 +38,7 @@
 #include <drivers.h>
 #include <cars.h>
 
-#include <playerconfig.h>
+#include <controlconfig.h>
 #ifdef CLIENT_SERVER
 #include <csnetwork.h>
 #else
@@ -382,7 +382,7 @@ rmOnPlayerConfig(void * /* dummy */)
 	   is pressed, and not only once at the Raceman menu initialization,
 	   because the previous menu has to be saved (ESC, Back) and because it can be this menu,
 	   as well as the Main menu */
-	GfuiScreenActivate(PlayerConfigMenuInit(ScrHandle));
+	GfuiScreenActivate(ControlMenuInit(ScrHandle, 1));
 
 	// Keep this in mind for when we go back here.
 	PlayerConfigOpen = true;

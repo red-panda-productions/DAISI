@@ -20,7 +20,6 @@
 #include <tgfclient.h>
 
 #include <racescreens.h>
-#include <playerconfig.h>
 #include <controlconfig.h>
 
 #include "mainmenu.h"
