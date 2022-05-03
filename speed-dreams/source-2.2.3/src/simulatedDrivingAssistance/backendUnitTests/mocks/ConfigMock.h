@@ -10,6 +10,7 @@ private:
     DataToStore m_dataToStore;
     char* m_userID;
     bool* m_indicators;
+    bool m_asyncConnection;
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)
@@ -63,5 +64,10 @@ public:
     char* GetUserId() const
     {
         return m_userID;
+    }
+
+    bool GetSyncOption() const
+    {
+        return m_asyncConnection;
     }
 };

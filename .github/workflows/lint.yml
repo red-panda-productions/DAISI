@@ -1,4 +1,4 @@
-name: linter
+name: CI Pipeline Lint
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  cpp-linter:
+  report-linting-errors:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2

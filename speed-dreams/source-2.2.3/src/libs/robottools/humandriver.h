@@ -23,6 +23,7 @@
 #include "Recorder.h"
 
 #define USER_INPUT_RECORD_PARAM_AMOUNT 16
+#define SIMULATION_RECORD_PARAM_AMOUNT 18
 
 class ROBOTTOOLS_API HumanDriver
 {
