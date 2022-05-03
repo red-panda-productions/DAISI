@@ -53,7 +53,7 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
 #endif
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, MAX_ULONG, nullptr, 0);
-    BlackBox.Initialize(initialData, p_testSituations, p_testAmount);
+    BlackBox.Initialize(Config.GetSyncOption(), initialData, p_testSituations, p_testAmount);
 
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
@@ -95,6 +95,11 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     if (decisionMade)
     {
         m_fileBufferStorage.SaveDecisions(m_decision);
+
+        if (m_recorder)
+        {
+            m_recorder->WriteDecisions(&m_decision, p_tickCount);
+        }
     }
 
     int decisionCount = 0;
@@ -102,10 +107,6 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 
     InterventionExecutor->RunDecision(decisions, decisionCount);
 
-    if (m_recorder)
-    {
-        m_recorder->WriteDecisions(&m_decision, p_tickCount);
-    }
     return decisionMade;
 }
 
