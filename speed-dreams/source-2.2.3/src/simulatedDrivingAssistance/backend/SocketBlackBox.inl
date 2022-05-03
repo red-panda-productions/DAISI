@@ -5,13 +5,13 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
-#define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                  \
-    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                          \
-    template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                \
-    template void SocketBlackBox<p_type1, p_type2>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests);                 \
-    template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                  \
-    template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                            \
-    template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple); \
+#define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
+    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                               \
+    template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                     \
+    template void SocketBlackBox<p_type1, p_type2>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests); \
+    template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                       \
+    template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                                 \
+    template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);      \
     template bool SocketBlackBox<p_type1, p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
 
 // inserts value from BlackBoxData variables in vector
@@ -46,13 +46,22 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     m_variableDecisionMap["Accel"] = CONVERT_TO_ACCEL_DECISION;
 }
 
-/// @brief                          Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
-/// @param p_initialBlackBoxData  The initial drive situation
+/// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
+/// @param p_connectAsync True if blackbox will run async (not waiting for response), false if sync (wait for response)
+/// @param p_initialBlackBoxData The initial drive situation
+/// @param p_tests Control data used in tests
+/// @param p_amountOfTests Amount of tests in p_tests
 template <class BlackBoxData, class PointerManager>
-void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests)
+void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests)
 {
     Initialize();
-    m_server.ConnectAsync();
+    std::cout << "Connecting ";
+    if (p_connectAsync)
+    {
+        m_asyncConnection = true;
+        std::cout << "a";
+    }
+    std::cout << "sync" << std::endl;
     m_server.AwaitClientConnection();
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
@@ -156,11 +165,15 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
 /// @param p_car       Car to base decisions off.
 /// @param p_situation Situation to base decisions off.
 /// @param p_tickCount The current tick count.
-/// @return returns decision array.
+/// @param p_decisions Decision tuple to store decisions in
+/// @return returns true if a decision is made, else false (will always return true if connection is not async)
 template <class BlackBoxData, class PointerManager>
 bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
 {
-    if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE)) return false;
+    if (!m_asyncConnection)
+        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    else if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE))
+        return false;
     msgpack::sbuffer sbuffer;
 
     delete m_currentData;

@@ -23,7 +23,7 @@ public:
 
     void Initialize();
 
-    void Initialize(BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0);
+    void Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0);
 
     void Shutdown();
 
@@ -46,6 +46,8 @@ private:
     BlackBoxData* m_currentData = nullptr;
 
     PointerManager m_pointerManager;
+
+    bool m_asyncConnection = false;
 };
 
 /// @brief The standard SocketBlackBox type

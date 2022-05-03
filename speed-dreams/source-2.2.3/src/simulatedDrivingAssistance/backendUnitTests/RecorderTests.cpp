@@ -59,10 +59,12 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Ensure file is created with the proper name
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
+    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
 
     // Ensure the file is empty
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME)
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME)
 }
 
 /// @brief Test the recorder with a single parameter, for different compression options and scenarios
@@ -172,16 +174,22 @@ TEST(RecorderTests, RecorderThreeParamCompression)
 TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
+
     Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0);
-    recorder.WriteUserInput(nullptr, 0);
-    recorder.WriteUserInput(nullptr, 2);
-    recorder.WriteUserInput(nullptr, 1);
-    recorder.WriteUserInput(nullptr, 6.9);
+    recorder.WriteUserInput(nullptr, 0, false);
+    recorder.WriteUserInput(nullptr, 2, false);
+    recorder.WriteUserInput(nullptr, 1, false);
+    recorder.WriteUserInput(nullptr, 6.9, false);
 
     recorder.WriteDecisions(nullptr, 0);
     recorder.WriteDecisions(nullptr, 3);
     recorder.WriteDecisions(nullptr, 435);
     recorder.WriteDecisions(nullptr, 95875);
+
+    recorder.WriteSimulationData(nullptr, 0.0, false);
+    recorder.WriteSimulationData(nullptr, 7.87, false);
+    recorder.WriteSimulationData(nullptr, 845.15421, false);
+    recorder.WriteSimulationData(nullptr, 95875.45145, false);
 
     std::stringstream expectedUserInput;
 
@@ -194,6 +202,12 @@ TEST(RecorderTests, WriteOnlyTime)
     expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
+
+    std::stringstream expectedSimulationData;
+
+    expectedSimulationData << bits(0.0) << bits(7.87) << bits(845.15421) << bits(95875.45145);
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", SIMULATION_DATA_RECORDING_FILE_NAME, expectedSimulationData);
 }
 
 /// @brief Test whether the recorder can safely write to the same file twice.
@@ -224,6 +238,52 @@ TEST(RecorderTests, WriteSameFileTwice)
 
         ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected);
     }
+}
+
+TEST(RecorderTests, WriteDecisions)
+{
+    Random random(0x534732);
+    std::string folder = GetTestingDirectory();
+    std::stringstream expectedDecisionsData;
+
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 0);
+    unsigned long timestamp = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        DecisionTuple decisionTuple;
+        decisionTuple.SetAccel(random.NextFloat(0, 1));
+        decisionTuple.SetBrake(random.NextFloat(0, 1));
+        decisionTuple.SetGear(random.NextInt(0, 10));
+        decisionTuple.SetSteer(random.NextFloat(0, 1));
+        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetAccel()) << bits(decisionTuple.GetBrake()) << bits(static_cast<float>(decisionTuple.GetGear()));
+        recorder.WriteDecisions(&decisionTuple, timestamp++);
+    }
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_decisions", DECISIONS_RECORDING_FILE_NAME, expectedDecisionsData);
+}
+
+TEST(RecorderTests, WriteSimulationData)
+{
+    Random random(0x534732);
+    std::string folder = GetTestingDirectory();
+    std::stringstream expectedSimulationData;
+
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_simulation_data", 0, 3);
+    float simulationData[3];
+    double timestamp = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        simulationData[0] = random.NextFloat(-1000, 1000);
+        simulationData[1] = random.NextFloat(-1000, 1000);
+        simulationData[2] = random.NextFloat(-1000, 1000);
+        expectedSimulationData << bits(timestamp) << bits(simulationData[0]) << bits(simulationData[1]) << bits(simulationData[2]);
+        recorder.WriteSimulationData(simulationData, timestamp);
+        timestamp += (1.0 / 240);
+    }
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_simulation_data", SIMULATION_DATA_RECORDING_FILE_NAME, expectedSimulationData);
 }
 
 TEST(RecorderTests, CompressionWithoutPreviousState)
