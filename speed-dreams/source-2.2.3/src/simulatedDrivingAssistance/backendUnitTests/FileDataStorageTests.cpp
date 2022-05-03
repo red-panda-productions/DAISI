@@ -384,7 +384,7 @@ TEST(FileDataStorageTests, CreatesFileDirectoryIfNotExists)
     // Delete the existing test directory to ensure directories are properly created
     if (std::experimental::filesystem::exists(TEST_FILE_DIR))
     {
-        std::experimental::filesystem::remove_all(TEST_FILE_DIR);  // NOCOVERAGE: deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
+        std::experimental::filesystem::remove_all(TEST_FILE_DIR);  // @NOCOVERAGE, deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
     }
 
     TestNoStorageWithTimestamps();

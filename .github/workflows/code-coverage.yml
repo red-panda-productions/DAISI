@@ -1,0 +1,75 @@
+name: CI Pipeline Code Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allow manually triggering from the actions tab
+  workflow_dispatch:
+
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  report-code-coverage:
+    # The CMake configure and build commands are platform agnostic anda should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install OpenCppCoverage
+      uses: KungFuDonkey/Install-OpenCppCoverage@v1
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - name: Install MySQL
+      uses: Fettpet/setup-mysql@v1
+      with:
+        mysql-version: 8.0
+        username: SDATest
+        password: PASSWORD
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+
+    - name: Configure CMake
+      shell: bash
+      run: cmake -DOPTION_GITHUB_ACTIONS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_CXX_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -DCMAKE_C_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_C_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config Debug
+
+    - name: Run code coverage UnitUtilities
+      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+      run: .\UnitUtilitiesCoverage.bat
+
+    - name: Run code coverage Frontend
+      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+      run: .\FrontendCoverage.bat
+    
+    - name: Run code coverage Backend
+      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+      run: .\BackendCoverage.bat
+
+    - name: Create code coverage report
+      uses: 5monkeys/cobertura-action@master
+      with:
+        path: ${{github.workspace}}\speed-dreams\source-2.2.3\BackendCoverage.xml
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 100
+        fail_below_threshold: true
+        show_missing: true
+        link_missing_lines: true
+        report_name: 'code coverage report'
+      
