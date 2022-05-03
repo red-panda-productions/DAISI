@@ -233,8 +233,12 @@ TEST(RecorderTests, CompressionWithoutPreviousState)
     ASSERT_THROW(recorder.WriteRecording(nullptr, 0, file, 0, true, nullptr), std::exception);
 }
 
-TEST(RecorderTests, WriteCarTests)
+TEST(RecorderTests, WriteRunSettingsTests)
 {
+    namespace filesystem = std::experimental::filesystem;
+
+    Random random(0x534732);
+
     GfInit(false);
 
     // Find the car xml
@@ -259,15 +263,61 @@ TEST(RecorderTests, WriteCarTests)
     strcpy(carElt.info.name, "Test Car");
 
     // Create a recorder
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_car", 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_settings", 0, 0);
 
     // Write the car data
-    recorder.WriteCar(&carElt);
+    tTrack track{};
+    track.filename = new char[64];
+    strcpy(track.filename, "supper/track/2.xml");
+    tIndicator indicators;
+    indicators.Audio = random.NextBool();
+    indicators.Icon = random.NextBool();
+    indicators.Text = random.NextBool();
+
+    InterventionType interventionType = random.NextInt(0, NUM_INTERVENTION_TYPES);
+
+    tParticipantControl participantControl;
+    participantControl.ControlInterventionToggle = random.NextBool();
+    participantControl.ControlGas = random.NextBool();
+    participantControl.ControlSteering = random.NextBool();
+    participantControl.ForceFeedback = random.NextBool();
+    participantControl.RecordSession = random.NextBool();
+    participantControl.BBRecordSession = random.NextBool();
+
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl);
+
+    filesystem::path settingsPath = GetTestingDirectory();
+    settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
+
+    ASSERT_TRUE(filesystem::exists(settingsPath));
+
+    void* handle = GfParmReadFile(settingsPath.string().c_str(), 0, true);
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, nullptr), BoolToString(indicators.Audio));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_TEXT, nullptr), BoolToString(indicators.Text));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_ICON, nullptr), BoolToString(indicators.Icon));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, nullptr), BoolToString(participantControl.BBRecordSession));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(participantControl.RecordSession));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, nullptr), BoolToString(participantControl.ControlInterventionToggle));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteering));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(participantControl.RecordSession));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, nullptr), BoolToString(participantControl.BBRecordSession));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_FILENAME, nullptr), track.filename);
+
+    ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);
+
+    delete[] track.filename;
 
     // Check the contents of the file
     std::ifstream originalFile(path);
     std::stringstream originalBuffer;
     originalBuffer << originalFile.rdbuf();
     std::string folder = GetTestingDirectory();
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_car", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_settings", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
 }

@@ -64,13 +64,37 @@ Recorder::~Recorder()
     m_decisionsRecordingFile.close();
 }
 
-/// @brief Write the settings of the car being recorded to the recording.
-/// @param p_carElt The handle to the car settings.
-void Recorder::WriteCar(const tCarElt* p_carElt)
+/// @brief Write the settings of the run being recorded to the recording folder.
+/// @param p_carElt The car being used.
+/// @param p_track The track that's being driven on
+/// @param p_indicators The indicator settings
+/// @param p_interventionType The intervention type settings
+/// @param p_participantControl The participant control settings
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl)
 {
-    GfParmWriteFile(std::experimental::filesystem::path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
+    using std::experimental::filesystem::path;
+    GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                     p_carElt->_carHandle,
                     p_carElt->info.name);
+
+    void* settingsFileHandle = GfParmReadFile(path(m_recordingDir).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_CREAT, true);
+
+    GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, BoolToString(p_indicators.Audio));
+    GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, BoolToString(p_indicators.Icon));
+    GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_TEXT, BoolToString(p_indicators.Text));
+
+    GfParmSetNum(settingsFileHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, static_cast<float>(p_interventionType));
+
+    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_FILENAME, p_track->filename);
+
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlGas));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteering));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, BoolToString(p_participantControl.RecordSession));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, BoolToString(p_participantControl.BBRecordSession));
+
+    GfParmWriteFile(nullptr, settingsFileHandle, "Run Settings");
 }
 
 /// @brief Write user input to the output file
