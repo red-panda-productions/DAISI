@@ -122,7 +122,7 @@ void ShowInterventionTest(InterventionAction p_action)
 
     auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    carController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
+    carController.ShowIntervention(p_action);
 
     auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
