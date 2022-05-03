@@ -30,6 +30,8 @@ public:
 
     void SetCar(tCarElt* p_car);
 
+    const tCarElt* GetCar() const;
+
 private:
     tCarElt* m_car = nullptr;
 };
