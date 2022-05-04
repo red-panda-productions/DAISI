@@ -68,6 +68,9 @@ extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 #endif
 
+// SIMULATED DRIVING ASSISTANCE: include mediator
+#include "Mediator.h"
+
 typedef enum { eTransAuto, eTransSeq, eTransGrid, eTransHbox } eTransmission;
 
 typedef enum { eRWD, eFWD, e4WD } eDriveTrain;
@@ -602,9 +605,14 @@ void HumanDriver::init_track(int index,
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: Save car when a race starts
+    // SIMULATED DRIVING ASSISTANCE: Save initial run settings
     if (m_recorder) {
-        m_recorder->WriteCar(car);
+        auto mediator = SMediator::GetInstance();
+        tIndicator indicatorSettings = mediator->GetIndicatorSettings();
+        InterventionType interventionType = mediator->GetInterventionType();
+        tParticipantControl participantControlSettings = mediator->GetPControlSettings();
+
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings);
     }
     const int idx = index - 1;
 
