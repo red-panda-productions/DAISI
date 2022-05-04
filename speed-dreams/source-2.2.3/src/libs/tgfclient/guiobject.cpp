@@ -436,7 +436,8 @@ gfuiSelectNext(void * /* dummy */)
 	    curObject = curObject->next;
 	    if ((curObject->focusMode != GFUI_FOCUS_NONE) &&
 		(curObject->state != GFUI_DISABLE) &&
-		(curObject->visible)) {
+		(curObject->visible) &&
+		(curObject->widget != GFUI_LABEL)) {
 		gfuiSetFocus(curObject);
 		return;
 	    }
