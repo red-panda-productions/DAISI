@@ -38,9 +38,6 @@ static char buf[1024];
 static char path[1024];
 static char path2[1024];
 
-// SIMULATED DRIVING ASSISTANCE: store the last intervention type for toggling on/off
-InterventionType m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
-
 cGrScreen::cGrScreen(int myid)
 {
     id = myid;
