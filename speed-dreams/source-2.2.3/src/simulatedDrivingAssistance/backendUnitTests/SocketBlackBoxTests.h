@@ -167,7 +167,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool async)
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
     // normal
-    if(async)
+    if (async)
     {
         ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));  // removes 1 data step
 
