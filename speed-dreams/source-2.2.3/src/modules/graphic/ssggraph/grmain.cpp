@@ -491,11 +491,6 @@ grSwitchMirror(void * /* dummy */)
     grGetCurrentScreen()->switchMirror();
 }
 
-void ToggleIntervention(void * /* dummy */)
-{
-    grGetCurrentScreen()->ToggleIntervention();
-}
-
 int
 initView(int x, int y, int width, int height, int /* flag */, void *screen)
 {
@@ -551,9 +546,6 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
     GfuiAddKey(screen, ')',            "UnSplit Screen", (void*)GR_SPLIT_REM, grSplitScreen, NULL);
     GfuiAddKey(screen, '_',            "Split Screen Arrangement", (void*)GR_SPLIT_ARR, grSplitScreen, NULL);
     GfuiAddKey(screen, GFUIK_TAB,      "Next (split) Screen", (void*)GR_NEXT_SCREEN, grChangeScreen, NULL);
-
-    // SIMULATED DRIVING ASSISTANCE: add toggle for interventions
-    GfuiAddKey(screen, 'i', "Toggle interventions", nullptr, ToggleIntervention, NULL);
 
     GfLogInfo("Current screen is #%d (out of %d)\n", nCurrentScreenIndex, grNbActiveScreens);
 

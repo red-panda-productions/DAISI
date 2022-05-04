@@ -58,6 +58,7 @@
 #include <robot.h>
 #include <playerpref.h>
 #include <car.h>
+#include "Mediator.h"
 
 
 #include "humandriver.h"
@@ -165,6 +166,8 @@ static std::vector<tHumanContext*> HCtx;
 static bool speedLimiter = false;
 static tdble speedLimit;
 
+// SIMULATED DRIVING ASSISTANCE: store the last intervention type for toggling on/off
+InterventionType m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
 
 typedef struct
 {
@@ -241,8 +244,10 @@ static const tControlCmd CmdControlRef[] = {
     {HM_ATT_DASHB_NEXT ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_NEXT_MIN, 0.0, 0.0, HM_ATT_DASHB_NEXT_MAX, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_PREV ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_PREV_MIN, 0.0, 0.0, HM_ATT_DASHB_PREV_MAX, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_INC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_INC_MIN,  0.0, 0.0, HM_ATT_DASHB_INC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
-    {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0}
-};
+    {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
+
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off
+    {HM_ATT_INTERV_TGGLE, GFCTRL_TYPE_NOT_AFFECTED, -1, nullptr, 0.0, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0}};
 
 static const int NbCmdControl = sizeof(CmdControlRef) / sizeof(CmdControlRef[0]);
 
@@ -1688,6 +1693,18 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
             }//if-else dv
         }//if speedLimit
     }//if speedLimiter
+
+
+    // SIMULATED DRIVING ASSISTANCE: toggle intervention on/off
+    tControlCmd input = cmd[CMD_INTERV_TGGLE];
+    if ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
+        || (input.type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[input.val]) 
+        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1))
+    {
+        InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+        SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
+        m_prevIntervention = currentType;
+    }
 
 
 #ifndef WIN32

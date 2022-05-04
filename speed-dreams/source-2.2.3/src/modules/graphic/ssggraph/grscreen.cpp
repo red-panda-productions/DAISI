@@ -99,15 +99,6 @@ cGrScreen::selectBoard(const long brd)
     board->selectBoard(brd);
 }
 
-// SIMULATED DRIVING ASSISTANCE
-/// @brief Toggles the interventions on/off (so between the selected type and NO_SIGNALS)
-void cGrScreen::ToggleIntervention()
-{
-    InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
-    SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
-    m_prevIntervention = currentType;
-}
-
 int cGrScreen::isInScreen(int x, int y)
 {
     if (!active) {
