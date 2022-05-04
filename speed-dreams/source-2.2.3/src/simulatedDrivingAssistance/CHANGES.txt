@@ -59,6 +59,7 @@ Changed:
                 changed common_drive(): added check for input of intervention toggle on/off
                 added   SetRecorder()
                 added   m_prevIntervention member
+                added   NO_KEYBOARD define: clarify magic number
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
