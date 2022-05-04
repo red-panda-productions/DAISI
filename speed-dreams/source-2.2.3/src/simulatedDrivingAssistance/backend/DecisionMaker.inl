@@ -7,7 +7,8 @@
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2, type3, type4, type5)                                                                 \
-    template void DecisionMaker<type1, type2, type3, type4, type5>::Initialize(tCarElt* p_initialCar,                                           \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::Initialize(unsigned long p_initialTickCount,                                \
+                                                                               tCarElt* p_initialCar,                                           \
                                                                                tSituation* p_initialSituation,                                  \
                                                                                tTrack* p_track,                                                 \
                                                                                const std::string& p_blackBoxExecutablePath,                     \
@@ -38,7 +39,8 @@
 /// @param  p_testSituations   The test situations
 /// @param  p_testAmount       The amount of tests
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
+void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
+                                    tCarElt* p_initialCar,
                                     tSituation* p_initialSituation,
                                     tTrack* p_track,
                                     const std::string& p_blackBoxExecutablePath,
@@ -52,7 +54,7 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
     StartExecutable(p_blackBoxExecutablePath);  // @NOCOVERAGE
 #endif
 
-    BlackBoxData initialData(p_initialCar, p_initialSituation, MAX_ULONG, nullptr, 0);
+    BlackBoxData initialData(p_initialCar, p_initialSituation, p_initialTickCount, nullptr, 0);
     BlackBox.Initialize(Config.GetSyncOption(), initialData, p_testSituations, p_testAmount);
 
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
