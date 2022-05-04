@@ -88,6 +88,8 @@ Changed:
             guiobject.cpp
                 changed GfuiDraw()
                 changed GfuiReleaseObject()
+                changed gfuiSelectNext(): it now skips over labels
+                changed gfuiSelectPrev(): it now skips over labels
                 added   GfuiDrawString() overloaded to support different parameters.
             tgfclient.h
                 added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
@@ -96,7 +98,8 @@ Changed:
                 added   tfuiRadioButtonCallback
                 added   GfuiMenuCreateRadioButtonListControl()
 
-                added   GfuiMenuBoolToStr()
+
+
                 added   GfuiMenuControlGetBoolean()
                 
                 added   GfuiRadioButtonListCreate()
