@@ -155,7 +155,7 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
 /// @param  p_processInformation The information about the process, this contains the handles
 inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation)
 {
-    LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
+    LPSTR args = _strdup(p_args);
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
     // Start the process. Nullpointers correspond to default values for this method.
     // Inherit handles is not necessary for our use case and is thus false.
