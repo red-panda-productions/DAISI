@@ -26,6 +26,11 @@ int m_passwordControl;
 char m_url[512];
 int m_urlControl;
 
+char* GetUsername()
+{
+    return m_username;
+}
+
 /// @brief Handle input in the userId textbox
 static void SetUsername(void*)
 {

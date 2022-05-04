@@ -1,4 +1,5 @@
 #include "SQLDatabaseStorage.h"
+#include ".././modules/userinterface/legacymenu/mainscreens/DatabaseSettingsMenu.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
 #include "ConfigEnums.h"
@@ -648,6 +649,8 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     std::string password;
     std::string schema;
     std::string useSSL;
+
+    username = GetUsername();
 
     READ_INPUT(ifstream, ip)
     READ_INPUT(ifstream, portString)
