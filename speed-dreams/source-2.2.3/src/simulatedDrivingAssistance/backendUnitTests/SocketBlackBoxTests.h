@@ -92,7 +92,7 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 }
 
 /// @brief Tests an entire run of the framework
-void SocketTest(void (*p_blackboxFunction)(), bool async)
+void SocketTest(void (*p_blackboxFunction)(), bool p_async)
 {
     // creates a connection between the black box and a client
     SETUP(p_blackboxFunction)
@@ -167,7 +167,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool async)
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
     // normal
-    if (async)
+    if (p_async)
     {
         ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));  // removes 1 data step
 
