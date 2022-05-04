@@ -43,30 +43,8 @@ void *RmRaceSelectMenuHandle = NULL;
 
 static std::map<std::string, int> rmMapSubTypeComboIds;
 
-
-/* Called when the menu is activated */
 static void
-rmOnActivate(void * /* dummy */)
-{
-	GfLogTrace("Entering Race Mode Select menu\n");
-
-	LmRaceEngine().reset();
-}
-
-/* Exit from Race engine */
-static void
-rmOnRaceSelectShutdown(void *prevMenu)
-{
-    GfuiScreenActivate(prevMenu);
-	
-    LmRaceEngine().cleanup();
-	
-	LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
-}
-
-
-static void
-rmOnSelectRaceMan(void *pvRaceManTypeIndex)
+rmOnSelectRaceMan(void* pvRaceManTypeIndex)
 {
 	// Get the race managers with the given type
 	const std::vector<std::string>& vecRaceManTypes = GfRaceManagers::self()->getTypes();
@@ -102,7 +80,7 @@ rmOnSelectRaceMan(void *pvRaceManTypeIndex)
 	{
 		// Give the selected race manager to the race engine.
 		LmRaceEngine().selectRaceman(pSelRaceMan);
-		
+
 		// Start the race configuration menus sequence.
 		LmRaceEngine().configureRace(/* bInteractive */ true);
 	}
@@ -111,6 +89,28 @@ rmOnSelectRaceMan(void *pvRaceManTypeIndex)
 		GfLogError("No such race manager (type '%s')\n", strRaceManType.c_str());
 	}
 }
+
+/* Called when the menu is activated */
+static void
+rmOnActivate(void * /* dummy */)
+{
+	GfLogTrace("Entering Race Mode Select menu\n");
+
+	void* j = (void*)1;
+	rmOnSelectRaceMan(j);
+}
+
+/* Exit from Race engine */
+static void
+rmOnRaceSelectShutdown(void *prevMenu)
+{
+    GfuiScreenActivate(prevMenu);
+	
+    LmRaceEngine().cleanup();
+	
+	LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
+}
+
 
 static void
 rmOnChangeRaceMan(tComboBoxInfo *)
