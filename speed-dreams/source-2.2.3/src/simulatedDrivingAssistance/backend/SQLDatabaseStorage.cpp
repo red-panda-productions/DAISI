@@ -1,4 +1,5 @@
 #include "SQLDatabaseStorage.h"
+#include "mediator.h"
 #include ".././modules/userinterface/legacymenu/mainscreens/DatabaseSettingsMenu.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
@@ -650,7 +651,7 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     std::string schema;
     std::string useSSL;
 
-    username = GetUsername();
+    DatabaseSettings* dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
     READ_INPUT(ifstream, ip)
     READ_INPUT(ifstream, portString)

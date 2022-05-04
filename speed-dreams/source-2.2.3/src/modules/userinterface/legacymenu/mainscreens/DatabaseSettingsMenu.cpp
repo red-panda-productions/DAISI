@@ -1,55 +1,39 @@
 #include <tgfclient.h>
 #include "guimenu.h"
 #include "legacymenu.h"
+#include "Mediator.h"
 #include "DatabaseSettingsMenu.h"
 
 // Parameters used in the xml files
 #define PRM_USERNAME         "UsernameEdit"
 #define PRM_PASSWORD         "PasswordEdit"
-#define PRM_URL              "UrlEdit"
+#define PRM_ADDRESS          "AddressEdit"
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
 static void* s_nextHandle = nullptr;
 
-// GUI settings Id's
-
-// Username
-char m_username[128];
-int m_usernameControl;
-
-// Password
-char m_password[128];
-int m_passwordControl;
-
-// Username
-char m_url[512];
-int m_urlControl;
-
-char* GetUsername()
-{
-    return m_username;
-}
+DatabaseSettings* m_dbsettings = new DatabaseSettings;
 
 /// @brief Handle input in the userId textbox
 static void SetUsername(void*)
 {
-    strcpy(m_username, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_username);
+    m_dbsettings->username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
+    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings->username);
 }
 
 /// @brief Handle input in the userId textbox
 static void SetPassword(void*)
 {
-    strcpy(m_password, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_password);
+    m_dbsettings->password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
+    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings->password);
 }
 
 /// @brief Handle input in the userId textbox
-static void SetUrl(void*)
+static void SetAddress(void*)
 {
-    strcpy(m_url, GfuiEditboxGetString(s_scrHandle, m_urlControl));
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_url);
+    m_dbsettings->address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
+    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings->address);
 }
 
 /// @brief Saves the settings into the ResearcherMenu.xml file
@@ -62,13 +46,9 @@ static void SaveSettingsToDisk()
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save max time to xml file
-    char buf[512];
-    sprintf(buf, "%d", m_username);
-    GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, buf);
-    sprintf(buf, "%d", m_password);
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, buf);
-    sprintf(buf, "%d", m_url);
-    GfParmSetStr(readParam, PRM_URL, GFMNU_ATTR_TEXT, buf);
+    GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, m_dbsettings->username);
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, m_dbsettings->password);
+    GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, m_dbsettings->address);
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
@@ -78,6 +58,7 @@ static void SaveSettingsToDisk()
 static void SaveSettings(void* /* dummy */)
 {
     // Save settings to the sqldatabase
+    SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
 
     // Save the encrypted userId in the SDAConfig
     /*size_t encryptedUserId = std::hash<std::string>{}(m_userId);
@@ -94,23 +75,18 @@ static void SaveSettings(void* /* dummy */)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    char buf[128];
-    sprintf(buf, m_username);
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, buf);
-    sprintf(buf, m_password);
-    GfuiEditboxSetString(s_scrHandle, m_passwordControl, buf);
-    sprintf(buf, m_url);
-    GfuiEditboxSetString(s_scrHandle, m_urlControl, buf);
+    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings->username);
+    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings->password);
+    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings->address);
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
 /// @param p_param The configuration xml file handle
 static void LoadDefaultSettings()
 {
-
-    sprintf(m_username, "%d", GfuiEditboxGetString(s_scrHandle, m_usernameControl));
-    sprintf(m_password, "%d", GfuiEditboxGetString(s_scrHandle, m_passwordControl));
-    sprintf(m_url, "%d", GfuiEditboxGetString(s_scrHandle, m_urlControl));
+    m_dbsettings->username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
+    m_dbsettings->password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
+    m_dbsettings->address  = GfuiEditboxGetString(s_scrHandle, m_addressControl);
 }
 
 /// @brief        Loads the settings from the config file into the internal variables
@@ -120,9 +96,9 @@ static void LoadConfigSettings(void* p_param)
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
 
     // Set the max time setting from the xml file
-    sprintf(m_username, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_password,  GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_url, GfParmGetStr(p_param, PRM_URL, GFMNU_ATTR_TEXT, nullptr));
+    m_dbsettings->username = GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings->password = GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings->address  = GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr);
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
@@ -168,7 +144,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsername);
     m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPassword);
-    m_urlControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_URL, nullptr, nullptr, SetUrl);
+    m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddress);
 
     GfParmReleaseHandle(param);
 

@@ -15,6 +15,17 @@ typedef struct Indicator
     bool Text;
 } tIndicator;
 
+/// @brief The different ways a user can be indicated about an intervention
+typedef struct DatabaseSettings
+{
+    const char* username;
+    const char* password;
+    const char* address;
+    const char* port;
+    const char* schemaName;
+    bool useSSL;
+} tDatabaseSettings;
+
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 

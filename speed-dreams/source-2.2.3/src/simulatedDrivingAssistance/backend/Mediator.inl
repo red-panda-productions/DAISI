@@ -5,7 +5,6 @@
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
-
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -25,6 +24,8 @@
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template void Mediator<type>::SetDatabaseSettings(DatabaseSettings* p_dbSettings);                                                                  \
+    template DatabaseSettings* Mediator<type>::GetDatabaseSettings();                                                                                   \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
@@ -161,6 +162,22 @@ void Mediator<DecisionMaker>::RaceStop()
     if (!m_inRace) return;
     m_decisionMaker.RaceStop();
     m_inRace = false;
+}
+
+/// @brief Tells the decisionmaker that the race has ended
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetDatabaseSettings(DatabaseSettings* p_dbSettings)
+{
+    m_dbSettings = p_dbSettings;
+}
+
+/// @brief Tells the decisionmaker that the race has ended
+template <typename DecisionMaker>
+DatabaseSettings* Mediator<DecisionMaker>::GetDatabaseSettings()
+{
+    if (m_dbSettings == nullptr) {
+    }
+    return m_dbSettings;
 }
 
 /// @brief Creates a mediator instance if needed and returns it

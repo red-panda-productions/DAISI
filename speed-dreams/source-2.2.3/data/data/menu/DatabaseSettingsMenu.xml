@@ -30,7 +30,7 @@
         </section>
 		
 		<!-- Input field for userId -->
-        <section name="UrlEdit">
+        <section name="AddressEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
