@@ -69,6 +69,9 @@ extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 #endif
 
+// SIMULATED DRIVING ASSISTANCE: include mediator
+#include "Mediator.h"
+
 typedef enum { eTransAuto, eTransSeq, eTransGrid, eTransHbox } eTransmission;
 
 typedef enum { eRWD, eFWD, e4WD } eDriveTrain;
@@ -607,9 +610,14 @@ void HumanDriver::init_track(int index,
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: Save car when a race starts
+    // SIMULATED DRIVING ASSISTANCE: Save initial run settings
     if (m_recorder) {
-        m_recorder->WriteCar(car);
+        auto mediator = SMediator::GetInstance();
+        tIndicator indicatorSettings = mediator->GetIndicatorSettings();
+        InterventionType interventionType = mediator->GetInterventionType();
+        tParticipantControl participantControlSettings = mediator->GetPControlSettings();
+
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings);
     }
     const int idx = index - 1;
 
@@ -1979,6 +1987,31 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
  */
 void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
 {
+    // SIMULATED DRIVING ASSISTANCE: added recording of simulation data
+    if(m_recorder) {
+        float params[SIMULATION_RECORD_PARAM_AMOUNT] = {
+            car->pub.DynGCg.pos.x,
+            car->pub.DynGCg.pos.y,
+            car->pub.DynGCg.pos.z,
+            car->pub.DynGCg.vel.x,
+            car->pub.DynGCg.vel.y,
+            car->pub.DynGCg.vel.z,
+            car->pub.DynGCg.acc.x,
+            car->pub.DynGCg.acc.y,
+            car->pub.DynGCg.acc.z,
+            car->pub.DynGC.pos.x,
+            car->pub.DynGC.pos.y,
+            car->pub.DynGC.pos.z,
+            car->pub.DynGC.vel.x,
+            car->pub.DynGC.vel.y,
+            car->pub.DynGC.vel.z,
+            car->pub.DynGC.acc.x,
+            car->pub.DynGC.acc.y,
+            car->pub.DynGC.acc.z,
+        };
+        m_recorder->WriteSimulationData(params,s->currentTime, false);
+    }
+
     const int idx = index - 1;
 
     tControlCmd *cmd = HCtx[idx]->cmdControl;

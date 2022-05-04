@@ -50,22 +50,44 @@ void CarController::SetCar(tCarElt* p_car)
 {
     m_car = p_car;
 }
+
+/// @brief  Gets the car pointer
+/// @return The car pointer
+const tCarElt* CarController::GetCar() const
+{
+    return m_car;
+}
+
+/// @brief  Gets the steer value of the car
+/// @return The steer value of the car
 float CarController::GetSteerCmd() const
 {
     return m_car->ctrl.steer;
 }
+
+/// @brief  Gets the acceleration value of the car
+/// @return The acceleration value of the car
 float CarController::GetAccelCmd() const
 {
     return m_car->ctrl.accelCmd;
 }
+
+/// @brief  Gets the brake value of the car
+/// @return The brake value of the car
 float CarController::GetBrakeCmd() const
 {
     return m_car->ctrl.brakeCmd;
 }
+
+/// @brief  Gets the clutch value of the car
+/// @return The clutch value of the car
 float CarController::GetClutchCmd() const
 {
     return m_car->ctrl.clutchCmd;
 }
+
+/// @brief  Gets the light value of the car
+/// @return The light value of the car
 int CarController::GetLightCmd() const
 {
     return m_car->ctrl.lightCmd;
