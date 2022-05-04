@@ -32,8 +32,6 @@
 #include "grrain.h"
 #include "grutil.h"
 
-#include "Mediator.h"
-
 static char buf[1024];
 static char path[1024];
 static char path2[1024];
@@ -95,6 +93,7 @@ cGrScreen::selectBoard(const long brd)
 {
     board->selectBoard(brd);
 }
+
 
 int cGrScreen::isInScreen(int x, int y)
 {
