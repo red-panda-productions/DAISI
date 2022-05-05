@@ -134,14 +134,31 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST(DecisionsTest, AccelRunIndicateTests)
 {
-    IndicatorConfig::ClearInstance();
+    //IndicatorConfig::ClearInstance();
     InitializeMediator();
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     AccelDecision accelDecision;
     accelDecision.AccelAmount = 1;
     accelDecision.RunIndicateCommands();
 
-    // TODO: Ensure this works when it gets implemented
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
-    ASSERT_EQ(activeIndicators.size(), 0);
+
+    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_BRAKE indicator should be active
+    ASSERT_EQ(activeIndicators.size(), 1);
+    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+
+    accelDecision.AccelAmount = 0;
+    accelDecision.RunIndicateCommands();
+
+    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+    // if the accelerate amount is below the ACCEL_THRESHOLD defined in AccelDecision.cpp, no indicator should have been changed
+    ASSERT_EQ(activeIndicators.size(), 1);
+    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+
 }
