@@ -48,7 +48,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
-    float controlAccelAmount = random.NextFloat();
+    float controlAccelAmount = random.NextFloat(ACCEL_THRESHOLD, ACCEL_THRESHOLD + 10);
     accelDecision.AccelAmount = controlAccelAmount;
     accelDecision.RunInterveneCommands();
 
@@ -134,7 +134,6 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST(DecisionsTest, AccelRunIndicateTests)
 {
-    //IndicatorConfig::ClearInstance();
     InitializeMediator();
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.

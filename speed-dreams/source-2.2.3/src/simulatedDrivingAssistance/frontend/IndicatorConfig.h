@@ -29,7 +29,7 @@
 #define VAL_YES "yes"
 #define VAL_NO  "no"
 static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "none", "steer left", "steer right", "brake"};
+    "none", "steer left", "steer right", "brake", "accelerate"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
