@@ -56,7 +56,7 @@ jobs:
       run: ctest -V
 
     - name: ccache debug
-      run: ccache -s
+      run: ccache --print-stats
 
     - name: Upload test results
       uses: actions/upload-artifact@v2
