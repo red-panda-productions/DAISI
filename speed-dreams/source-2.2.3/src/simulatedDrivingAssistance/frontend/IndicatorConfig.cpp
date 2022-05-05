@@ -38,7 +38,8 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
     return m_indicatorData;
 }
 
-/// @brief  Returns a vector containing indicator data for all active indicators
+/// @brief  Returns a vector containing indicator data for all active indicators,
+///         if and only if the interventions are turned on (not on NO_SIGNALS).
 /// @return The vector of indicator data
 std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
 {

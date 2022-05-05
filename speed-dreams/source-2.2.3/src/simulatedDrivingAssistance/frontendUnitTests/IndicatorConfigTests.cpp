@@ -6,6 +6,7 @@
 #include "../rppUtils/Random.hpp"
 #include "TestUtils.h"
 #include "IndicatorConfig.h"
+#include "Mediator.h"
 
 #define NUM_OF_TESTS    100
 #define MAX_TEXT_LENGTH 64
@@ -37,6 +38,9 @@ protected:
         ASSERT_TRUE(SetupSingletonsFolder());
         m_rnd = Random();
         GTEST_COUT << "Random Seed: " << m_rnd.GetSeed() << std::endl;
+
+        // Needs to be on something other than NO_SIGNALS to retrieve active indicators
+        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
     }
 
     /// @brief       Creates randomly generated sound data
