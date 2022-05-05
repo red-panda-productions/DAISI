@@ -7,8 +7,10 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-#include "IndicatorConfig.h"
 #include "../rppUtils/RppUtils.hpp"
+
+#include "IndicatorConfig.h"
+#include "Mediator.h"
 
 /// @brief        Loads the indicator data of every intervention action from config file in the given path
 /// @param p_path The path to the XML file containing the indicator data to load
@@ -40,6 +42,9 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 /// @return The vector of indicator data
 std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
 {
+    // Guard when no signals are to be sent, always return an empty vector.
+    if (SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_NO_SIGNALS) return {};
+
     return m_activeIndicators;
 }
 
