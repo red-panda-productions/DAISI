@@ -55,6 +55,9 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       run: ctest -V
 
+    - name: ccache debug
+      run: ccache -s
+
     - name: Upload test results
       uses: actions/upload-artifact@v2
       if: failure()
