@@ -57,7 +57,7 @@ private:
     unsigned long m_tickCount = 0;
 
     tTrack* m_track = nullptr;
-    bool m_inRace = false;  // Whether the game is currently in a race
+    bool m_inRace = true;  // Whether the game is currently in a race
 };
 
 /// @brief The standard type of the mediator
