@@ -98,8 +98,7 @@ Changed:
                 added   tfuiRadioButtonCallback
                 added   GfuiMenuCreateRadioButtonListControl()
 
-
-
+                added   GfuiMenuBoolToStr()
                 added   GfuiMenuControlGetBoolean()
                 
                 added   GfuiRadioButtonListCreate()
