@@ -159,5 +159,4 @@ TEST(DecisionsTest, AccelRunIndicateTests)
     // if the accelerate amount is below the ACCEL_THRESHOLD defined in AccelDecision.cpp, no indicator should have been changed
     ASSERT_EQ(activeIndicators.size(), 1);
     ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
-
 }
