@@ -58,6 +58,20 @@ tParticipantControl SDAConfig::GetPControlSettings() const
     return m_pControl;
 }
 
+/// @brief                    Sets the status of the replay recorder
+/// @param p_replayRecorderOn The value to set the status to
+void SDAConfig::SetReplayRecorderSetting(bool p_replayRecorderOn)
+{
+    m_replayRecorderOn = p_replayRecorderOn;
+}
+
+/// @brief Returns the status of the replay recorder
+/// @returns The status of the replay recorder
+bool SDAConfig::GetReplayRecorderSetting() const
+{
+    return m_replayRecorderOn;
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 void SDAConfig::SetMaxTime(int p_maxTime)

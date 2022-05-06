@@ -59,7 +59,7 @@ END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 void PControlTest1(bool p_bool1, bool p_bool2, bool p_bool3)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL, NULL, NULL};
+    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
@@ -74,23 +74,31 @@ END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief         Tests if the SDAConfig sets and gets the other pControl settings correctly
 /// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest2(bool p_bool1, bool p_bool2, bool p_bool3)
+void PControlTest2(bool p_bool1)
 {
     SDAConfig config;
-    tParticipantControl arr = {NULL, NULL, NULL, p_bool1, p_bool2, p_bool3};
+    tParticipantControl arr = {NULL, NULL, NULL, p_bool1};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
-    ASSERT_EQ(arr.RecordSession, pControl.RecordSession);
-    ASSERT_EQ(arr.BBRecordSession, pControl.BBRecordSession);
 }
 
-/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (last 3)
-BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings2)
-bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest2, booleans, 2, booleans, 2, booleans, 2)
+/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (last 1)
+TEST_CASE(ConfigTests, PControlSettings2TestTrue, PControlTest2, (true))
+TEST_CASE(ConfigTests, PControlSettings2TestFalse, PControlTest2, (false))
+
+/// @brief                   Tests if the SDAConfig sets and gets the replay recorder status correctly
+/// @param p_recorderSetting The recorder setting
+void RecorderSettingTest(bool p_recorderSetting)
+{
+    SDAConfig config;
+    config.SetReplayRecorderSetting(p_recorderSetting);
+    ASSERT_EQ(p_recorderSetting, config.GetReplayRecorderSetting());
+}
+
+/// @brief Tests the SDAConfig recorder settings
+TEST_CASE(ConfigTests, RecorderSettingTestTrue, RecorderSettingTest, (true))
+TEST_CASE(ConfigTests, RecorderSettingTestFalse, RecorderSettingTest, (false))
 
 /// @brief Tests if the SDAConfig sets and gets the MaxTime correctly
 TEST(ConfigTests, MaxTimeTest)

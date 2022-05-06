@@ -14,10 +14,12 @@
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
     template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
     template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
     template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                                                  \
+    template void Mediator<type>::SetReplayRecorderSetting(bool p_replayRecorderOn);                                                                    \
     template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
@@ -66,6 +68,14 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetPControlSettings(tParticipantControl p_pControl)
 {
     return m_decisionMaker.Config.SetPControlSettings(p_pControl);
+}
+
+/// @brief                    Sets the replay recorder setting to p_replayRecorderOn
+/// @param p_replayRecorderOn Whether the replay recorder should be on
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetReplayRecorderSetting(bool p_replayRecorderOn)
+{
+    m_decisionMaker.Config.SetReplayRecorderSetting(p_replayRecorderOn);
 }
 
 /// @brief           Sets the maximum simulation time to p_maxTime
@@ -125,6 +135,14 @@ tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
     return m_decisionMaker.Config.GetPControlSettings();
 }
 
+/// @brief Gets the replay recorder setting
+/// @return The replay recorder setting
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetReplayRecorderSetting()
+{
+    return m_decisionMaker.Config.GetReplayRecorderSetting();
+}
+
 /// @brief              Does one drive tick in the framework
 /// @param  p_car       The current car
 /// @param  p_situation The current situation
@@ -147,7 +165,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 {
     m_track = p_track;
     tCarElt car;
-    bool recordBB = GetPControlSettings().BBRecordSession;
+    bool recordBB = GetReplayRecorderSetting();
 
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
     std::cout << blackBoxFilePath << std::endl;

@@ -25,9 +25,9 @@ Driver::Driver(int p_index, const char* p_name)
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
-    auto participantSettings = SMediator::GetInstance()->GetPControlSettings();
+    bool useRecorder = SMediator::GetInstance()->GetReplayRecorderSetting();
 
-    if (participantSettings.BBRecordSession || participantSettings.RecordSession)
+    if (useRecorder)
     {
         m_recorder = new Recorder("user_recordings",
                                   "userRecording%Y%m%d-%H%M%S",
@@ -36,7 +36,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
     }
 
     m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
-    m_humanDriver.SetRecorder(participantSettings.RecordSession ? m_recorder : nullptr);
+    m_humanDriver.SetRecorder(useRecorder ? m_recorder : nullptr);
 
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation, m_recorder);
 }

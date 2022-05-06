@@ -42,8 +42,6 @@ typedef struct ParticipantControl
     bool ControlSteering;
 
     bool ForceFeedback;
-    bool RecordSession;
-    bool BBRecordSession;
 } tParticipantControl;
 
 /// @brief The different types of black boxes
@@ -62,6 +60,8 @@ typedef unsigned int SyncType;
 
 #define SYNC_SYNCHRONOUS  0
 #define SYNC_ASYNCHRONOUS 1
+
+typedef bool ReplayOption;
 
 /// @brief The different types of data that can be stored
 typedef struct DataToStore

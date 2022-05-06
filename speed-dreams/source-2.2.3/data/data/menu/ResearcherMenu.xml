@@ -226,32 +226,6 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-        <section name="CheckboxRecorderToggle">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="Recorder on/off"/>
-            <attstr name="tip" val="Enable/Disable the simulation recorder"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="190"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
-        </section>
-
-        <section name="CheckboxBBRecorderToggle">
-            <attstr name="type" val="check box"/>
-            <attstr name="text" val="BB Recorder on/off"/>
-            <attstr name="tip" val="Enable/Disable the black box recorder"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="160"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attstr name="checked" val="no"/>
-        </section>
-
         <!-- Input field for max time -->
         <section name="MaxTimeEdit">
             <attstr name="type" val="edit box"/>

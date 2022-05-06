@@ -21,8 +21,6 @@
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 #define PRM_CTRL_STEERING    "CheckboxPControlSteering"
 #define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
-#define PRM_RECORD_TGGLE     "CheckboxRecorderToggle"
-#define PRM_RECORD_BB_TGGLE  "CheckboxBBRecorderToggle"
 #define PRM_MAX_TIME         "MaxTimeEdit"
 #define PRM_USER_ID          "UserIdEdit"
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
@@ -31,7 +29,7 @@
 
 // Constant numbers
 #define INDICATOR_AMOUNT 3
-#define PCONTROL_AMOUNT  6
+#define PCONTROL_AMOUNT  4
 #define MAX_TIME         1440
 
 // Messages for file selection
@@ -162,20 +160,6 @@ static void SelectForceFeedback(tCheckBoxInfo* p_info)
     m_pControl.ForceFeedback = p_info->bChecked;
 }
 
-/// @brief        Enables/disables the simulation recorder
-/// @param p_info Information on the checkbox
-static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
-{
-    m_pControl.RecordSession = p_info->bChecked;
-}
-
-/// @brief        Enables/disables the black box recorder
-/// @param p_info Information on the checkbox
-static void SelectBBRecorderOnOff(tCheckBoxInfo* p_info)
-{
-    m_pControl.BBRecordSession = p_info->bChecked;
-}
-
 /// @brief Handle input in the max time textbox
 static void SetMaxTime(void*)
 {
@@ -231,8 +215,6 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteering));
 
     GfParmSetStr(readParam, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
-    GfParmSetStr(readParam, PRM_RECORD_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.RecordSession));
-    GfParmSetStr(readParam, PRM_RECORD_BB_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.BBRecordSession));
 
     // Save max time to xml file
     char buf[32];
@@ -277,6 +259,8 @@ static void SaveSettings(void* /* dummy */)
     forceFeedback.effectsConfig["globalEffect"]["enabled"] = m_pControl.ForceFeedback;
     forceFeedback.saveConfiguration();
 
+    // Make sure developer screen is also saving its settings
+
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
 }
@@ -311,8 +295,6 @@ static void SynchronizeControls()
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlInterventionToggle);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlSteering);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ForceFeedback);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[4], m_pControl.RecordSession);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[5], m_pControl.BBRecordSession);
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -361,8 +343,6 @@ static void LoadConfigSettings(void* p_param)
     m_pControl.ControlSteering = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, false);
 
     m_pControl.ForceFeedback = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, false);
-    m_pControl.RecordSession = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_TGGLE, GFMNU_ATTR_CHECKED, false);
-    m_pControl.BBRecordSession = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_BB_TGGLE, GFMNU_ATTR_CHECKED, false);
 
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, nullptr));
@@ -554,8 +534,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Other options checkbox controls
     m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
-    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE, nullptr, SelectRecorderOnOff);
-    m_pControlControl[5] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_BB_TGGLE, nullptr, SelectBBRecorderOnOff);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
