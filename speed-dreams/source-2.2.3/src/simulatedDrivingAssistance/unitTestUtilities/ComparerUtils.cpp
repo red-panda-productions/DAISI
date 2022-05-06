@@ -63,7 +63,7 @@
     COMP_TPOSD((a).vel, (b).vel) \
     COMP_TPOSD((a).acc, (b).acc)
 
-/// @brief   Performs a test on two tCarSetupItem element
+/// @brief   Performs a test on two tCarSetupItem elements
 /// @param a Identifier of the first element
 /// @param b Identifier of the second element
 #define COMP_TCARSETUPITEM(a, b)                    \
@@ -74,7 +74,7 @@
     COMP_ELEM((a).stepsize, (b).stepsize)           \
     COMP_ELEM((a).changed, (b).changed)
 
-/// @brief   Performs a test on two tTrkLocPos element
+/// @brief   Performs a test on two tTrkLocPos elements
 /// @param a Identifier of the first element
 /// @param b Identifier of the second element
 /// @note    Much like RAND_TRKPOS, this ignores a.seg and b.seg
@@ -85,7 +85,7 @@
     COMP_ELEM((a).toMiddle, (b).toMiddle) \
     COMP_ELEM((a).toLeft, (b).toLeft)
 
-/// @brief                  Compares the values of two cars, not any of the pointers
+/// @brief                  Compares the values of two cars, not any of the values inside elements pointed to by a pointer
 /// @param p_car1           Car 1 to compare
 /// @param p_car2           Car 2 to compare
 /// @param p_comparisonType Whether to compare cars for equality by values (COMP_UTIL_VALUE_EQUALITY) or inequality of pointers (COMP_UTIL_POINTER_INEQUALITY)
@@ -479,7 +479,7 @@ void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_comparisonType)
     // COPY NOT IMPLEMENTED FOR car.nex
 }
 
-/// @brief                  Compares the values of two situation, not any of the pointers
+/// @brief                  Compares the values of two situation, not any of the values inside elements pointed to by a pointer
 /// @param p_situation1     Situation 1 to compare
 /// @param p_situation2     Situation 2 to compare
 /// @param p_comparisonType Whether to compare situations for equality by values (COMP_UTIL_VALUE_EQUALITY) or inequality of pointers (COMP_UTIL_POINTER_INEQUALITY)
