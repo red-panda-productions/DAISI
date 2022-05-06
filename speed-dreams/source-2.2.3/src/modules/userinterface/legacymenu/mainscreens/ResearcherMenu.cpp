@@ -5,6 +5,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
+#include "DeveloperMenu.h"
 #include <shobjidl.h>  // For Windows COM interface
 #include <locale>
 #include <codecvt>
@@ -82,6 +83,12 @@ char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 
 // Apply Button
 int m_applyButton;
+
+bool ActivateDeveloperMenu()
+{
+    DeveloperMenuRun(nullptr);
+    return true;
+}
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
@@ -554,6 +561,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
+    GfuiAddKey(s_scrHandle, GFUIK_BACKSPACE, "Switch to Developer Screen", NULL, DeveloperMenuRun, NULL);
 
     // Create random userId
     std::random_device rd;
