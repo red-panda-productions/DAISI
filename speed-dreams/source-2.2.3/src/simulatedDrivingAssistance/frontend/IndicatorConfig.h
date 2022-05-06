@@ -41,7 +41,7 @@ public:
 
     std::vector<tIndicatorData> GetIndicatorData();
 
-    std::vector<tIndicatorData> GetActiveIndicators();
+    std::vector<tIndicatorData> GetActiveIndicators(InterventionType p_interventionType);
 
     static IndicatorConfig* GetInstance();
 
