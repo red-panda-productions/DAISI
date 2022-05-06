@@ -59,7 +59,7 @@ TEST(ComparerUtilsTests, GeneratedCompare)
     car1.index = car2.index + 1;  // Guarantee difference
     tSituation situation1 = {};
     tSituation situation2 = GenerateSituation();
-    situation2.raceInfo.features = situation1.raceInfo.features + 1;  // Guaranteee difference
+    situation2.raceInfo.features = situation1.raceInfo.features + 1;  // Guarantee difference
 
     INVERT_COMP_TEST(CompareSegments(segments1.NextSegments, segments2, segments1.NextSegmentsCount, true))  // Test value inequality
     INVERT_COMP_TEST(CompareCars(car1, car2, true))                                                          // Test value inequality
