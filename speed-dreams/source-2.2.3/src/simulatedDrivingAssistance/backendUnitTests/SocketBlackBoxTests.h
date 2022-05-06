@@ -92,6 +92,8 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 }
 
 /// @brief Tests an entire run of the framework
+/// @param p_blackboxFunction function with blackbox initialisation and behaviour
+/// @param p_async whether or not the connection is async
 void SocketTest(void (*p_blackboxFunction)(), bool p_async)
 {
     // creates a connection between the black box and a client
