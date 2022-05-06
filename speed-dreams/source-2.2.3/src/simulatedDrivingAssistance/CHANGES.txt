@@ -52,11 +52,14 @@ Changed:
                 included Recorder.h
                 added m_recorder
                 added SetRecorder
-            rtHumanDriver.cpp
+            rthumandriver.cpp
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
+                changed common_drive(): added check for input of intervention toggle on/off
                 added   SetRecorder()
+                added   m_prevIntervention member
+                added   NO_KEYBOARD define: clarify magic number
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
@@ -119,7 +122,10 @@ Changed:
             added mediator shut down
     interfaces/
         playerpref.h
-            added HM_ADRV_FILE define
+            added   HM_ADRV_FILE define
+            added   HM_ATT_INTERV_TGGLE define
+            added   CMD_INTERV_TGGLE define
+            changed CMD_END_OF_LIST to match the new amount of cmds.
         sound.h
             added intervention sound volume xml parameter 
     modules/
@@ -193,10 +199,13 @@ Changed:
                         removed RmProgressiveTimeModifier implementation and calls
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
-                confscreens/soundconfig.cpp
-                    added ChangeInterventionVolume()
-                    added logic to create new controls for intervention volume and store their data
-                    changed readSoundCfg()
+                confscreens/
+                    soundconfig.cpp
+                        added ChangeInterventionVolume()
+                        added logic to create new controls for intervention volume and store their data
+                        changed readSoundCfg()
+                    controlconfig.cpp
+                        added cmd info for intervention toggle on/off to the Cmd[] member variable.
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module
@@ -306,6 +315,8 @@ Changed:
         added a back button
     soundconfigmenu.xml
         added controls for intervention sound volume
+    controlconfigmenu.xml
+        added controls for intervention toggle on/off
         
   cmake/
     checks.cmake
