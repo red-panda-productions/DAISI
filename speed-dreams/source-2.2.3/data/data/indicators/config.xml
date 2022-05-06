@@ -70,5 +70,14 @@
                 <attstr name ="source" val="warning_brake_brake.wav"/>
             </section>
         </section>
+        <section name ="accelerate">
+            <section name="text">
+                <attstr name ="content"   val="Accel"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+         </section>
     </section>
 </params>
