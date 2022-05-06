@@ -3,6 +3,7 @@
 #include "../rppUtils/Random.hpp"
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
+#include "Mediator.h"
 #include "TestUtils.h"
 
 /// @brief sets up teh car controller
@@ -118,13 +119,14 @@ void ShowInterventionTest(InterventionAction p_action)
 {
     IndicatorConfig::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
+
     CarController carController;
 
-    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     carController.ShowIntervention(p_action);
 
-    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     ASSERT_TRUE(activeAfter.size() - activeBefore.size() > 0);
 }
