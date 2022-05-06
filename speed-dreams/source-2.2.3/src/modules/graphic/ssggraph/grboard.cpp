@@ -406,7 +406,8 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 void cGrBoard::DispIndicators() 
 {
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators())
+    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
+    for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType))
     {
         if (settings.Icon)
             DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
