@@ -10,7 +10,6 @@
     ASSERT_ALMOST_EQ(tuple.p_getFunction(), p_controlValue, 0.0001f);                                 \
     ASSERT_TRUE(tuple.p_containsFunction());
 
-
 /// @brief Tests p_setFunction and p_getFunction.
 /// These functions work with int and bool so it uses ASSERT_EQ
 #define SET_GET_FUNCTION_TEST(p_setFunction, p_getFunction, p_containsFunction, p_controlValue) \
