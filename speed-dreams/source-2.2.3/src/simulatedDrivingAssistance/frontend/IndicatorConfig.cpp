@@ -10,7 +10,6 @@
 #include "../rppUtils/RppUtils.hpp"
 
 #include "IndicatorConfig.h"
-#include "Mediator.h"
 
 /// @brief        Loads the indicator data of every intervention action from config file in the given path
 /// @param p_path The path to the XML file containing the indicator data to load
@@ -41,10 +40,10 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 /// @brief  Returns a vector containing indicator data for all active indicators,
 ///         if and only if the interventions are turned on (not on NO_SIGNALS).
 /// @return The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
+std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionType p_interventionType)
 {
     // Guard when no signals are to be sent, always return an empty vector.
-    if (SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_NO_SIGNALS) return {};
+    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
 
     return m_activeIndicators;
 }

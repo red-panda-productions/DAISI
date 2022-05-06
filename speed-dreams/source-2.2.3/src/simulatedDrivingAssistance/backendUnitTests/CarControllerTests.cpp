@@ -118,13 +118,9 @@ TEST(CarControllerTests, LightTests)
 void ShowInterventionTest(InterventionAction p_action)
 {
     IndicatorConfig::ClearInstance();
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
     std::cout << "singltons" << std::endl;
-
-    // Needs to be on something other than NO_SIGNALS to retrieve active indicators
-    SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     std::cout << "mediator" << std::endl;
 
@@ -132,7 +128,7 @@ void ShowInterventionTest(InterventionAction p_action)
 
     std::cout << "car controller" << std::endl;
 
-    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     std::cout << "before" << std::endl;
 
@@ -140,7 +136,7 @@ void ShowInterventionTest(InterventionAction p_action)
 
     std::cout << "show" << std::endl;
 
-    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     std::cout << "after" << std::endl;
 
