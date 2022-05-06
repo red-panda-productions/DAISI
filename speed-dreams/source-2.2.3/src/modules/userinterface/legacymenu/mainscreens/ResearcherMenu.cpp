@@ -26,6 +26,7 @@
 #define PRM_MAX_TIME         "MaxTimeEdit"
 #define PRM_USER_ID          "UserIdEdit"
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
+#define PRM_DEV              "DevButton"
 #define GFMNU_ATTR_PATH      "path"
 
 // Constant numbers
@@ -531,6 +532,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Choose black box control
     m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
+
+    // Dev button control
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, s_scrHandle, DeveloperMenuRun);
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
