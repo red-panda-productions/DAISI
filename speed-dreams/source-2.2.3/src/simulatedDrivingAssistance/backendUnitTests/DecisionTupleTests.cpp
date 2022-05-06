@@ -14,10 +14,12 @@
     ASSERT_EQ(tuple.p_getFunction(), p_controlValue);                                           \
     ASSERT_TRUE(tuple.p_containsFunction());
 
+#define TEST_AMOUNT 10
+
 TEST(DecisionTupleTests, AccelTest)
 {
     Random random;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         float controlValue = random.NextFloat(0, 1);
         FLOAT_SET_GET_FUNCTION_TEST(SetAccel, GetAccel, ContainsAccel, controlValue)
@@ -27,7 +29,7 @@ TEST(DecisionTupleTests, AccelTest)
 TEST(DecisionTupleTests, BrakeTest)
 {
     Random random;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         float controlValue = random.NextFloat(0, 1);
         FLOAT_SET_GET_FUNCTION_TEST(SetBrake, GetBrake, ContainsBrake, controlValue)
@@ -37,7 +39,7 @@ TEST(DecisionTupleTests, BrakeTest)
 TEST(DecisionTupleTests, SteerTest)
 {
     Random random;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         float controlValue = random.NextFloat(-1, 1);
         FLOAT_SET_GET_FUNCTION_TEST(SetSteer, GetSteer, ContainsSteer, controlValue)
@@ -47,7 +49,7 @@ TEST(DecisionTupleTests, SteerTest)
 TEST(DecisionTupleTests, GearTest)
 {
     Random random;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         // TODO: Implement actual test when function is implemented
         SET_GET_FUNCTION_TEST(SetGear, GetGear, ContainsGear, 0)
@@ -57,7 +59,7 @@ TEST(DecisionTupleTests, GearTest)
 TEST(DecisionTupleTests, LightsTest)
 {
     Random random;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         // TODO: Implement actual test when function is implemented
         SET_GET_FUNCTION_TEST(SetLights, GetLights, ContainsLights, false)
@@ -78,22 +80,37 @@ TEST(DecisionTupleTests, ActiveDecisionsTest)
     tuple.GetActiveDecisions(decisionsCount);
     ASSERT_EQ(decisionsCount, 1);
 
-    dynamic_cast<AccelDecision*>(decisions[0])->AccelAmount = controlAccel;
+    auto* accelDecision = dynamic_cast<AccelDecision*>(decisions[0]);
+    ASSERT_NE(accelDecision, nullptr);
 
-    float controlBrake = random.NextFloat(0, 1);
-    tuple.SetBrake(controlBrake);
-    tuple.GetActiveDecisions(decisionsCount);
-    ASSERT_EQ(decisionsCount, 2);
-
-    dynamic_cast<BrakeDecision*>(decisions[0])->BrakeAmount = controlBrake;
-    dynamic_cast<AccelDecision*>(decisions[1])->AccelAmount = controlAccel;
+    ASSERT_ALMOST_EQ(accelDecision->AccelAmount, controlAccel, 0.001f);
 
     float controlSteer = random.NextFloat(-1, 1);
     tuple.SetSteer(controlSteer);
     tuple.GetActiveDecisions(decisionsCount);
+    ASSERT_EQ(decisionsCount, 2);
+
+    auto* steerDecision = dynamic_cast<SteerDecision*>(decisions[0]);
+    accelDecision = dynamic_cast<AccelDecision*>(decisions[1]);
+    ASSERT_NE(steerDecision, nullptr);
+    ASSERT_NE(accelDecision, nullptr);
+
+    ASSERT_ALMOST_EQ(steerDecision->SteerAmount, controlSteer, 0.001f);
+    ASSERT_ALMOST_EQ(accelDecision->AccelAmount, controlAccel, 0.001f);
+
+    float controlBrake = random.NextFloat(0, 1);
+    tuple.SetBrake(controlBrake);
+    tuple.GetActiveDecisions(decisionsCount);
     ASSERT_EQ(decisionsCount, 3);
 
-    dynamic_cast<BrakeDecision*>(decisions[0])->BrakeAmount = controlBrake;
-    dynamic_cast<SteerDecision*>(decisions[1])->SteerAmount = controlSteer;
-    dynamic_cast<AccelDecision*>(decisions[2])->AccelAmount = controlAccel;
+    auto* brakeDecision = dynamic_cast<BrakeDecision*>(decisions[0]);
+    steerDecision = dynamic_cast<SteerDecision*>(decisions[1]);
+    accelDecision = dynamic_cast<AccelDecision*>(decisions[2]);
+    ASSERT_NE(brakeDecision, nullptr);
+    ASSERT_NE(steerDecision, nullptr);
+    ASSERT_NE(accelDecision, nullptr);
+
+    ASSERT_ALMOST_EQ(brakeDecision->BrakeAmount, controlBrake, 0.001f);
+    ASSERT_ALMOST_EQ(steerDecision->SteerAmount, controlSteer, 0.001f);
+    ASSERT_ALMOST_EQ(accelDecision->AccelAmount, controlAccel, 0.001f);
 }
