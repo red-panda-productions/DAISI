@@ -77,7 +77,7 @@
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="text">
-                <attstr name ="content"   val="Brake"/>
+                <attstr name ="content"   val="Accel"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
