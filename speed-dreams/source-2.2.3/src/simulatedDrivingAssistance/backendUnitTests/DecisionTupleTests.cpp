@@ -2,12 +2,16 @@
 #include "TestUtils.h"
 #include "DecisionTuple.h"
 
+/// @brief Tests p_setFunction, p_getFunction and p_containsFunction.
+/// These functions work with float so it uses ASSERT_ALMOST_EQ
 #define FLOAT_SET_GET_FUNCTION_TEST(p_setFunction, p_getFunction, p_containsFunction, p_controlValue) \
     DecisionTuple tuple;                                                                              \
     tuple.p_setFunction(p_controlValue);                                                              \
     ASSERT_ALMOST_EQ(tuple.p_getFunction(), p_controlValue, 0.0001f);                                 \
     ASSERT_TRUE(tuple.p_containsFunction());
 
+/// @brief Tests p_setFunction and p_getFunction.
+/// These functions work with int and bool so it uses ASSERT_EQ
 #define SET_GET_FUNCTION_TEST(p_setFunction, p_getFunction, p_containsFunction, p_controlValue) \
     DecisionTuple tuple;                                                                        \
     tuple.p_setFunction(p_controlValue);                                                        \
@@ -16,6 +20,7 @@
 
 #define TEST_AMOUNT 10
 
+/// @brief Tests the SetAccel, GetAccel and ContainsAccel
 TEST(DecisionTupleTests, AccelTest)
 {
     Random random;
@@ -26,6 +31,7 @@ TEST(DecisionTupleTests, AccelTest)
     }
 }
 
+/// @brief Tests the SetBrake, GetBrake and ContainsBrake
 TEST(DecisionTupleTests, BrakeTest)
 {
     Random random;
@@ -36,6 +42,7 @@ TEST(DecisionTupleTests, BrakeTest)
     }
 }
 
+/// @brief Tests the SetSteer, GetSteer and ContainsSteer
 TEST(DecisionTupleTests, SteerTest)
 {
     Random random;
@@ -46,6 +53,7 @@ TEST(DecisionTupleTests, SteerTest)
     }
 }
 
+/// @brief Tests the SetGear, GetGear and ContainsGear
 TEST(DecisionTupleTests, GearTest)
 {
     Random random;
@@ -56,6 +64,7 @@ TEST(DecisionTupleTests, GearTest)
     }
 }
 
+/// @brief Tests the SetLights, GetLights and ContainsLights
 TEST(DecisionTupleTests, LightsTest)
 {
     Random random;
@@ -66,6 +75,7 @@ TEST(DecisionTupleTests, LightsTest)
     }
 }
 
+/// @brief Tests the GetActiveDecisions function
 TEST(DecisionTupleTests, ActiveDecisionsTest)
 {
     DecisionTuple tuple;
