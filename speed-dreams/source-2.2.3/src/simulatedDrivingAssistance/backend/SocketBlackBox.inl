@@ -99,9 +99,13 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     }
 
     sbuffer.clear();
-    SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
-    m_server.SendData(sbuffer.data(), sbuffer.size());
-    m_server.ReceiveDataAsync();
+
+    if (m_asyncConnection)
+    {
+        SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
+        m_server.SendData(sbuffer.data(), sbuffer.size());
+        m_server.ReceiveDataAsync();
+    }
 }
 
 /// @brief Shuts the black box down
@@ -171,9 +175,23 @@ template <class BlackBoxData, class PointerManager>
 bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
 {
     if (!m_asyncConnection)
+    {
+        msgpack::sbuffer sbuffer;
+
+        delete m_currentData;
+        m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
+        SerializeBlackBoxData(sbuffer, m_currentData);
+        m_server.SendData(sbuffer.data(), sbuffer.size());
+
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+
+        DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
+        return true;
+    }
+
     else if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE))
         return false;
+
     msgpack::sbuffer sbuffer;
 
     delete m_currentData;
