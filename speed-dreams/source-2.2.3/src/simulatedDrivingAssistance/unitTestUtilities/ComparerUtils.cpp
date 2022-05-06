@@ -5,7 +5,7 @@
 // Lifted wholesale from BlackBoxDataTests.cpp, provides comparer functions for the following structs: tCarElt, tSituation, and for tTrackSeg*
 // Does not compare values of pointers, as none of these values are being copied in BlackBoxData and are thus not useable anyhow within a black box
 
-/// @brief                  Performs a test on two elements that are elementary
+/// @brief                  Performs a comparison on two elements that are elementary
 /// @param a                Identifier of the first element
 /// @param b                Identifier of the second element
 /// @param p_comparisonType A bool defined in the environment this define is called in that determines
@@ -20,11 +20,11 @@
         ASSERT_NE(&(a), &(b)); \
     }
 
-/// @brief                  Performs a test on two char*
+/// @brief                  Performs a comparison on two char*
 /// @param a                Identifier of the first char*
 /// @param b                Identifier of the second char*
 /// @param p_comparisonType A bool defined in the environment this define is called in that determines
-/// whether to string compare the values of the identifiers or to compare pointers of the identifiers
+/// whether to string compare the values of the identifiers (in this case: the contents of the char*) or to compare pointers of the identifiers
 #define COMP_NAME(a, b)                 \
     if (p_comparisonType)               \
     {                                   \
