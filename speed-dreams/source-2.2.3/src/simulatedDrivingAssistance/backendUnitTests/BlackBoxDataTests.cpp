@@ -40,16 +40,16 @@ protected:
     }
 };
 
-/// @brief          Tests whether elements are the correct value or pointer
-/// @param p_eqOrNe true: test for equality of values,
-///                 false: test for inequality of pointers within the structs (that we don't have two stucture elements that map to the same memory location)
+/// @brief                  Tests whether elements are the correct value or pointer
+/// @param p_comparisonType true: test for equality of values,
+///                         false: test for inequality of pointers within the structs (that we don't have two stucture elements that map to the same memory location)
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
-    bool p_eqOrNe = GetParam();
+    bool p_comparisonType = GetParam();
     BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount);
 
     // Compare tickCount
-    if (p_eqOrNe)
+    if (p_comparisonType)
     {
         EXPECT_EQ(TickCount, data.TickCount);
     }
@@ -59,8 +59,8 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     }
 
     // Compare car
-    CompareCars(Car, data.Car, p_eqOrNe);
-    if (p_eqOrNe)
+    CompareCars(Car, data.Car, p_comparisonType);
+    if (p_comparisonType)
     {
         EXPECT_EQ(Segments, data.Car.pub.trkPos.seg);
     }
@@ -70,10 +70,10 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     }
 
     // Compare situation
-    CompareSituations(Situation, data.Situation, p_eqOrNe);
+    CompareSituations(Situation, data.Situation, p_comparisonType);
 
     // Compare car.pub.trkPos.seg vs segments
-    CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_eqOrNe);
+    CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_comparisonType);
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));

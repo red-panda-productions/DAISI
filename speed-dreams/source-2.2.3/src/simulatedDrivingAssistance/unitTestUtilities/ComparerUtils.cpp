@@ -5,13 +5,13 @@
 // Lifted wholesale from BlackBoxDataTests.cpp, provides comparer functions for the following structs: tCarElt, tSituation, and for tTrackSeg*
 // Does not compare values of pointers, as none of these values are being copied in BlackBoxData and are thus not useable anyhow within a black box
 
-/// @brief          Performs a test on two elements that are elementary
-/// @param a        Identifier of the first element
-/// @param b        Identifier of the second element
-/// @param p_eqOrNe A bool defined in the environment this define is called in that determines
+/// @brief                  Performs a test on two elements that are elementary
+/// @param a                Identifier of the first element
+/// @param b                Identifier of the second element
+/// @param p_comparisonType A bool defined in the environment this define is called in that determines
 /// whether to compare the values of the identifiers or the pointers of the identifiers
 #define COMP_ELEM(a, b)        \
-    if (p_eqOrNe)              \
+    if (p_comparisonType)      \
     {                          \
         ASSERT_EQ((a), (b));   \
     }                          \
@@ -20,13 +20,13 @@
         ASSERT_NE(&(a), &(b)); \
     }
 
-/// @brief          Performs a test on two char*
-/// @param a        Identifier of the first char*
-/// @param b        Identifier of the second char*
-/// @param p_eqOrNe A bool defined in the environment this define is called in that determines
+/// @brief                  Performs a test on two char*
+/// @param a                Identifier of the first char*
+/// @param b                Identifier of the second char*
+/// @param p_comparisonType A bool defined in the environment this define is called in that determines
 /// whether to string compare the values of the identifiers or to compare pointers of the identifiers
 #define COMP_NAME(a, b)                 \
-    if (p_eqOrNe)                       \
+    if (p_comparisonType)               \
     {                                   \
         ASSERT_EQ(strcmp((a), (b)), 0); \
     }                                   \
@@ -85,12 +85,12 @@
     COMP_ELEM((a).toMiddle, (b).toMiddle) \
     COMP_ELEM((a).toLeft, (b).toLeft)
 
-/// @brief          Compares the values of two cars, not any of the pointers
-/// @param p_car1   Car 1 to compare
-/// @param p_car2   Car 2 to compare
-/// @param p_eqOrNe Whether to compare cars for equality by values (true) or inequality of pointers (false)
+/// @brief                  Compares the values of two cars, not any of the pointers
+/// @param p_car1           Car 1 to compare
+/// @param p_car2           Car 2 to compare
+/// @param p_comparisonType Whether to compare cars for equality by values (COMP_UTIL_VALUE_EQUALITY) or inequality of pointers (COMP_UTIL_POINTER_INEQUALITY)
 /// (the latter is only really relevant for testing BlackBoxData() works)
-void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe)
+void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_comparisonType)
 {
     bool res = true;
     // Compare car.index
@@ -479,12 +479,12 @@ void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_eqOrNe)
     // COPY NOT IMPLEMENTED FOR car.nex
 }
 
-/// @brief              Compares the values of two situation, not any of the pointers
-/// @param p_situation1 Situation 1 to compare
-/// @param p_situation2 Situation 2 to compare
-/// @param p_eqOrNe     Whether to compare situations for equality by values (true) or inequality of pointers (false)
+/// @brief                  Compares the values of two situation, not any of the pointers
+/// @param p_situation1     Situation 1 to compare
+/// @param p_situation2     Situation 2 to compare
+/// @param p_comparisonType Whether to compare situations for equality by values (COMP_UTIL_VALUE_EQUALITY) or inequality of pointers (COMP_UTIL_POINTER_INEQUALITY)
 /// (the latter is only really relevant for testing BlackBoxData() works)
-void CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_eqOrNe)
+void CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_comparisonType)
 {
     COMP_ELEM(p_situation1.raceInfo.ncars, p_situation2.raceInfo.ncars)
     COMP_ELEM(p_situation1.raceInfo.totLaps, p_situation2.raceInfo.totLaps)
@@ -502,13 +502,13 @@ void CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool 
     // COPY NOT IMPLEMENTED FOR situation.cars
 }
 
-/// @brief                 Compares the values of two segment pointers, continuing through seg.next
-/// @param p_segments1     Segment pointer 1 to compare
-/// @param p_segments2     Segment pointer 2 to compare
-/// @param p_segmentsCount The amount of segments to check
-/// @param p_eqOrNe        Whether to compare segments for equality by values (true) or inequality of pointers (false)
+/// @brief                  Compares the values of two segment pointers, continuing through seg.next
+/// @param p_segments1      Segment pointer 1 to compare
+/// @param p_segments2      Segment pointer 2 to compare
+/// @param p_segmentsCount  The amount of segments to check
+/// @param p_comparisonType Whether to compare segments for equality by values (COMP_UTIL_VALUE_EQUALITY) or inequality of pointers (COMP_UTIL_POINTER_INEQUALITY)
 /// (the latter is only really relevant for testing BlackBoxData() works)
-void CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segmentsCount, bool p_eqOrNe)
+void CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segmentsCount, bool p_comparisonType)
 {
     if (p_segments1 && p_segments2)
     {
