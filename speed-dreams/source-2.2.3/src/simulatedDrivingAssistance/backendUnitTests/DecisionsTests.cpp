@@ -29,6 +29,9 @@ void InitializeMediator()
     carController.SetSteerCmd(0);
 
     SMediator::GetInstance()->CarController = carController;
+
+    // Needs to be on something other than NO_SIGNALS to retrieve active indicators
+    SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
 }
 
 /// @brief Tests if all decisions do their RunInterveneCommand correctly
