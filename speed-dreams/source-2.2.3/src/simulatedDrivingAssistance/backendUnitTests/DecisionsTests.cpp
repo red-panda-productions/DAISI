@@ -147,7 +147,7 @@ TEST(DecisionsTest, AccelRunIndicateTests)
 
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_BRAKE indicator should be active
+    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_ACCELERATE indicator should be active
     ASSERT_EQ(activeIndicators.size(), 1);
     ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
 
