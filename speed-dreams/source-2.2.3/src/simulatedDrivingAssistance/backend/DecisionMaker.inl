@@ -32,6 +32,7 @@
 /// @param  p_initialTickCount The initial tickCount
 /// @param  p_initialCar       The initial car
 /// @param  p_initialSituation The initial situation
+/// @param  p_track            The track of speed dreams
 /// @param  p_recorder         If not nullptr all blackbox decisions will be recorded using this recorder
 /// @param  p_blackBoxExecutablePath The path to the black box executable.
 /// Should either be an absolute path or relative to the current directory.
