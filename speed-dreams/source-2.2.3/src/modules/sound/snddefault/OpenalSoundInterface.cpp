@@ -235,7 +235,7 @@ void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundDat
         sound->update();
     }
 
-	InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
+    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType);
 
     // Go through all indicators and set Active to false if the indicator is not active.
