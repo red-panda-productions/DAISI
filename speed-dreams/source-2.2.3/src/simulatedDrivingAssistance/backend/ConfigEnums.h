@@ -57,6 +57,12 @@ typedef unsigned int DataStorageType;
 #define DATA_STORAGE_TYPE_SOCKET 0
 #define DATA_STORAGE_TYPE_SQL    1
 
+/// @brief The different types of sync between simulation and black box
+typedef unsigned int SyncType;
+
+#define SYNC_SYNCHRONOUS  0
+#define SYNC_ASYNCHRONOUS 1
+
 /// @brief The different types of data that can be stored
 typedef struct DataToStore
 {

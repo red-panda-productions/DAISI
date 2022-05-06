@@ -28,6 +28,8 @@ public:
 
     void SetBlackBoxFilePath(const char* p_filePath);
 
+    void SetSyncOption(bool p_sync);
+
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();

@@ -150,6 +150,16 @@ TEST(ConfigTests, BlackBoxFilePathTest)
     }
 }
 
+void SyncOptionTest(bool p_sync)
+{
+    SDAConfig config;
+    config.SetSyncOption(p_sync);
+    ASSERT_EQ(p_sync, config.GetSyncOption());
+}
+
+TEST_CASE(ConfigTests, SyncOptionTestAsync, SyncOptionTest, (true))
+TEST_CASE(ConfigTests, SyncOptionTestSync, SyncOptionTest, (false))
+
 /// @brief         Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
 /// @param p_bool1 First bool
 /// @param p_bool2 Second bool
@@ -173,15 +183,3 @@ void TestBoolArr(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_
 BEGIN_TEST_COMBINATORIAL(ConfigTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArr, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
-
-void SyncOptionTest(bool p_syncOption)
-{
-    SDAConfig config;
-
-    config.SetSyncOption(p_syncOption);
-
-    ASSERT_EQ(config.GetSyncOption(), p_syncOption);
-}
-
-TEST_CASE(ConfigTests, SyncOptionTrueTest, SyncOptionTest, (true))
-TEST_CASE(ConfigTests, SyncOptionFalseTest, SyncOptionTest, (false))

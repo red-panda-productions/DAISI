@@ -22,6 +22,7 @@
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
+    template void Mediator<type>::SetSyncOption(bool p_sync);                                                                                           \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
@@ -97,6 +98,14 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
 {
     m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
+}
+
+/// @brief Sets the synchrosity of the black box
+/// @param p_sync Whether the black box should be run asynchronously (true), or synchronously (false)
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetSyncOption(bool p_sync)
+{
+    m_decisionMaker.Config.SetSyncOption(p_sync);
 }
 
 /// @brief             Gets the setting for the given indicator
