@@ -29,6 +29,8 @@ jobs:
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        max-size: "2GB"
 
     - name: Install MySQL
       uses: Fettpet/setup-mysql@v1
