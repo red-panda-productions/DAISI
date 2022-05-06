@@ -118,6 +118,7 @@ TEST(CarControllerTests, LightTests)
 void ShowInterventionTest(InterventionAction p_action)
 {
     IndicatorConfig::ClearInstance();
+    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
     // Needs to be on something other than NO_SIGNALS to retrieve active indicators
