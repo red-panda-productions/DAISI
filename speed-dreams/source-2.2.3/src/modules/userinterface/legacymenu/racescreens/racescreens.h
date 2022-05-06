@@ -29,8 +29,6 @@
 
 #include <itrackloader.h>
 
-#include "mainmenu.h"
-
 
 #include <tgfclient.h> // tfuiCallback
 
@@ -168,7 +166,6 @@ extern void rmUseRealConfigFile();
 
 // The Race Select menu.
 extern void *RmRaceSelectMenuHandle;
-extern void* MainMenuHandle;
 
 
 // Progressive simulation time modifier, for more user-friendly resuming

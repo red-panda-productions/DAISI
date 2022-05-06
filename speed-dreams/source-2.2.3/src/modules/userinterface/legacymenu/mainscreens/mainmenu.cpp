@@ -29,7 +29,7 @@
 #include "DataSelectionMenu.h"
 
 
-
+static void* MainMenuHandle = 0;
 
 
 static void
