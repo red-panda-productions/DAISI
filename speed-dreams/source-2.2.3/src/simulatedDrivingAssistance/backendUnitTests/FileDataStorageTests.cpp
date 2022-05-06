@@ -55,15 +55,15 @@
 #define GET_RANDOM_SITUATION tSituation situation = {};  // Currently no variables of tSituation are used yet
 
 /// @brief Write to a stream variable "expected" the data expected to be seen in a file when environment is stored
-#define WRITE_EXPECTED_ENVIRONMENT expected << std::to_string(car.pub.DynGCg.pos.x) << std::endl  \
-                                            << std::to_string(car.pub.DynGCg.pos.y) << std::endl  \
-                                            << std::to_string(car.pub.DynGCg.pos.z) << std::endl  \
-                                            << std::to_string(car.pub.DynGCg.pos.ax) << std::endl \
-                                            << std::to_string(car.pub.DynGCg.pos.ay) << std::endl \
-                                            << std::to_string(car.pub.DynGCg.pos.az) << std::endl \
-                                            << std::to_string(car.pub.DynGC.vel.x) << std::endl   \
-                                            << std::to_string(car.pub.DynGC.acc.x) << std::endl   \
-                                            << std::to_string(car.priv.gear) << std::endl;
+#define WRITE_EXPECTED_CAR expected << std::to_string(car.pub.DynGCg.pos.x) << std::endl  \
+                                    << std::to_string(car.pub.DynGCg.pos.y) << std::endl  \
+                                    << std::to_string(car.pub.DynGCg.pos.z) << std::endl  \
+                                    << std::to_string(car.pub.DynGCg.pos.ax) << std::endl \
+                                    << std::to_string(car.pub.DynGCg.pos.ay) << std::endl \
+                                    << std::to_string(car.pub.DynGCg.pos.az) << std::endl \
+                                    << std::to_string(car.pub.DynGC.vel.x) << std::endl   \
+                                    << std::to_string(car.pub.DynGC.acc.x) << std::endl   \
+                                    << std::to_string(car.priv.gear) << std::endl;
 
 #define WRITE_EXPECTED_CONTROLS expected << std::to_string(car.ctrl.steer) << std::endl    \
                                          << std::to_string(car.ctrl.brakeCmd) << std::endl \
@@ -235,9 +235,9 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
 
         // Define our expectations
         expected << std::to_string(tickCount) << std::endl;
-        if (p_storeEnvironment)
+        if (p_storeCar)
         {
-            WRITE_EXPECTED_ENVIRONMENT;
+            WRITE_EXPECTED_CAR;
         }
         if (p_storeControls)
         {
@@ -357,7 +357,7 @@ TEST(FileDataStorageTests, DecisionsAfterData)
     GET_RANDOM_SITUATION;
     fileDataStorage.Save(&car, &situation, tickCount);
     expected << std::to_string(tickCount) << std::endl;
-    WRITE_EXPECTED_ENVIRONMENT;
+    WRITE_EXPECTED_CAR;
     WRITE_EXPECTED_CONTROLS;
 
     // Generate and write decisions
