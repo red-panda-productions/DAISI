@@ -3,6 +3,7 @@
 #include "../rppUtils/Random.hpp"
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
+#include "Mediator.h"
 #include "TestUtils.h"
 
 /// @brief sets up teh car controller
@@ -118,6 +119,10 @@ void ShowInterventionTest(InterventionAction p_action)
 {
     IndicatorConfig::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
+
+    // Needs to be on something other than NO_SIGNALS to retrieve active indicators
+    SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
+
     CarController carController;
 
     auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators();
