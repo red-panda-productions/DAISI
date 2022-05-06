@@ -305,7 +305,6 @@ static int DeadZoneLabelId;
 static int DeadZoneEditId;
 static int SteerSpeedSensEditId;
 static int CalibrateButtonId;
-static int GearChangeEditId;
 
 static tGearChangeMode GearChangeMode;
 
@@ -786,64 +785,8 @@ onPush(void* vi)
     GfuiApp().eventLoop().setRecomputeCB(IdleWaitForInput);
 }
 
-/* Load screen editable fields with relevant values :
-- all empty if no player selected,
-- from selected player current settings otherwise
-*/
-static void
-refreshEditVal(void)
-{
-    int autoRevVisible = GFUI_INVISIBLE;
 
 
-        GfuiLabelSetText(ScrHandle, GearChangeEditId, (*CurrPlayer)->gearChangeModeString());
-        GfuiEnable(ScrHandle, GearChangeEditId, GFUI_ENABLE);
-
-
-        if ((*CurrPlayer)->gearChangeMode() == GEAR_MODE_AUTO)
-            autoRevVisible = GFUI_VISIBLE;
-}
-
-/* Gear change mode change callback */
-static void
-onChangeGearChange(void* vp)
-{
-    if (CurrPlayer == PlayersInfo.end()) {
-        return;
-    }
-    tGearChangeMode gearChangeMode = (*CurrPlayer)->gearChangeMode();
-    if (vp == 0) {
-        if (gearChangeMode == GEAR_MODE_AUTO) {
-            gearChangeMode = GEAR_MODE_HBOX;
-        }
-        else if (gearChangeMode == GEAR_MODE_SEQ) {
-            gearChangeMode = GEAR_MODE_AUTO;
-        }
-        else if (gearChangeMode == GEAR_MODE_HBOX) {
-            gearChangeMode = GEAR_MODE_GRID;
-        }
-        else {
-            gearChangeMode = GEAR_MODE_SEQ;
-        }
-    }
-    else {
-        if (gearChangeMode == GEAR_MODE_AUTO) {
-            gearChangeMode = GEAR_MODE_SEQ;
-        }
-        else if (gearChangeMode == GEAR_MODE_SEQ) {
-            gearChangeMode = GEAR_MODE_GRID;
-        }
-        else if (gearChangeMode == GEAR_MODE_GRID) {
-            gearChangeMode = GEAR_MODE_HBOX;
-        }
-        else {
-            gearChangeMode = GEAR_MODE_AUTO;
-        }
-    }
-    (*CurrPlayer)->setGearChangeMode(gearChangeMode);
-
-    refreshEditVal();
-}
 /* Load human driver (= player) info list (PlayersInfo) from preferences and human drivers files ;
 load associated scroll list */
 static int
@@ -1090,10 +1033,6 @@ ControlMenuInit(void* prevMenu, int saveOnExit)
     SteerSpeedSensEditId = GfuiMenuCreateEditControl(ScrHandle, param, "Steer Speed Sensitivity Edit", NULL, NULL, onSteerSpeedSensChange);
 
 
-    /* Gear changing mode and associated "combobox" (left arrow, label, right arrow) */
-    GfuiMenuCreateButtonControl(ScrHandle, param, "gearleftarrow", (void*)0, onChangeGearChange);
-    GfuiMenuCreateButtonControl(ScrHandle, param, "gearrightarrow", (void*)1, onChangeGearChange);
-    GearChangeEditId = GfuiMenuCreateLabelControl(ScrHandle, param, "geartext");
 
     /* Save button and associated keyboard shortcut */
     GfuiMenuCreateButtonControl(ScrHandle, param, "save", PrevScrHandle, onSave);
