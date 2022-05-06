@@ -21,7 +21,7 @@
       <attstr name="name" val="Quick Race"/>
       <attstr name="type" val="Quick"/>
       <attstr name="description" val="Quick Race"/>
-      <attnum name="priority" val="90"/>
+      <attnum name="priority" val="100"/>
       <attstr name="menu image" val="data/img/splash-quickrace.jpg"/>
       <attstr name="run image" val="data/img/splash-run-practice.jpg"/>
     </section>

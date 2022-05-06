@@ -24,6 +24,8 @@
 extern void* MainMenuInit(bool);
 extern int MainMenuRun(void);
 
+static void* MainMenuHandle = 0;
+
 #endif /* _MAINMENU_H_ */ 
 
 
