@@ -29,6 +29,7 @@ SET(_SOURCES BlackBoxDataTests.cpp
         ConfigTests.cpp
         DecisionMakerTests.cpp
         DecisionsTests.cpp
+        DecisionTupleTests.cpp
         ExecutorTests.cpp
         FactoryTests.cpp
         FileDataStorageTests.cpp
