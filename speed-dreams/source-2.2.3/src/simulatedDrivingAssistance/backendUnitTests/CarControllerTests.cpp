@@ -120,16 +120,13 @@ void ShowInterventionTest(InterventionAction p_action)
     IndicatorConfig::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    // Needs to be on something other than NO_SIGNALS to retrieve active indicators
-    SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
-
     CarController carController;
 
-    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     carController.ShowIntervention(p_action);
 
-    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
     ASSERT_TRUE(activeAfter.size() - activeBefore.size() > 0);
 }
