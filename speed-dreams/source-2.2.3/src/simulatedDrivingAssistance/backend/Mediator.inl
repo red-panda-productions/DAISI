@@ -175,8 +175,6 @@ void Mediator<DecisionMaker>::SetDatabaseSettings(DatabaseSettings* p_dbSettings
 template <typename DecisionMaker>
 DatabaseSettings* Mediator<DecisionMaker>::GetDatabaseSettings()
 {
-    if (m_dbSettings == nullptr) {
-    }
     return m_dbSettings;
 }
 

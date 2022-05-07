@@ -22,7 +22,7 @@ typedef struct DatabaseSettings
     const char* password;
     const char* address;
     const char* port;
-    const char* schemaName;
+    const char* schema;
     bool useSSL;
 } tDatabaseSettings;
 
