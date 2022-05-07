@@ -357,7 +357,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, nullptr), BoolToString(indicators.Audio));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_TEXT, nullptr), BoolToString(indicators.Text));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_ICON, nullptr), BoolToString(indicators.Icon));
-    
+
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(replayRecorderOption));
 

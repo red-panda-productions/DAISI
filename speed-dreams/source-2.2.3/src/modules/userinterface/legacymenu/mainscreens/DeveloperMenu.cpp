@@ -103,13 +103,15 @@ static void OnActivate(void* /* dummy */)
     SynchronizeControls();
 }
 
+/// @brief Switches back to the reseacher menu
 static void SwitchToResearcherMenu(void* /* dummy */)
 {
-    // go back to the main screen
+    // go back to the researcher screen
     GfuiScreenActivate(s_prevHandle);
 }
 
-static void SaveAndGoBack(void*)
+/// @brief Saves the settings and then switched back to the researcher menu.
+static void SaveAndGoBack(void* /* dummy */)
 {
     SaveSettings();
 
@@ -163,6 +165,8 @@ void DeveloperMenuRun(void*)
     GfuiScreenActivate(s_scrHandle);
 }
 
+/// @brief Makes sure these settings are still set in the SDAConfig, even if this menu is never opened and exited via apply,
+/// as otherwise there is no guarantee on what the settings are.
 void ConfigureSettings()
 {
     LoadSettings();
