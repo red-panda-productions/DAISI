@@ -260,6 +260,7 @@ static void SaveSettings(void* /* dummy */)
     forceFeedback.saveConfiguration();
 
     // Make sure developer screen is also saving its settings
+    ConfigureDeveloperSettings();
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);

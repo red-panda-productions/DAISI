@@ -167,7 +167,7 @@ void DeveloperMenuRun(void*)
 
 /// @brief Makes sure these settings are still set in the SDAConfig, even if this menu is never opened and exited via apply,
 /// as otherwise there is no guarantee on what the settings are.
-void ConfigureSettings()
+void ConfigureDeveloperSettings()
 {
     LoadSettings();
     SaveSettings();

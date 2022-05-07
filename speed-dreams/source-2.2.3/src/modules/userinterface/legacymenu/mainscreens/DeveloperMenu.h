@@ -2,4 +2,4 @@
 
 extern void* DeveloperMenuInit(void* prevMenu);
 extern void DeveloperMenuRun(void*);
-extern void ConfigureSettings();
+extern void ConfigureDeveloperSettings();
