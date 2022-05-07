@@ -28,6 +28,9 @@
 #include <simuconfig.h>
 #include <aiconfig.h>
 
+// SIMULATED DRIVING ASSISTANCE
+#include "ThresholdConfig.h"
+
 #include "optionsmenu.h"
 
 
@@ -91,6 +94,13 @@ onAIMenuActivate(void * /* dummy */)
     GfuiScreenActivate(AIMenuInit(MenuHandle));
 }
 
+// SIMULATED DRIVING ASSISTANCE
+/// @brief Activates the threshold config menu
+static void OnThresholdMenuActivate(void* /* dummy */)
+{
+    GfuiScreenActivate(ThresholdConfigMenuInit(MenuHandle));
+}
+
 void *
 OptionsMenuInit(void *prevMenu)
 {
@@ -118,6 +128,10 @@ OptionsMenuInit(void *prevMenu)
     GfuiMenuCreateButtonControl(MenuHandle, param, "sound", NULL, onSoundMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, param, "simulation", NULL, onSimuMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, param, "ai", NULL, onAIMenuActivate);
+
+    // SIMULATED DRIVING ASSISTANCE
+    GfuiMenuCreateButtonControl(MenuHandle, param, "Threshold", nullptr, OnThresholdMenuActivate);
+
     GfuiMenuCreateButtonControl(MenuHandle, param, "back", prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);

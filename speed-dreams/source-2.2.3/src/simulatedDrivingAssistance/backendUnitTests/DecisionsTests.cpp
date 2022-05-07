@@ -40,9 +40,10 @@ TEST(DecisionsTest, RunInterveneDecisions)
     InitializeMediator();
 
     Random random;
+    tThreshold thresholds = SMediator::GetInstance()->GetThresholdSettings();
 
     BrakeDecision brakeDecision;
-    float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
+    float controlBrakeAmount = random.NextFloat(thresholds.Brake, thresholds.Brake + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
     brakeDecision.RunInterveneCommands();
 
@@ -60,7 +61,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
-    float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
+    float controlSteerAmount = random.NextFloat(thresholds.Steer, thresholds.Steer + 10);
     steerDecision.SteerAmount = controlSteerAmount;
     steerDecision.RunInterveneCommands();
 

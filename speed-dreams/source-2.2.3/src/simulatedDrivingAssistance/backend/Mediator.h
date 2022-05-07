@@ -31,6 +31,7 @@ public:
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
+    tThreshold GetThresholdSettings();
 
     static Mediator* GetInstance();
 #ifdef TEST
@@ -57,6 +58,11 @@ private:
     unsigned long m_tickCount = 0;
 
     tTrack* m_track = nullptr;
+
+    tThreshold m_thresholds;
+    tThreshold SetThresholdSettings();
+    bool m_thresholdsSet = false;
+
     bool m_inRace = false;  // Whether the game is currently in a race
 };
 

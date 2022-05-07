@@ -14,6 +14,8 @@
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template tThreshold Mediator<type>::GetThresholdSettings();                                                                                         \
+    template tThreshold Mediator<type>::SetThresholdSettings();                                                                                         \
     template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
     template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
@@ -114,6 +116,39 @@ template <typename DecisionMaker>
 tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
 {
     return m_decisionMaker.Config.GetPControlSettings();
+}
+
+/// @brief  Sets the decision thresholds to what is in the xml file
+/// @return The new set threshold values
+template <typename DecisionMaker>
+tThreshold Mediator<DecisionMaker>::SetThresholdSettings()
+{
+    char buf[1024];
+    sprintf(buf, "%s%s", GfLocalDir(), "config/Threshhold.xml");
+    void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+
+    m_thresholds;
+    m_thresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", 0.0f);
+    m_thresholds.Brake = GfParmGetNum(paramHandle, "Threshold Settings", "Brake", "%", 0.9f);
+    m_thresholds.Steer = GfParmGetNum(paramHandle, "Threshold Settings", "Steer", "%", 0.04f);
+
+    GfParmReleaseHandle(paramHandle);
+
+    m_thresholdsSet = true;
+    return m_thresholds;
+}
+
+/// @brief  Returns the decision threshold values
+/// @return The threshold values
+template <typename DecisionMaker>
+tThreshold Mediator<DecisionMaker>::GetThresholdSettings()
+{
+    // if thresholds already set, return them
+    if (m_thresholdsSet)
+        return m_thresholds;
+
+    // else set thresholds according to the xml and return those
+    return SetThresholdSettings();
 }
 
 /// @brief              Does one drive tick in the framework

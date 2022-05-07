@@ -68,3 +68,11 @@ typedef struct DataToStore
     bool InterventionData;
     bool MetaData;
 } tDataToStore;
+
+/// @brief The threshold amounts for decisions. floats are values between 0 and 1.
+typedef struct Thresholds
+{
+    float Accel;
+    float Brake;
+    float Steer;
+} tThreshold;
