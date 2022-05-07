@@ -152,7 +152,7 @@ extern void RmResEraseScreen();
 extern void RmAddPreRacePauseItems();
 extern void RmAddCooldownItems();
 
-
+// SIMULATED DRIVING ASSISTANCE: removed networking
 
 // The Race Select menu.
 extern void *RmRaceSelectMenuHandle;

@@ -20,6 +20,7 @@
 #include <tgfclient.h>
 
 #include <racescreens.h>
+// SIMULATED DRIVING ASSISTANCE: REMOVED PLAYER CONFIG, ADDED CONTROLCONGFIG
 #include <controlconfig.h>
 
 #include "mainmenu.h"
@@ -39,6 +40,7 @@ onPlayerConfigMenuActivate(void* /* dummy */)
        is pressed, and not only once at the Main menu initialization,
        because the previous menu has to be saved (ESC, Back) and because it can be this menu,
        as well as the Raceman menu */
+       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
     GfuiScreenActivate(ControlMenuInit(MainMenuHandle, 1));
 }
 
@@ -118,6 +120,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateStaticControls(MainMenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
+    // SIMULATED DRIVING ASSISTANCE: FROM RACE TO START
     GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
     if (SupportsHumanDrivers)

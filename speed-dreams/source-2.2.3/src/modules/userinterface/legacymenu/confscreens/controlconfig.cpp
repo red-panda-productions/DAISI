@@ -959,7 +959,7 @@ DevCalibrate(void* /* dummy */)
         GfuiScreenActivate(nextCalMenu);
 }
 
-
+// SIMULATED DRIVING ASSISTANCE: REMOVED PREFHDLE, INDEX, GEARCHANGEMODE.
 /* */
 void*
 ControlMenuInit(void* prevMenu, int saveOnExit)

@@ -185,11 +185,14 @@ Changed:
                     added    ResearcherMenu.h and .cpp
                     added    DataSelectionMenu.h and .cpp
                     added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                    removed player, graph, opengl, advanced, simu, ai, hostsettings configs
                 mainscreens
                     /mainmenu.cpp
                         included "DataSelectionMenu.h"
                         added    GoBack()
                         changed  MainMenuInit()
+                        changed  onplayerconfigMenuActivate()
+                        changed  onRaceSelectActivate()
                     /optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
                 racescreens/
@@ -197,10 +200,25 @@ Changed:
                         removed RmProgressiveTimeModifier implementation and calls
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
-                confscreens/soundconfig.cpp
-                    added ChangeInterventionVolume()
-                    added logic to create new controls for intervention volume and store their data
-                    changed readSoundCfg()
+                        removed controlsmenu and forcefeedbackmenu
+                    racemanmenu.cpp
+                        removed networking and go back to main menu
+                        changed rmOnRaceDataChanged
+                        added BackToMainMenu()
+                        changed rmRaceManMenu()
+                    racescreens.h
+                        removed networking
+                    raceselectmenu.cpp
+                        skip through this in rmOnActivate()
+                    removed csnetclientsettings.cpp, csnetserversettings.cpp ,csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                confscreens
+                    /soundconfig.cpp
+                        added ChangeInterventionVolume()
+                        added logic to create new controls for intervention volume and store their data
+                        changed readSoundCfg()
+                    /controlconfig 
+                        removed parameters in init
+                    removed player, graph, opengl, advanced, simu, ai, hostsettings config .h/.cpp
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module
@@ -305,15 +323,42 @@ Changed:
                     removed selectTrackMap()
 
 
-  data/data/menu/
-    mainmenu.xml
-        added a back button
-        renamed race button
-    soundconfigmenu.xml
-        added controls for intervention sound volume
-    stopracemenu.xml
-        removed controls and forcefeedback menu
-    optionsmenu.xml
+  data/
+      config/raceman
+        CMakeLists.txt
+        quickrace.xml
+            changed standard track
+        practice.xml
+            removed
+        singleevent-challange.xml
+            removed
+        singleeven-endurance.xml
+            removed
+      data/
+        credits.xml
+        menu/
+            mainmenu.xml
+                added a back button
+                renamed race button
+                removed weekend
+                removed player
+            soundconfigmenu.xml
+                added controls for intervention sound volume
+            stopracemenu.xml
+                removed controls and forcefeedback menu
+            optionsmenu.xml
+                removed unused menus
+            creditsmenu.xml
+                added new section
+            playerconfig.xml
+                removed
+            raceselectmenu.xml
+                removed practice and optimizationMT buttons
+            soundconfig.xml
+                removed sound system option
+            stopracemenu.xml
+                removed controls and force feedback buttons
+
         
   cmake/
     checks.cmake

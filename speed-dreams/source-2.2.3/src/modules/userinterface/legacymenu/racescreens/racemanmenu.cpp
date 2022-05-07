@@ -46,6 +46,7 @@
 
 #include "mainmenu.h"
 
+// SIMULATED DRIVING ASSISTANCE: removed networking
 
 // Raceman menu.
 static void	*ScrHandle = 0;
@@ -171,6 +172,7 @@ rmLoadRaceFromResultsFile(const char *filename)
 	rmOnRaceDataChanged();
 }
 
+
 // Callbacks for the current menu ------------------------------------------------------------
 static void
 rmOnActivate(void * /* dummy */)
@@ -195,6 +197,7 @@ rmOnActivate(void * /* dummy */)
 	rmOnRaceDataChanged();
 }
 
+// SIMULATED DRIVING ASSISTANCE: removed networking
 static void
 rmOnRaceDataChanged()
 {
@@ -370,6 +373,8 @@ static void BackToMainMenu(void* p_prevMenu)
 
 	LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
 }
+
+// SIMULATED DRIVING ASSISTANCE: removed networking
 void
 RmRacemanMenu()
 {

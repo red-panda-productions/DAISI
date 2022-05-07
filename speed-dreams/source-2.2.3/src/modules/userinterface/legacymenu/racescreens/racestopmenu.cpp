@@ -150,7 +150,7 @@ rmControlsHookActivate(void * /* dummy */)
     } else {
         gearChangeMode = GEAR_MODE_SEQ;
     }
-
+    // SIMULATED DRIVING ASSISTANCE: controlmenuinit changed param
     GfuiScreenActivate(ControlMenuInit(hscreen, 1));
 #endif
 }
