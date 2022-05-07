@@ -101,7 +101,7 @@ void FileDataStorage::Shutdown()
 void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
 {
     WRITE_VAR(m_outputStream, p_timestamp);
-    if (m_saveSettings.EnvironmentData)
+    if (m_saveSettings.CarData)
     {
         Posd pos = p_car->pub.DynGCg.pos;
         tDynPt mov = p_car->pub.DynGC;

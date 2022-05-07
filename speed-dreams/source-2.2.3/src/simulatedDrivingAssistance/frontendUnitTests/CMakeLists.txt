@@ -41,7 +41,7 @@ target_link_libraries(
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend)
+ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend backend)
 
 ADD_PLIB_LIBRARY(frontendUnitTests)
 

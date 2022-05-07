@@ -8,20 +8,16 @@ struct TestSegments
     int NextSegmentsCount;
 };
 
-class GeneratorUtils
-{
-public:
-    static tTrackSeg GenerateSegment();
+tTrackSeg GenerateSegment();
 
-    static TestSegments GenerateSegments();
+TestSegments GenerateSegments();
 
-    static void DestroySegments(TestSegments& p_segments);
+void DestroySegments(TestSegments& p_segments);
 
-    static tCarElt GenerateCar(TestSegments& p_segments);
+tCarElt GenerateCar(TestSegments& p_segments);
 
-    static void DestroyCar(tCarElt& p_car);
+void DestroyCar(tCarElt& p_car);
 
-    static tSituation GenerateSituation();
+tSituation GenerateSituation();
 
-    static void DestroySituation(tSituation& p_situation);
-};
+void DestroySituation(tSituation& p_situation);

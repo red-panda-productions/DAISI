@@ -72,6 +72,7 @@ void BlackBoxSideSync()
 
     tCarElt car;
     tSituation situation;
+
     // It should always return true because it waits for a decision
     ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
 
@@ -91,7 +92,9 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 }
 
 /// @brief Tests an entire run of the framework
-void SocketTest(void (*p_blackboxFunction)())
+/// @param p_blackboxFunction function with blackbox initialisation and behaviour
+/// @param p_async whether or not the connection is async
+void SocketTest(void (*p_blackboxFunction)(), bool p_async)
 {
     // creates a connection between the black box and a client
     SETUP(p_blackboxFunction)
@@ -166,14 +169,19 @@ void SocketTest(void (*p_blackboxFunction)())
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
     // normal
-    ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));  // removes 1 data step
-    msgpack::unpacked msg5;
-    msgpack::unpack(msg5, buffer, TEST_BUFFER_SIZE);
-    std::vector<std::string> driveSituation4;
-    msg5->convert(driveSituation4);
+    if (p_async)
+    {
+        ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));  // removes 1 data step
 
-    // tests if the drive situation is expected
-    TestDriveSituation(driveSituation4, exampleSituation);
+        msgpack::unpacked msg5;
+        msgpack::unpack(msg5, buffer, TEST_BUFFER_SIZE);
+        std::vector<std::string> driveSituation4;
+        msg5->convert(driveSituation4);
+
+        // tests if the drive situation is expected
+        TestDriveSituation(driveSituation4, exampleSituation);
+    }
+
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
     // gets a stop command
@@ -185,8 +193,8 @@ void SocketTest(void (*p_blackboxFunction)())
     client.Disconnect();
 }
 
-TEST_CASE(SocketBlackBoxTests, SocketTestAsync, SocketTest, (&BlackBoxSideAsync))
-TEST_CASE(SocketBlackBoxTests, SocketTestSync, SocketTest, (&BlackBoxSideSync))
+TEST_CASE(SocketBlackBoxTests, SocketTestAsync, SocketTest, (&BlackBoxSideAsync, true))
+TEST_CASE(SocketBlackBoxTests, SocketTestSync, SocketTest, (&BlackBoxSideSync, false))
 
 /// @brief this black box side should fail
 void FailingBlackBox()

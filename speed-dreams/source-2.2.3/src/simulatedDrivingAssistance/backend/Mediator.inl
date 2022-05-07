@@ -177,7 +177,8 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed
-    m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
+    m_decisionMaker.Initialize(m_tickCount, &car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
+
     m_inRace = true;
 }
 
