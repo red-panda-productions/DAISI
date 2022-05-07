@@ -13,6 +13,8 @@
 
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS "Interventions"
+#define PRM_SECT_INTERVENTIONS_STEER "InterventionsSteer"
+#define PRM_SECT_INTERVENTIONS_BRAKE  "InterventionsBrake"
 #define PRM_SECT_TEXTURE       "texture"
 #define PRM_SECT_SOUND         "sound"
 #define PRM_SECT_TEXT          "text"
@@ -28,20 +30,30 @@
 
 #define VAL_YES "yes"
 #define VAL_NO  "no"
+
 static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "none", "steer left", "steer right", "brake", "accelerate"};
+    "none", "steer left", "steer right", "brake", "accelerate", "none"};
+
+static const char* s_actionSteerEnumString[NUM_INTERVENTION_ACTION_STEER] = {"none", "steer left", "steer right"};
+
+static const char* s_actionBrakeEnumString[NUM_INTERVENTION_ACTION_BRAKE] = {"brake", "accelerate", "none"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
 {
 public:
     void LoadIndicatorData(const char* p_path);
+    void LoadIndicatorDataHelper(void* xmlHandle, char* path, std::vector<tIndicatorData> m_indicatorData, InterventionAction intervention, char* prm_sect);
 
     void ActivateIndicator(InterventionAction p_action);
 
     std::vector<tIndicatorData> GetIndicatorData();
+    std::vector<tIndicatorData> GetSteerIndicatorData();
+    std::vector<tIndicatorData> GetBrakeIndicatorData();
 
     std::vector<tIndicatorData> GetActiveIndicators(InterventionType p_interventionType);
+
+    tIndicatorData GetNeutralIndicator(InterventionAction action, std::string indicatorTask);
 
     static IndicatorConfig* GetInstance();
 
@@ -64,6 +76,8 @@ private:
     static IndicatorConfig* m_instance;
 
     std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
+    std::vector<tIndicatorData> m_indicatorSteerData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_BRAKE);
+    std::vector<tIndicatorData> m_indicatorBrakeData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_STEER);
 
     std::vector<tIndicatorData> m_activeIndicators = {};
 

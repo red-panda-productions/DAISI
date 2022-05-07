@@ -406,6 +406,10 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 void cGrBoard::DispIndicators() 
 {
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
+
+    std::vector<tIndicatorData> m_indicatorBrakeData = IndicatorConfig::GetInstance()->GetBrakeIndicatorData();
+    std::vector<tIndicatorData> m_indicatorSteerData = IndicatorConfig::GetInstance()->GetSteerIndicatorData();
+
     InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
     for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType))
     {
@@ -414,6 +418,45 @@ void cGrBoard::DispIndicators()
 
         if (settings.Text)
             DispIndicatorText(indicator.Text);
+
+        if (any_of(m_indicatorBrakeData.begin(), m_indicatorBrakeData.end(), &indicator))
+        {
+            tIndicatorData m_indicatorData = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
+
+            if (settings.Icon)
+                DispIndicatorIcon(m_indicatorData.Texture, m_textures[m_indicatorData.Action]);
+
+            if (settings.Text)
+                DispIndicatorText(m_indicatorData.Text);
+        }
+        else if(any_of(m_indicatorSteerData.begin(), m_indicatorSteerData.end(), &indicator))
+        {
+            tIndicatorData m_indicatorData = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
+            // TODO: display neutral (none) for braking indicator type
+            if (settings.Icon)
+                DispIndicatorIcon(m_indicatorData.Texture, m_textures[m_indicatorData.Action]);
+
+            if (settings.Text)
+                DispIndicatorText(m_indicatorData.Text);
+        }
+        else
+        {
+            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
+            tIndicatorData m_neutralBrake= IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
+            // TODO: display neutral (none) for both indicator types (brake and steering) 
+
+            if (settings.Icon)
+                DispIndicatorIcon(m_neutralSteer.Texture, m_textures[m_neutralSteer.Action]);
+
+            if (settings.Text)
+                DispIndicatorText(m_neutralSteer.Text);
+
+            if (settings.Icon)
+                DispIndicatorIcon(m_neutralBrake.Texture, m_textures[m_neutralBrake.Action]);
+
+            if (settings.Text)
+                DispIndicatorText(m_neutralBrake.Text);
+        }
     }
 }
 
@@ -481,6 +524,7 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
 void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
+
     m_textures = new ssgSimpleState*[indicators.size()];
     for (const tIndicatorData& indicator : indicators)
     {

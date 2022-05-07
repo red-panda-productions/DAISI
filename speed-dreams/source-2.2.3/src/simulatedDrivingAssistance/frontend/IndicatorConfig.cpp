@@ -28,12 +28,50 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
             LoadTexture(xmlHandle, std::string(path)),
             LoadText(xmlHandle, std::string(path))};
     }
+
+    // Load the indicator data for the every brake-type intervention action
+    //LoadIndicatorDataHelper(xmlHandle, path, m_indicatorBrakeData, NUM_INTERVENTION_ACTION_BRAKE, PRM_SECT_INTERVENTIONS_BRAKE);
+
+    // Load the indicator data for every speed-type intervention action
+    //LoadIndicatorDataHelper(xmlHandle, path, m_indicatorSteerData, NUM_INTERVENTION_ACTION_STEER, PRM_SECT_INTERVENTIONS_STEER);
 }
 
-/// @brief  Returns a vector of ALL indicator data
+void IndicatorConfig::LoadIndicatorDataHelper(void* xmlHandle, char *path, std::vector<tIndicatorData> m_indicatorData, InterventionAction intervention, char* prm_sect)
+{
+    for (int i = 0; i < intervention; i++)
+    {
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", prm_sect, s_actionBrakeEnumString[i]);
+        m_indicatorData[i] = {
+            (InterventionAction)i,
+            LoadSound(xmlHandle, std::string(path)),
+            LoadTexture(xmlHandle, std::string(path)),
+            LoadText(xmlHandle, std::string(path))};
+    }
+}
+
+
+/// @brief  Returns a vector of the indicator data for steering
+/// @return The vector of indicator data
+std::vector<tIndicatorData> IndicatorConfig::GetSteerIndicatorData()
+{
+    return m_indicatorSteerData;
+}
+
+/// @brief  Returns a vector of the indicator data for braking
+/// @return The vector of indicator data
+std::vector<tIndicatorData> IndicatorConfig::GetBrakeIndicatorData()
+{
+    return m_indicatorBrakeData;
+}
+
+/// @brief  Returns a vector of the indicator data for braking
 /// @return The vector of indicator data
 std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 {
+    // Create a new vector with all the indicator data and return it
+    std::vector<tIndicatorData> m_indicatorData;
+    m_indicatorData.insert(m_indicatorData.end(), m_indicatorBrakeData.begin(), m_indicatorBrakeData.end());
+    m_indicatorData.insert(m_indicatorData.end(), m_indicatorSteerData.begin(), m_indicatorSteerData.end());
     return m_indicatorData;
 }
 
@@ -49,12 +87,37 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionTyp
     return m_activeIndicators;
 }
 
+/// @brief          Returns an element containing indicator data for only a neutral indicator
+/// @return         The element of neutral indicator data
+tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action, std::string indicatorTask)
+{
+    std::vector<tIndicatorData> m_indicatorData;
+    
+    if (indicatorTask == "steering")
+    {
+        m_indicatorData = IndicatorConfig::GetInstance()->GetSteerIndicatorData();
+    }
+    else 
+        m_indicatorData = IndicatorConfig::GetInstance()->GetBrakeIndicatorData();
+
+    std::vector<tIndicatorData> m_neutralIndicator;
+    for (const tIndicatorData& indicator : m_indicatorData)
+    {
+        if (indicator.Action == action)
+            m_neutralIndicator.insert(m_neutralIndicator.end(), indicator);        
+    }
+    tIndicatorData first = m_indicatorData.front();
+    return first;
+}
+
 /// @brief          Activates the given intervention indicator
 /// @param p_action The intervention to activate the indicators for
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
     // TODO: add to the vector instead of overwriting it, this also requires
     //       a way to remove the indicator after some time has passed.
+
+    std::vector<tIndicatorData> m_indicatorData = IndicatorConfig::GetInstance()->GetIndicatorData();
     m_activeIndicators = {m_indicatorData[p_action]};
 }
 

@@ -141,6 +141,7 @@ protected:
     /// @return      The vector of generated indicator data
     std::vector<tIndicatorData> CreateRandomIndicatorData(DataGeneration p_gen)
     {
+        //std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
         std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
         for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {

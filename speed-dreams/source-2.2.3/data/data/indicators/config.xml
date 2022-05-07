@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
 <params name="intervention-config" type="template">
-    <section name="Interventions">
+	<section name="Interventions">
+    <section name="InterventionsSteer">
         <section name ="none">
             <section name="texture">
                 <attstr name ="source" val="Intervention_Steer_None_Proto_256.png"/>
@@ -53,31 +54,59 @@
                 <attstr name="looping" val="no"/>
             </section>
         </section>
-        <section name ="brake">
-            <section name="texture">
-                <attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="text">
-                <attstr name ="content"   val="Brake"/>
-                <attnum name ="xpos"      val="0.75"/>
-                <attnum name ="ypos"      val="0"/>
-                <attstr name ="font"      val="jura-normal.glf"/>
-                <attnum name ="font-size" val="300"/>
-            </section>
-            <section name="sound">
-                <attstr name ="source" val="warning_brake_brake.wav"/>
-            </section>
-        </section>
-        <section name ="accelerate">
-            <section name="text">
-                <attstr name ="content"   val="Accel"/>
-                <attnum name ="xpos"      val="0.75"/>
-                <attnum name ="ypos"      val="0"/>
-                <attstr name ="font"      val="jura-normal.glf"/>
-                <attnum name ="font-size" val="300"/>
-            </section>
-         </section>
     </section>
+	<section name="InterventionsBrake">
+		<section name ="brake">
+			<section name="texture">
+				<attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
+				<attnum name ="xpos"   val="0.85"/>
+				<attnum name ="ypos"   val="0.03"/>
+			</section>
+			<section name="text">
+				<attstr name ="content"   val="Brake"/>
+				<attnum name ="xpos"      val="0.85"/>
+				<attnum name ="ypos"      val="0"/>
+				<attstr name ="font"      val="jura-normal.glf"/>
+				<attnum name ="font-size" val="300"/>
+			</section>
+			<section name="sound">
+				<attstr name ="source" val="warning_brake_brake.wav"/>
+			</section>
+		</section>
+		<section name ="accelerate">
+			<section name="texture">
+				<attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
+				<attnum name ="xpos"   val="0.85"/>
+				<attnum name ="ypos"   val="0.03"/>
+			</section>
+			<section name="text">
+				<attstr name ="content"   val="Brake"/>
+				<attnum name ="xpos"      val="0.85"/>
+				<attnum name ="ypos"      val="0"/>
+				<attstr name ="font"      val="jura-normal.glf"/>
+				<attnum name ="font-size" val="300"/>
+			</section>
+			<section name="sound">
+				<attstr name ="source" val="warning_brake_brake.wav"/>
+			</section>
+		</section>
+		<section name="none">
+			<section name="texture">
+				<attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
+				<attnum name ="xpos"   val="0.85"/>
+				<attnum name ="ypos"   val="0.03"/>
+			</section>
+			<section name="text">
+				<attstr name ="content"   val="Brake"/>
+				<attnum name ="xpos"      val="0.85"/>
+				<attnum name ="ypos"      val="0"/>
+				<attstr name ="font"      val="jura-normal.glf"/>
+				<attnum name ="font-size" val="300"/>
+			</section>
+			<section name="sound">
+				<attstr name ="source" val="warning_brake_brake.wav"/>
+			</section>
+		</section>
+	</section>
+	</section>
 </params>
