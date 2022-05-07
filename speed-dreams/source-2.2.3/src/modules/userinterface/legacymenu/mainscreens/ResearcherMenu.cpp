@@ -321,8 +321,6 @@ static void LoadDefaultSettings()
     m_pControl.ControlGas = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
     m_pControl.ControlSteering = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
     m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
-    m_pControl.RecordSession = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[4]);
-    m_pControl.BBRecordSession = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[5]);
 
     m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
 }
