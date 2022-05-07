@@ -30,6 +30,14 @@
 
 #include "textonly.h"
 
+// SIMULATED DRIVING ASSISTANCE: Include filesystem, recorder for defines, Mediator and RPPUtils
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
+#include <experimental/filesystem>
+#include "Recorder.h"
+#include "Mediator.h"
+#include "../../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+
+namespace filesystem = std::experimental::filesystem;
 
 // The TextOnlyUI singleton.
 TextOnlyUI* TextOnlyUI::_pSelf = 0;
@@ -83,40 +91,114 @@ TextOnlyUI::TextOnlyUI(const std::string& strShLibName, void* hShLibHandle)
 {
 }
 
+/// @brief Load the replay configuration, for example set the track.
+/// @param p_selRaceMan The pointer that should point to the replay race manager.
+/// @return true if the replay configuration was loaded successfully
+bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
+    std::string replayFolder;
+    if(!GfApp().hasOption("replay", replayFolder)) {
+        GfLogError("Either 'startrace' or 'replay' should be defined when 'textonly' is defined.\n");
+        return false;
+    }
+
+    if(!Recorder::ValidateAndUpdateRecording(replayFolder)) {
+        GfLogError("Failed to validate and/or update recording %s\n", replayFolder.c_str());
+        return false;
+    }
+
+    SMediator::GetInstance()->SetReplayFolder(replayFolder);
+
+    filesystem::path recordingSettingsPath = replayFolder;
+    recordingSettingsPath.append(RUN_SETTINGS_FILE_NAME);
+
+    std::string path = recordingSettingsPath.string();
+    auto replaySettingsHandle = GfParmReadFile(path.c_str(), 0, true);
+    const char* trackCategory = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    const char* trackName = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+
+    p_selRaceMan = GfRaceManagers::self()->getRaceManager("replay");
+    auto handle = p_selRaceMan->getDescriptorHandle();
+
+    GfParmSetStr(handle, "Tracks/1", KEY_CATEGORY, trackCategory);
+    GfParmSetStr(handle, "Tracks/1", KEY_NAME, trackName);
+
+    SMediator::GetInstance()->SetBlackBoxFilePath("");
+
+    tDataToStore dataToStore{};
+    dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = dataToStore.MetaData = false;
+    SMediator::GetInstance()->SetDataCollectionSettings(dataToStore);
+
+    tIndicator indicators{};
+    indicators.Audio = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, "false"));
+    indicators.Icon = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, "false"));
+    indicators.Text = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_TEXT, "false"));
+    SMediator::GetInstance()->SetIndicatorSettings(indicators);
+
+    InterventionType interventionType = static_cast<InterventionType>(GfParmGetNum(replaySettingsHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, INTERVENTION_TYPE_NO_SIGNALS));
+    SMediator::GetInstance()->SetInterventionType(interventionType);
+
+    SMediator::GetInstance()->SetMaxTime(-1);
+
+    tParticipantControl participantControl{};
+    participantControl.ControlGas = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
+    participantControl.ControlInterventionToggle = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, "false"));
+    participantControl.ControlSteering = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, "false"));
+    participantControl.ForceFeedback = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, "false"));
+    participantControl.RecordSession = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, "false"));
+    participantControl.BBRecordSession = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, "false"));
+    SMediator::GetInstance()->SetPControlSettings(participantControl);
+
+    Task task = 0;
+    // TODO: This will be replaced by allowed blackbox actions
+    SMediator::GetInstance()->SetTask(task);
+
+    GfParmReleaseHandle(replaySettingsHandle);
+
+    return true;
+}
+
 // Implementation of IUserInterface ****************************************
 bool TextOnlyUI::activate()
 {
     // Get the race to start.
     std::string strRaceToStart;
-	(void)GfApp().hasOption("startrace", strRaceToStart); // Should always be true (see main).
-		
+    // SIMULATED DRIVING ASSITANCE: Add replay check
+    GfRaceManager* pSelRaceMan = nullptr;
+    if(GfApp().hasOption("startrace", strRaceToStart))
+    {
+        pSelRaceMan = GfRaceManagers::self()->getRaceManager(strRaceToStart);
+    }
+    else if(!LoadReplayConfiguration(pSelRaceMan))
+    {
+        return false;
+    }
+
     // Check if it's an available one, and refuse activation if not.
-	GfRaceManager* pSelRaceMan =  GfRaceManagers::self()->getRaceManager(strRaceToStart);
     if (!pSelRaceMan)
-	{
+    {
         GfLogError("No such race type '%s'\n", strRaceToStart.c_str());
-		
-		return false;
-	}
 
-	// Otherwise, run the selected race.
-	// * Initialize the race engine.
-	raceEngine().reset();
+        return false;
+    }
 
-	// * Give the selected race manager to the race engine.
-	raceEngine().selectRaceman(pSelRaceMan, /*bKeepHumans=*/false);
-		
-	// * Configure the new race (no user interaction needed).
-	raceEngine().configureRace(/* bInteractive */ false);
+    // Otherwise, run the selected race.
+    // * Initialize the race engine.
+    raceEngine().reset();
 
-	// * Force "result-only" mode for all the sessions of the race with initial "normal" mode
-	//   (don't change the ones with "simu simu" mode).
-	raceEngine().race()->forceResultsOnly();
+    // * Give the selected race manager to the race engine.
+    raceEngine().selectRaceman(pSelRaceMan, /*bKeepHumans=*/false);
 
-	// * Start the race engine state automaton
-	raceEngine().startNewRace();
+    // * Configure the new race (no user interaction needed).
+    raceEngine().configureRace(/* bInteractive */ false);
 
-	return true;
+    // * Force "result-only" mode for all the sessions of the race with initial "normal" mode
+    //   (don't change the ones with "simu simu" mode).
+    raceEngine().race()->forceResultsOnly();
+
+    // * Start the race engine state automaton
+    raceEngine().startNewRace();
+
+    return true;
 }
 
 void TextOnlyUI::quit()

@@ -128,3 +128,11 @@ bool SDAConfig::GetSyncOption() const
 {
     return m_asyncConnection;
 }
+
+void SDAConfig::SetReplayFolder(const filesystem::path& p_replayFolder) {
+    m_currentReplayFolder = p_replayFolder;
+}
+
+const filesystem::path& SDAConfig::GetReplayFolder() const {
+    return m_currentReplayFolder;
+}

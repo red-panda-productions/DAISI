@@ -55,6 +55,8 @@ void TEMP_DECISIONMAKER::Initialize(tCarElt* p_initialCar,
     BlackBoxData initialData(p_initialCar, p_initialSituation, MAX_ULONG, nullptr, 0);
     BlackBox.Initialize(Config.GetSyncOption(), initialData, p_testSituations, p_testAmount);
 
+    if(p_blackBoxExecutablePath.empty()) return;
+
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();

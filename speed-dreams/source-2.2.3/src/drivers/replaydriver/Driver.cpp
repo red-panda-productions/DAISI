@@ -6,7 +6,7 @@
 
 #include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
 
-#define RECORDING_NAME "userRecording20220429-002706"
+namespace filesystem = std::experimental::filesystem;
 
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
@@ -25,19 +25,18 @@ Driver::Driver(int p_index, const char* p_name)
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
-    namespace filesystem = std::experimental::filesystem;
-
-    filesystem::path sdaFolder;
-    if (!GetSdaFolder(sdaFolder)) return;
-    sdaFolder.append("user_recordings").append(RECORDING_NAME);
+    const filesystem::path& replayFolder = SMediator::GetInstance()->GetReplayFolder();
+    const filesystem::path carSettingsFile = filesystem::path(replayFolder).append(CAR_SETTINGS_FILE_NAME);
+    const filesystem::path userRecordingFile = filesystem::path(replayFolder).append(USER_INPUT_RECORDING_FILE_NAME);
+    const filesystem::path simulationFile = filesystem::path(replayFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME);
 
     *p_carParmHandle =
-        GfParmReadFile(filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
+        GfParmReadFile(carSettingsFile.string().c_str(),
                        GFPARM_RMODE_STD,
                        true);
 
-    m_replayFile.open(filesystem::path(sdaFolder).append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
-    m_recordedSimulationData.open(filesystem::path(sdaFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
+    m_replayFile.open(userRecordingFile.string().c_str(), std::ios::binary);
+    m_recordedSimulationData.open(simulationFile.string().c_str(), std::ios::binary);
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
@@ -55,6 +54,8 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 /// @param p_simulationDataFile The recorded simulation data file
 void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
 {
+    if (p_simulationDataFile.peek() == EOF) return;
+
     double currentTime;
     tPosd posG{};
     tPosd velG{};
@@ -165,13 +166,10 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     p_car->_telemetryMode = static_cast<int>(telemetryMode);
     p_car->_singleWheelBrakeMode = static_cast<int>(singleWheelBrakeMode);
 
-    if (m_replayFile.eof())
+    m_replayFile >> bits(m_inputTime);
+    if (!m_replayFile)
     {
         p_situation->raceInfo.state = RM_RACE_ENDED;
-    }
-    else
-    {
-        m_replayFile >> bits(m_inputTime);
     }
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);

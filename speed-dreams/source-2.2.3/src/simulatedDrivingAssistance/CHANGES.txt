@@ -28,6 +28,9 @@ Added:
         DataSelectionMenu.cpp
   data/
     data/
+        config/
+            raceman/
+                replay.xml
         img/
             radio-checked.png
             radio-checked-focused.png
@@ -117,6 +120,10 @@ Changed:
         main.cpp
             added singletonfolder setup
             added mediator shut down
+            added replay command line option
+            added HasValidRaceStartArguments()
+
+            changed check to call custom HasValidRaceStartArguments method
     interfaces/
         playerpref.h
             added HM_ADRV_FILE define
@@ -168,35 +175,44 @@ Changed:
                 added InterventionVolume member
                 added Clamp() helper function
         userinterface/
-            legacymenu.h 
-                ActivateResearcherMenu()
-            legacymenu.cpp
-                included "ResearcherMenu.h"
-                included "DataSelectionMenu.h"
-                added    ActivateResearcherMenu()
-                changed  backLoad()
-                changed  activate()
-            racestopmenu.cpp
-                RmStopRaceMenu()
-                    changed  AssistedHuman is a human
             legacymenu/
                 CMakeList.txt
                     added    ResearcherMenu.h and .cpp
                     added    DataSelectionMenu.h and .cpp
                     added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
-                mainscreens/mainmenu.cpp
+                legacymenu.h
+                    ActivateResearcherMenu()
+                legacymenu.cpp
+                    included "ResearcherMenu.h"
                     included "DataSelectionMenu.h"
-                    added    GoBack()
-                    changed  MainMenuInit()
+                    added    ActivateResearcherMenu()
+                    changed  backLoad()
+                    changed  activate()
                 racescreens/
+                    racestopmenu.cpp
+                        RmStopRaceMenu()
+                        changed  AssistedHuman is a human
+                        removed rmProgressiveTimeModifier.start() call
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
-                    racestopmenu.cpp
-                        removed rmProgressiveTimeModifier.start() call
-                confscreens/soundconfig.cpp
-                    added ChangeInterventionVolume()
-                    added logic to create new controls for intervention volume and store their data
-                    changed readSoundCfg()
+                mainscreens/
+                    mainmenu.cpp
+                        included "DataSelectionMenu.h"
+                        added    GoBack()
+                        changed  MainMenuInit()
+                        racestopmenu.cpp
+                confscreens/
+                    soundconfig.cpp
+                        added ChangeInterventionVolume()
+                        added logic to create new controls for intervention volume and store their data
+                        changed readSoundCfg()
+            textonly/
+                CMakeLists.txt
+                    added backend
+                textonly.cpp
+                    added includes
+                    added LoadReplayConfiguration
+                    changed TextOnlyUI::activate()
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module
