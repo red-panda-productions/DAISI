@@ -10,8 +10,8 @@
 #define PRM_SYNC         "SynchronizationButtonList"
 #define PRM_RECORD_TGGLE "CheckboxRecorderToggle"
 
-static void* s_scrHandle = NULL;
-static void* s_prevHandle = NULL;
+static void* s_scrHandle = nullptr;
+static void* s_prevHandle = nullptr;
 
 // Control for synchronization option
 int m_syncButtonList;
@@ -37,7 +37,7 @@ static void LoadSettingsFromFile(void* p_param)
 /// Makes sure all visuals display the internal values
 static void SynchronizeControls()
 {
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_syncButtonList, m_sync);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_syncButtonList, (int)m_sync);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_replayRecorder, m_replayRecorderOn);
 }
@@ -132,14 +132,14 @@ static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
     m_replayRecorderOn = p_info->bChecked;
 }
 
-void* DeveloperMenuInit(void* prevMenu)
+void* DeveloperMenuInit(void* p_prevMenu)
 {
     // screen already created
     if (s_scrHandle) return s_scrHandle;
 
-    s_scrHandle = GfuiScreenCreate((float*)NULL, NULL, OnActivate, NULL,
-                                   (tfuiCallback)NULL, 1);
-    s_prevHandle = prevMenu;
+    s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate, nullptr,
+                                   (tfuiCallback)nullptr, 1);
+    s_prevHandle = p_prevMenu;
 
     void* param = GfuiMenuLoad("DeveloperMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
@@ -153,9 +153,9 @@ void* DeveloperMenuInit(void* prevMenu)
 
     GfParmReleaseHandle(param);
     // add keyboard controls here
-    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", NULL, SaveAndGoBack, NULL);
+    GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveAndGoBack, nullptr);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Cancel", s_prevHandle,
-               SwitchToResearcherMenu, NULL);
+               SwitchToResearcherMenu, nullptr);
 
     return s_scrHandle;
 }
