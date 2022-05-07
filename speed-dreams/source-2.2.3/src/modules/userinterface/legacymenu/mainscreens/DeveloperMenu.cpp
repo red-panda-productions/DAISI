@@ -138,7 +138,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     if (s_scrHandle) return s_scrHandle;
 
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate, nullptr,
-                                   (tfuiCallback)nullptr, 1);
+                                   (tfuiCallback) nullptr, 1);
     s_prevHandle = p_prevMenu;
 
     void* param = GfuiMenuLoad("DeveloperMenu.xml");
