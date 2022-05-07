@@ -39,11 +39,7 @@
 #include <cars.h>
 
 #include <controlconfig.h>
-#ifdef CLIENT_SERVER
-#include <csnetwork.h>
-#else
-#include <network.h>
-#endif
+
 
 #include "legacymenu.h"
 #include "racescreens.h"
@@ -382,43 +378,7 @@ RmRacemanMenu()
 	//       (merge the RmNetworkClientMenu and RmNetworkHostMenu into this race man menu,
 	//        after adding some more features / controls ? because they look similar).
 	tRmInfo* reInfo = LmRaceEngine().inData();
-	if (!strcmp(reInfo->_reName, "Online Race"))
-	{
-		// Temporary, as long as the networking menu are not ported to tgfdata.
-		
-		// Force any needed fix on the specified track for the race (may not exist)
-		const GfTrack* pTrack = LmRaceEngine().race()->getTrack();
-		GfLogTrace("Using track %s for Online Race", pTrack->getName().c_str());
 
-		// Synchronize reInfo->params with LmRaceEngine().race() state,
-		// in case the track was fixed.
-		if (LmRaceEngine().race()->isDirty())
-			LmRaceEngine().race()->store(); // Save data to params.
-		
-		// End of temporary.
-
-		if (NetGetNetwork())
-		{
-			if (NetGetNetwork()->IsConnected())
-			{
-				if (NetIsClient())
-				{
-					RmNetworkClientMenu(NULL);
-					return;
-				}
-				else if (NetIsServer())
-				{
-					RmNetworkHostMenu(NULL);
-					return;
-				}
-			}
-		}
-		else
-		{
-			RmNetworkMenu(NULL);
-			return;
-		}
-	}
 
 	// Don't do this twice.
 	if (ScrHandle)

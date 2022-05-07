@@ -17,17 +17,15 @@ SET(CS confscreens)
 SET(CONFSCREENS_SOURCES ${CS}/controlconfig.cpp
                         ${CS}/joystickconfig.cpp ${CS}/mouseconfig.cpp
                         ${CS}/joy2butconfig.cpp
-                        ${CS}/displayconfig.cpp ${CS}/graphconfig.cpp ${CS}/openglconfig.cpp
-                        ${CS}/monitorconfig.cpp ${CS}/advancedgraphconfig.cpp
-                        ${CS}/simuconfig.cpp ${CS}/soundconfig.cpp ${CS}/aiconfig.cpp
-                        ${CS}/hostsettingsmenu.cpp)
-SET(CONFSCREENS_HEADERS ${CS}/confscreens.h ${CS}/advancedgraphconfig.h
+                        ${CS}/displayconfig.cpp 
+                        ${CS}/monitorconfig.cpp
+                        ${CS}/soundconfig.cpp)
+SET(CONFSCREENS_HEADERS ${CS}/confscreens.h 
                         ${CS}/controlconfig.h
                         ${CS}/joystickconfig.h ${CS}/mouseconfig.h
                         ${CS}/joy2butconfig.h ${CS}/monitorconfig.h
-                        ${CS}/displayconfig.h ${CS}/graphconfig.h ${CS}/openglconfig.h 
-                        ${CS}/simuconfig.h ${CS}/soundconfig.h ${CS}/aiconfig.h
-                        ${CS}/hostsettingsmenu.h)
+                        ${CS}/displayconfig.h   
+                        ${CS}/soundconfig.h)
 
 IF(OPTION_SDL_FORCEFEEDBACK)
    SET(CONFSCREENS_SOURCES ${CONFSCREENS_SOURCES} ${CS}/forcefeedbackconfig.cpp)
@@ -37,7 +35,7 @@ ENDIF(OPTION_SDL_FORCEFEEDBACK)
 SET(RS racescreens)
 SET(RACESCREENS_SOURCES ${RS}/raceselectmenu.cpp 
                         #${RS}/raceweekendmenu.cpp
-                        ${RS}/racemanmenu.cpp ${RS}/fileselect.cpp ${RS}/networkingmenu.cpp
+                        ${RS}/racemanmenu.cpp ${RS}/fileselect.cpp 
                         ${RS}/raceconfigstate.cpp
                         ${RS}/trackselect.cpp ${RS}/driverselect.cpp ${RS}/garagemenu.cpp
                         ${RS}/raceparamsmenu.cpp ${RS}/carsetupmenu.cpp
@@ -45,16 +43,10 @@ SET(RACESCREENS_SOURCES ${RS}/raceselectmenu.cpp
                         ${RS}/raceoptimizationmenu.cpp 
                         ${RS}/racestopmenu.cpp ${RS}/racestartmenu.cpp ${RS}/racepitmenu.cpp 
                         ${RS}/raceresultsmenus.cpp ${RS}/racenexteventmenu.cpp)
-IF(OPTION_CLIENT_SERVER)
-   SET(RACESCREENS_SOURCES ${RACESCREENS_SOURCES} ${RS}/csnetworkingmenu.cpp 
-                                                  ${RS}/csnetclientsettings.cpp
-                                                  ${RS}/csnetserversettings.cpp)
-ENDIF(OPTION_CLIENT_SERVER)
+
 
 SET(RACESCREENS_HEADERS ${RS}/racescreens.h ${RS}/garagemenu.h ${RS}/carsetupmenu.h) #${RS}/raceweekendscreens.h)
-IF(OPTION_CLIENT_SERVER)
-   SET(RACESCREENS_HEADERS ${RACESCREENS_HEADERS} ${RS}/csnetworking.h) 
-ENDIF(OPTION_CLIENT_SERVER)
+
 
 SET(LEGACYMENU_SOURCES ${MAINSCREENS_SOURCES} 
                        ${CONFSCREENS_SOURCES} 
@@ -68,13 +60,7 @@ SET(LEGACYMENU_HEADERS ${MAINSCREENS_HEADERS}
 INCLUDE_DIRECTORIES(. ${MS} ${CS} ${RS})
 ADD_INTERFACE_INCLUDEDIR()
 
-IF(OPTION_CLIENT_SERVER)
-   SET(NETWORKING_INC csnetworking)
-   SET(NETWORKING_LIB csnetworking)
-ELSE(OPTION_CLIENT_SERVER)
-   SET(NETWORKING_INC networking)
-   SET(NETWORKING_LIB networking)
-ENDIF(OPTION_CLIENT_SERVER)
+
 
 # SIMULATED DRIVING ASSISTANCE CHANGE: added backend
 ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC})
