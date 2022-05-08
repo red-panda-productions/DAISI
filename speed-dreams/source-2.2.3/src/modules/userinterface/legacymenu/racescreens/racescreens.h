@@ -29,7 +29,6 @@
 
 #include <itrackloader.h>
 
-
 #include <tgfclient.h> // tfuiCallback
 
 class GfRace;
@@ -156,7 +155,6 @@ extern void RmAddCooldownItems();
 
 // The Race Select menu.
 extern void *RmRaceSelectMenuHandle;
-
 
 // Progressive simulation time modifier, for more user-friendly resuming
 // a race from the Stop Race menu (progressively accelerates time from a low factor).

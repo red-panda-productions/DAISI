@@ -15,7 +15,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
-***************************************************************************/
+ ***************************************************************************/
 
 #include <tgfclient.h>
 
@@ -34,7 +34,7 @@ static void *MainMenuHandle = 0;
 
 
 static void
-onControlMenuActivate(void* /* dummy */)
+onControlMenuActivate(void * /* dummy */)
 {
     /* Here, we need to call OptionOptionInit each time the firing button
        is pressed, and not only once at the Main menu initialization,
@@ -103,19 +103,19 @@ onMainMenuActivate(void * /* dummy */)
  *
  */
 
-void*
+void *
 MainMenuInit(bool SupportsHumanDrivers)
 {
     // Initialize only once.
     if (MainMenuHandle)
         return MainMenuHandle;
 
-    MainMenuHandle = GfuiScreenCreate((float*)NULL,
+    MainMenuHandle = GfuiScreenCreate((float*)NULL, 
 				    NULL, onMainMenuActivate, 
 				    NULL, (tfuiCallback)NULL, 
 				    1);
 
-    void* menuDescHdle = GfuiMenuLoad("mainmenu.xml");
+    void *menuDescHdle = GfuiMenuLoad("mainmenu.xml");
 
     GfuiMenuCreateStaticControls(MainMenuHandle, menuDescHdle);
 

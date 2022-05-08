@@ -8,7 +8,7 @@
 
  ***************************************************************************/
 
- /***************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,11 +17,11 @@
  *                                                                         *
  ***************************************************************************/
 
- /** @file
+/** @file
 			 Race selection menu
 	 @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
 	 @version	$Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
- */
+*/
 
 
 #include <map>
