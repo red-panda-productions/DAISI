@@ -328,8 +328,9 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     // Write the car data
     tTrack track{};
-    track.filename = new char[64];
-    GenerateRandomCharArray(track.filename, 63);
+    track.name = new char[64];
+    track.name = "track_name";
+    track.category = "track_category";
     tIndicator indicators;
     indicators.Audio = random.NextBool();
     indicators.Icon = random.NextBool();
@@ -369,11 +370,12 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(participantControl.RecordSession));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, nullptr), BoolToString(participantControl.BBRecordSession));
 
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_FILENAME, nullptr), track.filename);
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_NAME, nullptr), track.name);
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_CATEGORY, nullptr), track.category);
 
     ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);
 
-    delete[] track.filename;
+    ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_VERSION, KEY_VERSION, nullptr, NAN)), CURRENT_RECORDER_VERSION);
 
     // Check the contents of the file
     std::ifstream originalFile(path);
