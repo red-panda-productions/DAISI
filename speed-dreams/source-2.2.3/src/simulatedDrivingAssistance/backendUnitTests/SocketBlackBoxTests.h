@@ -29,16 +29,16 @@
     ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
 /// @brief The black box side of the test, as these tests have to run in parallel
-void BlackBoxSide()
+void BlackBoxSideAsync()
 {
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> bb;
     Random random;
     BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
     BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
-    BlackBoxDataMock situations[2]{ mock, exampleSituation };
+    BlackBoxDataMock situations[2]{mock, exampleSituation};
 
-    /// intializes the black box with 2 tests
-    bb.Initialize(mock, situations, 2);
+    /// intializes the black box with 2 tests and async
+    bb.Initialize(true, mock, situations, 2);
     DecisionTuple decisions;
 
     tCarElt car;
@@ -58,6 +58,32 @@ void BlackBoxSide()
     bb.Shutdown();
 }
 
+void BlackBoxSideSync()
+{
+    SocketBlackBox<BlackBoxDataMock, PointerManagerMock> bb;
+    Random random;
+    BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
+    BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
+    BlackBoxDataMock situations[2]{mock, exampleSituation};
+
+    /// intializes the black box with 2 tests and sync connection
+    bb.Initialize(false, mock, situations, 2);
+    DecisionTuple decisions;
+
+    tCarElt car;
+    tSituation situation;
+
+    // It should always return true because it waits for a decision
+    ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
+
+    // check the result
+    ASSERT_ALMOST_EQ(decisions.GetSteer(), STEER_VALUE, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisions.GetBrake(), BRAKE_VALUE, TOLERANCE);
+
+    // shut the server down
+    bb.Shutdown();
+}
+
 /// @brief					 Tests if the parsed drivesituation is the same as the target
 /// @param  p_driveSituation Parsed drive situation
 /// @param  p_target		 The target
@@ -66,15 +92,17 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 }
 
 /// @brief Tests an entire run of the framework
-TEST(SocketBlackBoxTests, SocketTest)
+/// @param p_blackboxFunction function with blackbox initialisation and behaviour
+/// @param p_async whether or not the connection is async
+void SocketTest(void (*p_blackboxFunction)(), bool p_async)
 {
     // creates a connection between the black box and a client
-    SETUP(BlackBoxSide)
+    SETUP(p_blackboxFunction)
 
-        std::vector<std::string> order = {
-            "ACTIONORDER",
-            "Steer",
-            "Brake" };
+    std::vector<std::string> order = {
+        "ACTIONORDER",
+        "Steer",
+        "Brake"};
 
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
@@ -106,7 +134,7 @@ TEST(SocketBlackBoxTests, SocketTest)
     // send back result of test 1
     std::vector<std::string> action{
         std::to_string(STEER_VALUE),
-        std::to_string(BRAKE_VALUE) };
+        std::to_string(BRAKE_VALUE)};
     sbuffer.clear();
     msgpack::pack(sbuffer, action);
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
@@ -141,14 +169,19 @@ TEST(SocketBlackBoxTests, SocketTest)
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
     // normal
-    ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));  // removes 1 data step
-    msgpack::unpacked msg5;
-    msgpack::unpack(msg5, buffer, TEST_BUFFER_SIZE);
-    std::vector<std::string> driveSituation4;
-    msg5->convert(driveSituation4);
+    if (p_async)
+    {
+        ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));  // removes 1 data step
 
-    // tests if the drive situation is expected
-    TestDriveSituation(driveSituation4, exampleSituation);
+        msgpack::unpacked msg5;
+        msgpack::unpack(msg5, buffer, TEST_BUFFER_SIZE);
+        std::vector<std::string> driveSituation4;
+        msg5->convert(driveSituation4);
+
+        // tests if the drive situation is expected
+        TestDriveSituation(driveSituation4, exampleSituation);
+    }
+
     ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
 
     // gets a stop command
@@ -160,10 +193,13 @@ TEST(SocketBlackBoxTests, SocketTest)
     client.Disconnect();
 }
 
+TEST_CASE(SocketBlackBoxTests, SocketTestAsync, SocketTest, (&BlackBoxSideAsync, true))
+TEST_CASE(SocketBlackBoxTests, SocketTestSync, SocketTest, (&BlackBoxSideSync, false))
+
 /// @brief this black box side should fail
 void FailingBlackBox()
 {
-    ASSERT_THROW(BlackBoxSide(), std::exception);
+    ASSERT_THROW(BlackBoxSideAsync(), std::exception);
 }
 
 /// @brief Tests what happens when no order is sent
@@ -171,26 +207,26 @@ TEST(SocketBlackBoxTests, NoOrderSend)
 {
     SETUP(FailingBlackBox)
 
-        std::vector<std::string> order = {
-            "Speed",
-            "TopSpeed",
-            "Gear",
-            "Headlights",
-            "SteerCmd",
-            "AccelCmd",
-            "BrakeCmd",
-            "ClutchCmd",
-            "Offroad",
-            "ToMiddle",
-            "ToLeft",
-            "ToRight",
-            "ToStart",
-            "TimeOfDay",
-            "Clouds",
-            "Rain",
-            "ACTIONORDER",
-            "Steer",
-            "Brake" };
+    std::vector<std::string> order = {
+        "Speed",
+        "TopSpeed",
+        "Gear",
+        "Headlights",
+        "SteerCmd",
+        "AccelCmd",
+        "BrakeCmd",
+        "ClutchCmd",
+        "Offroad",
+        "ToMiddle",
+        "ToLeft",
+        "ToRight",
+        "ToStart",
+        "TimeOfDay",
+        "Clouds",
+        "Rain",
+        "ACTIONORDER",
+        "Steer",
+        "Brake"};
 
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
@@ -203,26 +239,26 @@ TEST(SocketBlackBoxTests, NoActionOrderSend)
 {
     SETUP(FailingBlackBox)
 
-        std::vector<std::string> order = {
-            "DATAORDER",
-            "Speed",
-            "TopSpeed",
-            "Gear",
-            "Headlights",
-            "SteerCmd",
-            "AccelCmd",
-            "BrakeCmd",
-            "ClutchCmd",
-            "Offroad",
-            "ToMiddle",
-            "ToLeft",
-            "ToRight",
-            "ToStart",
-            "TimeOfDay",
-            "Clouds",
-            "Rain",
-            "Steer",
-            "Brake" };
+    std::vector<std::string> order = {
+        "DATAORDER",
+        "Speed",
+        "TopSpeed",
+        "Gear",
+        "Headlights",
+        "SteerCmd",
+        "AccelCmd",
+        "BrakeCmd",
+        "ClutchCmd",
+        "Offroad",
+        "ToMiddle",
+        "ToLeft",
+        "ToRight",
+        "ToStart",
+        "TimeOfDay",
+        "Clouds",
+        "Rain",
+        "Steer",
+        "Brake"};
 
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;

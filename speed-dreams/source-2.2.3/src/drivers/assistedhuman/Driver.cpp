@@ -32,7 +32,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
         m_recorder = new Recorder("user_recordings",
                                   "userRecording%Y%m%d-%H%M%S",
                                   USER_INPUT_RECORD_PARAM_AMOUNT,
-                                  DECISION_RECORD_PARAM_AMOUNT);
+                                  SIMULATION_RECORD_PARAM_AMOUNT);
     }
 
     m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);

@@ -50,6 +50,9 @@ static int	SaveOnExit = 0;
 static tCtrlMouseInfo MouseInfo;
 static char	CurrentSection[256];
 
+// SIMULATED DRIVING ASSISTANCE: add define for clarity of important magic number.
+#define NO_KEYBOARD 0
+
 /* Control command information */
 static tCmdInfo Cmd[] = {
     {HM_ATT_LEFTSTEER,  {1,  GFCTRL_TYPE_MOUSE_AXIS},   0, 0, HM_ATT_LEFTSTEER_MIN,  0, HM_ATT_LEFTSTEER_MAX,  0, HM_ATT_LEFTSTEER_POW,  1.0, 1, HM_ATT_JOY_PREF_AXIS, 0},
@@ -79,8 +82,10 @@ static tCmdInfo Cmd[] = {
     {HM_ATT_DASHB_NEXT, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_NEXT_MIN,  0, HM_ATT_DASHB_NEXT_MAX,0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_PREV, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_PREV_MIN,  0, HM_ATT_DASHB_PREV_MAX,0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_INC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_INC_MIN,   0, HM_ATT_DASHB_INC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
-    {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0}
-};
+    {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
+
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
+    {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, NO_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
 
 static const int MaxCmd = sizeof(Cmd) / sizeof(Cmd[0]);
 static const int ICmdReverseGear = 9;
