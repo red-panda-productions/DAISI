@@ -10,6 +10,9 @@
 #define PRM_SYNC         "SynchronizationButtonList"
 #define PRM_RECORD_TGGLE "CheckboxRecorderToggle"
 
+#define DEV_FILEPATH    "config/DeveloperMenu.xml"
+#define DEV_SCREEN_NAME "DeveloperMenu"
+
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 
@@ -53,7 +56,7 @@ static void LoadDefaultSettings()
 /// @brief Loads (if possible) the settings; otherwise, the control's default settings will be used
 static void LoadSettings()
 {
-    std::string strPath("config/DeveloperMenu.xml");
+    std::string strPath(DEV_FILEPATH);
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
     if (GfFileExists(buf))
@@ -61,6 +64,7 @@ static void LoadSettings()
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadSettingsFromFile(param);
+        SynchronizeControls();
         return;
     }
     LoadDefaultSettings();
@@ -69,7 +73,7 @@ static void LoadSettings()
 /// @brief Saves the settings to a file
 static void SaveSettingsToFile()
 {
-    std::string dstStr("config/DeveloperMenu.xml");
+    std::string dstStr(DEV_FILEPATH);
     char dst[512];
     sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
@@ -83,7 +87,7 @@ static void SaveSettingsToFile()
     GfParmSetStr(readParam, PRM_RECORD_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_replayRecorderOn));
 
     // Write queued changes
-    GfParmWriteFile(nullptr, readParam, "DeveloperMenu");
+    GfParmWriteFile(nullptr, readParam, DEV_SCREEN_NAME);
 }
 
 /// @brief Saves the settings so the mediator (or future instances) can access them
@@ -100,7 +104,6 @@ static void SaveSettings()
 static void OnActivate(void* /* dummy */)
 {
     LoadSettings();
-    SynchronizeControls();
 }
 
 /// @brief Switches back to the reseacher menu
@@ -156,6 +159,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveAndGoBack, nullptr);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Cancel", s_prevHandle,
                SwitchToResearcherMenu, nullptr);
+    GfuiMenuDefaultKeysAdd(s_scrHandle);
 
     return s_scrHandle;
 }

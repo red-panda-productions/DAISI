@@ -3,120 +3,120 @@
 <!DOCTYPE params SYSTEM "../tgf/params.dtd">
 
 <params name="DeveloperMenu">
+    
+    <section name="dynamic controls">
 
-	<section name="dynamic controls">
+        <!-- Button list to determining whether to run async- or synchronously-->
+        <section name="SynchronizationButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="Synchronous Black Box"/>
+                    <attstr name="tip" val="Select for the simulation to wait on the black box"/>
+                </section>
+                <section name="1">
+                    <attstr name="text" val="Asynchronous Black Box"/>
+                    <attstr name="tip" val="Select for the simulation to not wait on the black box"/>
+                </section>
+            </section>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="370"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attnum name="selected" val="1"/>
+            <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="1"/>
+        </section>
 
-		<!-- Button list to determining whether to run async- or synchronously-->
-		<section name="SynchronizationButtonList">
-			<attstr name="type" val="radio button list"/>
-			<section name="options">
-				<section name="0">
-					<attstr name="text" val="Synchronous Black Box"/>
-					<attstr name="tip" val="Select for the simulation to wait on the black box"/>
-				</section>
-				<section name="1">
-					<attstr name="text" val="Asynchronous Black Box"/>
-					<attstr name="tip" val="Select for the simulation to not wait on the black box"/>
-				</section>
-			</section>
-			<attnum name="x" val="20"/>
-			<attnum name="y" val="370"/>
-			<attnum name="image width" val="20"/>
-			<attnum name="image height" val="20"/>
-			<attstr name="color" val="0xFFFFFF"/>
-			<attstr name="font" val="small_t"/>
-			<attnum name="selected" val="1"/>
-			<attnum name="distance" val="10"/>
-			<attnum name="minimum of one" val="1"/>
-		</section>
+        <!-- Replay Recorder on/off-->
+        <section name="CheckboxRecorderToggle">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Recorder on/off"/>
+            <attstr name="tip" val="Enable/Disable the replay recorder"/>
+            <attnum name="x" val="200"/>
+            <attnum name="y" val="370"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="no"/>
+        </section>
 
-		<!-- Replay Recorder on/off-->
-		<section name="CheckboxRecorderToggle">
-			<attstr name="type" val="check box"/>
-			<attstr name="text" val="Recorder on/off"/>
-			<attstr name="tip" val="Enable/Disable the replay recorder"/>
-			<attnum name="x" val="200"/>
-			<attnum name="y" val="370"/>
-			<attnum name="image width" val="20"/>
-			<attnum name="image height" val="20"/>
-			<attstr name="color" val="0xFFFFFF"/>
-			<attstr name="font" val="small_t"/>
-			<attstr name="checked" val="no"/>
-		</section>
+        <!-- Cancel button-->
+        <section name="CancelButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Cancel"/>
+            <attstr name="tip" val="Cancel changes"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="50"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
 
-		<!-- Cancel button-->
-		<section name="CancelButton">
-			<attstr name="type" val="text button"/>
-			<attstr name="show box" val="no"/>
-			<attstr name="text" val="Cancel"/>
-			<attstr name="tip" val="Cancel changes"/>
-			<attstr name="h align" val="left"/>
-			<attnum name="x" val="50"/>
-			<attnum name="y" val="82"/>
-			<attnum name="width" val="120"/>
-			<attstr name="font" val="medium"/>
-			<attstr name="color" val="0xFFFFFF"/>
-			<attstr name="focused color" val="0xFFFFFF"/>
-			<attstr name="pushed color" val="0xFFFFFF"/>
-			<attnum name="image x" val="-10"/>
-			<attnum name="image y" val="4"/>
-			<attnum name="image width" val="60"/>
-			<attnum name="image height" val="16"/>
-			<attstr name="focused image" val="data/img/button-left-focused.png"/>
-			<attstr name="enabled image" val="data/img/button-left.png"/>
-			<attstr name="pushed image" val="data/img/button-left-pushed.png"/>
-		</section>
+        <!-- Apply button-->
+        <section name="ApplyButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Apply"/>
+            <attstr name="tip" val="Accept and save changes"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="435"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
 
-		<!-- Apply button-->
-		<section name="ApplyButton">
-			<attstr name="type" val="text button"/>
-			<attstr name="show box" val="no"/>
-			<attstr name="text" val="Apply"/>
-			<attstr name="tip" val="Accept and save changes"/>
-			<attstr name="h align" val="left"/>
-			<attnum name="x" val="435"/>
-			<attnum name="y" val="82"/>
-			<attnum name="width" val="120"/>
-			<attstr name="font" val="medium"/>
-			<attstr name="color" val="0xFFFFFF"/>
-			<attstr name="focused color" val="0xFFFFFF"/>
-			<attstr name="pushed color" val="0xFFFFFF"/>
-			<attnum name="image x" val="-10"/>
-			<attnum name="image y" val="4"/>
-			<attnum name="image width" val="60"/>
-			<attnum name="image height" val="16"/>
-			<attstr name="focused image" val="data/img/button-left-focused.png"/>
-			<attstr name="enabled image" val="data/img/button-left.png"/>
-			<attstr name="pushed image" val="data/img/button-left-pushed.png"/>
-		</section>
+    </section>
 
-	</section>
+    <section name="static controls">
 
-	<section name="static controls">
+        <section name="1">
+            <attstr name="type" val="background image"/>
+            <attstr name="image" val="data/img/splash-aiconf.jpg"/>
+        </section>
 
-		<section name="1">
-			<attstr name="type" val="background image"/>
-			<attstr name="image" val="data/img/splash-aiconf.jpg"/>
-		</section>
+        <section name="2">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Sync Option"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
 
-		<section name="2">
-			<attstr name="type" val="label"/>
-			<attnum name="x" val="20"/>
-			<attnum name="y" val="400"/>
-			<attstr name="text" val="Sync Option"/>
-			<attstr name="h align" val="left"/>
-			<attstr name="font" val="medium_t"/>
-		</section>
+        <section name="3">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="200"/>
+            <attnum name="y" val="400"/>
+            <attstr name="text" val="Replay Recorder"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
 
-		<section name="3">
-			<attstr name="type" val="label"/>
-			<attnum name="x" val="200"/>
-			<attnum name="y" val="400"/>
-			<attstr name="text" val="Replay Recorder"/>
-			<attstr name="h align" val="left"/>
-			<attstr name="font" val="medium_t"/>
-		</section>
-
-	</section>
+    </section>
 
 </params>
