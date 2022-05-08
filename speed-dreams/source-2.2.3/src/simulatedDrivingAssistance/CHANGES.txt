@@ -186,14 +186,14 @@ Changed:
                     added    DataSelectionMenu.h and .cpp
                     added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                     removed player, graph, opengl, advanced, simu, ai, hostsettings configs
-                mainscreens
-                    /mainmenu.cpp
+                mainscreens/
+                    mainmenu.cpp
                         included "DataSelectionMenu.h"
                         added    GoBack()
                         changed  MainMenuInit()
                         changed  onplayerconfigMenuActivate()
                         changed  onRaceSelectActivate()
-                    /optionsmenu.cpp
+                    optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
                 racescreens/
                     racerunningmenus.cpp
@@ -211,12 +211,12 @@ Changed:
                     raceselectmenu.cpp
                         skip through this in rmOnActivate()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp ,csnetworkingmenu.cpp, networking.cpp, csnetwork.h
-                confscreens
-                    /soundconfig.cpp
+                confscreens/
+                    soundconfig.cpp
                         added ChangeInterventionVolume()
                         added logic to create new controls for intervention volume and store their data
                         changed readSoundCfg()
-                    /controlconfig 
+                    controlconfig 
                         removed parameters in init
                     removed player, graph, opengl, advanced, simu, ai, hostsettings config .h/.cpp
         graphic/
@@ -328,14 +328,12 @@ Changed:
         CMakeLists.txt
         quickrace.xml
             changed standard track
-        practice.xml
-            removed
-        singleevent-challange.xml
-            removed
-        singleeven-endurance.xml
-            removed
+        removed practice.xml
+        removed singleevent-challange.xml
+        removed singleeven-endurance.xml
       data/
         credits.xml
+            added Simulated driving assistance developers
         menu/
             mainmenu.xml
                 added a back button
@@ -350,8 +348,7 @@ Changed:
                 removed unused menus
             creditsmenu.xml
                 added new section
-            playerconfig.xml
-                removed
+            removed playerconfig.xml
             raceselectmenu.xml
                 removed practice and optimizationMT buttons
             soundconfig.xml

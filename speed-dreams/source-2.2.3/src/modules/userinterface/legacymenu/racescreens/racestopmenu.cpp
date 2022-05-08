@@ -123,88 +123,7 @@ rmRestartRaceHookInit()
 
     return pvRestartRaceHookHandle;
 }
-// Controls hook *******************************************************
-static void
-rmControlsHookActivate(void * /* dummy */)
-{
-#if 0
-    GfuiScreenActivate(PlayerConfigMenuInit(hscreen));
-#else
-    void *prHandle;
-    char buf[100];
-    const char *str;
-    tGearChangeMode gearChangeMode;
 
-    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
-    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-
-    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, curPlayerIdx);
-    str = GfParmGetStr(prHandle, buf, HM_ATT_TRANS, HM_VAL_AUTO);
-
-    if (!strcmp(str, HM_VAL_AUTO)) {
-        gearChangeMode = GEAR_MODE_AUTO;
-    } else if (!strcmp(str, HM_VAL_GRID)) {
-        gearChangeMode = GEAR_MODE_GRID;
-    } else if (!strcmp(str, HM_VAL_HBOX)) {
-        gearChangeMode = GEAR_MODE_HBOX;
-    } else {
-        gearChangeMode = GEAR_MODE_SEQ;
-    }
-    // SIMULATED DRIVING ASSISTANCE: controlmenuinit changed param
-    GfuiScreenActivate(ControlMenuInit(hscreen, 1));
-#endif
-}
-
-static void	*pvControlsHookHandle = 0;
-
-static void *
-rmControlsHookInit()
-{
-    if (!pvControlsHookHandle)
-        pvControlsHookHandle = GfuiHookCreate(0, rmControlsHookActivate);
-
-    return pvControlsHookHandle;
-}
-
-#if SDL_FORCEFEEDBACK
-// ForceFeedbackConfig hook ********************************************
-static void
-rmForceFeedbackConfigHookActivate(void * /* dummy */)
-{
-    void *prHandle;
-    char buf[100];
-
-    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
-    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-
-    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, curPlayerIdx);
-
-
-    std::string carName = "";
-
-    //Find human cars
-    tRmInfo* pCurrReInfo = LmRaceEngine().inData();
-    for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
-        if(pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
-            carName.append(pCurrReInfo->s->cars[i]->_carName);
-        }
-    }
-
-
-    GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
-}
-
-static void	*pvForceFeedbackConfigHookHandle = 0;
-
-static void *
-rmForceFeedbackConfigHookInit()
-{
-    if (!pvForceFeedbackConfigHookHandle)
-        pvForceFeedbackConfigHookHandle = GfuiHookCreate(0, rmForceFeedbackConfigHookActivate);
-
-    return pvForceFeedbackConfigHookHandle;
-}
-#endif
 
 // Quit race hook ******************************************************
 static void	*rmStopScrHandle = 0;
@@ -426,9 +345,6 @@ RmStopRaceMenuShutdown()
 
     GfuiHookRelease(pvRestartRaceHookHandle);
     pvRestartRaceHookHandle = 0;
-
-    GfuiHookRelease(pvControlsHookHandle);
-    pvControlsHookHandle = 0;
 
     GfuiHookRelease(pvQuitHookHandle);
     pvQuitHookHandle = 0;

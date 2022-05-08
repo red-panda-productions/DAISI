@@ -8,14 +8,14 @@
 
  ***************************************************************************/
 
- /***************************************************************************
-  *                                                                         *
-  *   This program is free software; you can redistribute it and/or modify  *
-  *   it under the terms of the GNU General Public License as published by  *
-  *   the Free Software Foundation; either version 2 of the License, or     *
-  *   (at your option) any later version.                                   *
-  *                                                                         *
-  ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+***************************************************************************/
 
 #include <tgfclient.h>
 
@@ -29,12 +29,12 @@
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
 
-
-static void* MainMenuHandle = 0;
+// SIMULATED DRIVING ASSISTANCE: RENAMED MenuHandle
+static void *MainMenuHandle = 0;
 
 
 static void
-onPlayerConfigMenuActivate(void* /* dummy */)
+onControlMenuActivate(void* /* dummy */)
 {
     /* Here, we need to call OptionOptionInit each time the firing button
        is pressed, and not only once at the Main menu initialization,
@@ -45,7 +45,7 @@ onPlayerConfigMenuActivate(void* /* dummy */)
 }
 
 static void
-onRaceSelectMenuActivate(void* /* dummy */)
+onRaceSelectMenuActivate(void * /* dummy */)
 {
     GfuiScreenActivate(RmRaceSelectInit(MainMenuHandle));
 }
@@ -57,32 +57,32 @@ onRaceSelectMenuActivate(void* /* dummy */)
 }*/
 
 static void
-onOptionsMenuActivate(void* /* dummy */)
+onOptionsMenuActivate(void * /* dummy */)
 {
     GfuiScreenActivate(OptionsMenuInit(MainMenuHandle));
 }
 
 // SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
 /// @brief Activates the dataSelectionMenu screen
-static void GoBack(void* /* dummy */)
+static void GoBack(void * /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(MainMenuHandle));
 }
 
 static void
-onCreditsMenuActivate(void* /* dummy */)
+onCreditsMenuActivate(void * /* dummy */)
 {
     CreditsMenuActivate(MainMenuHandle);
 }
 
 static void
-onExitMenuActivate(void* /*dummy*/)
+onExitMenuActivate(void * /*dummy*/)
 {
     GfuiScreenActivate(ExitMenuInit(MainMenuHandle));
 }
 
 static void
-onMainMenuActivate(void* /* dummy */)
+onMainMenuActivate(void * /* dummy */)
 {
 }
 
@@ -124,7 +124,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
     if (SupportsHumanDrivers)
-        GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
+        GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
     GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
