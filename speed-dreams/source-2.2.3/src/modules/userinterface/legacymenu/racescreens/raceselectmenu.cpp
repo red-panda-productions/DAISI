@@ -17,10 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 
-/** @file  
+/** @file   
                 Race selection menu
-     @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
-     @version	$Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
+    @author		<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
+    @version	$Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
 */
 
 #include <map>
@@ -81,7 +81,7 @@ rmOnSelectRaceMan()
 	{
 		// Give the selected race manager to the race engine.
 		LmRaceEngine().selectRaceman(pSelRaceMan);
-        
+
 		// Start the race configuration menus sequence.
 		LmRaceEngine().configureRace(/* bInteractive */ true);
 	}
@@ -127,8 +127,8 @@ rmOnChangeRaceMan(tComboBoxInfo *)
 void *
 RmRaceSelectInit(void *prevMenu)
 {
-    if (RmRaceSelectMenuHandle)
-        return RmRaceSelectMenuHandle;
+    if (RmRaceSelectMenuHandle) 
+            return RmRaceSelectMenuHandle;
 
 	// Ask the RaceEngine what types of races should be allowed here
 	bool SupportsHumanDrivers = LmRaceEngine().supportsHumanDrivers();

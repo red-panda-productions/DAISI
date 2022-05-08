@@ -53,7 +53,7 @@ onRaceSelectMenuActivate(void * /* dummy */)
 //static void
 //onRaceWESelectMenuActivate(void * /* dummy */)
 /*{
-    GfuiScreenActivate(RmRaceWESelectInit(MainMenuHandle));
+        GfuiScreenActivate(RmRaceWESelectInit(MainMenuHandle));
 }*/
 
 static void
@@ -100,7 +100,7 @@ onMainMenuActivate(void * /* dummy */)
  *	0 ok -1 nok
  *
  * Remarks
- *    
+ *      
  */
 
 void *
@@ -155,7 +155,7 @@ MainMenuInit(bool SupportsHumanDrivers)
  *	0 ok -1 nok
  *
  * Remarks
- *    
+ *      
  */
 int
 MainMenuRun(void)
