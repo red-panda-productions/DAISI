@@ -111,9 +111,9 @@ MainMenuInit(bool SupportsHumanDrivers)
         return MainMenuHandle;
 
     MainMenuHandle = GfuiScreenCreate((float*)NULL,
-        NULL, onMainMenuActivate,
-        NULL, (tfuiCallback)NULL,
-        1);
+				    NULL, onMainMenuActivate, 
+				    NULL, (tfuiCallback)NULL, 
+				    1);
 
     void* menuDescHdle = GfuiMenuLoad("mainmenu.xml");
 
