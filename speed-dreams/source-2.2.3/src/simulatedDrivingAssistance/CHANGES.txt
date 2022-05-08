@@ -226,7 +226,7 @@ Changed:
                         changed readSoundCfg()
                     /controlconfig 
                         removed parameters in init
-                    removed player, graph, opengl, advanced, simu, ai, hostsettings config .h/.cpp
+                    removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
 
         graphic/
             ssggraph/
