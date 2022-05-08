@@ -128,6 +128,46 @@ rmRestartRaceHookInit()
 // Quit race hook ******************************************************
 static void	*rmStopScrHandle = 0;
 
+//SIMULATED DRIVING ASSISTANCE: remove controls setting
+#if SDL_FORCEFEEDBACK
+// ForceFeedbackConfig hook ********************************************
+static void
+rmForceFeedbackConfigHookActivate(void* /* dummy */)
+{
+    void* prHandle;
+    char buf[100];
+
+    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
+    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
+
+    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, curPlayerIdx);
+
+
+    std::string carName = "";
+
+    //Find human cars
+    tRmInfo* pCurrReInfo = LmRaceEngine().inData();
+    for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
+        if (pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN) {
+            carName.append(pCurrReInfo->s->cars[i]->_carName);
+        }
+    }
+
+
+    GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
+}
+
+static void* pvForceFeedbackConfigHookHandle = 0;
+
+static void*
+rmForceFeedbackConfigHookInit()
+{
+    if (!pvForceFeedbackConfigHookHandle)
+        pvForceFeedbackConfigHookHandle = GfuiHookCreate(0, rmForceFeedbackConfigHookActivate);
+
+    return pvForceFeedbackConfigHookHandle;
+}
+#endif
 static void
 rmQuitHookActivate(void * /* dummy */)
 {
@@ -216,10 +256,9 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                const char *buttonRole3 = 0, void *screen3 = 0,
                const char *buttonRole4 = 0, void *screen4 = 0,
                const char *buttonRole5 = 0, void *screen5 = 0,
-               const char *buttonRole6 = 0, void *screen6 = 0,
-               const char *buttonRole7 = 0, void *screen7 = 0)
+               const char *buttonRole6 = 0, void *screen6 = 0)
 {
-    const tButtonDesc aButtons[7] =
+    const tButtonDesc aButtons[6] =
     {
         { buttonRole1, screen1 },
         { buttonRole2, screen2 },
@@ -227,7 +266,6 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
         { buttonRole4, screen4 },
         { buttonRole5, screen5 },
         { buttonRole6, screen6 },
-        { buttonRole7, screen7 }
     };
 
     int nButtons = 2;
@@ -243,8 +281,6 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                 if (buttonRole6 && screen6)
                 {
                     nButtons++;
-                    if (buttonRole7 && screen7)
-                        nButtons++;
                 }
             }
         }
@@ -265,8 +301,8 @@ RmStopRaceMenu()
     void* params = LmRaceEngine().outData()->params;
     const char* pszRaceName = LmRaceEngine().outData()->_reRaceName;
 
-    const char *buttonRole[7];
-    void *screen[7];
+    const char *buttonRole[6];
+    void *screen[6];
     int i;
 
 #if 1
@@ -293,7 +329,7 @@ RmStopRaceMenu()
     if (LegacyMenu::self().soundEngine())
         LegacyMenu::self().soundEngine()->mute();
 
-    for(i=0; i < 7; i++) {
+    for(i=0; i < 6; i++) {
         buttonRole[i] = "";
         screen[i] = NULL;
     }
@@ -317,6 +353,34 @@ RmStopRaceMenu()
 
     buttonRole[i] = "abort";
     screen[i++] = rmAbortRaceHookInit();
+#if 1
+    // get current driver
+    j = (int)GfParmGetNum(grHandle, GR_SCT_DISPMODE, GR_ATT_CUR_SCREEN, NULL, 0.0);
+    snprintf(buf, sizeof(buf), "%s/%d", GR_SCT_DISPMODE, j);
+    cur_name = GfParmGetStr(grHandle, buf, GR_ATT_CUR_DRV, "not found");
+    GfLogInfo("Current driver (on active split screen) is '%s'\n", cur_name);
+
+    // Attempt to find a human driver
+    for (j = 0; ; j++) {
+        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j + 1);
+        human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
+        assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
+
+        if (strlen(human_test_name) == 0 && strlen(assisted_test_name) == 0) break;
+
+        if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0) {
+            GfLogInfo("Matching human driver found, setting index to %d.\n", j + 1);
+            curPlayerIdx = j + 1;
+
+
+#if SDL_FORCEFEEDBACK
+            buttonRole[i] = "forcefeedback";
+            screen[i++] = rmForceFeedbackConfigHookInit();
+            break;
+#endif
+        }
+    }
+#endif
 
     buttonRole[i] = "quit";
     screen[i++] = rmQuitHookInit();
@@ -326,9 +390,8 @@ RmStopRaceMenu()
                buttonRole[1], screen[1],
                buttonRole[2], screen[2],
                buttonRole[3], screen[3],
-               0, 0,
-               0, 0,
-               buttonRole[6], screen[6]);
+               buttonRole[4], screen[4],
+               buttonRole[5], screen[5]);
 }
 
 void

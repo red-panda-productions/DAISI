@@ -1,27 +1,28 @@
 /***************************************************************************
 
-	file        : raceselectmenu.cpp
-	created     : Sat Nov 16 09:36:29 CET 2002
-	copyright   : (C) 2002 by Eric Espie
-	email       : eric.espie@torcs.org
-	version     : $Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
+    file        : raceselectmenu.cpp
+    created     : Sat Nov 16 09:36:29 CET 2002
+    copyright   : (C) 2002 by Eric Espie
+    email       : eric.espie@torcs.org   
+    version     : $Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $                                  
 
  ***************************************************************************/
 
  /***************************************************************************
-  *                                                                         *
-  *   This program is free software; you can redistribute it and/or modify  *
-  *   it under the terms of the GNU General Public License as published by  *
-  *   the Free Software Foundation; either version 2 of the License, or     *
-  *   (at your option) any later version.                                   *
-  *                                                                         *
-  ***************************************************************************/
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
-  /** @file
-			  Race selection menu
-	  @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
-	  @version	$Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
-  */
+ /** @file
+			 Race selection menu
+	 @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
+	 @version	$Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
+ */
+
 
 #include <map>
 #include <algorithm>
@@ -38,8 +39,8 @@
 
 #define SINGLE_RACEMAN_IDX 0 
 
-  // The Race Select menu.
-void* RmRaceSelectMenuHandle = NULL;
+// The Race Select menu.
+void *RmRaceSelectMenuHandle = NULL;
 
 
 static std::map<std::string, int> rmMapSubTypeComboIds;
@@ -98,10 +99,9 @@ rmOnActivate(void* dummy)
 	GfLogTrace("Entering Race Mode Select menu\n");
 
 	LmRaceEngine().reset();
-	// SIMULATED DRIVING ASSISTANCE: skip this menu when activated
-	// 
-	rmOnSelectRaceMan();
 
+	// SIMULATED DRIVING ASSISTANCE: skip this menu when activated
+	rmOnSelectRaceMan();
 }
 
 
@@ -120,13 +120,13 @@ rmOnRaceSelectShutdown(void* prevMenu)
 
 
 static void
-rmOnChangeRaceMan(tComboBoxInfo*)
+rmOnChangeRaceMan(tComboBoxInfo *)
 {
 }
 
 /* Initialize the single player menu */
-void*
-RmRaceSelectInit(void* prevMenu)
+void *
+RmRaceSelectInit(void *prevMenu)
 {
 	if (RmRaceSelectMenuHandle)
 		return RmRaceSelectMenuHandle;
@@ -135,28 +135,10 @@ RmRaceSelectInit(void* prevMenu)
 	bool SupportsHumanDrivers = LmRaceEngine().supportsHumanDrivers();
 
 	// Create screen, load menu XML descriptor and create static controls.
-	RmRaceSelectMenuHandle = GfuiScreenCreate((float*)NULL,
-		NULL, rmOnActivate,
-		NULL, (tfuiCallback)NULL,
-		1);
-
-	void* hMenuXMLDesc = GfuiMenuLoad("raceselectmenu.xml");
-
-	GfuiMenuCreateStaticControls(RmRaceSelectMenuHandle, hMenuXMLDesc);
-
-	
-
-	// Create Back button
-	GfuiMenuCreateButtonControl(RmRaceSelectMenuHandle, hMenuXMLDesc, "BackButton",
-		prevMenu, rmOnRaceSelectShutdown);
-
-	// Close menu XML descriptor.
-	GfParmReleaseHandle(hMenuXMLDesc);
-
-	// Register keyboard shortcuts.
-	GfuiMenuDefaultKeysAdd(RmRaceSelectMenuHandle);
-	GfuiAddKey(RmRaceSelectMenuHandle, GFUIK_ESCAPE, "Back To Main Menu",
-		prevMenu, rmOnRaceSelectShutdown, NULL);
+    RmRaceSelectMenuHandle = GfuiScreenCreate((float*)NULL, 
+											NULL, rmOnActivate, 
+											NULL, (tfuiCallback)NULL, 
+											1);
 
 	// Give the race engine the menu to come back to.
 	LmRaceEngine().initializeState(prevMenu);

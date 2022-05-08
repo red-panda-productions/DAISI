@@ -187,7 +187,7 @@ Changed:
             racestopmenu.cpp
                 RmStopRaceMenu()
                     changed  AssistedHuman is a human
-                    removed controls and forcefeedback menu
+                    removed controls menu
             legacymenu/
                 CMakeList.txt
                     added    ResearcherMenu.h and .cpp
@@ -208,7 +208,7 @@ Changed:
                         removed RmProgressiveTimeModifier implementation and calls
                     racestopmenu.cpp
                         removed rmProgressiveTimeModifier.start() call
-                        removed controlsmenu and forcefeedbackmenu
+                        removed controlsmenu 
                     racemanmenu.cpp
                         removed networking and go back to main menu
                         changed rmOnRaceDataChanged
@@ -352,7 +352,7 @@ Changed:
             soundconfigmenu.xml
                 added controls for intervention sound volume
             stopracemenu.xml
-                removed controls and forcefeedback menu
+                removed controls menu
             optionsmenu.xml
                 removed unused menus
             creditsmenu.xml

@@ -281,7 +281,7 @@ rmOnSelectCompetitor(void * /* dummy */)
 }
 
 static void
-rmOnPlayerConfig(void * /* dummy */)
+rmOnControlConfig(void * /* dummy */)
 {
 	/* Here, we need to call OptionOptionInit each time the firing button
 	   is pressed, and not only once at the Raceman menu initialization,
@@ -413,8 +413,8 @@ RmRacemanMenu()
 	GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ConfigureRaceButton",
 								NULL, RmConfigureRace);
 	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ConfigurePlayersButton",
-								NULL, rmOnPlayerConfig);
+		GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ControlsButton",
+								NULL, rmOnControlConfig);
 	
 	GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "BackButton",
 								RmRaceSelectMenuHandle, BackToMainMenu);
