@@ -128,7 +128,7 @@ TestSegments GenerateSegments()
     TestSegments testSegments = {};
     // Main application uses 10 as its p_nextSegmentsCount (SocketBlackBox::GetDecisions()), so test around that range, not excessively more
 #define MAX_TESTSEGMENT_COUNT 16
-    testSegments.NextSegmentsCount = random.NextInt(1, MAX_TESTSEGMENT_COUNT);
+    testSegments.NextSegmentsCount = random.NextInt(2, MAX_TESTSEGMENT_COUNT);
     testSegments.NextSegments = new tTrackSeg[testSegments.NextSegmentsCount];
     testSegments.NextSegments[0] = GenerateSegment();
     for (int i = 1; i < testSegments.NextSegmentsCount; i++)
