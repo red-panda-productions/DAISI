@@ -219,7 +219,7 @@ Changed:
                         removed networking
                     raceselectmenu.cpp
                         skip through this in rmOnActivate()
-                    removed csnetclientsettings.cpp, csnetserversettings.cpp ,csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                    removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
                 confscreens/
                     soundconfig.cpp
                         added ChangeInterventionVolume()
