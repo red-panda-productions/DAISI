@@ -506,7 +506,7 @@ static tCarElt* reLoadSingleCar( int carindex, int listindex, int modindex, int 
 #endif
     GfLogInfo("Driver's name: %s\n", curModInfo->name);
 
-  // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman and replaydriver
+  // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman
   isHuman = strcmp( cardllname, "human" ) == 0 || strcmp( cardllname, "networkhuman" ) == 0 || strcmp(cardllname, "assistedhuman") == 0;
 
   /* Extended is forced for humans, so no need to increase robotIdx */
@@ -861,7 +861,7 @@ ReInitCars(void)
         snprintf(buf, sizeof(buf), "drivers/%s/%s.xml", robotModuleName, robotModuleName);
         robhdle = GfParmReadFile(buf, GFPARM_RMODE_STD);
       }
-      // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman and replaydriver
+      // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman
       if (robhdle && (strcmp(robotModuleName, "human") == 0 || strcmp(robotModuleName, "networkhuman") == 0 || strcmp(robotModuleName, "assistedhuman") == 0))
       {
         /* Human driver */
