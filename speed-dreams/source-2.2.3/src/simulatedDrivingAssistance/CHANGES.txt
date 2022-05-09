@@ -211,8 +211,9 @@ Changed:
                         removed controlsmenu 
                     racemanmenu.cpp
                         removed networking and go back to main menu
-                        changed rmOnRaceDataChanged
-                        added BackToMainMenu()
+                        changed rmOnRaceDataChanged()
+                        changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
+                        added   BackToMainMenu()
                         changed rmRaceManMenu()
                     racescreens.h
                         removed networking
