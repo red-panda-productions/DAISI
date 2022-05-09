@@ -1,6 +1,5 @@
 #include "SQLDatabaseStorage.h"
 #include "mediator.h"
-#include ".././modules/userinterface/legacymenu/mainscreens/DatabaseSettingsMenu.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
 #include "ConfigEnums.h"
@@ -645,14 +644,14 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     int port;
     try
     {
-        port = std::stoi(dbsettings.port);
+        port = std::stoi(dbsettings.Port);
     }
     catch (std::exception& e)
     {
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
 
-    if (OpenDatabase(dbsettings.address, port, dbsettings.username, dbsettings.password, dbsettings.schema, dbsettings.useSSL))
+    if (OpenDatabase(dbsettings.Address, port, dbsettings.Username, dbsettings.Password, dbsettings.Schema, dbsettings.UseSSL))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);

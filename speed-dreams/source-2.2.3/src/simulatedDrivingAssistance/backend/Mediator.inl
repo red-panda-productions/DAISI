@@ -164,14 +164,16 @@ void Mediator<DecisionMaker>::RaceStop()
     m_inRace = false;
 }
 
-/// @brief Tells the decisionmaker that the race has ended
+/// @brief            Sets the database connection settings for the database server
+/// @param p_dbSettings The settings made in the DatabaseSettingsMenu
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetDatabaseSettings(tDatabaseSettings p_dbSettings)
 {
     m_dbSettings = p_dbSettings;
 }
 
-/// @brief Tells the decisionmaker that the race has ended
+/// @brief  Gets the database connection settings
+/// @return The database connection settings
 template <typename DecisionMaker>
 tDatabaseSettings Mediator<DecisionMaker>::GetDatabaseSettings()
 {

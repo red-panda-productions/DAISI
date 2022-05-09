@@ -15,15 +15,15 @@ typedef struct Indicator
     bool Text;
 } tIndicator;
 
-/// @brief The different ways a user can be indicated about an intervention
+/// @brief The settings for the database in which the data is saved
 typedef struct DatabaseSettings
 {
-    char username[256];
-    char password[256];
-    char address[256];
-    char port[256];
-    char schema[256];
-    bool useSSL;
+    char Username[256];
+    char Password[256];
+    char Address[256];
+    char Port[256];
+    char Schema[256];
+    bool UseSSL;
 } tDatabaseSettings;
 
 /// @brief The different interventions that can be done

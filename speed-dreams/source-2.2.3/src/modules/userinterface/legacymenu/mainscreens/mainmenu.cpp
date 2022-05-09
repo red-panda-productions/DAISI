@@ -29,10 +29,7 @@
 #include "DataSelectionMenu.h"
 #include "DatabaseSettingsMenu.h"
 
-
-
 static void *MenuHandle = 0;
-
 
 static void
 onPlayerConfigMenuActivate(void * /* dummy */)
@@ -50,10 +47,10 @@ onRaceSelectMenuActivate(void * /* dummy */)
     GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
 }
 
-//static void
-//onRaceWESelectMenuActivate(void * /* dummy */)
+// static void
+// onRaceWESelectMenuActivate(void * /* dummy */)
 /*{
-	GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
+        GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
 }*/
 
 static void
@@ -64,9 +61,17 @@ onOptionsMenuActivate(void * /* dummy */)
 
 // SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
 /// @brief Activates the dataSelectionMenu screen
-static void GoBack(void* /* dummy */)
+static void GoBack(void * /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
+}
+
+// SIMULATED DRIVING ASSISTANCE CHANGE: added onDatabaseSettingsMenuActivate function
+/// @brief Activates the databaseSettingMenu screen
+static void
+onDatabaseSettingsMenuActivate(void * /* dummy */)
+{
+    GfuiScreenActivate(DatabaseSettingsMenuInit(MenuHandle));
 }
 
 static void
@@ -86,12 +91,6 @@ onMainMenuActivate(void * /* dummy */)
 {
 }
 
-static void
-onDatabaseSettingsMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(DatabaseSettingsMenuInit(MenuHandle));
-}
-
 /*
  * Function
  *	MainMenuInit
@@ -106,7 +105,7 @@ onDatabaseSettingsMenuActivate(void * /* dummy */)
  *	0 ok -1 nok
  *
  * Remarks
- *	
+ *
  */
 
 void *
@@ -116,24 +115,24 @@ MainMenuInit(bool SupportsHumanDrivers)
     if (MenuHandle)
         return MenuHandle;
 
-    MenuHandle = GfuiScreenCreate((float*)NULL, 
-				    NULL, onMainMenuActivate, 
-				    NULL, (tfuiCallback)NULL, 
-				    1);
+    MenuHandle = GfuiScreenCreate((float *)NULL,
+                                  NULL, onMainMenuActivate,
+                                  NULL, (tfuiCallback)NULL,
+                                  1);
 
     void *menuDescHdle = GfuiMenuLoad("mainmenu.xml");
 
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
-    //Add buttons and create based on xml
+    // Add buttons and create based on xml
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "race", NULL, onRaceSelectMenuActivate);
-    //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
-	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
+    // GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
+    if (SupportsHumanDrivers)
+        GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
+    // SIMULATED DRIVING ASSISTANCE CHANGE: added back and database button
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "database", nullptr, onDatabaseSettingsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
@@ -161,12 +160,11 @@ MainMenuInit(bool SupportsHumanDrivers)
  *	0 ok -1 nok
  *
  * Remarks
- *	
+ *
  */
-int
-MainMenuRun(void)
+int MainMenuRun(void)
 {
     GfuiScreenActivate(MenuHandle);
-	
+
     return 0;
 }

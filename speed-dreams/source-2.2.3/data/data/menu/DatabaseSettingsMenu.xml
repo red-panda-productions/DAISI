@@ -5,7 +5,7 @@
 <params name="DatabaseSettings">
 
     <section name="dynamic controls">
-        <!-- Input field for max time -->
+        <!-- Input field for username -->
         <section name="UsernameEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -17,7 +17,7 @@
 			<attstr name="text" val="Username"/>
         </section>
 
-        <!-- Input field for userId -->
+        <!-- Input field for password -->
         <section name="PasswordEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -29,7 +29,7 @@
 			<attstr name="text" val="Password"/>
         </section>
 		
-		<!-- Input field for userId -->
+		<!-- Input field for IP Address -->
         <section name="AddressEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -41,7 +41,7 @@
 			<attstr name="text" val="Url"/>
         </section>
 		
-				<!-- Input field for userId -->
+		<!-- Input field for the port -->
         <section name="PortEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -53,6 +53,7 @@
 			<attstr name="text" val="Port"/>
         </section>
 		
+		<!-- Input field for the database schema name -->
 		<section name="SchemaEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -64,6 +65,7 @@
 			<attstr name="text" val="SchemaName"/>
         </section>
 		
+		<!-- Checkbox for SSL option -->
 		<section name="CheckboxUseSSL">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Use SSL"/>
@@ -100,6 +102,7 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 		
+		<!-- Back button -->
 		<section name="BackButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
@@ -128,7 +131,7 @@
 
         <section name="1">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/splash-aiconf.jpg"/> <!-- TODO change background -->
+            <attstr name="image" val="data/img/splash-aiconf.jpg"/>
         </section>
 		
         <section name="2">
@@ -136,7 +139,7 @@
             <attnum name="x" val="250"/>
             <attnum name="y" val="350"/>
             <attstr name="text" val="Username"/>
-            <attstr name="tip" val="Set the username"/>
+            <attstr name="tip" val="Your username for the database server"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
@@ -146,7 +149,7 @@
             <attnum name="x" val="250"/>
             <attnum name="y" val="300"/>
             <attstr name="text" val="Password"/>
-            <attstr name="tip" val="Give the password"/>
+            <attstr name="tip" val="Your password for the database server"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
