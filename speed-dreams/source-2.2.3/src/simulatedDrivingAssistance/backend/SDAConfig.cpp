@@ -131,12 +131,14 @@ bool SDAConfig::GetSyncOption() const
 
 /// @brief Set m_currentReplayFolder to p_replayFolder
 /// @param p_replayFolder value to set m_currentReplayFolder to
-void SDAConfig::SetReplayFolder(const filesystem::path& p_replayFolder) {
+void SDAConfig::SetReplayFolder(const filesystem::path& p_replayFolder)
+{
     m_currentReplayFolder = p_replayFolder;
 }
 
 /// @brief Gets the set replay folder.
 /// @return Not set if replay mode was not enabled from the command line, if set returns the path to the replay folder
-const filesystem::path& SDAConfig::GetReplayFolder() const {
+const filesystem::path& SDAConfig::GetReplayFolder() const
+{
     return m_currentReplayFolder;
 }

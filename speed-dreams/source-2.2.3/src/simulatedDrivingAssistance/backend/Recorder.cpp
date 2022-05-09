@@ -230,7 +230,7 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 {
     const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
 
-    if(trackFileName == nullptr) return false;
+    if (trackFileName == nullptr) return false;
 
     void* trackHandle = GfParmReadFile(trackFileName, 0, true);
 
@@ -239,7 +239,8 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 
     GfParmReleaseHandle(trackHandle);
 
-    if (category == nullptr || name == nullptr) {
+    if (category == nullptr || name == nullptr)
+    {
         free((void*)category);
         free((void*)name);
         return false;
@@ -280,7 +281,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     void* settingsHandle = GfParmReadFile(settingsFile.string().c_str(), 0, true);
 
     // If it cannot be parsed the recording is invalid
-    if(settingsHandle == nullptr)
+    if (settingsHandle == nullptr)
     {
         return false;
     }
@@ -294,7 +295,8 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     filesystem::path simulationFile = filesystem::path(p_recordingFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME);
 
     // Version 0 recording, so use txt paths
-    if(version == 0) {
+    if (version == 0)
+    {
         decisionsRecordingFile.replace_extension("txt");
         userRecordingFile.replace_extension("txt");
         simulationFile.replace_extension("txt");
