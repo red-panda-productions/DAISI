@@ -491,12 +491,12 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Return if screen already created
     if (s_scrHandle) return s_scrHandle;
 
-    DeveloperMenuInit(p_nextMenu);
-
     // Otherwise, create the screen
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
+    
+    DeveloperMenuInit(s_scrHandle);
 
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
