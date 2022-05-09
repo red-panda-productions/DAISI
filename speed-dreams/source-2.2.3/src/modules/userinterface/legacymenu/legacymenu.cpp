@@ -33,7 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-// SIMULATED DRIVING ASSISTANCE CHANGE: included InterventionMenu.h, ResearcherMenu.h and DeveloperMenu.h
+// SIMULATED DRIVING ASSISTANCE CHANGE: included ResearcherMenu.h, DataSelectionMenu.h and DeveloperMenu.h
 #include "ResearcherMenu.h"
 #include "DataSelectionMenu.h"
 #include "DeveloperMenu.h"
