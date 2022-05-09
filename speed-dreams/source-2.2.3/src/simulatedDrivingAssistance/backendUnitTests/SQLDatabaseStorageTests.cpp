@@ -122,7 +122,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
     sprintf(dummySettings.Port, "3306");
     sprintf(dummySettings.Address, "127.0.0.1");
     sprintf(dummySettings.Schema, "sda_test");
-    dummySettings.UseSSL = true;
+    dummySettings.UseSSL = false;
 
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -147,6 +147,8 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     sprintf(dummySettings.Port, "1");
     sprintf(dummySettings.Address, "Address");
     sprintf(dummySettings.Schema, "Schema");
+    dummySettings.UseSSL = false;
+
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -169,6 +171,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     sprintf(dummySettings.Port, "1");
     sprintf(dummySettings.Address, "Address");
     sprintf(dummySettings.Schema, "Schema");
+    dummySettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
@@ -193,7 +196,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
     sprintf(dummySettings.Port, "3306");
     sprintf(dummySettings.Address, "127.0.0.1");
     sprintf(dummySettings.Schema, "sda_test");
-    dummySettings.UseSSL = true;
+    dummySettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
@@ -216,7 +219,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
     sprintf(dummySettings.Port, "3306");
     sprintf(dummySettings.Address, "127.0.0.1");
     sprintf(dummySettings.Schema, "sda_test");
-    dummySettings.UseSSL = true;
+    dummySettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
@@ -241,6 +244,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
     sprintf(dummySettings.Port, "1");
     sprintf(dummySettings.Address, "Address");
     sprintf(dummySettings.Schema, "Schema");
+    dummySettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
