@@ -24,39 +24,38 @@ int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
 
-
-tDatabaseSettings m_dbsettings;
+static tDatabaseSettings m_dbsettings;
 
 /// @brief Handle input in the userId textbox
 static void SetUsername(void*)
 {
-    m_dbsettings.username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
+    sprintf(m_dbsettings.username, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
     GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings.username);
 }
 
 /// @brief Handle input in the userId textbox
 static void SetPassword(void*)
 {
-    m_dbsettings.password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
+    sprintf(m_dbsettings.password, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
     GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings.password);
 }
 
 /// @brief Handle input in the userId textbox
 static void SetAddress(void*)
 {
-    m_dbsettings.address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
+    sprintf(m_dbsettings.address, GfuiEditboxGetString(s_scrHandle, m_addressControl));
     GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings.address);
 }
 
 static void SetPort(void*)
 {
-    m_dbsettings.port = GfuiEditboxGetString(s_scrHandle, m_portControl);
+    sprintf(m_dbsettings.port, GfuiEditboxGetString(s_scrHandle, m_portControl));
     GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings.port);
 }
 
 static void SetSchema(void*)
 {
-    m_dbsettings.schema = GfuiEditboxGetString(s_scrHandle, m_schemaControl);
+    sprintf(m_dbsettings.schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
     GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.schema);
 }
 
@@ -81,8 +80,6 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_dbsettings.port);
     GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings.schema);
     GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings.useSSL));
-
-
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
@@ -120,11 +117,11 @@ static void SynchronizeControls()
 /// @param p_param The configuration xml file handle
 static void LoadDefaultSettings()
 {
-    m_dbsettings.username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
-    m_dbsettings.password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
-    m_dbsettings.address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
-    m_dbsettings.port = GfuiEditboxGetString(s_scrHandle, m_portControl);
-    m_dbsettings.schema = GfuiEditboxGetString(s_scrHandle, m_schemaControl);
+    sprintf(m_dbsettings.username, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
+    sprintf(m_dbsettings.password, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
+    sprintf(m_dbsettings.address, GfuiEditboxGetString(s_scrHandle, m_addressControl));
+    sprintf(m_dbsettings.port, GfuiEditboxGetString(s_scrHandle, m_portControl));
+    sprintf(m_dbsettings.schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
     m_dbsettings.useSSL = GfuiCheckboxIsChecked(s_scrHandle, m_useSSLControl);
 }
 
@@ -135,13 +132,11 @@ static void LoadConfigSettings(void* p_param)
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
 
     // Set the max time setting from the xml file
-    m_dbsettings.username = GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings.password = GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings.address = GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings.port = GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings.schema = GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings.useSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
-    GfParmReleaseHandle(p_param);
+    sprintf(m_dbsettings.username, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_dbsettings.password, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_dbsettings.address, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_dbsettings.port, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_dbsettings.schema, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
@@ -198,7 +193,6 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPort);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
     m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSL);
-
 
     GfParmReleaseHandle(param);
 

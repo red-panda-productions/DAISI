@@ -57,7 +57,6 @@ private:
     DecisionMaker m_decisionMaker;
 
     unsigned long m_tickCount = 0;
-
     tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;

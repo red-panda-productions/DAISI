@@ -24,8 +24,8 @@
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
-    template void Mediator<type>::SetDatabaseSettings(DatabaseSettings p_dbSettings);                                                                  \
-    template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                   \
+    template void Mediator<type>::SetDatabaseSettings(DatabaseSettings p_dbSettings);                                                                   \
+    template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task

@@ -18,11 +18,11 @@ typedef struct Indicator
 /// @brief The different ways a user can be indicated about an intervention
 typedef struct DatabaseSettings
 {
-    const char* username;
-    const char* password;
-    const char* address;
-    const char* port;
-    const char* schema;
+    char username[256];
+    char password[256];
+    char address[256];
+    char port[256];
+    char schema[256];
     bool useSSL;
 } tDatabaseSettings;
 
