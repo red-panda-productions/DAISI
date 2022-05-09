@@ -392,8 +392,8 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
     // SIMULATED DRIVING ASSISTANCE: displays the current active and neutral intervention indicators
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
     InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
-    DispNeutralIndicators(settings, interventionType);
     DispActiveIndicators(settings, interventionType);
+    DispNeutralIndicators(settings, interventionType);
 
     grDispCounterBoard2();
 

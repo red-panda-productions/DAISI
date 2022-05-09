@@ -92,25 +92,29 @@ std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionTy
     // Guard when no signals are to be sent, always return an empty vector.
     if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
 
+    // For the indicators that are active, get for the indicators that are neutral
     for (const tIndicatorData &indicator : GetActiveIndicators(p_interventionType))
     {
+        // This if-statement is build around the idea that either braking or steering is active, not both
         if (indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
         {
+            // Only steering is in neutral
             tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
-            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralSteer);
+            m_neutralIndicators = {m_neutralSteer};
                  
         }
         else if (indicator.Action == INTERVENTION_ACTION_TURN_LEFT || indicator.Action == INTERVENTION_ACTION_TURN_RIGHT)
         {
+            // Only braking is in neutral
             tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
-            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralBrake);
+            m_neutralIndicators = {m_neutralBrake};
         }
         else
         {
+            // Both braking and steering are in neutral
             tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
             tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
-            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralBrake);
-            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralSteer);
+            m_neutralIndicators = {m_neutralSteer, m_neutralBrake};
         }
     }
     return m_neutralIndicators;
@@ -121,7 +125,7 @@ std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionTy
 tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action, std::string indicatorTask)
 {
     std::vector<tIndicatorData> m_neutralIndicator;
-    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetIndicatorData())//m_indicatorData)
+    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetIndicatorData())
     {
         if (indicator.Action == action)
             m_neutralIndicator.insert(m_neutralIndicator.end(), indicator);        
