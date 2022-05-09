@@ -14,7 +14,7 @@
 /// @param p_password password of database to connect to
 void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::string& p_password)
 {
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "SDATest", p_password, "sda_test", "false"));
+    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "SDATest", p_password, "sda_test", false));
 }
 
 /// @brief Inserts test data in opened database
@@ -90,7 +90,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
 
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data"), std::exception)
     {
-        ASSERT_STREQ("Could not find database settings file", e.what());
+        ASSERT_STREQ("Could not find database settings xml", e.what());
     }
 }
 
@@ -105,7 +105,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
     // because the settings file doesn't exist.
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\noSettingsFile"), std::exception)
     {
-        ASSERT_STREQ("Could not find database settings file", e.what());
+        ASSERT_STREQ("Could not find database settings xml", e.what());
     }
 }
 
@@ -113,6 +113,17 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
 ///         but it is a string in the settingsfile of the stringPort dir.
 TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    static tDatabaseSettings dummySettings;
+    sprintf(dummySettings.Username, "SDATest");
+    sprintf(dummySettings.Password, "PASSWORD");
+    sprintf(dummySettings.Port, "3306");
+    sprintf(dummySettings.Address, "127.0.0.1");
+    sprintf(dummySettings.Schema, "sda_test");
+    dummySettings.UseSSL = true;
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when the port is not an integer
