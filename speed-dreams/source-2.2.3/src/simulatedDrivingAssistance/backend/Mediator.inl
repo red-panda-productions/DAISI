@@ -25,8 +25,8 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
-    template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                                   \
-    template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                   \
+    template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \
+    template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
     template Mediator<type>* Mediator<type>::GetInstance();
@@ -128,8 +128,8 @@ void Mediator<DecisionMaker>::SetReplayFolder(const filesystem::path& p_replayFo
     m_decisionMaker.Config.SetReplayFolder(p_replayFolder);
 }
 
-/// @brief              Sets the settings for indication of interventions
-/// @param p_indicators The Indicator settings
+/// @brief Gets the replay folder if it has been set from the command line.
+/// @return The path to the replay folder
 template <typename DecisionMaker>
 const filesystem::path& Mediator<DecisionMaker>::GetReplayFolder() const
 {

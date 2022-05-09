@@ -185,3 +185,14 @@ void SyncOptionTest(bool p_syncOption)
 
 TEST_CASE(ConfigTests, SyncOptionTrueTest, SyncOptionTest, (true))
 TEST_CASE(ConfigTests, SyncOptionFalseTest, SyncOptionTest, (false))
+
+TEST(ConfigTests, ReplayFolderTest)
+{
+    SDAConfig config;
+
+    char randomPath[64];
+    GenerateRandomCharArray(randomPath, 63);
+
+    config.SetReplayFolder(randomPath);
+    ASSERT_EQ(config.GetReplayFolder(), randomPath);
+}

@@ -70,8 +70,6 @@ ADD_IPCLIB_PACKAGE(backendUnitTests)
 SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
 
 FILE(COPY "${CMAKE_SOURCE_DIR}/data/SimulationData" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-FILE(COPY "${CMAKE_SOURCE_DIR}/test_data/test_car.xml" DESTINATION "${CMAKE_BINARY_DIR}/${SD_BINDIR}/test_data")
-FILE(COPY "${CMAKE_SOURCE_DIR}/test_data/test_car.xml" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/test_data")
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)

@@ -7,8 +7,9 @@
 #include <experimental/filesystem>
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
-#define TEST_DIRECTORY     "test_test_data"
-#define TEST_CAR_FILE_NAME "test_car.xml"
+#define TEST_DIRECTORY      "test_test_data"
+#define RECORDING_TEST_DATA "test_data/recordings"
+#define TEST_CAR_FILE_NAME  "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
 #define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
@@ -295,8 +296,6 @@ TEST(RecorderTests, CompressionWithoutPreviousState)
 
 TEST(RecorderTests, WriteRunSettingsTests)
 {
-    namespace filesystem = std::experimental::filesystem;
-
     Random random;
     GTEST_COUT << "Random Seed: " << random.GetSeed() << std::endl;
 
@@ -383,4 +382,108 @@ TEST(RecorderTests, WriteRunSettingsTests)
     originalBuffer << originalFile.rdbuf();
     std::string folder = GetTestingDirectory();
     ASSERT_FILE_CONTENTS(folder, "test_recorder_settings", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
+}
+
+/// @brief Initialise a VALIDATE or UPGRADE test. It makes sure all Gf* methods can be called, and creates the folder to validate/upgrade
+/// @param source The source folder that should be validated or upgraded, this will be copied so the original doesn't get modified
+/// @param varName The name of the result variable to be used in the test, will be the path to the recording to validate or update
+#define INIT_VALIDATE_OR_UPGRADE_TEST(source, varName)                                      \
+    GfInit(false);                                                                          \
+    filesystem::path varName;                                                               \
+    filesystem::current_path(SD_DATADIR_SRC);                                               \
+                                                                                            \
+    {                                                                                       \
+        filesystem::path sourcePath(RECORDING_TEST_DATA);                                   \
+        sourcePath.append(source);                                                          \
+                                                                                            \
+        if (!GetSdaFolder(varName))                                                         \
+        {                                                                                   \
+            throw std::exception("Failed to get SDA folder");                               \
+        }                                                                                   \
+        varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
+                                                                                            \
+        /* Delete the existing test directory to ensure directories are properly created */ \
+        if (std::experimental::filesystem::exists(varName))                                 \
+        {                                                                                   \
+            std::experimental::filesystem::remove_all(varName);                             \
+        }                                                                                   \
+                                                                                            \
+        filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \
+    }
+
+TEST(RecorderTests, UpgradeFromV0Test)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(USER_INPUT_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(SIMULATION_DATA_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(DECISIONS_RECORDING_FILE_NAME)));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    ASSERT_STRCASEEQ(name, "test_highway");
+    ASSERT_STRCASEEQ(category, "road");
+    delete[] name;
+    delete[] category;
+
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+}
+
+TEST(RecorderTests, ValidateV1RecordingTest)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(USER_INPUT_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(SIMULATION_DATA_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(DECISIONS_RECORDING_FILE_NAME)));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    ASSERT_STRCASEEQ(name, "test_highway");
+    ASSERT_STRCASEEQ(category, "road");
+    delete[] name;
+    delete[] category;
+
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+}
+
+TEST(RecorderTests, InvalidXMLSettingsFileValidate)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("invalid-xml-settings-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingFilesValidation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-car-recording", missingCarPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-decisions-recording", missingDecisionsPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-recordings-recording", missingRecordingsPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-settings-recording", missingSettingsPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-simulation-recording", missingSimulationPath);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingCarPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingDecisionsPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingRecordingsPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingSettingsPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingSimulationPath));
+}
+
+TEST(RecorderTests, InvalidTrackPathV0Validation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-invalid-track-path-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
 }
