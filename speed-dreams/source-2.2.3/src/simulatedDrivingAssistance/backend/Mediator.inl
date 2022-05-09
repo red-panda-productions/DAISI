@@ -110,7 +110,7 @@ void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
     m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
 }
 
-/// @brief Sets the synchrosity of the black box
+/// @brief        Sets the sync option of the black box
 /// @param p_sync Whether the black box should be run asynchronously (true), or synchronously (false)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetBlackBoxSyncOption(bool p_sync)
