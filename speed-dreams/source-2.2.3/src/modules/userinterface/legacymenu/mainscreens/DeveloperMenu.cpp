@@ -100,6 +100,7 @@ static void SaveSettings()
     SaveSettingsToFile();
 }
 
+/// @brief Takes actions that need to be run on activation of the developer screen
 static void OnActivate(void* /* dummy */)
 {
     LoadSettings();
@@ -134,6 +135,7 @@ static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
     m_replayRecorderOn = p_info->bChecked;
 }
 
+/// @brief Initializes the developer menu
 void* DeveloperMenuInit(void* p_prevMenu)
 {
     // screen already created
@@ -163,6 +165,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     return s_scrHandle;
 }
 
+/// @brief Activates the developer menu
 void DeveloperMenuRun(void*)
 {
     GfuiScreenActivate(s_scrHandle);

@@ -56,36 +56,23 @@ END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 /// @param p_bool1 First  bool
 /// @param p_bool2 Second bool
 /// @param p_bool3 Third  bool
-void PControlTest1(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @param p_bool4 Fourth bool
+void PControlTest(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL};
+    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, p_bool4};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
+    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
 BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
-
-/// @brief         Tests if the SDAConfig sets and gets the other pControl settings correctly
-/// @param p_bool1 First  bool
-void PControlTest2(bool p_bool1)
-{
-    SDAConfig config;
-    tParticipantControl arr = {NULL, NULL, NULL, p_bool1};
-    config.SetPControlSettings(arr);
-    tParticipantControl pControl = config.GetPControlSettings();
-    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
-}
-
-/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (last 1)
-TEST_CASE(ConfigTests, PControlSettings2TestTrue, PControlTest2, (true))
-TEST_CASE(ConfigTests, PControlSettings2TestFalse, PControlTest2, (false))
+END_TEST_COMBINATORIAL4(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                   Tests if the SDAConfig sets and gets the replay recorder status correctly
 /// @param p_recorderSetting The recorder setting

@@ -83,12 +83,6 @@ char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 // Apply Button
 int m_applyButton;
 
-bool ActivateDeveloperMenu()
-{
-    DeveloperMenuRun(nullptr);
-    return true;
-}
-
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
 static void SelectTask(tRadioButtonInfo* p_info)
@@ -494,9 +488,10 @@ static void SelectFile(void* /* dummy */)
 /// @return           The researcherMenu scrHandle
 void* ResearcherMenuInit(void* p_nextMenu)
 {
-    DeveloperMenuInit(p_nextMenu);
     // Return if screen already created
     if (s_scrHandle) return s_scrHandle;
+
+    DeveloperMenuInit(p_nextMenu);
 
     // Otherwise, create the screen
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
