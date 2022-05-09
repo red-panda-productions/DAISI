@@ -344,6 +344,30 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
     }
 }
 
+/// @brief Tests whether the IndicatorConfig can get a neutral indicator and retrieve the correct values.
+TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
+{
+    for (int i = 0; i < NUM_OF_TESTS; i++)
+    {
+        // Create random valid indicator data
+        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
+        const char* filepath = WriteIndicatorDataToXml(rndData);
+
+        // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
+        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
+        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        {
+            IndicatorConfig::GetInstance()->ActivateIndicator(i);
+            
+            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+
+            // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
+            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
+            AssertIndicator(active[0], rndData[i]);
+        }
+    }
+}
+
 /// @brief Test Fixture for testing the indicatorconfig singleton properties
 class IndicatorConfigSingletonTests : public ::testing::Test
 {

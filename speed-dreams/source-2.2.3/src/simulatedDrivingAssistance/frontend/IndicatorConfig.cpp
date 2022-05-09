@@ -68,10 +68,6 @@ std::vector<tIndicatorData> IndicatorConfig::GetBrakeIndicatorData()
 /// @return The vector of indicator data
 std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 {
-    // Create a new vector with all the indicator data and return it
-    
-    //m_indicatorData.insert(m_indicatorData.end(), m_indicatorBrakeData.begin(), m_indicatorBrakeData.end());
-    //m_indicatorData.insert(m_indicatorData.end(), m_indicatorSteerData.begin(), m_indicatorSteerData.end());
     return m_indicatorData;
 }
 
@@ -124,22 +120,13 @@ std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionTy
 /// @return         The element of neutral indicator data
 tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action, std::string indicatorTask)
 {
-    std::vector<tIndicatorData> m_indicatorData;
-    
-    if (indicatorTask == "steering")
-    {
-        m_indicatorData = IndicatorConfig::GetInstance()->GetSteerIndicatorData();
-    }
-    else 
-        m_indicatorData = IndicatorConfig::GetInstance()->GetBrakeIndicatorData();
-
     std::vector<tIndicatorData> m_neutralIndicator;
-    for (const tIndicatorData& indicator : m_indicatorData)
+    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetIndicatorData())//m_indicatorData)
     {
         if (indicator.Action == action)
             m_neutralIndicator.insert(m_neutralIndicator.end(), indicator);        
     }
-    tIndicatorData first = m_indicatorData.front();
+    tIndicatorData first = m_neutralIndicator.front();
     return first;
 }
 
@@ -149,7 +136,6 @@ void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
     // TODO: add to the vector instead of overwriting it, this also requires
     //       a way to remove the indicator after some time has passed.
-
     std::vector<tIndicatorData> m_indicatorData = IndicatorConfig::GetInstance()->GetIndicatorData();
     m_activeIndicators = {m_indicatorData[p_action]};
 }
