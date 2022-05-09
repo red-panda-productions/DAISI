@@ -9,6 +9,7 @@
 #include <shobjidl.h>  // For Windows COM interface
 #include <locale>
 #include <codecvt>
+#include "../rppUtils/FileDialog.hpp"
 
 // Parameters used in the xml files
 #define PRM_TASKS            "TaskRadioButtonList"
@@ -370,92 +371,26 @@ static void OnActivate(void* /* dummy */)
     LoadDefaultSettings();
 }
 
-/// @brief Releases a file dialog
-void Release(IFileDialog* p_fileDialog)
+/// @brief Selects a black box
+static void SelectBlackBox(void* /* dummy */)
 {
-    p_fileDialog->Release();
-    CoUninitialize();
-}
-
-/// @brief Releases a shell item and a file dialog
-void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
-{
-    p_shellItem->Release();
-    Release(p_fileDialog);
-}
-
-/// @brief Edits the black box button with a message, releases a shell item and file dialog
-void ShowErrorThenRelease(const char* p_errorMsg, IShellItem* p_shellItem, IFileDialog* p_fileDialog)
-{
-    m_blackBoxChosen = false;
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, p_errorMsg);
-    Release(p_shellItem, p_fileDialog);
-}
-
-/// @brief Opens a file dialog and changes the button to reflect this choice.
-static void SelectFile(void* /* dummy */)
-{
-    // Opens a file dialog on Windows
-
-    // Initialize COM interface
-    HRESULT hresult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (FAILED(hresult)) { return; }
-
-    // Create a file dialog
-    IFileDialog* fileDialog;
-    hresult = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_ALL, IID_IFileDialog, reinterpret_cast<void**>(&fileDialog));
-    if (FAILED(hresult))
+#define AMOUNT_OF_NAMES 1
+    const wchar_t* names[AMOUNT_OF_NAMES] = {(const wchar_t*)L"Executables"};
+    const wchar_t* extensions[AMOUNT_OF_NAMES] = {(const wchar_t*)L".exe"};
+    char buf[MAX_PATH_SIZE];
+    char err[MAX_PATH_SIZE];
+    bool success = SelectFile(buf, names, extensions, AMOUNT_OF_NAMES, err);
+    if (!success)
     {
-        CoUninitialize();
         return;
     }
 
-    // Set file types for file dialog, then open it
-    COMDLG_FILTERSPEC filter[1] = {{L"Executables", L"*.exe"}};
-    hresult = fileDialog->SetFileTypes(1, filter);
-    if (FAILED(hresult))
-    {
-        Release(fileDialog);
-        return;
-    }
-    hresult = fileDialog->Show(nullptr);
-    if (FAILED(hresult))
-    {
-        Release(fileDialog);
-        return;
-    }
-
-    // Get filename
-    IShellItem* shellItem;
-    hresult = fileDialog->GetResult(&shellItem);
-    if (FAILED(hresult))
-    {
-        Release(fileDialog);
-        return;
-    }  // I feel like I should release shellItem here as well, but the Microsoft Docs do not do so at this stage
-    PWSTR filePath;
-    hresult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
-    if (FAILED(hresult))
-    {
-        Release(shellItem, fileDialog);
-        return;
-    }
-
-    // Convert PWSTR to std::string
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-    std::string fileName = converter.to_bytes(filePath);
-    // Over max file length
-    if (fileName.size() >= BLACKBOX_PATH_SIZE - 1)  // std::string isn't null terminated, while Windows paths/char* are
-    {
-        // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars,
-        // or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
-        ShowErrorThenRelease(MSG_BLACK_BOX_PATH_TOO_LONG, shellItem, fileDialog);
-        return;
-    }
+    // Validate input w.r.t. black boxes
+    std::string fileName = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (fileName.size() <= 7)
     {
-        ShowErrorThenRelease(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
     // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
@@ -467,7 +402,7 @@ static void SelectFile(void* /* dummy */)
     // Enforce that file ends in .exe
     if (std::strcmp(extension.c_str(), ".exe") != 0)
     {
-        ShowErrorThenRelease(MSG_BLACK_BOX_NOT_EXE, shellItem, fileDialog);
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
 
@@ -476,11 +411,9 @@ static void SelectFile(void* /* dummy */)
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NORMAL_TEXT);  // Reset the apply button
 
-    strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, fileName.c_str());
+    // Only after validation copy into the actual variable
+    strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
     m_blackBoxChosen = true;
-    // Release variables: relevant ones are also released early if an action didn't succeed
-    CoTaskMemFree(filePath);
-    Release(shellItem, fileDialog);
 }
 
 /// @brief            Initializes the researcher menu
@@ -495,7 +428,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
-    
+
     DeveloperMenuInit(s_scrHandle);
 
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
@@ -508,7 +441,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_taskControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_TASKS, nullptr, SelectTask);
 
     // Choose black box control
-    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectFile);
+    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
