@@ -63,7 +63,7 @@ onOptionsMenuActivate(void * /* dummy */)
 
 // SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
 /// @brief Activates the dataSelectionMenu screen
-static void GoBack(void * /* dummy */)
+static void GoBack(void* /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
 }
