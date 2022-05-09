@@ -25,7 +25,7 @@ int m_replayRecorder;
 SyncType m_sync;
 
 // Recorder status
-ReplayOption m_replayRecorderOn;
+bool m_replayRecorderOn;
 
 /// @brief         Loads the settings from the config file
 /// @param p_param A handle to the parameter file
@@ -135,7 +135,9 @@ static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
     m_replayRecorderOn = p_info->bChecked;
 }
 
-/// @brief Initializes the developer menu
+/// @brief            Initializes the developer menu
+/// @param p_prevMenu A handle to the previous menu
+/// @returns          A handle to the developer menu
 void* DeveloperMenuInit(void* p_prevMenu)
 {
     // screen already created
@@ -147,7 +149,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
 
     void* param = GfuiMenuLoad("DeveloperMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
-    // add UI button controls here
+
     GfuiMenuCreateButtonControl(s_scrHandle, param, "CancelButton",
                                 s_scrHandle, SwitchToResearcherMenu);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",
@@ -156,7 +158,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE, nullptr, SelectRecorderOnOff);
 
     GfParmReleaseHandle(param);
-    // add keyboard controls here
+
     GfuiAddKey(s_scrHandle, GFUIK_RETURN, "Apply", nullptr, SaveAndGoBack, nullptr);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Cancel", s_prevHandle,
                SwitchToResearcherMenu, nullptr);

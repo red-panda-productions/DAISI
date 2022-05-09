@@ -79,11 +79,12 @@ Recorder::~Recorder()
 }
 
 /// @brief Write the settings of the run being recorded to the recording folder.
-/// @param p_carElt The car being used.
-/// @param p_track The track that's being driven on
-/// @param p_indicators The indicator settings
-/// @param p_interventionType The intervention type settings
-/// @param p_participantControl The participant control settings
+/// @param p_carElt               The car being used.
+/// @param p_track                The track that's being driven on
+/// @param p_indicators           The indicator settings
+/// @param p_interventionType     The intervention type settings
+/// @param p_participantControl   The participant control settings
+/// @param p_replayRecorderOption The replay recorder setting
 void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const bool& p_replayRecorderOption)
 {
     using std::experimental::filesystem::path;
