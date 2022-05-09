@@ -343,7 +343,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     participantControl.ControlSteering = random.NextBool();
     participantControl.ForceFeedback = random.NextBool();
 
-    ReplayOption replayRecorderOption = random.NextBool();
+    bool replayRecorderOption = random.NextBool();
 
     recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl, replayRecorderOption);
 

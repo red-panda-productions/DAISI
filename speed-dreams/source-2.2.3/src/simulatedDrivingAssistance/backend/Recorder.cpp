@@ -84,7 +84,7 @@ Recorder::~Recorder()
 /// @param p_indicators The indicator settings
 /// @param p_interventionType The intervention type settings
 /// @param p_participantControl The participant control settings
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const ReplayOption& p_replayRecorderOption)
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const bool& p_replayRecorderOption)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),

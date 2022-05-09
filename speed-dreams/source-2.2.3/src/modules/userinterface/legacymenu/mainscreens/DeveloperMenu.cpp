@@ -36,7 +36,7 @@ static void LoadSettingsFromFile(void* p_param)
     m_replayRecorderOn = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_TGGLE, GFMNU_ATTR_CHECKED, false);
 }
 
-/// Makes sure all visuals display the internal values
+/// @brief Makes sure all visuals display the internal values
 static void SynchronizeControls()
 {
     GfuiRadioButtonListSetSelected(s_scrHandle, m_syncButtonList, (int)m_sync);

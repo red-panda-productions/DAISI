@@ -616,7 +616,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         tIndicator indicatorSettings = mediator->GetIndicatorSettings();
         InterventionType interventionType = mediator->GetInterventionType();
         tParticipantControl participantControlSettings = mediator->GetPControlSettings();
-        ReplayOption replayRecorderOption = mediator->GetReplayRecorderSetting();
+        bool replayRecorderOption = mediator->GetReplayRecorderSetting();
 
         m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, replayRecorderOption);
     }
