@@ -37,6 +37,7 @@ void InitializeMediator()
 /// @brief Tests if all decisions do their RunInterveneCommand correctly
 TEST(DecisionsTest, RunInterveneDecisions)
 {
+    IndicatorConfig::ClearInstance();
     InitializeMediator();
 
     Random random;

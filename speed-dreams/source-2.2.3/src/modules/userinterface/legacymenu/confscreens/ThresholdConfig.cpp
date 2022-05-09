@@ -9,7 +9,7 @@
 #define SND_ATT_BRAKE     "Brake"
 #define SND_ATT_STEER     "Steer"
 
-static void* s_scrHandle  = nullptr;
+static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 
 // Data to store
@@ -27,7 +27,10 @@ static void SetAccelThreshold(void*)
 {
     // Get accel threshold from text box, clamped between 0 and 1
     char* val = GfuiEditboxGetString(s_scrHandle, m_accelThresholdControl);
-    sscanf(val, "%g", &m_accelVal);
+    char* endptr;
+    m_accelVal = (float)strtol(val, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
 
     if (m_accelVal > 1.0f)
         m_accelVal = 1.0f;
@@ -45,7 +48,10 @@ static void SetBrakeThreshold(void*)
 {
     // Get accel threshold from text box, clamped between 0 and 1
     char* val = GfuiEditboxGetString(s_scrHandle, m_brakeThresholdControl);
-    sscanf(val, "%g", &m_brakeVal);
+    char* endptr;
+    m_brakeVal = (float)strtol(val, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
 
     if (m_brakeVal > 1.0f)
         m_brakeVal = 1.0f;
@@ -63,7 +69,11 @@ static void SetSteerThreshold(void*)
 {
     // Get accel threshold from text box, clamped between 0 and 1
     char* val = GfuiEditboxGetString(s_scrHandle, m_steerThresholdControl);
-    sscanf(val, "%g", &m_steerVal);
+    char* endptr;
+    m_steerVal = (float)strtol(val, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
+
 
     if (m_steerVal > 1.0f)
         m_steerVal = 1.0f;
@@ -77,13 +87,13 @@ static void SetSteerThreshold(void*)
 }
 
 /// @brief Read threshold config from local xml file
-static void ReadThresholdConfig(void)
+static void ReadThresholdConfig()
 {
     char buf[1024];
 
     // Threshold interface.
     sprintf(buf, "%s%s", GfLocalDir(), SND_PARAM_FILE);
-    void *paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Accel threshold
     m_accelVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_ACCEL, "%", 0.0f);
@@ -135,12 +145,12 @@ static void SaveThresholdOptions(void*)
 
     char buf[1024];
     sprintf(buf, "%s%s", GfLocalDir(), SND_PARAM_FILE);
-    void *paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
     GfParmSetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_ACCEL, "%", m_accelVal);
     GfParmSetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_BRAKE, "%", m_brakeVal);
     GfParmSetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_STEER, "%", m_steerVal);
 
-    GfParmWriteFile(NULL, paramHandle, "Threshhold");
+    GfParmWriteFile(nullptr, paramHandle, "Threshhold");
     GfParmReleaseHandle(paramHandle);
 
     // Return to previous screen.
