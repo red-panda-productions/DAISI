@@ -29,8 +29,7 @@
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
 
-// SIMULATED DRIVING ASSISTANCE: RENAMED MenuHandle
-static void *MainMenuHandle = 0;
+static void *MenuHandle = 0;
 
 
 static void
@@ -41,44 +40,44 @@ onControlMenuActivate(void * /* dummy */)
        because the previous menu has to be saved (ESC, Back) and because it can be this menu,
        as well as the Raceman menu */
        // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
-    GfuiScreenActivate(ControlMenuInit(MainMenuHandle, 1));
+    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
 }
 
 static void
 onRaceSelectMenuActivate(void * /* dummy */)
 {
-    GfuiScreenActivate(RmRaceSelectInit(MainMenuHandle));
+    GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
 }
 
 //static void
 //onRaceWESelectMenuActivate(void * /* dummy */)
 /*{
-        GfuiScreenActivate(RmRaceWESelectInit(MainMenuHandle));
+        GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
 }*/
 
 static void
 onOptionsMenuActivate(void * /* dummy */)
 {
-    GfuiScreenActivate(OptionsMenuInit(MainMenuHandle));
+    GfuiScreenActivate(OptionsMenuInit(MenuHandle));
 }
 
 // SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
 /// @brief Activates the dataSelectionMenu screen
 static void GoBack(void * /* dummy */)
 {
-    GfuiScreenActivate(DataSelectionMenuInit(MainMenuHandle));
+    GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
 }
 
 static void
 onCreditsMenuActivate(void * /* dummy */)
 {
-    CreditsMenuActivate(MainMenuHandle);
+    CreditsMenuActivate(MenuHandle);
 }
 
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MainMenuHandle));
+    GfuiScreenActivate(ExitMenuInit(MenuHandle));
 }
 
 static void
@@ -107,38 +106,38 @@ void *
 MainMenuInit(bool SupportsHumanDrivers)
 {
     // Initialize only once.
-    if (MainMenuHandle)
-        return MainMenuHandle;
+    if (MenuHandle)
+        return MenuHandle;
 
-    MainMenuHandle = GfuiScreenCreate((float*)NULL, 
+    MenuHandle = GfuiScreenCreate((float*)NULL, 
 				    NULL, onMainMenuActivate, 
 				    NULL, (tfuiCallback)NULL, 
 				    1);
 
     void *menuDescHdle = GfuiMenuLoad("mainmenu.xml");
 
-    GfuiMenuCreateStaticControls(MainMenuHandle, menuDescHdle);
+    GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
     // SIMULATED DRIVING ASSISTANCE: FROM RACE TO START
-    GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
-    //GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
+    //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
     if (SupportsHumanDrivers)
-        GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
-    GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
-    GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
-    GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "back", nullptr, GoBack);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
-    GfuiMenuCreateButtonControl(MainMenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
 
     GfParmReleaseHandle(menuDescHdle);
 
-    GfuiMenuDefaultKeysAdd(MainMenuHandle);
-    GfuiAddKey(MainMenuHandle, GFUIK_ESCAPE, "Quit the game", NULL, onExitMenuActivate, NULL);
+    GfuiMenuDefaultKeysAdd(MenuHandle);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Quit the game", NULL, onExitMenuActivate, NULL);
 
-    return MainMenuHandle;
+    return MenuHandle;
 }
 
 /*
@@ -160,7 +159,7 @@ MainMenuInit(bool SupportsHumanDrivers)
 int
 MainMenuRun(void)
 {
-    GfuiScreenActivate(MainMenuHandle);
+    GfuiScreenActivate(MenuHandle);
 
     return 0;
 }
