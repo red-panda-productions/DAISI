@@ -28,40 +28,6 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
             LoadTexture(xmlHandle, std::string(path)),
             LoadText(xmlHandle, std::string(path))};
     }
-
-    // Load the indicator data for the every brake-type intervention action
-    //LoadIndicatorDataHelper(xmlHandle, path, m_indicatorBrakeData, NUM_INTERVENTION_ACTION_BRAKE, PRM_SECT_INTERVENTIONS_BRAKE);
-
-    // Load the indicator data for every speed-type intervention action
-    //LoadIndicatorDataHelper(xmlHandle, path, m_indicatorSteerData, NUM_INTERVENTION_ACTION_STEER, PRM_SECT_INTERVENTIONS_STEER);
-}
-
-void IndicatorConfig::LoadIndicatorDataHelper(void* xmlHandle, char *path, std::vector<tIndicatorData> m_indicatorData, InterventionAction intervention, char* prm_sect)
-{
-    for (int i = 0; i < intervention; i++)
-    {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", prm_sect, s_actionEnumString[i]);
-        m_indicatorData[i] = {
-            (InterventionAction)i,
-            LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path)),
-            LoadText(xmlHandle, std::string(path))};
-    }
-}
-
-
-/// @brief  Returns a vector of the indicator data for steering
-/// @return The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetSteerIndicatorData()
-{
-    return m_indicatorSteerData;
-}
-
-/// @brief  Returns a vector of the indicator data for braking
-/// @return The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetBrakeIndicatorData()
-{
-    return m_indicatorBrakeData;
 }
 
 /// @brief  Returns a vector of the indicator data for braking
@@ -99,21 +65,21 @@ std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionTy
         if (indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
         {
             // Only steering is in neutral
-            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
+            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE);
             m_neutralIndicators = {m_neutralSteer};
                  
         }
         else if (indicator.Action == INTERVENTION_ACTION_TURN_LEFT || indicator.Action == INTERVENTION_ACTION_TURN_RIGHT)
         {
             // Only braking is in neutral
-            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
+            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE);
             m_neutralIndicators = {m_neutralBrake};
         }
         else
         {
             // Both braking and steering are in neutral
-            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
-            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
+            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE);
+            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE);
             m_neutralIndicators = {m_neutralSteer, m_neutralBrake};
         }
     }
@@ -122,7 +88,7 @@ std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionTy
 
 /// @brief          Returns an element containing indicator data for only a neutral indicator
 /// @return         The element of neutral indicator data
-tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action, std::string indicatorTask)
+tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action)
 {
     std::vector<tIndicatorData> m_neutralIndicator;
     for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetIndicatorData())

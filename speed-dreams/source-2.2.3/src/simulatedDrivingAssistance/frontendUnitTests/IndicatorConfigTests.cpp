@@ -141,7 +141,6 @@ protected:
     /// @return      The vector of generated indicator data
     std::vector<tIndicatorData> CreateRandomIndicatorData(DataGeneration p_gen)
     {
-        //std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
         std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
         for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
@@ -151,9 +150,9 @@ protected:
                 CreateRandomTextureData(p_gen),
                 CreateRandomTextData(p_gen)};
         }
-
         return data;
     }
+
 
     /// @brief        Writes the given indicator data object to a xml file.
     /// @param p_data The indicator data
@@ -336,7 +335,6 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
         {
             IndicatorConfig::GetInstance()->ActivateIndicator(i);
             std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
             // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
             // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
             AssertIndicator(active[0], rndData[i]);
@@ -344,7 +342,8 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
     }
 }
 
-/// @brief Tests whether the IndicatorConfig can get a neutral indicator and retrieve the correct values.
+/// @brief Tests whether the IndicatorConfig gets the correct number of neutral indicators depending on the current
+/// active indicators
 TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
@@ -353,17 +352,26 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
         const char* filepath = WriteIndicatorDataToXml(rndData);
 
-        // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
+        // Activate every action and check whether the corresponding action is also returned by GetNeutralIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
         for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+            std::vector<tIndicatorData> neutral = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-            // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
-            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
-            AssertIndicator(active[0], rndData[i]);
+            // TODO: check if the actual loaded neutral indicators are correct
+            if (neutral.size() > 1)
+            {
+                ASSERT_TRUE(neutral.size() == 2 && active.size() == 0);
+            }
+            else if (neutral.size() == 1)
+            {
+                ASSERT_TRUE(neutral.size() == 1 && active.size() == 1);
+            }
+            else
+                ASSERT_TRUE(neutral.size() == 0 && active.size() == 2);
+            
         }
     }
 }
