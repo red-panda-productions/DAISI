@@ -55,11 +55,14 @@ Changed:
                 included Recorder.h
                 added m_recorder
                 added SetRecorder
-            rtHumanDriver.cpp
+            rthumandriver.cpp
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
+                changed common_drive(): added check for input of intervention toggle on/off
                 added   SetRecorder()
+                added   m_prevIntervention member
+                added   NO_KEYBOARD define: clarify magic number
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
@@ -91,6 +94,8 @@ Changed:
             guiobject.cpp
                 changed GfuiDraw()
                 changed GfuiReleaseObject()
+                changed gfuiSelectNext(): it now skips over labels
+                changed gfuiSelectPrev(): it now skips over labels
                 added   GfuiDrawString() overloaded to support different parameters.
             tgfclient.h
                 added   GFUI_RADIOBUTTON and GFUI_RADIOBUTTONLIST
@@ -126,7 +131,10 @@ Changed:
             changed check to call custom HasValidRaceStartArguments method
     interfaces/
         playerpref.h
-            added HM_ADRV_FILE define
+            added   HM_ADRV_FILE define
+            added   HM_ATT_INTERV_TGGLE define
+            added   CMD_INTERV_TGGLE define
+            changed CMD_END_OF_LIST to match the new amount of cmds.
         sound.h
             added intervention sound volume xml parameter 
     modules/
@@ -206,6 +214,8 @@ Changed:
                         added ChangeInterventionVolume()
                         added logic to create new controls for intervention volume and store their data
                         changed readSoundCfg()
+                    controlconfig.cpp
+                        added cmd info for intervention toggle on/off to the Cmd[] member variable.
             textonly/
                 CMakeLists.txt
                     added backend
@@ -322,6 +332,8 @@ Changed:
         added a back button
     soundconfigmenu.xml
         added controls for intervention sound volume
+    controlconfigmenu.xml
+        added controls for intervention toggle on/off
         
   cmake/
     checks.cmake
