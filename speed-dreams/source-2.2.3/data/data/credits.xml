@@ -25,7 +25,7 @@
 
   <section name="chapters">
 
-	  <!--SIMULATED DRIVING ASSISTANCE: added us to the credits-->
+	  <!--SIMULATED DRIVING ASSISTANCE: added the team to the credits-->
 	  <section name ="0">
 		  <attstr name="name" val="Simulated Driving Assistance"/>
 		  <section name="columns">
