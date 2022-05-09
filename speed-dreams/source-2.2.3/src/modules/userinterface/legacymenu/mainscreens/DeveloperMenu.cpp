@@ -95,7 +95,7 @@ static void SaveSettings()
 {
     SMediator* mediator = SMediator::GetInstance();
 
-    mediator->SetSyncOption(m_sync == 1);
+    mediator->SetBlackBoxSyncOption(m_sync == 1);
     mediator->SetReplayRecorderSetting(m_replayRecorderOn);
 
     SaveSettingsToFile();

@@ -103,7 +103,7 @@
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="400"/>
-            <attstr name="text" val="Sync Option"/>
+            <attstr name="text" val="Black Box Sync Option"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
