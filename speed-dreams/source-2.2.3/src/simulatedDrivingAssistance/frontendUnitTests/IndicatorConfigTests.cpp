@@ -6,6 +6,7 @@
 #include "../rppUtils/Random.hpp"
 #include "TestUtils.h"
 #include "IndicatorConfig.h"
+#include "Mediator.h"
 
 #define NUM_OF_TESTS    100
 #define MAX_TEXT_LENGTH 64
@@ -37,6 +38,9 @@ protected:
         ASSERT_TRUE(SetupSingletonsFolder());
         m_rnd = Random();
         GTEST_COUT << "Random Seed: " << m_rnd.GetSeed() << std::endl;
+
+        // Needs to be on something other than NO_SIGNALS to retrieve active indicators
+        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
     }
 
     /// @brief       Creates randomly generated sound data
@@ -330,7 +334,7 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
         for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators();
+            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
             // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
             // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
