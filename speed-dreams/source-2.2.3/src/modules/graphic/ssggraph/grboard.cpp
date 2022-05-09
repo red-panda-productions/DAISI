@@ -403,14 +403,9 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
-/// 
-/// BUG / ERROR is somewhere in this function DispIndicators()
 void cGrBoard::DispIndicators() 
 {
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-
-    std::vector<tIndicatorData> m_indicatorBrakeData = IndicatorConfig::GetInstance()->GetBrakeIndicatorData();
-    std::vector<tIndicatorData> m_indicatorSteerData = IndicatorConfig::GetInstance()->GetSteerIndicatorData();
 
     tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
     tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
@@ -418,54 +413,36 @@ void cGrBoard::DispIndicators()
     InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
     for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType))
     {
-        if (any_of(m_indicatorBrakeData.begin(), m_indicatorBrakeData.end(), &indicator))
+        if (indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
         {
-            // Display the active braking indicator
-            if (settings.Icon)
-                DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
-
-            if (settings.Text)
-                DispIndicatorText(indicator.Text);
-
+           // Display the active indicator (braking)
+            DispIndicatorsHelper(indicator, settings);
            // Display neutral (none) for steering indicator type
-            if (settings.Icon)
-                DispIndicatorIcon(m_neutralSteer.Texture, m_textures[m_neutralSteer.Action]);
-
-            if (settings.Text)
-                DispIndicatorText(m_neutralSteer.Text);
+            DispIndicatorsHelper(m_neutralBrake, settings);
         }
-        else if(any_of(m_indicatorSteerData.begin(), m_indicatorSteerData.end(), &indicator))
+        else if (indicator.Action == INTERVENTION_ACTION_TURN_LEFT || indicator.Action == INTERVENTION_ACTION_TURN_RIGHT)
         {
-            // Display the active steering indicator
-            if (settings.Icon)
-                DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
-
-            if (settings.Text)
-                DispIndicatorText(indicator.Text);
-
+            //Display the active indicator (steering)
+            DispIndicatorsHelper(indicator, settings);
             // Display neutral (none) for braking indicator type
-            if (settings.Icon)
-                DispIndicatorIcon(m_neutralBrake.Texture, m_textures[m_neutralBrake.Action]);
-
-            if (settings.Text)
-                DispIndicatorText(m_neutralBrake.Text);
+            DispIndicatorsHelper(m_neutralBrake, settings);
         }
         else
         {
             // Display neutral (none) for both indicator types (brake and steering) 
-            if (settings.Icon)
-                DispIndicatorIcon(m_neutralSteer.Texture, m_textures[m_neutralSteer.Action]);
-
-            if (settings.Text)
-                DispIndicatorText(m_neutralSteer.Text);
-
-            if (settings.Icon)
-                DispIndicatorIcon(m_neutralBrake.Texture, m_textures[m_neutralBrake.Action]);
-
-            if (settings.Text)
-                DispIndicatorText(m_neutralBrake.Text);
+            DispIndicatorsHelper(m_neutralSteer, settings);
+            DispIndicatorsHelper(m_neutralBrake, settings);
         }
     }
+}
+
+void cGrBoard::DispIndicatorsHelper(tIndicatorData m_indicator, tIndicator settings) 
+{
+    if (settings.Icon)
+        DispIndicatorIcon(m_indicator.Texture, m_textures[m_indicator.Action]);
+
+    if (settings.Text)
+        DispIndicatorText(m_indicator.Text);
 }
 
 // SIMULATED DRIVING ASSISTANCE

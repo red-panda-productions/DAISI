@@ -55,6 +55,7 @@ class cGrBoard
 
     // SIMULATED DRIVING ASSISTANCE: add display indicator methods
     void DispIndicators();
+    void DispIndicatorsHelper(tIndicatorData m_neutral, tIndicator settings);
     void DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture);
     void DispIndicatorText(tTextData* p_data);
 
