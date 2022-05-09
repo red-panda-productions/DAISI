@@ -16,8 +16,8 @@ public:
     void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
 
-    void SetDatabaseSettings(DatabaseSettings* p_dbSettings);
-    DatabaseSettings* GetDatabaseSettings();
+    void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
+    tDatabaseSettings GetDatabaseSettings();
     void SetTask(Task p_task);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
@@ -58,7 +58,7 @@ private:
 
     unsigned long m_tickCount = 0;
 
-    DatabaseSettings* m_dbSettings;
+    tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;
     bool m_inRace = false;  // Whether the game is currently in a race

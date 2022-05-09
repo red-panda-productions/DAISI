@@ -3,6 +3,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DatabaseSettingsMenu.h"
+#include "mainmenu.h"
 
 // Parameters used in the xml files
 #define PRM_USERNAME "UsernameEdit"
@@ -24,44 +25,44 @@ int m_schemaControl;
 int m_useSSLControl;
 
 
-DatabaseSettings* m_dbsettings = new DatabaseSettings;
+tDatabaseSettings m_dbsettings;
 
 /// @brief Handle input in the userId textbox
 static void SetUsername(void*)
 {
-    m_dbsettings->username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings->username);
+    m_dbsettings.username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
+    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings.username);
 }
 
 /// @brief Handle input in the userId textbox
 static void SetPassword(void*)
 {
-    m_dbsettings->password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
-    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings->password);
+    m_dbsettings.password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
+    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings.password);
 }
 
 /// @brief Handle input in the userId textbox
 static void SetAddress(void*)
 {
-    m_dbsettings->address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
-    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings->address);
+    m_dbsettings.address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
+    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings.address);
 }
 
 static void SetPort(void*)
 {
-    m_dbsettings->port = GfuiEditboxGetString(s_scrHandle, m_portControl);
-    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings->port);
+    m_dbsettings.port = GfuiEditboxGetString(s_scrHandle, m_portControl);
+    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings.port);
 }
 
 static void SetSchema(void*)
 {
-    m_dbsettings->schema = GfuiEditboxGetString(s_scrHandle, m_schemaControl);
-    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings->schema);
+    m_dbsettings.schema = GfuiEditboxGetString(s_scrHandle, m_schemaControl);
+    GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.schema);
 }
 
-static void SelectUseSSL(tCheckBoxInfo* p_info)
+static void SetUseSSL(tCheckBoxInfo* p_info)
 {
-    m_dbsettings->useSSL = p_info->bChecked;
+    m_dbsettings.useSSL = p_info->bChecked;
 }
 
 /// @brief Saves the settings into the ResearcherMenu.xml file
@@ -74,12 +75,12 @@ static void SaveSettingsToDisk()
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save max time to xml file
-    GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, m_dbsettings->username);
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, m_dbsettings->password);
-    GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, m_dbsettings->address);
-    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_dbsettings->port);
-    GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings->schema);
-    GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings->useSSL));
+    GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, m_dbsettings.username);
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, m_dbsettings.password);
+    GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, m_dbsettings.address);
+    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_dbsettings.port);
+    GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings.schema);
+    GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings.useSSL));
 
 
 
@@ -91,7 +92,6 @@ static void SaveSettingsToDisk()
 static void SaveSettings(void* /* dummy */)
 {
     // Save settings to the sqldatabase
-    SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
 
     // Save the encrypted userId in the SDAConfig
     /*size_t encryptedUserId = std::hash<std::string>{}(m_userId);
@@ -108,24 +108,24 @@ static void SaveSettings(void* /* dummy */)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings->username);
-    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings->password);
-    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings->address);
-    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings->port);
-    GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings->schema);
-    GfuiCheckboxSetChecked(s_scrHandle, m_useSSLControl, m_dbsettings->useSSL);
+    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings.username);
+    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings.password);
+    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings.address);
+    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings.port);
+    GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.schema);
+    GfuiCheckboxSetChecked(s_scrHandle, m_useSSLControl, m_dbsettings.useSSL);
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
 /// @param p_param The configuration xml file handle
 static void LoadDefaultSettings()
 {
-    m_dbsettings->username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
-    m_dbsettings->password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
-    m_dbsettings->address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
-    m_dbsettings->port = GfuiEditboxGetString(s_scrHandle, m_portControl);
-    m_dbsettings->schema = GfuiEditboxGetString(s_scrHandle, m_schemaControl);
-    m_dbsettings->useSSL = GfuiCheckboxIsChecked(s_scrHandle, m_useSSLControl);
+    m_dbsettings.username = GfuiEditboxGetString(s_scrHandle, m_usernameControl);
+    m_dbsettings.password = GfuiEditboxGetString(s_scrHandle, m_passwordControl);
+    m_dbsettings.address = GfuiEditboxGetString(s_scrHandle, m_addressControl);
+    m_dbsettings.port = GfuiEditboxGetString(s_scrHandle, m_portControl);
+    m_dbsettings.schema = GfuiEditboxGetString(s_scrHandle, m_schemaControl);
+    m_dbsettings.useSSL = GfuiCheckboxIsChecked(s_scrHandle, m_useSSLControl);
 }
 
 /// @brief        Loads the settings from the config file into the internal variables
@@ -135,12 +135,14 @@ static void LoadConfigSettings(void* p_param)
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
 
     // Set the max time setting from the xml file
-    m_dbsettings->username = GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings->password = GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings->address = GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings->port = GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings->schema = GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr);
-    m_dbsettings->useSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
+    m_dbsettings.username = GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings.password = GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings.address = GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings.port = GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings.schema = GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr);
+    m_dbsettings.useSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
+    GfParmReleaseHandle(p_param);
+
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
 }
@@ -165,8 +167,7 @@ static void OnActivate(void* /* dummy */)
 /// @brief Returns to the researcher menu screen
 static void GoBack(void* /* dummy */)
 {
-
-
+    GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
 
 /// @brief            Initializes the researcher menu
@@ -196,14 +197,15 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddress);
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPort);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
-    m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SelectUseSSL);
+    m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSL);
 
 
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
-
+    OnActivate(s_scrHandle);
+    SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
     return s_scrHandle;
 }
 

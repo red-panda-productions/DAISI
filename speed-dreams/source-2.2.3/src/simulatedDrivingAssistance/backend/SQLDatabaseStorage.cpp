@@ -122,7 +122,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_username,
     const std::string& p_password,
     const std::string& p_schemaName,
-    std::string p_useEncryption)
+    bool p_useEncryption)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -137,8 +137,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
-    transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
-    if (p_useEncryption == "true")
+    if (p_useEncryption)
     {
         PutKeys(connection_properties);
     }
@@ -641,38 +640,19 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
 
     if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
 
-    std::ifstream ifstream(configPath + '\\' + configFile);
-    if (ifstream.fail()) throw std::exception("Could not open database settings file");
-
-    std::string ip;
-    std::string portString;
-    std::string username;
-    std::string password;
-    std::string schema;
-    std::string useSSL;
-
-    DatabaseSettings* dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
-
-    READ_INPUT(ifstream, ip)
-    READ_INPUT(ifstream, portString)
-    READ_INPUT(ifstream, username)
-    READ_INPUT(ifstream, password)
-    READ_INPUT(ifstream, schema)
-    READ_INPUT(ifstream, useSSL)
-
-    ifstream.close();
+    DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
     int port;
     try
     {
-        port = std::stoi(portString);
+        port = std::stoi(dbsettings.port);
     }
     catch (std::exception& e)
     {
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
 
-    if (OpenDatabase(ip, port, username, password, schema, useSSL))
+    if (OpenDatabase(dbsettings.address, port, dbsettings.username, dbsettings.password, dbsettings.schema, dbsettings.useSSL))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);

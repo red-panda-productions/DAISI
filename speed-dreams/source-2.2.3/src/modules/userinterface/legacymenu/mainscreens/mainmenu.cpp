@@ -27,6 +27,8 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
+#include "DatabaseSettingsMenu.h"
+
 
 
 static void *MenuHandle = 0;
@@ -84,6 +86,12 @@ onMainMenuActivate(void * /* dummy */)
 {
 }
 
+static void
+onDatabaseSettingsMenuActivate(void * /* dummy */)
+{
+    GfuiScreenActivate(DatabaseSettingsMenuInit(MenuHandle));
+}
+
 /*
  * Function
  *	MainMenuInit
@@ -126,6 +134,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "database", nullptr, onDatabaseSettingsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);

@@ -24,8 +24,8 @@
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
-    template void Mediator<type>::SetDatabaseSettings(DatabaseSettings* p_dbSettings);                                                                  \
-    template DatabaseSettings* Mediator<type>::GetDatabaseSettings();                                                                                   \
+    template void Mediator<type>::SetDatabaseSettings(DatabaseSettings p_dbSettings);                                                                  \
+    template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                   \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
@@ -166,14 +166,14 @@ void Mediator<DecisionMaker>::RaceStop()
 
 /// @brief Tells the decisionmaker that the race has ended
 template <typename DecisionMaker>
-void Mediator<DecisionMaker>::SetDatabaseSettings(DatabaseSettings* p_dbSettings)
+void Mediator<DecisionMaker>::SetDatabaseSettings(tDatabaseSettings p_dbSettings)
 {
     m_dbSettings = p_dbSettings;
 }
 
 /// @brief Tells the decisionmaker that the race has ended
 template <typename DecisionMaker>
-DatabaseSettings* Mediator<DecisionMaker>::GetDatabaseSettings()
+tDatabaseSettings Mediator<DecisionMaker>::GetDatabaseSettings()
 {
     return m_dbSettings;
 }

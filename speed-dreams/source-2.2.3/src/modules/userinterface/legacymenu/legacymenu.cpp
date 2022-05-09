@@ -98,11 +98,12 @@ bool LegacyMenu::backLoad()
 
 	// Pre-load the main and race select menus
     // (to be able to get back to them, even when directly starting a given race).
-    if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
+    if (!RmRaceSelectInit(DatabaseSettingsMenuInit(MainMenuInit(SupportsHumanDrivers))))
         return false;
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu and the Researcher menu
-    ResearcherMenuInit(DataSelectionMenuInit(DatabaseSettingsMenuInit(MainMenuInit(SupportsHumanDrivers))));
+    ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
+
 
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
