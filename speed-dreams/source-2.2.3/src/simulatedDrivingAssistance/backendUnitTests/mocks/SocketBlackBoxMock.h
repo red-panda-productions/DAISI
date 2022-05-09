@@ -12,7 +12,7 @@ public:
         Decisions.SetAccel(60);
     }
 
-    void Initialize(BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)
+    void Initialize(bool p_connectAsync, BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)
     {
         InitialDriveSituation = &p_initialDriveSituation;
     }

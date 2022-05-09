@@ -25,19 +25,24 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-SET(_SOURCES MsgpackDeserializeTests.cpp
-        MediatorTests.cpp
-        FactoryTests.cpp
-        DecisionMakerTests.cpp
+SET(_SOURCES BlackBoxDataTests.cpp
         ConfigTests.cpp
+        DecisionMakerTests.cpp
+        DecisionsTests.cpp
+        DecisionTupleTests.cpp
+        ExecutorTests.cpp
+        FactoryTests.cpp
         FileDataStorageTests.cpp
-        SQLDatabaseStorageTests.cpp
-        BlackBoxDataTests.cpp
+        MediatorTests.cpp
+        MsgpackDeserializeTests.cpp
         RecorderTests.cpp
+        SQLDatabaseStorageTests.cpp
+        CarControllerTests.cpp
         )
 
 SET(_HEADERS MsgpackSerializeTests.h
-    SocketBlackBoxTests.h)
+    SocketBlackBoxTests.h
+    )
 
 SET(_MOCK_SOURCES "")
 
@@ -47,7 +52,8 @@ SET(_MOCK_HEADERS
     mocks/SocketBlackBoxMock.h
     mocks/ConfigMock.h
     mocks/PointerManagerMock.h
-    mocks/DecisionMakerMock.h)
+    mocks/DecisionMakerMock.h
+)
 
 
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
@@ -75,4 +81,15 @@ gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 
 #Code coverage
 SET(BACKEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/backend")
-CREATE_OPEN_CPP_COVERAGE_BAT("BackendCoverage" "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe" "${BACKEND_SOURCE_DIR}" "${BACKEND_SOURCE_DIR}/IPCPointerManager.h;${BACKEND_SOURCE_DIR}/IPCPointerManager.inl" ".*@NOCOVERAGE.*")
+
+SET(BAT_NAME "BackendCoverage")
+SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe")
+SET(SOURCE_DIR "${BACKEND_SOURCE_DIR}")
+SET(EXCLUDED_SOURCES "${BACKEND_SOURCE_DIR}/IPCPointerManager.h;${BACKEND_SOURCE_DIR}/IPCPointerManager.inl")
+SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
+
+IF(OPTION_GITHUB_ACTIONS)
+    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "cobertura" "BackendCoverage.xml" "FrontendCoverage.cov")
+ELSE(OPTION_GITHUB_ACTIONS)
+    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
+ENDIF(OPTION_GITHUB_ACTIONS)

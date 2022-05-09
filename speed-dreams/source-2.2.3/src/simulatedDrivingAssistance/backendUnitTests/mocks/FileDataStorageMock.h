@@ -40,6 +40,7 @@ public:
     time_t BlackboxTime;
     int EnvironmentVersion;
     InterventionType InterventionType;
+    DecisionTuple* SavedDecisions;
 
     void Shutdown()
     {
@@ -51,6 +52,7 @@ public:
 
     void SaveDecisions(DecisionTuple& p_decisions)
     {
+        SavedDecisions = &p_decisions;
     }
 };
 

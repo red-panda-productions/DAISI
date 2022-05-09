@@ -434,9 +434,11 @@ gfuiSelectNext(void * /* dummy */)
 	    
 	default:
 	    curObject = curObject->next;
+	    // SIMULATED DRIVING ASSISTANCE CHANGE: it now skips labels
 	    if ((curObject->focusMode != GFUI_FOCUS_NONE) &&
 		(curObject->state != GFUI_DISABLE) &&
-		(curObject->visible)) {
+		(curObject->visible) &&
+		(curObject->widget != GFUI_LABEL)) {
 		gfuiSetFocus(curObject);
 		return;
 	    }
@@ -468,9 +470,11 @@ gfuiSelectPrev(void * /* dummy */)
 
 	default:
 	    curObject = curObject->prev;
+	    // SIMULATED DRIVING ASSISTANCE CHANGE: it now skips labels
 	    if ((curObject->focusMode != GFUI_FOCUS_NONE) &&
 		(curObject->state != GFUI_DISABLE) &&
-		(curObject->visible)) {
+		(curObject->visible) &&
+		(curObject->widget != GFUI_LABEL)) {
 		gfuiSetFocus(curObject);
 		return;
 	    }
