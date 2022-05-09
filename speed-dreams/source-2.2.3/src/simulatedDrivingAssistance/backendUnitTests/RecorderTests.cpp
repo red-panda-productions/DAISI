@@ -296,18 +296,15 @@ TEST(RecorderTests, CompressionWithoutPreviousState)
 
 TEST(RecorderTests, WriteRunSettingsTests)
 {
+    filesystem::current_path(SD_DATADIR_SRC);
+
     Random random;
     GTEST_COUT << "Random Seed: " << random.GetSeed() << std::endl;
 
     GfInit(false);
 
     // Find the car xml
-    std::string path = "test_data";
-    if (!FindFileDirectory(path, TEST_CAR_FILE_NAME))
-    {
-        throw std::exception("Could not find test_car.xml.");  // @NOCOVERAGE, should always be available
-    }
-    path.append("/" TEST_CAR_FILE_NAME);
+    std::string path = "test_data/recordings/" TEST_CAR_FILE_NAME;
 
     // Load the car xml
     auto carHandle = GfParmReadFile(path.c_str(), 0, true);
