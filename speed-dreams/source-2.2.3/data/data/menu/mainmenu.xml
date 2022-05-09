@@ -24,7 +24,7 @@
 <params name="mainmenu">
 
 	<section name="dynamic controls">
-    <!--// SIMULATED DRIVING ASSISTANCE: FROM RACE TO START-->
+    <!-- SIMULATED DRIVING ASSISTANCE: FROM RACE TO START-->
     <section name="start">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
