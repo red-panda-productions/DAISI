@@ -33,10 +33,9 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-// SIMULATED DRIVING ASSISTANCE CHANGE: included ResearcherMenu.h, DataSelectionMenu.h and DeveloperMenu.h
+// SIMULATED DRIVING ASSISTANCE CHANGE: included ResearcherMenu.h, DataSelectionMenu.h
 #include "ResearcherMenu.h"
 #include "DataSelectionMenu.h"
-#include "DeveloperMenu.h"
 
 #include "mainmenu.h"
 #include "exitmenu.h"
@@ -102,7 +101,7 @@ bool LegacyMenu::backLoad()
         return false;
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
-    DeveloperMenuInit(ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers))));
+    ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
 
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())

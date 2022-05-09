@@ -1,6 +1,5 @@
 #include <tgfclient.h>
 #include "legacymenu.h"
-#include "mainmenu.h"
 #include "DeveloperMenu.h"
 #include "ConfigEnums.h"
 #include "Mediator.h"

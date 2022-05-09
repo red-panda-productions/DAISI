@@ -494,6 +494,7 @@ static void SelectFile(void* /* dummy */)
 /// @return           The researcherMenu scrHandle
 void* ResearcherMenuInit(void* p_nextMenu)
 {
+    DeveloperMenuInit(p_nextMenu);
     // Return if screen already created
     if (s_scrHandle) return s_scrHandle;
 

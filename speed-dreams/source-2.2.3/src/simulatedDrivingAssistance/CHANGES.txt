@@ -184,7 +184,6 @@ Changed:
             legacymenu.cpp
                 included "ResearcherMenu.h"
                 included "DataSelectionMenu.h"
-                included "DeveloperMenu.h"
                 added    ActivateResearcherMenu()
                 changed  backLoad()
                 changed  activate()
