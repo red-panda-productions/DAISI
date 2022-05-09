@@ -210,6 +210,8 @@ Changed:
                         removed rmProgressiveTimeModifier.start() call
                         removed controlsmenu 
                     racemanmenu.cpp
+                        included <controlconfig.h> and "mainmenu.h"
+                        removed <playerconfig.h>, <csnetwork.h> and <network.h>
                         removed networking and go back to main menu
                         changed rmOnRaceDataChanged()
                         changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
