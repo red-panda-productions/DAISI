@@ -196,7 +196,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
     sprintf(dummySettings.Port, "3306");
     sprintf(dummySettings.Address, "127.0.0.1");
     sprintf(dummySettings.Schema, "sda_test");
-    dummySettings.UseSSL = false;
+    dummySettings.UseSSL = true;
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
@@ -219,7 +219,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
     sprintf(dummySettings.Port, "3306");
     sprintf(dummySettings.Address, "127.0.0.1");
     sprintf(dummySettings.Schema, "sda_test");
-    dummySettings.UseSSL = false;
+    dummySettings.UseSSL = true;
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
@@ -245,6 +245,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
     sprintf(dummySettings.Address, "Address");
     sprintf(dummySettings.Schema, "Schema");
     dummySettings.UseSSL = false;
+
     SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
 
     chdir(SD_DATADIR_SRC);
