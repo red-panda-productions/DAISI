@@ -2,8 +2,7 @@
 <!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
 <params name="intervention-config" type="template">
 	<section name="Interventions">
-    <section name="InterventionsSteer">
-        <section name ="none">
+        <section name ="steer none">
             <section name="texture">
                 <attstr name ="source" val="Intervention_Steer_None_Proto_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
@@ -54,8 +53,6 @@
                 <attstr name="looping" val="no"/>
             </section>
         </section>
-    </section>
-	<section name="InterventionsBrake">
 		<section name ="brake">
 			<section name="texture">
 				<attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
@@ -90,7 +87,7 @@
 				<attstr name ="source" val="warning_brake_brake.wav"/>
 			</section>
 		</section>
-		<section name="none">
+		<section name="brake none">
 			<section name="texture">
 				<attstr name ="source" val="Intervention_Brake_Proto_256.png"/>
 				<attnum name ="xpos"   val="0.85"/>
@@ -107,6 +104,5 @@
 				<attstr name ="source" val="warning_brake_brake.wav"/>
 			</section>
 		</section>
-	</section>
 	</section>
 </params>

@@ -13,8 +13,8 @@
 
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS "Interventions"
-#define PRM_SECT_INTERVENTIONS_STEER "InterventionsSteer"
-#define PRM_SECT_INTERVENTIONS_BRAKE  "InterventionsBrake"
+//#define PRM_SECT_INTERVENTIONS_STEER "InterventionsSteer"
+//#define PRM_SECT_INTERVENTIONS_BRAKE  "InterventionsBrake"
 #define PRM_SECT_TEXTURE       "texture"
 #define PRM_SECT_SOUND         "sound"
 #define PRM_SECT_TEXT          "text"
@@ -32,11 +32,11 @@
 #define VAL_NO  "no"
 
 static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "none", "steer left", "steer right", "brake", "accelerate", "none"};
+    "steer none", "steer left", "steer right", "brake", "accelerate", "brake none"};
 
-static const char* s_actionSteerEnumString[NUM_INTERVENTION_ACTION_STEER] = {"none", "steer left", "steer right"};
+//static const char* s_actionSteerEnumString[NUM_INTERVENTION_ACTION_STEER] = {"none", "steer left", "steer right"};
 
-static const char* s_actionBrakeEnumString[NUM_INTERVENTION_ACTION_BRAKE] = {"brake", "accelerate", "none"};
+//static const char* s_actionBrakeEnumString[NUM_INTERVENTION_ACTION_BRAKE] = {"brake", "accelerate", "none"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
@@ -52,6 +52,7 @@ public:
     std::vector<tIndicatorData> GetBrakeIndicatorData();
 
     std::vector<tIndicatorData> GetActiveIndicators(InterventionType p_interventionType);
+    std::vector<tIndicatorData> GetNeutralIndicators(InterventionType p_interventionType);
 
     tIndicatorData GetNeutralIndicator(InterventionAction action, std::string indicatorTask);
 
@@ -80,6 +81,7 @@ private:
     std::vector<tIndicatorData> m_indicatorBrakeData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_STEER);
 
     std::vector<tIndicatorData> m_activeIndicators = {};
+    std::vector<tIndicatorData> m_neutralIndicators = {};
 
     // Loading helpers
     tSoundData* LoadSound(void* p_handle, std::string p_path);

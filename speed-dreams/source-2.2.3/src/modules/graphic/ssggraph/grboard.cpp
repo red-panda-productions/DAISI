@@ -387,10 +387,13 @@ void cGrBoard::shutdown(void)
 void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
                             const tCarElt *currCar, bool isCurrScreen)
 {
-    car_ = currCar;  
+    car_ = currCar;
 
-    // SIMULATED DRIVING ASSISTANCE: displays the current intervention indicators 
-    DispIndicators();
+    // SIMULATED DRIVING ASSISTANCE: displays the current active and neutral intervention indicators
+    tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
+    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
+    DispNeutralIndicators(settings, interventionType);
+    DispActiveIndicators(settings, interventionType);
 
     grDispCounterBoard2();
 
@@ -403,39 +406,28 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispIndicators() 
+void cGrBoard::DispActiveIndicators(tIndicator settings, InterventionType interventionType) 
 {
-    tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-
-    tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
-    tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
-
-    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
     for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType))
     {
-        if (indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
-        {
-           // Display the active indicator (braking)
-            DispIndicatorsHelper(indicator, settings);
-           // Display neutral (none) for steering indicator type
-            DispIndicatorsHelper(m_neutralBrake, settings);
-        }
-        else if (indicator.Action == INTERVENTION_ACTION_TURN_LEFT || indicator.Action == INTERVENTION_ACTION_TURN_RIGHT)
-        {
-            //Display the active indicator (steering)
-            DispIndicatorsHelper(indicator, settings);
-            // Display neutral (none) for braking indicator type
-            DispIndicatorsHelper(m_neutralBrake, settings);
-        }
-        else
-        {
-            // Display neutral (none) for both indicator types (brake and steering) 
-            DispIndicatorsHelper(m_neutralSteer, settings);
-            DispIndicatorsHelper(m_neutralBrake, settings);
-        }
+        DispIndicatorsHelper(indicator, settings);
     }
 }
 
+// SIMULATED DRIVING ASSISTANCE
+/// @brief Displays the currently neutral indicators from IndicatorConfig
+///        Depending on the indicator settings that are currently active.
+void cGrBoard::DispNeutralIndicators(tIndicator settings, InterventionType interventionType)
+{
+    for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetNeutralIndicators(interventionType))
+    {
+        DispIndicatorsHelper(indicator, settings);
+    }
+}
+
+// SIMULATED DRIVING ASSISTANCE
+/// @brief Helper function for displaying active and neutral indicators from IndicatorConfig
+///        Depending on the indicator settings that are currently active.
 void cGrBoard::DispIndicatorsHelper(tIndicatorData m_indicator, tIndicator settings) 
 {
     if (settings.Icon)
@@ -449,7 +441,7 @@ void cGrBoard::DispIndicatorsHelper(tIndicatorData m_indicator, tIndicator setti
 /// @brief           Displays the icon indicator (if the texture was loaded correctly) 
 /// @param p_data    Pointer to struct containing data about the texture, like its position   
 /// @param p_texture Pointer to the object containing the actual loaded OpenGL texture
-void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
+void cGrBoard::DispIndicatorIcon(tTextureData *p_data, ssgSimpleState *p_texture)
 {
     // Guard if texture data is null or the texture itself is null
     if (!p_data || !p_texture) return;
@@ -493,7 +485,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
 /// @param p_data Pointer to struct containing data about the text, like its position  
 void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
-    // Guard if no text data is defined forthis indicator
+    // Guard if no text data is defined for this indicator
     if (!p_data) return;
 
     GfuiDrawString(

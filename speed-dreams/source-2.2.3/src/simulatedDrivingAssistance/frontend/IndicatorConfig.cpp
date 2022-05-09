@@ -40,7 +40,7 @@ void IndicatorConfig::LoadIndicatorDataHelper(void* xmlHandle, char *path, std::
 {
     for (int i = 0; i < intervention; i++)
     {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", prm_sect, s_actionBrakeEnumString[i]);
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", prm_sect, s_actionEnumString[i]);
         m_indicatorData[i] = {
             (InterventionAction)i,
             LoadSound(xmlHandle, std::string(path)),
@@ -69,9 +69,9 @@ std::vector<tIndicatorData> IndicatorConfig::GetBrakeIndicatorData()
 std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 {
     // Create a new vector with all the indicator data and return it
-    std::vector<tIndicatorData> m_indicatorData;
-    m_indicatorData.insert(m_indicatorData.end(), m_indicatorBrakeData.begin(), m_indicatorBrakeData.end());
-    m_indicatorData.insert(m_indicatorData.end(), m_indicatorSteerData.begin(), m_indicatorSteerData.end());
+    
+    //m_indicatorData.insert(m_indicatorData.end(), m_indicatorBrakeData.begin(), m_indicatorBrakeData.end());
+    //m_indicatorData.insert(m_indicatorData.end(), m_indicatorSteerData.begin(), m_indicatorSteerData.end());
     return m_indicatorData;
 }
 
@@ -85,6 +85,39 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionTyp
     if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
 
     return m_activeIndicators;
+}
+
+/// @brief                    Returns a vector containing indicator data for all neutral indicators,
+///                           if and only if the interventions are turned on (not on NO_SIGNALS).
+/// @param p_interventionType The intervention type setting
+/// @return                   The vector of indicator data
+std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionType p_interventionType)
+{
+    // Guard when no signals are to be sent, always return an empty vector.
+    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
+
+    for (const tIndicatorData &indicator : GetActiveIndicators(p_interventionType))
+    {
+        if (indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
+        {
+            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
+            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralSteer);
+                 
+        }
+        else if (indicator.Action == INTERVENTION_ACTION_TURN_LEFT || indicator.Action == INTERVENTION_ACTION_TURN_RIGHT)
+        {
+            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
+            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralBrake);
+        }
+        else
+        {
+            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE, "steering");
+            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE, "braking");
+            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralBrake);
+            m_neutralIndicators.insert(m_neutralIndicators.end(), m_neutralSteer);
+        }
+    }
+    return m_neutralIndicators;
 }
 
 /// @brief          Returns an element containing indicator data for only a neutral indicator
