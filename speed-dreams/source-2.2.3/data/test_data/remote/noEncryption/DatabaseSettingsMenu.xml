@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE params SYSTEM "params.dtd">
+
+
+<params name="DatabaseSettingsMenu">
+  <section name="UsernameEdit">
+    <attstr name="text" val="Tesddfsst"/>
+  </section>
+
+  <section name="PasswordEdit">
+    <attstr name="text" val="fdgdfsfd"/>
+  </section>
+
+  <section name="AddressEdit">
+    <attstr name="text" val="Url"/>
+  </section>
+
+  <section name="PortEdit">
+    <attstr name="text" val="Port"/>
+  </section>
+
+  <section name="SchemaEdit">
+    <attstr name="text" val="SchemaName2"/>
+  </section>
+
+  <section name="CheckboxUseSSL">
+    <attstr name="checked" val="yes"/>
+  </section>
+
+</params>

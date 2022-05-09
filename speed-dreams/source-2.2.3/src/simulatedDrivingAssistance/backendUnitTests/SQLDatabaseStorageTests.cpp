@@ -7,6 +7,8 @@
 #include <portability.h>
 #include <config.h>
 
+#include "Mediator.h"
+
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
 /// @param p_password password of database to connect to
@@ -125,7 +127,17 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 ///         coverage path as TestDatabaseRunIncorrect
 TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
+    static tDatabaseSettings dummySettings;
+    sprintf(dummySettings.Username, "Username");
+    sprintf(dummySettings.Password, "Password");
+    sprintf(dummySettings.Port, "1");
+    sprintf(dummySettings.Address, "Address");
+    sprintf(dummySettings.Schema, "Schema");
+    SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
+
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
@@ -137,6 +149,17 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 ///         incorrect password
 TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    static tDatabaseSettings dummySettings;
+    sprintf(dummySettings.Username, "Username");
+    sprintf(dummySettings.Password, "Password");
+    sprintf(dummySettings.Port, "1");
+    sprintf(dummySettings.Address, "Address");
+    sprintf(dummySettings.Schema, "Schema");
+    SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
@@ -150,6 +173,18 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 /// @brief test for crash when there is no certificates folder
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    static tDatabaseSettings dummySettings;
+    sprintf(dummySettings.Username, "SDATest");
+    sprintf(dummySettings.Password, "PASSWORD");
+    sprintf(dummySettings.Port, "3306");
+    sprintf(dummySettings.Address, "127.0.0.1");
+    sprintf(dummySettings.Schema, "sda_test");
+    dummySettings.UseSSL = true;
+    SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\noCertDir"), std::exception)
@@ -161,6 +196,18 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 /// @brief tests for crash when there is no "database_encryption_settings.txt"file
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    static tDatabaseSettings dummySettings;
+    sprintf(dummySettings.Username, "SDATest");
+    sprintf(dummySettings.Password, "PASSWORD");
+    sprintf(dummySettings.Port, "3306");
+    sprintf(dummySettings.Address, "127.0.0.1");
+    sprintf(dummySettings.Schema, "sda_test");
+    dummySettings.UseSSL = true;
+    SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\noEncryption"), std::exception)
@@ -174,6 +221,17 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 ///         encryption file
 TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    static tDatabaseSettings dummySettings;
+    sprintf(dummySettings.Username, "Username");
+    sprintf(dummySettings.Password, "Password");
+    sprintf(dummySettings.Port, "1");
+    sprintf(dummySettings.Address, "Address");
+    sprintf(dummySettings.Schema, "Schema");
+    SMediator::GetInstance()->SetDatabaseSettings(dummySettings);
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\remote\\correctRemote"));

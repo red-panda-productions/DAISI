@@ -654,10 +654,10 @@ void SQLDatabaseStorage::CloseDatabase()
 void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     std::string configPath("data" + p_dirPath);
-    std::string configFile("database_connection_settings.txt");
+    std::string configFile("DatabaseSettingsMenu.xml");
 
     if (!FindFileDirectory(configPath, configFile))
-        throw std::exception("Could not find database settings file");
+        throw std::exception("Could not find database settings xml");
 
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
