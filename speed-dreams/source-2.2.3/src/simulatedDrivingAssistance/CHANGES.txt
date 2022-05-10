@@ -233,18 +233,18 @@ Changed:
                         changed readSoundCfg()
                     controlconfig 
                         included <deque>
-                        added static void *PlayerHdle = NULL;
-                        added SkillLevelString
-                        added NbSkillLevels
-                        added NoPlayer
-                        added HumanDriverModuleName
-                        added DefaultCarName
-                        added tInfo
-                        added tPlayerInfo
-                        added tPlayerInfoList
-                        added currPlayer
-                        added Yn[]
-                        added GenPlayerList()
+                        added static void *PlayerHdle = NULL; from removed playerconfig.cpp
+                        added SkillLevelString from removed playerconfig.cpp
+                        added NbSkillLevels from removed playerconfig.cpp
+                        added NoPlayer from removed playerconfig.cpp
+                        added HumanDriverModuleName from removed playerconfig.cpp
+                        added DefaultCarName from removed playerconfig.cpp
+                        added tInfo from removed playerconfig.cpp
+                        added tPlayerInfo from removed playerconfig.cpp
+                        added tPlayerInfoList from removed playerconfig.cpp
+                        added currPlayer from removed playerconfig.cpp
+                        added Yn[] from removed playerconfig.cpp
+                        added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
 
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config

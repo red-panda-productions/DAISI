@@ -45,7 +45,7 @@
 static void *ScrHandle = NULL;
 static void	*PrevScrHandle = NULL;
 static void	*PrefHdle = NULL;
-// SIMULATED DRIVING ASSISTANCE: added PlayerHdle
+// SIMULATED DRIVING ASSISTANCE: moved PlayerHdle from removed playerconfig.cpp
 static void* PlayerHdle = NULL;
 static int	SaveOnExit = 0;
 
@@ -86,7 +86,7 @@ static tCmdInfo Cmd[] = {
     {HM_ATT_DASHB_INC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_INC_MIN,   0, HM_ATT_DASHB_INC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
 
-	    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
     {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, NO_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
 
 static const int MaxCmd = sizeof(Cmd) / sizeof(Cmd[0]);
@@ -144,7 +144,7 @@ static float SteerSensVal;
 static float DeadZoneVal;
 static float SteerSpeedSensVal;
 
-// SIMULATED DRIVING ASSISTANCE: added skillLevel of players to controls since player menu is removed
+// SIMULATED DRIVING ASSISTANCE: moved skillLevel  from removed playerconfig.cpp
 static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
 static const int NbSkillLevels = sizeof(SkillLevelString) / sizeof(SkillLevelString[0]);
 
@@ -153,7 +153,7 @@ static const char* NoPlayer = "-- No one --";
 static const char* HumanDriverModuleName = "human";
 static const char* DefaultCarName = "sc-lynx-220";
 
-// SIMULATED DRIVING ASSISTANCE: added tInfo
+// SIMULATED DRIVING ASSISTANCE: moved tInfo from removed playerconfig.cpp
 /* Struct to define a generic ("internal name / id", "displayable name") pair */
 typedef struct tInfo
 {
@@ -161,7 +161,7 @@ typedef struct tInfo
 	char* dispname;
 
 } tInfo;
-// SIMULATED DRIVING ASSISTANCE: added tPlayerInfo
+// SIMULATED DRIVING ASSISTANCE: moved tPlayerInfo from removed playerconfig.cpp
 /* Player info struct */
 struct tPlayerInfo
 {
@@ -295,17 +295,17 @@ private:
 	int				_autoreverse;
 };
 
-// SIMULATED DRIVING ASSISTANCE: added tPlayerinfoList
+// SIMULATED DRIVING ASSISTANCE: moved tPlayerinfoList from removed playerconfig.cpp
 /* The human driver (= player) info list */
 typedef std::deque<tPlayerInfo*> tPlayerInfoList;
 static tPlayerInfoList PlayersInfo;
 
-// SIMULATED DRIVING ASSISTANCE: added currPlayer
+// SIMULATED DRIVING ASSISTANCE: moved currPlayer from removed playerconfig.cpp
 
 /* The currently selected player (PlayersInfo.end() if none) */
 static tPlayerInfoList::iterator CurrPlayer;
 
-// SIMULATED DRIVING ASSISTANCE: added Yn[]
+// SIMULATED DRIVING ASSISTANCE: moved Yn[] from removed playerconfig.cpp
 /* A bool to ("yes", "no") conversion table */
 static const char* Yn[] = { HM_VAL_YES, HM_VAL_NO };
 
@@ -776,7 +776,7 @@ onPush(void *vi)
 }
 
 
-//SIMULATED DRIVING ASSISTANCE: added GenPlayerList()
+//SIMULATED DRIVING ASSISTANCE: moved GenPlayerList() from removed playerconfig.cpp
 /* Load human driver (= player) info list (PlayersInfo) from preferences and human drivers files ;
 load associated scroll list */
 static int
