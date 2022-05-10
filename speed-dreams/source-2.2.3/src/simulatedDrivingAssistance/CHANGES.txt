@@ -200,7 +200,7 @@ Changed:
                         removed  <playerconfig.h>
                         added    GoBack()
                         changed  MainMenuInit()
-                        changed  onplayerconfigMenuActivate()
+                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
                         changed  onRaceSelectActivate()
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
