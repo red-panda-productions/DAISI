@@ -23,6 +23,7 @@
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                    \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                             \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation); \
+    template void Mediator<type>::SetSaveRaceToDatabase(bool p_saveToDatabase);                                                   \
     template void Mediator<type>::RaceStop();                                                                                     \
     template Mediator<type>* Mediator<type>::GetInstance();
 
@@ -151,9 +152,17 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
-    m_decisionMaker.RaceStop();
+    m_decisionMaker.RaceStop(m_saveRaceToDatabase);
     m_inRace = false;
 }
+
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetSaveRaceToDatabase(bool p_saveToDatabase)
+{
+    m_saveRaceToDatabase = p_saveToDatabase;
+}
+
+
 
 /// @brief Creates a mediator instance if needed and returns it
 /// @return A mediator instance

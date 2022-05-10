@@ -1,10 +1,10 @@
 /***************************************************************************
 
-    file                 : exitmenu.cpp
-    created              : Sat Mar 18 23:42:12 CET 2000
-    copyright            : (C) 2000 by Eric Espie
+    file                 : savemenu.cpp
+    created              : Tue Mar 18 10:54:12 CET 2022
+    copyright            : (C) 2022 by Maik Vink
     email                : torcs@free.fr
-    version              : $Id: exitmenu.cpp 5154 2013-02-17 10:08:28Z wdbee $
+    version              : $Id: savemenu.cpp $
 
  ***************************************************************************/
 
@@ -21,55 +21,39 @@
 
 #include "legacymenu.h"
 
-#include "exitmenu.h"
+#include "Mediator.h"
+#include "conformationmenu.h"
 #include "savemenu.h"
 #include "mainmenu.h"
 
-
 static void *MenuHandle = NULL;
 
-static void 
+static void
 onAcceptExit(void * /* dummy */)
 {
-	LmRaceEngine().abortRace(); // Do cleanup to get back correct setup files
-	LegacyMenu::self().quit();
+    SMediator::GetInstance()->SetSaveRaceToDatabase(true);
+    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
+    LegacyMenu::self().quit();
 }
 
-/*
- * Function
- *	ExitMenuInit
- *
- * Description
- *	init the exit menus
- *
- * Parameters
- *	prevMenu : Handle of the menu to activate when cancelling the exit action.
- *
- * Return
- *	The menu handle
- *
- * Remarks
- *	
- */
-
-void* ExitMenuInit(void *prevMenu)
+void* SaveMenuInit(void *prevMenu)
 {
-    if (MenuHandle) {
-		GfuiScreenRelease(MenuHandle);
+    if (MenuHandle)
+    {
+        GfuiScreenRelease(MenuHandle);
     }
 
     MenuHandle = GfuiScreenCreate();
 
-    void *param = GfuiMenuLoad("exitmenu.xml");
-
+    void *param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", SaveMenuInit(MenuHandle), GfuiScreenActivate);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onAcceptExit);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInit(MenuHandle), GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
-    
+
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", prevMenu, GfuiScreenActivate, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", prevMenu, GfuiScreenActivate, NULL);
 
     return MenuHandle;
 }

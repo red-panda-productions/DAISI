@@ -24,7 +24,7 @@ public:
     void SetUserId(char* p_userId);
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
-
+    void SetSaveRaceToDatabase(bool p_saveToDatabase);
     void SetBlackBoxFilePath(const char* p_filePath);
 
     tIndicator GetIndicatorSettings();
@@ -50,6 +50,7 @@ private:
 
     tTrack* m_track = nullptr;
     bool m_inRace = false;  // Whether the game is currently in a race
+    bool m_saveRaceToDatabase = false;
 };
 
 /// @brief The standard type of the mediator
