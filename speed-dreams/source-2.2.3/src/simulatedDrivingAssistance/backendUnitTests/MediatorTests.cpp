@@ -112,10 +112,10 @@ void TaskTestMediator(Task p_task)
 TEST_CASE(MediatorTests, TaskTestsLaneKeeping, TaskTestMediator, (TASK_LANE_KEEPING))
 TEST_CASE(MediatorTests, TaskTestsSpeedControl, TaskTestMediator, (TASK_SPEED_CONTROL))
 
-/// @brief         Tests if the Mediator sets and gets the IndicatorSettings correctly
-/// @param p_audio The audio option
-/// @param p_icon  The icon option
-/// @param p_text  The text option
+/// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
+/// @param p_audio Whether to enable the audio option
+/// @param p_icon  Whether to enable the icon option
+/// @param p_text  Whether to enable the text option
 void IndicatorTestMediator(bool p_audio, bool p_icon, bool p_text)
 {
     SDAConfigMediator::ClearInstance();
@@ -134,10 +134,10 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, IndicatorSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief                Tests if the Mediator sets and gets the participant control settings correctly
-/// @param p_intervention Control intervention toggle option
-/// @param p_gas          Control gas option
-/// @param p_steer        Control steering option
+/// @brief Tests if the SDAConfig sets and gets the participant control settings correctly
+/// @param p_intervention Whether to enable participant intervention control
+/// @param p_gas Whether to enable participant gas control
+/// @param p_steer Whether to enable participant steer control
 void PControlTest1Mediator(bool p_intervention, bool p_gas, bool p_steer)
 {
     SDAConfigMediator::ClearInstance();
@@ -156,15 +156,15 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(PControlTest1Mediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief            Tests if the Mediator sets and gets the other pControl settings correctly
-/// @param p_force    Force feedback option
-/// @param p_record   Record option
-/// @param p_bbrecord BB Record option
-void PControlTest2Mediator(bool p_force, bool p_record, bool p_bbrecord)
+/// @brief                  Tests if the SDAConfig sets and gets the other pControl settings correctly
+/// @param p_force          Whether to enable force feedback
+/// @param p_userRecord     Whether to enable user controls session recording
+/// @param p_blackboxRecord Whether to enable blackbox session recording
+void PControlTest2Mediator(bool p_force, bool p_record, bool p_blackboxRecord)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {NULL, NULL, NULL, p_force, p_record, p_bbrecord};
+    tParticipantControl arr = {NULL, NULL, NULL, p_force, p_record, p_blackboxRecord};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tParticipantControl pControl = config.GetPControlSettings();

@@ -73,10 +73,10 @@ BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the SDAConfig sets and gets the other pControl settings correctly
-/// @param p_bool1 Whether to enable force feedback
-/// @param p_bool2 Whether to enable user controls session recording
-/// @param p_bool3 Whether to enable blackbox session recording
+/// @brief                  Tests if the SDAConfig sets and gets the other pControl settings correctly
+/// @param p_force          Whether to enable force feedback
+/// @param p_userRecord     Whether to enable user controls session recording
+/// @param p_blackboxRecord Whether to enable blackbox session recording
 void PControlTest2(bool p_force, bool p_userRecord, bool p_blackboxRecord)
 {
     SDAConfig config;
@@ -151,7 +151,7 @@ TEST(ConfigTests, BlackBoxFilePathTest)
     }
 }
 
-/// @brief         Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
+/// @brief                Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
 /// @param p_env          The environment data setting
 /// @param p_car          The car data setting
 /// @param p_human        The human data setting
