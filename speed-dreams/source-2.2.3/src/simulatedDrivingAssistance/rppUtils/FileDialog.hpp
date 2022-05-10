@@ -2,6 +2,8 @@
 
 // includes that are necessary for windows
 #include <shobjidl.h>  // For Windows COM interface
+#include <locale>
+#include <codecvt>
 
 #define MAX_PATH_SIZE 260
 
