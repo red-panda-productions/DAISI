@@ -285,7 +285,6 @@ TEST(MediatorTests, RaceStartTest)
 
     tTrack track = {};
 
-    TestSegments segments = GenerateSegments();
     tSituation situation = GenerateSituation();
 
     SDAConfigMediator::GetInstance()->SetBlackBoxFilePath(FAKE_PATH);
@@ -312,7 +311,6 @@ TEST(MediatorTests, RaceStopTest)
 
     tTrack track = {};
 
-    TestSegments segments = GenerateSegments();
     tSituation situation = GenerateSituation();
 
     SDAConfigMediator::GetInstance()->RaceStart(&track, nullptr, nullptr, &situation, nullptr);
