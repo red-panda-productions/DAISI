@@ -10,6 +10,7 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 #include "../rppUtils/RppUtils.hpp"
+#include "GeneratorUtils.h"
 
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
@@ -122,8 +123,7 @@ void IndicatorTestMediator(bool p_audio, bool p_icon, bool p_text)
     ASSERT_TRUE(SetupSingletonsFolder());
     tIndicator arr = {p_audio, p_icon, p_text};
     SDAConfigMediator::GetInstance()->SetIndicatorSettings(arr);
-    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-    tIndicator indicator = config.GetIndicatorSettings();
+    tIndicator indicator = SDAConfigMediator::GetInstance()->GetIndicatorSettings();
     ASSERT_EQ(arr.Audio, indicator.Audio);
     ASSERT_EQ(arr.Icon, indicator.Icon);
     ASSERT_EQ(arr.Text, indicator.Text);
@@ -144,8 +144,7 @@ void PControlTest1Mediator(bool p_intervention, bool p_gas, bool p_steer)
     ASSERT_TRUE(SetupSingletonsFolder());
     tParticipantControl arr = {p_intervention, p_gas, p_steer, NULL, NULL, NULL};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
-    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-    tParticipantControl pControl = config.GetPControlSettings();
+    tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
@@ -166,8 +165,7 @@ void PControlTest2Mediator(bool p_force, bool p_record, bool p_blackboxRecord)
     ASSERT_TRUE(SetupSingletonsFolder());
     tParticipantControl arr = {NULL, NULL, NULL, p_force, p_record, p_blackboxRecord};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
-    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-    tParticipantControl pControl = config.GetPControlSettings();
+    tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
     ASSERT_EQ(arr.RecordSession, pControl.RecordSession);
     ASSERT_EQ(arr.BBRecordSession, pControl.BBRecordSession);
@@ -253,3 +251,73 @@ void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_interventi
 BEGIN_TEST_COMBINATORIAL(MediatorTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
+TEST(MediatorTests, DriveTickTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    TestSegments segments = GenerateSegments();
+    tCarElt car = GenerateCar(segments);
+    tSituation situation = GenerateSituation();
+
+    SDAConfigMediator::GetInstance()->DriveTick(&car, &situation);
+
+    const tCarElt* checkCar = SDAConfigMediator::GetInstance()->CarController.GetCar();
+    ASSERT_TRUE(checkCar == &car);
+
+    DecisionMakerMock<SDAConfig>* decisionMaker = SDAConfigMediator::GetInstance()->GetDecisionMaker();
+
+    ASSERT_TRUE(&car == decisionMaker->Car);
+    ASSERT_TRUE(&situation == decisionMaker->Situation);
+    ASSERT_TRUE(decisionMaker->TickCount == 0);
+}
+
+#define FAKE_PATH "Totally/a/path"
+
+TEST(MediatorTests, RaceStartTest)
+{
+    GfInit();
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    DecisionMakerMock<SDAConfig>* decisionMaker = SDAConfigMediator::GetInstance()->GetDecisionMaker();
+
+    tTrack track = {};
+
+    TestSegments segments = GenerateSegments();
+    tSituation situation = GenerateSituation();
+
+    SDAConfigMediator::GetInstance()->SetBlackBoxFilePath(FAKE_PATH);
+    SDAConfigMediator::GetInstance()->RaceStart(&track, nullptr, nullptr, &situation, nullptr);
+
+    ASSERT_TRUE(decisionMaker->Situation == &situation);
+    ASSERT_TRUE(decisionMaker->Track == &track);
+    TestStringEqual(FAKE_PATH, decisionMaker->BlackboxExecutablePath.c_str(), decisionMaker->BlackboxExecutablePath.size());
+    ASSERT_TRUE(decisionMaker->Recorder == nullptr);
+}
+
+TEST(MediatorTests, RaceStopTest)
+{
+    GfInit();
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    DecisionMakerMock<SDAConfig>* decisionMaker = SDAConfigMediator::GetInstance()->GetDecisionMaker();
+    ASSERT_FALSE(decisionMaker->RaceStopped);
+
+    SDAConfigMediator::GetInstance()->RaceStop();
+
+    ASSERT_FALSE(decisionMaker->RaceStopped);
+
+    tTrack track = {};
+
+    TestSegments segments = GenerateSegments();
+    tSituation situation = GenerateSituation();
+
+    SDAConfigMediator::GetInstance()->RaceStart(&track, nullptr, nullptr, &situation, nullptr);
+
+    SDAConfigMediator::GetInstance()->RaceStop();
+
+    ASSERT_TRUE(decisionMaker->RaceStopped);
+}
