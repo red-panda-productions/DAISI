@@ -362,7 +362,7 @@ RmStopRaceMenu()
 
     // Attempt to find a human driver
     for (j=0; ; j++) {
-        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j + 1);
+        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j+1);
         human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
         assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
 
