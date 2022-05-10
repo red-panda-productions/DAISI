@@ -154,7 +154,7 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(PControlTest1Mediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the v sets and gets the other pControl settings correctly
+/// @brief         Tests if the Mediator sets and gets the other pControl settings correctly
 /// @param p_bool1 First  bool
 /// @param p_bool2 Second bool
 /// @param p_bool3 Third  bool
@@ -213,7 +213,7 @@ TEST(MediatorTests, BlackBoxFilePathTest)
 {
     Random random;
     char path[256];
-    for (int j = 0; j <= 10; j++)
+    for (int j = 0; j < TEST_AMOUNT; j++)
     {
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
