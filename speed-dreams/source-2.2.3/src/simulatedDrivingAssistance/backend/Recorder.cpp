@@ -4,6 +4,20 @@
 #include <tgf.h>
 #include "../rppUtils/RppUtils.hpp"
 
+namespace filesystem = std::experimental::filesystem;
+
+/// @brief Create a file to record the data to. Truncate if the file already exists.
+/// @param p_recordingsFolder The folder to place the file in
+/// @param p_decisionsRecordingFile  The stream to open the file on
+/// @param p_fileName The filename of the file to open
+void CreateRecordingFile(const std::experimental::filesystem::path& p_recordingsFolder, std::ofstream& p_decisionsRecordingFile, const char* p_fileName)
+{
+    // Open the files with truncate on, such that if the file was already in use any existing content will be discarded
+    filesystem::path filePath = filesystem::path(p_recordingsFolder).append(p_fileName);
+    std::cout << "Writing decisions to " << filePath << std::endl;
+    p_decisionsRecordingFile.open(filePath, std::ios::binary | std::ios::trunc);
+}
+
 /// @brief  Constructor of Recording,
 ///	    	creates a file with the current date and time,
 ///	    	opens file in binary and appending mode
@@ -12,12 +26,12 @@
 /// @param p_dirName	        the name of the directory that needs to be placed in the SDA appdata directory.
 /// @param p_fileNamePattern    the pattern for the output file name, as taken by std::put_time, without file extension
 /// @param p_userParamAmount	the amount of parameters that are saved for every line of user inputs.
-/// @param p_decisionParamAmount	the amount of parameters that are saved for every line of decision parameters.
+/// @param p_simulationDataParamAmount	the amount of parameters that are saved for every line of simulation data.
 Recorder::Recorder(const std::string& p_dirName,
                    const std::string& p_fileNamePattern,
                    int p_userParamAmount,
-                   int p_decisionParamAmount)
-    : m_userParamAmount(p_userParamAmount), m_decisionParamAmount(p_decisionParamAmount)
+                   int p_simulationDataParamAmount)
+    : m_userParamAmount(p_userParamAmount), m_simulationDataParamAmount(p_simulationDataParamAmount)
 {
     std::experimental::filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
@@ -37,40 +51,64 @@ Recorder::Recorder(const std::string& p_dirName,
     m_recordingDir = std::experimental::filesystem::path(recordingsFolder);
     create_directories(m_recordingDir);
 
-    // Open the files with truncate on, such that if the file was already in use any existing content will be discarded
-    std::experimental::filesystem::path
-        path = std::experimental::filesystem::path(recordingsFolder).append(USER_INPUT_RECORDING_FILE_NAME);
-    std::cout << "Writing user input to " << path << std::endl;
-    m_userInputRecordingFile.open(path, std::ios::binary | std::ios::trunc);
-    m_userInputRecordingFile << std::fixed << std::setprecision(20);
-
-    path = std::experimental::filesystem::path(recordingsFolder).append(DECISIONS_RECORDING_FILE_NAME);
-    std::cout << "Writing decisions to " << path << std::endl;
-    m_decisionsRecordingFile.open(path, std::ios::binary | std::ios::trunc);
-    m_decisionsRecordingFile << std::fixed << std::setprecision(20);
+    CreateRecordingFile(m_recordingDir, m_userInputRecordingFile, USER_INPUT_RECORDING_FILE_NAME);
+    CreateRecordingFile(m_recordingDir, m_decisionsRecordingFile, DECISIONS_RECORDING_FILE_NAME);
+    CreateRecordingFile(m_recordingDir, m_simulationDataRecordingFile, SIMULATION_DATA_RECORDING_FILE_NAME);
 
     // initialize previous input with impossible values. This ensures the first actual values are always written when compression is enabled.
     m_prevUserInput = new float[m_userParamAmount];
     for (int i = 0; i < m_userParamAmount; i++)
     {
-        m_prevUserInput[i] = 2.0f;  // 2.0f is impossible user input
+        m_prevUserInput[i] = NAN;
+    }
+
+    m_prevSimulationData = new float[m_simulationDataParamAmount];
+    for (int i = 0; i < m_simulationDataParamAmount; i++)
+    {
+        m_prevSimulationData[i] = NAN;
     }
 }
 
 Recorder::~Recorder()
 {
     delete[] m_prevUserInput;
+    delete[] m_prevSimulationData;
     m_userInputRecordingFile.close();
     m_decisionsRecordingFile.close();
+    m_simulationDataRecordingFile.close();
 }
 
-/// @brief Write the settings of the car being recorded to the recording.
-/// @param p_carElt The handle to the car settings.
-void Recorder::WriteCar(const tCarElt* p_carElt)
+/// @brief Write the settings of the run being recorded to the recording folder.
+/// @param p_carElt The car being used.
+/// @param p_track The track that's being driven on
+/// @param p_indicators The indicator settings
+/// @param p_interventionType The intervention type settings
+/// @param p_participantControl The participant control settings
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl)
 {
-    GfParmWriteFile(std::experimental::filesystem::path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
+    using std::experimental::filesystem::path;
+    GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                     p_carElt->_carHandle,
                     p_carElt->info.name);
+
+    void* settingsFileHandle = GfParmReadFile(path(m_recordingDir).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_CREAT, true);
+
+    GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, BoolToString(p_indicators.Audio));
+    GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, BoolToString(p_indicators.Icon));
+    GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_TEXT, BoolToString(p_indicators.Text));
+
+    GfParmSetNum(settingsFileHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, static_cast<float>(p_interventionType));
+
+    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_FILENAME, p_track->filename);
+
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlGas));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteering));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, BoolToString(p_participantControl.RecordSession));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, BoolToString(p_participantControl.BBRecordSession));
+
+    GfParmWriteFile(nullptr, settingsFileHandle, "Run Settings");
 }
 
 /// @brief Write user input to the output file
@@ -79,21 +117,45 @@ void Recorder::WriteCar(const tCarElt* p_carElt)
 /// @param p_useCompression Whether to use compression while writing
 void Recorder::WriteUserInput(const float* p_userInput, const double p_timestamp, const bool p_useCompression)
 {
-    WriteRecording(p_userInput,
-                   p_timestamp,
-                   m_userInputRecordingFile,
-                   m_userParamAmount,
-                   p_useCompression,
-                   m_prevUserInput);
+    WriteRecording(p_userInput, p_timestamp, m_userInputRecordingFile, m_userParamAmount, p_useCompression, m_prevUserInput);
+}
+
+/// @brief Write simulation data to the output file
+/// @param p_simulationData Simulation data to write, should be an array >= m_simulationDataParamAmount
+/// @param p_timestamp Timestamp at which the simulation data occurred
+/// @param p_useCompression Whether to use compression while writing
+void Recorder::WriteSimulationData(const float* p_simulationData, const double p_timeStamp, const bool p_useCompression)
+{
+    WriteRecording(p_simulationData, p_timeStamp, m_simulationDataRecordingFile, m_simulationDataParamAmount, p_useCompression, m_prevSimulationData);
 }
 
 /// @brief Write decision data to the output file
 /// @param p_userInput Decision data to write, should be an array >= m_decisionParamAmount
 /// @param p_timestamp Timestamp at which the decision data occured
-void Recorder::WriteDecisions(const float* p_decisions, const unsigned long p_timestamp)
+void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const unsigned long p_timestamp)
 {
-    WriteRecording(p_decisions, p_timestamp, m_decisionsRecordingFile, m_decisionParamAmount, false, nullptr);
+    if (p_decisions == nullptr)
+    {
+        WriteRecording(nullptr, p_timestamp, m_decisionsRecordingFile, 0, false, nullptr);
+        return;
+    }
+
+    float decisionValues[DECISION_RECORD_PARAM_AMOUNT] =
+        {
+            p_decisions->GetSteer(),
+            p_decisions->GetAccel(),
+            p_decisions->GetBrake(),
+            static_cast<float>(p_decisions->GetGear())};
+    WriteRecording(decisionValues, p_timestamp, m_decisionsRecordingFile, DECISION_RECORD_PARAM_AMOUNT, false, nullptr);
 }
+
+#define CREATE_WRITE_RECORDING_DEFINITION(type)                           \
+    template void Recorder::WriteRecording<type>(const float* p_input,    \
+                                                 type p_currentTime,      \
+                                                 std::ofstream& p_file,   \
+                                                 const int p_paramAmount, \
+                                                 bool p_useCompression,   \
+                                                 float* p_prevInput);
 
 /// @brief  Writes a float array to the m_recordingFile,
 ///	    	with the current time of the simulation.
@@ -106,8 +168,9 @@ void Recorder::WriteDecisions(const float* p_decisions, const unsigned long p_ti
 /// @param p_paramAmount    Amount of parameters to write, should be <= size of p_input
 /// @param p_useCompression boolean value if compression is done
 /// @param p_prevInput      the previous input, used for compression, length should be p_paramAmount and not nullptr if p_useCompression is true.
+template <typename TIME>
 void Recorder::WriteRecording(const float* p_input,
-                              const double p_currentTime,
+                              TIME p_currentTime,
                               std::ofstream& p_file,
                               const int p_paramAmount,
                               bool p_useCompression,
@@ -121,7 +184,7 @@ void Recorder::WriteRecording(const float* p_input,
     // doesn't write if the input is the same as the previous time
     // if p_compression is true
     if (p_useCompression && CheckSameInput(p_input, p_prevInput, p_paramAmount)) return;
-    p_file << p_currentTime << " ";
+    p_file << bits(p_currentTime);
     for (int i = 0; i < p_paramAmount; i++)
     {
         // update previous input
@@ -131,10 +194,14 @@ void Recorder::WriteRecording(const float* p_input,
         }
 
         // write to file
-        p_file << p_input[i] << " ";
+        p_file << bits(p_input[i]);
     }
-    p_file << std::endl;
+    p_file.flush();
 }
+
+CREATE_WRITE_RECORDING_DEFINITION(int)
+CREATE_WRITE_RECORDING_DEFINITION(unsigned long)
+CREATE_WRITE_RECORDING_DEFINITION(double)
 
 /// @brief				    Checks if the input is the same as the previous input
 /// @param p_input		    The new input that should be recorded.

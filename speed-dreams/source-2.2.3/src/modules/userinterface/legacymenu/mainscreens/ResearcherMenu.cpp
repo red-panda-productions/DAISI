@@ -16,8 +16,8 @@
 #define PRM_INDCTR_TEXT      "CheckboxIndicatorTextual"
 #define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
 #define PRM_ENVIRONMENT      "EnvironmentRadioButtonList"
-#define PRM_CTRL_GAS         "CheckboxPControlGas"
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
+#define PRM_CTRL_GAS         "CheckboxPControlGas"
 #define PRM_CTRL_STEERING    "CheckboxPControlSteering"
 #define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
 #define PRM_RECORD_TGGLE     "CheckboxRecorderToggle"
@@ -218,8 +218,8 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, val);
 
     // Save participant control settings to xml file
-    GfParmSetStr(readParam, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlGas));
     GfParmSetStr(readParam, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
+    GfParmSetStr(readParam, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlGas));
     GfParmSetStr(readParam, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteering));
 
     GfParmSetStr(readParam, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
@@ -299,8 +299,8 @@ static void SynchronizeControls()
 
     GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, (int)m_interventionType);
 
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlGas);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlInterventionToggle);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlInterventionToggle);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlGas);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlSteering);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ForceFeedback);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[4], m_pControl.RecordSession);
@@ -327,10 +327,12 @@ static void LoadDefaultSettings()
 
     m_interventionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_interventionTypeControl);
 
-    m_pControl.ControlGas = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
-    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
+    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
+    m_pControl.ControlGas = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
     m_pControl.ControlSteering = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
     m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
+    m_pControl.RecordSession = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[4]);
+    m_pControl.BBRecordSession = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[5]);
 
     m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
 }
@@ -348,8 +350,8 @@ static void LoadConfigSettings(void* p_param)
 
     m_interventionType = std::stoi(GfParmGetStr(p_param, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, nullptr));
 
-    m_pControl.ControlGas = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlInterventionToggle = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, false);
+    m_pControl.ControlGas = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlSteering = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, false);
 
     m_pControl.ForceFeedback = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, false);

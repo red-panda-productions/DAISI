@@ -6,7 +6,7 @@
 
 #include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
 
-#define RECORDING_NAME "userRecording20220426-140251"
+#define RECORDING_NAME "userRecording20220429-002706"
 
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
@@ -25,16 +25,19 @@ Driver::Driver(int p_index, const char* p_name)
 /// @param p_situation The current race situation
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
-    std::experimental::filesystem::path sdaFolder;
+    namespace filesystem = std::experimental::filesystem;
+
+    filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
     sdaFolder.append("user_recordings").append(RECORDING_NAME);
 
     *p_carParmHandle =
-        GfParmReadFile(std::experimental::filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
+        GfParmReadFile(filesystem::path(sdaFolder).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                        GFPARM_RMODE_STD,
                        true);
 
-    m_replayFile.open(sdaFolder.append(USER_INPUT_RECORDING_FILE_NAME).string().c_str());
+    m_replayFile.open(filesystem::path(sdaFolder).append(USER_INPUT_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
+    m_recordedSimulationData.open(filesystem::path(sdaFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME).string().c_str(), std::ios::binary);
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation);
 }
 
@@ -44,9 +47,60 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 /// @param p_situation The current race situation
 void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 {
-    std::string inputTime;
-    m_replayFile >> inputTime;
-    m_inputTime = std::stod(inputTime);
+    m_replayFile >> bits(m_inputTime);
+}
+
+/// @brief Validate whether the current simulation data matches the recorded simulation data.
+/// @param p_car The current state of the car
+/// @param p_simulationDataFile The recorded simulation data file
+void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
+{
+    double currentTime;
+    tPosd posG{};
+    tPosd velG{};
+    tPosd accG{};
+    tPosd pos{};
+    tPosd vel{};
+    tPosd acc{};
+
+    p_simulationDataFile >> bits(currentTime);
+    p_simulationDataFile >> bits(posG.x);
+    p_simulationDataFile >> bits(posG.y);
+    p_simulationDataFile >> bits(posG.z);
+    p_simulationDataFile >> bits(velG.x);
+    p_simulationDataFile >> bits(velG.y);
+    p_simulationDataFile >> bits(velG.z);
+    p_simulationDataFile >> bits(accG.x);
+    p_simulationDataFile >> bits(accG.y);
+    p_simulationDataFile >> bits(accG.z);
+    p_simulationDataFile >> bits(pos.x);
+    p_simulationDataFile >> bits(pos.y);
+    p_simulationDataFile >> bits(pos.z);
+    p_simulationDataFile >> bits(vel.x);
+    p_simulationDataFile >> bits(vel.y);
+    p_simulationDataFile >> bits(vel.z);
+    p_simulationDataFile >> bits(acc.x);
+    p_simulationDataFile >> bits(acc.y);
+    p_simulationDataFile >> bits(acc.z);
+
+    assert(p_car->pub.DynGCg.pos.x == posG.x);
+    assert(p_car->pub.DynGCg.pos.y == posG.y);
+    assert(p_car->pub.DynGCg.pos.z == posG.z);
+    assert(p_car->pub.DynGCg.vel.x == velG.x);
+    assert(p_car->pub.DynGCg.vel.y == velG.y);
+    assert(p_car->pub.DynGCg.vel.z == velG.z);
+    assert(p_car->pub.DynGCg.acc.x == accG.x);
+    assert(p_car->pub.DynGCg.acc.y == accG.y);
+    assert(p_car->pub.DynGCg.acc.z == accG.z);
+    assert(p_car->pub.DynGC.pos.x == pos.x);
+    assert(p_car->pub.DynGC.pos.y == pos.y);
+    assert(p_car->pub.DynGC.pos.z == pos.z);
+    assert(p_car->pub.DynGC.vel.x == vel.x);
+    assert(p_car->pub.DynGC.vel.y == vel.y);
+    assert(p_car->pub.DynGC.vel.z == vel.z);
+    assert(p_car->pub.DynGC.acc.x == acc.x);
+    assert(p_car->pub.DynGC.acc.y == acc.y);
+    assert(p_car->pub.DynGC.acc.z == acc.z);
 }
 
 /// @brief Update the car's controls based on recording at that currentTime.
@@ -56,55 +110,43 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
-    std::string accelString;
-    m_replayFile >> accelString;
-    float accel = std::stof(accelString);
-    std::string brakeString;
-    m_replayFile >> brakeString;
-    float brake = std::stof(brakeString);
-    std::string steerString;
-    m_replayFile >> steerString;
-    float steer = std::stof(steerString);
-    std::string gearString;
-    m_replayFile >> gearString;
-    float gear = std::stof(gearString);
-    std::string clutchString;
-    m_replayFile >> clutchString;
-    float clutch = std::stof(clutchString);
+    ValidateSimulationData(p_car, m_recordedSimulationData);
 
-    std::string raceCmdString;
-    m_replayFile >> raceCmdString;
-    float raceCmd = std::stof(raceCmdString);
-    std::string lightCmdString;
-    m_replayFile >> lightCmdString;
-    float lightCmd = std::stof(lightCmdString);
-    std::string ebrakeCmdString;
-    m_replayFile >> ebrakeCmdString;
-    float ebrakeCmd = std::stof(ebrakeCmdString);
-    std::string brakeFLCmdString;
-    m_replayFile >> brakeFLCmdString;
-    float brakeFLCmd = std::stof(brakeFLCmdString);
-    std::string brakeFRCmdString;
-    m_replayFile >> brakeFRCmdString;
-    float brakeFRCmd = std::stof(brakeFRCmdString);
-    std::string brakeRLCmdString;
-    m_replayFile >> brakeRLCmdString;
-    float brakeRLCmd = std::stof(brakeRLCmdString);
-    std::string brakeRRCmdString;
-    m_replayFile >> brakeRRCmdString;
-    float brakeRRCmd = std::stof(brakeRRCmdString);
-    std::string wingFCmdString;
-    m_replayFile >> wingFCmdString;
-    float wingFCmd = std::stof(wingFCmdString);
-    std::string wingRCmdString;
-    m_replayFile >> wingRCmdString;
-    float wingRCmd = std::stof(wingRCmdString);
-    std::string telemetryModeString;
-    m_replayFile >> telemetryModeString;
-    float telemetryMode = std::stof(telemetryModeString);
-    std::string singleWheelBrakeModeString;
-    m_replayFile >> singleWheelBrakeModeString;
-    float singleWheelBrakeMode = std::stof(singleWheelBrakeModeString);
+    float accel;
+    float brake;
+    float steer;
+    float gear;
+    float clutch;
+
+    m_replayFile >> bits(accel);
+    m_replayFile >> bits(brake);
+    m_replayFile >> bits(steer);
+    m_replayFile >> bits(gear);
+    m_replayFile >> bits(clutch);
+
+    float raceCmd;
+    float lightCmd;
+    float ebrakeCmd;
+    float brakeFLCmd;
+    float brakeFRCmd;
+    float brakeRLCmd;
+    float brakeRRCmd;
+    float wingFCmd;
+    float wingRCmd;
+    float telemetryMode;
+    float singleWheelBrakeMode;
+
+    m_replayFile >> bits(raceCmd);
+    m_replayFile >> bits(lightCmd);
+    m_replayFile >> bits(ebrakeCmd);
+    m_replayFile >> bits(brakeFLCmd);
+    m_replayFile >> bits(brakeFRCmd);
+    m_replayFile >> bits(brakeRLCmd);
+    m_replayFile >> bits(brakeRRCmd);
+    m_replayFile >> bits(wingFCmd);
+    m_replayFile >> bits(wingRCmd);
+    m_replayFile >> bits(telemetryMode);
+    m_replayFile >> bits(singleWheelBrakeMode);
 
     p_car->_accelCmd = accel;
     p_car->_brakeCmd = brake;
@@ -129,9 +171,7 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     }
     else
     {
-        std::string inputTime;
-        m_replayFile >> inputTime;
-        m_inputTime = std::stod(inputTime);
+        m_replayFile >> bits(m_inputTime);
     }
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);

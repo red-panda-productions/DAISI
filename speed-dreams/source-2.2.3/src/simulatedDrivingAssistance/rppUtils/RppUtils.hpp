@@ -148,6 +148,10 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    WinExec(p_command, p_showCommand);
+}
 /// @brief          Returns true with certain chance
 /// @param p_rnd    The random generator reference to use
 /// @param p_chance The chance to succeed [0-100]
@@ -183,4 +187,70 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
     }
 
     return true;
+}
+
+#define BOOL_TRUE_STRING  "true"
+#define BOOL_FALSE_STRING "false"
+
+/// @brief Convert a boolean to a string
+/// @param p_boolean The boolean to convert to a string
+/// @return The string representing the boolean value
+inline const char* BoolToString(const bool p_boolean)
+{
+    return p_boolean ? BOOL_TRUE_STRING : BOOL_FALSE_STRING;
+}
+
+/// @brief Assert the contents of the binary file in filePath match the binary stream contents
+#define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
+    {                                                                        \
+        std::cout << "Reading binary file from " << (filePath) << std::endl; \
+        std::ifstream file(filePath, std::ios::binary);                      \
+        ASSERT_TRUE(file.is_open());                                         \
+        std::stringstream buffer;                                            \
+        buffer << file.rdbuf();                                              \
+        file.close();                                                        \
+        ASSERT_TRUE(!file.is_open());                                        \
+        ASSERT_EQ(buffer.str().size(), (contents).str().size());             \
+        for (int i = 0; i < buffer.str().size(); i++)                        \
+        {                                                                    \
+            char controlByte;                                                \
+            char testByte;                                                   \
+            (contents) >> bits(controlByte);                                 \
+            buffer >> bits(testByte);                                        \
+            ASSERT_EQ(testByte, controlByte);                                \
+        }                                                                    \
+    }
+
+/// @brief The following functions are used to write binary values to files.
+///        Cannot write strings (though this can be added)
+template <typename TYPE>
+struct Bits
+{
+    TYPE T;
+};
+
+template <typename TYPE>
+static inline Bits<TYPE&> bits(TYPE& p_t)
+{
+    return Bits<TYPE&>{p_t};
+}
+
+template <typename TYPE>
+static inline Bits<const TYPE&> bits(const TYPE& p_t)
+{
+    return Bits<const TYPE&>{p_t};
+}
+
+template <typename TYPE>
+static inline std::istream& operator>>(std::istream& p_in, Bits<TYPE&> p_b)
+{
+    return p_in.read(reinterpret_cast<char*>(&p_b.T), sizeof(TYPE));
+}
+
+template <typename TYPE>
+static inline std::ostream& operator<<(std::ostream& p_out, Bits<TYPE&> const p_b)
+{
+    // reinterpret_cast is for pointer conversion
+    // static_cast is for compatible pointer conversion
+    return p_out.write(reinterpret_cast<const char*>(&(p_b.T)), sizeof(TYPE));
 }

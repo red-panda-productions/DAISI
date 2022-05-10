@@ -13,18 +13,20 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-#define DECISION_RECORD_PARAM_AMOUNT 2
-
-/// @brief                 A class that can ask the black box to make a decision
-/// @tparam SocketBlackBox The SocketBlackBox type
-/// @tparam SDAConfig      The config type
-template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage>
+/// @brief                     A class that can ask the black box to make a decision
+/// @tparam SocketBlackBox     The SocketBlackBox type
+/// @tparam SDAConfig          The config type
+/// @tparam FileDataStorage    The FileDataStorage type
+/// @tparam SQLDatabaseStorage The SQLDatabaseStorage type
+/// @tparam Recorder           The Recorder type
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 class DecisionMaker
 {
 public:
+    DecisionMaker(){};
     SDAConfig Config;
 
-    void Initialize(tCarElt* p_initialCar, tSituation* p_initialSituation, tTrack* p_track, const std::string& p_blackBoxExecutablePath,
+    void Initialize(unsigned long p_initialTickCount, tCarElt* p_initialCar, tSituation* p_initialSituation, tTrack* p_track, const std::string& p_blackBoxExecutablePath,
                     Recorder* p_recorder, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0);
 
     bool Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount);
@@ -38,6 +40,7 @@ public:
 
     FileDataStorage* GetFileDataStorage();
     std::experimental::filesystem::path* GetBufferFilePath();
+    Recorder* GetRecorder();
 
     ~DecisionMaker();
 
@@ -49,4 +52,4 @@ private:
 };
 
 /// @brief The standard type of the decisionMaker
-#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage>
+#define SDecisionMaker DecisionMaker<SSocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>

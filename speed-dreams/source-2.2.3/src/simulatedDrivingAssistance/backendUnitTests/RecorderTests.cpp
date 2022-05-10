@@ -10,6 +10,10 @@
 #define TEST_DIRECTORY     "test_test_data"
 #define TEST_CAR_FILE_NAME "test_car.xml"
 
+/// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
+#define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
+    ASSERT_BINARY_FILE_CONTENTS(folder + ("\\" recordingName "\\" filename), contents)
+
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
 #define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
     {                                                                                               \
@@ -18,6 +22,7 @@
         ASSERT_TRUE(file.is_open());                                                                \
         std::stringstream buffer;                                                                   \
         buffer << file.rdbuf();                                                                     \
+        std::cout << buffer.str() << std::endl;                                                     \
         ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
     }
 
@@ -45,7 +50,7 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Delete the existing test directory to ensure directories are properly created
     if (std::experimental::filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all(folder);
+        std::experimental::filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
     }
 
     // Create a recorder without storing any parameters
@@ -54,10 +59,12 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Ensure file is created with the proper name
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
+    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
 
     // Ensure the file is empty
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME)
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME)
 }
 
 /// @brief Test the recorder with a single parameter, for different compression options and scenarios
@@ -76,44 +83,42 @@ TEST(RecorderTests, RecorderOneParamCompression)
     float inputs[1];
     double currentTime;
 
-    expected << std::fixed << std::setprecision(20);
-
     inputs[0] = 0.1f;
     currentTime = 0;
-    expected << currentTime << " " << inputs[0] << " \n";
+    expected << bits(currentTime) << bits(inputs[0]);
     recorder.WriteUserInput(inputs, currentTime, false);
 
     // Writing the same value without compression should add it to the file again
     inputs[0] = 0.1f;
-    currentTime = 0.1;
-    expected << currentTime << " " << inputs[0] << " \n";
+    currentTime = 1;
+    expected << bits(currentTime) << bits(inputs[0]);
     recorder.WriteUserInput(inputs, currentTime, false);
 
     // Writing a different value without compression should add it to the file
     inputs[0] = 0.2f;
-    currentTime = 0.2;
-    expected << currentTime << " " << inputs[0] << " \n";
+    currentTime = -2;
+    expected << bits(currentTime) << bits(inputs[0]);
     recorder.WriteUserInput(inputs, currentTime, false);
 
     // Writing the same value with compression should not add it to the file
     inputs[0] = 0.2f;
-    currentTime = 1;
+    currentTime = 0.3;
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Writing a different value with compression should add it to the file
     inputs[0] = 0.3f;
-    currentTime = -1;
-    expected << currentTime << " " << inputs[0] << " \n";
+    currentTime = 16;
+    expected << bits(currentTime) << bits(inputs[0]);
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Writing a slightly different value with compression should still add it to the file
     inputs[0] = std::nextafter(0.3f, 0.4f);
-    currentTime = 0;
-    expected << currentTime << " " << inputs[0] << " \n";
+    currentTime = 0.01;
+    expected << bits(currentTime) << bits(inputs[0]);
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Check file contents
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_one_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str());
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_one_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected);
 }
 
 /// @brief Test the recorder with three parameters, for different compression options and scenarios
@@ -126,7 +131,6 @@ TEST(RecorderTests, RecorderThreeParamCompression)
 {
     std::string folder = GetTestingDirectory();
     std::stringstream expected;
-    expected << std::fixed << std::setprecision(20);
 
     Recorder recorder(TEST_DIRECTORY, "test_recorder_three_param_compression", 3, 0);
     float inputs[3];
@@ -136,62 +140,74 @@ TEST(RecorderTests, RecorderThreeParamCompression)
     inputs[1] = 0.0f;
     inputs[2] = 1.0f;
     currentTime = 0;
-    expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
+    expected << bits(currentTime) << bits(inputs[0]) << bits(inputs[1]) << bits(inputs[2]);
     recorder.WriteUserInput(inputs, currentTime, false);
 
     // Writing the same values without compression should write all values again
-    currentTime = 0.1;
-    expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
+    currentTime = 1;
+    expected << bits(currentTime) << bits(inputs[0]) << bits(inputs[1]) << bits(inputs[2]);
     recorder.WriteUserInput(inputs, currentTime, false);
 
     // Writing all values differently with compression should write all values again
     inputs[0] = 0.2f;
     inputs[1] = 0.3f;
     inputs[2] = 0.4f;
-    currentTime = 1;
-    expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
+    currentTime = 0.2;
+    expected << bits(currentTime) << bits(inputs[0]) << bits(inputs[1]) << bits(inputs[2]);
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Writing a single value differently should write all values again
     inputs[1] = std::nextafter(inputs[1], 1.0f);
-    currentTime = -1;
-    expected << currentTime << " " << inputs[0] << " " << inputs[1] << " " << inputs[2] << " \n";
+    currentTime = 6;
+    expected << bits(currentTime) << bits(inputs[0]) << bits(inputs[1]) << bits(inputs[2]);
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Writing the same values with compression should not write again
-    currentTime = 0.5;
+    currentTime = 5.5;
     recorder.WriteUserInput(inputs, currentTime, true);
 
     // Check file contents
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_three_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected.str().c_str());
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_three_param_compression", USER_INPUT_RECORDING_FILE_NAME, expected);
 }
 
 /// @brief Test the recorder without any values, only the timestamps
 TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
+
     Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0);
-    recorder.WriteUserInput(nullptr, 0);
-    recorder.WriteUserInput(nullptr, 0.1);
-    recorder.WriteUserInput(nullptr, 1);
-    recorder.WriteUserInput(nullptr, -1);
+    recorder.WriteUserInput(nullptr, 0, false);
+    recorder.WriteUserInput(nullptr, 2, false);
+    recorder.WriteUserInput(nullptr, 1, false);
+    recorder.WriteUserInput(nullptr, 6.9, false);
 
     recorder.WriteDecisions(nullptr, 0);
     recorder.WriteDecisions(nullptr, 3);
     recorder.WriteDecisions(nullptr, 435);
     recorder.WriteDecisions(nullptr, 95875);
 
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", USER_INPUT_RECORDING_FILE_NAME,
-                         "0.00000000000000000000 \n"
-                         "0.10000000000000000555 \n"
-                         "1.00000000000000000000 \n"
-                         "-1.00000000000000000000 \n")
+    recorder.WriteSimulationData(nullptr, 0.0, false);
+    recorder.WriteSimulationData(nullptr, 7.87, false);
+    recorder.WriteSimulationData(nullptr, 845.15421, false);
+    recorder.WriteSimulationData(nullptr, 95875.45145, false);
 
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME,
-                         "0.00000000000000000000 \n"
-                         "3.00000000000000000000 \n"
-                         "435.00000000000000000000 \n"
-                         "95875.00000000000000000000 \n")
+    std::stringstream expectedUserInput;
+
+    expectedUserInput << bits(0.0) << bits(2.0) << bits(1.0) << bits(6.9);
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", USER_INPUT_RECORDING_FILE_NAME, expectedUserInput)
+
+    std::stringstream expectedDecisions;
+
+    expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
+
+    std::stringstream expectedSimulationData;
+
+    expectedSimulationData << bits(0.0) << bits(7.87) << bits(845.15421) << bits(95875.45145);
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", SIMULATION_DATA_RECORDING_FILE_NAME, expectedSimulationData);
 }
 
 /// @brief Test whether the recorder can safely write to the same file twice.
@@ -204,16 +220,70 @@ TEST(RecorderTests, WriteSameFileTwice)
         Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0);
         recorder.WriteUserInput(nullptr, 0);
         recorder.WriteUserInput(nullptr, 1);
-        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME,
-                             "0.00000000000000000000 \n"
-                             "1.00000000000000000000 \n");
+
+        std::stringstream expected;
+
+        expected << bits(0.0) << bits(1.0);
+
+        ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected);
     }
     // Write less timesteps the second time, such that simply overwriting the file will be caught by the test as well
     {
         Recorder recorder(TEST_DIRECTORY, "test_recorder_same_file_twice", 0, 0);
         recorder.WriteUserInput(nullptr, 2);
-        ASSERT_FILE_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, "2.00000000000000000000 \n");
+
+        std::stringstream expected;
+
+        expected << bits(2.0);
+
+        ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_same_file_twice", USER_INPUT_RECORDING_FILE_NAME, expected);
     }
+}
+
+TEST(RecorderTests, WriteDecisions)
+{
+    Random random(0x534732);
+    std::string folder = GetTestingDirectory();
+    std::stringstream expectedDecisionsData;
+
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 0);
+    unsigned long timestamp = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        DecisionTuple decisionTuple;
+        decisionTuple.SetAccel(random.NextFloat(0, 1));
+        decisionTuple.SetBrake(random.NextFloat(0, 1));
+        decisionTuple.SetGear(random.NextInt(0, 10));
+        decisionTuple.SetSteer(random.NextFloat(0, 1));
+        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetAccel()) << bits(decisionTuple.GetBrake()) << bits(static_cast<float>(decisionTuple.GetGear()));
+        recorder.WriteDecisions(&decisionTuple, timestamp++);
+    }
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_decisions", DECISIONS_RECORDING_FILE_NAME, expectedDecisionsData);
+}
+
+TEST(RecorderTests, WriteSimulationData)
+{
+    Random random(0x534732);
+    std::string folder = GetTestingDirectory();
+    std::stringstream expectedSimulationData;
+
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_simulation_data", 0, 3);
+    float simulationData[3];
+    double timestamp = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        simulationData[0] = random.NextFloat(-1000, 1000);
+        simulationData[1] = random.NextFloat(-1000, 1000);
+        simulationData[2] = random.NextFloat(-1000, 1000);
+        expectedSimulationData << bits(timestamp) << bits(simulationData[0]) << bits(simulationData[1]) << bits(simulationData[2]);
+        recorder.WriteSimulationData(simulationData, timestamp);
+        timestamp += (1.0 / 240);
+    }
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_simulation_data", SIMULATION_DATA_RECORDING_FILE_NAME, expectedSimulationData);
 }
 
 TEST(RecorderTests, CompressionWithoutPreviousState)
@@ -223,15 +293,20 @@ TEST(RecorderTests, CompressionWithoutPreviousState)
     ASSERT_THROW(recorder.WriteRecording(nullptr, 0, file, 0, true, nullptr), std::exception);
 }
 
-TEST(RecorderTests, WriteCarTests)
+TEST(RecorderTests, WriteRunSettingsTests)
 {
+    namespace filesystem = std::experimental::filesystem;
+
+    Random random;
+    GTEST_COUT << "Random Seed: " << random.GetSeed() << std::endl;
+
     GfInit(false);
 
     // Find the car xml
     std::string path = "test_data";
     if (!FindFileDirectory(path, TEST_CAR_FILE_NAME))
     {
-        throw std::exception("Could not find test_car.xml.");
+        throw std::exception("Could not find test_car.xml.");  // @NOCOVERAGE, should always be available
     }
     path.append("/" TEST_CAR_FILE_NAME);
 
@@ -240,7 +315,7 @@ TEST(RecorderTests, WriteCarTests)
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml.");
+        throw std::exception("Could not load test_car.xml.");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
@@ -249,15 +324,61 @@ TEST(RecorderTests, WriteCarTests)
     strcpy(carElt.info.name, "Test Car");
 
     // Create a recorder
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_car", 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_settings", 0, 0);
 
     // Write the car data
-    recorder.WriteCar(&carElt);
+    tTrack track{};
+    track.filename = new char[64];
+    GenerateRandomCharArray(track.filename, 63);
+    tIndicator indicators;
+    indicators.Audio = random.NextBool();
+    indicators.Icon = random.NextBool();
+    indicators.Text = random.NextBool();
+
+    InterventionType interventionType = random.NextInt(0, NUM_INTERVENTION_TYPES);
+
+    tParticipantControl participantControl;
+    participantControl.ControlInterventionToggle = random.NextBool();
+    participantControl.ControlGas = random.NextBool();
+    participantControl.ControlSteering = random.NextBool();
+    participantControl.ForceFeedback = random.NextBool();
+    participantControl.RecordSession = random.NextBool();
+    participantControl.BBRecordSession = random.NextBool();
+
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl);
+
+    filesystem::path settingsPath = GetTestingDirectory();
+    settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
+
+    ASSERT_TRUE(filesystem::exists(settingsPath));
+
+    void* handle = GfParmReadFile(settingsPath.string().c_str(), 0, true);
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, nullptr), BoolToString(indicators.Audio));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_TEXT, nullptr), BoolToString(indicators.Text));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_ICON, nullptr), BoolToString(indicators.Icon));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, nullptr), BoolToString(participantControl.BBRecordSession));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(participantControl.RecordSession));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, nullptr), BoolToString(participantControl.ControlInterventionToggle));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteering));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(participantControl.RecordSession));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION, nullptr), BoolToString(participantControl.BBRecordSession));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_FILENAME, nullptr), track.filename);
+
+    ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);
+
+    delete[] track.filename;
 
     // Check the contents of the file
     std::ifstream originalFile(path);
     std::stringstream originalBuffer;
     originalBuffer << originalFile.rdbuf();
     std::string folder = GetTestingDirectory();
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_car", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_settings", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
 }
