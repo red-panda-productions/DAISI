@@ -69,3 +69,18 @@ TEST(MediatorTests, ReadFromFile)
 
     DeleteSingletonsFolder();
 }
+
+/// @brief                      Tests if the Mediator sets and gets the interventionType correctly
+/// @param p_blackBoxSyncOption The sync option that needs to be set
+void BlackBoxSyncOptionTestMediator(bool p_blackBoxSyncOption)
+{
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator* mediator = SMediator::GetInstance();
+    mediator->SetBlackBoxSyncOption(p_blackBoxSyncOption);
+    ASSERT_EQ(p_blackBoxSyncOption, mediator->GetBlackBoxSyncOption());
+
+    DeleteSingletonsFolder();
+}
+
+TEST_CASE(MediatorTests, SyncOptionTestTrue, BlackBoxSyncOptionTestMediator, (true))
+TEST_CASE(MediatorTests, SyncOptionTestFalse, BlackBoxSyncOptionTestMediator, (false))

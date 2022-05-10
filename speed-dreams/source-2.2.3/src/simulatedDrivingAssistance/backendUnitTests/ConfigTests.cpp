@@ -145,15 +145,15 @@ TEST(ConfigTests, BlackBoxFilePathTest)
     }
 }
 
-void BlackBoxSyncOptionTest(bool p_sync)
+void BlackBoxSyncOptionTestConfig(bool p_sync)
 {
     SDAConfig config;
     config.SetBlackBoxSyncOption(p_sync);
     ASSERT_EQ(p_sync, config.GetBlackBoxSyncOption());
 }
 
-TEST_CASE(ConfigTests, BlackBoxSyncOptionTestAsync, BlackBoxSyncOptionTest, (true))
-TEST_CASE(ConfigTests, BlackBoxSyncOptionTestSync, BlackBoxSyncOptionTest, (false))
+TEST_CASE(ConfigTests, BlackBoxSyncOptionTestAsync, BlackBoxSyncOptionTestConfig, (true))
+TEST_CASE(ConfigTests, BlackBoxSyncOptionTestSync, BlackBoxSyncOptionTestConfig, (false))
 
 /// @brief         Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
 /// @param p_bool1 First bool

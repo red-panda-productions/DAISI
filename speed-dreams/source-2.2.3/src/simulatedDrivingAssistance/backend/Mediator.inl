@@ -14,6 +14,7 @@
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template bool Mediator<type>::GetBlackBoxSyncOption();                                                                                              \
     template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
     template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
@@ -141,6 +142,14 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::GetReplayRecorderSetting()
 {
     return m_decisionMaker.Config.GetReplayRecorderSetting();
+}
+
+/// @brief  Gets the black box sync option
+/// @return The black box sync option
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetBlackBoxSyncOption()
+{
+    return m_decisionMaker.Config.GetBlackBoxSyncOption();
 }
 
 /// @brief              Does one drive tick in the framework
