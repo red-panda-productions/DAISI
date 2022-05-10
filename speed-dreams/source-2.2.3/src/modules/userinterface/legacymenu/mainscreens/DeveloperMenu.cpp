@@ -5,6 +5,7 @@
 #include "Mediator.h"
 #include "guimenu.h"
 #include "../rppUtils/FileDialog.hpp"
+#include <experimental/filesystem>
 
 // Parameters used in the xml files
 #define PRM_SYNC          "SynchronizationButtonList"
@@ -53,7 +54,7 @@ static void LoadSettingsFromFile(void* p_param)
     const char* filePath = GfParmGetStr(p_param, PRM_CHOOSE_REPLAY, GFMNU_ATTR_PATH, nullptr);
     if (filePath)
     {
-        strcpy_s(m_replayFilePath, BLACKBOX_PATH_SIZE, filePath);
+        strcpy_s(m_replayFilePath, MAX_PATH_SIZE, filePath);
         m_replayFileChosen = true;
     }
 }
@@ -67,8 +68,8 @@ static void SynchronizeControls()
 
     if (m_replayFileChosen)
     {
-        std::string fileName = m_replayFilePath;
-        std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+        std::experimental::filesystem::path path = m_replayFilePath;
+        std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_chooseReplayFileButton, buttonText.c_str());
     }
 }
@@ -179,10 +180,9 @@ static void ChooseReplayFile(void* /* dummy */)
         return;
     }
 
-    std::string fileName = buf;
-
     // Visual feedback of choice
-    std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+    std::experimental::filesystem::path path = buf;
+    std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_chooseReplayFileButton, buttonText.c_str());
 
     // Copy into actual variable

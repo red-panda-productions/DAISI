@@ -252,18 +252,3 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder)
 
     return true;
 }
-
-/// @brief        Finds the last name of the last object (folder/file) in a filepath
-/// @param p_path A path
-/// @returns      The name represented by the path, ignoring any directories
-inline std::string FindLastDirectoryItemName(std::string& p_path)
-{
-    unsigned int lastDirectoryIndex = 0;
-    for (unsigned int i = p_path.size() - 1; i >= 0; i--)
-    {
-        if (p_path[i] != '\\') { continue; }
-        lastDirectoryIndex = i;
-        break;
-    }
-    return p_path.substr(lastDirectoryIndex + 1, std::string::npos);
-}

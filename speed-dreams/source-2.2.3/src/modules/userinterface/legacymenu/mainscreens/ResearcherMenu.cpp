@@ -10,6 +10,7 @@
 #include <locale>
 #include <codecvt>
 #include "../rppUtils/FileDialog.hpp"
+#include <experimental/filesystem>
 
 // Parameters used in the xml files
 #define PRM_TASKS            "TaskRadioButtonList"
@@ -282,8 +283,8 @@ static void SynchronizeControls()
 
     if (m_blackBoxChosen)
     {
-        std::string fileName = m_blackBoxFilePath;
-        std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+        std::experimental::filesystem::path path = m_blackBoxFilePath;
+        std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     }
 }
@@ -373,28 +374,22 @@ static void SelectBlackBox(void* /* dummy */)
     }
 
     // Validate input w.r.t. black boxes
-    std::string fileName = buf;
+    std::experimental::filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
-    if (fileName.size() <= 7)
+    if (path.string().size() <= 7)
     {
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
-    // Convert file extension to lowercase in case of COM file aliasing that converts extension into uppercase as a result of file path lengths > 260 characters
-    std::string extension = fileName.substr(fileName.size() - 4, std::string::npos);
-    for (int i = 1; i < 5; i++)
-    {
-        extension[i] = static_cast<char>(std::tolower(extension[i]));
-    }
     // Enforce that file ends in .exe
-    if (std::strcmp(extension.c_str(), ".exe") != 0)
+    if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
 
     // Visual feedback of choice
-    std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+    std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NORMAL_TEXT);  // Reset the apply button
 
