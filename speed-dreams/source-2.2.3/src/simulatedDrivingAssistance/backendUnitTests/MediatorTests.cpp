@@ -17,6 +17,7 @@
 /// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
 #define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
+/// @brief The amount of tests for multiple tests
 #define TEST_AMOUNT 20
 
 template <>
