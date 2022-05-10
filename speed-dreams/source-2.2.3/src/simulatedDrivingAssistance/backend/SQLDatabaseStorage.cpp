@@ -132,6 +132,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     bool p_useEncryption,
     const std::string& p_dirPath)
 {
+    std::cout << "open database";
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
 
@@ -656,10 +657,13 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     std::string configPath("data" + p_dirPath);
     std::string configFile("DatabaseSettingsMenu.xml");
 
+    std::cout << "looking for file";
     if (!FindFileDirectory(configPath, configFile))
         throw std::exception("Could not find database settings xml");
+    std::cout << "file found" << std::endl;
 
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
+    std::cout << "databasesettings found";
 
     int port;
     try
