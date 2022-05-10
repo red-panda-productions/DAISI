@@ -25,6 +25,7 @@
 
 #include "legacymenu.h"
 #include "exitmenu.h"
+#include "savemenu.h"
 #include "racescreens.h"
 
 #include <graphic.h>
@@ -121,6 +122,10 @@ rmRestartRaceHookInit()
 {
     if (!pvRestartRaceHookHandle)
         pvRestartRaceHookHandle = GfuiHookCreate(0, rmRestartRaceHookActivate);
+
+    if (pvRestartRaceHookHandle)
+        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle));
+
 
     return pvRestartRaceHookHandle;
 }

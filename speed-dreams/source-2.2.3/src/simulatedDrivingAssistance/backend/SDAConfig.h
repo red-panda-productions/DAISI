@@ -20,6 +20,7 @@ private:
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+    bool m_saveRaceToDatabase = false;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -44,6 +45,8 @@ public:
     char* GetUserId() const;
     void SetBlackBoxFilePath(const char* p_filePath);
     const char* GetBlackBoxFilePath() const;
+    void SetSaveToDatabaseCheck(bool p_saveToDatabase);
+    bool GetSaveToDatabaseCheck() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType GetInterventionType() const;

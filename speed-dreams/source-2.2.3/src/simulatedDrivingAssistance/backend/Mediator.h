@@ -50,7 +50,6 @@ private:
 
     tTrack* m_track = nullptr;
     bool m_inRace = false;  // Whether the game is currently in a race
-    bool m_saveRaceToDatabase = false;
 };
 
 /// @brief The standard type of the mediator

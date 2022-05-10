@@ -100,6 +100,16 @@ tDataToStore SDAConfig::GetDataCollectionSetting() const
     return m_dataCollectionSetting;
 }
 
+void SDAConfig::SetSaveToDatabaseCheck(bool p_saveToDatabase)
+{
+    m_saveRaceToDatabase = p_saveToDatabase;
+}
+
+bool SDAConfig::GetSaveToDatabaseCheck() const
+{
+    return m_saveRaceToDatabase;
+}
+
 /// @brief            Sets the filepath for the black box executable
 /// @param p_filePath A const char* representing the filepath of the black box executable
 void SDAConfig::SetBlackBoxFilePath(const char* p_filePath)
