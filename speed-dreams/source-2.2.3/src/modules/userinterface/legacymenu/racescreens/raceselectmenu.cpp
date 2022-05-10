@@ -18,8 +18,8 @@
  ***************************************************************************/
 
 /** @file   
-                Race selection menu
-    @author		<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
+    		Race selection menu
+    @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
     @version	$Id: raceselectmenu.cpp 7011 2020-04-30 15:23:52Z iobyte $
 */
 
@@ -82,7 +82,7 @@ rmOnSelectRaceMan()
 	{
 		// Give the selected race manager to the race engine.
 		LmRaceEngine().selectRaceman(pSelRaceMan);
-
+		
 		// Start the race configuration menus sequence.
 		LmRaceEngine().configureRace(/* bInteractive */ true);
 	}

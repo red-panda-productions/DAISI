@@ -86,8 +86,8 @@ static tCmdInfo Cmd[] = {
     {HM_ATT_DASHB_INC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_INC_MIN,   0, HM_ATT_DASHB_INC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
 
-	// SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
-	{HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, NO_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0} };
+	    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
+    {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, NO_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
 
 static const int MaxCmd = sizeof(Cmd) / sizeof(Cmd[0]);
 static const int ICmdReverseGear = 9;
@@ -144,6 +144,8 @@ static float SteerSensVal;
 static float DeadZoneVal;
 static float SteerSpeedSensVal;
 
+// SIMULATED DRIVING ASSISTANCE: added skillLevel of players to controls since player menu is removed
+static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
 static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
 static const int NbSkillLevels = sizeof(SkillLevelString) / sizeof(SkillLevelString[0]);
 
@@ -151,6 +153,8 @@ static const char* PlayerNamePrompt = "-- Enter name --";
 static const char* NoPlayer = "-- No one --";
 static const char* HumanDriverModuleName = "human";
 static const char* DefaultCarName = "sc-lynx-220";
+
+// SIMULATED DRIVING ASSISTANCE: added tInfo
 /* Struct to define a generic ("internal name / id", "displayable name") pair */
 typedef struct tInfo
 {
@@ -158,6 +162,7 @@ typedef struct tInfo
 	char* dispname;
 
 } tInfo;
+// SIMULATED DRIVING ASSISTANCE: added tPlayerInfo
 /* Player info struct */
 struct tPlayerInfo
 {
@@ -291,9 +296,12 @@ private:
 	int				_autoreverse;
 };
 
+// SIMULATED DRIVING ASSISTANCE: added tPlayerinfoList
 /* The human driver (= player) info list */
 typedef std::deque<tPlayerInfo*> tPlayerInfoList;
 static tPlayerInfoList PlayersInfo;
+
+// SIMULATED DRIVING ASSISTANCE: added currPlayer
 
 /* The currently selected player (PlayersInfo.end() if none) */
 static tPlayerInfoList::iterator CurrPlayer;
@@ -319,7 +327,6 @@ static int AcceptMouseClicks = 1;
 static int MouseCalNeeded;
 static int JoyCalNeeded;
 static int Joy2butCalNeeded;
-
 
 static void
 onSteerSensChange(void * /* dummy */)
@@ -768,6 +775,9 @@ onPush(void *vi)
     /* Now, wait for input device actions */
     GfuiApp().eventLoop().setRecomputeCB(IdleWaitForInput);
 }
+
+
+//SIMULATED DRIVING ASSISTANCE: added GenPlayerList()
 /* Load human driver (= player) info list (PlayersInfo) from preferences and human drivers files ;
 load associated scroll list */
 static int
@@ -945,7 +955,8 @@ DevCalibrate(void * /* dummy */)
 	GfuiScreenActivate(nextCalMenu);
 }
 
-
+// SIMULATED DRIVING ASSISTANCE: removed prefHdle, index, GearChangeMode, and set those in the function
+// according to now removed playerconfigmenu
 /* */
 void *
 ControlMenuInit(void *prevMenu, int saveOnExit)
