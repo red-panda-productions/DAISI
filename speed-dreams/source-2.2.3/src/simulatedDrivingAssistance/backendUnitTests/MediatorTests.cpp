@@ -50,6 +50,23 @@ void InterventionTest(InterventionType p_interventionType)
     DeleteSingletonsFolder();
 }
 
+/// @brief                      Tests if the Mediator sets and gets the interventionType correctly
+/// @param p_blackBoxSyncOption The sync option that needs to be set
+void BlackBoxSyncOptionTestMediator(bool p_blackBoxSyncOption)
+{
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    SMediator* mediator = SMediator::GetInstance();
+
+    mediator->SetBlackBoxSyncOption(p_blackBoxSyncOption);
+    ASSERT_EQ(p_blackBoxSyncOption, mediator->GetBlackBoxSyncOption());
+
+    DeleteSingletonsFolder();
+}
+
+TEST_CASE(MediatorTests, SyncOptionTestTrue, BlackBoxSyncOptionTestMediator, (true))
+TEST_CASE(MediatorTests, SyncOptionTestFalse, BlackBoxSyncOptionTestMediator, (false))
+
 TEST_CASE(MediatorTests, InterventionTestNoSignals, InterventionTest, (INTERVENTION_TYPE_NO_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTestOnlySignals, InterventionTest, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTestSharedControl, InterventionTest, (INTERVENTION_TYPE_SHARED_CONTROL))
@@ -67,20 +84,6 @@ TEST(MediatorTests, ReadFromFile)
     SMediator* mediator2 = SMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
 
-    DeleteSingletonsFolder();
+    SMediator::ClearInstance(); // Clear Mediator
+    DeleteSingletonsFolder();   // And delete pointer to it as it doesn't exist anymore
 }
-
-/// @brief                      Tests if the Mediator sets and gets the interventionType correctly
-/// @param p_blackBoxSyncOption The sync option that needs to be set
-void BlackBoxSyncOptionTestMediator(bool p_blackBoxSyncOption)
-{
-    ASSERT_TRUE(SetupSingletonsFolder());
-    SMediator* mediator = SMediator::GetInstance();
-    mediator->SetBlackBoxSyncOption(p_blackBoxSyncOption);
-    ASSERT_EQ(p_blackBoxSyncOption, mediator->GetBlackBoxSyncOption());
-
-    DeleteSingletonsFolder();
-}
-
-TEST_CASE(MediatorTests, SyncOptionTestTrue, BlackBoxSyncOptionTestMediator, (true))
-TEST_CASE(MediatorTests, SyncOptionTestFalse, BlackBoxSyncOptionTestMediator, (false))
