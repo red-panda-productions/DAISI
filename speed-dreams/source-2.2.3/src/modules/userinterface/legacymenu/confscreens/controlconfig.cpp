@@ -3,25 +3,27 @@
     file        : controlconfig.cpp
     created     : Wed Mar 12 21:20:34 CET 2003
     copyright   : (C) 2003 by Eric Espie
+    file        : controlconfig.cpp
+    created     : Wed Mar 12 21:20:34 CET 2003
+    copyright   : (C) 2003 by Eric Espie 
     email       : eric.espie@torcs.org
     version     : $Id: controlconfig.cpp 6966 2020-04-25 17:33:03Z scttgs0 $
-
  ***************************************************************************/
 
- /***************************************************************************
-  *                                                                         *
-  *   This program is free software; you can redistribute it and/or modify  *
-  *   it under the terms of the GNU General Public License as published by  *
-  *   the Free Software Foundation; either version 2 of the License, or     *
-  *   (at your option) any later version.                                   *
-  *                                                                         *
-  ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
-  /** @file
-              Human player control configuration menu
-      @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
-      @version	$Id: controlconfig.cpp 6966 2020-04-25 17:33:03Z scttgs0 $
-  */
+/** @file   
+    		Human player control configuration menu
+    @author	<a href=mailto:eric.espie@torcs.org>Eric Espie</a>
+    @version	$Id: controlconfig.cpp 6966 2020-04-25 17:33:03Z scttgs0 $
+*/
 
 #include <cstdio>
 #include <cstdlib>
@@ -41,10 +43,11 @@
 #include "joy2butconfig.h"
 
 
-static void* ScrHandle = NULL;
-static void* PrevScrHandle = NULL;
-static void* PrefHdle = NULL;
-static void* PlayerHdle = NULL;
+static void *ScrHandle = NULL;
+static void	*PrevScrHandle = NULL;
+static void	*PrefHdle = NULL;
+// SIMULATED DRIVING ASSISTANCE: added PlayerHdle
+static void *PlayerHdle = NULL;
 static int	SaveOnExit = 0;
 
 static tCtrlMouseInfo MouseInfo;
@@ -132,7 +135,7 @@ static tCmdDispInfo CmdDispInfo[] = {
 static tCtrlJoyInfo joyInfo;// = NULL;
 static tCtrlJoyInfo joyCenter;
 #else
-static jsJoystick* Joystick[GFCTRL_JOY_NUMBER];
+static jsJoystick	*Joystick[GFCTRL_JOY_NUMBER];
 static float		JoyAxis[GFCTRL_JOY_MAX_AXES * GFCTRL_JOY_NUMBER];
 static float 		JoyAxisCenter[GFCTRL_JOY_MAX_AXES * GFCTRL_JOY_NUMBER];
 static int		JoyButtons[GFCTRL_JOY_NUMBER];
@@ -142,6 +145,7 @@ static float SteerSensVal;
 static float DeadZoneVal;
 static float SteerSpeedSensVal;
 
+// SIMULATED DRIVING ASSISTANCE: added skillLevel of players to controls since player menu is removed
 static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
 static const int NbSkillLevels = sizeof(SkillLevelString) / sizeof(SkillLevelString[0]);
 
@@ -149,6 +153,7 @@ static const char* NoPlayer = "-- No one --";
 static const char* HumanDriverModuleName = "human";
 static const char* DefaultCarName = "sc-lynx-220";
 
+// SIMULATED DRIVING ASSISTANCE: added tInfo
 /* Struct to define a generic ("internal name / id", "displayable name") pair */
 typedef struct tInfo
 {
@@ -157,6 +162,7 @@ typedef struct tInfo
 
 } tInfo;
 
+// SIMULATED DRIVING ASSISTANCE: added tPlayerInfo
 struct tPlayerInfo
 {
 public:
@@ -293,13 +299,16 @@ private:
     int				_autoreverse;
 };
 
+// SIMULATED DRIVING ASSISTANCE: added tPlayerinfoList
 /* The human driver (= player) info list */
 typedef std::deque<tPlayerInfo*> tPlayerInfoList;
 static tPlayerInfoList PlayersInfo;
 
+// SIMULATED DRIVING ASSISTANCE: added currPlayer
 /* The currently selected player (PlayersInfo.end() if none) */
 static tPlayerInfoList::iterator CurrPlayer;
 
+// SIMULATED DRIVING ASSISTANCE: added Yn[]
 /* A bool to ("yes", "no") conversion table */
 static const char* Yn[] = { HM_VAL_YES, HM_VAL_NO };
 
@@ -322,9 +331,9 @@ static int JoyCalNeeded;
 static int Joy2butCalNeeded;
 
 static void
-onSteerSensChange(void* /* dummy */)
+onSteerSensChange(void * /* dummy */)
 {
-    char* val;
+    char	*val;
     float	fv;
 
     val = GfuiEditboxGetString(ScrHandle, SteerSensEditId);
@@ -334,17 +343,16 @@ onSteerSensChange(void* /* dummy */)
         sprintf(buf, "%6.4f", fv);
         GfuiEditboxSetString(ScrHandle, SteerSensEditId, buf);
         SteerSensVal = fv;
-    }
-    else {
+    } else {
         GfuiEditboxSetString(ScrHandle, SteerSensEditId, "");
     }
 
 }
 
 static void
-onDeadZoneChange(void* /* dummy */)
+onDeadZoneChange(void * /* dummy */)
 {
-    char* val;
+    char	*val;
     float	fv;
 
     val = GfuiEditboxGetString(ScrHandle, DeadZoneEditId);
@@ -352,7 +360,28 @@ onDeadZoneChange(void* /* dummy */)
         if (fv < 0.0)
             fv = 0.0;
         else if (fv > 1.0)
-            fv = 1.0;
+                fv = 1.0;
+        sprintf(buf, "%6.4f", fv);
+        GfuiEditboxSetString(ScrHandle, DeadZoneEditId, buf);
+        DeadZoneVal = fv;
+    } else {
+        GfuiEditboxSetString(ScrHandle, SteerSensEditId, "");
+    }
+
+}
+
+static void
+onSteerSpeedSensChange(void * /* dummy */)
+{
+    char* val;
+    float	fv;
+
+    val = GfuiEditboxGetString(ScrHandle, SteerSpeedSensEditId);
+    if (sscanf(val, "%f", &fv) == 1) {
+        if (fv < 0.0)
+            fv = 0.0;
+        else if (fv > 1.0)
+                fv = 1.0;
         sprintf(buf, "%6.4f", fv);
         GfuiEditboxSetString(ScrHandle, DeadZoneEditId, buf);
         DeadZoneVal = fv;
@@ -363,29 +392,9 @@ onDeadZoneChange(void* /* dummy */)
 
 }
 
-static void
-onSteerSpeedSensChange(void* /* dummy */)
-{
-    char* val;
-    float	fv;
-
-    val = GfuiEditboxGetString(ScrHandle, SteerSpeedSensEditId);
-    if (sscanf(val, "%f", &fv) == 1) {
-        if (fv < 0.0)
-            fv = 0.0;
-        sprintf(buf, "%6.4f", fv);
-        GfuiEditboxSetString(ScrHandle, SteerSpeedSensEditId, buf);
-        SteerSpeedSensVal = fv;
-    }
-    else {
-        GfuiEditboxSetString(ScrHandle, SteerSpeedSensEditId, "");
-    }
-
-}
-
 /* Quit current menu */
 static void
-onQuit(void* prevMenu)
+onQuit(void *prevMenu)
 {
     ReloadValues = 1;
 
@@ -418,7 +427,7 @@ onQuit(void* prevMenu)
 
 /* Save settings in the players preferences and go back to previous screen */
 static void
-onSave(void* prevMenu)
+onSave(void *prevMenu)
 {
     // Force current edit to loose focus (if one has it) and update associated variable.
     GfuiUnSelectCurrent();
@@ -432,12 +441,12 @@ static void
 updateButtonText(void)
 {
     int		cmdInd;
-    const char* str;
+    const char *str;
 
     /* No calibration / no dead zone needed for the moment (but let's check this ...) */
     MouseCalNeeded = 0;
-    JoyCalNeeded = 0;
-    Joy2butCalNeeded = 0;
+    JoyCalNeeded   = 0;
+    Joy2butCalNeeded   = 0;
 
     /* For each control: */
     for (cmdInd = 0; cmdInd < MaxCmd; cmdInd++) {
@@ -446,33 +455,32 @@ updateButtonText(void)
         str = GfctrlGetNameByRef(Cmd[cmdInd].ref.type, Cmd[cmdInd].ref.index);
         if (str) {
             GfuiButtonSetText(ScrHandle, Cmd[cmdInd].Id, str);
-        }
-        else {
+        } else {
             GfuiButtonSetText(ScrHandle, Cmd[cmdInd].Id, "---");
         }
 
         /* According to detected action, update the "calibration needed" flags */
         if (Cmd[cmdInd].ref.type == GFCTRL_TYPE_MOUSE_AXIS) {
             MouseCalNeeded = 1;
-        }
-        else if (Cmd[cmdInd].ref.type == GFCTRL_TYPE_JOY_AXIS) {
+        } else if (Cmd[cmdInd].ref.type == GFCTRL_TYPE_JOY_AXIS) {
             JoyCalNeeded = 1;
-        }
-        else if (Cmd[cmdInd].ref.type == GFCTRL_TYPE_JOY_ATOB) {
+        } else if (Cmd[cmdInd].ref.type == GFCTRL_TYPE_JOY_ATOB) {
             Joy2butCalNeeded = 1;
         }
     }
 
     /* According to detected action, update the "dead zone needed" flag */
+
+    /* According to detected action, update the "dead zone needed" flag */
     int deadZoneNeeded = 1;
-    if ((Cmd[0].ref.type == GFCTRL_TYPE_KEYBOARD
-        || Cmd[0].ref.type == GFCTRL_TYPE_JOY_BUT
-        || Cmd[0].ref.type == GFCTRL_TYPE_MOUSE_BUT)
-        && (Cmd[1].ref.type == GFCTRL_TYPE_KEYBOARD
-            || Cmd[1].ref.type == GFCTRL_TYPE_JOY_BUT
-            || Cmd[1].ref.type == GFCTRL_TYPE_MOUSE_BUT)) {
-        deadZoneNeeded = 0;
-    }
+	if ((Cmd[0].ref.type == GFCTRL_TYPE_KEYBOARD
+			|| Cmd[0].ref.type == GFCTRL_TYPE_JOY_BUT
+			|| Cmd[0].ref.type == GFCTRL_TYPE_MOUSE_BUT)
+		&& (Cmd[1].ref.type == GFCTRL_TYPE_KEYBOARD
+			|| Cmd[1].ref.type == GFCTRL_TYPE_JOY_BUT
+			|| Cmd[1].ref.type == GFCTRL_TYPE_MOUSE_BUT)) {
+	    deadZoneNeeded = 0;
+	}
 
     /* Update Steer Sensibility editbox */
     sprintf(buf, "%6.4f", SteerSensVal);
@@ -488,19 +496,19 @@ updateButtonText(void)
 
     /* Show / hide mouse / joystick calibration button,
        according to the detected input device actions */
-    GfuiVisibilitySet(ScrHandle, CalibrateButtonId,
-        MouseCalNeeded | JoyCalNeeded | Joy2butCalNeeded ? GFUI_VISIBLE : GFUI_INVISIBLE);
-
+    GfuiVisibilitySet(ScrHandle, CalibrateButtonId, 
+		      MouseCalNeeded|JoyCalNeeded|Joy2butCalNeeded ? GFUI_VISIBLE : GFUI_INVISIBLE);
+	
     /* Show / hide dead zone label /editbox,
        according to the detected input device actions */
-    GfuiVisibilitySet(ScrHandle, DeadZoneLabelId,
-        deadZoneNeeded ? GFUI_VISIBLE : GFUI_INVISIBLE);
-    GfuiVisibilitySet(ScrHandle, DeadZoneEditId,
-        deadZoneNeeded ? GFUI_VISIBLE : GFUI_INVISIBLE);
+    GfuiVisibilitySet(ScrHandle, DeadZoneLabelId, 
+		      deadZoneNeeded ? GFUI_VISIBLE : GFUI_INVISIBLE);
+    GfuiVisibilitySet(ScrHandle, DeadZoneEditId, 
+		      deadZoneNeeded ? GFUI_VISIBLE : GFUI_INVISIBLE);
 }
 
 static void
-onFocusLost(void* /* dummy */)
+onFocusLost(void * /* dummy */)
 {
     updateButtonText();
 }
@@ -513,22 +521,21 @@ static int
 onKeyAction(int key, int /* modifier */, int state)
 {
     if (!InputWaited || state == GFUI_KEY_UP) {
-        return 0;
+	return 0;
     }
     if (key == GFUIK_RSHIFT || key == GFUIK_LSHIFT) {
         return 0;
     }
     if (key == GFUIK_ESCAPE) {
-        /* escape */
-        Cmd[CurrentCmd].ref.index = -1;
-        Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_NOT_AFFECTED;
-        GfParmSetStr(PrefHdle, CurrentSection, Cmd[CurrentCmd].name, "");
-    }
-    else {
-        const char* name = GfctrlGetNameByRef(GFCTRL_TYPE_KEYBOARD, key);
-        Cmd[CurrentCmd].ref.index = key;
-        Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_KEYBOARD;
-        GfParmSetStr(PrefHdle, CurrentSection, Cmd[CurrentCmd].name, name);
+	/* escape */
+	Cmd[CurrentCmd].ref.index = -1;
+	Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_NOT_AFFECTED;
+	GfParmSetStr(PrefHdle, CurrentSection, Cmd[CurrentCmd].name, "");
+    } else {
+	const char* name = GfctrlGetNameByRef(GFCTRL_TYPE_KEYBOARD, key);
+	Cmd[CurrentCmd].ref.index = key;
+	Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_KEYBOARD;
+	GfParmSetStr(PrefHdle, CurrentSection, Cmd[CurrentCmd].name, name);
     }
 
     GfuiApp().eventLoop().setRecomputeCB(0);
@@ -544,19 +551,19 @@ getMovedAxis(int joy_number)
     int		Index = -1;
     float	maxDiff = 0.3;
 
-    for (i = GFCTRL_JOY_MAX_AXES * joy_number; i < GFCTRL_JOY_MAX_AXES * (joy_number + 1); i++) {
+    for (i = GFCTRL_JOY_MAX_AXES * joy_number; i < GFCTRL_JOY_MAX_AXES * (joy_number+1); i++) {
 #if SDL_JOYSTICK
-        if (maxDiff < fabs(joyInfo.ax[i] - joyCenter.ax[i])) {
-            maxDiff = fabs(joyInfo.ax[i] - joyCenter.ax[i]);
+	if (maxDiff < fabs(joyInfo.ax[i] - joyCenter.ax[i])) {
+	    maxDiff = fabs(joyInfo.ax[i] - joyCenter.ax[i]);
 #else
-        if (maxDiff < fabs(JoyAxis[i] - JoyAxisCenter[i])) {
-            maxDiff = fabs(JoyAxis[i] - JoyAxisCenter[i]);
+	if (maxDiff < fabs(JoyAxis[i] - JoyAxisCenter[i])) {
+	    maxDiff = fabs(JoyAxis[i] - JoyAxisCenter[i]);
 #endif
-            Index = i;
-        }
-        }
-    return Index;
+	    Index = i;
+	}
     }
+    return Index;
+}
 
 // Not used anymore : remove ?
 /* Game event loop idle function : For collecting input devices actions */
@@ -577,40 +584,40 @@ IdleWaitForInput(void)
 #endif
     int i;
     int		index;
-    const char* str;
+    const char *str;
     int		axis;
 
     GfctrlMouseGetCurrentState(&MouseInfo);
 
     /* Check for a mouse button pressed */
     for (i = 0; i < 7; i++) {
-        if (MouseInfo.edgedn[i]) {
-            AcceptMouseClicks = 0;
-            GfuiApp().eventLoop().setRecomputeCB(0);
-            InputWaited = 0;
-            str = GfctrlGetNameByRef(GFCTRL_TYPE_MOUSE_BUT, i);
-            Cmd[CurrentCmd].ref.index = i;
-            Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_MOUSE_BUT;
-            GfuiButtonSetText(ScrHandle, Cmd[CurrentCmd].Id, str);
-            GfuiApp().eventLoop().postRedisplay();
-            updateButtonText();
-            return;
-        }
+	if (MouseInfo.edgedn[i]) {
+	    AcceptMouseClicks = 0;
+	    GfuiApp().eventLoop().setRecomputeCB(0);
+	    InputWaited = 0;
+	    str = GfctrlGetNameByRef(GFCTRL_TYPE_MOUSE_BUT, i);
+	    Cmd[CurrentCmd].ref.index = i;
+	    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_MOUSE_BUT;
+	    GfuiButtonSetText (ScrHandle, Cmd[CurrentCmd].Id, str);
+	    GfuiApp().eventLoop().postRedisplay();
+	    updateButtonText();
+	    return;
+	}
     }
 
     /* Check for a mouse axis moved */
     for (i = 0; i < 4; i++) {
-        if (MouseInfo.ax[i] > 20.0) {
-            GfuiApp().eventLoop().setRecomputeCB(0);
-            InputWaited = 0;
-            str = GfctrlGetNameByRef(GFCTRL_TYPE_MOUSE_AXIS, i);
-            Cmd[CurrentCmd].ref.index = i;
-            Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_MOUSE_AXIS;
-            GfuiButtonSetText(ScrHandle, Cmd[CurrentCmd].Id, str);
-            GfuiApp().eventLoop().postRedisplay();
-            updateButtonText();
-            return;
-        }
+	if (MouseInfo.ax[i] > 20.0) {
+	    GfuiApp().eventLoop().setRecomputeCB(0);
+	    InputWaited = 0;
+	    str = GfctrlGetNameByRef(GFCTRL_TYPE_MOUSE_AXIS, i);
+	    Cmd[CurrentCmd].ref.index = i;
+	    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_MOUSE_AXIS;
+	    GfuiButtonSetText (ScrHandle, Cmd[CurrentCmd].Id, str);
+	    GfuiApp().eventLoop().postRedisplay();
+	    updateButtonText();
+	    return;
+	}
     }
 
     /* Check for a Joystick button pressed */
@@ -619,148 +626,150 @@ IdleWaitForInput(void)
 #endif
     for (index = 0; index < GFCTRL_JOY_NUMBER; index++) {
 #ifndef SDL_JOYSTICK
-        if (Joystick[index]) {
-            Joystick[index]->read(&b, &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
+	if (Joystick[index]) {
+	    Joystick[index]->read(&b, &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
 #endif
 
             /* check for joystick movement as well */
             axis = getMovedAxis(index);
 
-            /* Allow a little extra time to detect button */
-            if (axis != -1 && Cmd[CurrentCmd].pref != HM_ATT_JOY_REQ_AXIS) {
-                GfSleep(0.3);
+	    /* Allow a little extra time to detect button */
+	    if (axis != -1 && Cmd[CurrentCmd].pref != HM_ATT_JOY_REQ_AXIS) {
+		GfSleep(0.3);
 #if SDL_JOYSTICK
                 GfctrlJoyGetCurrentStates(&joyInfo);
 #else
-                Joystick[index]->read(&b, &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
+   		Joystick[index]->read(&b, &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
 #endif
-            }
+	    }
 
             /* Joystick buttons */
 #if SDL_JOYSTICK
-            for (i = 0; i < GFCTRL_JOY_MAX_BUTTONS; i++) {
-                if (joyInfo.levelup[i + GFCTRL_JOY_MAX_BUTTONS * index]) {
+	    for (i = 0; i < GFCTRL_JOY_MAX_BUTTONS; i++) {
+		if (joyInfo.levelup[i + GFCTRL_JOY_MAX_BUTTONS * index]) {
 #else
-            for (i = 0, mask = 1; i < 32; i++, mask *= 2) {
-                if (((b & mask) != 0) && ((JoyButtons[index] & mask) == 0)) {
+	    for (i = 0, mask = 1; i < 32; i++, mask *= 2) {
+		if (((b & mask) != 0) && ((JoyButtons[index] & mask) == 0)) {
 #endif
-                    /* Allow a little extra time to detect axis movement */
-                    if (axis == -1 && Cmd[CurrentCmd].pref != HM_ATT_JOY_REQ_BUT) {
-                        GfSleep(0.3);
+		    /* Allow a little extra time to detect axis movement */
+		    if (axis == -1 && Cmd[CurrentCmd].pref != HM_ATT_JOY_REQ_BUT) {
+    			GfSleep(0.3);
 #if SDL_JOYSTICK
-                        GfctrlJoyGetCurrentStates(&joyInfo);
+            GfctrlJoyGetCurrentStates(&joyInfo);
 #else
-                        Joystick[index]->read(&b, &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
+	    		Joystick[index]->read(&b, &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
 #endif
                         axis = getMovedAxis(index);
                     }
 
-                    /* Choose to use AXIS type... */
-                    if (axis != -1 && Cmd[CurrentCmd].pref != HM_ATT_JOY_PREF_BUT &&
-                        Cmd[CurrentCmd].pref != HM_ATT_JOY_REQ_BUT &&
-                        Cmd[CurrentCmd].pref != HM_ATT_JOY_PREF_LAST) {
-                        // Toggle Prefered Type
-                        if (Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_AXIS)
-                            Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_BUT;
-                        if (Cmd[CurrentCmd].pref >= HM_ATT_JOY_PREF_ANY)
-                            Cmd[CurrentCmd].pref++;
+            		axis = getMovedAxis(index);
+		    }
+
+		    /* Choose to use AXIS type... */
+		    if (axis != -1 && Cmd[CurrentCmd].pref != HM_ATT_JOY_PREF_BUT && 
+			    Cmd[CurrentCmd].pref != HM_ATT_JOY_REQ_BUT &&
+			    Cmd[CurrentCmd].pref != HM_ATT_JOY_PREF_LAST) {
+			// Toggle Prefered Type
+			if (Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_AXIS)
+			    Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_BUT;
+			if (Cmd[CurrentCmd].pref >= HM_ATT_JOY_PREF_ANY)
+			    Cmd[CurrentCmd].pref ++;
 
 #if SDL_JOYSTICK
-                        Cmd[CurrentCmd].butIgnore = i + GFCTRL_JOY_MAX_BUTTONS * index;
+         Cmd[CurrentCmd].butIgnore = i + GFCTRL_JOY_MAX_BUTTONS * index;
 #else
-                        Cmd[CurrentCmd].butIgnore = i + 32 * index;
+			Cmd[CurrentCmd].butIgnore = i + 32 * index;
 #endif
 
-                        goto configure_for_joy_axis;
-                    }
+			goto configure_for_joy_axis;
+		    }
 
-                    if (axis != -1 && Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_BUT) {
-                        Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_AXIS;
-                    }
-                    if (axis != -1 && Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_LAST) {
-                        Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_ANY;
-                    }
-                    Cmd[CurrentCmd].butIgnore = 0;
+		    if (axis != -1 && Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_BUT) {
+			Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_AXIS;
+		    }
+		    if (axis != -1 && Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_LAST) {
+			Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_ANY;
+		    }
+		    Cmd[CurrentCmd].butIgnore = 0;
 
-                    /* Button i fired */
-                    GfuiApp().eventLoop().setRecomputeCB(0);
-                    InputWaited = 0;
+		    /* Button i fired */
+		    GfuiApp().eventLoop().setRecomputeCB(0);
+		    InputWaited = 0;
 #if SDL_JOYSTICK
-                    str = GfctrlGetNameByRef(GFCTRL_TYPE_JOY_BUT, i + GFCTRL_JOY_MAX_BUTTONS * index);
-                    Cmd[CurrentCmd].ref.index = i + GFCTRL_JOY_MAX_BUTTONS * index;
+		    str = GfctrlGetNameByRef(GFCTRL_TYPE_JOY_BUT, i + GFCTRL_JOY_MAX_BUTTONS * index);
+		    Cmd[CurrentCmd].ref.index = i + GFCTRL_JOY_MAX_BUTTONS * index;
 #else
-                    str = GfctrlGetNameByRef(GFCTRL_TYPE_JOY_BUT, i + 32 * index);
-                    Cmd[CurrentCmd].ref.index = i + 32 * index;
+		    str = GfctrlGetNameByRef(GFCTRL_TYPE_JOY_BUT, i + 32 * index);
+		    Cmd[CurrentCmd].ref.index = i + 32 * index;
 #endif
-                    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_JOY_BUT;
-                    GfuiButtonSetText(ScrHandle, Cmd[CurrentCmd].Id, str);
-                    GfuiApp().eventLoop().postRedisplay();
+		    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_JOY_BUT;
+		    GfuiButtonSetText (ScrHandle, Cmd[CurrentCmd].Id, str);
+		    GfuiApp().eventLoop().postRedisplay();
 #ifndef SDL_JOYSTICK
-                    JoyButtons[index] = b;
+		    JoyButtons[index] = b;
 #endif
-                    updateButtonText();
-                    return;
-                }
-            }
+		    updateButtonText();
+            return;
+	    }
 #ifndef SDL_JOYSTICK
-            JoyButtons[index] = b;
+	    JoyButtons[index] = b;
 #endif
 
-            /* Axis movement detected without button */
-            if (axis != -1) {
-                Cmd[CurrentCmd].butIgnore = 0;
+            	    /* Axis movement detected without button */
+	    if (axis != -1) {
+		Cmd[CurrentCmd].butIgnore = 0;
 
-                // Toggle preference, when there is no button available
-                if (Cmd[CurrentCmd].pref >= HM_ATT_JOY_PREF_ANY)
-                    Cmd[CurrentCmd].pref++;
-                if (Cmd[CurrentCmd].pref > HM_ATT_JOY_PREF_ANY1)
-                    Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_ANY;
+		// Toggle preference, when there is no button available
+		if (Cmd[CurrentCmd].pref >= HM_ATT_JOY_PREF_ANY)
+		    Cmd[CurrentCmd].pref ++;
+		if (Cmd[CurrentCmd].pref > HM_ATT_JOY_PREF_ANY1)
+		    Cmd[CurrentCmd].pref = HM_ATT_JOY_PREF_ANY;
 
-            configure_for_joy_axis:
-                GfuiApp().eventLoop().setRecomputeCB(0);
-                InputWaited = 0;
+configure_for_joy_axis:
+		GfuiApp().eventLoop().setRecomputeCB(0);
+		InputWaited = 0;
 
-                if (Cmd[CurrentCmd].pref == HM_ATT_JOY_REQ_BUT ||
-                    Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_ANY ||
-                    Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_LAST)
-                    /* Map axis to a button type */
-                    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_JOY_ATOB;
-                else
-                    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_JOY_AXIS;
+		if (Cmd[CurrentCmd].pref == HM_ATT_JOY_REQ_BUT || 
+			Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_ANY ||
+			Cmd[CurrentCmd].pref == HM_ATT_JOY_PREF_LAST) 
+		    /* Map axis to a button type */
+		    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_JOY_ATOB;
+		else
+		    Cmd[CurrentCmd].ref.type = GFCTRL_TYPE_JOY_AXIS;
 
-                Cmd[CurrentCmd].ref.index = axis;
-                str = GfctrlGetNameByRef(GFCTRL_TYPE_JOY_AXIS, axis);
-                GfuiButtonSetText(ScrHandle, Cmd[CurrentCmd].Id, str);
-                GfuiApp().eventLoop().postRedisplay();
-                updateButtonText();
-                return;
-            }
+		Cmd[CurrentCmd].ref.index = axis;
+		str = GfctrlGetNameByRef(GFCTRL_TYPE_JOY_AXIS, axis);
+		GfuiButtonSetText (ScrHandle, Cmd[CurrentCmd].Id, str);
+		GfuiApp().eventLoop().postRedisplay();
+		updateButtonText();
+		return;
+	    }
 #ifndef SDL_JOYSTICK
-                }
+	}
 #endif
-            }
+    }
 
     /* Let CPU take breath (and fans stay at low and quiet speed) */
     GfSleep(0.001);
-        }
+}
 
 /* Push button callback for each command button : activate input devices action collection loop */
 static void
-onPush(void* vi)
+onPush(void *vi)
 {
     long	i = (long)vi;
 
     /* Do nothing if mouse button clicks are to be refused */
     if (!AcceptMouseClicks) {
-        AcceptMouseClicks = 1;
-        return;
+	AcceptMouseClicks = 1;
+	return;
     }
 
     /* Selected given command as the currently awaited one */
     CurrentCmd = i;
 
     /* Empty button text to tell the user we will soon be waiting for its input */
-    GfuiButtonSetText(ScrHandle, Cmd[i].Id, "");
+    GfuiButtonSetText (ScrHandle, Cmd[i].Id, "");
 
     /* Reset selected command action */
     Cmd[i].ref.index = -1;
@@ -768,7 +777,7 @@ onPush(void* vi)
 
     /* State that a keyboard action is awaited */
     if (Cmd[CurrentCmd].keyboardPossible)
-        InputWaited = 1;
+	InputWaited = 1;
 
     /* Read initial mouse status */
     GfctrlMouseInitCenter();
@@ -781,8 +790,8 @@ onPush(void* vi)
     memcpy(&joyCenter, &joyInfo, sizeof(joyCenter));
 #else
     for (int index = 0; index < GFCTRL_JOY_NUMBER; index++)
-        if (Joystick[index])
-            Joystick[index]->read(&JoyButtons[index], &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
+	if (Joystick[index])
+	    Joystick[index]->read(&JoyButtons[index], &JoyAxis[index * GFCTRL_JOY_MAX_AXES]);
     memcpy(JoyAxisCenter, JoyAxis, sizeof(JoyAxisCenter));
 #endif
 
@@ -791,7 +800,7 @@ onPush(void* vi)
 }
 
 
-
+//SIMULATED DRIVING ASSISTANCE: added GenPlayerList()
 /* Load human driver (= player) info list (PlayersInfo) from preferences and human drivers files ;
 load associated scroll list */
 static int
@@ -890,7 +899,7 @@ GenPlayerList(void)
 }
 
 static void
-onActivate(void* /* dummy */)
+onActivate(void * /* dummy */)
 {
 #if SDL_JOYSTICK
     //joyInfo = GfctrlJoyCreate();
@@ -898,17 +907,16 @@ onActivate(void* /* dummy */)
 #else
     // Create and test joysticks ; only keep the up and running ones.
     for (int jsInd = 0; jsInd < GFCTRL_JOY_NUMBER; jsInd++) {
-        if (!Joystick[jsInd])
-            Joystick[jsInd] = new jsJoystick(jsInd);
-        if (Joystick[jsInd]->notWorking()) {
-            /* don't configure the joystick */
-            delete Joystick[jsInd];
-            Joystick[jsInd] = 0;
-        }
-        else {
-            GfOut("Detected joystick #%d type '%s' %d axes\n",
-                jsInd, Joystick[jsInd]->getName(), Joystick[jsInd]->getNumAxes());
-        }
+	if (!Joystick[jsInd])
+	    Joystick[jsInd] = new jsJoystick(jsInd);
+	if (Joystick[jsInd]->notWorking()) {
+	    /* don't configure the joystick */
+	    delete Joystick[jsInd];
+	    Joystick[jsInd] = 0;
+	} else {
+	  GfOut("Detected joystick #%d type '%s' %d axes\n", 
+		jsInd, Joystick[jsInd]->getName(), Joystick[jsInd]->getNumAxes());
+	}
     }
 #endif
 
@@ -919,30 +927,30 @@ onActivate(void* /* dummy */)
         /* Load command settings from preference params for current player */
         ControlGetSettings();
 
-        /* For each control : */
-        for (int cmdInd = 0; cmdInd < MaxCmd; cmdInd++) {
+	/* For each control : */
+	for (int cmdInd = 0; cmdInd < MaxCmd; cmdInd++) {
 
-            /* Show / hide control editboxes according to selected gear changing mode code */
-            if (GearChangeMode & CmdDispInfo[cmdInd].gearChangeModeMask)
-            {
-                GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].labelId, GFUI_VISIBLE);
-                GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].Id, GFUI_VISIBLE);
-            }
-            else
-            {
-                GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].labelId, GFUI_INVISIBLE);
-                GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].Id, GFUI_INVISIBLE);
-            }
-        }
+	    /* Show / hide control editboxes according to selected gear changing mode code */
+	    if (GearChangeMode & CmdDispInfo[cmdInd].gearChangeModeMask)
+	    {
+	        GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].labelId, GFUI_VISIBLE);
+	        GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].Id, GFUI_VISIBLE);
+	    }
+	    else
+	    {
+	        GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].labelId, GFUI_INVISIBLE);
+	        GfuiVisibilitySet(ScrHandle, Cmd[cmdInd].Id, GFUI_INVISIBLE);
+	    }
+	}
     }
-
+    
     updateButtonText();
 
     AcceptMouseClicks = 1;
 }
 
 static void
-DevCalibrate(void* /* dummy */)
+DevCalibrate(void * /* dummy */)
 {
     void* nextCalMenu = NULL;
 
@@ -951,23 +959,23 @@ DevCalibrate(void* /* dummy */)
 
     // Create calibration "wizard" (1 menu for each device to calibrate
     if (Joy2butCalNeeded)
-        nextCalMenu = Joy2butCalMenuInit(ScrHandle, nextCalMenu, Cmd, MaxCmd);
+	nextCalMenu = Joy2butCalMenuInit(ScrHandle, nextCalMenu, Cmd, MaxCmd);
 
     if (JoyCalNeeded)
-        nextCalMenu = JoyCalMenuInit(ScrHandle, nextCalMenu, Cmd, MaxCmd);
+	nextCalMenu = JoyCalMenuInit(ScrHandle, nextCalMenu, Cmd, MaxCmd);
 
     if (MouseCalNeeded)
-        nextCalMenu = MouseCalMenuInit(ScrHandle, nextCalMenu, Cmd, MaxCmd);
-
+	nextCalMenu = MouseCalMenuInit(ScrHandle, nextCalMenu, Cmd, MaxCmd);
+	 
     // Activate first wizard screen
     if (nextCalMenu)
-        GfuiScreenActivate(nextCalMenu);
+	GfuiScreenActivate(nextCalMenu);
 }
 
-// SIMULATED DRIVING ASSISTANCE: REMOVED PREFHDLE, INDEX, GEARCHANGEMODE.
+// SIMULATED DRIVING ASSISTANCE: removed prefHdle, index, GearChangeMode.
 /* */
-void*
-ControlMenuInit(void* prevMenu, int saveOnExit)
+void *
+ControlMenuInit(void *prevMenu, int saveOnExit)
 {
 
     /* Load players settings */
@@ -991,19 +999,19 @@ ControlMenuInit(void* prevMenu, int saveOnExit)
 
     /* Don't recreate screen if already done */
     if (ScrHandle) {
-        if (PrevScrHandle != prevMenu)
-            // Need to re-create screen as parent has changed
-            GfuiScreenRelease(ScrHandle);
-        else
-            return ScrHandle;
-    }
+	if (PrevScrHandle != prevMenu) 
+		// Need to re-create screen as parent has changed
+		GfuiScreenRelease(ScrHandle);
+	 else
+		return ScrHandle;
+            }
 
     PrevScrHandle = prevMenu;
 
 #ifndef SDL_JOYSTICK
     /* Initialize joysticks array */
     for (int jsInd = 0; jsInd < GFCTRL_JOY_NUMBER; jsInd++)
-        Joystick[jsInd] = 0;
+	Joystick[jsInd] = 0;
 #endif
 
     /* Create screen */
@@ -1019,42 +1027,39 @@ ControlMenuInit(void* prevMenu, int saveOnExit)
     /* For each control (in Cmd array), create the associated label and editbox */
     for (i = 0; i < MaxCmd; i++)
     {
-        Cmd[i].labelId = GfuiMenuCreateLabelControl(ScrHandle, param, Cmd[i].name);
-        std::string strCmdEdit(Cmd[i].name);
-        strCmdEdit += " button";
-        Cmd[i].Id = GfuiMenuCreateButtonControl(ScrHandle, param, strCmdEdit.c_str(), (void*)(long)i, onPush, NULL, (tfuiCallback)NULL, onFocusLost);
-    }
-
+	Cmd[i].labelId = GfuiMenuCreateLabelControl(ScrHandle,param,Cmd[i].name);
+	std::string strCmdEdit(Cmd[i].name);
+	strCmdEdit += " button";
+	Cmd[i].Id = GfuiMenuCreateButtonControl(ScrHandle,param,strCmdEdit.c_str(),(void*)(long)i,onPush,NULL,(tfuiCallback)NULL,onFocusLost);
+	}
+    
     /* Steer Sensibility label and associated editbox */
-    GfuiMenuCreateLabelControl(ScrHandle, param, "Steer Sensitivity");
-    SteerSensEditId = GfuiMenuCreateEditControl(ScrHandle, param, "Steer Sensitivity Edit", NULL, NULL, onSteerSensChange);
+    GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Sensitivity");
+    SteerSensEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Sensitivity Edit",NULL,NULL,onSteerSensChange);
 
     /* Steer Dead Zone label and associated editbox */
-    DeadZoneLabelId = GfuiMenuCreateLabelControl(ScrHandle, param, "Steer Dead Zone");
-    DeadZoneEditId = GfuiMenuCreateEditControl(ScrHandle, param, "Steer Dead Zone Edit", NULL, NULL, onDeadZoneChange);
+    DeadZoneLabelId = GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Dead Zone");
+    DeadZoneEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Dead Zone Edit",NULL,NULL,onDeadZoneChange);
 
     /* Steer Speed Sensibility label and associated editbox */
-    GfuiMenuCreateLabelControl(ScrHandle, param, "Steer Speed Sensitivity");
-    SteerSpeedSensEditId = GfuiMenuCreateEditControl(ScrHandle, param, "Steer Speed Sensitivity Edit", NULL, NULL, onSteerSpeedSensChange);
-
-
+    GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Speed Sensitivity");
+    SteerSpeedSensEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Speed Sensitivity Edit",NULL,NULL,onSteerSpeedSensChange);
 
     /* Save button and associated keyboard shortcut */
-    GfuiMenuCreateButtonControl(ScrHandle, param, "save", PrevScrHandle, onSave);
+    GfuiMenuCreateButtonControl(ScrHandle,param,"save",PrevScrHandle,onSave);
     GfuiAddKey(ScrHandle, GFUIK_RETURN /* Return */, "Save", PrevScrHandle, onSave, NULL);
 
     /* Mouse calibration screen access button */
-    CalibrateButtonId = GfuiMenuCreateButtonControl(ScrHandle, param, "calibrate", NULL, DevCalibrate);
+    CalibrateButtonId = GfuiMenuCreateButtonControl(ScrHandle,param,"calibrate",NULL, DevCalibrate);
 
     /* Cancel button and associated keyboard shortcut */
-    GfuiMenuCreateButtonControl(ScrHandle, param, "cancel", PrevScrHandle, onQuit);
+    GfuiMenuCreateButtonControl(ScrHandle,param,"cancel",PrevScrHandle,onQuit);
     GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel", PrevScrHandle, onQuit, NULL);
 
     /* General callback for keyboard keys */
-    GfuiKeyEventRegister(ScrHandle, onKeyAction);
-
     GfParmReleaseHandle(param);
-
+    
+    GfParmReleaseHandle(param);
     return ScrHandle;
 }
 
