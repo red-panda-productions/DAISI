@@ -34,10 +34,10 @@
 #define MAX_TIME         1440
 
 // Messages for file selection
-#define MSG_BLACK_BOX_NORMAL_TEXT   "Choose Black Box: "
-#define MSG_BLACK_BOX_NOT_EXE       "Choose Black Box: chosen file was not a .exe"
-#define MSG_APPLY_NORMAL_TEXT       "Apply"
-#define MSG_APPLY_NO_BLACK_BOX      "Apply | You need to select a valid Black Box"
+#define MSG_BLACK_BOX_NORMAL_TEXT "Choose Black Box: "
+#define MSG_BLACK_BOX_NOT_EXE     "Choose Black Box: chosen file was not a .exe"
+#define MSG_APPLY_NORMAL_TEXT     "Apply"
+#define MSG_APPLY_NO_BLACK_BOX    "Apply | You need to select a valid Black Box"
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;

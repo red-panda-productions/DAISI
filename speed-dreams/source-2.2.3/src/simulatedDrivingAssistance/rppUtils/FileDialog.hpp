@@ -92,7 +92,7 @@ inline bool SelectFile(char* p_buf, const wchar_t** p_names, const wchar_t** p_e
         Release(fileDialog, filterSpec);
         // If the user does not choose multiple items, this should be unreachable as we enforce fileDialog->Show to succeed
         // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getresult#return-value
-        strcpy_s(p_err, MAX_PATH_SIZE, "Could not retrieve Shell Item (item for Windows Folder Hierarchy identification) from file dialog"); 
+        strcpy_s(p_err, MAX_PATH_SIZE, "Could not retrieve Shell Item (item for Windows Folder Hierarchy identification) from file dialog");
         return false;
     }
     PWSTR filePath;

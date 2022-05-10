@@ -7,7 +7,7 @@
 #include "../rppUtils/FileDialog.hpp"
 
 // Parameters used in the xml files
-#define PRM_SYNC         "SynchronizationButtonList"
+#define PRM_SYNC          "SynchronizationButtonList"
 #define PRM_RECORD_TOGGLE "CheckboxRecorderToggle"
 #define PRM_CHOOSE_REPLAY "ChooseReplayFileButton"
 #define GFMNU_ATTR_PATH   "path"
@@ -208,7 +208,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "CancelButton",
                                 s_scrHandle, SwitchToResearcherMenu);
     m_applyButtonDev = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",
-                                s_scrHandle, SaveAndGoBack);
+                                                   s_scrHandle, SaveAndGoBack);
     m_syncButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
