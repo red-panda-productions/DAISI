@@ -232,7 +232,21 @@ Changed:
                         added logic to create new controls for intervention volume and store their data
                         changed readSoundCfg()
                     controlconfig 
+                        included <deque>
+                        added static void *PlayerHdle = NULL;
+                        added SkillLevelString
+                        added NbSkillLevels
+                        added NoPlayer
+                        added HumanDriverModuleName
+                        added DefaultCarName
+                        added tInfo
+                        added tPlayerInfo
+                        added tPlayerInfoList
+                        added currPlayer
+                        added Yn[]
+                        added GenPlayerList()
                         removed parameters in init
+
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
 
         graphic/

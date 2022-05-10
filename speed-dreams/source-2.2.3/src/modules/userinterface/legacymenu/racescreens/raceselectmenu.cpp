@@ -44,6 +44,7 @@ void *RmRaceSelectMenuHandle = NULL;
 
 static std::map<std::string, int> rmMapSubTypeComboIds;
 
+// SIMULATED DRIVING ASSISTANCE: removed void *pvRaceManTypeIndex since it is SINGLE_RACEMAN_IDX now.
 static void
 rmOnSelectRaceMan()
 {
