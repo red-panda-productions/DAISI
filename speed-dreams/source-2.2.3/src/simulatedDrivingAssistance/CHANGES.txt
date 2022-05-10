@@ -197,6 +197,7 @@ Changed:
                 mainscreens/
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
+                        removed  <playerconfig.h>
                         added    GoBack()
                         changed  MainMenuInit()
                         changed  onplayerconfigMenuActivate()
