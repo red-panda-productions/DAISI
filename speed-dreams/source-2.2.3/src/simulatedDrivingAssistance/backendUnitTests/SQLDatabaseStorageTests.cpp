@@ -113,7 +113,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
 ///         but it is a string in the settingsfile of the stringPort dir.
 TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 {
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
     static tDatabaseSettings TestSettings;
@@ -124,7 +123,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
     sprintf(TestSettings.Schema, "sda_test");
     TestSettings.UseSSL = false;
 
-    std::cout << "mediator prepared" << std::endl;
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when the port is not an integer
@@ -139,7 +137,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
 ///         coverage path as TestDatabaseRunIncorrect
 TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
     static tDatabaseSettings TestSettings;
@@ -163,7 +160,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 ///         incorrect password
 TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
     static tDatabaseSettings TestSettings;
@@ -188,9 +184,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 /// @brief test for crash when there is no certificates folder
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 {
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    chdir(SD_DATADIR_SRC);
     static tDatabaseSettings TestSettings;
     sprintf(TestSettings.Username, "SDATest");
     sprintf(TestSettings.Password, "PASSWORD");
@@ -211,7 +205,6 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 /// @brief tests for crash when there is no "database_encryption_settings.txt"file
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 {
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
     static tDatabaseSettings TestSettings;
@@ -236,7 +229,6 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 ///         encryption file
 TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
-    SMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
     static tDatabaseSettings TestSettings;
