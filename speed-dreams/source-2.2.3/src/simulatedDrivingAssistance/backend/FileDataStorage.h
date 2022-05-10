@@ -36,7 +36,7 @@ public:
 
     void SaveDecisions(DecisionTuple& p_decisions);
 
-    ~FileDataStorage();
+    ~FileDataStorage() = default;
 };
 
 /// @brief Standard implementation of the file data storage
