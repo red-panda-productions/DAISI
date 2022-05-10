@@ -4,16 +4,24 @@
 #include "ConfigEnums.h"
 #include "Mediator.h"
 #include "guimenu.h"
+#include "../rppUtils/FileDialog.hpp"
 
 // Parameters used in the xml files
 #define PRM_SYNC         "SynchronizationButtonList"
-#define PRM_RECORD_TGGLE "CheckboxRecorderToggle"
+#define PRM_RECORD_TOGGLE "CheckboxRecorderToggle"
+#define PRM_CHOOSE_REPLAY "ChooseReplayFileButton"
+#define GFMNU_ATTR_PATH   "path"
 
 #define DEV_FILEPATH    "config/DeveloperMenu.xml"
 #define DEV_SCREEN_NAME "DeveloperMenu"
 
+#define MSG_CHOOSE_REPLAY_NORMAL_TEXT "Choose Replay File: "
+
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
+
+// Control for apply button
+int m_applyButtonDev;
 
 // Control for synchronization option
 int m_syncButtonList;
@@ -21,11 +29,18 @@ int m_syncButtonList;
 // Control for replay recorder
 int m_replayRecorder;
 
+// Control for choosing replay file
+int m_chooseReplayFileButton;
+
 // Synchronization type
 SyncType m_sync;
 
 // Recorder status
 bool m_replayRecorderOn;
+
+// Replay file
+char m_replayFilePath[MAX_PATH_SIZE];
+bool m_replayFileChosen = false;
 
 /// @brief         Loads the settings from the config file
 /// @param p_param A handle to the parameter file
@@ -33,7 +48,14 @@ static void LoadSettingsFromFile(void* p_param)
 {
     m_sync = std::stoi(GfParmGetStr(p_param, PRM_SYNC, GFMNU_ATTR_SELECTED, "1"));
 
-    m_replayRecorderOn = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_TGGLE, GFMNU_ATTR_CHECKED, false);
+    m_replayRecorderOn = GfuiMenuControlGetBoolean(p_param, PRM_RECORD_TOGGLE, GFMNU_ATTR_CHECKED, false);
+
+    const char* filePath = GfParmGetStr(p_param, PRM_CHOOSE_REPLAY, GFMNU_ATTR_PATH, nullptr);
+    if (filePath)
+    {
+        strcpy_s(m_replayFilePath, BLACKBOX_PATH_SIZE, filePath);
+        m_replayFileChosen = true;
+    }
 }
 
 /// @brief Makes sure all visuals display the internal values
@@ -42,6 +64,13 @@ static void SynchronizeControls()
     GfuiRadioButtonListSetSelected(s_scrHandle, m_syncButtonList, (int)m_sync);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_replayRecorder, m_replayRecorderOn);
+
+    if (m_replayFileChosen)
+    {
+        std::string fileName = m_replayFilePath;
+        std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+        GfuiButtonSetText(s_scrHandle, m_chooseReplayFileButton, buttonText.c_str());
+    }
 }
 
 /// @brief Loads default settings
@@ -83,7 +112,10 @@ static void SaveSettingsToFile()
     GfParmSetStr(readParam, PRM_SYNC, GFMNU_ATTR_SELECTED, val);
 
     // Write recorder status
-    GfParmSetStr(readParam, PRM_RECORD_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_replayRecorderOn));
+    GfParmSetStr(readParam, PRM_RECORD_TOGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_replayRecorderOn));
+
+    // Write replay file path
+    GfParmSetStr(readParam, PRM_CHOOSE_REPLAY, GFMNU_ATTR_PATH, m_replayFilePath);
 
     // Write queued changes
     GfParmWriteFile(nullptr, readParam, DEV_SCREEN_NAME);
@@ -96,6 +128,7 @@ static void SaveSettings()
 
     mediator->SetBlackBoxSyncOption(m_sync == 1);
     mediator->SetReplayRecorderSetting(m_replayRecorderOn);
+    // TODO Save replay file (not to disk, that is handled in the below method)
 
     SaveSettingsToFile();
 }
@@ -135,6 +168,28 @@ static void SelectRecorderOnOff(tCheckBoxInfo* p_info)
     m_replayRecorderOn = p_info->bChecked;
 }
 
+/// @brief Chooses the replay file
+static void ChooseReplayFile(void* /* dummy */)
+{
+    char buf[MAX_PATH_SIZE];
+    char err[MAX_PATH_SIZE];
+    bool success = SelectFile(buf, err, true);
+    if (!success)
+    {
+        return;
+    }
+
+    std::string fileName = buf;
+
+    // Visual feedback of choice
+    std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+    GfuiButtonSetText(s_scrHandle, m_chooseReplayFileButton, buttonText.c_str());
+
+    // Copy into actual variable
+    strcpy_s(m_replayFilePath, BLACKBOX_PATH_SIZE, buf);
+    m_replayFileChosen = true;
+}
+
 /// @brief            Initializes the developer menu
 /// @param p_prevMenu A handle to the previous menu
 /// @returns          A handle to the developer menu
@@ -152,10 +207,11 @@ void* DeveloperMenuInit(void* p_prevMenu)
 
     GfuiMenuCreateButtonControl(s_scrHandle, param, "CancelButton",
                                 s_scrHandle, SwitchToResearcherMenu);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",
+    m_applyButtonDev = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",
                                 s_scrHandle, SaveAndGoBack);
     m_syncButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
-    m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TGGLE, nullptr, SelectRecorderOnOff);
+    m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
+    m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
 
     GfParmReleaseHandle(param);
 

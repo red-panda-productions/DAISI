@@ -36,7 +36,6 @@
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT   "Choose Black Box: "
 #define MSG_BLACK_BOX_NOT_EXE       "Choose Black Box: chosen file was not a .exe"
-#define MSG_BLACK_BOX_PATH_TOO_LONG "Choose Black Box: >260 char path was not aliased to <260 char"
 #define MSG_APPLY_NORMAL_TEXT       "Apply"
 #define MSG_APPLY_NO_BLACK_BOX      "Apply | You need to select a valid Black Box"
 
@@ -216,7 +215,7 @@ static void SaveSettingsToDisk()
     sprintf(buf, "%d", m_maxTime);
     GfParmSetStr(readParam, PRM_MAX_TIME, GFMNU_ATTR_TEXT, buf);
 
-    // Save filepath to xml file
+    // Save black box filepath to xml file
     GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
     // Write all the above queued changed to xml file
@@ -261,21 +260,6 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief   Finds the message to display on the black box button
-/// @param   The path to a file
-/// @returns The default black box button text, plus the filename of the file represented by the path, ignoring any directories
-std::string FindBlackBoxButtonTextFromPath(std::string& p_path)
-{
-    unsigned int lastDirectoryIndex = 0;
-    for (unsigned int i = p_path.size() - 1; i >= 0; i--)
-    {
-        if (p_path[i] != '\\') { continue; }
-        lastDirectoryIndex = i;
-        break;
-    }
-    return MSG_BLACK_BOX_NORMAL_TEXT + p_path.substr(lastDirectoryIndex + 1, std::string::npos);
-}
-
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
@@ -296,9 +280,12 @@ static void SynchronizeControls()
     sprintf(buf, "%d", m_maxTime);
     GfuiEditboxSetString(s_scrHandle, m_maxTimeControl, buf);
 
-    std::string fileName = m_blackBoxFilePath;
-    std::string buttonText = FindBlackBoxButtonTextFromPath(fileName);
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    if (m_blackBoxChosen)
+    {
+        std::string fileName = m_blackBoxFilePath;
+        std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    }
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
@@ -376,7 +363,7 @@ static void SelectBlackBox(void* /* dummy */)
 {
 #define AMOUNT_OF_NAMES 1
     const wchar_t* names[AMOUNT_OF_NAMES] = {(const wchar_t*)L"Executables"};
-    const wchar_t* extensions[AMOUNT_OF_NAMES] = {(const wchar_t*)L".exe"};
+    const wchar_t* extensions[AMOUNT_OF_NAMES] = {(const wchar_t*)L"*.exe"};
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
     bool success = SelectFile(buf, names, extensions, AMOUNT_OF_NAMES, err);
@@ -407,7 +394,7 @@ static void SelectBlackBox(void* /* dummy */)
     }
 
     // Visual feedback of choice
-    std::string buttonText = FindBlackBoxButtonTextFromPath(fileName);
+    std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + FindLastDirectoryItemName(fileName);
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NORMAL_TEXT);  // Reset the apply button
 
