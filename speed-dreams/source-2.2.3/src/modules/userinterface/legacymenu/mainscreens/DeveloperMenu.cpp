@@ -85,9 +85,8 @@ static void LoadDefaultSettings()
 /// @brief Loads (if possible) the settings; otherwise, the control's default settings will be used
 static void LoadSettings()
 {
-    std::string strPath(DEV_FILEPATH);
     char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
+    sprintf(buf, "%s%s", GfLocalDir(), DEV_FILEPATH);
     if (GfFileExists(buf))
     {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
@@ -174,7 +173,7 @@ static void ChooseReplayFile(void* /* dummy */)
 {
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, err, true);
+    bool success = SelectFile(buf, nullptr, nullptr, 0, err, true);
     if (!success)
     {
         return;

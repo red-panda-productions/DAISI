@@ -29,6 +29,10 @@
 #define PRM_DEV              "DevButton"
 #define GFMNU_ATTR_PATH      "path"
 
+// Names for the config file
+#define RESEARCH_FILEPATH    "config/ResearcherMenu.xml"
+#define RESEARCH_SCREEN_NAME "ResearcherMenu"
+
 // Constant numbers
 #define INDICATOR_AMOUNT 3
 #define PCONTROL_AMOUNT  4
@@ -39,6 +43,9 @@
 #define MSG_BLACK_BOX_NOT_EXE     "Choose Black Box: chosen file was not a .exe"
 #define MSG_APPLY_NORMAL_TEXT     "Apply"
 #define MSG_APPLY_NO_BLACK_BOX    "Apply | You need to select a valid Black Box"
+
+// Lengths of file dialog selection items
+#define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -185,7 +192,7 @@ static void SetUserId(void*)
 static void SaveSettingsToDisk()
 {
     // Copies xml to documents folder and then opens file parameter
-    std::string dstStr("config/ResearcherMenu.xml");
+    std::string dstStr(RESEARCH_FILEPATH);
     char dst[512];
     sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
@@ -220,7 +227,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
     // Write all the above queued changed to xml file
-    GfParmWriteFile(nullptr, readParam, "ResearcherMenu");
+    GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -346,9 +353,8 @@ static void LoadConfigSettings(void* p_param)
 static void OnActivate(void* /* dummy */)
 {
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
-    std::string strPath("config/ResearcherMenu.xml");
     char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
+    sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
     if (GfFileExists(buf))
     {
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
@@ -362,12 +368,11 @@ static void OnActivate(void* /* dummy */)
 /// @brief Selects a black box
 static void SelectBlackBox(void* /* dummy */)
 {
-#define AMOUNT_OF_NAMES 1
-    const wchar_t* names[AMOUNT_OF_NAMES] = {(const wchar_t*)L"Executables"};
-    const wchar_t* extensions[AMOUNT_OF_NAMES] = {(const wchar_t*)L"*.exe"};
+    const wchar_t* names[AMOUNT_OF_NAMES_BLACK_BOX_FILES] = {(const wchar_t*)L"Executables"};
+    const wchar_t* extensions[AMOUNT_OF_NAMES_BLACK_BOX_FILES] = {(const wchar_t*)L"*.exe"};
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, names, extensions, AMOUNT_OF_NAMES, err);
+    bool success = SelectFile(buf, names, extensions, AMOUNT_OF_NAMES_BLACK_BOX_FILES, err, false);
     if (!success)
     {
         return;
