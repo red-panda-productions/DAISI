@@ -173,7 +173,7 @@ static void ChooseReplayFile(void* /* dummy */)
 {
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, nullptr, nullptr, 0, err, true);
+    bool success = SelectFile(buf, err, true);
     if (!success)
     {
         return;

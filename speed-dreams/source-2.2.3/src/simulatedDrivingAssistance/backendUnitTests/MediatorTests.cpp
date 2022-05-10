@@ -84,6 +84,5 @@ TEST(MediatorTests, ReadFromFile)
     SMediator* mediator2 = SMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
 
-    SMediator::ClearInstance(); // Clear Mediator
-    DeleteSingletonsFolder();   // And delete pointer to it as it doesn't exist anymore
+    DeleteSingletonsFolder();
 }

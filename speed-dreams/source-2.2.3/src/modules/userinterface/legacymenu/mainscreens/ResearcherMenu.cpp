@@ -372,7 +372,7 @@ static void SelectBlackBox(void* /* dummy */)
     const wchar_t* extensions[AMOUNT_OF_NAMES_BLACK_BOX_FILES] = {(const wchar_t*)L"*.exe"};
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, names, extensions, AMOUNT_OF_NAMES_BLACK_BOX_FILES, err, false);
+    bool success = SelectFile(buf, err, false, names, extensions, AMOUNT_OF_NAMES_BLACK_BOX_FILES);
     if (!success)
     {
         return;

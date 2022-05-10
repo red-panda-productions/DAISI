@@ -29,13 +29,13 @@ inline void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_F
 
 /// @brief            Opens a file dialog for the user to select a file, limiting the files shown to the provided parameters
 /// @param p_buf      A buffer to write the filename to
+/// @param p_err      A buffer to write an error to (if applicable)
+/// @param p_folder   Whether to select files (true) or folders (false)
 /// @param p_names    The names of the types of file to select
 /// @param p_exts     The extension filters of the types of file to select
 ///	@param p_extCount The amount of extensions/names provided
-/// @param p_err      A buffer to write an error to (if applicable)
-/// @param p_folder   Whether to select files (true) or folders (false)
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
-inline bool SelectFile(char* p_buf, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount, char* p_err, bool p_folder)
+inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
 {
     // Opens a file dialog on Windows
 
