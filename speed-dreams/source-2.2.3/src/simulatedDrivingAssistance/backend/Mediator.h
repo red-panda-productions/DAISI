@@ -39,6 +39,11 @@ public:
         delete m_instance;
         m_instance = nullptr;
     }
+
+    DecisionMaker* GetDecisionMaker()
+    {
+        return &m_decisionMaker;
+    }
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour

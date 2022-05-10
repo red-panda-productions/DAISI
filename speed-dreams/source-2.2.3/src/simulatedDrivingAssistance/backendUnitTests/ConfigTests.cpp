@@ -34,12 +34,13 @@ TEST_CASE(ConfigTests, TaskTestsLaneKeeping, TaskTest, (TASK_LANE_KEEPING))
 TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
 
 /// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
-/// @param p_bool1 First bool
-/// @param p_bool2 Second bool
-void IndicatorTest(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @param p_audio Whether to enable the audio option
+/// @param p_icon  Whether to enable the icon option
+/// @param p_text  Whether to enable the text option
+void IndicatorTest(bool p_audio, bool p_icon, bool p_text)
 {
     SDAConfig config;
-    tIndicator arr = {p_bool1, p_bool2, p_bool3};
+    tIndicator arr = {p_audio, p_icon, p_text};
     config.SetIndicatorSettings(arr);
     tIndicator indicator = config.GetIndicatorSettings();
     ASSERT_EQ(arr.Audio, indicator.Audio);
@@ -52,14 +53,14 @@ BEGIN_TEST_COMBINATORIAL(ConfigTests, IndicatorSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the SDAConfig sets and gets the participant control settings correctly
-/// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest1(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @brief Tests if the SDAConfig sets and gets the participant control settings correctly
+/// @param p_intervention Whether to enable participant intervention control
+/// @param p_gas Whether to enable participant gas control
+/// @param p_steer Whether to enable participant steer control
+void PControlTest1(bool p_intervention, bool p_gas, bool p_steer)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL, NULL, NULL};
+    tParticipantControl arr = {p_intervention, p_gas, p_steer, NULL, NULL, NULL};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
@@ -72,14 +73,14 @@ BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the SDAConfig sets and gets the other pControl settings correctly
-/// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest2(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @brief                  Tests if the SDAConfig sets and gets the other pControl settings correctly
+/// @param p_force          Whether to enable force feedback
+/// @param p_userRecord     Whether to enable user controls session recording
+/// @param p_blackboxRecord Whether to enable blackbox session recording
+void PControlTest2(bool p_force, bool p_userRecord, bool p_blackboxRecord)
 {
     SDAConfig config;
-    tParticipantControl arr = {NULL, NULL, NULL, p_bool1, p_bool2, p_bool3};
+    tParticipantControl arr = {NULL, NULL, NULL, p_force, p_userRecord, p_blackboxRecord};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
@@ -150,16 +151,16 @@ TEST(ConfigTests, BlackBoxFilePathTest)
     }
 }
 
-/// @brief         Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
-/// @param p_bool1 First bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third bool
-/// @param p_bool4 Fourth bool
-/// @param p_bool5 Fifth bool
-void TestBoolArr(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_bool5)
+/// @brief                Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
+/// @param p_env          The environment data setting
+/// @param p_car          The car data setting
+/// @param p_human        The human data setting
+/// @param p_intervention The intervention data setting
+/// @param p_meta         The meta data setting
+void TestBoolArr(bool p_env, bool p_car, bool p_human, bool p_intervention, bool p_meta)
 {
     SDAConfig config;
-    tDataToStore arr = {p_bool1, p_bool2, p_bool3, p_bool4, p_bool5};
+    tDataToStore arr = {p_env, p_car, p_human, p_intervention, p_meta};
     config.SetDataCollectionSettings(arr);
     tDataToStore dataToStore = config.GetDataCollectionSetting();
     ASSERT_EQ(arr.EnvironmentData, dataToStore.EnvironmentData);
