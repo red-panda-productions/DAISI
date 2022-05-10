@@ -184,6 +184,8 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder)
         if (FAILED(hresult))
         {
             Release(fileDialog);
+            // No actual documentation on how this can fail
+            // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-getoptions#return-values
             strcpy_s(p_err, MAX_PATH_SIZE, "Could not get file dialog options");
             return false;
         }
@@ -191,6 +193,8 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder)
         if (FAILED(hresult))
         {
             Release(fileDialog);
+            // No actual documentation on how this can fail
+            // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-ifiledialog-setoptions#return-value
             strcpy_s(p_err, MAX_PATH_SIZE, "Could not set file dialog options");
             return false;
         }
