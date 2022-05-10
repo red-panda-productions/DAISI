@@ -33,7 +33,7 @@
 	where (race manager type) comes from (racemanager).xml, "type" field in the "Header".
 
 	-->
-	<!--SIMULATED DRIVING ASSISTANCE: removed practice and optimizationMT-->
+	<!-- SIMULATED DRIVING ASSISTANCE: removed practice, optimizationMT, singleEvent, championship, career and online buttons -->
 	<!-- second button for STANDARDGAME only -->
 	<section name="QuickButton">
 		<attstr name="type" val="text button"/>
