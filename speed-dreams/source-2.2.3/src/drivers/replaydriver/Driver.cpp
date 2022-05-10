@@ -26,6 +26,7 @@ Driver::Driver(int p_index, const char* p_name)
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     const filesystem::path& replayFolder = SMediator::GetInstance()->GetReplayFolder();
+    assert(Recorder::ValidateAndUpdateRecording(replayFolder));
     const filesystem::path carSettingsFile = filesystem::path(replayFolder).append(CAR_SETTINGS_FILE_NAME);
     const filesystem::path userRecordingFile = filesystem::path(replayFolder).append(USER_INPUT_RECORDING_FILE_NAME);
     const filesystem::path simulationFile = filesystem::path(replayFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME);
