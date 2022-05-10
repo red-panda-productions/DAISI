@@ -2,6 +2,8 @@
 #include <iostream>
 #include "ThresholdConfig.h"
 #include "../legacymenu.h"
+#include "ConfigEnums.h"
+#include "Mediator.h"
 
 #define SND_PARAM_FILE    "config/Threshhold.xml"
 #define SND_SCT_THRESHOLD "Threshold Settings"
@@ -28,7 +30,7 @@ static void SetAccelThreshold(void*)
     // Get accel threshold from text box, clamped between 0 and 1
     char* val = GfuiEditboxGetString(s_scrHandle, m_accelThresholdControl);
     char* endptr;
-    m_accelVal = (float)strtol(val, &endptr, 0);
+    m_accelVal = strtof(val, &endptr);
     if (*endptr != '\0')
         std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
 
@@ -49,7 +51,7 @@ static void SetBrakeThreshold(void*)
     // Get accel threshold from text box, clamped between 0 and 1
     char* val = GfuiEditboxGetString(s_scrHandle, m_brakeThresholdControl);
     char* endptr;
-    m_brakeVal = (float)strtol(val, &endptr, 0);
+    m_brakeVal = strtof(val, &endptr);
     if (*endptr != '\0')
         std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
 
@@ -70,10 +72,9 @@ static void SetSteerThreshold(void*)
     // Get accel threshold from text box, clamped between 0 and 1
     char* val = GfuiEditboxGetString(s_scrHandle, m_steerThresholdControl);
     char* endptr;
-    m_steerVal = (float)strtol(val, &endptr, 0);
+    m_steerVal = strtof(val, &endptr);
     if (*endptr != '\0')
         std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
-
 
     if (m_steerVal > 1.0f)
         m_steerVal = 1.0f;
@@ -96,7 +97,7 @@ static void ReadThresholdConfig()
     void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Accel threshold
-    m_accelVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_ACCEL, "%", 0.0f);
+    m_accelVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_ACCEL, "%", STANDARD_THRESHOLD_ACCEL);
     if (m_accelVal > 1.0f)
     {
         m_accelVal = 1.0f;
@@ -109,7 +110,7 @@ static void ReadThresholdConfig()
     GfuiEditboxSetString(s_scrHandle, m_accelThresholdControl, buf);
 
     // Brake threshold
-    m_brakeVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_BRAKE, "%", 0.0f);
+    m_brakeVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_BRAKE, "%", STANDARD_THRESHOLD_BRAKE);
     if (m_brakeVal > 1.0f)
     {
         m_brakeVal = 1.0f;
@@ -122,7 +123,7 @@ static void ReadThresholdConfig()
     GfuiEditboxSetString(s_scrHandle, m_brakeThresholdControl, buf);
 
     // Steer threshold
-    m_steerVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_STEER, "%", 0.0f);
+    m_steerVal = GfParmGetNum(paramHandle, SND_SCT_THRESHOLD, SND_ATT_STEER, "%", STANDARD_THRESHOLD_STEER);
     if (m_steerVal > 1.0f)
     {
         m_steerVal = 1.0f;
@@ -152,6 +153,9 @@ static void SaveThresholdOptions(void*)
 
     GfParmWriteFile(nullptr, paramHandle, "Threshhold");
     GfParmReleaseHandle(paramHandle);
+
+    // Update the Thresholds in the Mediator
+    SMediator::GetInstance()->SetThresholdSettings(buf);
 
     // Return to previous screen.
     GfuiScreenActivate(s_prevHandle);

@@ -31,6 +31,8 @@ public:
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
+
+    tThreshold SetThresholdSettings(const char* p_filePath);
     tThreshold GetThresholdSettings();
 
     static Mediator* GetInstance();
@@ -60,7 +62,6 @@ private:
     tTrack* m_track = nullptr;
 
     tThreshold m_thresholds;
-    tThreshold SetThresholdSettings();
     bool m_thresholdsSet = false;
 
     bool m_inRace = false;  // Whether the game is currently in a race

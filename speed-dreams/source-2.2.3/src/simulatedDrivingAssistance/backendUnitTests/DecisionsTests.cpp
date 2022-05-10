@@ -37,7 +37,7 @@ void InitializeMediator()
 /// @brief Tests if all decisions do their RunInterveneCommand correctly
 TEST(DecisionsTest, RunInterveneDecisions)
 {
-    IndicatorConfig::ClearInstance();
+    //IndicatorConfig::ClearInstance();
     InitializeMediator();
 
     Random random;
@@ -53,7 +53,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
-    float controlAccelAmount = random.NextFloat(ACCEL_THRESHOLD, ACCEL_THRESHOLD + 10);
+    float controlAccelAmount = random.NextFloat(thresholds.Accel, thresholds.Accel + 10);
     accelDecision.AccelAmount = controlAccelAmount;
     accelDecision.RunInterveneCommands();
 

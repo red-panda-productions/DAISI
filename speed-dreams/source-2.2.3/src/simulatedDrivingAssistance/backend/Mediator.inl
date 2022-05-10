@@ -15,7 +15,7 @@
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
     template tThreshold Mediator<type>::GetThresholdSettings();                                                                                         \
-    template tThreshold Mediator<type>::SetThresholdSettings();                                                                                         \
+    template tThreshold Mediator<type>::SetThresholdSettings(const char* p_filePath);                                                                   \
     template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
     template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
@@ -119,18 +119,17 @@ tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
 }
 
 /// @brief  Sets the decision thresholds to what is in the xml file
+/// @param  p_filePath The path to the xml file
 /// @return The new set threshold values
 template <typename DecisionMaker>
-tThreshold Mediator<DecisionMaker>::SetThresholdSettings()
+tThreshold Mediator<DecisionMaker>::SetThresholdSettings(const char* p_filePath)
 {
-    char buf[1024];
-    sprintf(buf, "%s%s", GfLocalDir(), "config/Threshhold.xml");
-    void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    void* paramHandle = GfParmReadFile(p_filePath, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     m_thresholds;
-    m_thresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", 0.0f);
-    m_thresholds.Brake = GfParmGetNum(paramHandle, "Threshold Settings", "Brake", "%", 0.9f);
-    m_thresholds.Steer = GfParmGetNum(paramHandle, "Threshold Settings", "Steer", "%", 0.04f);
+    m_thresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", STANDARD_THRESHOLD_ACCEL);
+    m_thresholds.Brake = GfParmGetNum(paramHandle, "Threshold Settings", "Brake", "%", STANDARD_THRESHOLD_BRAKE);
+    m_thresholds.Steer = GfParmGetNum(paramHandle, "Threshold Settings", "Steer", "%", STANDARD_THRESHOLD_STEER);
 
     GfParmReleaseHandle(paramHandle);
 
@@ -148,7 +147,10 @@ tThreshold Mediator<DecisionMaker>::GetThresholdSettings()
         return m_thresholds;
 
     // else set thresholds according to the xml and return those
-    return SetThresholdSettings();
+    std::string dstStr("config/Threshhold.xml");
+    char buf[512];
+    sprintf(buf, "%s%s", GfLocalDir(), dstStr.c_str());
+    return SetThresholdSettings(buf);
 }
 
 /// @brief              Does one drive tick in the framework
