@@ -11,15 +11,17 @@
 #include <experimental/filesystem>
 #include "../rppUtils/RppUtils.hpp"
 
+/// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
 
-#define MockMediator2 Mediator<DecisionMakerMock<SDAConfig>>
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
 
 template <>
-MockMediator2* MockMediator2::m_instance = nullptr;
+SDAConfigMediator* SDAConfigMediator::m_instance = nullptr;
 
 /// @brief Test if the distribution of the mediator works
 TEST(MediatorTests, GetDistributedMediatorTemplated)
@@ -51,7 +53,7 @@ void InterventionTestMediator(InterventionType p_interventionType)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    MockMediator2* mediator = MockMediator2::GetInstance();
+    SDAConfigMediator* mediator = SDAConfigMediator::GetInstance();
 
     mediator->SetInterventionType(p_interventionType);
     ASSERT_EQ(p_interventionType, mediator->GetInterventionType());
@@ -81,10 +83,10 @@ TEST(MediatorTests, ReadFromFile)
 /// @param p_interventionType The interventionType to test for
 void InterventionTypeTestMediator(InterventionType p_interventionType)
 {
-    MockMediator2::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    MockMediator2::GetInstance()->SetInterventionType(p_interventionType);
-    const InterventionType it = MockMediator2::GetInstance()->GetDecisionMaker()->Type;
+    SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
+    const InterventionType it = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Type;
     ASSERT_EQ(p_interventionType, it);
 }
 
@@ -97,10 +99,10 @@ TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeT
 /// @param p_task The task to test for
 void TaskTestMediator(Task p_task)
 {
-    MockMediator2::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    MockMediator2::GetInstance()->SetTask(p_task);
-    const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+    SDAConfigMediator::GetInstance()->SetTask(p_task);
+    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     ASSERT_EQ(p_task, config.GetTask());
 }
 
@@ -112,11 +114,11 @@ TEST_CASE(MediatorTests, TaskTestsSpeedControl, TaskTestMediator, (TASK_SPEED_CO
 /// @param p_bool2 Second bool
 void IndicatorTestMediator(bool p_bool1, bool p_bool2, bool p_bool3)
 {
-    MockMediator2::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     tIndicator arr = {p_bool1, p_bool2, p_bool3};
-    MockMediator2::GetInstance()->SetIndicatorSettings(arr);
-    const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+    SDAConfigMediator::GetInstance()->SetIndicatorSettings(arr);
+    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tIndicator indicator = config.GetIndicatorSettings();
     ASSERT_EQ(arr.Audio, indicator.Audio);
     ASSERT_EQ(arr.Icon, indicator.Icon);
@@ -134,11 +136,11 @@ END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, boolean
 /// @param p_bool3 Third  bool
 void PControlTest1Mediator(bool p_bool1, bool p_bool2, bool p_bool3)
 {
-    MockMediator2::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL, NULL, NULL};
-    MockMediator2::GetInstance()->SetPControlSettings(arr);
-    const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+    SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
+    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
@@ -156,11 +158,11 @@ END_TEST_COMBINATORIAL3(PControlTest1Mediator, booleans, 2, booleans, 2, boolean
 /// @param p_bool3 Third  bool
 void PControlTest2Mediator(bool p_bool1, bool p_bool2, bool p_bool3)
 {
-    MockMediator2::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     tParticipantControl arr = {NULL, NULL, NULL, p_bool1, p_bool2, p_bool3};
-    MockMediator2::GetInstance()->SetPControlSettings(arr);
-    const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+    SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
+    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
     ASSERT_EQ(arr.RecordSession, pControl.RecordSession);
@@ -178,11 +180,11 @@ TEST(MediatorTests, MaxTimeTest)
     Random random;
     for (int i = 0; i < 20; i++)
     {
-        MockMediator2::ClearInstance();
+        SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
         int maxTime = random.NextInt();
-        MockMediator2::GetInstance()->SetMaxTime(maxTime);
-        const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+        SDAConfigMediator::GetInstance()->SetMaxTime(maxTime);
+        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
         ASSERT_EQ(maxTime, config.GetMaxTime());
     }
 }
@@ -194,12 +196,12 @@ TEST(MediatorTests, UserIDTest)
     char buf[32];
     for (int i = 0; i < 20; i++)
     {
-        MockMediator2::ClearInstance();
+        SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
         int userID = random.NextInt();
         sprintf(buf, "%d", userID);
-        MockMediator2::GetInstance()->SetUserId(buf);
-        const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+        SDAConfigMediator::GetInstance()->SetUserId(buf);
+        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
         ASSERT_EQ(buf, config.GetUserId());
     }
 }
@@ -210,7 +212,7 @@ TEST(MediatorTests, BlackBoxFilePathTest)
     Random random;
     for (int j = 0; j <= 10; j++)
     {
-        MockMediator2::ClearInstance();
+        SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
         char path[256];
         int length = 2 + 254 * j / 10;
@@ -224,8 +226,8 @@ TEST(MediatorTests, BlackBoxFilePathTest)
             path[i] = c;
         }
         path[length - 1] = '\0';
-        MockMediator2::GetInstance()->SetBlackBoxFilePath(path);
-        const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+        SDAConfigMediator::GetInstance()->SetBlackBoxFilePath(path);
+        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
         const char* configPath = config.GetBlackBoxFilePath();
         for (int i = 0; i < length; i++)
         {
@@ -242,11 +244,11 @@ TEST(MediatorTests, BlackBoxFilePathTest)
 /// @param p_bool5 Fifth bool
 void TestBoolArrMediator(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_bool5)
 {
-    MockMediator2::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     tDataToStore arr = {p_bool1, p_bool2, p_bool3, p_bool4, p_bool5};
-    MockMediator2::GetInstance()->SetDataCollectionSettings(arr);
-    const SDAConfig config = MockMediator2::GetInstance()->GetDecisionMaker()->Config;
+    SDAConfigMediator::GetInstance()->SetDataCollectionSettings(arr);
+    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tDataToStore dataToStore = config.GetDataCollectionSetting();
     ASSERT_EQ(arr.EnvironmentData, dataToStore.EnvironmentData);
     ASSERT_EQ(arr.CarData, dataToStore.CarData);

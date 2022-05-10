@@ -34,4 +34,5 @@ public:
     ~DecisionMakerMock() = default;
 };
 
+/// @brief The standard DecisionMakerMock
 #define SDecisionMakerMock DecisionMakerMock<ConfigMock>
