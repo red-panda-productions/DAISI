@@ -220,7 +220,10 @@ Changed:
                     racescreens.h
                         removed networking
                     raceselectmenu.cpp
-                        skip through this in rmOnActivate()
+                        changed rmOnActivate()
+                        changed rmOnRaceSelectShutdown()
+                        changed rmOnSelectRaceMan()
+                        changed RmRaceSelectInit()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
                 confscreens/
                     soundconfig.cpp
