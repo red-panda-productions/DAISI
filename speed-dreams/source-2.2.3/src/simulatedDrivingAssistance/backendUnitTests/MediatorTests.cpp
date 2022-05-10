@@ -129,10 +129,10 @@ void TaskTestMediator(Task p_task)
 TEST_CASE(MediatorTests, TaskTestsLaneKeeping, TaskTestMediator, (TASK_LANE_KEEPING))
 TEST_CASE(MediatorTests, TaskTestsSpeedControl, TaskTestMediator, (TASK_SPEED_CONTROL))
 
-/// @brief         Tests if the Mediator sets and gets the IndicatorSettings correctly
-/// @param p_audio The audio option
-/// @param p_icon  The icon option
-/// @param p_text  The text option
+/// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
+/// @param p_audio Whether to enable the audio option
+/// @param p_icon  Whether to enable the icon option
+/// @param p_text  Whether to enable the text option
 void IndicatorTestMediator(bool p_audio, bool p_icon, bool p_text)
 {
     SDAConfigMediator::ClearInstance();
