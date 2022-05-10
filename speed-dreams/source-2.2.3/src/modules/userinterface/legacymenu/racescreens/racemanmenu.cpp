@@ -46,8 +46,6 @@
 
 #include "mainmenu.h"
 
-// SIMULATED DRIVING ASSISTANCE: removed networking
-
 // Raceman menu.
 static void	*ScrHandle = 0;
 
@@ -280,6 +278,7 @@ rmOnSelectCompetitor(void * /* dummy */)
 		GfLogDebug("Selecting %s\n", pComp->getName().c_str());
 }
 
+// SIMULATED DRIVING ASSISTANCE: renamed from rmOnPlayerConfig
 static void
 rmOnControlConfig(void * /* dummy */)
 {
@@ -416,10 +415,12 @@ RmRacemanMenu()
 	// Create Configure race, Configure players and Back buttons.
 	GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ConfigureRaceButton",
 								NULL, RmConfigureRace);
+	// SIMULATED DRIVING ASSISTANCE: renamed configurePlayersButton to ControlsButton and rmOnPlayerConfig to rmOnControlConfig
 	if (SupportsHumanDrivers)
 		GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ControlsButton",
 								NULL, rmOnControlConfig);
-	
+
+	// SIMULATED DRIVING ASSISTANCE: backbutton goes back to main menu
 	GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "BackButton",
 								RmRaceSelectMenuHandle, BackToMainMenu);
 
@@ -461,6 +462,7 @@ RmRacemanMenu()
 	GfuiMenuDefaultKeysAdd(ScrHandle);
 	GfuiAddKey(ScrHandle, GFUIK_RETURN, "Start the race",
 			   NULL, rmStartNewRace, NULL);
+	// SIMULATED DRIVING ASSISTANCE: escape goes back to main menu
 	GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Back to the Main menu",
 			   RmRaceSelectMenuHandle, BackToMainMenu, NULL);
 

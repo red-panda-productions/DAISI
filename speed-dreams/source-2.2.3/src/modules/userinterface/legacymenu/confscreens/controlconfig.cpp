@@ -146,7 +146,6 @@ static float SteerSpeedSensVal;
 
 // SIMULATED DRIVING ASSISTANCE: added skillLevel of players to controls since player menu is removed
 static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
-static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
 static const int NbSkillLevels = sizeof(SkillLevelString) / sizeof(SkillLevelString[0]);
 
 static const char* PlayerNamePrompt = "-- Enter name --";

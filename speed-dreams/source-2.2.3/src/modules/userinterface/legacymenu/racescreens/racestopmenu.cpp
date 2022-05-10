@@ -153,7 +153,7 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
     GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
 }
 
-static void     *pvForceFeedbackConfigHookHandle = 0;
+static void	*pvForceFeedbackConfigHookHandle = 0;
 
 static void *
 rmForceFeedbackConfigHookInit()
@@ -166,7 +166,7 @@ rmForceFeedbackConfigHookInit()
 #endif
 
 // Quit race hook ******************************************************
-static void     *rmStopScrHandle = 0;
+static void	*rmStopScrHandle = 0;
 
 static void
 rmQuitHookActivate(void * /* dummy */)

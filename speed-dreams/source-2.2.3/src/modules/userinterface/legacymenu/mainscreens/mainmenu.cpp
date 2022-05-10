@@ -20,7 +20,6 @@
 #include <tgfclient.h>
 
 #include <racescreens.h>
-// SIMULATED DRIVING ASSISTANCE: REMOVED PLAYER CONFIG, ADDED CONTROLCONGFIG
 #include <controlconfig.h>
 
 #include "mainmenu.h"
@@ -31,7 +30,7 @@
 
 static void *MenuHandle = 0;
 
-
+// SIMULATED DRIVING ASSISTANCE: renamed from onPlayerConfigMenuActivate
 static void
 onControlMenuActivate(void * /* dummy */)
 {
@@ -52,7 +51,7 @@ onRaceSelectMenuActivate(void * /* dummy */)
 //static void
 //onRaceWESelectMenuActivate(void * /* dummy */)
 /*{
-        GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
+	GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
 }*/
 
 static void
@@ -99,7 +98,7 @@ onMainMenuActivate(void * /* dummy */)
  *	0 ok -1 nok
  *
  * Remarks
- *      
+ *	
  */
 
 void *
@@ -122,8 +121,8 @@ MainMenuInit(bool SupportsHumanDrivers)
     // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
-    if (SupportsHumanDrivers)
-        GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
+	if (SupportsHumanDrivers)
+		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
@@ -154,12 +153,12 @@ MainMenuInit(bool SupportsHumanDrivers)
  *	0 ok -1 nok
  *
  * Remarks
- *      
+ *	
  */
 int
 MainMenuRun(void)
 {
     GfuiScreenActivate(MenuHandle);
-
+	
     return 0;
 }

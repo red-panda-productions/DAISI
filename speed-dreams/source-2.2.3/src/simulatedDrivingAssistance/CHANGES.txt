@@ -385,6 +385,8 @@ Changed:
                 removed sound system option
             stopracemenu.xml
                 removed controls and force feedback buttons
+            racemanmenu.xml
+                changed player button to control button
         
   cmake/
     checks.cmake

@@ -139,7 +139,7 @@ RmRaceSelectInit(void *prevMenu)
 											NULL, rmOnActivate, 
 											NULL, (tfuiCallback)NULL, 
 											1);
-
+	// SIMULATED DRIVING ASSISTANCE: removed loading the menu, since it is skipped on activation.
 	// Give the race engine the menu to come back to.
 	LmRaceEngine().initializeState(prevMenu);
 
