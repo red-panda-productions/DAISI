@@ -26,7 +26,7 @@
 
 #include "optionsmenu.h"
 
- // SIMULATED DRIVING ASSISTANCE: REMOVED player, graph, opengl, advanced, simu, ai, hostsettings configs
+ // SIMULATED DRIVING ASSISTANCE: removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
 static void *MenuHandle = NULL;
 
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
