@@ -7,8 +7,9 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-#include "IndicatorConfig.h"
 #include "../rppUtils/RppUtils.hpp"
+
+#include "IndicatorConfig.h"
 
 /// @brief        Loads the indicator data of every intervention action from config file in the given path
 /// @param p_path The path to the XML file containing the indicator data to load
@@ -36,10 +37,15 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
     return m_indicatorData;
 }
 
-/// @brief  Returns a vector containing indicator data for all active indicators
-/// @return The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
+/// @brief                    Returns a vector containing indicator data for all active indicators,
+///                           if and only if the interventions are turned on (not on NO_SIGNALS).
+/// @param p_interventionType The intervention type setting
+/// @return                   The vector of indicator data
+std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionType p_interventionType)
 {
+    // Guard when no signals are to be sent, always return an empty vector.
+    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
+
     return m_activeIndicators;
 }
 

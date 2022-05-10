@@ -33,43 +33,44 @@
   </section>
 
   <section name="template controls">
-	  <!-- Dev. team (chapter 0) pages -->
-	  <section name="0.name">
-		  <attstr name="type" val="label"/>
-		  <attstr name="tip" val="Name of the team member"/>
-		  <attnum name="max len" val="30"/>
-		  <attstr name="h align" val="right"/>
-		  <attnum name="width" val="160"/>
-		  <attstr name="font" val="small"/>
-		  <attstr name="color" val="0xFFFFFF"/>
+      <!--SIMULATED DRIVING ASSISTANCE: new dev team section-->
+      <!-- Dev. team (chapter 0) pages -->
+      <section name="0.name">
+          <attstr name="type" val="label"/>
+          <attstr name="tip" val="Name of the team member"/>
+          <attnum name="max len" val="30"/>
+          <attstr name="h align" val="right"/>
+          <attnum name="width" val="160"/>
+          <attstr name="font" val="small"/>
+          <attstr name="color" val="0xFFFFFF"/>
 	  </section>
 	  <section name="0.contribs">
-		  <attstr name="type" val="label"/>
-		  <attstr name="tip" val="Main contributions"/>
-		  <attnum name="max len" val="100"/>
-		  <attstr name="h align" val="left"/>
-		  <attstr name="font" val="small_t"/>
-		  <attstr name="color" val="0xFFFFFF"/>
-	  </section>
-	  <section name="0.role">
-		  <attstr name="type" val="label"/>
-		  <attstr name="tip" val="Role in the team"/>
-		  <attnum name="max len" val="30"/>
-		  <attstr name="h align" val="right"/>
-		  <attnum name="width" val="160"/>
-		  <attstr name="font" val="small"/>
-		  <attstr name="color" val="0xFFFFFF"/>
-	  </section>
-	  <section name="0.web">
-		  <attstr name="type" val="label"/>
-		  <attstr name="tip" val="Website"/>
-		  <attnum name="max len" val="100"/>
-		  <attstr name="h align" val="left"/>
-		  <attstr name="font" val="small_t"/>
-		  <attstr name="color" val="0xFFFFFF"/>
-	  </section>
-
-	  <!-- Dev. team (chapter 1) pages -->
+          <attstr name="type" val="label"/>
+          <attstr name="tip" val="Main contributions"/>
+          <attnum name="max len" val="100"/>
+          <attstr name="h align" val="left"/>
+          <attstr name="font" val="small_t"/>
+          <attstr name="color" val="0xFFFFFF"/>
+      </section>
+      <section name="0.role">
+          <attstr name="type" val="label"/>
+          <attstr name="tip" val="Role in the team"/>
+          <attnum name="max len" val="30"/>
+          <attstr name="h align" val="right"/>
+          <attnum name="width" val="160"/>
+          <attstr name="font" val="small"/>
+          <attstr name="color" val="0xFFFFFF"/>
+      </section>
+      <section name="0.web">
+          <attstr name="type" val="label"/>
+          <attstr name="tip" val="Website"/>
+          <attnum name="max len" val="100"/>
+          <attstr name="h align" val="left"/>
+          <attstr name="font" val="small_t"/>
+          <attstr name="color" val="0xFFFFFF"/>
+      </section>
+      
+    <!-- Dev. team (chapter 1) pages -->
     <section name="1.name">
       <attstr name="type" val="label"/>
       <attstr name="tip" val="Name of the team member"/>

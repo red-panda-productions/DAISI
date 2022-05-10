@@ -41,7 +41,7 @@ target_link_libraries(
   gmock_main
 )
 
-ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend)
+ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend backend)
 
 ADD_PLIB_LIBRARY(frontendUnitTests)
 
@@ -52,4 +52,15 @@ gtest_discover_tests(frontendUnitTests DISCOVERY_TIMEOUT 600)
 
 #Code coverage
 SET(FRONTEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/frontend")
-CREATE_OPEN_CPP_COVERAGE_BAT("FrontendCoverage" "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe" "${FRONTEND_SOURCE_DIR}" "" ".*@NOCOVERAGE.*")
+
+SET(BAT_NAME "FrontendCoverage")
+SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe")
+SET(SOURCE_DIR "${FRONTEND_SOURCE_DIR}")
+SET(EXCLUDED_SOURCES "")
+SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
+
+IF(OPTION_GITHUB_ACTIONS)
+    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "FrontendCoverage.cov" "UnitTestCoverage.cov")
+ELSE(OPTION_GITHUB_ACTIONS)
+    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
+ENDIF(OPTION_GITHUB_ACTIONS)

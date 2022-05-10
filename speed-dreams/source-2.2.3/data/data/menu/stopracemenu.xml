@@ -30,6 +30,7 @@
 		<attnum name="yTopButton" val="290"/>
 		<attnum name="buttonShift" val="32"/>
 
+		<!--SIMULATED DRIVING ASSISTANCE: removed controls and force feedback-->
 		<!-- button texts and tips -->
 		<attstr name="restart.text" val="Restart Race"/>
 		<attstr name="restart.tip" val="Restart the current race"/>
@@ -37,6 +38,8 @@
 		<attstr name="abort.tip" val="Abort the current race"/>
 		<attstr name="resume.text" val="Resume Race"/>
 		<attstr name="resume.tip" val="Return to the race"/>
+        <attstr name="forcefeedback.text" val="Adjust Force Feedback"/>
+        <attstr name="forcefeedback.tip" val="Adjust the Force Feedback configuration for the current car"/>
 		<attstr name="skip.text" val="Skip Session"/>
 		<attstr name="skip.tip" val="Skip the current session"/>
 		<attstr name="quit.text" val="Quit Game"/>

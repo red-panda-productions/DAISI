@@ -21,16 +21,12 @@
 
 #include <displayconfig.h>
 #include <monitorconfig.h>
-#include <graphconfig.h>
-#include <advancedgraphconfig.h>
-#include <openglconfig.h>
 #include <soundconfig.h>
-#include <simuconfig.h>
-#include <aiconfig.h>
+
 
 #include "optionsmenu.h"
 
-
+ // SIMULATED DRIVING ASSISTANCE: REMOVED player, graph, opengl, advanced, simu, ai, hostsettings configs
 static void *MenuHandle = NULL;
 
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
@@ -55,23 +51,6 @@ onMonitorMenuActivate(void * /* dummy */)
 
 #endif
 
-static void
-onGraphMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(GraphMenuInit(MenuHandle));
-}
-
-static void
-onAdvancedGraphMenuActivate(void * /*dummy */)
-{
-	GfuiScreenActivate(AdvancedGraphMenuInit(MenuHandle));
-}
-
-static void
-onOpenGLMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(OpenGLMenuInit(MenuHandle));
-}
 
 static void
 onSoundMenuActivate(void * /* dummy */)
@@ -79,18 +58,7 @@ onSoundMenuActivate(void * /* dummy */)
     GfuiScreenActivate(SoundMenuInit(MenuHandle));
 }
 
-static void
-onSimuMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(SimuMenuInit(MenuHandle));
-}
-
-static void
-onAIMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(AIMenuInit(MenuHandle));
-}
-
+//SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
 void *
 OptionsMenuInit(void *prevMenu)
 {
@@ -113,7 +81,6 @@ OptionsMenuInit(void *prevMenu)
     GfuiMenuCreateButtonControl(MenuHandle, param, "back", prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
-    //SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
     GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Back", prevMenu, GfuiScreenActivate, NULL);

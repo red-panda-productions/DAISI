@@ -20,7 +20,7 @@
 #include <tgfclient.h>
 
 #include <racescreens.h>
-#include <playerconfig.h>
+// SIMULATED DRIVING ASSISTANCE: REMOVED PLAYER CONFIG, ADDED CONTROLCONGFIG
 #include <controlconfig.h>
 
 #include "mainmenu.h"
@@ -29,23 +29,18 @@
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
 
-
-
 static void *MenuHandle = 0;
 
 
 static void
-onControlConfigMenuActivate(void * /* dummy */)
+onControlMenuActivate(void * /* dummy */)
 {
-    unsigned curPlayerIdx;
-
-    if (CurrPlayer != PlayersInfo.end()) {
-
-        ReloadValues = 0;
-
-        curPlayerIdx = (unsigned)1;
-        GfuiScreenActivate(ControlMenuInit(MenuHandle, PrefHdle, curPlayerIdx, 1, 1));
-    }
+    /* Here, we need to call OptionOptionInit each time the firing button
+       is pressed, and not only once at the Main menu initialization,
+       because the previous menu has to be saved (ESC, Back) and because it can be this menu,
+       as well as the Raceman menu */
+       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
+    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
 }
 
 static void
@@ -57,7 +52,7 @@ onRaceSelectMenuActivate(void * /* dummy */)
 //static void
 //onRaceWESelectMenuActivate(void * /* dummy */)
 /*{
-	GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
+        GfuiScreenActivate(RmRaceWESelectInit(MenuHandle));
 }*/
 
 static void
@@ -104,7 +99,7 @@ onMainMenuActivate(void * /* dummy */)
  *	0 ok -1 nok
  *
  * Remarks
- *	
+ *      
  */
 
 void *
@@ -124,10 +119,11 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
+    // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
-	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlConfigMenuActivate);
+    if (SupportsHumanDrivers)
+        GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
@@ -158,12 +154,12 @@ MainMenuInit(bool SupportsHumanDrivers)
  *	0 ok -1 nok
  *
  * Remarks
- *	
+ *      
  */
 int
 MainMenuRun(void)
 {
     GfuiScreenActivate(MenuHandle);
-	
+
     return 0;
 }

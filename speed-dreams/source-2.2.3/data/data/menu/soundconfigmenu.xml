@@ -191,7 +191,7 @@
 	</section>
 	<!--SIMULATED DRIVING ASSISTANCE: removed sound FX system-->
 
-	<section name="5">
+	<section name="4">
 		<attstr name="type" val="label"/>
 		<attnum name="x" val="20"/>
 		<attnum name="y" val="293"/>
@@ -202,7 +202,7 @@
 		<attstr name="font" val="small_t"/>
 	</section>
 
-	<section name="6">
+	<section name="5">
 		<attstr name="type" val="label"/>
 		<attnum name="x" val="20"/>
 		<attnum name="y" val="260"/>
@@ -212,7 +212,7 @@
 		<attstr name="font" val="small_t"/>
 	</section>
 
-	<section name="7">
+	<section name="6">
 		<attstr name="type" val="label"/>
 		<attnum name="x" val="20"/>
 		<attnum name="y" val="236"/>
@@ -223,7 +223,7 @@
 		<attstr name="font" val="small_t"/>
 	</section>
 
-    <section name="8">
+    <section name="7">
         <attstr name="type" val="label"/>
         <attnum name="x" val="20"/>
         <attnum name="y" val="203"/>
