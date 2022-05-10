@@ -119,7 +119,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
-    // SIMULATED DRIVING ASSISTANCE: FROM RACE TO START
+    // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
     if (SupportsHumanDrivers)
