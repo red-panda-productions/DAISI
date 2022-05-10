@@ -365,9 +365,9 @@ rmResumeRace(void * /* dummy */)
 }
 
 // SIMULATED DRIVING ASSISTANCE: added function to go back to main menu
-/// @brief				goes back to the main menu, cleans up the race engine and shutsdown the graphics,
-///						according to the raceselectmenu that we skip
-/// @param p_prevMenu	needed for MainMenuInit but not used.
+/// @brief              goes back to the main menu, cleans up the race engine and shutsdown the graphics,
+///	                    according to the raceselectmenu that we skip
+/// @param p_prevMenu   needed for MainMenuInit but not used.
 static void BackToMainMenu(void* p_prevMenu)
 {
 	GfuiScreenActivate(MainMenuInit((p_prevMenu)));
