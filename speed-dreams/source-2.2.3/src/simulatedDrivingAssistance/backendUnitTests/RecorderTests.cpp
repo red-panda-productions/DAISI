@@ -324,7 +324,6 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     // Write the car data
     tTrack track{};
-    track.name = new char[64];
     track.name = "track_name";
     track.category = "track_category";
     tIndicator indicators;
