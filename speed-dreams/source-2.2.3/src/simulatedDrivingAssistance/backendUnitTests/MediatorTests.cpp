@@ -112,13 +112,14 @@ TEST_CASE(MediatorTests, TaskTestsLaneKeeping, TaskTestMediator, (TASK_LANE_KEEP
 TEST_CASE(MediatorTests, TaskTestsSpeedControl, TaskTestMediator, (TASK_SPEED_CONTROL))
 
 /// @brief         Tests if the Mediator sets and gets the IndicatorSettings correctly
-/// @param p_bool1 First bool
-/// @param p_bool2 Second bool
-void IndicatorTestMediator(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @param p_audio The audio option
+/// @param p_icon  The icon option
+/// @param p_text  The text option
+void IndicatorTestMediator(bool p_audio, bool p_icon, bool p_text)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tIndicator arr = {p_bool1, p_bool2, p_bool3};
+    tIndicator arr = {p_audio, p_icon, p_text};
     SDAConfigMediator::GetInstance()->SetIndicatorSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tIndicator indicator = config.GetIndicatorSettings();
@@ -132,15 +133,15 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, IndicatorSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the Mediator sets and gets the participant control settings correctly
-/// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest1Mediator(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @brief                Tests if the Mediator sets and gets the participant control settings correctly
+/// @param p_intervention Control intervention toggle option
+/// @param p_gas          Control gas option
+/// @param p_steer        Control steering option
+void PControlTest1Mediator(bool p_intervention, bool p_gas, bool p_steer)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL, NULL, NULL};
+    tParticipantControl arr = {p_intervention, p_gas, p_steer, NULL, NULL, NULL};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tParticipantControl pControl = config.GetPControlSettings();
@@ -154,15 +155,15 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(PControlTest1Mediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the Mediator sets and gets the other pControl settings correctly
-/// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest2Mediator(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @brief            Tests if the Mediator sets and gets the other pControl settings correctly
+/// @param p_force    Force feedback option
+/// @param p_record   Record option
+/// @param p_bbrecord BB Record option
+void PControlTest2Mediator(bool p_force, bool p_record, bool p_bbrecord)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {NULL, NULL, NULL, p_bool1, p_bool2, p_bool3};
+    tParticipantControl arr = {NULL, NULL, NULL, p_force, p_record, p_bbrecord};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tParticipantControl pControl = config.GetPControlSettings();
@@ -226,17 +227,17 @@ TEST(MediatorTests, BlackBoxFilePathTest)
     }
 }
 
-/// @brief         Tests if the Mediator sets and gets the DataCollectionSetting correctly
-/// @param p_bool1 First bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third bool
-/// @param p_bool4 Fourth bool
-/// @param p_bool5 Fifth bool
-void TestBoolArrMediator(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_bool5)
+/// @brief                Tests if the Mediator sets and gets the DataCollectionSetting correctly
+/// @param p_env          The environment data setting
+/// @param p_car          The car data setting
+/// @param p_human        The human data setting
+/// @param p_intervention The intervention data setting
+/// @param p_meta         The meta data setting
+void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_intervention, bool p_meta)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tDataToStore arr = {p_bool1, p_bool2, p_bool3, p_bool4, p_bool5};
+    tDataToStore arr = {p_env, p_car, p_human, p_intervention, p_meta};
     SDAConfigMediator::GetInstance()->SetDataCollectionSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tDataToStore dataToStore = config.GetDataCollectionSetting();
