@@ -53,7 +53,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
-    float controlAccelAmount = random.NextFloat();
+    float controlAccelAmount = random.NextFloat(ACCEL_THRESHOLD, ACCEL_THRESHOLD + 10);
     accelDecision.AccelAmount = controlAccelAmount;
     accelDecision.RunInterveneCommands();
 
@@ -139,14 +139,29 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST(DecisionsTest, AccelRunIndicateTests)
 {
-    IndicatorConfig::ClearInstance();
     InitializeMediator();
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     AccelDecision accelDecision;
     accelDecision.AccelAmount = 1;
     accelDecision.RunIndicateCommands();
 
-    // TODO: Ensure this works when it gets implemented
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-    ASSERT_EQ(activeIndicators.size(), 0);
+
+    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_ACCELERATE indicator should be active
+    ASSERT_EQ(activeIndicators.size(), 1);
+    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+
+    accelDecision.AccelAmount = 0;
+    accelDecision.RunIndicateCommands();
+
+    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+
+    // if the accelerate amount is below the ACCEL_THRESHOLD defined in AccelDecision.cpp, no indicator should have been changed
+    ASSERT_EQ(activeIndicators.size(), 1);
+    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
 }
