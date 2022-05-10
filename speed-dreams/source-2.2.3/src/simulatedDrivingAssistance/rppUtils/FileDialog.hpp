@@ -2,8 +2,6 @@
 
 // includes that are necessary for windows
 #include <shobjidl.h>  // For Windows COM interface
-#include <locale>
-#include <codecvt>
 
 #define MAX_PATH_SIZE 260
 
@@ -38,12 +36,13 @@ inline void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_F
 inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
 {
     // Opens a file dialog on Windows
+    // Functions returning an HRESULT are from shobjidl.h can all fail. In each such if block where it has failed, we provide the docs associated with that function
 
     // Initialize COM interface
     HRESULT hresult = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (FAILED(hresult))
     {
-        // Could fail if some other method on this thread, before this call used the COM interface and failed to uninitialize it
+        // Could fail if some other method on this thread, before this call, used the COM interface and failed to uninitialize it
         // https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex#return-value
         strcpy_s(p_err, MAX_PATH_SIZE, "Could not initialize COM interface");
         return false;
@@ -107,6 +106,8 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** 
     if (FAILED(hresult))
     {
         Release(fileDialog, filterSpec);
+        // User closed the window
+        // https://docs.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-imodalwindow-show#return-value
         strcpy_s(p_err, MAX_PATH_SIZE, "Closed the file dialog");
         return false;
     }

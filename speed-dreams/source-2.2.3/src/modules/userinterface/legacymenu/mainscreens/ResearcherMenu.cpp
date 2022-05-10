@@ -6,9 +6,6 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
-#include <shobjidl.h>  // For Windows COM interface
-#include <locale>
-#include <codecvt>
 #include "../rppUtils/FileDialog.hpp"
 #include <experimental/filesystem>
 

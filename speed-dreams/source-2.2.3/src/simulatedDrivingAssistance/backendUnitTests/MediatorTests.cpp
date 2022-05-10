@@ -50,7 +50,7 @@ void InterventionTest(InterventionType p_interventionType)
     DeleteSingletonsFolder();
 }
 
-/// @brief                      Tests if the Mediator sets and gets the interventionType correctly
+/// @brief                      Tests if the Mediator sets and gets the black box sync option correctly
 /// @param p_blackBoxSyncOption The sync option that needs to be set
 void BlackBoxSyncOptionTestMediator(bool p_blackBoxSyncOption)
 {
