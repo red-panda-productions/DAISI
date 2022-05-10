@@ -10,7 +10,6 @@
 
 class FileDataStorageMock
 {
-
 public:
     std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,
                                                    const std::string& p_fileName,

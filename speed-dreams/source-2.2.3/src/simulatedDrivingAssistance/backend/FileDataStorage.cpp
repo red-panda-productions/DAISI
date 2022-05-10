@@ -159,7 +159,3 @@ void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
     }
     WRITE_STRING(m_outputStream, "NONE");
 }
-
-FileDataStorage::~FileDataStorage()
-{
-}

@@ -5,7 +5,7 @@
 #include "car.h"
 #include "ConfigMock.h"
 
-template<class ConfigMock>
+template <class ConfigMock>
 class DecisionMakerMock
 {
 public:
