@@ -124,7 +124,7 @@ rmRestartRaceHookInit()
     return pvRestartRaceHookHandle;
 }
 
-//SIMULATED DRIVING ASSISTANCE: remove controls setting
+//SIMULATED DRIVING ASSISTANCE: removed controls settings
 #if SDL_FORCEFEEDBACK
 // ForceFeedbackConfig hook ********************************************
 static void
