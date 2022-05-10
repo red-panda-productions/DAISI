@@ -17,6 +17,8 @@
 /// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
 #define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
+#define TEST_AMOUNT 20
+
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
 
@@ -178,7 +180,7 @@ END_TEST_COMBINATORIAL3(PControlTest2Mediator, booleans, 2, booleans, 2, boolean
 TEST(MediatorTests, MaxTimeTest)
 {
     Random random;
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
@@ -194,7 +196,7 @@ TEST(MediatorTests, UserIDTest)
 {
     Random random;
     char buf[32];
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < TEST_AMOUNT; i++)
     {
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
@@ -210,29 +212,17 @@ TEST(MediatorTests, UserIDTest)
 TEST(MediatorTests, BlackBoxFilePathTest)
 {
     Random random;
+    char path[256];
     for (int j = 0; j <= 10; j++)
     {
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
-        char path[256];
-        int length = 2 + 254 * j / 10;
-        for (int i = 0; i < length - 1; i++)
-        {
-            char c;
-            do
-            {  // Make sure no character is assigned the null character
-                c = (char)random.NextByte();
-            } while (c == '\0');
-            path[i] = c;
-        }
-        path[length - 1] = '\0';
+        int length = random.NextInt(256);
+        GenerateRandomCharArray(path, length);
         SDAConfigMediator::GetInstance()->SetBlackBoxFilePath(path);
         const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
         const char* configPath = config.GetBlackBoxFilePath();
-        for (int i = 0; i < length; i++)
-        {
-            ASSERT_EQ(path[i], configPath[i]);
-        }
+        TestStringEqual(path, configPath, length);
     }
 }
 
