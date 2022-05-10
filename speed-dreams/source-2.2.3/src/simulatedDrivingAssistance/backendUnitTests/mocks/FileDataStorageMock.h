@@ -10,8 +10,6 @@
 
 class FileDataStorageMock
 {
-private:
-    std::ofstream m_outputStream;
 
 public:
     std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,

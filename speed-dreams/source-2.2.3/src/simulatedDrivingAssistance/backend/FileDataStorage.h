@@ -14,7 +14,7 @@ private:
     /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
     tDataToStore m_saveSettings;
     /// @brief Output filestream to write data to, should be initialized through @link FileDataStorage::Initialize
-    std::ofstream m_outputStream;
+    std::ofstream m_outputStream = {};
 
 public:
     std::experimental::filesystem::path Initialize(
@@ -35,6 +35,8 @@ public:
     void Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp);
 
     void SaveDecisions(DecisionTuple& p_decisions);
+
+    ~FileDataStorage();
 };
 
 /// @brief Standard implementation of the file data storage

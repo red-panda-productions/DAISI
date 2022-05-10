@@ -1,9 +1,11 @@
 #pragma once
 #include "ConfigEnums.h"
 #include "raceman.h"
-#include "FileDataStorage.h"
+#include "FileDataStorageMock.h"
 #include "car.h"
+#include "ConfigMock.h"
 
+template<class ConfigMock>
 class DecisionMakerMock
 {
 public:
@@ -15,11 +17,21 @@ public:
     void ChangeSettings(InterventionType p_type)
     {
         Type = p_type;
+        Config.SetInterventionType(p_type);
+    }
+
+    void SetDataCollectionSettings(tDataToStore p_dataSetting)
+    {
+        Config.SetDataCollectionSettings(p_dataSetting);
     }
 
     InterventionType Type;
-    FileDataStorage FileBufferStorage;
+    FileDataStorageMock FileBufferStorage;
     bool Decision;
+
+    ConfigMock Config;
 
     ~DecisionMakerMock() = default;
 };
+
+#define SDecisionMakerMock DecisionMakerMock<ConfigMock>
