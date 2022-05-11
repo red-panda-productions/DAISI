@@ -109,22 +109,22 @@ RmBackToRaceHookInit()
 }
 
 // Restart race hook ***************************************************
+static void *pvRestartRaceHookHandle = 0;
+
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
-    LmRaceEngine().restartRace();
-}
+    if (pvRestartRaceHookHandle)
+        GfuiScreenActivate(SaveMenuInitRestart(pvRestartRaceHookHandle));
 
-static void	*pvRestartRaceHookHandle = 0;
+    //LmRaceEngine().restartRace();
+}
 
 static void *
 rmRestartRaceHookInit()
 {
     if (!pvRestartRaceHookHandle)
         pvRestartRaceHookHandle = GfuiHookCreate(0, rmRestartRaceHookActivate);
-
-    if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle));
 
 
     return pvRestartRaceHookHandle;

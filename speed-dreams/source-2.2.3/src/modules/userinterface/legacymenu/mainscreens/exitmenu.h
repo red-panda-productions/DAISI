@@ -23,6 +23,7 @@
 
 
 extern void* ExitMenuInit(void *prevMenu);
+extern void* ExitMenuInitNoRace(void *prevMenu);
 
 #endif /* _EXITMENU_H_ */ 
 

@@ -73,3 +73,26 @@ void* ExitMenuInit(void *prevMenu)
 
     return MenuHandle;
 }
+
+void* ExitMenuInitNoRace(void *prevMenu)
+{
+    if (MenuHandle)
+    {
+        GfuiScreenRelease(MenuHandle);
+    }
+
+    MenuHandle = GfuiScreenCreate();
+
+    void *param = GfuiMenuLoad("exitmenu.xml");
+
+    GfuiMenuCreateStaticControls(MenuHandle, param);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+
+    GfParmReleaseHandle(param);
+
+    GfuiMenuDefaultKeysAdd(MenuHandle);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", prevMenu, GfuiScreenActivate, NULL);
+
+    return MenuHandle;
+}

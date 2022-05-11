@@ -21,5 +21,6 @@
 #define _CONFORMATIONMENU_H_
 
 extern void* ConformationMenuInit(void* prevMenu);
+extern void* ConformationMenuInitRestart(void* prevMenu);
 
 #endif /* _CONFORMATIONMENU_H_ */

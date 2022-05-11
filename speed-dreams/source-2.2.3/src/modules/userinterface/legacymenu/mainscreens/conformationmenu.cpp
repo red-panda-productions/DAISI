@@ -35,6 +35,13 @@ onAcceptExit(void * /* dummy */)
     LegacyMenu::self().quit();
 }
 
+static void
+onRestartExit(void * /* dummy */)
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
+    LmRaceEngine().restartRace();
+}
+
 void *ConformationMenuInit(void *prevMenu)
 {
     if (MenuHandle)
@@ -47,6 +54,28 @@ void *ConformationMenuInit(void *prevMenu)
     void *param = GfuiMenuLoad("conformationmenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
     GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", NULL, onAcceptExit);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "waitdontdelete", prevMenu, GfuiScreenActivate);
+
+    GfParmReleaseHandle(param);
+
+    GfuiMenuDefaultKeysAdd(MenuHandle);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", prevMenu, GfuiScreenActivate, NULL);
+
+    return MenuHandle;
+}
+
+void *ConformationMenuInitRestart(void *prevMenu)
+{
+    if (MenuHandle)
+    {
+        GfuiScreenRelease(MenuHandle);
+    }
+
+    MenuHandle = GfuiScreenCreate();
+
+    void *param = GfuiMenuLoad("conformationmenu.xml");
+    GfuiMenuCreateStaticControls(MenuHandle, param);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", NULL, onRestartExit);
     GfuiMenuCreateButtonControl(MenuHandle, param, "waitdontdelete", prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);

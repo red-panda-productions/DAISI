@@ -76,7 +76,7 @@ onCreditsMenuActivate(void * /* dummy */)
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle));
+    GfuiScreenActivate(ExitMenuInitNoRace(MenuHandle));
 }
 
 static void

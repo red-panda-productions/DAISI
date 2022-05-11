@@ -43,6 +43,7 @@
 
 #include "legacymenu.h"
 #include "displayconfig.h"
+#include "Mediator.h"
 
 
 // The LegacyMenu singleton.
@@ -494,6 +495,18 @@ void LegacyMenu::onRaceFinishing()
 	{
         RmResScreenShutdown();
     }
+}
+
+void LegacyMenu::onAcceptExit()
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
+    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
+    LegacyMenu::self().quit();
+}
+
+void LegacyMenu::onAcceptRestart()
+{
+
 }
 
 bool LegacyMenu::onRaceFinished(bool bEndOfSession)

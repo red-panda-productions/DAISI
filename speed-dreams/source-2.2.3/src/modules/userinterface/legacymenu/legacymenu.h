@@ -138,6 +138,10 @@ public:
 	//! Accessor to the sound engine.
 	ISoundEngine* soundEngine();
 
+	//! Determining the exitprotocol
+    void onAcceptExit();
+    void onAcceptRestart();
+
  protected:
 
 	//! Protected constructor to avoid instanciation outside (but friends).
@@ -156,7 +160,7 @@ public:
 	void shutdownGraphicsView();
 	void unloadCarsGraphics();
 	void unloadTrackGraphics();
-	void shutdownSound(); 
+	void shutdownSound();
 
 	//! Load stuff in the background of the splash screen (menus, XML data, ...).
 	static bool backLoad();

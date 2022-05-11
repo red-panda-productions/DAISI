@@ -36,6 +36,13 @@ onAcceptExit(void * /* dummy */)
     LegacyMenu::self().quit();
 }
 
+static void
+onRestartAccept(void * /* dummy */)
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(true);
+    LmRaceEngine().restartRace();
+}
+
 void* SaveMenuInit(void *prevMenu)
 {
     if (MenuHandle)
@@ -49,6 +56,28 @@ void* SaveMenuInit(void *prevMenu)
     GfuiMenuCreateStaticControls(MenuHandle, param);
     GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onAcceptExit);
     GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInit(MenuHandle), GfuiScreenActivate);
+
+    GfParmReleaseHandle(param);
+
+    GfuiMenuDefaultKeysAdd(MenuHandle);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", prevMenu, GfuiScreenActivate, NULL);
+
+    return MenuHandle;
+}
+
+void *SaveMenuInitRestart(void *prevMenu)
+{
+    if (MenuHandle)
+    {
+        GfuiScreenRelease(MenuHandle);
+    }
+
+    MenuHandle = GfuiScreenCreate();
+
+    void *param = GfuiMenuLoad("savemenu.xml");
+    GfuiMenuCreateStaticControls(MenuHandle, param);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onRestartAccept);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInitRestart(MenuHandle), GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
 

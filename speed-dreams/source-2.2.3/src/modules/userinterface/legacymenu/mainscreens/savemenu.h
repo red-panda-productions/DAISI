@@ -21,5 +21,6 @@
 #define _SAVEMENU_H_
 
 extern void* SaveMenuInit(void* prevMenu);
+extern void* SaveMenuInitRestart(void* prevMenu);
 
 #endif /* _SAVEMENU_H_ */
