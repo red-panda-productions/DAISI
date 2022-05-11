@@ -63,6 +63,11 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     }
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);
+
+    if(SMediator::GetInstance()->TimeOut())
+    {
+        m_humanDriver.end_race(m_index, p_car, p_situation);
+    }
 }
 
 /// @brief Pause the current race.

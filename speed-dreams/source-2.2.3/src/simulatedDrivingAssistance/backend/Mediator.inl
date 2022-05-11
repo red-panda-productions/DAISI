@@ -33,6 +33,7 @@ namespace filesystem = std::experimental::filesystem;
     template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template bool Mediator<type>::TimeOut();                                                                                                            \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
@@ -255,4 +256,13 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     int pointerValue = stoi(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
+}
+
+/// @brief returns whether the race has taken longer than the requested amount of minutes
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::TimeOut()
+{
+    int maxTime =  m_decisionMaker.Config.GetMaxTime() * 60 * 1000;
+    int currentTime = m_tickCount * RCM_MAX_DT_ROBOTS;
+    return maxTime < currentTime;
 }
