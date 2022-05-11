@@ -10,9 +10,6 @@
 
 class FileDataStorageMock
 {
-private:
-    std::ofstream m_outputStream;
-
 public:
     std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,
                                                    const std::string& p_fileName,
@@ -40,6 +37,7 @@ public:
     time_t BlackboxTime;
     int EnvironmentVersion;
     InterventionType InterventionType;
+    DecisionTuple* SavedDecisions;
 
     void Shutdown()
     {
@@ -51,6 +49,7 @@ public:
 
     void SaveDecisions(DecisionTuple& p_decisions)
     {
+        SavedDecisions = &p_decisions;
     }
 };
 

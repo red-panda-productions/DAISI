@@ -46,8 +46,9 @@
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
-        <!--SIMULATED DRIVING ASSISTANCE removed graphics, advanced graphics, opengl, simulation, ai opponents menu-->
-        <section name="sound">
+    
+    <!--SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation and ai opponents menus -->
+	<section name="sound">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Sound"/>

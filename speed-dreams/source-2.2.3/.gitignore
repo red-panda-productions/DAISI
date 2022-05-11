@@ -32,10 +32,14 @@ FrontendCoverage.bat
 
 UnitUtilitiesCoverage.bat
 
-test_data
+Folder.DotSettings.user
 
 temp/
 
 RppUtilsCoverage.bat
 
+
 Folder.DotSettings.user
+
+enc_temp_folder
+

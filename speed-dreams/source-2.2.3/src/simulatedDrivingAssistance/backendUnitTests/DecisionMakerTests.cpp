@@ -2,6 +2,7 @@
 #include "DecisionMaker.h"
 #include "DecisionMaker.inl"
 #include "mocks/SocketBlackBoxMock.h"
+#include "mocks/RecorderMock.h"
 #include "mocks/InterventionExecutorMock.h"
 #include "mocks/ConfigMock.h"
 #include "TestUtils.h"
@@ -14,16 +15,76 @@
 #include "../rppUtils/RppUtils.hpp"
 #include "VariableStore.h"
 
-#define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock>
+#define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>
+
+/// @brief				 Tests if the decision maker can be initialized
+/// @param  p_decisionMaker the decision maker that will be initialized
+void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
+{
+    GfInit(false);
+    tCarElt car;
+    tSituation situation;
+    situation.deltaTime = 108;
+    car.pub.speed = 144;
+    tTrack track;
+    track.filename = "trackfile";
+    track.name = "track_1";
+    track.version = 0;
+
+    p_decisionMaker.Config.SetUserId("1");
+
+    RecorderMock* recorder = new RecorderMock;
+
+    chdir(SD_DATADIR_SRC);
+
+    std::string findfilepath;
+    if (p_emptyPath)
+    {
+        findfilepath = "";
+    }
+    else
+    {
+        findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
+        ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
+        findfilepath.append("\\blackbox.exe");
+    }
+
+    p_decisionMaker.Initialize(0, &car, &situation, &track, findfilepath, recorder);
+
+    BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
+    FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
+
+    // TODO make comparer for car, track and situation so the entire object can be compared
+    if(!p_emptyPath) {
+        ASSERT_TRUE(storage->EnvironmentVersion == track.version);
+    }
+    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
+    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
+}
+
+/// @brief Runs the initialize test function
+TEST(DecisionMakerTests, InitializeTest)
+{
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker);
+}
+
+/// @brief Runs the initialize test function with empty path
+TEST(DecisionMakerTests, InitializeTestEmpty)
+{
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker, true);
+}
 
 /// @brief				 Tests if a decision can be made
 /// @param  p_isDecision Whether the black box made a decision
 void DecisionTest(bool p_isDecision)
 {
     TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker);
     decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
 
-    tCarElt car;  // need data
+    tCarElt car;
     tSituation situation;
 
     decisionMaker.BlackBox.IsDecision = p_isDecision;
@@ -34,8 +95,15 @@ void DecisionTest(bool p_isDecision)
         return;
     }
     ASSERT_TRUE(decisionMaker.Decide(&car, &situation, 0));
-    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
 
+    RecorderMock* recorder = decisionMaker.GetRecorder();
+    FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
+    ASSERT_EQ(recorder->CurrentDecisions.GetSteer(), storage->SavedDecisions->GetSteer());
+    ASSERT_EQ(recorder->CurrentDecisions.GetBrake(), storage->SavedDecisions->GetBrake());
+    ASSERT_EQ(recorder->CurrentDecisions.GetAccel(), storage->SavedDecisions->GetAccel());
+    ASSERT_EQ(recorder->CurrentDecisions.GetGear(), storage->SavedDecisions->GetGear());
+    ASSERT_EQ(recorder->CurrentTimestamp, 0);
+    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
     ASSERT_FALSE(mock == nullptr);
     ASSERT_EQ(mock->DecisionCount, DECISIONS_COUNT);
     ASSERT_FALSE(mock->Decisions == nullptr);
@@ -60,44 +128,6 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTe
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
-
-/// @brief				 Tests if the decision maker can be initialized
-/// @param  p_decisionMaker the decision maker that will be initialized
-void InitializeTest(TDecisionMaker& p_decisionMaker)
-{
-    tCarElt car;
-    tSituation situation;
-    situation.deltaTime = 108;
-    car.pub.speed = 144;
-    tTrack track;
-    track.filename = "trackfile";
-    track.name = "track_1";
-    track.version = 0;
-
-    p_decisionMaker.Config.SetUserId("1");
-
-    std::string findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
-    std::cout << SD_DATADIR_SRC << std::endl;
-    chdir(SD_DATADIR_SRC);
-    ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
-    findfilepath.append("\\blackbox.exe");
-    p_decisionMaker.Initialize(&car, &situation, &track, findfilepath, nullptr);
-
-    BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
-    FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
-
-    // TODO make comparer for car, track and situation so the entire object can be compared
-    ASSERT_TRUE(storage->EnvironmentVersion == track.version);
-    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
-    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
-}
-
-/// @brief Runs the initialize test function
-TEST(DecisionMakerTests, InitializeTest)
-{
-    TDecisionMaker decisionMaker;
-    InitializeTest(decisionMaker);
-}
 
 /// @brief				 Tests if the data collection settings can be set correctly
 /// @param  p_dataToStore data settings that will be set.

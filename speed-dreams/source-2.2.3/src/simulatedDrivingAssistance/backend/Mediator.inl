@@ -9,20 +9,28 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+namespace filesystem = std::experimental::filesystem;
+
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template bool Mediator<type>::GetBlackBoxSyncOption();                                                                                              \
+    template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
     template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
     template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
     template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                                                  \
+    template void Mediator<type>::SetReplayRecorderSetting(bool p_replayRecorderOn);                                                                    \
     template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
+    template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
+    template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \
+    template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
     template Mediator<type>* Mediator<type>::GetInstance();
@@ -67,6 +75,14 @@ void Mediator<DecisionMaker>::SetPControlSettings(tParticipantControl p_pControl
     return m_decisionMaker.Config.SetPControlSettings(p_pControl);
 }
 
+/// @brief                    Sets the replay recorder setting to p_replayRecorderOn
+/// @param p_replayRecorderOn Whether the replay recorder should be on
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetReplayRecorderSetting(bool p_replayRecorderOn)
+{
+    m_decisionMaker.Config.SetReplayRecorderSetting(p_replayRecorderOn);
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 template <typename DecisionMaker>
@@ -99,6 +115,14 @@ void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
     m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
 }
 
+/// @brief        Sets the sync option of the black box
+/// @param p_sync Whether the black box should be run asynchronously (true), or synchronously (false)
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetBlackBoxSyncOption(bool p_sync)
+{
+    m_decisionMaker.Config.SetBlackBoxSyncOption(p_sync);
+}
+
 /// @brief             Gets the setting for the given indicator
 /// @param p_indicator Indicator whose setting to get
 /// @return true if the indicator is enabled, false when disabled
@@ -114,6 +138,38 @@ template <typename DecisionMaker>
 tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
 {
     return m_decisionMaker.Config.GetPControlSettings();
+}
+
+/// @brief        Sets the folder that contains all replay data.
+/// @param p_replayFolder The path to the folder
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetReplayFolder(const filesystem::path& p_replayFolder)
+{
+    m_decisionMaker.Config.SetReplayFolder(p_replayFolder);
+}
+
+/// @brief Gets the replay folder if it has been set from the command line.
+/// @return The path to the replay folder
+template <typename DecisionMaker>
+const filesystem::path& Mediator<DecisionMaker>::GetReplayFolder() const
+{
+    return m_decisionMaker.Config.GetReplayFolder();
+}
+
+/// @brief Gets the replay recorder setting
+/// @return The replay recorder setting
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetReplayRecorderSetting()
+{
+    return m_decisionMaker.Config.GetReplayRecorderSetting();
+}
+
+/// @brief  Gets the black box sync option
+/// @return The black box sync option
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::GetBlackBoxSyncOption()
+{
+    return m_decisionMaker.Config.GetBlackBoxSyncOption();
 }
 
 /// @brief              Does one drive tick in the framework
@@ -138,7 +194,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 {
     m_track = p_track;
     tCarElt car;
-    bool recordBB = GetPControlSettings().BBRecordSession;
+    bool recordBB = GetReplayRecorderSetting();
 
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
     std::cout << blackBoxFilePath << std::endl;
@@ -150,7 +206,8 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed
-    m_decisionMaker.Initialize(&car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
+    m_decisionMaker.Initialize(m_tickCount, &car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
+
     m_inRace = true;
 }
 

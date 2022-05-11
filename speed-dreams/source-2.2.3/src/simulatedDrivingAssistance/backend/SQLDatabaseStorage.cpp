@@ -2,6 +2,7 @@
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
 #include "ConfigEnums.h"
+#include <config.h>
 
 /// @brief reads input from input file, unless EOF has been reached
 #define READ_INPUT(p_inputFile, p_string)                        \
@@ -55,7 +56,11 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
-    if (inputFile.fail()) throw std::exception("Could not open data file");
+    if (inputFile.fail())
+    {
+        std::cerr << "[MYSQL] internal dberror: Could not open input file" << std::endl;
+        return;
+    }
 
     try
     {
@@ -67,7 +72,6 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
         CloseDatabase();
         inputFile.close();
         std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
-        throw e;
     }
 
     inputFile.close();
@@ -76,17 +80,18 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @brief  gets the keys for secure database connection in the data/certificates folder
 ///         and adds them to the connection properties
 ///         name of the keys are set in the database_encryption_settings.txt file
+/// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
+///                                 needs "\\" in front of it
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
-void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
+void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap& p_connectionProperties)
 {
-    std::string configPath(ROOT_FOLDER "\\data");
-    std::string configFile("database_encryption_settings.txt");
+    std::string encryptionPath("data" + p_dirPath);
+    std::string encryptionFile("database_encryption_settings.txt");
 
-    if (!FindFileDirectory(configPath, configFile))
+    if (!FindFileDirectory(encryptionPath, encryptionFile))
         throw std::exception("Could not find database encryption settings file");
 
-    std::ifstream ifstream(configPath + '\\' + configFile);
-    if (ifstream.fail()) throw std::exception("Could not open database encryption settings file");
+    std::ifstream ifstream(encryptionPath + '\\' + encryptionFile);
 
     std::string caName;
     std::string pubName;
@@ -95,7 +100,7 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
     READ_INPUT(ifstream, pubName)
     READ_INPUT(ifstream, privName)
 
-    std::string certificatesPath(ROOT_FOLDER "\\data\\certificates");
+    std::string certificatesPath("data" + p_dirPath + "\\certificates");
 
     if (!FindFileDirectory(certificatesPath, caName))
         throw std::exception("Could not find certificate folder");
@@ -113,6 +118,9 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap p_connectionProperties)
 /// @param p_password       Password to connect with to the database.
 /// @param p_schemaName     Name of the database schema to use.
 /// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
+/// @param p_dirPath        optional: path relative to the datafolder in which the
+///                         "database_encryption_settings.txt" file is located
+///                         needs "\\" in front
 /// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_hostName,
@@ -120,7 +128,8 @@ bool SQLDatabaseStorage::OpenDatabase(
     const std::string& p_username,
     const std::string& p_password,
     const std::string& p_schemaName,
-    std::string p_useEncryption)
+    std::string p_useEncryption,
+    const std::string& p_dirPath)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -138,7 +147,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
     if (p_useEncryption == "true")
     {
-        PutKeys(connection_properties);
+        PutKeys(p_dirPath, connection_properties);
     }
 
     try
@@ -632,15 +641,25 @@ void SQLDatabaseStorage::CloseDatabase()
     delete m_connection;
 }
 
-void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath)
+/// @brief  Runs the database connection by finding the "database_connection_settings.txt" file
+///         getting the connection properties out of that file
+///         opening the database, storing the data of the bufferfile
+///         and closing the database
+/// @param  p_inputFilePath     path for the buffer file, the content of which is written to the database
+/// @param  p_dirPath           optional parameter: path after the data folder
+///                             for "database_connection_settings.txt" file
+///                             and if applicable the "database_encryption_settings.txt".
+///                             needs "\\" in front
+///                             if left out path will be data folder
+void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
-    std::string configPath(ROOT_FOLDER "\\data");
+    std::string configPath("data" + p_dirPath);
     std::string configFile("database_connection_settings.txt");
 
-    if (!FindFileDirectory(configPath, configFile)) throw std::exception("Could not find database settings file");
+    if (!FindFileDirectory(configPath, configFile))
+        throw std::exception("Could not find database settings file");
 
     std::ifstream ifstream(configPath + '\\' + configFile);
-    if (ifstream.fail()) throw std::exception("Could not open database settings file");
 
     std::string ip;
     std::string portString;
@@ -668,7 +687,7 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
         throw std::exception("Port in database settings config file could not be converted to an int");
     }
 
-    if (OpenDatabase(ip, port, username, password, schema, useSSL))
+    if (OpenDatabase(ip, port, username, password, schema, useSSL, p_dirPath))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);

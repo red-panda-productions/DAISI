@@ -7,8 +7,9 @@
 #include <experimental/filesystem>
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
-#define TEST_DIRECTORY     "test_test_data"
-#define TEST_CAR_FILE_NAME "test_car.xml"
+#define TEST_DIRECTORY      "test_test_data"
+#define RECORDING_TEST_DATA "test_data/recordings"
+#define TEST_CAR_FILE_NAME  "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
 #define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
@@ -50,7 +51,7 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Delete the existing test directory to ensure directories are properly created
     if (std::experimental::filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all(folder);
+        std::experimental::filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
     }
 
     // Create a recorder without storing any parameters
@@ -59,10 +60,12 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     // Ensure file is created with the proper name
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
     ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
+    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
 
     // Ensure the file is empty
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME)
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME)
 }
 
 /// @brief Test the recorder with a single parameter, for different compression options and scenarios
@@ -172,16 +175,22 @@ TEST(RecorderTests, RecorderThreeParamCompression)
 TEST(RecorderTests, WriteOnlyTime)
 {
     std::string folder = GetTestingDirectory();
+
     Recorder recorder(TEST_DIRECTORY, "test_recorder_time_only", 0, 0);
-    recorder.WriteUserInput(nullptr, 0);
-    recorder.WriteUserInput(nullptr, 2);
-    recorder.WriteUserInput(nullptr, 1);
-    recorder.WriteUserInput(nullptr, 6.9);
+    recorder.WriteUserInput(nullptr, 0, false);
+    recorder.WriteUserInput(nullptr, 2, false);
+    recorder.WriteUserInput(nullptr, 1, false);
+    recorder.WriteUserInput(nullptr, 6.9, false);
 
     recorder.WriteDecisions(nullptr, 0);
     recorder.WriteDecisions(nullptr, 3);
     recorder.WriteDecisions(nullptr, 435);
     recorder.WriteDecisions(nullptr, 95875);
+
+    recorder.WriteSimulationData(nullptr, 0.0, false);
+    recorder.WriteSimulationData(nullptr, 7.87, false);
+    recorder.WriteSimulationData(nullptr, 845.15421, false);
+    recorder.WriteSimulationData(nullptr, 95875.45145, false);
 
     std::stringstream expectedUserInput;
 
@@ -194,6 +203,12 @@ TEST(RecorderTests, WriteOnlyTime)
     expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
+
+    std::stringstream expectedSimulationData;
+
+    expectedSimulationData << bits(0.0) << bits(7.87) << bits(845.15421) << bits(95875.45145);
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", SIMULATION_DATA_RECORDING_FILE_NAME, expectedSimulationData);
 }
 
 /// @brief Test whether the recorder can safely write to the same file twice.
@@ -226,6 +241,52 @@ TEST(RecorderTests, WriteSameFileTwice)
     }
 }
 
+TEST(RecorderTests, WriteDecisions)
+{
+    Random random(0x534732);
+    std::string folder = GetTestingDirectory();
+    std::stringstream expectedDecisionsData;
+
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 0);
+    unsigned long timestamp = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        DecisionTuple decisionTuple;
+        decisionTuple.SetAccel(random.NextFloat(0, 1));
+        decisionTuple.SetBrake(random.NextFloat(0, 1));
+        decisionTuple.SetGear(random.NextInt(0, 10));
+        decisionTuple.SetSteer(random.NextFloat(0, 1));
+        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetAccel()) << bits(decisionTuple.GetBrake()) << bits(static_cast<float>(decisionTuple.GetGear()));
+        recorder.WriteDecisions(&decisionTuple, timestamp++);
+    }
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_decisions", DECISIONS_RECORDING_FILE_NAME, expectedDecisionsData);
+}
+
+TEST(RecorderTests, WriteSimulationData)
+{
+    Random random(0x534732);
+    std::string folder = GetTestingDirectory();
+    std::stringstream expectedSimulationData;
+
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_write_simulation_data", 0, 3);
+    float simulationData[3];
+    double timestamp = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+        simulationData[0] = random.NextFloat(-1000, 1000);
+        simulationData[1] = random.NextFloat(-1000, 1000);
+        simulationData[2] = random.NextFloat(-1000, 1000);
+        expectedSimulationData << bits(timestamp) << bits(simulationData[0]) << bits(simulationData[1]) << bits(simulationData[2]);
+        recorder.WriteSimulationData(simulationData, timestamp);
+        timestamp += (1.0 / 240);
+    }
+
+    ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_write_simulation_data", SIMULATION_DATA_RECORDING_FILE_NAME, expectedSimulationData);
+}
+
 TEST(RecorderTests, CompressionWithoutPreviousState)
 {
     Recorder recorder(TEST_DIRECTORY, "test_recorder_compression_without_previous_state", 0, 0);
@@ -233,24 +294,24 @@ TEST(RecorderTests, CompressionWithoutPreviousState)
     ASSERT_THROW(recorder.WriteRecording(nullptr, 0, file, 0, true, nullptr), std::exception);
 }
 
-TEST(RecorderTests, WriteCarTests)
+TEST(RecorderTests, WriteRunSettingsTests)
 {
+    filesystem::current_path(SD_DATADIR_SRC);
+
+    Random random;
+    GTEST_COUT << "Random Seed: " << random.GetSeed() << std::endl;
+
     GfInit(false);
 
     // Find the car xml
-    std::string path = "test_data";
-    if (!FindFileDirectory(path, TEST_CAR_FILE_NAME))
-    {
-        throw std::exception("Could not find test_car.xml.");
-    }
-    path.append("/" TEST_CAR_FILE_NAME);
+    std::string path = "test_data/recordings/" TEST_CAR_FILE_NAME;
 
     // Load the car xml
     auto carHandle = GfParmReadFile(path.c_str(), 0, true);
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml.");
+        throw std::exception("Could not load test_car.xml.");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
@@ -259,15 +320,162 @@ TEST(RecorderTests, WriteCarTests)
     strcpy(carElt.info.name, "Test Car");
 
     // Create a recorder
-    Recorder recorder(TEST_DIRECTORY, "test_recorder_car", 0, 0);
+    Recorder recorder(TEST_DIRECTORY, "test_recorder_settings", 0, 0);
 
     // Write the car data
-    recorder.WriteCar(&carElt);
+    tTrack track{};
+    track.name = "track_name";
+    track.category = "track_category";
+    tIndicator indicators;
+    indicators.Audio = random.NextBool();
+    indicators.Icon = random.NextBool();
+    indicators.Text = random.NextBool();
+
+    InterventionType interventionType = random.NextInt(0, NUM_INTERVENTION_TYPES);
+
+    tParticipantControl participantControl;
+    participantControl.ControlInterventionToggle = random.NextBool();
+    participantControl.ControlGas = random.NextBool();
+    participantControl.ControlSteering = random.NextBool();
+    participantControl.ForceFeedback = random.NextBool();
+
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl);
+
+    filesystem::path settingsPath = GetTestingDirectory();
+    settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
+
+    ASSERT_TRUE(filesystem::exists(settingsPath));
+
+    void* handle = GfParmReadFile(settingsPath.string().c_str(), 0, true);
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, nullptr), BoolToString(indicators.Audio));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_TEXT, nullptr), BoolToString(indicators.Text));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_ICON, nullptr), BoolToString(indicators.Icon));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, nullptr), BoolToString(participantControl.ControlInterventionToggle));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteering));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_NAME, nullptr), track.name);
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_CATEGORY, nullptr), track.category);
+
+    ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);
+
+    ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_VERSION, KEY_VERSION, nullptr, NAN)), CURRENT_RECORDER_VERSION);
 
     // Check the contents of the file
     std::ifstream originalFile(path);
     std::stringstream originalBuffer;
     originalBuffer << originalFile.rdbuf();
     std::string folder = GetTestingDirectory();
-    ASSERT_FILE_CONTENTS(folder, "test_recorder_car", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
+    ASSERT_FILE_CONTENTS(folder, "test_recorder_settings", CAR_SETTINGS_FILE_NAME, originalBuffer.str().c_str());
+}
+
+/// @brief Initialise a VALIDATE or UPGRADE test. It makes sure all Gf* methods can be called, and creates the folder to validate/upgrade
+/// @param source The source folder that should be validated or upgraded, this will be copied so the original doesn't get modified
+/// @param varName The name of the result variable to be used in the test, will be the path to the recording to validate or update
+#define INIT_VALIDATE_OR_UPGRADE_TEST(source, varName)                                      \
+    GfInit(false);                                                                          \
+    filesystem::path varName;                                                               \
+    filesystem::current_path(SD_DATADIR_SRC);                                               \
+                                                                                            \
+    {                                                                                       \
+        filesystem::path sourcePath(RECORDING_TEST_DATA);                                   \
+        sourcePath.append(source);                                                          \
+                                                                                            \
+        if (!GetSdaFolder(varName))                                                         \
+        {                                                                                   \
+            throw std::exception("Failed to get SDA folder");                               \
+        }                                                                                   \
+        varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
+                                                                                            \
+        /* Delete the existing test directory to ensure directories are properly created */ \
+        if (std::experimental::filesystem::exists(varName))                                 \
+        {                                                                                   \
+            std::experimental::filesystem::remove_all(varName);                             \
+        }                                                                                   \
+                                                                                            \
+        filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \
+    }
+
+TEST(RecorderTests, UpgradeFromV0Test)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(USER_INPUT_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(SIMULATION_DATA_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(DECISIONS_RECORDING_FILE_NAME)));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    ASSERT_STRCASEEQ(name, "test_highway");
+    ASSERT_STRCASEEQ(category, "road");
+    delete[] name;
+    delete[] category;
+
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+    ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION));
+    ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION));
+}
+
+TEST(RecorderTests, ValidateV1RecordingTest)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(USER_INPUT_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(SIMULATION_DATA_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(DECISIONS_RECORDING_FILE_NAME)));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    ASSERT_STRCASEEQ(name, "test_highway");
+    ASSERT_STRCASEEQ(category, "road");
+    delete[] name;
+    delete[] category;
+
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+}
+
+TEST(RecorderTests, InvalidXMLSettingsFileValidate)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("invalid-xml-settings-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingFilesValidation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-car-recording", missingCarPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-decisions-recording", missingDecisionsPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-recordings-recording", missingRecordingsPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-settings-recording", missingSettingsPath);
+    INIT_VALIDATE_OR_UPGRADE_TEST("missing-simulation-recording", missingSimulationPath);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingCarPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingDecisionsPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingRecordingsPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingSettingsPath));
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(missingSimulationPath));
+}
+
+TEST(RecorderTests, InvalidTrackPathV0Validation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-invalid-track-path-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
 }

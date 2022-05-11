@@ -58,6 +58,20 @@ tParticipantControl SDAConfig::GetPControlSettings() const
     return m_pControl;
 }
 
+/// @brief                    Sets the status of the replay recorder
+/// @param p_replayRecorderOn The value to set the status to
+void SDAConfig::SetReplayRecorderSetting(bool p_replayRecorderOn)
+{
+    m_replayRecorderOn = p_replayRecorderOn;
+}
+
+/// @brief Returns the status of the replay recorder
+/// @returns The status of the replay recorder
+bool SDAConfig::GetReplayRecorderSetting() const
+{
+    return m_replayRecorderOn;
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 void SDAConfig::SetMaxTime(int p_maxTime)
@@ -113,4 +127,32 @@ void SDAConfig::SetBlackBoxFilePath(const char* p_filePath)
 const char* SDAConfig::GetBlackBoxFilePath() const
 {
     return m_blackBoxFilePath;
+}
+
+/// @brief Set m_asyncConnection to p_asyncConnection
+/// @param p_asyncConnection value to set m_asyncConnection to
+void SDAConfig::SetBlackBoxSyncOption(bool p_asyncConnection)
+{
+    m_asyncConnection = p_asyncConnection;
+}
+
+/// @brief Gets the blackbox connection sync option
+/// @return False if sync, true if async
+bool SDAConfig::GetBlackBoxSyncOption() const
+{
+    return m_asyncConnection;
+}
+
+/// @brief Set m_currentReplayFolder to p_replayFolder
+/// @param p_replayFolder value to set m_currentReplayFolder to
+void SDAConfig::SetReplayFolder(const filesystem::path& p_replayFolder)
+{
+    m_currentReplayFolder = p_replayFolder;
+}
+
+/// @brief Gets the set replay folder.
+/// @return Not set if replay mode was not enabled from the command line, if set returns the path to the replay folder
+const filesystem::path& SDAConfig::GetReplayFolder() const
+{
+    return m_currentReplayFolder;
 }
