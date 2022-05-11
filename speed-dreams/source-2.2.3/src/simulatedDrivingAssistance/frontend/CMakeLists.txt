@@ -5,7 +5,7 @@ SET(_SOURCES IndicatorConfig.cpp)
 SET(_HEADERS IndicatorConfig.h IndicatorData.h)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient)
+ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient backend)
 
 SD_ADD_LIBRARY(frontend STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(frontend PROPERTIES LINKER_LANGUAGE CXX)
@@ -13,6 +13,8 @@ SET_TARGET_PROPERTIES(frontend PROPERTIES LINKER_LANGUAGE CXX)
 ADD_SDLIB_LIBRARY(frontend tgf portability tgfclient)
 
 target_include_directories(frontend PUBLIC "${CMAKE_SOURCE_DIR}/src/libs/tgfclient")
+
+TARGET_LINK_LIBRARIES(frontend backend)
 
 ADD_PLIB_LIBRARY(frontend)
 ADD_PLIB_INCLUDEDIR()

@@ -52,7 +52,7 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
 {
     // Create file directory if not yet exists
     std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
-    filePath.append(p_fileName);
+    filePath.append(p_fileName.c_str());
     create_directories(filePath.parent_path());
 
     // Initialize member variables
@@ -98,10 +98,10 @@ void FileDataStorage::Shutdown()
 /// @param p_car Current car status in Speed Dreams
 /// @param p_situation Current situation in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt *p_car, tSituation *p_situation, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
 {
     WRITE_VAR(m_outputStream, p_timestamp);
-    if (m_saveSettings.EnvironmentData)
+    if (m_saveSettings.CarData)
     {
         Posd pos = p_car->pub.DynGCg.pos;
         tDynPt mov = p_car->pub.DynGC;
@@ -127,7 +127,7 @@ void FileDataStorage::Save(tCarElt *p_car, tSituation *p_situation, unsigned lon
 
 /// @brief Save all decisions that were taken this tick
 /// @param p_decisions Tuple of decisions taken this tick
-void FileDataStorage::SaveDecisions(DecisionTuple &p_decisions)
+void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
 {
     if (!m_saveSettings.InterventionData) return;
 

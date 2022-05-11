@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
+
+<params name="replaydriver" type="param" mode="mw" version="1.0">
+
+	<section name="Robots">
+		<section name="index">
+
+			<section name="1">
+				<attstr name="name" val="Replay Driver"/>
+				<attstr name="short name" val="rpDriver"/>
+				<attstr name="code name" val="APL"></attstr>
+				<attstr name="car name" val="sc-lynx-220"/>
+				<attnum name="race number" val="36.69"/>
+				<attnum name="red" val="0.000000"/>
+				<attnum name="green" val="1.000000"/>
+				<attnum name="blue" val="0.500000"/>
+				<attstr name="skill level" val="rookie"/>
+			</section>
+
+		</section>
+
+		<section name="arbitrary cars">
+			<attstr name="team" val="red-panda-productions"></attstr>
+		</section>
+	</section>
+
+</params>

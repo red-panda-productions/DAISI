@@ -29,21 +29,29 @@
 #define VAL_YES "yes"
 #define VAL_NO  "no"
 static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "none", "steer left", "steer right", "brake"};
+    "none", "steer left", "steer right", "brake", "accelerate"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
 {
 public:
-    void Initialize();
+    void LoadIndicatorData(const char* p_path);
 
     void ActivateIndicator(InterventionAction p_action);
 
     std::vector<tIndicatorData> GetIndicatorData();
 
-    std::vector<tIndicatorData> GetActiveIndicators();
+    std::vector<tIndicatorData> GetActiveIndicators(InterventionType p_interventionType);
 
     static IndicatorConfig* GetInstance();
+
+#ifdef TEST
+    static void ClearInstance()
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    }
+#endif
 
     /// @brief Removes copy constructor for singleton behaviour
     IndicatorConfig(IndicatorConfig const&) = delete;
@@ -58,8 +66,6 @@ private:
     std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
 
     std::vector<tIndicatorData> m_activeIndicators = {};
-
-    void LoadIndicatorData();
 
     // Loading helpers
     tSoundData* LoadSound(void* p_handle, std::string p_path);

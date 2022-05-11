@@ -183,11 +183,10 @@ int PairWiseTestGenerator<DimensionsCount>::MaximizeCoverage(TestCaseInfo& p_tes
         }
         if (!progress)
         {
+            delete[] mutableDimensions;
             return totalCoverage;
         }
     }
-
-    delete[] mutableDimensions;
 }
 
 /// @brief			Returns the mutable dimensions based on a tuple which can be scrambled

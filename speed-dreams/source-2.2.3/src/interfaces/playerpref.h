@@ -151,6 +151,9 @@
 #define HM_ATT_DASHB_DEC_MIN    "dashboard decrease min"
 #define HM_ATT_DASHB_DEC_MAX    "dashboard decrease max"
 
+// SIMULATED DRIVING ASSISTANCE
+#define HM_ATT_INTERV_TGGLE "intervention toggle"
+
 #define	HM_SECT_PREF	"Preferences"
 
 #define HM_LIST_DRV	"Drivers"
@@ -209,7 +212,10 @@
 #define CMD_DASHB_INC 26
 #define CMD_DASHB_DEC 27
 
-#define CMD_END_OF_LIST 27	/* Change this to same value as last item */
+// SIMULATED DRIVING ASSISTANCE: add cmd for toggling the interventions on/off
+#define CMD_INTERV_TGGLE 28
+
+#define CMD_END_OF_LIST 28	/* Change this to same value as last item */
 
 #endif /* _PLAYERPREF_H_ */ 
 

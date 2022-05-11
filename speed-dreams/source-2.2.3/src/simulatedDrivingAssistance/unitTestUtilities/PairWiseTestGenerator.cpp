@@ -70,20 +70,6 @@ TestCaseInfo::TestCaseInfo(int p_length)
     : Features(new int[p_length]),
       Length(p_length) {}
 
-/// @brief The default constructor of TestCaseInfo
-TestCaseInfo::TestCaseInfo()
-    : Features(nullptr),
-      Length(0) {}
-
-/// @brief			 Set the internal data of the test info
-/// @param  p_length The length
-void TestCaseInfo::SetTestCaseInfo(int p_length)
-{
-    delete[] Features;
-    Features = new int[p_length];
-    Length = p_length;
-}
-
 /// @brief			Checks if a testCase is covered by a tuple
 /// @param  p_tuple The tuple
 /// @return			Whether the test case is covered

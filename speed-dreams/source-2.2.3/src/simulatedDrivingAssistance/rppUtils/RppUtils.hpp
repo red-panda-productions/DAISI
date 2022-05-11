@@ -6,6 +6,8 @@
 #include <windows.h>
 #include <tgf.h>
 
+#include "Random.hpp"
+
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -66,22 +68,37 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
     return false;
 }
 
+/// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
+/// @returns The filepath to the singletons folder
+inline std::experimental::filesystem::path SingletonsFilePath()
+{
+    return {std::experimental::filesystem::temp_directory_path().append("Singletons")};
+}
+
+/// @brief   Deletes the contents of the singletons folder
+/// @returns An int encoding whether the action succeeded
+inline int DeleteSingletonsFolder()
+{
+    std::error_code errorCode;
+
+    std::experimental::filesystem::path path = SingletonsFilePath();
+    remove_all(path, errorCode);
+    if (errorCode.value() != 0)
+    {
+        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
+        return errorCode.value();
+    }
+    return 0;
+}
+
 /// @brief  Makes sure there is an empty singletons folder to be used by Singleton classes.
 ///         Needs to be called once at the start of a method with any GetInstance() calls.
 /// @return Boolean indicating whether the setup succeeded or not
 inline bool SetupSingletonsFolder()
 {
-    std::error_code errorCode;
+    DeleteSingletonsFolder();
 
-    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
-    path.append("Singletons");
-    std::experimental::filesystem::remove_all(path, errorCode);
-    if (errorCode.value() != 0)
-    {
-        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
-        return false;
-    }
-
+    auto path = SingletonsFilePath();
     // set up singleton folder
     char directory[256];
     getcwd(directory, 256);
@@ -131,6 +148,19 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    WinExec(p_command, p_showCommand);
+}
+/// @brief          Returns true with certain chance
+/// @param p_rnd    The random generator reference to use
+/// @param p_chance The chance to succeed [0-100]
+/// @return         Boolean indicating succes or not.
+inline bool SucceedWithChance(Random& p_rnd, int p_chance)
+{
+    return p_rnd.NextInt(0, 100) < p_chance;
+}
+
 /// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
 /// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
@@ -157,4 +187,78 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
     }
 
     return true;
+}
+
+#define BOOL_TRUE_STRING  "true"
+#define BOOL_FALSE_STRING "false"
+
+/// @brief Convert a boolean to a string
+/// @param p_boolean The boolean to convert to a string
+/// @return The string representing the boolean value
+inline const char* BoolToString(const bool p_boolean)
+{
+    return p_boolean ? BOOL_TRUE_STRING : BOOL_FALSE_STRING;
+}
+
+/// @brief Convert a string to a boolean
+/// @param p_string The string to convert to a boolean
+/// @return The boolean representing the string value
+inline bool StringToBool(const char* p_string)
+{
+    return strcmp(p_string, BOOL_TRUE_STRING) == 0;
+}
+
+/// @brief Assert the contents of the binary file in filePath match the binary stream contents
+#define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
+    {                                                                        \
+        std::cout << "Reading binary file from " << (filePath) << std::endl; \
+        std::ifstream file(filePath, std::ios::binary);                      \
+        ASSERT_TRUE(file.is_open());                                         \
+        std::stringstream buffer;                                            \
+        buffer << file.rdbuf();                                              \
+        file.close();                                                        \
+        ASSERT_TRUE(!file.is_open());                                        \
+        ASSERT_EQ(buffer.str().size(), (contents).str().size());             \
+        for (int i = 0; i < buffer.str().size(); i++)                        \
+        {                                                                    \
+            char controlByte;                                                \
+            char testByte;                                                   \
+            (contents) >> bits(controlByte);                                 \
+            buffer >> bits(testByte);                                        \
+            ASSERT_EQ(testByte, controlByte);                                \
+        }                                                                    \
+    }
+
+/// @brief The following functions are used to write binary values to files.
+///        Cannot write strings (though this can be added)
+template <typename TYPE>
+struct Bits
+{
+    TYPE T;
+};
+
+template <typename TYPE>
+static inline Bits<TYPE&> bits(TYPE& p_t)
+{
+    return Bits<TYPE&>{p_t};
+}
+
+template <typename TYPE>
+static inline Bits<const TYPE&> bits(const TYPE& p_t)
+{
+    return Bits<const TYPE&>{p_t};
+}
+
+template <typename TYPE>
+static inline std::istream& operator>>(std::istream& p_in, Bits<TYPE&> p_b)
+{
+    return p_in.read(reinterpret_cast<char*>(&p_b.T), sizeof(TYPE));
+}
+
+template <typename TYPE>
+static inline std::ostream& operator<<(std::ostream& p_out, Bits<TYPE&> const p_b)
+{
+    // reinterpret_cast is for pointer conversion
+    // static_cast is for compatible pointer conversion
+    return p_out.write(reinterpret_cast<const char*>(&(p_b.T)), sizeof(TYPE));
 }

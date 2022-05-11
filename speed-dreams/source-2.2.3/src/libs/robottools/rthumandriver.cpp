@@ -58,26 +58,19 @@
 #include <robot.h>
 #include <playerpref.h>
 #include <car.h>
+#include "Mediator.h"
 
 
 #include "humandriver.h"
 #if SDL_FORCEFEEDBACK
 #include "forcefeedback.h"
 
-// ASSISTED DRIVING ASSISTANCE: added recorder
-#include <ConfigEnums.h>
-#include "Mediator.h"
-
-#define PARAM_AMOUNT 3
-tParticipantControl m_pControl;
-
-#include <Recorder.h>
-Recorder* recorder;
-
-
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 #endif
+
+// SIMULATED DRIVING ASSISTANCE: include mediator
+#include "Mediator.h"
 
 typedef enum { eTransAuto, eTransSeq, eTransGrid, eTransHbox } eTransmission;
 
@@ -176,6 +169,8 @@ static std::vector<tHumanContext*> HCtx;
 static bool speedLimiter = false;
 static tdble speedLimit;
 
+// SIMULATED DRIVING ASSISTANCE: store the last intervention type for toggling on/off
+InterventionType m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
 
 typedef struct
 {
@@ -252,8 +247,10 @@ static const tControlCmd CmdControlRef[] = {
     {HM_ATT_DASHB_NEXT ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_NEXT_MIN, 0.0, 0.0, HM_ATT_DASHB_NEXT_MAX, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_PREV ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_PREV_MIN, 0.0, 0.0, HM_ATT_DASHB_PREV_MAX, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_INC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_INC_MIN,  0.0, 0.0, HM_ATT_DASHB_INC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
-    {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0}
-};
+    {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
+
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off
+    {HM_ATT_INTERV_TGGLE, GFCTRL_TYPE_NOT_AFFECTED, -1, nullptr, 0.0, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0}};
 
 static const int NbCmdControl = sizeof(CmdControlRef) / sizeof(CmdControlRef[0]);
 
@@ -280,11 +277,6 @@ static const std::string Yn[] = {HM_VAL_YES, HM_VAL_NO};
  */
 void HumanDriver::shutdown(const int index)
 {
-    // SIMULATED DRIVING ASSISTANCE: Delete recorder
-    if (m_pControl.RecordSession) {
-        delete recorder;
-    }
-
 	int idx = index - 1;
 
     free(VecNames[idx]);
@@ -298,6 +290,9 @@ void HumanDriver::shutdown(const int index)
     HCtx[idx] = 0;
 
     resume_keybd = true;
+
+    // SIMULATED DRIVING ASSISTANCE: Prevent usage of deleted recorder
+    m_recorder = nullptr;
 }
 
 /*
@@ -418,7 +413,7 @@ int HumanDriver::count_drivers()
  */
 int HumanDriver::initialize(tModInfo *modInfo, tfModPrivInit InitFuncPt)
 {
-    if (NbDrivers <= 0) {
+	if (NbDrivers <= 0) {
         GfOut("human : No human driver registered, or moduleMaxInterfaces() was not called (NbDrivers=%d)\n", NbDrivers);
         return -1;
     }
@@ -615,10 +610,14 @@ void HumanDriver::init_track(int index,
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: construct recorder when starting a race
-    m_pControl = SMediator::GetInstance()->GetPControlSettings();
-    if (m_pControl.RecordSession) {
-        recorder = new Recorder("user_recordings", "userRecording%Y%m%d-%H%M%S", PARAM_AMOUNT);
+    // SIMULATED DRIVING ASSISTANCE: Save initial run settings
+    if (m_recorder) {
+        auto mediator = SMediator::GetInstance();
+        tIndicator indicatorSettings = mediator->GetIndicatorSettings();
+        InterventionType interventionType = mediator->GetInterventionType();
+        tParticipantControl participantControlSettings = mediator->GetPControlSettings();
+
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings);
     }
     const int idx = index - 1;
 
@@ -1704,6 +1703,18 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }//if speedLimiter
 
 
+    // SIMULATED DRIVING ASSISTANCE: toggle intervention on/off
+    tControlCmd input = cmd[CMD_INTERV_TGGLE];
+    if ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
+        || (input.type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[input.val]) 
+        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1))
+    {
+        InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+        SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
+        m_prevIntervention = currentType;
+    }
+
+
 #ifndef WIN32
 #ifdef TELEMETRY
     if ((car->_laps > 1) && (car->_laps < 5)) {
@@ -1719,11 +1730,6 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 #endif
 #endif
-    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
-    if (m_pControl.RecordSession) {
-        float inputs[PARAM_AMOUNT] = {car->ctrl.accelCmd, car->ctrl.brakeCmd, car->ctrl.steer};
-        recorder->WriteRecording(inputs, s->currentTime, false);
-    }
     HCtx[idx]->lap = car->_laps;
 }//common_drive
 
@@ -1981,6 +1987,31 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
  */
 void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
 {
+    // SIMULATED DRIVING ASSISTANCE: added recording of simulation data
+    if(m_recorder) {
+        float params[SIMULATION_RECORD_PARAM_AMOUNT] = {
+            car->pub.DynGCg.pos.x,
+            car->pub.DynGCg.pos.y,
+            car->pub.DynGCg.pos.z,
+            car->pub.DynGCg.vel.x,
+            car->pub.DynGCg.vel.y,
+            car->pub.DynGCg.vel.z,
+            car->pub.DynGCg.acc.x,
+            car->pub.DynGCg.acc.y,
+            car->pub.DynGCg.acc.z,
+            car->pub.DynGC.pos.x,
+            car->pub.DynGC.pos.y,
+            car->pub.DynGC.pos.z,
+            car->pub.DynGC.vel.x,
+            car->pub.DynGC.vel.y,
+            car->pub.DynGC.vel.z,
+            car->pub.DynGC.acc.x,
+            car->pub.DynGC.acc.y,
+            car->pub.DynGC.acc.z,
+        };
+        m_recorder->WriteSimulationData(params,s->currentTime, false);
+    }
+
     const int idx = index - 1;
 
     tControlCmd *cmd = HCtx[idx]->cmdControl;
@@ -2112,6 +2143,28 @@ void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
         car->_clutchCmd = getAutoClutch(idx, car->_gear, car->_gearCmd, car);
 
     common_brake(idx, car, s);
+
+    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
+    if (m_recorder) {
+        float inputs[USER_INPUT_RECORD_PARAM_AMOUNT] = {
+            car->_accelCmd,
+            car->_brakeCmd,
+            car->_steerCmd,
+            static_cast<float>(car->_gearCmd),
+            car->_clutchCmd,
+            static_cast<float>(car->_raceCmd),
+            static_cast<float>(car->_lightCmd),
+            static_cast<float>(car->_ebrakeCmd),
+            car->_brakeFLCmd,
+            car->_brakeFRCmd,
+            car->_brakeRLCmd,
+            car->_brakeRRCmd,
+            car->_wingFCmd,
+            car->_wingRCmd,
+            static_cast<float>(car->_telemetryMode),
+            static_cast<float>(car->_singleWheelBrakeMode)};
+        m_recorder->WriteUserInput(inputs, s->currentTime);
+    }
 }
 
 /*
@@ -2419,4 +2472,11 @@ bool HumanDriver::uses_at(int index)
 void HumanDriver::read_prefs(int index)
 {
     human_prefs(index, index);
+}
+
+/// @brief Set the recorder to record with, when set all player input will be recorded
+/// @param p_recorder The recorder object
+void HumanDriver::SetRecorder(Recorder *p_recorder)
+{
+    this->m_recorder = p_recorder;
 }

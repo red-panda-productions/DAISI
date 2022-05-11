@@ -21,11 +21,13 @@ public:
 
     void SetAccel(float p_accelValue);
 
+    void SetLights(bool p_lightsValue);
+
     float GetBrake() const;
 
     float GetSteer() const;
 
-    float GetGear() const;
+    int GetGear() const;
 
     float GetAccel() const;
 
@@ -46,4 +48,6 @@ private:
     bool m_steerActive = false;
     AccelDecision m_accelDecision;
     bool m_accelActive = false;
+    bool m_gearActive = false;
+    bool m_lightsActive = false;
 };

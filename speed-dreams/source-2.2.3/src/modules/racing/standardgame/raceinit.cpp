@@ -862,7 +862,7 @@ ReInitCars(void)
         robhdle = GfParmReadFile(buf, GFPARM_RMODE_STD);
       }
       // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman
-      if (robhdle && ( strcmp( robotModuleName, "human" ) == 0 || strcmp( robotModuleName, "networkhuman" ) == 0 || strcmp(robotModuleName, "assistedhuman") == 0) )
+      if (robhdle && (strcmp(robotModuleName, "human") == 0 || strcmp(robotModuleName, "networkhuman") == 0 || strcmp(robotModuleName, "assistedhuman") == 0))
       {
         /* Human driver */
         elt = reLoadSingleCar( index, i, robotIdx - (*(ReInfo->robModList))->modInfo[0].index, robotIdx, FALSE, robotModuleName );
