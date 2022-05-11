@@ -53,45 +53,40 @@ BEGIN_TEST_COMBINATORIAL(ConfigTests, IndicatorSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief Tests if the SDAConfig sets and gets the participant control settings correctly
+/// @brief                Tests if the SDAConfig sets and gets the participant control settings correctly
 /// @param p_intervention Whether to enable participant intervention control
-/// @param p_gas Whether to enable participant gas control
-/// @param p_steer Whether to enable participant steer control
-void PControlTest1(bool p_intervention, bool p_gas, bool p_steer)
+/// @param p_gas          Whether to enable participant gas control
+/// @param p_steer        Whether to enable participant steer control
+/// @param p_force        Whether to enable force feedback
+void PControlTest(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_intervention, p_gas, p_steer, NULL, NULL, NULL};
+    tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
+    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
 BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief                  Tests if the SDAConfig sets and gets the other pControl settings correctly
-/// @param p_force          Whether to enable force feedback
-/// @param p_userRecord     Whether to enable user controls session recording
-/// @param p_blackboxRecord Whether to enable blackbox session recording
-void PControlTest2(bool p_force, bool p_userRecord, bool p_blackboxRecord)
+/// @brief                   Tests if the SDAConfig sets and gets the replay recorder status correctly
+/// @param p_recorderSetting The recorder setting
+void RecorderSettingTest(bool p_recorderSetting)
 {
     SDAConfig config;
-    tParticipantControl arr = {NULL, NULL, NULL, p_force, p_userRecord, p_blackboxRecord};
-    config.SetPControlSettings(arr);
-    tParticipantControl pControl = config.GetPControlSettings();
-    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
-    ASSERT_EQ(arr.RecordSession, pControl.RecordSession);
-    ASSERT_EQ(arr.BBRecordSession, pControl.BBRecordSession);
+    config.SetReplayRecorderSetting(p_recorderSetting);
+    ASSERT_EQ(p_recorderSetting, config.GetReplayRecorderSetting());
 }
 
-/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (last 3)
-BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings2)
-bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest2, booleans, 2, booleans, 2, booleans, 2)
+/// @brief Tests the SDAConfig recorder settings
+TEST_CASE(ConfigTests, RecorderSettingTestTrue, RecorderSettingTest, (true))
+TEST_CASE(ConfigTests, RecorderSettingTestFalse, RecorderSettingTest, (false))
 
 /// @brief Tests if the SDAConfig sets and gets the MaxTime correctly
 TEST(ConfigTests, MaxTimeTest)
@@ -150,6 +145,16 @@ TEST(ConfigTests, BlackBoxFilePathTest)
         }
     }
 }
+
+void BlackBoxSyncOptionTestConfig(bool p_sync)
+{
+    SDAConfig config;
+    config.SetBlackBoxSyncOption(p_sync);
+    ASSERT_EQ(p_sync, config.GetBlackBoxSyncOption());
+}
+
+TEST_CASE(ConfigTests, BlackBoxSyncOptionTestAsync, BlackBoxSyncOptionTestConfig, (true))
+TEST_CASE(ConfigTests, BlackBoxSyncOptionTestSync, BlackBoxSyncOptionTestConfig, (false))
 
 /// @brief                Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
 /// @param p_env          The environment data setting

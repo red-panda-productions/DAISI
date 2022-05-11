@@ -57,7 +57,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 #endif
 
     BlackBoxData initialData(p_initialCar, p_initialSituation, p_initialTickCount, nullptr, 0);
-    BlackBox.Initialize(Config.GetSyncOption(), initialData, p_testSituations, p_testAmount);
+    BlackBox.Initialize(Config.GetBlackBoxSyncOption(), initialData, p_testSituations, p_testAmount);
 
     if (p_blackBoxExecutablePath.empty())
     {
