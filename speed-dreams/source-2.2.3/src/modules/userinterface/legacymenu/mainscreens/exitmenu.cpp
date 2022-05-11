@@ -51,7 +51,7 @@ onAcceptExit(void * /* dummy */)
  *	
  */
 
-void* ExitMenuInit(void *prevMenu)
+void *ExitMenuInit(void *prevMenu, bool p_raceExit, int saveWayVersion)
 {
     if (MenuHandle) {
 		GfuiScreenRelease(MenuHandle);
