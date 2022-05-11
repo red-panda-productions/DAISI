@@ -112,7 +112,7 @@ TEST(MediatorTests, GetThresholdTest)
     ASSERT_TRUE(SetupSingletonsFolder());
 
     GfInit();
-    GfSetLocalDir( SD_LOCALDIR );
+    GfSetLocalDir(SD_LOCALDIR);
 
     // Check if mediator returns standard values if no xml is found
     SMediator* mediator = SMediator::GetInstance();
@@ -132,7 +132,7 @@ TEST(MediatorTests, GetThresholdTest)
     if (!FindFileDirectory(path, "test_thresholds.xml")) throw std::exception("Can't find test file");
 
     // Create Data Directory if not already done.
-    GfSetDataDir( SD_DATADIR_SRC );
+    GfSetDataDir(SD_DATADIR_SRC);
 
     // Test if the mediator returns the right thresholds when it reads from a xml file
     std::string dstStr("../test_data/test_thresholds.xml");

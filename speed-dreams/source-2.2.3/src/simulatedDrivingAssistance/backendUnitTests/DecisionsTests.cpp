@@ -48,7 +48,6 @@ public:
     }
 };
 
-
 /// @brief Tests if all decisions do their RunInterveneCommand correctly
 TEST_F(DecisionTest, RunInterveneDecisions)
 {
@@ -56,7 +55,7 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     SMediator* mediator = SMediator::GetInstance();
 
     // Create Data Directory if not already done.
-    GfSetDataDir( SD_DATADIR_SRC );
+    GfSetDataDir(SD_DATADIR_SRC);
 
     // Test if the mediator returns the right thresholds when it reads from a xml file
     std::string dstStr("../test_data/test_thresholds_defaults.xml");
