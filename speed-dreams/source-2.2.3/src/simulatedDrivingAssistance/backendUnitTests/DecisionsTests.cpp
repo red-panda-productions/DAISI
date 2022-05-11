@@ -10,7 +10,7 @@
 #include <config.h>
 
 // testing fixture for decision tests
-class DecisionTest : public ::testing::Test
+class DecisionTest : public ::testing::TestWithParam<int>
 {
 private:
     tCarElt* m_car;
@@ -103,7 +103,7 @@ TEST_F(DecisionTest, RunInterveneDecisions)
 }
 
 /// @brief Checks if the brake decision RunIndicateCommand works correctly
-TEST_F(DecisionTest, BrakeRunIndicateTest)
+TEST_P(DecisionTest, BrakeRunIndicateTest)
 {
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
@@ -111,27 +111,23 @@ TEST_F(DecisionTest, BrakeRunIndicateTest)
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     BrakeDecision brakeDecision;
-    brakeDecision.BrakeAmount = 1;
+    brakeDecision.BrakeAmount = GetParam();
     brakeDecision.RunIndicateCommands();
 
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-    // if the break amount is above the BRAKE_THRESHOLD defined in BrakeDecision.cpp, INTERVENTION_ACTION_BRAKE indicator should be active
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
-
-    brakeDecision.BrakeAmount = 0;
-    brakeDecision.RunIndicateCommands();
-
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
-    // if the break amount is below the BRAKE_THRESHOLD defined in BrakeDecision.cpp, no indicator should have been changed
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+    // if the break amount is above the STANDARD_THRESHOLD_BRAKE, INTERVENTION_ACTION_BRAKE indicator should be active
+    if (brakeDecision.BrakeAmount >= STANDARD_THRESHOLD_BRAKE)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+    }
+    // TODO: else
 }
+INSTANTIATE_TEST_CASE_P(BrakeRunIndicateTest, DecisionTest, ::testing::Values(-99, -1, 0, 1, 2, 99));
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
-TEST_F(DecisionTest, SteerRunIndicateTests)
+TEST_P(DecisionTest, SteerRunIndicateTests)
 {
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
@@ -139,26 +135,30 @@ TEST_F(DecisionTest, SteerRunIndicateTests)
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     SteerDecision steerDecision;
-    steerDecision.SteerAmount = -1;
+    steerDecision.SteerAmount = GetParam();
     steerDecision.RunIndicateCommands();
 
     // TODO: Update to have multiple indicators when indicator code is updated
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
-
-    steerDecision.SteerAmount = 1;
-    steerDecision.RunIndicateCommands();
-
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
+    // if the steer amount is above the STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_LEFT indicator should be active
+    if (steerDecision.SteerAmount >= STANDARD_THRESHOLD_STEER)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
+    }
+    // if the steer amount is below the -STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_RIGHT indicator should be active
+    else if (steerDecision.SteerAmount <= -STANDARD_THRESHOLD_STEER)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
+    }
+    // TODO: else
 }
+INSTANTIATE_TEST_CASE_P(SteerRunIndicateTests, DecisionTest, ::testing::Values(-2, -1, 0, 1, 2, 99));
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
-TEST_F(DecisionTest, AccelRunIndicateTests)
+TEST_P(DecisionTest, AccelRunIndicateTests)
 {
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
@@ -166,21 +166,17 @@ TEST_F(DecisionTest, AccelRunIndicateTests)
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     AccelDecision accelDecision;
-    accelDecision.AccelAmount = 1;
+    accelDecision.AccelAmount = GetParam();
     accelDecision.RunIndicateCommands();
 
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_ACCELERATE indicator should be active
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
-
-    accelDecision.AccelAmount = 0;
-    accelDecision.RunIndicateCommands();
-
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
-    // if the accelerate amount is below the ACCEL_THRESHOLD defined in AccelDecision.cpp, no indicator should have been changed
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+    // if the accelerate amount is above the STANDARD_THRESHOLD_ACCEL, INTERVENTION_ACTION_ACCELERATE indicator should be active
+    if (accelDecision.AccelAmount >= STANDARD_THRESHOLD_ACCEL)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+    }
+    // TODO: else
 }
+INSTANTIATE_TEST_CASE_P(AccelRunIndicateTests, DecisionTest, ::testing::Values(-1, 0, 1, 2, 99));
