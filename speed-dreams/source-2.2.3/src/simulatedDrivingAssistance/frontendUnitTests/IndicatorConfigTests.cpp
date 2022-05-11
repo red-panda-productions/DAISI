@@ -153,7 +153,6 @@ protected:
         return data;
     }
 
-
     /// @brief        Writes the given indicator data object to a xml file.
     /// @param p_data The indicator data
     /// @return       The filepath of the xml file that it has been written to.
@@ -370,8 +369,7 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
                     else
                         ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_STEER_NONE);
                 }
-            } 
-
+            }
         }
     }
 }
@@ -398,7 +396,7 @@ TEST_F(IndicatorConfigLoadingTests, NumberOfIndicators)
 
             // There is always at least 1 neutral indicator in the ONLY SIGNALS intervention type
             ASSERT_TRUE(neutral1.size() > 0);
-                  
+
             // There are 2 neutral indicators if there are 0 active indicators in the ONLY SIGNALS intervention type
             if (active1.size() == 0)
                 ASSERT_TRUE(neutral1.size() == 2);
