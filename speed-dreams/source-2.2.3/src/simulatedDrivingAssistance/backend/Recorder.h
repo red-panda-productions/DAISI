@@ -51,7 +51,7 @@ class Recorder
 public:
     Recorder(const std::string& p_dirName, const std::string& p_fileName, int p_userParamAmount, int p_simulationDataParamAmount);
     ~Recorder();
-    void WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const bool& p_replayRecorderOption);
+    void WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
     void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);

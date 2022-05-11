@@ -339,9 +339,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     participantControl.ControlSteering = random.NextBool();
     participantControl.ForceFeedback = random.NextBool();
 
-    bool replayRecorderOption = random.NextBool();
-
-    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl, replayRecorderOption);
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl);
 
     filesystem::path settingsPath = GetTestingDirectory();
     settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
@@ -355,13 +353,11 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_ICON, nullptr), BoolToString(indicators.Icon));
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(replayRecorderOption));
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, nullptr), BoolToString(participantControl.ControlInterventionToggle));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteering));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, nullptr), BoolToString(replayRecorderOption));
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_NAME, nullptr), track.name);
     ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_CATEGORY, nullptr), track.category);
