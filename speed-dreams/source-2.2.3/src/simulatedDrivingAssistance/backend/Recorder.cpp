@@ -247,6 +247,8 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
     GfParmSetStr(p_settingsHandle, PATH_TRACK, KEY_CATEGORY, category);
     GfParmSetStr(p_settingsHandle, PATH_TRACK, KEY_NAME, name);
     GfParmRemove(p_settingsHandle, PATH_TRACK, KEY_FILENAME);
+    GfParmRemove(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION);
+    GfParmRemove(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION);
 
     filesystem::path fixedUserRecordingFile = filesystem::path(p_userRecordingFile).replace_extension(RECORDING_EXTENSION);
     filesystem::path fixedDecisionsRecordingFile = filesystem::path(p_decisionsRecordingFile).replace_extension(RECORDING_EXTENSION);
