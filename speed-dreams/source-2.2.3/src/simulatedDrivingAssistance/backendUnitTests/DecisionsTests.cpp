@@ -9,47 +9,60 @@
 #include "IndicatorConfig.h"
 #include <config.h>
 
-/// @brief Initialize SMediator with a car which values are set to 0
-void InitializeMediator()
+// testing fixture for decision tests
+class DecisionTest : public ::testing::Test
 {
-    GfInit();
-    GfSetDataDir(SD_DATADIR_SRC);
-    SetupSingletonsFolder();
+private:
+    tCarElt* m_car;
 
-    tCarElt car;
-    car.ctrl.brakeCmd = 0;
-    car.ctrl.accelCmd = 0;
-    car.ctrl.steer = 0;
+public:
+    /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
+    void SetUp() override
+    {
+        GfInit();
+        GfSetDataDir(SD_DATADIR_SRC);
+        SetupSingletonsFolder();
 
-    CarController carController;
-    carController.SetCar(&car);
+        m_car = new tCarElt;
+        m_car->ctrl.brakeCmd = 0;
+        m_car->ctrl.accelCmd = 0;
+        m_car->ctrl.steer = 0;
 
-    carController.SetBrakeCmd(0);
-    carController.SetAccelCmd(0);
-    carController.SetSteerCmd(0);
+        CarController carController;
+        carController.SetCar(m_car);
 
-    SMediator::GetInstance()->CarController = carController;
+        carController.SetBrakeCmd(0);
+        carController.SetAccelCmd(0);
+        carController.SetSteerCmd(0);
 
-    // Needs to be on something other than NO_SIGNALS to retrieve active indicators
-    SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
-}
+        SMediator::GetInstance()->CarController = carController;
+
+        /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/
+        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
+    }
+
+    /// @brief deletes the car from the heap at the end of a test
+    void TearDown() override
+    {
+        delete m_car;
+    }
+};
+
 
 /// @brief Tests if all decisions do their RunInterveneCommand correctly
-TEST(DecisionsTest, RunInterveneDecisions)
+TEST_F(DecisionTest, RunInterveneDecisions)
 {
-    //IndicatorConfig::ClearInstance();
-    InitializeMediator();
-
-    Random random;
+    IndicatorConfig::ClearInstance();
     tThreshold thresholds = SMediator::GetInstance()->GetThresholdSettings();
-
+    Random random;
     BrakeDecision brakeDecision;
+
     float controlBrakeAmount = random.NextFloat(thresholds.Brake, thresholds.Brake + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
     brakeDecision.RunInterveneCommands();
 
     std::cout << "Testing brake...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
@@ -58,7 +71,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     accelDecision.RunInterveneCommands();
 
     std::cout << "Testing accel...";
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
@@ -67,21 +80,19 @@ TEST(DecisionsTest, RunInterveneDecisions)
     steerDecision.RunInterveneCommands();
 
     std::cout << "Testing steer...";
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 
     std::cout << "Checking if no value was changed that should not have been changed...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 }
 
 /// @brief Checks if the brake decision RunIndicateCommand works correctly
-TEST(DecisionTests, BrakeRunIndicateTest)
+TEST_F(DecisionTest, BrakeRunIndicateTest)
 {
-    InitializeMediator();
-
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
@@ -108,10 +119,8 @@ TEST(DecisionTests, BrakeRunIndicateTest)
 }
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
-TEST(DecisionsTest, SteerRunIndicateTests)
+TEST_F(DecisionTest, SteerRunIndicateTests)
 {
-    InitializeMediator();
-
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
@@ -137,10 +146,8 @@ TEST(DecisionsTest, SteerRunIndicateTests)
 }
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
-TEST(DecisionsTest, AccelRunIndicateTests)
+TEST_F(DecisionTest, AccelRunIndicateTests)
 {
-    InitializeMediator();
-
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
