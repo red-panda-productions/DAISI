@@ -19,6 +19,7 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
     template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop();                                                                 \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::ExperimentStop();                                                           \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
@@ -152,6 +153,14 @@ void TEMP_DECISIONMAKER::RaceStop()
     sqlDatabaseStorage.Run(m_bufferFilePath);
     m_recorder = nullptr;
 }
+
+/// @brief When the experiment stops, the 
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::ExperimentStop()
+{
+
+}
+
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()

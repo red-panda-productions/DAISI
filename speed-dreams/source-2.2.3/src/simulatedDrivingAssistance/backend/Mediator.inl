@@ -33,6 +33,7 @@ namespace filesystem = std::experimental::filesystem;
     template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template void Mediator<type>::ExperimentStop();                                                                                                     \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the task in SDAConfig to p_task
@@ -218,6 +219,13 @@ void Mediator<DecisionMaker>::RaceStop()
     if (!m_inRace) return;
     m_decisionMaker.RaceStop();
     m_inRace = false;
+}
+
+/// @brief Tells the decisionmaker that the experiment has ended
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::ExperimentStop()
+{
+   
 }
 
 /// @brief Creates a mediator instance if needed and returns it

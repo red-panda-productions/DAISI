@@ -34,6 +34,7 @@ public:
     void ChangeSettings(InterventionType p_dataSetting);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void RaceStop();
+    void ExperimentStop();
 
     InterventionExecutor* InterventionExecutor = nullptr;
     SocketBlackBox BlackBox;
