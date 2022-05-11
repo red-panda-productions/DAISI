@@ -150,6 +150,8 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
     // TODO: This will be replaced by allowed blackbox actions
     SMediator::GetInstance()->SetTask(task);
 
+    SMediator::GetInstance()->SetBlackBoxSyncOption(false);
+
     GfParmReleaseHandle(replaySettingsHandle);
 
     return true;

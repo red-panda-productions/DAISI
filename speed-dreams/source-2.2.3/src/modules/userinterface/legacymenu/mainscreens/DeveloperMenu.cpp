@@ -128,7 +128,7 @@ static void SaveSettings()
 
     mediator->SetBlackBoxSyncOption(m_sync == 1);
     mediator->SetReplayRecorderSetting(m_replayRecorderOn);
-    // TODO Save replay file (not to disk, that is handled in the below method)
+    mediator->SetReplayFolder(m_replayFilePath);
 
     SaveSettingsToFile();
 }
