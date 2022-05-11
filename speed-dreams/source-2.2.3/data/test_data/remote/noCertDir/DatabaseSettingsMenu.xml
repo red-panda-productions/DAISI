@@ -4,27 +4,27 @@
 
 <params name="DatabaseSettingsMenu">
   <section name="UsernameEdit">
-    <attstr name="text" val="Tesddfsst"/>
+    <attstr name="text" val="SDATest"/>
   </section>
 
   <section name="PasswordEdit">
-    <attstr name="text" val="fdgdfsfd"/>
+    <attstr name="text" val="PASSWORD"/>
   </section>
 
   <section name="AddressEdit">
-    <attstr name="text" val="Url"/>
+    <attstr name="text" val="127.0.0.1"/>
   </section>
 
   <section name="PortEdit">
-    <attstr name="text" val="Port"/>
+    <attstr name="text" val="3306"/>
   </section>
 
   <section name="SchemaEdit">
-    <attstr name="text" val="SchemaName2"/>
+    <attstr name="text" val="sda_test"/>
   </section>
 
   <section name="CheckboxUseSSL">
-    <attstr name="checked" val="yes"/>
+    <attstr name="checked" val="true"/>
   </section>
 
 </params>
