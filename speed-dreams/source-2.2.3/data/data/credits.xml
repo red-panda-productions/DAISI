@@ -25,9 +25,118 @@
 
   <section name="chapters">
 
-    <section name="0">
+	  <!--SIMULATED DRIVING ASSISTANCE: added the team to the credits-->
+	  <section name ="0">
+		  <attstr name="name" val="Simulated Driving Assistance"/>
+		  <section name="columns">
+			  <section name="name">
+				  <attstr name="name" val="Name"/>
+				  <attnum name="width" val="170"/>
+			  </section>
+			  <section name="contribs">
+				  <attstr name="name" val="Main contributions"/>
+				  <attnum name="width" val="430"/>
+			  </section>
+			  <section name="role">
+				  <attstr name="name" val="Role"/>
+				  <attnum name="width" val="170"/>
+			  </section>
+			  <section name="web">
+				  <attstr name="name" val="Web"/>
+				  <attnum name="width" val="430"/>
+			  </section>
+		  </section>
+		  <section name="records">
+			  <section name="0">
+				  <attstr name="name" val="Lars de Kwant"/>
+				  <attstr name="contribs" val="Frontend"/>
+				  <attstr name="role" val="Chairman"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="1">
+				  <attstr name="name" val="Kayleigh Lieverse"/>
+				  <attstr name="contribs" val="Analysis"/>
+				  <attstr name="role" val="Scrum Master"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="2">
+				  <attstr name="name" val="Meagan Loerakker"/>
+				  <attstr name="contribs" val="Analysis"/>
+				  <attstr name="role" val="Product Owner"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="3">
+				  <attstr name="name" val="Sietze Riemersma"/>
+				  <attstr name="contribs" val="Backend"/>
+				  <attstr name="role" val="Chief of Code"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="4">
+				  <attstr name="name" val="Nout Heesink"/>
+				  <attstr name="contribs" val="Backend"/>
+				  <attstr name="role" val="Qualtity Inspector"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="5">
+				  <attstr name="name" val="Stefan Hoekzema"/>
+				  <attstr name="contribs" val="Frontend, Backend"/>
+				  <attstr name="role" val="UX-Researcher"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="6">
+				  <attstr name="name" val="Gerjan Lugtenburg"/>
+				  <attstr name="contribs" val="Frontend"/>
+				  <attstr name="role" val="Chief of Code"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="7">
+				  <attstr name="name" val="Sjoerd Schilder"/>
+				  <attstr name="contribs" val="frontend"/>
+				  <attstr name="role" val="Chief of Artists"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="8">
+				  <attstr name="name" val="Maik Vink"/>
+				  <attstr name="contribs" val="Analysis"/>
+				  <attstr name="role" val="Shadow Scrum Master"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="9">
+				  <attstr name="name" val="Ian Gerritse"/>
+				  <attstr name="contribs" val="Analysis"/>
+				  <attstr name="role" val="Chief of Report"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="10">
+				  <attstr name="name" val="Lucas Disseldorp"/>
+				  <attstr name="contribs" val="Analysis"/>
+				  <attstr name="role" val="Shadow Chairman"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="11">
+				  <attstr name="name" val="Mina Spijk"/>
+				  <attstr name="contribs" val="Analysis"/>
+				  <attstr name="role" val="Quality Inspector Reports"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="12">
+				  <attstr name="name" val="Cas Alderhout"/>
+				  <attstr name="contribs" val="Highway Environment, Car, Intervention Icons"/>
+				  <attstr name="role" val="Artist"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+			  <section name="13">
+				  <attstr name="name" val="Eva van Kessel"/>
+				  <attstr name="contribs" val="Menu UI, Intervention Icons"/>
+				  <attstr name="role" val="Artist"/>
+				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
+			  </section>
+		  </section>
+	  </section>
 
-	  <attstr name="name" val="Development team"/>
+	  <section name="1">
+
+	  <attstr name="name" val="pre-fork (Speed Dreams) Developers"/>
 
       <section name="columns">
         <section name="name">
@@ -142,9 +251,9 @@
       </section>
     </section>
 
-    <section name="1">
+    <section name="2">
 
-      <attstr name="name" val="Contributors"/>
+      <attstr name="name" val="pre-fork (Speed Dreams) Contributors"/>
 
       <section name="columns">
         <section name="name">
@@ -277,7 +386,7 @@
       </section>
     </section>
 
-    <section name="2">
+    <section name="3">
 
       <attstr name="name" val="3rd party libs and code"/>
 
@@ -339,7 +448,7 @@
       </section>
     </section>
 
-    <section name="3">
+    <section name="4">
 
       <attstr name="name" val="3rd party tools"/>
 
@@ -419,7 +528,7 @@
       </section>
     </section>
 
-    <section name="4">
+    <section name="5">
 
       <attstr name="name" val="Pre-fork contributors (Torcs)"/>
 

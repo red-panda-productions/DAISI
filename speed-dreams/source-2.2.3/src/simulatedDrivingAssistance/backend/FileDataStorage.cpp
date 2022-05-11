@@ -52,7 +52,7 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
 {
     // Create file directory if not yet exists
     std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
-    filePath.append(p_fileName);
+    filePath.append(p_fileName.c_str());
     create_directories(filePath.parent_path());
 
     // Initialize member variables

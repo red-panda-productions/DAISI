@@ -58,6 +58,20 @@ tParticipantControl SDAConfig::GetPControlSettings() const
     return m_pControl;
 }
 
+/// @brief                    Sets the status of the replay recorder
+/// @param p_replayRecorderOn The value to set the status to
+void SDAConfig::SetReplayRecorderSetting(bool p_replayRecorderOn)
+{
+    m_replayRecorderOn = p_replayRecorderOn;
+}
+
+/// @brief Returns the status of the replay recorder
+/// @returns The status of the replay recorder
+bool SDAConfig::GetReplayRecorderSetting() const
+{
+    return m_replayRecorderOn;
+}
+
 /// @brief           Sets the maximum simulation time to p_maxTime
 /// @param p_maxTime The maximum simulation time
 void SDAConfig::SetMaxTime(int p_maxTime)
@@ -117,14 +131,14 @@ const char* SDAConfig::GetBlackBoxFilePath() const
 
 /// @brief Set m_asyncConnection to p_asyncConnection
 /// @param p_asyncConnection value to set m_asyncConnection to
-void SDAConfig::SetSyncOption(bool p_asyncConnection)
+void SDAConfig::SetBlackBoxSyncOption(bool p_asyncConnection)
 {
     m_asyncConnection = p_asyncConnection;
 }
 
 /// @brief Gets the blackbox connection sync option
 /// @return False if sync, true if async
-bool SDAConfig::GetSyncOption() const
+bool SDAConfig::GetBlackBoxSyncOption() const
 {
     return m_asyncConnection;
 }

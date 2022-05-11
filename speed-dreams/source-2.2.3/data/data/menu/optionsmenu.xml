@@ -47,72 +47,7 @@
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
 
-	<section name="graphic">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Graphics"/>
-		<attstr name="tip" val="Configure graphics settings"/>
-		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="290"/>
-		<attnum name="width" val="320"/>
-		<attstr name="font" val="big"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
-
-	<section name="advanced">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Advanced Graphics"/>
-		<attstr name="tip" val="Configure advanced graphics options settings"/>
-		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="258"/>
-		<attnum name="width" val="320"/>
-		<attstr name="font" val="big"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
-
-	<section name="opengl">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
-		<attstr name="text" val="OpenGL"/>
-		<attstr name="tip" val="Configure OpenGL parameters"/>
-		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="226"/>
-		<attnum name="width" val="320"/>
-		<attstr name="font" val="big"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
-
+    <!--SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation and ai opponents menus -->
 	<section name="sound">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
@@ -120,51 +55,7 @@
 		<attstr name="tip" val="Setup sound volume and sound system"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="260"/>
-		<attnum name="y" val="194"/>
-		<attnum name="width" val="320"/>
-		<attstr name="font" val="big"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
-
-	<section name="simulation">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Simulation"/>
-		<attstr name="tip" val="Configure simulation parameters"/>
-		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="162"/>
-		<attnum name="width" val="320"/>
-		<attstr name="font" val="big"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
-
-	<section name="ai">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
-		<attstr name="text" val="AI Opponents"/>
-		<attstr name="tip" val="Setup skill level of ai opponents"/>
-		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="130"/>
+		<attnum name="y" val="290"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>

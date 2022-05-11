@@ -39,10 +39,14 @@
 #include "joystickconfig.h"
 #include "joy2butconfig.h"
 
+#include <deque>
+
 
 static void *ScrHandle = NULL;
 static void	*PrevScrHandle = NULL;
 static void	*PrefHdle = NULL;
+// SIMULATED DRIVING ASSISTANCE: moved PlayerHdle from removed playerconfig.cpp
+static void* PlayerHdle = NULL;
 static int	SaveOnExit = 0;
 
 static tCtrlMouseInfo MouseInfo;
@@ -139,6 +143,171 @@ static int		JoyButtons[GFCTRL_JOY_NUMBER];
 static float SteerSensVal;
 static float DeadZoneVal;
 static float SteerSpeedSensVal;
+
+// SIMULATED DRIVING ASSISTANCE: moved skillLevel  from removed playerconfig.cpp
+static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
+static const int NbSkillLevels = sizeof(SkillLevelString) / sizeof(SkillLevelString[0]);
+
+static const char* PlayerNamePrompt = "-- Enter name --";
+static const char* NoPlayer = "-- No one --";
+static const char* HumanDriverModuleName = "human";
+static const char* DefaultCarName = "sc-lynx-220";
+
+// SIMULATED DRIVING ASSISTANCE: moved tInfo from removed playerconfig.cpp
+/* Struct to define a generic ("internal name / id", "displayable name") pair */
+typedef struct tInfo
+{
+	char* name;
+	char* dispname;
+
+} tInfo;
+// SIMULATED DRIVING ASSISTANCE: moved tPlayerInfo from removed playerconfig.cpp
+/* Player info struct */
+struct tPlayerInfo
+{
+public:
+
+	tPlayerInfo(const char *name = HumanDriverModuleName, const char *dispname = 0,
+				const char *defcarname = 0, int racenumber = 0, int skilllevel = 0,
+				float *color = 0, 
+				tGearChangeMode gearchangemode = GEAR_MODE_AUTO, int autoreverse = 0, 
+				int nbpitstops = 0
+				) 
+	{
+		_info.name = 0;
+		setName(name);
+		_info.dispname = 0;
+		setDispName(dispname);
+		_defcarname = 0;
+		setDefaultCarName(defcarname);
+		_racenumber = racenumber; 
+		_gearchangemode = gearchangemode; 
+		_nbpitstops = nbpitstops; 
+		_skilllevel = skilllevel; 
+		_autoreverse = autoreverse;
+		_color[0] = color ? color[0] : 1.0; 
+		_color[1] = color ? color[1] : 1.0; 
+		_color[2] = color ? color[2] : 0.5; 
+		_color[3] = color ? color[3] : 1.0;
+	}
+
+	tPlayerInfo(const tPlayerInfo &src)
+	{
+		_info.name = 0;
+		setName(src._info.name);
+		_info.dispname = 0;
+		setDispName(src._info.dispname);
+		_defcarname = 0;
+		setDefaultCarName(src._defcarname);
+		_racenumber = src._racenumber; 
+		_gearchangemode = src._gearchangemode; 
+		_nbpitstops = src._nbpitstops; 
+		_skilllevel = src._skilllevel; 
+		_autoreverse = src._autoreverse;
+		_color[0] = src._color[0]; 
+		_color[1] = src._color[1]; 
+		_color[2] = src._color[2]; 
+		_color[3] = src._color[3];
+	}
+
+	const char *name()  const { return _info.name; };
+	const char *dispName()  const { return _info.dispname; }
+	const char *defaultCarName()  const { return _defcarname; }
+	int raceNumber() const { return _racenumber; }
+	tGearChangeMode gearChangeMode() const { return _gearchangemode; }
+	int nbPitStops() const { return _nbpitstops; }
+	float color(int idx) const { return (idx >= 0 && idx < 4) ? _color[idx] : 0.0; }
+	int skillLevel() const { return _skilllevel; }
+	int autoReverse() const { return _autoreverse; }
+
+	void setName(const char *name)
+	{
+		if (_info.name)
+			delete[] _info.name;
+		if (!name || strlen(name) == 0)
+			name = HumanDriverModuleName;
+		_info.name = new char[strlen(name)+1];
+		strcpy(_info.name, name); // Can't use strdup : free crashes in destructor !?
+	}
+	void setDispName(const char *dispname)
+	{
+		if (_info.dispname)
+			delete[] _info.dispname;
+		if (!dispname)
+			dispname = NoPlayer;
+		_info.dispname = new char[strlen(dispname)+1];
+		strcpy(_info.dispname, dispname); // Can't use strdup : free crashes in destructor !?
+	}
+	void setDefaultCarName(const char *defcarname)
+	{
+		if (_defcarname)
+			delete[] _defcarname;
+		if (!defcarname || strlen(defcarname) == 0)
+			defcarname = DefaultCarName;
+		_defcarname = new char[strlen(defcarname)+1];
+		strcpy(_defcarname, defcarname); // Can't use strdup : free crashes in destructor !?
+	}
+
+	void setRaceNumber(int raceNumber) { _racenumber = raceNumber; }
+	void setGearChangeMode(tGearChangeMode gearChangeMode) { _gearchangemode = gearChangeMode; }
+	void setNbPitStops(int nbPitStops) { _nbpitstops = nbPitStops; }
+	void setSkillLevel(int skillLevel) { _skilllevel = skillLevel; }
+	void setAutoReverse(int autoReverse) { _autoreverse = autoReverse; }
+
+	~tPlayerInfo() 
+	{
+		if (_info.dispname)
+			delete[] _info.dispname;
+		if (_info.name)
+			delete[] _info.name;
+		if (_defcarname)
+			delete[] _defcarname;
+
+	}
+
+	// Gear change mode enum to string conversion
+	const char *gearChangeModeString() const
+	{ 
+		const char *gearChangeStr;
+	
+		if (_gearchangemode == GEAR_MODE_AUTO) {
+			gearChangeStr = HM_VAL_AUTO;
+		} else if (_gearchangemode == GEAR_MODE_GRID) {
+			gearChangeStr = HM_VAL_GRID;
+		} else if (_gearchangemode == GEAR_MODE_HBOX) {
+			gearChangeStr = HM_VAL_HBOX;
+		} else {
+			gearChangeStr = HM_VAL_SEQ;
+		}
+ 
+		return gearChangeStr;
+	}
+
+private:
+
+	tInfo			_info;
+	char*			_defcarname;
+	int				_racenumber;
+	tGearChangeMode	_gearchangemode;
+	int				_nbpitstops;
+	float			_color[4];
+	int				_skilllevel;
+	int				_autoreverse;
+};
+
+// SIMULATED DRIVING ASSISTANCE: moved tPlayerinfoList from removed playerconfig.cpp
+/* The human driver (= player) info list */
+typedef std::deque<tPlayerInfo*> tPlayerInfoList;
+static tPlayerInfoList PlayersInfo;
+
+// SIMULATED DRIVING ASSISTANCE: moved currPlayer from removed playerconfig.cpp
+
+/* The currently selected player (PlayersInfo.end() if none) */
+static tPlayerInfoList::iterator CurrPlayer;
+
+// SIMULATED DRIVING ASSISTANCE: moved Yn[] from removed playerconfig.cpp
+/* A bool to ("yes", "no") conversion table */
+static const char* Yn[] = { HM_VAL_YES, HM_VAL_NO };
 
 static char buf[1024];
 
@@ -606,6 +775,107 @@ onPush(void *vi)
     GfuiApp().eventLoop().setRecomputeCB(IdleWaitForInput);
 }
 
+
+//SIMULATED DRIVING ASSISTANCE: moved GenPlayerList() from removed playerconfig.cpp
+/* Load human driver (= player) info list (PlayersInfo) from preferences and human drivers files ;
+load associated scroll list */
+static int
+GenPlayerList(void)
+{
+	char sstring[128];
+	int i;
+	int j;
+	const char* driver;
+	const char* defaultCar;
+	int skilllevel;
+	const char* str;
+	int racenumber;
+	float color[4];
+
+	/* Reset players list */
+	tPlayerInfoList::iterator playerIter;
+	for (playerIter = PlayersInfo.begin(); playerIter != PlayersInfo.end(); ++playerIter)
+		delete* playerIter;
+	PlayersInfo.clear();
+
+	/* Load players settings from human.xml file *//*was meant: preferences.xml file?*/
+	snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), HM_DRV_FILE);
+	PlayerHdle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
+	if (PlayerHdle == NULL) {
+		return -1;
+	}
+
+	for (i = 0; ; i++) {
+		snprintf(sstring, sizeof(sstring), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, i + 1);
+		driver = GfParmGetStr(PlayerHdle, sstring, ROB_ATTR_NAME, "");
+		if (strlen(driver) == 0) {
+			break; // Exit at end of driver list.
+		}
+		else {
+			str = GfParmGetStr(PlayerHdle, sstring, ROB_ATTR_LEVEL, SkillLevelString[0]);
+			skilllevel = 0;
+			for (j = 0; j < NbSkillLevels; j++) {
+				if (strcmp(SkillLevelString[j], str) == 0) {
+					skilllevel = j;
+					break;
+				}
+			}
+			defaultCar = GfParmGetStr(PlayerHdle, sstring, ROB_ATTR_CAR, 0);
+			racenumber = (int)GfParmGetNum(PlayerHdle, sstring, ROB_ATTR_RACENUM, (char*)NULL, 0);
+			color[0] = (float)GfParmGetNum(PlayerHdle, sstring, ROB_ATTR_RED, (char*)NULL, 1.0);
+			color[1] = (float)GfParmGetNum(PlayerHdle, sstring, ROB_ATTR_GREEN, (char*)NULL, 1.0);;
+			color[2] = (float)GfParmGetNum(PlayerHdle, sstring, ROB_ATTR_BLUE, (char*)NULL, 0.5);;
+			color[3] = 1.0;
+			PlayersInfo.push_back(new tPlayerInfo(HumanDriverModuleName, // Driver module name
+				driver,  // Player (display) name
+				defaultCar, // Default car name.
+				racenumber, // Race number
+				skilllevel, // skill level
+				color));  // Colors
+
+		}
+	}
+
+	/* No currently selected player */
+	CurrPlayer = PlayersInfo.end();
+
+
+	/* Load players settings from human/preferences.xml file*/
+	snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), HM_PREF_FILE);
+	PrefHdle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
+	if (!PrefHdle) {
+		return -1;
+	}
+
+	for (i = 0; i < (int)PlayersInfo.size(); i++) {
+		snprintf(sstring, sizeof(sstring), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, i + 1);
+		str = GfParmGetStr(PrefHdle, sstring, HM_ATT_TRANS, HM_VAL_AUTO);
+		if (!strcmp(str, HM_VAL_AUTO)) {
+			PlayersInfo[i]->setGearChangeMode(GEAR_MODE_AUTO);
+		}
+		else if (!strcmp(str, HM_VAL_GRID)) {
+			PlayersInfo[i]->setGearChangeMode(GEAR_MODE_GRID);
+		}
+		else if (!strcmp(str, HM_VAL_HBOX)) {
+			PlayersInfo[i]->setGearChangeMode(GEAR_MODE_HBOX);
+		}
+		else {
+			PlayersInfo[i]->setGearChangeMode(GEAR_MODE_SEQ);
+		} /* Note: Deprecated "manual" value (after R1.3.0) smoothly converted to "sequential" (backward compatibility) */
+		PlayersInfo[i]->setNbPitStops(GfParmGetNum(PrefHdle, sstring, HM_ATT_NBPITS, (char*)NULL, 0));
+		if (!strcmp(GfParmGetStr(PrefHdle, sstring, HM_ATT_AUTOREVERSE, Yn[0]), Yn[0])) {
+			PlayersInfo[i]->setAutoReverse(0);
+		}
+		else {
+			PlayersInfo[i]->setAutoReverse(1);
+		}
+
+
+	}
+
+	return 0;
+}
+
 static void
 onActivate(void * /* dummy */)
 {
@@ -629,6 +899,12 @@ onActivate(void * /* dummy */)
 #endif
 
     if (ReloadValues) {
+
+        /* Load players settings */
+        GenPlayerList();
+
+        /* Initialize current player and select it */
+        CurrPlayer = PlayersInfo.begin();
 
         /* Load command settings from preference params for current player */
         ControlGetSettings();
@@ -678,22 +954,28 @@ DevCalibrate(void * /* dummy */)
 	GfuiScreenActivate(nextCalMenu);
 }
 
-
+// SIMULATED DRIVING ASSISTANCE: removed prefHdle, index, GearChangeMode, and set those in the function
+// according to now removed playerconfigmenu
 /* */
 void *
-ControlMenuInit(void *prevMenu, void *prefHdle, unsigned index, tGearChangeMode gearChangeMode, int saveOnExit)
+ControlMenuInit(void *prevMenu, int saveOnExit)
 {
+	/* Load players settings */
+	GenPlayerList();
+
+	/* Initialize current player and select it */
+	CurrPlayer = PlayersInfo.begin();
     int	i;
 
-    ReloadValues = 1;
-    PrefHdle = prefHdle;
+    ReloadValues = (unsigned)(CurrPlayer - PlayersInfo.begin()) + 1;
+    unsigned index = (unsigned)1;
     SaveOnExit = saveOnExit;
 
     /* Select current player section in the players preferences */
     sprintf(CurrentSection, "%s/%s/%u", HM_SECT_PREF, HM_LIST_DRV, index);
 
     /* Set specified gear changing mode for current player */
-    GearChangeMode = gearChangeMode;
+	GearChangeMode = (*CurrPlayer)->gearChangeMode();
 
     /* Don't recreate screen if already done */
     if (ScrHandle) {

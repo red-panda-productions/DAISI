@@ -15,7 +15,7 @@ public:
 
     int SendData(const char* p_data, int p_size) const;
 
-    void Disconnect();
+    int Disconnect();
 
     ~ClientSocket();
 

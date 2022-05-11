@@ -21,19 +21,14 @@
 
 #include <displayconfig.h>
 #include <monitorconfig.h>
-#include <graphconfig.h>
-#include <advancedgraphconfig.h>
-#include <openglconfig.h>
 #include <soundconfig.h>
-#include <simuconfig.h>
-#include <aiconfig.h>
 
 // SIMULATED DRIVING ASSISTANCE
 #include "ThresholdConfig.h"
 
 #include "optionsmenu.h"
 
-
+ // SIMULATED DRIVING ASSISTANCE: removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
 static void *MenuHandle = NULL;
 
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
@@ -58,40 +53,11 @@ onMonitorMenuActivate(void * /* dummy */)
 
 #endif
 
-static void
-onGraphMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(GraphMenuInit(MenuHandle));
-}
-
-static void
-onAdvancedGraphMenuActivate(void * /*dummy */)
-{
-	GfuiScreenActivate(AdvancedGraphMenuInit(MenuHandle));
-}
-
-static void
-onOpenGLMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(OpenGLMenuInit(MenuHandle));
-}
 
 static void
 onSoundMenuActivate(void * /* dummy */)
 {
     GfuiScreenActivate(SoundMenuInit(MenuHandle));
-}
-
-static void
-onSimuMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(SimuMenuInit(MenuHandle));
-}
-
-static void
-onAIMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(AIMenuInit(MenuHandle));
 }
 
 // SIMULATED DRIVING ASSISTANCE
@@ -100,6 +66,8 @@ static void OnThresholdMenuActivate(void* /* dummy */)
 {
     GfuiScreenActivate(ThresholdConfigMenuInit(MenuHandle));
 }
+
+//SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
 
 void *
 OptionsMenuInit(void *prevMenu)
@@ -119,16 +87,7 @@ OptionsMenuInit(void *prevMenu)
 #else
     GfuiMenuCreateButtonControl(MenuHandle, param, "display", NULL, onDisplayMenuActivate);
 #endif
-    GfuiMenuCreateButtonControl(MenuHandle, param, "graphic", NULL, onGraphMenuActivate);
-//#if _ADVANCED // CMAKE OPTION ADVANCED
-	GfuiMenuCreateButtonControl(MenuHandle, param, "advanced", NULL, onAdvancedGraphMenuActivate);
-//#endif
-
-    GfuiMenuCreateButtonControl(MenuHandle, param, "opengl", NULL, onOpenGLMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, param, "sound", NULL, onSoundMenuActivate);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "simulation", NULL, onSimuMenuActivate);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "ai", NULL, onAIMenuActivate);
-
     // SIMULATED DRIVING ASSISTANCE
     GfuiMenuCreateButtonControl(MenuHandle, param, "Threshold", nullptr, OnThresholdMenuActivate);
 
