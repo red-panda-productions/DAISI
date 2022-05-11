@@ -53,7 +53,19 @@ public:
 TEST_F(DecisionTest, RunInterveneDecisions)
 {
     IndicatorConfig::ClearInstance();
-    tThreshold thresholds = SMediator::GetInstance()->GetThresholdSettings();
+    SMediator* mediator = SMediator::GetInstance();
+
+    // Create Data Directory if not already done.
+    GfSetDataDir( SD_DATADIR_SRC );
+
+    // Test if the mediator returns the right thresholds when it reads from a xml file
+    std::string dstStr("../test_data/test_thresholds_defaults.xml");
+    char buf[512];
+    sprintf(buf, "%s%s", GfDataDir(), dstStr.c_str());
+
+    mediator->SetThresholdSettings(buf);
+    tThreshold thresholds = mediator->GetThresholdSettings();
+
     Random random;
     BrakeDecision brakeDecision;
 
@@ -62,7 +74,7 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     brakeDecision.RunInterveneCommands();
 
     std::cout << "Testing brake...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlBrakeAmount, mediator->CarController.GetBrakeCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
@@ -71,7 +83,7 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     accelDecision.RunInterveneCommands();
 
     std::cout << "Testing accel...";
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlAccelAmount, mediator->CarController.GetAccelCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
@@ -80,13 +92,13 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     steerDecision.RunInterveneCommands();
 
     std::cout << "Testing steer...";
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlSteerAmount, mediator->CarController.GetSteerCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 
     std::cout << "Checking if no value was changed that should not have been changed...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.000001f);
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.000001f);
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlBrakeAmount, mediator->CarController.GetBrakeCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlAccelAmount, mediator->CarController.GetAccelCmd(), 0.000001f);
+    ASSERT_ALMOST_EQ(controlSteerAmount, mediator->CarController.GetSteerCmd(), 0.000001f);
     std::cout << " check" << std::endl;
 }
 

@@ -148,7 +148,7 @@ tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
 template <typename DecisionMaker>
 tThreshold Mediator<DecisionMaker>::SetThresholdSettings(const char* p_filePath)
 {
-    void* paramHandle = GfParmReadFile(p_filePath, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    void* paramHandle = GfParmReadFile(p_filePath, GFPARM_RMODE_REREAD );
 
     m_thresholds;
     m_thresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", STANDARD_THRESHOLD_ACCEL);

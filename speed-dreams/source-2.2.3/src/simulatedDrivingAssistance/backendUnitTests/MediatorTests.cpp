@@ -131,7 +131,7 @@ TEST(MediatorTests, GetThresholdTest)
     std::string path("test_data");
     if (!FindFileDirectory(path, "test_thresholds.xml")) throw std::exception("Can't find test file");
 
-    // Create LocalDir (user settings root) if not already done.
+    // Create Data Directory if not already done.
     GfSetDataDir( SD_DATADIR_SRC );
 
     // Test if the mediator returns the right thresholds when it reads from a xml file
