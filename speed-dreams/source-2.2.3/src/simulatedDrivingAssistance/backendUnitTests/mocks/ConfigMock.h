@@ -36,7 +36,6 @@ public:
 
     void SetAllowedActions(tAllowedActions p_allowedActions)
     {
-
     }
 
     void SetIndicatorSettings(bool* p_indicators)

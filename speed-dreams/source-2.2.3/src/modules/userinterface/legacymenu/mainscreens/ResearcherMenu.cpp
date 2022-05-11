@@ -58,7 +58,7 @@ int m_allowedActionsControl[ALLOWED_ACTIONS_AMOUNT];
 int m_taskControl;
 int m_interventionTypeControl;
 
-// Task
+// Allowed black box actions
 tAllowedActions m_allowedActions;
 
 // Indicators
@@ -93,21 +93,21 @@ char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 int m_applyButton;
 
 /// @brief        Sets the task to the selected one
-/// @param p_info Information on the radio button pressed
+/// @param p_info Information on the checkbox
 static void SelectAllowedSteer(tCheckBoxInfo* p_info)
 {
     m_allowedActions.Steer = p_info->bChecked;
 }
 
 /// @brief        Sets the task to the selected one
-/// @param p_info Information on the radio button pressed
+/// @param p_info Information on the checkbox
 static void SelectAllowedAccelerate(tCheckBoxInfo* p_info)
 {
     m_allowedActions.Accelerate = p_info->bChecked;
 }
 
 /// @brief        Sets the task to the selected one
-/// @param p_info Information on the radio button pressed
+/// @param p_info Information on the checkbox
 static void SelectAllowedBrake(tCheckBoxInfo* p_info)
 {
     m_allowedActions.Brake = p_info->bChecked;

@@ -8,6 +8,8 @@ void BrakeDecision::RunIndicateCommands()
     SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
 }
 
+/// @brief Runs the intervene commands
+/// @param p_allowedActions The allowed black box actions, for determining whether or not the command may be rans
 void BrakeDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
     if (!p_allowedActions.Brake) return;
