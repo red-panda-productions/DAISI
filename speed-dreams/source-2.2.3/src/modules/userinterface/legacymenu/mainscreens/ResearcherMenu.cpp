@@ -341,9 +341,9 @@ static void LoadDefaultSettings()
 static void LoadConfigSettings(void* p_param)
 {
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
-    m_allowedActions.Steer = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_STEER, GFMNU_ATTR_CHECKED, false);
-    m_allowedActions.Accelerate = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_ACCELERATE, GFMNU_ATTR_CHECKED, false);
-    m_allowedActions.Brake = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_BRAKE, GFMNU_ATTR_CHECKED, false);
+    m_allowedActions.Steer = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_STEER, GFMNU_ATTR_CHECKED, true);
+    m_allowedActions.Accelerate = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_ACCELERATE, GFMNU_ATTR_CHECKED, true);
+    m_allowedActions.Brake = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_BRAKE, GFMNU_ATTR_CHECKED, true);
     ;
 
     m_indicators.Audio = GfuiMenuControlGetBoolean(p_param, PRM_INDCTR_AUDITORY, GFMNU_ATTR_CHECKED, false);
