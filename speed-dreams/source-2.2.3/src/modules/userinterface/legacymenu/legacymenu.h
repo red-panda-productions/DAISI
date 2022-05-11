@@ -156,7 +156,7 @@ public:
 	void shutdownGraphicsView();
 	void unloadCarsGraphics();
 	void unloadTrackGraphics();
-	void shutdownSound();
+	void shutdownSound(); 
 
 	//! Load stuff in the background of the splash screen (menus, XML data, ...).
 	static bool backLoad();
