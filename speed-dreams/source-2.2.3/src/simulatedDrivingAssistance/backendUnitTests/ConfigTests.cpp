@@ -179,3 +179,14 @@ void TestBoolArr(bool p_env, bool p_car, bool p_human, bool p_intervention, bool
 BEGIN_TEST_COMBINATORIAL(ConfigTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArr, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
+TEST(ConfigTests, ReplayFolderTest)
+{
+    SDAConfig config;
+
+    char randomPath[64];
+    GenerateRandomCharArray(randomPath, 63);
+
+    config.SetReplayFolder(randomPath);
+    ASSERT_EQ(config.GetReplayFolder(), randomPath);
+}

@@ -4,8 +4,6 @@
 #include <tgf.h>
 #include "../rppUtils/RppUtils.hpp"
 
-namespace filesystem = std::experimental::filesystem;
-
 /// @brief Create a file to record the data to. Truncate if the file already exists.
 /// @param p_recordingsFolder The folder to place the file in
 /// @param p_decisionsRecordingFile  The stream to open the file on
@@ -84,8 +82,7 @@ Recorder::~Recorder()
 /// @param p_indicators           The indicator settings
 /// @param p_interventionType     The intervention type settings
 /// @param p_participantControl   The participant control settings
-/// @param p_replayRecorderOption The replay recorder setting
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const bool& p_replayRecorderOption)
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
@@ -100,13 +97,15 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
 
     GfParmSetNum(settingsFileHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, static_cast<float>(p_interventionType));
 
-    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_FILENAME, p_track->filename);
+    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_CATEGORY, p_track->category);
+    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_NAME, p_track->name);
 
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlGas));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteering));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
-    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION, BoolToString(p_replayRecorderOption));
+
+    GfParmSetNum(settingsFileHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
 
     GfParmWriteFile(nullptr, settingsFileHandle, "Run Settings");
 }
@@ -214,5 +213,115 @@ bool Recorder::CheckSameInput(const float* p_input, const float* p_prevInput, in
     {
         if (p_input[i] != p_prevInput[i]) return false;
     }
+    return true;
+}
+
+/// @brief Update a v0 recording to a v1 recording. This means:
+///  - Convert track filename to category and name
+///  - Change file extensions from txt to bin
+/// @param p_settingsHandle Handle to the run settings file
+/// @param p_userRecordingFile Path to the user recordings file
+/// @param p_decisionsRecordingFile Path to the decision recordings file
+/// @param p_simulationFile Path to the simulation file
+/// @return true if updating was successful
+bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecordingFile, filesystem::path& p_decisionsRecordingFile, filesystem::path& p_simulationFile)
+{
+    const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
+
+    if (trackFileName == nullptr) return false;
+
+    void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+
+    const char* category = strdup(GfParmGetStr(trackHandle, "Header", "category", nullptr));
+    const char* name = strdup(GfParmGetStr(trackHandle, "Header", "name", nullptr));
+
+    GfParmReleaseHandle(trackHandle);
+
+    if (category == nullptr || name == nullptr)
+    {
+        free((void*)category);
+        free((void*)name);
+        return false;
+    }
+
+    GfParmSetStr(p_settingsHandle, PATH_TRACK, KEY_CATEGORY, category);
+    GfParmSetStr(p_settingsHandle, PATH_TRACK, KEY_NAME, name);
+    GfParmRemove(p_settingsHandle, PATH_TRACK, KEY_FILENAME);
+    GfParmRemove(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION);
+    GfParmRemove(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION);
+
+    filesystem::path fixedUserRecordingFile = filesystem::path(p_userRecordingFile).replace_extension(RECORDING_EXTENSION);
+    filesystem::path fixedDecisionsRecordingFile = filesystem::path(p_decisionsRecordingFile).replace_extension(RECORDING_EXTENSION);
+    filesystem::path fixedSimulationFile = filesystem::path(p_simulationFile).replace_extension(RECORDING_EXTENSION);
+
+    filesystem::rename(p_userRecordingFile, fixedUserRecordingFile);
+    filesystem::rename(p_decisionsRecordingFile, fixedDecisionsRecordingFile);
+    filesystem::rename(p_simulationFile, fixedSimulationFile);
+
+    p_userRecordingFile = fixedUserRecordingFile;
+    p_decisionsRecordingFile = fixedDecisionsRecordingFile;
+    p_simulationFile = fixedSimulationFile;
+
+    return true;
+}
+
+/// @brief Validate a recording, and update it if it is an older version
+/// @param p_recordingFolder Folder of the recording to validate and update
+/// @return true if the recording contains all files and could be updated
+bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder)
+{
+    // Make sure the settings file exists
+    const filesystem::path settingsFile = filesystem::path(p_recordingFolder).append(RUN_SETTINGS_FILE_NAME);
+
+    if (!exists(settingsFile))
+    {
+        return false;
+    }
+
+    void* settingsHandle = GfParmReadFile(settingsFile.string().c_str(), 0, true);
+
+    // If it cannot be parsed the recording is invalid
+    if (settingsHandle == nullptr)
+    {
+        return false;
+    }
+
+    // Get the version so the paths can be changed, since v0 paths end in txt and v1+ paths end in bin
+    int version = static_cast<int>(GfParmGetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, 0));
+
+    const filesystem::path carSettingsFile = filesystem::path(p_recordingFolder).append(CAR_SETTINGS_FILE_NAME);
+    filesystem::path decisionsRecordingFile = filesystem::path(p_recordingFolder).append(DECISIONS_RECORDING_FILE_NAME);
+    filesystem::path userRecordingFile = filesystem::path(p_recordingFolder).append(USER_INPUT_RECORDING_FILE_NAME);
+    filesystem::path simulationFile = filesystem::path(p_recordingFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME);
+
+    // Version 0 recording, so use txt paths
+    if (version == 0)
+    {
+        decisionsRecordingFile.replace_extension("txt");
+        userRecordingFile.replace_extension("txt");
+        simulationFile.replace_extension("txt");
+    }
+
+    // Make sure all recordings exists
+    if (!exists(carSettingsFile) || !exists(settingsFile) || !exists(decisionsRecordingFile) || !exists(userRecordingFile) || !exists(simulationFile))
+    {
+        return false;
+    }
+
+    // Update version 0 to version 1 recording
+    if (version == 0)
+    {
+        if (!UpdateV0RecorderToV1(settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile))
+        {
+            GfParmReleaseHandle(settingsHandle);
+            return false;
+        }
+    }
+
+    // Set the recording to the latest version and save it
+    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
+
+    GfParmWriteFile(settingsFile.string().c_str(), settingsHandle, "Run Settings");
+    GfParmReleaseHandle(settingsHandle);
     return true;
 }

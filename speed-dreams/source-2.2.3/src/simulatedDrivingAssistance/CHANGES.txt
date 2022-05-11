@@ -30,6 +30,9 @@ Added:
         DeveloperMenu.cpp
   data/
     data/
+        config/
+            raceman/
+                replay.xml
         img/
             radio-checked.png
             radio-checked-focused.png
@@ -125,6 +128,10 @@ Changed:
         main.cpp
             added singletonfolder setup
             added mediator shut down
+            added replay command line option
+            added HasValidRaceStartArguments()
+
+            changed check to call custom HasValidRaceStartArguments method
     interfaces/
         playerpref.h
             added   HM_ADRV_FILE define
@@ -179,79 +186,83 @@ Changed:
                 added InterventionVolume member
                 added Clamp() helper function
         userinterface/
-            legacymenu.h 
-                ActivateResearcherMenu()
-            legacymenu.cpp
-                included "ResearcherMenu.h"
-                included "DataSelectionMenu.h"
-                added    ActivateResearcherMenu()
-                changed  backLoad()
-                changed  activate()
-            racestopmenu.cpp
-                RmStopRaceMenu()
-                    changed  AssistedHuman is a human
-                    removed controls menu
             legacymenu/
                 CMakeList.txt
-                    added    ResearcherMenu.h and .cpp
-                    added    DataSelectionMenu.h and .cpp
-                    added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                  added    ResearcherMenu.h and .cpp
+                  added    DataSelectionMenu.h and .cpp
+                  added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                legacymenu.h
+                    ActivateResearcherMenu()
+                legacymenu.cpp
+                    included "ResearcherMenu.h"
+                    included "DataSelectionMenu.h"
+                    added    ActivateResearcherMenu()
+                    changed  backLoad()
+                    changed  activate()
                     removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
-                mainscreens/
-                    mainmenu.cpp
-                        included "DataSelectionMenu.h"
-                        removed  <playerconfig.h>
-                        added    GoBack()
-                        changed  MainMenuInit()
-                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
-                        changed  MainMenuInit()
-                    optionsmenu.cpp
-                        removed graphics, advanced graphics, opengl, simulation, ai opponents menu
-                racescreens/
-                    racerunningmenus.cpp
-                        removed RmProgressiveTimeModifier implementation and calls
-                    racestopmenu.cpp
-                        removed rmProgressiveTimeModifier.start() call
-                        removed controlsmenu 
-                    racemanmenu.cpp
-                        included <controlconfig.h> and "mainmenu.h"
-                        removed <playerconfig.h>, <csnetwork.h> and <network.h>
-                        removed networking and go back to main menu
-                        changed rmOnRaceDataChanged()
-                        changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
-                        added   BackToMainMenu()
-                        changed rmRaceManMenu()
-                    racescreens.h
-                        removed networking
-                    raceselectmenu.cpp
-                        changed rmOnActivate()
-                        changed rmOnRaceSelectShutdown()
-                        changed rmOnSelectRaceMan()
-                        changed RmRaceSelectInit()
-                    removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
-                confscreens/
-                    soundconfig.cpp
-                        added ChangeInterventionVolume()
-                        added logic to create new controls for intervention volume and store their data
-                        changed readSoundCfg()
-                    controlconfig 
-                        included <deque>
-                        added static void *PlayerHdle = NULL; from removed playerconfig.cpp
-                        added SkillLevelString from removed playerconfig.cpp
-                        added NbSkillLevels from removed playerconfig.cpp
-                        added NoPlayer from removed playerconfig.cpp
-                        added HumanDriverModuleName from removed playerconfig.cpp
-                        added DefaultCarName from removed playerconfig.cpp
-                        added tInfo from removed playerconfig.cpp
-                        added tPlayerInfo from removed playerconfig.cpp
-                        added tPlayerInfoList from removed playerconfig.cpp
-                        added currPlayer from removed playerconfig.cpp
-                        added Yn[] from removed playerconfig.cpp
-                        added GenPlayerList() from removed playerconfig.cpp
-                        removed parameters in init
-
-                    removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
-
+            mainscreens/
+                mainmenu.cpp
+                    included "DataSelectionMenu.h"
+                    removed  <playerconfig.h>
+                    added    GoBack()
+                    changed  MainMenuInit()
+                    changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
+                    changed  MainMenuInit()
+                optionsmenu.cpp
+                    removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+            racescreens/
+                racestopmenu.cpp
+                    RmStopRaceMenu()
+                    changed  AssistedHuman is a human
+                    removed rmProgressiveTimeModifier.start() call
+                    removed controls menu
+                racerunningmenus.cpp
+                    removed RmProgressiveTimeModifier implementation and calls
+                racemanmenu.cpp
+                    included <controlconfig.h> and "mainmenu.h"
+                    removed <playerconfig.h>, <csnetwork.h> and <network.h>
+                    removed networking and go back to main menu
+                    changed rmOnRaceDataChanged()
+                    changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
+                    added   BackToMainMenu()
+                    changed rmRaceManMenu()
+                racescreens.h
+                    removed networking
+                raceselectmenu.cpp
+                    changed rmOnActivate()
+                    changed rmOnRaceSelectShutdown()
+                    changed rmOnSelectRaceMan()
+                    changed RmRaceSelectInit()
+                removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+            confscreens/
+                soundconfig.cpp
+                    added ChangeInterventionVolume()
+                    added logic to create new controls for intervention volume and store their data
+                    changed readSoundCfg()
+                controlconfig.cpp
+                    added cmd info for intervention toggle on/off to the Cmd[] member variable.
+                    included <deque>
+                    added static void *PlayerHdle = NULL; from removed playerconfig.cpp
+                    added SkillLevelString from removed playerconfig.cpp
+                    added NbSkillLevels from removed playerconfig.cpp
+                    added NoPlayer from removed playerconfig.cpp
+                    added HumanDriverModuleName from removed playerconfig.cpp
+                    added DefaultCarName from removed playerconfig.cpp
+                    added tInfo from removed playerconfig.cpp
+                    added tPlayerInfo from removed playerconfig.cpp
+                    added tPlayerInfoList from removed playerconfig.cpp
+                    added currPlayer from removed playerconfig.cpp
+                    added Yn[] from removed playerconfig.cpp
+                    added GenPlayerList() from removed playerconfig.cpp
+                    removed parameters in init
+                removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
+            textonly/
+                CMakeLists.txt
+                    added backend
+                textonly.cpp
+                    added includes
+                    added LoadReplayConfiguration
+                    changed TextOnlyUI::activate()
         graphic/
             ssggraph/
                 CMakeLists.txt added connection to frontend module
