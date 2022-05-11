@@ -146,9 +146,11 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
     participantControl.ForceFeedback = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, "false"));
     SMediator::GetInstance()->SetPControlSettings(participantControl);
 
-    Task task = 0;
-    // TODO: This will be replaced by allowed blackbox actions
-    SMediator::GetInstance()->SetTask(task);
+    tAllowedActions allowedActions{};
+    allowedActions.Steer = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, "false"));
+    allowedActions.Accelerate = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, "false"));
+    allowedActions.Brake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, "false"));
+    SMediator::GetInstance()->SetAllowedActions(allowedActions);
 
     SMediator::GetInstance()->SetBlackBoxSyncOption(false);
 

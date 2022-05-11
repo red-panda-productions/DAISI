@@ -23,6 +23,7 @@ namespace filesystem = std::experimental::filesystem;
 #define PATH_INTERVENTION_TYPE   "intervention_type"
 #define PATH_INDICATORS          "indicators"
 #define PATH_VERSION             "version"
+#define PATH_ALLOWED_ACTION      "allowed_actions"
 
 #define KEY_INDICATOR_AUDIO "audio"
 #define KEY_INDICATOR_ICON  "icon"
@@ -41,6 +42,10 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_PARTICIPANT_CONTROL_RECORD_SESSION              "record_session"
 #define KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION           "bb_record_session"
 
+#define KEY_ALLOWED_ACTION_STEER      "steer"
+#define KEY_ALLOWED_ACTION_ACCELERATE "accelerate"
+#define KEY_ALLOWED_ACTION_BRAKE      "brake"
+
 #define CURRENT_RECORDER_VERSION 1
 
 #define DECISION_RECORD_PARAM_AMOUNT 4
@@ -51,7 +56,7 @@ class Recorder
 public:
     Recorder(const std::string& p_dirName, const std::string& p_fileName, int p_userParamAmount, int p_simulationDataParamAmount);
     ~Recorder();
-    void WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl);
+    void WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const tAllowedActions& p_allowedActions);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
     void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);
