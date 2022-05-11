@@ -10,7 +10,7 @@
 namespace filesystem = std::experimental::filesystem;
 
 #define BB_FILE       DECISIONS_RECORDING_FILE_NAME
-#define REPLAY_ARG    "--replay "
+#define REPLAY_ARG    "--replay \""
 #define SD_EXTRA_ARGS "--textonly"
 #define BB_ARG        "--bbfile "
 
@@ -40,7 +40,7 @@ void CheckFiles(const filesystem::path& p_path, filesystem::path& p_bbfile)
 std::string GenerateSimulationArguments(const filesystem::path& p_path)
 {
     std::stringstream args;
-    args << SD_EXTRA_ARGS << " " << REPLAY_ARG << p_path;
+    args << SD_EXTRA_ARGS << " " << REPLAY_ARG << p_path << "\"";
 
     return {args.str()};
 }
