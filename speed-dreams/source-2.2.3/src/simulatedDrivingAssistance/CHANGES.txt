@@ -26,6 +26,8 @@ Added:
         ResearcherMenu.cpp
         DataSelectionMenu.h
         DataSelectionMenu.cpp
+        DeveloperMenu.h
+        DeveloperMenu.cpp
   data/
     data/
         img/
@@ -40,6 +42,7 @@ Added:
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
+            DeveloperMenu.xml
     drivers/
         assistedhuman/
             *
