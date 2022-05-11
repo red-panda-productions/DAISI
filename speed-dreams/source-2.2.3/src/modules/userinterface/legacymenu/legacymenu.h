@@ -138,10 +138,6 @@ public:
 	//! Accessor to the sound engine.
 	ISoundEngine* soundEngine();
 
-	//! Determining the exitprotocol
-    void onAcceptExit();
-    void onAcceptRestart();
-
  protected:
 
 	//! Protected constructor to avoid instanciation outside (but friends).

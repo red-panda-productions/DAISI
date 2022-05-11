@@ -43,7 +43,6 @@
 
 #include "legacymenu.h"
 #include "displayconfig.h"
-#include "Mediator.h"
 
 
 // The LegacyMenu singleton.

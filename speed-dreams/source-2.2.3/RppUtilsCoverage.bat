@@ -1,4 +1,0 @@
-@echo off
-            cd /d C:\Users\maikv\Development\Uni\SP\speed-dreams\speed-dreams\source-2.2.3\out\build\x64-Debug\src\simulatedDrivingAssistance\rppUtilsTests
-            "C:/Program Files (x86)/OpenCppCoverage/OpenCppCoverage.exe" --sources=C:\Users\maikv\Development\Uni\SP\speed-dreams\speed-dreams\source-2.2.3\src\simulatedDrivingAssistance\rppUtils --export_type=html:C:\Users\maikv\Development\Uni\SP\speed-dreams\speed-dreams\source-2.2.3\out\build\x64-Debug\src\simulatedDrivingAssistance\rppUtilsTests\RppUtilsCoverage  --excluded_line_regex .*@NOCOVERAGE.* -- C:\Users\maikv\Development\Uni\SP\speed-dreams\speed-dreams\source-2.2.3\out\build\x64-Debug\bin\rppUtilsTests.exe
-            @start C:\Users\maikv\Development\Uni\SP\speed-dreams\speed-dreams\source-2.2.3\out\build\x64-Debug\src\simulatedDrivingAssistance\rppUtilsTests\RppUtilsCoverage\index.html
