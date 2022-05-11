@@ -122,11 +122,11 @@ inline bool SetupSingletonsFolder()
 }
 
 /// @brief Start running a separate executable with no command-line arguments
+///        Should either be an absolute path or relative to the current directory.
+///        Path must include file extension; no default extension is assumed.
+///        Path is assumed to refer to an existing executable file
 /// @param p_executablePath The path to the executable.
 /// @param p_args           The arguments for the executable
-///// Should either be an absolute path or relative to the current directory.
-///// Path must include file extension; no default extension is assumed.
-///// Path is assumed to refer to an existing executable file
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
     // WARNING: This method of starting a process is Windows-exclusive.
