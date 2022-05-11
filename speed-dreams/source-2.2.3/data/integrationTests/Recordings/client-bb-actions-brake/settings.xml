@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE params SYSTEM "params.dtd">
+
+
+<params name="Run Settings">
+  <section name="indicators">
+    <attstr name="audio" val="true"/>
+    <attstr name="icon" val="true"/>
+    <attstr name="text" val="true"/>
+  </section>
+
+  <section name="intervention_type">
+    <attnum name="selected" val="2.000000"/>
+  </section>
+
+  <section name="environment">
+    <section name="track">
+      <attstr name="category" val="road"/>
+      <attstr name="name" val="Test_Highway"/>
+    </section>
+
+  </section>
+
+  <section name="participant_control">
+    <attstr name="control_gas" val="true"/>
+    <attstr name="control_intervention_toggle" val="false"/>
+    <attstr name="control_steering" val="true"/>
+    <attstr name="force_feedback" val="true"/>
+  </section>
+
+  <section name="version">
+    <attnum name="version" val="1.000000"/>
+  </section>
+
+</params>
