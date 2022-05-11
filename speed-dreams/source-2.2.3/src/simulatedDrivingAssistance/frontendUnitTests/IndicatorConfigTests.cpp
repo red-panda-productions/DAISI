@@ -370,6 +370,11 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
                         ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_STEER_NONE);
                 }
             }
+            else 
+            {
+                ASSERT_TRUE(neutral.front().Action == INTERVENTION_ACTION_STEER_NONE);
+                ASSERT_TRUE(neutral.back().Action == INTERVENTION_ACTION_BRAKE_NONE);
+            }
         }
     }
 }
