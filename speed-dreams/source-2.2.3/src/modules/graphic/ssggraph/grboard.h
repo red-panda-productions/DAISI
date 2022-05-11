@@ -22,8 +22,8 @@
 
 #include <plib/ssg.h>
 
-#include <car.h>        // tCarElt
-#include <raceman.h>    // tSituation
+#include <car.h>      // tCarElt
+#include <raceman.h>  // tSituation
 
 class cGrFrameInfo;
 
@@ -34,9 +34,9 @@ class cGrFrameInfo;
 
 class cGrBoard
 {
- protected:
-    int id;     // Board Id
-    const tCarElt* car_;
+protected:
+    int id;  // Board Id
+    const tCarElt *car_;
 
     int debugFlag;
     int boardWidth;
@@ -45,11 +45,11 @@ class cGrBoard
     int rightAnchor;
     int speedoRise;
 
- private:
-    void grDispDebug(const tSituation *s, const cGrFrameInfo* frame);
+private:
+    void grDispDebug(const tSituation *s, const cGrFrameInfo *frame);
     void grDispSplitScreenIndicator();
     void grDrawGauge(tdble X1, tdble Y1, tdble H, float *clr1,
-                        float *clr2, tdble val, const char *title);
+                     float *clr2, tdble val, const char *title);
 
     void grDispCounterBoard2();
 
@@ -58,10 +58,10 @@ class cGrBoard
     void DispNeutralIndicators(tIndicator settings, InterventionType interventionType);
     void DispIndicatorsHelper(tIndicatorData m_indicator, tIndicator settings);
     void DispIndicatorIcon(tTextureData *p_data, ssgSimpleState *p_texture);
-    void DispIndicatorText(tTextData* p_data);
+    void DispIndicatorText(tTextData *p_data);
 
 private:
-    //Dash colour handling
+    // Dash colour handling
     float *normal_color_;
     float *danger_color_;
     float *emphasized_color_;
@@ -69,7 +69,7 @@ private:
 
     void ReadDashColor(void *hdle, const std::string &color_name, float **color);
 
- public:
+public:
     explicit cGrBoard(int myid);
     ~cGrBoard();
 
@@ -78,8 +78,8 @@ private:
     void selectBoard(int brd);
     void setWidth(int width);
 
-    void refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
-                        const tCarElt *currCar, bool isCurrScreen);
+    void refreshBoard(tSituation *s, const cGrFrameInfo *frameInfo,
+                      const tCarElt *currCar, bool isCurrScreen);
     void loadDefaults(const tCarElt *curCar);
 };
 
