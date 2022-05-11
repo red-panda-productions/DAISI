@@ -33,8 +33,9 @@ typedef unsigned int InterventionAction;
 #define INTERVENTION_ACTION_TURN_LEFT  1
 #define INTERVENTION_ACTION_TURN_RIGHT 2
 #define INTERVENTION_ACTION_BRAKE      3
+#define INTERVENTION_ACTION_ACCELERATE 4
 
-#define NUM_INTERVENTION_ACTION 4
+#define NUM_INTERVENTION_ACTION 5
 
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl
@@ -44,8 +45,6 @@ typedef struct ParticipantControl
     bool ControlSteering;
 
     bool ForceFeedback;
-    bool RecordSession;
-    bool BBRecordSession;
 } tParticipantControl;
 
 /// @brief The different types of black boxes
@@ -58,6 +57,12 @@ typedef unsigned int DataStorageType;
 
 #define DATA_STORAGE_TYPE_SOCKET 0
 #define DATA_STORAGE_TYPE_SQL    1
+
+/// @brief The different types of sync between simulation and black box
+typedef unsigned int SyncType;
+
+#define SYNC_SYNCHRONOUS  0
+#define SYNC_ASYNCHRONOUS 1
 
 /// @brief The different types of data that can be stored
 typedef struct DataToStore

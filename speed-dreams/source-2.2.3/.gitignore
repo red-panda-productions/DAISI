@@ -40,3 +40,4 @@ src/simulatedDrivingAssistance/integrationTests/IntegrationTestConfig.h
 
 RppUtilsCoverage.bat
 
+enc_temp_folder

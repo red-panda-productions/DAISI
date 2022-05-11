@@ -265,11 +265,7 @@ void* SoundMenuInit(void *prevMenu)
 
 	void *param = GfuiMenuLoad("soundconfigmenu.xml");
 	GfuiMenuCreateStaticControls(scrHandle, param);
-
-	GfuiMenuCreateButtonControl(scrHandle,param,"soundleftarrow",(void*)-1,changeSoundState);
-	GfuiMenuCreateButtonControl(scrHandle,param,"soundrightarrow",(void*)1,changeSoundState);
-
-	SoundOptionId = GfuiMenuCreateLabelControl(scrHandle,param,"soundlabel");
+    //SIMULATED DRIVING ASSISTANCE: removed sound fx system
 	GfuiMenuCreateButtonControl(scrHandle,param,"ApplyButton",NULL,saveSoundOption);
 	GfuiMenuCreateButtonControl(scrHandle,param,"CancelButton",prevMenu,GfuiScreenActivate);
 
