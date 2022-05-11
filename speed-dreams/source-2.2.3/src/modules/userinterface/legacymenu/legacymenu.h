@@ -121,15 +121,15 @@ public:
 	void redrawGraphicsView(struct Situation* pSituation);
 	void shutdownGraphics(bool bUnloadModule = true);
 
-	// Loading screen management.
+	// Loading Screen management.
 	void activateLoadingScreen();
 	void shutdownLoadingScreen();
 
-	// Optimization screen management.
+	// Optimization Screen management.
 	void activateOptimizationScreen();
 	void shutdownOptimizationScreen();
 
-	//! Game screen management.
+	//! Game Screen management.
 	void activateGameScreen();
 	
 	//! Accessor to the graphics engine.
@@ -158,7 +158,7 @@ public:
 	void unloadTrackGraphics();
 	void shutdownSound(); 
 
-	//! Load stuff in the background of the splash screen (menus, XML data, ...).
+	//! Load stuff in the background of the splash Screen (menus, XML data, ...).
 	static bool backLoad();
 
 	//! Activate the main menu.
@@ -190,7 +190,7 @@ public:
 	//! The "Race Engine update state" hook (a GfuiScreenActivate'able object).
 	void* _hscrReUpdateStateHook;
 	
-	//! The game screen.
+	//! The game Screen.
 	void* _hscrGame;
 
 	//! The graphics state.
