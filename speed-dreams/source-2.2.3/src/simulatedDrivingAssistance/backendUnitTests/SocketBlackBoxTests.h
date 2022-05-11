@@ -180,9 +180,11 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
 
         // tests if the drive situation is expected
         TestDriveSituation(driveSituation4, exampleSituation);
+
+        ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
     }
 
-    ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
+    
 
     // gets a stop command
     ASSERT_DURATION_LE(1, client.AwaitData(buffer, TEST_BUFFER_SIZE));

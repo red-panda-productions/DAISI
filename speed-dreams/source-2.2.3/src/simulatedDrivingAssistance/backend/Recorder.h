@@ -6,18 +6,23 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+namespace filesystem = std::experimental::filesystem;
+
 #include "DecisionTuple.h"
 
-#define USER_INPUT_RECORDING_FILE_NAME      "recording.txt"
-#define DECISIONS_RECORDING_FILE_NAME       "decisions.txt"
+#define RECORDING_EXTENSION ".bin"
+
+#define USER_INPUT_RECORDING_FILE_NAME      "recording" RECORDING_EXTENSION
+#define DECISIONS_RECORDING_FILE_NAME       "decisions" RECORDING_EXTENSION
 #define CAR_SETTINGS_FILE_NAME              "car.xml"
-#define SIMULATION_DATA_RECORDING_FILE_NAME "simulation_data.txt"
+#define SIMULATION_DATA_RECORDING_FILE_NAME "simulation_data" RECORDING_EXTENSION
 #define RUN_SETTINGS_FILE_NAME              "settings.xml"
 
 #define PATH_PARTICIPANT_CONTROL "participant_control"
 #define PATH_TRACK               "environment/track"
 #define PATH_INTERVENTION_TYPE   "intervention_type"
 #define PATH_INDICATORS          "indicators"
+#define PATH_VERSION             "version"
 
 #define KEY_INDICATOR_AUDIO "audio"
 #define KEY_INDICATOR_ICON  "icon"
@@ -25,6 +30,9 @@
 
 #define KEY_SELECTED "selected"
 #define KEY_FILENAME "filename"
+#define KEY_CATEGORY "category"
+#define KEY_NAME     "name"
+#define KEY_VERSION  "version"
 
 #define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
 #define KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE "control_intervention_toggle"
@@ -32,6 +40,8 @@
 #define KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK              "force_feedback"
 #define KEY_PARTICIPANT_CONTROL_RECORD_SESSION              "record_session"
 #define KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION           "bb_record_session"
+
+#define CURRENT_RECORDER_VERSION 1
 
 #define DECISION_RECORD_PARAM_AMOUNT 4
 
@@ -49,13 +59,15 @@ public:
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
+    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder);
+
 private:
     static bool CheckSameInput(const float* p_input, const float* p_prevInput, int p_paramAmount);
 
     std::ofstream m_userInputRecordingFile;
     std::ofstream m_decisionsRecordingFile;
     std::ofstream m_simulationDataRecordingFile;
-    std::experimental::filesystem::path m_recordingDir;
+    filesystem::path m_recordingDir;
     float* m_prevUserInput;
     float* m_prevSimulationData;
     int m_userParamAmount;

@@ -69,6 +69,23 @@ TEST_CASE(MediatorTests, InterventionTestOnlySignals, InterventionTestMediator, 
 TEST_CASE(MediatorTests, InterventionTestSharedControl, InterventionTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
 
+/// @brief                      Tests if the Mediator sets and gets the black box sync option correctly
+/// @param p_blackBoxSyncOption The sync option that needs to be set
+void BlackBoxSyncOptionTestMediator(bool p_blackBoxSyncOption)
+{
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    SDAConfigMediator* mediator = SDAConfigMediator::GetInstance();
+
+    mediator->SetBlackBoxSyncOption(p_blackBoxSyncOption);
+    ASSERT_EQ(p_blackBoxSyncOption, mediator->GetBlackBoxSyncOption());
+
+    DeleteSingletonsFolder();
+}
+
+TEST_CASE(MediatorTests, SyncOptionTestTrue, BlackBoxSyncOptionTestMediator, (true))
+TEST_CASE(MediatorTests, SyncOptionTestFalse, BlackBoxSyncOptionTestMediator, (false))
+
 /// @brief Tests if reading a mediator pointer from a file works
 TEST(MediatorTests, ReadFromFile)
 {
@@ -134,21 +151,21 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, IndicatorSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief Tests if the SDAConfig sets and gets the participant control settings correctly
-/// @param p_intervention Whether to enable participant intervention control
-/// @param p_gas Whether to enable participant gas control
-/// @param p_steer Whether to enable participant steer control
-void PControlTest1Mediator(bool p_intervention, bool p_gas, bool p_steer)
+/// @brief                Tests if the Mediator sets and gets the participant control settings correctly
+/// @param p_intervention Control intervention toggle option
+/// @param p_gas          Control gas option
+/// @param p_steer        Control steering option
+/// @param p_force        Force feedback option
+void PControlTestMediator(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {p_intervention, p_gas, p_steer, NULL, NULL, NULL};
+    tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
-}
 
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination (first 3)
 BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
@@ -167,14 +184,12 @@ void PControlTest2Mediator(bool p_force, bool p_record, bool p_blackboxRecord)
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
-    ASSERT_EQ(arr.RecordSession, pControl.RecordSession);
-    ASSERT_EQ(arr.BBRecordSession, pControl.BBRecordSession);
 }
 
-/// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination (last 3)
-BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings2)
+/// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
+BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest2Mediator, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the Mediator sets and gets the MaxTime correctly
 TEST(MediatorTests, MaxTimeTest)

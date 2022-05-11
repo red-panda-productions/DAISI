@@ -200,6 +200,14 @@ inline const char* BoolToString(const bool p_boolean)
     return p_boolean ? BOOL_TRUE_STRING : BOOL_FALSE_STRING;
 }
 
+/// @brief Convert a string to a boolean
+/// @param p_string The string to convert to a boolean
+/// @return The boolean representing the string value
+inline bool StringToBool(const char* p_string)
+{
+    return strcmp(p_string, BOOL_TRUE_STRING) == 0;
+}
+
 /// @brief Assert the contents of the binary file in filePath match the binary stream contents
 #define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
     {                                                                        \
