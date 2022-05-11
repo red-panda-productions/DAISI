@@ -190,3 +190,14 @@ TEST(ConfigTests, ReplayFolderTest)
     config.SetReplayFolder(randomPath);
     ASSERT_EQ(config.GetReplayFolder(), randomPath);
 }
+
+void SaveRaceToDatabaseTestConf(bool p_save)
+{
+    SDAConfig config;
+
+    config.SetSaveToDatabaseCheck(p_save);
+    ASSERT_EQ(p_save, config.GetSaveToDatabaseCheck());
+}
+
+TEST_CASE(ConfigTests, SaveDataToDatabase, SaveRaceToDatabaseTestConf, (true))
+TEST_CASE(ConfigTests, DontSaveDataToDatabase, SaveRaceToDatabaseTestConf, (false))
