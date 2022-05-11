@@ -5,11 +5,7 @@
 #include "Mediator.inl"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
-#include <sys/types.h>
-#include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-#include "../rppUtils/RppUtils.hpp"
 #include <experimental/filesystem>
 
 namespace filesystem = std::experimental::filesystem;
@@ -136,7 +132,7 @@ TEST(MediatorTests, GetThresholdTest)
     sprintf(buf, "%s%s", GfDataDir(), dstStr.c_str());
     void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
-    Thresholds xmlThresholds;
+    tThreshold xmlThresholds;
     xmlThresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", 0);
     xmlThresholds.Brake = GfParmGetNum(paramHandle, "Threshold Settings", "Brake", "%", 0);
     xmlThresholds.Steer = GfParmGetNum(paramHandle, "Threshold Settings", "Steer", "%", 0);
