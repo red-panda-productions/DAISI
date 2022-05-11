@@ -66,7 +66,7 @@ public:
         return m_userID;
     }
 
-    bool GetSyncOption() const
+    bool GetBlackBoxSyncOption() const
     {
         return m_asyncConnection;
     }

@@ -20,6 +20,8 @@ public:
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
     void SetPControlSettings(tParticipantControl p_pControl);
+    void SetReplayRecorderSetting(bool p_replayRecorderOn);
+    void SetBlackBoxSyncOption(bool p_sync);
 
     void SetMaxTime(int p_maxTime);
     void SetUserId(char* p_userId);
@@ -28,9 +30,14 @@ public:
 
     void SetBlackBoxFilePath(const char* p_filePath);
 
+    void SetReplayFolder(const filesystem::path& p_replayFolder);
+    const filesystem::path& GetReplayFolder() const;
+
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
+    bool GetReplayRecorderSetting();
+    bool GetBlackBoxSyncOption();
 
     static Mediator* GetInstance();
 #ifdef TEST
@@ -38,6 +45,11 @@ public:
     {
         delete m_instance;
         m_instance = nullptr;
+    }
+
+    DecisionMaker* GetDecisionMaker()
+    {
+        return &m_decisionMaker;
     }
 #endif
 
