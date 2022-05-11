@@ -15,7 +15,8 @@
 
   <section name="environment">
     <section name="track">
-      <attstr name="filename" val="tracks/circuit/espie/espie.xml"/>
+      <attstr name="category" val="circuit"/>
+      <attstr name="name" val="Espie"/>
     </section>
 
   </section>
@@ -25,8 +26,10 @@
     <attstr name="control_intervention_toggle" val="false"/>
     <attstr name="control_steering" val="true"/>
     <attstr name="force_feedback" val="true"/>
-    <attstr name="record_session" val="true"/>
-    <attstr name="bb_record_session" val="true"/>
+  </section>
+
+  <section name="version">
+    <attnum name="version" val="1.000000"/>
   </section>
 
 </params>
