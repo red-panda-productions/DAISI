@@ -1,4 +1,4 @@
-<params name="Prius" type="template">
+<params name="Primo" type="template">
 	
 	<section name="Features">
 		<attstr name="enable abs" in="yes,no" val="yes"/>
@@ -19,17 +19,17 @@
 	</section>
 	
 	<section name="Sound">
-		<attstr name="engine sample" val="prius.wav"/>
+		<attstr name="engine sample" val="primo.wav"/>
 		<attnum name="rpm scale" val="0.7"/>
 	</section>
 	
 	<section name="Graphic Objects">
-		<attstr name="env" val="prius.acc"/>
+		<attstr name="env" val="primo.acc"/>
 		<attstr name="shadow texture" val="shadow.png"/>
-		<attstr name="tachometer texture" val="Prius-rpm.png"/>
+		<attstr name="tachometer texture" val="primo-rpm.png"/>
 		<attnum name="tachometer min value" unit="rpm" val="0"/>
 		<attnum name="tachometer max value" unit="rpm" val="10000"/>
-		<attstr name="speedometer texture" val="Prius-speed.png"/>
+		<attstr name="speedometer texture" val="primo-speed.png"/>
 		<attnum name="speedometer min value" unit="km/h" val="0"/>
 		<attnum name="speedometer max value" unit="km/h" val="360"/>
 		<attnum name="needle red" val="1.0"/>
@@ -39,7 +39,7 @@
 		<section name="Ranges">
 			<section name="1">
 				<attnum name="threshold" val="0"/>
-				<attstr name="car" val="prius.acc"/>
+				<attstr name="car" val="primo.acc"/>
 				<attstr name="wheels" val="yes"/>
 			</section>
 		</section>
