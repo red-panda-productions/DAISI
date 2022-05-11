@@ -20,18 +20,26 @@ TEST_CASE(ConfigTests, InterventionTypeTestOnlySignals, InterventionTypeTest, (I
 TEST_CASE(ConfigTests, InterventionTypeTestSharedControl, InterventionTypeTest, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(ConfigTests, InterventionTypeTestCompleteTakeover, InterventionTypeTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
 
-/// @brief        Tests if the SDAConfig sets and gets the task correctly
-/// @param p_task The task to test for
-void TaskTest(Task p_task)
+/// @brief              Tests if the SDAConfig sets and gets the allowed actions correctly
+/// @param p_steer      Whether the black box can steer
+/// @param p_accelerate Whether the black box can give gas
+/// @param p_brake      Whether the black box can brake
+void AllowedActionsTestConfig(bool p_steer, bool p_accelerate, bool p_brake)
 {
     SDAConfig config;
+    tAllowedActions allowedActionsSet = {p_steer, p_accelerate, p_brake};
+    config.SetAllowedActions(allowedActionsSet);
 
-    config.SetTask(p_task);
-    ASSERT_EQ(p_task, config.GetTask());
+    tAllowedActions allowedActionsGet = config.GetAllowedActions();
+    ASSERT_EQ(p_steer, allowedActionsGet.Steer);
+    ASSERT_EQ(p_accelerate, allowedActionsGet.Accelerate);
+    ASSERT_EQ(p_brake, allowedActionsGet.Brake);
 }
 
-TEST_CASE(ConfigTests, TaskTestsLaneKeeping, TaskTest, (TASK_LANE_KEEPING))
-TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
+/// @brief Tests the SDAConfig allowed actions for every possible combination
+BEGIN_TEST_COMBINATORIAL(ConfigTests, AllowedActions)
+bool booleans[] = {false, true};
+END_TEST_COMBINATORIAL3(AllowedActionsTestConfig, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
 /// @param p_audio Whether to enable the audio option

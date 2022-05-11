@@ -115,19 +115,26 @@ TEST_CASE(MediatorTests, InterventionTypeTestOnlySignals, InterventionTypeTestMe
 TEST_CASE(MediatorTests, InterventionTypeTestSharedControl, InterventionTypeTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
 
-/// @brief        Tests if the Mediator sets and gets the task correctly
-/// @param p_task The task to test for
-void TaskTestMediator(Task p_task)
+/// @brief              Tests if the mediator sets and gets the allowed actions correctly
+/// @param p_steer      Whether the black box can steer
+/// @param p_accelerate Whether the black box can give gas
+/// @param p_brake      Whether the black box can brake
+void AllowedActionsTestMediator(bool p_steer, bool p_accelerate, bool p_brake)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    SDAConfigMediator::GetInstance()->SetTask(p_task);
-    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-    ASSERT_EQ(p_task, config.GetTask());
+    tAllowedActions allowedActionsSet = {p_steer, p_accelerate, p_brake};
+    SDAConfigMediator::GetInstance()->SetAllowedActions(allowedActionsSet);
+    tAllowedActions allowedActionsGet = SDAConfigMediator::GetInstance()->GetAllowedActions();
+    ASSERT_EQ(p_steer, allowedActionsGet.Steer);
+    ASSERT_EQ(p_accelerate, allowedActionsGet.Accelerate);
+    ASSERT_EQ(p_brake, allowedActionsGet.Brake);
 }
 
-TEST_CASE(MediatorTests, TaskTestsLaneKeeping, TaskTestMediator, (TASK_LANE_KEEPING))
-TEST_CASE(MediatorTests, TaskTestsSpeedControl, TaskTestMediator, (TASK_SPEED_CONTROL))
+/// @brief Tests the Mediator allowed actions for every possible combination
+BEGIN_TEST_COMBINATORIAL(MediatorTests, AllowedActions)
+bool booleans[] = {false, true};
+END_TEST_COMBINATORIAL3(AllowedActionsTestMediator, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
 /// @param p_audio Whether to enable the audio option

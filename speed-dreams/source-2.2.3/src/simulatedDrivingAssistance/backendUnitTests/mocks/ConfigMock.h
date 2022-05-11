@@ -34,8 +34,9 @@ public:
         return m_dataToStore;
     }
 
-    void SetTask(Task p_task)
+    void SetAllowedActions(tAllowedActions p_allowedActions)
     {
+
     }
 
     void SetIndicatorSettings(bool* p_indicators)

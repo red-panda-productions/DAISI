@@ -16,7 +16,7 @@ public:
     void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
 
-    void SetTask(Task p_task);
+    void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
     void SetPControlSettings(tParticipantControl p_pControl);
@@ -30,6 +30,7 @@ public:
 
     void SetBlackBoxFilePath(const char* p_filePath);
 
+    tAllowedActions GetAllowedActions();
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
