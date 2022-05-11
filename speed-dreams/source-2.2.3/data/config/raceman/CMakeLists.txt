@@ -1,7 +1,6 @@
 INCLUDE(../../../cmake/macros.cmake)
 
-SET(_RACE_FILES practice.xml quickrace.xml
-    singleevent-challenge.xml singleevent-endurance.xml)
+SET(_RACE_FILES quickrace.xml)
 
 SD_INSTALL_FILES(DATA config/raceman USER config/raceman FILES ${_RACE_FILES})
 

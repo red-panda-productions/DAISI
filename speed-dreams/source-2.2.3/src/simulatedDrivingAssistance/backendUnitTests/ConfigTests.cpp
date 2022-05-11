@@ -34,12 +34,13 @@ TEST_CASE(ConfigTests, TaskTestsLaneKeeping, TaskTest, (TASK_LANE_KEEPING))
 TEST_CASE(ConfigTests, TaskTestsSpeedControl, TaskTest, (TASK_SPEED_CONTROL))
 
 /// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
-/// @param p_bool1 First bool
-/// @param p_bool2 Second bool
-void IndicatorTest(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @param p_audio Whether to enable the audio option
+/// @param p_icon  Whether to enable the icon option
+/// @param p_text  Whether to enable the text option
+void IndicatorTest(bool p_audio, bool p_icon, bool p_text)
 {
     SDAConfig config;
-    tIndicator arr = {p_bool1, p_bool2, p_bool3};
+    tIndicator arr = {p_audio, p_icon, p_text};
     config.SetIndicatorSettings(arr);
     tIndicator indicator = config.GetIndicatorSettings();
     ASSERT_EQ(arr.Audio, indicator.Audio);
@@ -52,45 +53,40 @@ BEGIN_TEST_COMBINATORIAL(ConfigTests, IndicatorSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the SDAConfig sets and gets the participant control settings correctly
-/// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest1(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @brief                Tests if the SDAConfig sets and gets the participant control settings correctly
+/// @param p_intervention Whether to enable participant intervention control
+/// @param p_gas          Whether to enable participant gas control
+/// @param p_steer        Whether to enable participant steer control
+/// @param p_force        Whether to enable force feedback
+void PControlTest(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_bool1, p_bool2, p_bool3, NULL, NULL, NULL};
+    tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
+    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
 BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest1, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the SDAConfig sets and gets the other pControl settings correctly
-/// @param p_bool1 First  bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third  bool
-void PControlTest2(bool p_bool1, bool p_bool2, bool p_bool3)
+/// @brief                   Tests if the SDAConfig sets and gets the replay recorder status correctly
+/// @param p_recorderSetting The recorder setting
+void RecorderSettingTest(bool p_recorderSetting)
 {
     SDAConfig config;
-    tParticipantControl arr = {NULL, NULL, NULL, p_bool1, p_bool2, p_bool3};
-    config.SetPControlSettings(arr);
-    tParticipantControl pControl = config.GetPControlSettings();
-    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
-    ASSERT_EQ(arr.RecordSession, pControl.RecordSession);
-    ASSERT_EQ(arr.BBRecordSession, pControl.BBRecordSession);
+    config.SetReplayRecorderSetting(p_recorderSetting);
+    ASSERT_EQ(p_recorderSetting, config.GetReplayRecorderSetting());
 }
 
-/// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (last 3)
-BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings2)
-bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest2, booleans, 2, booleans, 2, booleans, 2)
+/// @brief Tests the SDAConfig recorder settings
+TEST_CASE(ConfigTests, RecorderSettingTestTrue, RecorderSettingTest, (true))
+TEST_CASE(ConfigTests, RecorderSettingTestFalse, RecorderSettingTest, (false))
 
 /// @brief Tests if the SDAConfig sets and gets the MaxTime correctly
 TEST(ConfigTests, MaxTimeTest)
@@ -150,16 +146,26 @@ TEST(ConfigTests, BlackBoxFilePathTest)
     }
 }
 
-/// @brief         Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
-/// @param p_bool1 First bool
-/// @param p_bool2 Second bool
-/// @param p_bool3 Third bool
-/// @param p_bool4 Fourth bool
-/// @param p_bool5 Fifth bool
-void TestBoolArr(bool p_bool1, bool p_bool2, bool p_bool3, bool p_bool4, bool p_bool5)
+void BlackBoxSyncOptionTestConfig(bool p_sync)
 {
     SDAConfig config;
-    tDataToStore arr = {p_bool1, p_bool2, p_bool3, p_bool4, p_bool5};
+    config.SetBlackBoxSyncOption(p_sync);
+    ASSERT_EQ(p_sync, config.GetBlackBoxSyncOption());
+}
+
+TEST_CASE(ConfigTests, BlackBoxSyncOptionTestAsync, BlackBoxSyncOptionTestConfig, (true))
+TEST_CASE(ConfigTests, BlackBoxSyncOptionTestSync, BlackBoxSyncOptionTestConfig, (false))
+
+/// @brief                Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
+/// @param p_env          The environment data setting
+/// @param p_car          The car data setting
+/// @param p_human        The human data setting
+/// @param p_intervention The intervention data setting
+/// @param p_meta         The meta data setting
+void TestBoolArr(bool p_env, bool p_car, bool p_human, bool p_intervention, bool p_meta)
+{
+    SDAConfig config;
+    tDataToStore arr = {p_env, p_car, p_human, p_intervention, p_meta};
     config.SetDataCollectionSettings(arr);
     tDataToStore dataToStore = config.GetDataCollectionSetting();
     ASSERT_EQ(arr.EnvironmentData, dataToStore.EnvironmentData);
@@ -174,14 +180,13 @@ BEGIN_TEST_COMBINATORIAL(ConfigTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArr, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
-void SyncOptionTest(bool p_syncOption)
+TEST(ConfigTests, ReplayFolderTest)
 {
     SDAConfig config;
 
-    config.SetSyncOption(p_syncOption);
+    char randomPath[64];
+    GenerateRandomCharArray(randomPath, 63);
 
-    ASSERT_EQ(config.GetSyncOption(), p_syncOption);
+    config.SetReplayFolder(randomPath);
+    ASSERT_EQ(config.GetReplayFolder(), randomPath);
 }
-
-TEST_CASE(ConfigTests, SyncOptionTrueTest, SyncOptionTest, (true))
-TEST_CASE(ConfigTests, SyncOptionFalseTest, SyncOptionTest, (false))

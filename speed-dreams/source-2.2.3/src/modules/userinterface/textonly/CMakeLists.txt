@@ -13,7 +13,7 @@ ENDIF(OPTION_CLIENT_SERVER)
 
 #INCLUDE_DIRECTORIES(.)
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata ${NETWORKING_INC})
+ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata ${NETWORKING_INC} backend)
 ADD_PLIB_INCLUDEDIR()
 
 IF(OPTION_SDL2)
@@ -45,6 +45,6 @@ SD_ADD_LIBRARY(textonly MODULE ${_SOURCES} ${_HEADERS})
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose) 
 #SET_TARGET_PROPERTIES(textonly PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)
 
-ADD_SDLIB_LIBRARY(textonly portability tgf tgfclient tgfdata ${NETWORKING_LIB})
+ADD_SDLIB_LIBRARY(textonly portability tgf tgfclient tgfdata ${NETWORKING_LIB} backend)
 
 SD_INSTALL_FILES(LIB modules/userinterface TARGETS textonly)
