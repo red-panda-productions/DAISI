@@ -19,8 +19,9 @@
 
 /// @brief				 Tests if the decision maker can be initialized
 /// @param  p_decisionMaker the decision maker that will be initialized
-void InitializeTest(TDecisionMaker& p_decisionMaker)
+void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 {
+    GfInit(false);
     tCarElt car;
     tSituation situation;
     situation.deltaTime = 108;
@@ -34,18 +35,29 @@ void InitializeTest(TDecisionMaker& p_decisionMaker)
 
     RecorderMock* recorder = new RecorderMock;
 
-    std::string findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
-    std::cout << SD_DATADIR_SRC << std::endl;
     chdir(SD_DATADIR_SRC);
-    ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
-    findfilepath.append("\\blackbox.exe");
+
+    std::string findfilepath;
+    if (p_emptyPath)
+    {
+        findfilepath = "";
+    }
+    else
+    {
+        findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
+        ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
+        findfilepath.append("\\blackbox.exe");
+    }
+
     p_decisionMaker.Initialize(0, &car, &situation, &track, findfilepath, recorder);
 
     BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    ASSERT_TRUE(storage->EnvironmentVersion == track.version);
+    if(!p_emptyPath) {
+        ASSERT_TRUE(storage->EnvironmentVersion == track.version);
+    }
     ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
@@ -55,6 +67,13 @@ TEST(DecisionMakerTests, InitializeTest)
 {
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
+}
+
+/// @brief Runs the initialize test function with empty path
+TEST(DecisionMakerTests, InitializeTestEmpty)
+{
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker, true);
 }
 
 /// @brief				 Tests if a decision can be made
