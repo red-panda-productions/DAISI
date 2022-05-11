@@ -616,9 +616,8 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         tIndicator indicatorSettings = mediator->GetIndicatorSettings();
         InterventionType interventionType = mediator->GetInterventionType();
         tParticipantControl participantControlSettings = mediator->GetPControlSettings();
-        bool replayRecorderOption = mediator->GetReplayRecorderSetting();
 
-        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, replayRecorderOption);
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings);
     }
     const int idx = index - 1;
 

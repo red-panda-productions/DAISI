@@ -30,6 +30,9 @@ public:
 
     void SetBlackBoxFilePath(const char* p_filePath);
 
+    void SetReplayFolder(const filesystem::path& p_replayFolder);
+    const filesystem::path& GetReplayFolder() const;
+
     tAllowedActions GetAllowedActions();
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();

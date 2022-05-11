@@ -59,6 +59,12 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
     BlackBoxData initialData(p_initialCar, p_initialSituation, p_initialTickCount, nullptr, 0);
     BlackBox.Initialize(Config.GetBlackBoxSyncOption(), initialData, p_testSituations, p_testAmount);
 
+    if (p_blackBoxExecutablePath.empty())
+    {
+        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!");
+        return;
+    }
+
     std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();
