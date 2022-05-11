@@ -67,7 +67,7 @@ rmSkipSessionHookActivate(void * /* dummy */)
     LmRaceEngine().skipRaceSession();
 }
 
-static void *pvSkipSessionHookHandle = 0;
+static void *pvSkipSessionHookHandle = nullptr;
 
 static void *
 rmSkipSessionHookInit()
@@ -89,13 +89,13 @@ rmBackToRaceHookActivate(void * /* dummy */)
     //      But beware of the other hooks ...
     LmRaceEngine().inData()->_reState = RE_STATE_RACE;
 
-    // Back to the race screen in next display loop.
+    // Back to the race Screen in next display loop.
     LegacyMenu::self().activateGameScreen();
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
 }
 
-static void *pvBackToRaceHookHandle = 0;
+static void *pvBackToRaceHookHandle = nullptr;
 
 void *
 RmBackToRaceHookInit()
@@ -107,7 +107,7 @@ RmBackToRaceHookInit()
 }
 
 // Restart race hook ***************************************************
-static void *pvRestartRaceHookHandle = 0;
+static void *pvRestartRaceHookHandle = nullptr;
 
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
@@ -156,7 +156,7 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
     GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
 }
 
-static void *pvForceFeedbackConfigHookHandle = 0;
+static void *pvForceFeedbackConfigHookHandle = nullptr;
 
 static void *
 rmForceFeedbackConfigHookInit()
@@ -191,21 +191,21 @@ rmQuitHookInit()
 
 // 2, 3, 4 or 5 buttons "Stop race" menu *******************************
 
-static void *QuitHdle[6] = {0, 0, 0, 0, 0, 0};
+static void *QuitHdle[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 
 // Descriptor for 1 button.
 typedef struct
 {
-    const char *role;  // Button role.
-    void *screen;      // Screen to activate if clicked.
+    const char *Role;  // Button Role.
+    void *Screen;      // Screen to activate if clicked.
 
 } tButtonDesc;
 
 // Generic function for creating and activating the menu.
 static void *
-rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
+rmStopRaceMenu(const tButtonDesc p_aButtons[], int p_nButtons, int p_nCancelIndex)
 {
-    // Create screen, load menu XML descriptor and create static controls.
+    // Create Screen, load menu XML descriptor and create static controls.
     hscreen = GfuiScreenCreate(NULL, NULL, NULL, NULL, NULL, 1);
 
     void *hmenu = GfuiMenuLoad("stopracemenu.xml");
@@ -218,19 +218,19 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
     int ypos = (int)GfuiMenuGetNumProperty(hmenu, "yTopButton", 380);
     char pszPropName[64];
     const char *pszCancelTip = "";
-    for (int nButInd = 0; nButInd < nButtons; nButInd++)
+    for (int nButInd = 0; nButInd < p_nButtons; nButInd++)
     {
-        // Get text and tip from button role and menu properties.
-        sprintf(pszPropName, "%s.text", aButtons[nButInd].role);
+        // Get text and tip from button Role and menu properties.
+        sprintf(pszPropName, "%s.text", p_aButtons[nButInd].Role);
         const char *pszText = GfuiMenuGetStrProperty(hmenu, pszPropName, "");
-        sprintf(pszPropName, "%s.tip", aButtons[nButInd].role);
+        sprintf(pszPropName, "%s.tip", p_aButtons[nButInd].Role);
         const char *pszTip = GfuiMenuGetStrProperty(hmenu, pszPropName, "");
-        if (nButInd == nCancelIndex)
+        if (nButInd == p_nCancelIndex)
             pszCancelTip = pszTip;
 
         // Create the button from the template.
         GfuiMenuCreateTextButtonControl(hscreen, hmenu, "button",
-                                        aButtons[nButInd].screen, GfuiScreenActivate, 0, 0, 0,
+                                        p_aButtons[nButInd].Screen, GfuiScreenActivate, nullptr, nullptr, nullptr,
                                         true,  // From template.
                                         pszText, pszTip, xpos, ypos);
 
@@ -241,12 +241,12 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
     // Register keyboard shortcuts.
     GfuiMenuDefaultKeysAdd(hscreen);
     GfuiAddKey(hscreen, GFUIK_ESCAPE, pszCancelTip,
-               aButtons[nCancelIndex].screen, GfuiScreenActivate, NULL);
+               p_aButtons[p_nCancelIndex].Screen, GfuiScreenActivate, NULL);
 
     // Close menu XML descriptor.
     GfParmReleaseHandle(hmenu);
 
-    // Activate the created screen.
+    // Activate the created Screen.
     GfuiScreenActivate(hscreen);
 
     return hscreen;
@@ -254,25 +254,25 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
 
 // Simpler front-end function for creating and activating the menu.
 static void *
-rmStopRaceMenu(const char *buttonRole1, void *screen1,
-               const char *buttonRole2, void *screen2,
-               const char *buttonRole3 = 0, void *screen3 = 0,
-               const char *buttonRole4 = 0, void *screen4 = 0,
-               const char *buttonRole5 = 0, void *screen5 = 0,
-               const char *buttonRole6 = 0, void *screen6 = 0)
+rmStopRaceMenu(const char *p_buttonRole1, void *p_screen1,
+               const char *p_buttonRole2, void *p_screen2,
+               const char *p_buttonRole3 = nullptr, void *p_screen3 = nullptr,
+               const char *buttonRole4 = nullptr, void *screen4 = nullptr,
+               const char *buttonRole5 = nullptr, void *screen5 = nullptr,
+               const char *p_buttonRole6 = nullptr, void *p_screen6 = nullptr)
 {
     const tButtonDesc aButtons[6] =
         {
-            {buttonRole1, screen1},
-            {buttonRole2, screen2},
-            {buttonRole3, screen3},
+            {p_buttonRole1, p_screen1},
+            {p_buttonRole2, p_screen2},
+            {p_buttonRole3, p_screen3},
             {buttonRole4, screen4},
             {buttonRole5, screen5},
-            {buttonRole6, screen6},
+            {p_buttonRole6, p_screen6},
         };
 
     int nButtons = 2;
-    if (buttonRole3 && screen3)
+    if (p_buttonRole3 && p_screen3)
     {
         nButtons++;
         if (buttonRole4 && screen4)
@@ -281,7 +281,7 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
             if (buttonRole5 && screen5)
             {
                 nButtons++;
-                if (buttonRole6 && screen6)
+                if (p_buttonRole6 && p_screen6)
                 {
                     nButtons++;
                 }
@@ -334,7 +334,7 @@ void RmStopRaceMenu()
     for (i = 0; i < 6; i++)
     {
         buttonRole[i] = "";
-        screen[i] = NULL;
+        screen[i] = nullptr;
     }
 
     // Build list of options
@@ -361,7 +361,7 @@ void RmStopRaceMenu()
     j = (int)GfParmGetNum(grHandle, GR_SCT_DISPMODE, GR_ATT_CUR_SCREEN, NULL, 0.0);
     snprintf(buf, sizeof(buf), "%s/%d", GR_SCT_DISPMODE, j);
     cur_name = GfParmGetStr(grHandle, buf, GR_ATT_CUR_DRV, "not found");
-    GfLogInfo("Current driver (on active split screen) is '%s'\n", cur_name);
+    GfLogInfo("Current driver (on active split Screen) is '%s'\n", cur_name);
 
     // Attempt to find a human driver
     for (j = 0;; j++)
@@ -401,7 +401,7 @@ void RmStopRaceMenu()
 void RmStopRaceMenuShutdown()
 {
     GfuiHookRelease(pvAbortRaceHookHandle);
-    pvAbortRaceHookHandle = 0;
+    pvAbortRaceHookHandle = nullptr;
 
     GfuiHookRelease(pvSkipSessionHookHandle);
     pvSkipSessionHookHandle = 0;

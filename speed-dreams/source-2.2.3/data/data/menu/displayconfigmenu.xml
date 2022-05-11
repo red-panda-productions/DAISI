@@ -28,7 +28,7 @@
 	<section name="ScreenSizeCombo">
 		<attstr name="type" val="combo box"/>	  	  	  	  	  
 		<attnum name="max len" val="11"/>
-		<attstr name="tip" val="Select your screen / window size (width x height, in pixels)"/>
+		<attstr name="tip" val="Select your Screen / window size (width x height, in pixels)"/>
 		<attnum name="x" val="270"/>
 		<attnum name="y" val="318"/>
 		<attnum name="width" val="220"/>
@@ -62,7 +62,7 @@
 	<section name="DisplayModeCombo">
 		<attstr name="type" val="combo box"/>	  	  	  	  	  
 		<attnum name="max len" val="15"/>
-		<attstr name="tip" val="Select full-screen or windowed display mode"/>
+		<attstr name="tip" val="Select full-Screen or windowed display mode"/>
 		<attnum name="x" val="270"/>
 		<attnum name="y" val="258"/>
 		<attnum name="width" val="220"/>

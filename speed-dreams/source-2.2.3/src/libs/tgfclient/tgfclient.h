@@ -829,7 +829,7 @@ class TGFCLIENT_API GfuiEventLoop : public GfEventLoop
     //! Set the "redisplay/refresh" callback function.
     void setRedisplayCB(void (*func)(void));
 
-    //! Set the "reshape" callback function with given new screen/window geometry.
+    //! Set the "reshape" callback function with given new Screen/window geometry.
     void setReshapeCB(void (*func)(int width, int height));
 
     //! Post a "redisplay/refresh" event to the event loop.
@@ -887,7 +887,7 @@ class TGFCLIENT_API GfuiApplication : public GfApplication
     //! Parse the command line options (updates _lstOptionsLeft).
     bool parseOptions();
 
-    //! Setup the window / screen (+ menu infrastructure if specified) (with given size specs if >= 0, or from screen.xml).
+    //! Setup the window / Screen (+ menu infrastructure if specified) (with given size specs if >= 0, or from Screen.xml).
     bool setupWindow(bool bNoMenu = false, int nWinWidth = -1, int nWinHeight = -1, int nFullScreen = -1);
 
     //! Application event loop.

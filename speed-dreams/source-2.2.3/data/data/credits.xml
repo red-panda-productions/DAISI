@@ -37,7 +37,7 @@
 				  <attstr name="name" val="Main contributions"/>
 				  <attnum name="width" val="430"/>
 			  </section>
-			  <section name="role">
+			  <section name="Role">
 				  <attstr name="name" val="Role"/>
 				  <attnum name="width" val="170"/>
 			  </section>
@@ -50,85 +50,85 @@
 			  <section name="0">
 				  <attstr name="name" val="Lars de Kwant"/>
 				  <attstr name="contribs" val="Frontend"/>
-				  <attstr name="role" val="Chairman"/>
+				  <attstr name="Role" val="Chairman"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="1">
 				  <attstr name="name" val="Kayleigh Lieverse"/>
 				  <attstr name="contribs" val="Analysis"/>
-				  <attstr name="role" val="Scrum Master"/>
+				  <attstr name="Role" val="Scrum Master"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="2">
 				  <attstr name="name" val="Meagan Loerakker"/>
 				  <attstr name="contribs" val="Analysis"/>
-				  <attstr name="role" val="Product Owner"/>
+				  <attstr name="Role" val="Product Owner"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="3">
 				  <attstr name="name" val="Sietze Riemersma"/>
 				  <attstr name="contribs" val="Backend"/>
-				  <attstr name="role" val="Chief of Code"/>
+				  <attstr name="Role" val="Chief of Code"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="4">
 				  <attstr name="name" val="Nout Heesink"/>
 				  <attstr name="contribs" val="Backend"/>
-				  <attstr name="role" val="Qualtity Inspector"/>
+				  <attstr name="Role" val="Qualtity Inspector"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="5">
 				  <attstr name="name" val="Stefan Hoekzema"/>
 				  <attstr name="contribs" val="Frontend, Backend"/>
-				  <attstr name="role" val="UX-Researcher"/>
+				  <attstr name="Role" val="UX-Researcher"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="6">
 				  <attstr name="name" val="Gerjan Lugtenburg"/>
 				  <attstr name="contribs" val="Frontend"/>
-				  <attstr name="role" val="Chief of Code"/>
+				  <attstr name="Role" val="Chief of Code"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="7">
 				  <attstr name="name" val="Sjoerd Schilder"/>
 				  <attstr name="contribs" val="frontend"/>
-				  <attstr name="role" val="Chief of Artists"/>
+				  <attstr name="Role" val="Chief of Artists"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="8">
 				  <attstr name="name" val="Maik Vink"/>
 				  <attstr name="contribs" val="Analysis"/>
-				  <attstr name="role" val="Shadow Scrum Master"/>
+				  <attstr name="Role" val="Shadow Scrum Master"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="9">
 				  <attstr name="name" val="Ian Gerritse"/>
 				  <attstr name="contribs" val="Analysis"/>
-				  <attstr name="role" val="Chief of Report"/>
+				  <attstr name="Role" val="Chief of Report"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="10">
 				  <attstr name="name" val="Lucas Disseldorp"/>
 				  <attstr name="contribs" val="Analysis"/>
-				  <attstr name="role" val="Shadow Chairman"/>
+				  <attstr name="Role" val="Shadow Chairman"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="11">
 				  <attstr name="name" val="Mina Spijk"/>
 				  <attstr name="contribs" val="Analysis"/>
-				  <attstr name="role" val="Quality Inspector Reports"/>
+				  <attstr name="Role" val="Quality Inspector Reports"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="12">
 				  <attstr name="name" val="Cas Alderhout"/>
 				  <attstr name="contribs" val="Highway Environment, Car, Intervention Icons"/>
-				  <attstr name="role" val="Artist"/>
+				  <attstr name="Role" val="Artist"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 			  <section name="13">
 				  <attstr name="name" val="Eva van Kessel"/>
 				  <attstr name="contribs" val="Menu UI, Intervention Icons"/>
-				  <attstr name="role" val="Artist"/>
+				  <attstr name="Role" val="Artist"/>
 				  <attstr name="web" val="https://github.com/red-panda-productions/speed-dreams"/>
 			  </section>
 		  </section>
@@ -147,7 +147,7 @@
 			<attstr name="name" val="Main contributions"/>
 			<attnum name="width" val="430"/>
         </section>
-        <section name="role">
+        <section name="Role">
 			<attstr name="name" val="Role"/>
 			<attnum name="width" val="170"/>
         </section>
@@ -161,91 +161,91 @@
         <section name="0">
           <attstr name="name" val="Andrew Sumner"/>
           <attstr name="contribs" val="SC, 36GP, LS1 and LS2 cars sets, USR robot, Corkscrew track, 3D graphics"/>
-          <attstr name="role" val="Artist, Developer"/>
+          <attstr name="Role" val="Artist, Developer"/>
           <attstr name="web" val="http://sites.google.com/site/torcscreations"/>
         </section>
         <section name="1">
           <attstr name="name" val="Daniel Schellhammer"/>
           <attstr name="contribs" val="DanDroid robot"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="web" val="http://sites.google.com/site/torcscreations"/>
         </section>
         <section name="2">
           <attstr name="name" val="Eckhard M. Jaeger"/>
           <attstr name="contribs" val="Game house-style, Web site, HQ reworks of many tracks and cars"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="web" val="http://my.opera.com/area42"/>
         </section>
         <section name="3">
           <attstr name="name" val="Enrico Mattea (aka Ocirne)"/>
           <attstr name="contribs" val="Tests, Track preview images"/>
-          <attstr name="role" val="Tester"/>
+          <attstr name="Role" val="Tester"/>
           <attstr name="web" val=""/>
         </section>
         <section name="4">
           <attstr name="name" val="Gabor Kmetyko (aka Kilo)"/>
           <attstr name="contribs" val="Corkscrew &amp; Salty &amp; oval tracks #1, new leaderboard modes, Kilo2008 robot"/>
-          <attstr name="role" val="Developer, Artist"/>
+          <attstr name="Role" val="Developer, Artist"/>
           <attstr name="web" val="http://dev-kilo.blogspot.com"/>
         </section>
         <section name="5">
           <attstr name="name" val="Haruna Say"/>
           <attstr name="contribs" val="LS-GT1 setups, sounds and skins, MP5 setups and skins, Rally Series setups"/>
-          <attstr name="role" val="Artist, Car tuner"/>
+          <attstr name="Role" val="Artist, Car tuner"/>
           <attstr name="web" val="http://gtratomixsearch.deviantart.com"/>
         </section>
 	<section name="6">
           <attstr name="name" val="Joe Thompson"/>
           <attstr name="contribs" val="Tests, Release management, SF.net admin"/>
-          <attstr name="role" val="Developer, Moderator"/>
+          <attstr name="Role" val="Developer, Moderator"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
 	<section name="7">
           <attstr name="name" val="Julien Schaffo"/>
           <attstr name="contribs" val="3D Modeler, cars setups"/>
-          <attstr name="role" val="Developer, Moderator"/>
+          <attstr name="Role" val="Developer, Moderator"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
         <section name="8">
           <attstr name="name" val="Kristof Kaly-Kullai"/>
           <attstr name="contribs" val="Simu V4, Rework of all car setups towards realism"/>
-          <attstr name="role" val="Physicist, Developer"/>
+          <attstr name="Role" val="Physicist, Developer"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
 	<section name="9">
           <attstr name="name" val="MadBad"/>
           <attstr name="contribs" val="WebServer, gradual time acceleration on race resume"/>
-          <attstr name="role" val="Tester, Developer"/>
+          <attstr name="Role" val="Tester, Developer"/>
           <attstr name="web" val=""/>
         </section>
 	<section name="10">
           <attstr name="name" val="Ney Candido da Silva Ribeiro (aka Auradrummer)"/>
           <attstr name="contribs" val="LS2 Skins"/>
-          <attstr name="role" val="Artist, Tester"/>
+          <attstr name="Role" val="Artist, Tester"/>
           <attstr name="web" val="http://speed-dreams.org"/>
         </section>
         <section name="11">
           <attstr name="name" val="Simon Wood (aka Mungewell)"/>
           <attstr name="contribs" val="Board enhancements, Input Devices, Tests"/>
-          <attstr name="role" val="Developer, Tester"/>
+          <attstr name="Role" val="Developer, Tester"/>
           <attstr name="web" val="http://speed-dreams.org"/>
         </section>
 	<section name="12">
           <attstr name="name" val="Tom Low-Shang"/>
           <attstr name="contribs" val="Migrate human and networkhuman in share code, network"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="web" val=""/>
         </section>
         <section name="13">
           <attstr name="name" val="Wolf-Dieter Beelitz"/>
           <attstr name="contribs" val="Simplix robot, Migrants track, Robots API enhancements"/>
-          <attstr name="role" val="Developer, Artist"/>
+          <attstr name="Role" val="Developer, Artist"/>
           <attstr name="web" val="http://www.simplix.wdbee-aorp.de"/>
         </section>
         <section name="14">
           <attstr name="name" val="Xavier Bertaux"/>
           <attstr name="contribs" val="Art work management, Weather simulation, SF.net admin"/>
-          <attstr name="role" val="Moderator, Artist, Developer"/>
+          <attstr name="Role" val="Moderator, Artist, Developer"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
       </section>
@@ -264,7 +264,7 @@
           <attstr name="name" val="Main contributions"/>
           <attnum name="width" val="430"/>
         </section>
-        <section name="role">
+        <section name="Role">
           <attstr name="name" val="Role"/>
           <attnum name="width" val="170"/>
         </section>
@@ -278,109 +278,109 @@
         <section name="0">
           <attstr name="name" val="APR-Torcs (aka Manfariel)"/>
           <attstr name="contribs" val="Goldstone-Sand track, Tests"/>
-          <attstr name="role" val="Artist, Car Tuner, Tester"/>
+          <attstr name="Role" val="Artist, Car Tuner, Tester"/>
           <attstr name="web" val="http://apr-free.info/joomla/index.php/forsim-torcs"/>
 		</section>
 		<section name="1">
 		  <attstr name="name" val="Benjamin Piller"/>
 		  <attstr name="contribs" val="Menu music tracks"/>
-		  <attstr name="role" val="Musician Artist"/>
+		  <attstr name="Role" val="Musician Artist"/>
 		  <attstr name="web" val=""/>
 		</section>
         <section name="2">
           <attstr name="name" val="Brian Gavin"/>
           <attstr name="contribs" val="Initial OSG port, CMake build system, XML menus, Experimental online racing"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
         <section name="3">
           <attstr name="name" val="Chad3000"/>
           <attstr name="contribs" val="3D graphics"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="web" val=""/>
         </section>
         <section name="4">
           <attstr name="name" val="Christos Dimitrakakis"/>
           <attstr name="contribs" val="Advices on all physics-related subjects"/>
-          <attstr name="role" val="Consultant"/>
+          <attstr name="Role" val="Consultant"/>
           <attstr name="web" val="http://www.idiap.ch/~dimitrak/Main.html"/>
         </section>
         <section name="5">
           <attstr name="name" val="Dario Badagnani (aka DaFeBa)"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="LS1 Newscastle Fury standard livery"/>
           <attstr name="web" val=""/>
         </section>
         <section name="6">
           <attstr name="name" val="Eugen Treise"/>
-          <attstr name="role" val="Tester"/>
+          <attstr name="Role" val="Tester"/>
           <attstr name="contribs" val="XSLT for result formatting, testing"/>
           <attstr name="web" val=""/>
         </section>
         <section name="7">
           <attstr name="name" val="Filipe Lopes"/>
           <attstr name="contribs" val="Ubuntu packages"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="web" val=""/>
         </section>
         <section name="8">
           <attstr name="name" val="Jaime Vives Piqueres"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="HQ lighting expertise, Showroom track for car previews"/>
           <attstr name="web" val="http://www.ignorancia.org"/>
         </section>
 		<section name="9">
           <attstr name="name" val="Jean-Philippe Meuret"/>
           <attstr name="contribs" val="Code architecture, Multi-threading"/>
-          <attstr name="role" val="Developer, Moderator"/>
+          <attstr name="Role" val="Developer, Moderator"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
         <section name="10">
           <attstr name="name" val="Jan Ullmann"/>
-          <attstr name="role" val="Sound expert"/>
+          <attstr name="Role" val="Sound expert"/>
           <attstr name="contribs" val="HQ rework of most sound samples (except most car specific ones)"/>
           <attstr name="web" val="http://www.audioberlin.com"/>
         </section>
         <section name="11">
           <attstr name="name" val="Jurgen Schuessler"/>
-          <attstr name="role" val="Tester"/>
+          <attstr name="Role" val="Tester"/>
           <attstr name="contribs" val="Testing cars and tracks"/>
           <attstr name="web" val=""/>
         </section>
         <section name="12">
           <attstr name="name" val="Kennet Eriksson"/>
           <attstr name="contribs" val="Test drive, Car setups analysis"/>
-          <attstr name="role" val="Test driver"/>
+          <attstr name="Role" val="Test driver"/>
           <attstr name="web" val=""/>
         </section>
 	<section name="13">
           <attstr name="name" val="Mart Kelder"/>
           <attstr name="contribs" val="Whole code management, Career racing mode, CMake build system"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="web" val="http://www.speed-dreams.org"/>
         </section>
         <section name="14">
           <attstr name="name" val="Sebastian Heni"/>
           <attstr name="contribs" val="Tests"/>
-          <attstr name="role" val="Artist, Tester"/>
+          <attstr name="Role" val="Artist, Tester"/>
           <attstr name="web" val="http://seba.yolasite.com"/>
         </section>
         <section name="15">
           <attstr name="name" val="Uwe Kadritzke"/>
           <attstr name="contribs" val="36 GP board meters, Tests"/>
-          <attstr name="role" val="Artist, Tester"/>
+          <attstr name="Role" val="Artist, Tester"/>
           <attstr name="web" val="http://uwe.kadritzke.de"/>
         </section>
         <section name="16">
           <attstr name="name" val="Vicente Marti"/>
           <attstr name="contribs" val="Tests, WIP MP1 cars, TCSE updates for SD"/>
-          <attstr name="role" val="Artist, Tester"/>
+          <attstr name="Role" val="Artist, Tester"/>
           <attstr name="web" val="http://www.vmarti.es"/>
         </section>
         <section name="17">
           <attstr name="name" val="W-E-C"/>
           <attstr name="contribs" val="Car 3D models updates / fixes"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="web" val=""/>
         </section>
       </section>
@@ -541,7 +541,7 @@
           <attstr name="name" val="Main contributions"/>
           <attnum name="width" val="430"/>
         </section>
-        <section name="role">
+        <section name="Role">
           <attstr name="name" val="Role"/>
           <attnum name="width" val="170"/>
         </section>
@@ -554,163 +554,163 @@
       <section name="records">
         <section name="0">
           <attstr name="name" val="Eric Espie"/>
-          <attstr name="role" val="Torcs co-creator"/>
+          <attstr name="Role" val="Torcs co-creator"/>
           <attstr name="contribs" val="Game creation"/>
           <attstr name="web" val="http://www.torcs.org"/>
         </section>
         <section name="1">
           <attstr name="name" val="Christophe Guionneau"/>
-          <attstr name="role" val="Torcs co-creator"/>
+          <attstr name="Role" val="Torcs co-creator"/>
           <attstr name="contribs" val="Game creation"/>
           <attstr name="web" val="http://www.torcs.org"/>
         </section>
         <section name="2">
           <attstr name="name" val="Bernhard Wymann"/>
-          <attstr name="role" val="Project leader"/>
+          <attstr name="Role" val="Project leader"/>
           <attstr name="contribs" val="Project / whole code management, Torcs Racing Board, BerniW robot"/>
           <attstr name="web" val="http://www.berniw.org"/>
         </section>
         <section name="3">
           <attstr name="name" val="Christos Dimitrakakis"/>
-          <attstr name="role" val="Developer, Artist"/>
+          <attstr name="Role" val="Developer, Artist"/>
           <attstr name="contribs" val="Physics engines, cameras, sound code, samples, tracks, Olethros robot"/>
           <attstr name="web" val="http://www.idiap.ch/~dimitrak/Main.html"/>
         </section>
         <section name="4">
           <attstr name="name" val="Remi Coulom"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="contribs" val="K1999 robot"/>
           <attstr name="web" val="http://www.torcs.org"/>
         </section>
         <section name="5">
           <attstr name="name" val="Charalampos Alexopoulos"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="contribs" val="Track Editor project, TrackGen improvement"/>
           <attstr name="web" val="http://katergo.rege.org/projects/trackeditor"/>
         </section>
         <section name="6">
           <attstr name="name" val="Patrice Espie"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="contribs" val="Windows port of version 0.0.21, Track Editor components"/>
           <attstr name="web" val="http://www.torcs.org"/>
         </section>
         <section name="7">
           <attstr name="name" val="Eliam SpeedyChonChon"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Open Wheel Car, reworked cars, tracks, Torcs Drivers Championship"/>
           <attstr name="web" val="http://speedy.chonchon.free.fr"/>
         </section>
         <section name="8">
           <attstr name="name" val="Olaf Sassnick"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Reworked and new cars"/>
           <attstr name="web" val="http://0laf.0l.funpic.de"/>
         </section>
         <section name="9">
           <attstr name="name" val="Thierry Thomas"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="contribs" val="FreeBSD package, testing and bugfixes"/>
           <attstr name="web" val=""/>
         </section>
         <section name="10">
           <attstr name="name" val="Eugen Treise"/>
-          <attstr name="role" val="Tester"/>
+          <attstr name="Role" val="Tester"/>
           <attstr name="contribs" val="XSLT for result formatting, testing"/>
           <attstr name="web" val=""/>
         </section>
         <section name="11">
           <attstr name="name" val="Andrew Sumner"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="New/reworked tracks and cars. MacOS X port"/>
           <attstr name="web" val="http://sites.google.com/site/torcscreations"/>
         </section>
         <section name="12">
           <attstr name="name" val="Mart Kelder"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="contribs" val="Bugfixing"/>
           <attstr name="web" val=""/>
         </section>
         <section name="13">
           <attstr name="name" val="Christophe Macours"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Sound samples"/>
           <attstr name="web" val="http://users.belgacom.net/samples"/>
         </section>
         <section name="14">
           <attstr name="name" val="Andrea Alfieri"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Alfa Romeo 155 V6 Ti DTM car model"/>
           <attstr name="web" val=""/>
         </section>
         <section name="15">
           <attstr name="name" val="Asdas Asda (ViPeR)"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Viper, XJ-220, Acura NSX, Lotus GT1, McLaren F1"/>
           <attstr name="web" val=""/>
         </section>
         <section name="16">
           <attstr name="name" val="Patrick Wisselo"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="PW rally cars set"/>
           <attstr name="web" val=""/>
         </section>
         <section name="17">
           <attstr name="name" val="Matthias Friederike"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Matt's tracks"/>
           <attstr name="web" val="http://www.friederikematthias.de/matthias/torcs"/>
         </section>
         <section name="18">
           <attstr name="name" val="Bernhard Kaindl"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="contribs" val="SuSE package (and a lot of help)"/>
           <attstr name="web" val=""/>
         </section>
         <section name="19">
           <attstr name="name" val="Gernot Galli"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="contribs" val="Debian package"/>
           <attstr name="web" val=""/>
         </section>
         <section name="20">
           <attstr name="name" val="Henrik Enqvist"/>
-          <attstr name="role" val="Developer"/>
+          <attstr name="Role" val="Developer"/>
           <attstr name="contribs" val="In-code profiler"/>
           <attstr name="web" val=""/>
         </section>
         <section name="21">
           <attstr name="name" val="Per Ovind Karlsen"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="contribs" val="Mandrake package"/>
           <attstr name="web" val=""/>
         </section>
         <section name="22">
           <attstr name="name" val="Matthias Saou"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="contribs" val="RedHat package"/>
           <attstr name="web" val=""/>
         </section>
         <section name="23">
           <attstr name="name" val="Neil Winton"/>
-          <attstr name="role" val="Packager"/>
+          <attstr name="Role" val="Packager"/>
           <attstr name="contribs" val="Torcs 1.2.1 Windows package"/>
           <attstr name="web" val=""/>
         </section>
         <section name="24">
           <attstr name="name" val="Butch - K/Cendra"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="KC 60's cars"/>
           <attstr name="web" val=""/>
         </section>
         <section name="25">
           <attstr name="name" val="Vincent Moyet"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="Race cars"/>
           <attstr name="web" val=""/>
         </section>
         <section name="26">
           <attstr name="name" val="Jean-Christophe Durieu"/>
-          <attstr name="role" val="Artist"/>
+          <attstr name="Role" val="Artist"/>
           <attstr name="contribs" val="McLaren F1, Acura NSX, Lotus GT1, buggies, skins, logos, drawings "/>
           <attstr name="web" val=""/>
         </section>

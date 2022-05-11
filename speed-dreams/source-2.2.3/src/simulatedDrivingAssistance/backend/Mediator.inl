@@ -221,6 +221,7 @@ void Mediator<DecisionMaker>::RaceStop()
     m_inRace = false;
 }
 
+/// @brief Tells the decionmaker that the experiment data should be saved or not.
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetSaveRaceToDatabase(bool p_saveToDatabase)
 {

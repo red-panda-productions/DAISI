@@ -36,31 +36,31 @@ class GfRace;
 typedef struct RmTrackSelect
 {
 	GfRace      *pRace; /* The race to update */
-    void        *prevScreen;	/* Race manager screen to go back */
-    void        *nextScreen;	/* Race manager screen to go after select */
+    void        *prevScreen;	/* Race manager Screen to go back */
+    void        *nextScreen;	/* Race manager Screen to go after select */
     ITrackLoader	*piTrackLoader;	/* Track loader */
 } tRmTrackSelect;
 
 typedef struct RmDriverSelect
 {
 	GfRace      *pRace; /* The race to update */
-    void        *prevScreen;	/* Race manager screen to go back */
-    void        *nextScreen;	/* Race manager screen to go after select */
+    void        *prevScreen;	/* Race manager Screen to go back */
+    void        *nextScreen;	/* Race manager Screen to go after select */
 } tRmDriverSelect;
 
 typedef struct RmRaceParam
 {
 	GfRace          *pRace; /* The race to update */
     std::string		session; /* The race session to configure (RM_VAL_ANYRACE for all of them) */
-    void        	*prevScreen;	/* Race manager screen to go back */
-    void        	*nextScreen;	/* Race manager screen to go after select */
+    void        	*prevScreen;	/* Race manager Screen to go back */
+    void        	*nextScreen;	/* Race manager Screen to go after select */
 } tRmRaceParam;
 #ifdef CLIENT_SERVER
 typedef struct RmNetworkSetting
 {
 	GfRace      *pRace; /* The race to update */
-    void        *prevScreen;	/* Race manager screen to go back */
-    void        *nextScreen;	/* Race manager screen to go after select */
+    void        *prevScreen;	/* Race manager Screen to go back */
+    void        *nextScreen;	/* Race manager Screen to go after select */
 } tRmNetworkSetting;
 #endif
 

@@ -73,7 +73,7 @@
 #define TRK_ATT_BGCLR_B             "background color B"
 
 #define TRK_SECT_TRACKLIGHTS        "Track Lights"
-#define TRK_ATT_ROLE                "role"
+#define TRK_ATT_ROLE                "Role"
 #define TRK_SECT_TOPLEFT            "topleft"
 #define TRK_SECT_BOTTOMRIGHT        "bottomright"
 #define TRK_ATT_X                   "x"

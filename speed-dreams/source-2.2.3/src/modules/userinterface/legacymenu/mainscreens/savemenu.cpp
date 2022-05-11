@@ -60,23 +60,3 @@ void *SaveMenuInit(void *p_prevMenu, int p_saveWayVersion)
 
     return MenuHandle;
 }
-
-void *SaveMenuInitRestart(void *prevMenu)
-{
-    if (MenuHandle)
-    {
-        GfuiScreenRelease(MenuHandle);
-    }
-
-    MenuHandle = GfuiScreenCreate();
-
-    void *param = GfuiMenuLoad("savemenu.xml");
-    GfuiMenuCreateStaticControls(MenuHandle, param);
-
-    GfParmReleaseHandle(param);
-
-    GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", prevMenu, GfuiScreenActivate, nullptr);
-
-    return MenuHandle;
-}

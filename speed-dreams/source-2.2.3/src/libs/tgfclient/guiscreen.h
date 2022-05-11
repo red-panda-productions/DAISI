@@ -18,7 +18,7 @@
  ***************************************************************************/
  
 /** @file    
-    		Constants for screen / Open GL features config file
+    		Constants for Screen / Open GL features config file
     @author	<a href=mailto:torcs@free.fr>Eric Espie</a>
     @version	$Id: guiscreen.h 5917 2015-03-22 18:47:51Z torcs-ng $
 */
@@ -26,7 +26,7 @@
 #ifndef _GUISCREEN_H_
 #define _GUISCREEN_H_
 
-#define GFSCR_CONF_FILE                             "config/screen.xml"
+#define GFSCR_CONF_FILE                             "config/Screen.xml"
 
 #define GFSCR_SECT_VALIDPROPS                       "Validated Screen Properties"
 #define GFSCR_SECT_INTESTPROPS                      "In-Test Screen Properties"
@@ -35,7 +35,7 @@
 #define GFSCR_ATT_WIN_X                             "window width"
 #define GFSCR_ATT_WIN_Y                             "window height"
 #define GFSCR_ATT_MAXREFRESH                        "maximum refresh frequency"
-#define GFSCR_ATT_FSCR                              "full-screen"
+#define GFSCR_ATT_FSCR                              "full-Screen"
 #define GFSCR_VAL_YES                               "yes"
 #define GFSCR_VAL_NO                                "no"
 #define GFSCR_ATT_GAMMA                             "gamma"
