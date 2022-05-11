@@ -70,7 +70,7 @@ void CheckProcess(PROCESS_INFORMATION p_processInformation)
     CloseHandle(p_processInformation.hProcess);
     CloseHandle(p_processInformation.hThread);
 
-    ASSERT_EQ(exitCode,0);
+    ASSERT_EQ(exitCode, 0);
 
     // extra exit codes can be added here
 }

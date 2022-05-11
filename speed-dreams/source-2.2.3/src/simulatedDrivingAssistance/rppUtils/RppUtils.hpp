@@ -162,7 +162,7 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
     // Inherit handles is not necessary for our use case and is thus false.
 
     LPCSTR workingDirectory = nullptr;
-    if (p_workingDirectory != "")
+    if (!p_workingDirectory.empty())
     {
         workingDirectory = p_workingDirectory.c_str();
     }
