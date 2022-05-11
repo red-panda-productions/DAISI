@@ -43,7 +43,7 @@ onRestartAccept(void * /* dummy */)
     LmRaceEngine().restartRace();
 }
 
-void* SaveMenuInit(void *prevMenu)
+void* SaveMenuInit(void *prevMenu, int p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -54,9 +54,24 @@ void* SaveMenuInit(void *prevMenu)
 
     void *param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onAcceptExit);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInit(MenuHandle), GfuiScreenActivate);
-
+    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
+    switch (p_saveWayVersion)
+    {
+        case EXIT:
+        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onAcceptExit);
+            break;
+        }
+        case RESTART:
+        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onRestartAccept);
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in conformationmenu.h?");
+        }
+    }
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
@@ -76,8 +91,7 @@ void *SaveMenuInitRestart(void *prevMenu)
 
     void *param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onRestartAccept);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInitRestart(MenuHandle), GfuiScreenActivate);
+
 
     GfParmReleaseHandle(param);
 

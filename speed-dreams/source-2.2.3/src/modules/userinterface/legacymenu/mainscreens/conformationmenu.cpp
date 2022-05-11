@@ -36,13 +36,13 @@ onAcceptExit(void * /* dummy */)
 }
 
 static void
-onRestartExit(void * /* dummy */)
+onAcceptRestart(void * /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().restartRace();
 }
 
-void *ConformationMenuInit(void *prevMenu)
+void *ConformationMenuInit(void *prevMenu, int p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -53,6 +53,24 @@ void *ConformationMenuInit(void *prevMenu)
 
     void *param = GfuiMenuLoad("conformationmenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
+    switch (p_saveWayVersion)
+    {
+        case EXIT:
+        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", NULL, onAcceptExit);
+            break;
+        }
+        case RESTART:
+        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", NULL, onAcceptRestart);
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in conformationmenu.h?");
+        }
+
+    }
     GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", NULL, onAcceptExit);
     GfuiMenuCreateButtonControl(MenuHandle, param, "waitdontdelete", prevMenu, GfuiScreenActivate);
 
@@ -64,24 +82,3 @@ void *ConformationMenuInit(void *prevMenu)
     return MenuHandle;
 }
 
-void *ConformationMenuInitRestart(void *prevMenu)
-{
-    if (MenuHandle)
-    {
-        GfuiScreenRelease(MenuHandle);
-    }
-
-    MenuHandle = GfuiScreenCreate();
-
-    void *param = GfuiMenuLoad("conformationmenu.xml");
-    GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", NULL, onRestartExit);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "waitdontdelete", prevMenu, GfuiScreenActivate);
-
-    GfParmReleaseHandle(param);
-
-    GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", prevMenu, GfuiScreenActivate, NULL);
-
-    return MenuHandle;
-}

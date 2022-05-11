@@ -29,7 +29,7 @@
 			<attstr name="type" val="text button"/>
 			<attstr name="show box" val="no"/>
 			<attstr name="text" val="Delete the experiment file"/>
-			<attstr name="tip" val="Save the experiment data to the external database"/>
+			<attstr name="tip" val="delete the experiment data. WARNING: THIS CANNOT BE UNDONE!"/>
 			<attnum name="x" val="260"/>
 			<attnum name="y" val="290"/>
 			<attnum name="width" val="320"/>
@@ -51,7 +51,7 @@
 			<attstr name="type" val="text button"/>
 			<attstr name="show box" val="no"/>
 			<attstr name="text" val="Wait, don't delete the data"/>
-			<attstr name="tip" val="delete the experiment data created"/>
+			<attstr name="tip" val="return to the previous screen"/>
 			<attstr name="h align" val="left"/>
 			<attnum name="x" val="260"/>
 			<attnum name="y" val="258"/>

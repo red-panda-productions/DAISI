@@ -497,18 +497,6 @@ void LegacyMenu::onRaceFinishing()
     }
 }
 
-void LegacyMenu::onAcceptExit()
-{
-    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
-    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
-    LegacyMenu::self().quit();
-}
-
-void LegacyMenu::onAcceptRestart()
-{
-
-}
-
 bool LegacyMenu::onRaceFinished(bool bEndOfSession)
 {
     tRmInfo* pReInfo = _piRaceEngine->inData();

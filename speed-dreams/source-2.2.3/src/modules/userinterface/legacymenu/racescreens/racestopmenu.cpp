@@ -115,7 +115,7 @@ static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
     if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInitRestart(pvRestartRaceHookHandle));
+        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, 1));
 
     //LmRaceEngine().restartRace();
 }
@@ -218,8 +218,8 @@ static void	*rmStopScrHandle = 0;
 static void
 rmQuitHookActivate(void * /* dummy */)
 {
-    if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle));
+    if (rmStopScrHandle) 
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, 2));
 }
 
 static void	*pvQuitHookHandle = 0;

@@ -20,7 +20,9 @@
 #ifndef _CONFORMATIONMENU_H_
 #define _CONFORMATIONMENU_H_
 
-extern void* ConformationMenuInit(void* prevMenu);
-extern void* ConformationMenuInitRestart(void* prevMenu);
+extern void* ConformationMenuInit(void* prevMenu, int p_saveWayVersion);
 
 #endif /* _CONFORMATIONMENU_H_ */
+
+#define RESTART 1
+#define EXIT    2

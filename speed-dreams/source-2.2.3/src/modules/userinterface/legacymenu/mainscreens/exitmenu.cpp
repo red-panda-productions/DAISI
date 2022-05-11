@@ -26,13 +26,12 @@
 #include "mainmenu.h"
 
 
-static void *MenuHandle = NULL;
 
-static void 
+static void
 onAcceptExit(void * /* dummy */)
 {
-	LmRaceEngine().abortRace(); // Do cleanup to get back correct setup files
-	LegacyMenu::self().quit();
+    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
+    LegacyMenu::self().quit();
 }
 
 /*
@@ -49,32 +48,11 @@ onAcceptExit(void * /* dummy */)
  *	The menu handle
  *
  * Remarks
- *	
+ *
  */
+static void *MenuHandle = NULL;
 
-void* ExitMenuInit(void *prevMenu)
-{
-    if (MenuHandle) {
-		GfuiScreenRelease(MenuHandle);
-    }
-
-    MenuHandle = GfuiScreenCreate();
-
-    void *param = GfuiMenuLoad("exitmenu.xml");
-
-    GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", SaveMenuInit(MenuHandle), GfuiScreenActivate);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
-
-    GfParmReleaseHandle(param);
-    
-    GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", prevMenu, GfuiScreenActivate, NULL);
-
-    return MenuHandle;
-}
-
-void* ExitMenuInitNoRace(void *prevMenu)
+void *ExitMenuInit(void *prevMenu, bool p_raceExit, int saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -86,8 +64,17 @@ void* ExitMenuInitNoRace(void *prevMenu)
     void *param = GfuiMenuLoad("exitmenu.xml");
 
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+    if (p_raceExit)
+    {
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", SaveMenuInit(MenuHandle, saveWayVersion), GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+    }
+    else
+    {
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+    }
+
 
     GfParmReleaseHandle(param);
 
