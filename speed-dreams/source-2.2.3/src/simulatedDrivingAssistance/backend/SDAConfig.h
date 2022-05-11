@@ -21,6 +21,7 @@ private:
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
     bool m_asyncConnection = true;
+    bool m_replayRecorderOn = false;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -38,6 +39,9 @@ public:
     void SetPControlSettings(tParticipantControl p_pControl);
     tParticipantControl GetPControlSettings() const;
 
+    void SetReplayRecorderSetting(bool p_replayRecorderOn);
+    bool GetReplayRecorderSetting() const;
+
     void SetMaxTime(int p_maxTime);
     int GetMaxTime() const;
 
@@ -49,6 +53,6 @@ public:
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType GetInterventionType() const;
 
-    void SetSyncOption(bool p_asyncConnection);
-    bool GetSyncOption() const;
+    void SetBlackBoxSyncOption(bool p_asyncConnection);
+    bool GetBlackBoxSyncOption() const;
 };
