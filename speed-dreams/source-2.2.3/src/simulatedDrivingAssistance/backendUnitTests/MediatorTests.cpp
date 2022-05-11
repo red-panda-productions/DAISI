@@ -99,22 +99,6 @@ TEST(MediatorTests, ReadFromFile)
     DeleteSingletonsFolder();
 }
 
-/// @brief                    Tests if the Mediator sets and gets the interventionType correctly from SDAConfig
-/// @param p_interventionType The interventionType to test for
-void InterventionTypeTestMediator(InterventionType p_interventionType)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
-    const InterventionType it = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Type;
-    ASSERT_EQ(p_interventionType, it);
-}
-
-TEST_CASE(MediatorTests, InterventionTypeTestNoSignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_NO_SIGNALS))
-TEST_CASE(MediatorTests, InterventionTypeTestOnlySignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
-TEST_CASE(MediatorTests, InterventionTypeTestSharedControl, InterventionTypeTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
-TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
-
 /// @brief              Tests if the mediator sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer
 /// @param p_accelerate Whether the black box can give gas
@@ -136,7 +120,7 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, AllowedActions)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(AllowedActionsTestMediator, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief         Tests if the SDAConfig sets and gets the IndicatorSettings correctly
+/// @brief         Tests if the mediator sets and gets the IndicatorSettings correctly
 /// @param p_audio Whether to enable the audio option
 /// @param p_icon  Whether to enable the icon option
 /// @param p_text  Whether to enable the text option
@@ -146,8 +130,7 @@ void IndicatorTestMediator(bool p_audio, bool p_icon, bool p_text)
     ASSERT_TRUE(SetupSingletonsFolder());
     tIndicator arr = {p_audio, p_icon, p_text};
     SDAConfigMediator::GetInstance()->SetIndicatorSettings(arr);
-    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-    tIndicator indicator = config.GetIndicatorSettings();
+    tIndicator indicator = SDAConfigMediator::GetInstance()->GetIndicatorSettings();
     ASSERT_EQ(arr.Audio, indicator.Audio);
     ASSERT_EQ(arr.Icon, indicator.Icon);
     ASSERT_EQ(arr.Text, indicator.Text);
@@ -169,12 +152,10 @@ void PControlTestMediator(bool p_intervention, bool p_gas, bool p_steer, bool p_
     ASSERT_TRUE(SetupSingletonsFolder());
     tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
-    const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-    tParticipantControl pControl = config.GetPControlSettings();
+    tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
-
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
@@ -258,3 +239,34 @@ void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_interventi
 BEGIN_TEST_COMBINATORIAL(MediatorTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
+/// @brief                         Tests if the mediator gets and sets the replay recorder option correctly
+/// @param p_replayRecorderSetting The replay recorder option
+void TestReplayRecorderSettingMediator(bool p_replayRecorderSetting)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SDAConfigMediator::GetInstance()->SetReplayRecorderSetting(p_replayRecorderSetting);
+    ASSERT_EQ(p_replayRecorderSetting, SDAConfigMediator::GetInstance()->GetReplayRecorderSetting());
+}
+
+TEST_CASE(MediatorTests, ReplayRecorderOn, TestReplayRecorderSettingMediator, (true))
+TEST_CASE(MediatorTests, ReplayRecorderOff, TestReplayRecorderSettingMediator, (false))
+
+/// @brief Tests if the Mediator sets and gets the Replay folder correctly
+TEST(MediatorTests, ReplayFolderTest)
+{
+    Random random;
+    char path[256];
+    for (int j = 0; j < TEST_AMOUNT; j++)
+    {
+        SDAConfigMediator::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+        int length = random.NextInt(256);
+        GenerateRandomCharArray(path, length);
+        filesystem::path pathSet = path;
+        SDAConfigMediator::GetInstance()->SetReplayFolder(pathSet);
+        // filesystem::path has overloaded (==) to lexicographically compare two paths
+        ASSERT_TRUE(pathSet == SDAConfigMediator::GetInstance()->GetReplayFolder());
+    }
+}
