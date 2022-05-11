@@ -18,7 +18,7 @@
     template bool DecisionMaker<type1, type2, type3, type4, type5>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
-    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                                                 \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \

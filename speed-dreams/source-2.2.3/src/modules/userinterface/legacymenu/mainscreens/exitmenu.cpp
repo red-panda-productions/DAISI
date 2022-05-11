@@ -25,8 +25,6 @@
 #include "savemenu.h"
 #include "mainmenu.h"
 
-
-
 static void
 onAcceptExit(void * /* dummy */)
 {
@@ -50,9 +48,9 @@ onAcceptExit(void * /* dummy */)
  * Remarks
  *
  */
-static void *MenuHandle = NULL;
+static void *MenuHandle = nullptr;
 
-void *ExitMenuInit(void *prevMenu, bool p_raceExit, int saveWayVersion)
+void *ExitMenuInit(void *p_prevMenu, bool p_raceExit, int p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -66,20 +64,19 @@ void *ExitMenuInit(void *prevMenu, bool p_raceExit, int saveWayVersion)
     GfuiMenuCreateStaticControls(MenuHandle, param);
     if (p_raceExit)
     {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", SaveMenuInit(MenuHandle, saveWayVersion), GfuiScreenActivate);
-        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", SaveMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
     }
     else
     {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
-        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
     }
-
 
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", prevMenu, GfuiScreenActivate, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", p_prevMenu, GfuiScreenActivate, nullptr);
 
     return MenuHandle;
 }

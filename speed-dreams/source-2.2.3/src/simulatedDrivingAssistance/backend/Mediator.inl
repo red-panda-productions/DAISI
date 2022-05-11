@@ -227,8 +227,6 @@ void Mediator<DecisionMaker>::SetSaveRaceToDatabase(bool p_saveToDatabase)
     m_decisionMaker.Config.SetSaveToDatabaseCheck(p_saveToDatabase);
 }
 
-
-
 /// @brief Creates a mediator instance if needed and returns it
 /// @return A mediator instance
 template <typename DecisionMaker>

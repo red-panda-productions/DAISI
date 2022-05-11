@@ -20,7 +20,7 @@
 #ifndef _CONFORMATIONMENU_H_
 #define _CONFORMATIONMENU_H_
 
-extern void* ConformationMenuInit(void* prevMenu, int p_saveWayVersion);
+extern void* ConformationMenuInit(void* p_prevMenu, int p_saveWayVersion);
 
 #endif /* _CONFORMATIONMENU_H_ */
 

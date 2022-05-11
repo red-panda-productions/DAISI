@@ -26,7 +26,7 @@
 #include "savemenu.h"
 #include "mainmenu.h"
 
-static void *MenuHandle = NULL;
+static void *MenuHandle = nullptr;
 
 static void
 onAcceptExit(void * /* dummy */)
@@ -43,7 +43,7 @@ onRestartAccept(void * /* dummy */)
     LmRaceEngine().restartRace();
 }
 
-void* SaveMenuInit(void *prevMenu, int p_saveWayVersion)
+void *SaveMenuInit(void *p_prevMenu, int p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -59,12 +59,12 @@ void* SaveMenuInit(void *prevMenu, int p_saveWayVersion)
     {
         case EXIT:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onAcceptExit);
+            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, onAcceptExit);
             break;
         }
         case RESTART:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", NULL, onRestartAccept);
+            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, onRestartAccept);
             break;
         }
         default:
@@ -75,7 +75,7 @@ void* SaveMenuInit(void *prevMenu, int p_saveWayVersion)
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", prevMenu, GfuiScreenActivate, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", p_prevMenu, GfuiScreenActivate, nullptr);
 
     return MenuHandle;
 }
@@ -92,11 +92,10 @@ void *SaveMenuInitRestart(void *prevMenu)
     void *param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
 
-
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", prevMenu, GfuiScreenActivate, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", prevMenu, GfuiScreenActivate, nullptr);
 
     return MenuHandle;
 }
