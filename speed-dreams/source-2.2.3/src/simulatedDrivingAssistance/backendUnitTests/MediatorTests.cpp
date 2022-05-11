@@ -127,10 +127,6 @@ TEST(MediatorTests, GetThresholdTest)
     ASSERT_ALMOST_EQ(thresholds.Brake, STANDARD_THRESHOLD_BRAKE, 0.000001);
     ASSERT_ALMOST_EQ(thresholds.Steer, STANDARD_THRESHOLD_STEER, 0.000001);
 
-    // Test if the test_thresholds.xml file exists
-    std::string path("test_data");
-    if (!FindFileDirectory(path, "test_thresholds.xml")) throw std::exception("Can't find test file");
-
     // Create Data Directory if not already done.
     GfSetDataDir(SD_DATADIR_SRC);
 
