@@ -9,6 +9,8 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
+namespace filesystem = std::experimental::filesystem;
+
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
@@ -29,6 +31,8 @@
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
     template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
+    template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \
+    template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
     template Mediator<type>* Mediator<type>::GetInstance();
@@ -171,6 +175,22 @@ tThreshold Mediator<DecisionMaker>::GetThresholdSettings()
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), dstStr.c_str());
     return SetThresholdSettings(buf);
+}
+
+/// @brief        Sets the folder that contains all replay data.
+/// @param p_replayFolder The path to the folder
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetReplayFolder(const filesystem::path& p_replayFolder)
+{
+    m_decisionMaker.Config.SetReplayFolder(p_replayFolder);
+}
+
+/// @brief Gets the replay folder if it has been set from the command line.
+/// @return The path to the replay folder
+template <typename DecisionMaker>
+const filesystem::path& Mediator<DecisionMaker>::GetReplayFolder() const
+{
+    return m_decisionMaker.Config.GetReplayFolder();
 }
 
 /// @brief Gets the replay recorder setting
