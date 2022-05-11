@@ -22,7 +22,7 @@
 #include "legacymenu.h"
 
 #include "exitmenu.h"
-#include "savemenu.h"
+#include "SaveMenu.h"
 #include "mainmenu.h"
 
 static void

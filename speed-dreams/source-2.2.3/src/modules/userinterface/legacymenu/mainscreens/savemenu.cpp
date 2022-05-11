@@ -1,29 +1,10 @@
-/***************************************************************************
-
-    file                 : savemenu.cpp
-    created              : Tue Mar 18 10:54:12 CET 2022
-    copyright            : (C) 2022 by Maik Vink
-    email                : torcs@free.fr
-    version              : $Id: savemenu.cpp $
-
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
 #include <tgfclient.h>
 
 #include "legacymenu.h"
 
 #include "Mediator.h"
-#include "conformationmenu.h"
-#include "savemenu.h"
+#include "ConfirmationMenu.h"
+#include "SaveMenu.h"
 #include "mainmenu.h"
 
 static void *MenuHandle = nullptr;
@@ -54,7 +35,7 @@ void *SaveMenuInit(void *p_prevMenu, int p_saveWayVersion)
 
     void *param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConformationMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConfirmationMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
     switch (p_saveWayVersion)
     {
         case EXIT:
