@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "../rppUtils/RppUtils.hpp"
 #include "IntegrationTestConfig.h"
-
+#include "Recorder.h"
 #include <fstream>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
@@ -9,8 +9,7 @@
 
 namespace filesystem = std::experimental::filesystem;
 
-#define SD_EXECUTABLE "speed-dreams-2.exe"
-#define BB_FILE       "decisions.txt"
+#define BB_FILE       DECISIONS_RECORDING_FILE_NAME
 #define REPLAY_ARG    "--replay "
 #define SD_EXTRA_ARGS "--textonly"
 #define BB_ARG        "--bbfile "
@@ -41,7 +40,7 @@ void CheckFiles(const filesystem::path& p_path, filesystem::path& p_bbfile)
 std::string GenerateSimulationArguments(const filesystem::path& p_path)
 {
     std::stringstream args;
-    args << REPLAY_ARG << p_path;
+    args << SD_EXTRA_ARGS << " " << REPLAY_ARG << p_path;
 
     return {args.str()};
 }
@@ -53,7 +52,7 @@ std::string GenerateBBArguments(const filesystem::path& p_bbfile)
 {
     std::stringstream args;
 
-    args << BB_ARG << p_bbfile << " " << SD_EXTRA_ARGS;
+    args << BB_ARG << "\"" << p_bbfile << "\"";
 
     return {args.str()};
 }
@@ -71,7 +70,7 @@ void CheckProcess(PROCESS_INFORMATION p_processInformation)
     CloseHandle(p_processInformation.hProcess);
     CloseHandle(p_processInformation.hThread);
 
-    ASSERT_TRUE(exitCode == 0);
+    ASSERT_EQ(exitCode,0);
 
     // extra exit codes can be added here
 }
@@ -87,12 +86,12 @@ void RunTest(const std::string& p_path)
     std::string simulationArgs = GenerateSimulationArguments(p_path);
 
     PROCESS_INFORMATION simulationInfo;
-    StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo);
+    StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo, SD_EXECUTABLE_WORKING_DIRECTORY);
 
     std::string bbArgs = GenerateBBArguments(bbfile);
 
     PROCESS_INFORMATION bbInfo;
-    StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo);
+    StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo, INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY);
 
     CheckProcess(simulationInfo);
 

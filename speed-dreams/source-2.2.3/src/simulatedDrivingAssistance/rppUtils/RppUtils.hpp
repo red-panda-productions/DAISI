@@ -153,12 +153,19 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
 /// @param  p_executablePath     The path to the executable
 /// @param  p_args               The arguments for the executable
 /// @param  p_processInformation The information about the process, this contains the handles
-inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation)
+inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
 {
-    LPSTR args = _strdup(p_args);
+    std::string fullArgs = p_executablePath + " " + p_args;
+    LPSTR args = _strdup(fullArgs.c_str());
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
     // Start the process. Nullpointers correspond to default values for this method.
     // Inherit handles is not necessary for our use case and is thus false.
+
+    LPCSTR workingDirectory = nullptr;
+    if (p_workingDirectory != "")
+    {
+        workingDirectory = p_workingDirectory.c_str();
+    }
     CreateProcess(p_executablePath.c_str(),
                   args,
                   nullptr,
@@ -166,7 +173,7 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
                   false,
                   0,
                   nullptr,
-                  nullptr,
+                  workingDirectory,
                   &startupInformation,
                   &p_processInformation);
 }

@@ -25,8 +25,9 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-FILE(GLOB INTEGRATION_PATHS_LIST "${CMAKE_SOURCE_DIR}/data/integrationTests/*/")
+FILE(GLOB INTEGRATION_PATHS_LIST "${CMAKE_SOURCE_DIR}/data/integrationTests/Recordings/*/")
 
+MESSAGE(STATUS "Generating integration tests")
 # Generates the different paths for the integration tests
 SET(INTEGRATION_PATHS "")
 SET(FIRST_PATH ON)
@@ -36,9 +37,16 @@ FOREACH(INTEGRATION_PATH ${INTEGRATION_PATHS_LIST})
 	ENDIF(NOT FIRST_PATH)
 	SET(FIRST_PATH OFF)
 	STRING(CONCAT INTEGRATION_PATHS "${INTEGRATION_PATHS}" "\"${INTEGRATION_PATH}\"")
+	MESSAGE(STATUS "Integration test: ${INTEGRATION_PATH}")
 ENDFOREACH(INTEGRATION_PATH INTEGRATION_PATHS_LIST)
 
-SET(BLACK_BOX_PATH "\"${CMAKE_SOURCE_DIR}/data/blackbox/SDAReplay.exe\"")
+SET(BLACK_BOX_PATH "\"${CMAKE_SOURCE_DIR}/data/replayBlackbox/SDAReplay.exe\"")
+
+SET(BLACK_BOX_WORKING_DIRECTORY "\"${CMAKE_SOURCE_DIR}/data/replayBlackbox\"")
+
+SET(SD_EXECUTABLE_PATH "\"${CMAKE_BINARY_DIR}/bin/speed-dreams-2.exe\"")
+
+SET(SD_EXECUTABLE_WORKING_DIRECTORY "\"${CMAKE_BINARY_DIR}\"")
 
 CONFIGURE_FILE(IntegrationTestConfig.h.in IntegrationTestConfig.h @ONLY)
 
