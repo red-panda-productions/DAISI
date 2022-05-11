@@ -16,10 +16,13 @@
 				<attnum name="red" val="0.000000"/>
 				<attnum name="green" val="1.000000"/>
 				<attnum name="blue" val="0.500000"/>
-				<attstr name="type" val="human"/>
 				<attstr name="skill level" val="rookie"/>
 			</section>
 
+		</section>
+
+		<section name="arbitrary cars">
+			<attstr name="team" val="red-panda-productions"></attstr>
 		</section>
 	</section>
 

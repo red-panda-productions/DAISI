@@ -15,20 +15,22 @@ public:
 
     void ConnectAsync();
 
-    void AwaitClientConnection();
+    int AwaitClientConnection();
 
     int SendData(const char* p_data, int p_size) const;
 
-    void Disconnect();
+    int Disconnect();
 
-    void CloseServer();
+    int CloseServer();
 
     bool Connected();
 
     ~ServerSocket();
 
 private:
-    void Connect();
+    void ConnectThreadFunction();
+
+    int Connect();
 
     PCWSTR m_ip;
     int m_port;
@@ -38,6 +40,9 @@ private:
     struct sockaddr_in m_client;
     struct sockaddr_in m_server;
 
-    bool m_open;
     bool m_connecting;
+
+    bool m_open = false;
+
+    int m_connectErrorCode = IPCLIB_SUCCEED;
 };

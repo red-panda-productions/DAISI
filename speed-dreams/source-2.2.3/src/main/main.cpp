@@ -85,6 +85,25 @@ void ReleaseData(void)
 #endif
 // ... Use new Memory Manager
 
+// SIMULATED DRIVING ASSITANCE: Add HasValidRaceStartArguments
+/// @brief Check if the arguments given to speed dreams are valid: if text only is defined, startrace or replay need to have a value
+/// @param p_textOnly Whether text only is defined or not
+/// @param p_app The application itself
+/// @param p_strRaceToStart The string to save the command line option value to/
+/// @return true of the arguments are valid, false if not.
+bool HasValidRaceStartArguments(bool p_textOnly, GfApplication* p_app, std::string& p_strRaceToStart)
+{
+    if (p_textOnly)
+    {
+        if (p_app->hasOption("startrace", p_strRaceToStart) && !p_strRaceToStart.empty()) return true;
+        if (p_app->hasOption("replay", p_strRaceToStart) && !p_strRaceToStart.empty()) return true;
+
+        return false;
+    }
+
+    return true;
+}
+
 /*
  * Function
  *    main
@@ -148,6 +167,8 @@ int main(int argc, char* argv[])
     // Register app. specific options and help text.
     pApp->registerOption("s", "startrace", /* nHasValue = */ true);
     pApp->registerOption("x", "textonly", /* nHasValue = */ false);
+    // SIMULATED DRIVING ASSISTANCE: Added replay option
+    pApp->registerOption("r", "replay", true);
 
     pApp->addOptionsHelpSyntaxLine("[-s|--startrace <race name> [-x|--textonly] ]");
     pApp->addOptionsHelpExplainLine("- race name : Name without extension of the selected raceman file,");
@@ -158,10 +179,10 @@ int main(int argc, char* argv[])
     if (!pApp->parseOptions())
         return 1;
 
+    // SIMULATED DRIVING ASSISTANCE: Check for valid race start arguments
     // Some more checks about command line options.
     std::string strRaceToStart;
-    if (bTextOnly && (!pApp->hasOption("startrace", strRaceToStart) || strRaceToStart.empty()))
-    {
+    if(!HasValidRaceStartArguments(bTextOnly, pApp, strRaceToStart)) {
         std::cerr << "Exiting from " << pApp->name()
                   << " because no race specified in text-only mode." << std::endl;
         return 1;
