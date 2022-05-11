@@ -342,8 +342,7 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
     }
 }
 
-/// @brief Tests whether the IndicatorConfig gets the correct number of neutral indicators depending on the current
-/// active indicators
+/// @brief Tests whether the IndicatorConfig can retrieve the correct neutral indicators.
 TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
@@ -360,18 +359,56 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
             std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
             std::vector<tIndicatorData> neutral = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-            // TODO: check if the actual loaded neutral indicators are correct
-            if (neutral.size() > 1)
+            if (active.size() > 0)
             {
-                ASSERT_TRUE(neutral.size() == 2 && active.size() == 0);
-            }
-            else if (neutral.size() == 1)
-            {
-                ASSERT_TRUE(neutral.size() == 1 && active.size() == 1);
-            }
-            else
-                ASSERT_TRUE(neutral.size() == 0 && active.size() == 2);
-            
+                // Currently there is only 1 indicator active at the time.
+                // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
+                for (const tIndicatorData& indicator : neutral)
+                {
+                    if (active.front().Action == INTERVENTION_ACTION_TURN_LEFT || active.front().Action == INTERVENTION_ACTION_TURN_RIGHT || active.front().Action == INTERVENTION_ACTION_STEER_NONE)
+                        ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_BRAKE_NONE);
+                    else
+                        ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_STEER_NONE);
+                }
+            } 
+
+        }
+    }
+}
+
+/// @brief Tests whether the IndicatorConfig gets the correct number of neutral and active indicators
+TEST_F(IndicatorConfigLoadingTests, NumberOfIndicators)
+{
+    for (int i = 0; i < NUM_OF_TESTS; i++)
+    {
+        // Create random valid indicator data
+        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
+        const char* filepath = WriteIndicatorDataToXml(rndData);
+
+        // Activate every action and check whether the correct number of indicators are saved.
+        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
+        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        {
+            IndicatorConfig::GetInstance()->ActivateIndicator(i);
+            std::vector<tIndicatorData> active1 = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+            std::vector<tIndicatorData> neutral1 = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+
+            // Currently there is only 1 indicator active at the time.
+            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
+
+            // There is always at least 1 neutral indicator in the ONLY SIGNALS intervention type
+            ASSERT_TRUE(neutral1.size() > 0);
+                  
+            // There are 2 neutral indicators if there are 0 active indicators in the ONLY SIGNALS intervention type
+            if (active1.size() == 0)
+                ASSERT_TRUE(neutral1.size() == 2);
+
+            std::vector<tIndicatorData> active2 = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_NO_SIGNALS);
+            std::vector<tIndicatorData> neutral2 = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_NO_SIGNALS);
+
+            // There are neither active nor neutral indicators in the NO SIGNALS intervention type context
+            ASSERT_TRUE(neutral2.size() == 0);
+            ASSERT_TRUE(active2.size() == 0);
         }
     }
 }
