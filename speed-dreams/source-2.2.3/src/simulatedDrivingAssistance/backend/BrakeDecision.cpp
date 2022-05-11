@@ -8,7 +8,8 @@ void BrakeDecision::RunIndicateCommands()
     SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
 }
 
-void BrakeDecision::RunInterveneCommands()
+void BrakeDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
+    if (!p_allowedActions.Brake) return;
     SMediator::GetInstance()->CarController.SetBrakeCmd(BrakeAmount);
 }

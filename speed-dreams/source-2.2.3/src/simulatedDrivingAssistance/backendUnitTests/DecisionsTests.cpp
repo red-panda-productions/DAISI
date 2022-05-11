@@ -38,13 +38,15 @@ void InitializeMediator()
 TEST(DecisionsTest, RunInterveneDecisions)
 {
     InitializeMediator();
+    tAllowedActions allowedActions = {true, true, true};
+    // SMediator::GetInstance()->SetAllowedActions(allowedActions);
 
     Random random;
 
     BrakeDecision brakeDecision;
     float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
-    brakeDecision.RunInterveneCommands();
+    brakeDecision.RunInterveneCommands(allowedActions);
 
     std::cout << "Testing brake...";
     ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
@@ -53,7 +55,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     AccelDecision accelDecision;
     float controlAccelAmount = random.NextFloat(ACCEL_THRESHOLD, ACCEL_THRESHOLD + 10);
     accelDecision.AccelAmount = controlAccelAmount;
-    accelDecision.RunInterveneCommands();
+    accelDecision.RunInterveneCommands(allowedActions);
 
     std::cout << "Testing accel...";
     ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
@@ -62,7 +64,7 @@ TEST(DecisionsTest, RunInterveneDecisions)
     SteerDecision steerDecision;
     float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
     steerDecision.SteerAmount = controlSteerAmount;
-    steerDecision.RunInterveneCommands();
+    steerDecision.RunInterveneCommands(allowedActions);
 
     std::cout << "Testing steer...";
     ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);

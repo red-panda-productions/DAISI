@@ -14,9 +14,9 @@ void SteerDecision::RunIndicateCommands()
     }
 };
 
-void SteerDecision::RunInterveneCommands()
+void SteerDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
     if (SteerAmount > -SDA_STEERING_THRESHOLD && SteerAmount < SDA_STEERING_THRESHOLD) return;
-
+    if (!p_allowedActions.Steer) return;
     SMediator::GetInstance()->CarController.SetSteerCmd(SteerAmount);
 };

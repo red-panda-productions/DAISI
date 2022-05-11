@@ -8,7 +8,8 @@ void AccelDecision::RunIndicateCommands()
     SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_ACCELERATE);
 }
 
-void AccelDecision::RunInterveneCommands()
+void AccelDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
+    if (!p_allowedActions.Accelerate) return;
     SMediator::GetInstance()->CarController.SetAccelCmd(AccelAmount);
 }

@@ -10,5 +10,5 @@ public:
     float SteerAmount = 0;
 
     void RunIndicateCommands() override;
-    void RunInterveneCommands() override;
+    void RunInterveneCommands(tAllowedActions p_allowedActions) override;
 };
