@@ -26,17 +26,17 @@
 	<section name="properties">
 
 		<!-- button placing constants -->
-		<attnum name="xButton" val="260"/>
-		<attnum name="yTopButton" val="290"/>
-		<attnum name="buttonShift" val="32"/>
+		<attnum name="xButton" val="50"/>
+		<attnum name="yTopButton" val="330"/>
+		<attnum name="buttonShift" val="57"/>
 
 		<!-- button texts and tips -->
-		<attstr name="restart.text" val="Restart Race"/>
-		<attstr name="restart.tip" val="Restart the current race"/>
-		<attstr name="abort.text" val="Abandon Race"/>
-		<attstr name="abort.tip" val="Abort the current race"/>
-		<attstr name="resume.text" val="Resume Race"/>
-		<attstr name="resume.tip" val="Return to the race"/>
+		<attstr name="restart.text" val="Restart"/>
+		<attstr name="restart.tip" val="Restart the simulation"/>
+		<attstr name="abort.text" val="Abandon"/>
+		<attstr name="abort.tip" val="Abort the simulation"/>
+		<attstr name="resume.text" val="Resume"/>
+		<attstr name="resume.tip" val="Return to the simulation"/>
 		<attstr name="controls.text" val="Adjust Controls"/>
 		<attstr name="controls.tip" val="Adjust the Player's Controls"/>
 		<attstr name="forcefeedback.text" val="Adjust Force Feedback"/>
@@ -59,10 +59,10 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
+		<attnum name="image width" val="332"/>
+		<attnum name="image height" val="75"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -78,7 +78,7 @@
 
 	<section name ="1">
 		<attstr name="type" val="background image"/>
-		<attstr name="image" val="data/img/splash-stoprace.jpg"/>
+		<attstr name="image" val="data/img/menu-3.png"/>
 	</section>
 
 	<section name="2">
@@ -92,10 +92,10 @@
 
 	<section name="3">
 		<attstr name="type" val="static image"/>
-		<attnum name="x" val="212"/>
-		<attnum name="y" val="410"/>
-		<attnum name="width" val="450"/>
-		<attnum name="height" val="20"/>
+		<attnum name="x" val="-30"/>
+		<attnum name="y" val="400"/>
+		<attnum name="width" val="1050"/>
+		<attnum name="height" val="35"/>
 		<attstr name="image" val="data/img/head-stoprace.png"/>
 	</section>
 

@@ -41,7 +41,7 @@
 		<attstr name="tip" val="A free practice session for one player on one track"/>
 		<attnum name="x" val="260"/>
 		<attnum name="y" val="332"/>
-		<attnum name="width" val="320"/>
+		<attnum name="width" val="350"/>
 		<attstr name="h align" val="left"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
@@ -50,7 +50,7 @@
 		<attnum name="image x" val="-48"/>
 		<attnum name="image y" val="0"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
