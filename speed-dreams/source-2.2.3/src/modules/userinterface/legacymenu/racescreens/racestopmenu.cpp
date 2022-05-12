@@ -146,11 +146,10 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
 
     std::string carName = "";
 
-    // Find human cars
-    tRmInfo *pCurrReInfo = LmRaceEngine().inData();
+    //Find human cars
+    tRmInfo* pCurrReInfo = LmRaceEngine().inData();
     for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
-        if (pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN)
-        {
+        if (pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
             carName.append(pCurrReInfo->s->cars[i]->_carName);
         }
     }
@@ -198,10 +197,9 @@ rmQuitHookInit()
 static void *QuitHdle[6] = { 0, 0, 0, 0, 0, 0 };
 
 // Descriptor for 1 button.
-typedef struct
-{
+typedef struct {
     const char* role;  // Button role.
-    void       *screen;      // Screen to activate if clicked.
+    void       *screen;// Screen to activate if clicked.
 
 } tButtonDesc;
 
@@ -369,15 +367,15 @@ RmStopRaceMenu()
 
     // Attempt to find a human driver
     for (j=0; ; j++) {
-        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j + 1);
+        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j+1);
         human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
         assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
 
         if (strlen(human_test_name) == 0 && strlen(assisted_test_name) == 0) break;
 
         if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0) {
-            GfLogInfo("Matching human driver found, setting index to %d.\n", j + 1);
-            curPlayerIdx = j + 1;
+            GfLogInfo("Matching human driver found, setting index to %d.\n", j+1);
+            curPlayerIdx = j+1;
 
 #if SDL_FORCEFEEDBACK
             buttonRole[i] = "forcefeedback";
@@ -393,11 +391,11 @@ RmStopRaceMenu()
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
-            buttonRole[1], screen[1],
-            buttonRole[2], screen[2],
-            buttonRole[3], screen[3],
-            buttonRole[4], screen[4],
-            buttonRole[5], screen[5]);
+                buttonRole[1], screen[1],
+                buttonRole[2], screen[2],
+                buttonRole[3], screen[3],
+                buttonRole[4], screen[4],
+                buttonRole[5], screen[5]);
 }
 
 void
