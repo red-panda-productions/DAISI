@@ -70,7 +70,7 @@ rmSkipSessionHookActivate(void * /* dummy */)
     LmRaceEngine().skipRaceSession();
 }
 
-static void *pvSkipSessionHookHandle = 0;
+static void     *pvSkipSessionHookHandle = 0;
 
 static void *
 rmSkipSessionHookInit()
@@ -98,7 +98,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
 }
 
-static void *pvBackToRaceHookHandle = 0;
+static void     *pvBackToRaceHookHandle = 0;
 
 void *
 RmBackToRaceHookInit()
@@ -148,7 +148,7 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
 
     // Find human cars
     tRmInfo *pCurrReInfo = LmRaceEngine().inData();
-    for (int i = 0; i < pCurrReInfo->s->_ncars; i++){
+    for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
         if (pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN)
         {
             carName.append(pCurrReInfo->s->cars[i]->_carName);
@@ -159,7 +159,7 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
     GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
 }
 
-static void    *pvForceFeedbackConfigHookHandle = 0;
+static void     *pvForceFeedbackConfigHookHandle = 0;
 
 static void *
 rmForceFeedbackConfigHookInit()
@@ -172,7 +172,7 @@ rmForceFeedbackConfigHookInit()
 #endif
 
 // Quit race hook ******************************************************
-static void *rmStopScrHandle = 0;
+static void     *rmStopScrHandle = 0;
 
 static void
 rmQuitHookActivate(void * /* dummy */)
@@ -182,7 +182,7 @@ rmQuitHookActivate(void * /* dummy */)
         GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, EXIT));
 }
 
-static void *pvQuitHookHandle = 0;
+static void     *pvQuitHookHandle = 0;
 
 static void *
 rmQuitHookInit()
@@ -201,7 +201,7 @@ static void *QuitHdle[6] = { 0, 0, 0, 0, 0, 0 };
 typedef struct
 {
     const char* role;  // Button role.
-    void* screen;      // Screen to activate if clicked.
+    void       *screen;      // Screen to activate if clicked.
 
 } tButtonDesc;
 
@@ -266,14 +266,14 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                const char *buttonRole6 = 0, void *screen6 = 0)
 {
     const tButtonDesc aButtons[6] =
-        {
-            {buttonRole1, screen1},
-            {buttonRole2, screen2},
-            {buttonRole3, screen3},
-            {buttonRole4, screen4},
-            {buttonRole5, screen5},
-            {buttonRole6, screen6},
-        };
+    {
+        { buttonRole1, screen1 },
+        { buttonRole2, screen2 },
+        { buttonRole3, screen3 },
+        { buttonRole4, screen4 },
+        { buttonRole5, screen5 },
+        { buttonRole6, screen6 },
+    };
 
     int nButtons = 2;
     if (buttonRole3 && screen3)
@@ -293,7 +293,7 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
         }
     }
 
-    if (QuitHdle[nButtons - 1])
+    if (QuitHdle[nButtons-1])
         GfuiScreenRelease(QuitHdle[nButtons-1]);
 
     QuitHdle[nButtons-1] = rmStopRaceMenu(aButtons, nButtons, nButtons-1);
@@ -336,7 +336,7 @@ RmStopRaceMenu()
     if (LegacyMenu::self().soundEngine())
         LegacyMenu::self().soundEngine()->mute();
 
-    for (i = 0; i < 6; i++) {
+    for(i=0; i < 6; i++) {
         buttonRole[i] = "";
         screen[i] = NULL;
     }
@@ -368,7 +368,7 @@ RmStopRaceMenu()
     GfLogInfo("Current driver (on active split screen) is '%s'\n", cur_name);
 
     // Attempt to find a human driver
-    for (j = 0;; j++) {
+    for (j=0; ; j++) {
         snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j + 1);
         human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
         assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
@@ -393,11 +393,11 @@ RmStopRaceMenu()
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
-        buttonRole[1], screen[1],
-        buttonRole[2], screen[2],
-        buttonRole[3], screen[3],
-        buttonRole[4], screen[4],
-        buttonRole[5], screen[5]);
+            buttonRole[1], screen[1],
+            buttonRole[2], screen[2],
+            buttonRole[3], screen[3],
+            buttonRole[4], screen[4],
+            buttonRole[5], screen[5]);
 }
 
 void
