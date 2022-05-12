@@ -142,7 +142,8 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 {
 }
 
-/// @brief When the race stops, the simulation data collected will be stored in the database
+/// @brief                  When the race stops, the simulation needs to be shutdown correctly and check if it needs to be stroed in the database
+/// @param p_saveToDatabase bool that determines if the simulation data collected will be stored in the database
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
 {

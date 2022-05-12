@@ -32,6 +32,7 @@ typedef unsigned int RaceEndType;
 #define NO_END  0
 #define RESTART 1
 #define EXIT    2
+#define ABORT   3
 
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;

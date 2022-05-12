@@ -17,11 +17,18 @@ static void OnAcceptExit(void * /* dummy */)
     LegacyMenu::self().quit();
 }
 
-/// @brief tells the mediator to save experiment data and restart SpeedDreams
-static void onRestartAccept(void * /* dummy */)
+/// @brief tells the mediator to save experiment data and restart the race
+static void OnAcceptRestart(void * /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(true);
     LmRaceEngine().restartRace();
+}
+
+/// @brief tells the mediator to save experiment data and abort the race
+static void OnAcceptAbort(void * /* dummy */)
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(true);
+    LmRaceEngine().abortRace();
 }
 
 /// @brief                  create a save data screen
@@ -49,7 +56,12 @@ void *SaveMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
         }
         case RESTART:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, onRestartAccept);
+            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, OnAcceptRestart);
+            break;
+        }
+        case ABORT:
+        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, OnAcceptAbort);
             break;
         }
         default:

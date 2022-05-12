@@ -23,6 +23,13 @@ static void OnAcceptRestart(void * /* dummy */)
     LmRaceEngine().restartRace();
 }
 
+/// @brief tells the mediator to save experiment data and abort the race
+static void OnAcceptAbort(void * /* dummy */)
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
+    LmRaceEngine().abortRace();
+}
+
 /// @brief                  create a confirmation screen
 /// @param p_prevMenu       the previous menu from where it came
 /// @param P_saveWayVersion enum that decided how you got to the save screen
@@ -49,10 +56,15 @@ void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
             GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", nullptr, OnAcceptRestart);
             break;
         }
+        case ABORT:
+        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", nullptr, OnAcceptAbort);
+            break;
+        }
         default:
         {
             // throws an error, invalid option
-            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in conformationmenu.h?");
+            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in configEnum.h?");
         }
     }
     //add button functionality
