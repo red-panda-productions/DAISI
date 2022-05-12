@@ -25,6 +25,7 @@
 #include "legacymenu.h"
 #include "exitmenu.h"
 #include "SaveMenu.h"
+#include "ConfigEnums.h"
 #include "racescreens.h"
 
 #include <graphic.h>
@@ -113,7 +114,7 @@ static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
     if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, 1));
+        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RESTART));
 
     // LmRaceEngine().restartRace();
 }
@@ -175,7 +176,7 @@ static void
 rmQuitHookActivate(void * /* dummy */)
 {
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, 2));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, EXIT));
 }
 
 static void *pvQuitHookHandle = 0;

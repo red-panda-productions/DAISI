@@ -1,7 +1,7 @@
 #include <tgfclient.h>
 
 #include "legacymenu.h"
-
+#include "ConfigEnums.h"
 #include "Mediator.h"
 #include "ConfirmationMenu.h"
 #include "SaveMenu.h"
@@ -24,7 +24,7 @@ onRestartAccept(void * /* dummy */)
     LmRaceEngine().restartRace();
 }
 
-void *SaveMenuInit(void *p_prevMenu, int p_saveWayVersion)
+void *SaveMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle)
     {

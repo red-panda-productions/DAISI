@@ -20,6 +20,7 @@
 #include <tgfclient.h>
 
 #include "legacymenu.h"
+#include "ConfigEnums.h"
 
 #include "exitmenu.h"
 #include "SaveMenu.h"
@@ -50,7 +51,7 @@ onAcceptExit(void * /* dummy */)
  */
 static void *MenuHandle = nullptr;
 
-void *ExitMenuInit(void *p_prevMenu, bool p_raceExit, int p_saveWayVersion)
+void *ExitMenuInit(void *p_prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle)
     {

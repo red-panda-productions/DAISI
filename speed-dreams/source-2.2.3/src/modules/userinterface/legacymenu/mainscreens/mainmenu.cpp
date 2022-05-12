@@ -22,6 +22,7 @@
 #include <racescreens.h>
 #include <controlconfig.h>
 
+#include "ConfigEnums.h"
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "optionsmenu.h"
@@ -76,7 +77,7 @@ onCreditsMenuActivate(void * /* dummy */)
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle, false, 0));
+    GfuiScreenActivate(ExitMenuInit(MenuHandle, false, NO_END));
 }
 
 static void
