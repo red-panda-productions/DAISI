@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE params SYSTEM "../tgf/params.dtd">
+
+<params name="beginexperiment">
+
+    <section name="static controls">
+
+        <section name="1">
+            <attstr name="type" val="static image"/>
+            <attnum name="x" val="-10"/>
+            <attnum name="y" val="305"/>
+            <attnum name="width" val="195"/>
+            <attnum name="height" val="130"/>
+            <attstr name="image" val="data/img/sd-logo-big.png"/>
+        </section>
+
+        <section name="2">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="275"/>
+            <attnum name="y" val="410"/>
+            <attstr name="text" val="The experiment is about to start..."/>
+            <attnum name="width" val="450"/>
+            <attnum name="height" val="20"/>
+            <attstr name="font" val="mid"/>
+        </section>
+
+    </section>
+
+</params>
