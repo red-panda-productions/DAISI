@@ -268,8 +268,8 @@ TEST(MediatorTests, TimeOutTest)
         int currentTick = random.NextInt();
         SDAConfigMediator::GetInstance()->SetTicks(currentTick);
 
-        float maxTimeSeconds = maxTimeMinutes * 60;
-        float currentTime = currentTick * RCM_MAX_DT_ROBOTS;
+        float maxTimeSeconds = static_cast<float>(maxTimeMinutes) * 60;
+        float currentTime = static_cast<float>(currentTick) * RCM_MAX_DT_ROBOTS;
         bool isTimedOut = maxTimeSeconds < currentTime;
         ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
     }
