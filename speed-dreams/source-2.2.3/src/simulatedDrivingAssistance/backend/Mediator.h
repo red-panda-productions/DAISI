@@ -53,7 +53,7 @@ public:
         return &m_decisionMaker;
     }
 
-    void SetTicks(int tick)
+    void SetTicks(unsigned long tick)
     {
         m_tickCount = tick;
     }

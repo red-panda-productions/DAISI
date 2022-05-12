@@ -264,6 +264,6 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::TimeOut()
 {
     float maxTime = m_decisionMaker.Config.GetMaxTime() * 60;
-    float currentTime = m_tickCount * RCM_MAX_DT_ROBOTS;
+    float currentTime = m_tickCount * static_cast<float>(RCM_MAX_DT_ROBOTS);
     return maxTime < currentTime;
 }
