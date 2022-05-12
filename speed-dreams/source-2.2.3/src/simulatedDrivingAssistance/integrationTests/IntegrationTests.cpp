@@ -4,6 +4,10 @@
 #include "Recorder.h"
 #include <fstream>
 #include <thread>
+#include <windows.h>
+#include <process.h>
+#include <Tlhelp32.h>
+#include <winbase.h>
 #include "TestUtils.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
@@ -112,6 +116,37 @@ void RunTest(const std::string& p_path)
     CheckProcess(simulationInfo);
 }
 
+/// @brief           https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
+/// @param  filename The process name to kill
+void KillProcessByName(const char* filename)
+{
+    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
+    PROCESSENTRY32 pEntry;
+    pEntry.dwSize = sizeof(pEntry);
+    BOOL hRes = Process32First(hSnapShot, &pEntry);
+    while (hRes)
+    {
+        if (strcmp(pEntry.szExeFile, filename) == 0)
+        {
+            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
+                                          (DWORD)pEntry.th32ProcessID);
+            if (hProcess != NULL)
+            {
+                TerminateProcess(hProcess, 9);
+                CloseHandle(hProcess);
+            }
+        }
+        hRes = Process32Next(hSnapShot, &pEntry);
+    }
+    CloseHandle(hSnapShot);
+}
+
+void KillAllInterveningProcesses()
+{
+    KillProcessByName("SDAReplay.exe");
+    KillProcessByName("speed-dreams-2.exe");
+}
+
 /// @brief The class that instantiates the different integration tests
 class IntegrationTests : public testing::TestWithParam<std::string>
 {
@@ -120,6 +155,7 @@ class IntegrationTests : public testing::TestWithParam<std::string>
 /// @brief The parameterized test, with all of the information needed for an integration test
 TEST_P(IntegrationTests, IntegrationTest)
 {
+    KillAllInterveningProcesses();
     RunTest(GetParam());
 }
 
