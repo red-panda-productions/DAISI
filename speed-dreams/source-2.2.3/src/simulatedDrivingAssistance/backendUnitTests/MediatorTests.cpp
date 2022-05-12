@@ -92,7 +92,8 @@ TEST(MediatorTests, ReadFromFile)
     ASSERT_TRUE(SetupSingletonsFolder());
     MockMediator* mediator1 = MockMediator::GetInstance();
 
-    MockMediator::ClearInstance();
+    MockMediator::ClearInstance(false);  // Our next call should real the pointer to the mediator from a file.
+    // We don't want that pointer to point to a deleted mediator, so call with false
     MockMediator* mediator2 = MockMediator::GetInstance();
     ASSERT_EQ(mediator1, mediator2);
 

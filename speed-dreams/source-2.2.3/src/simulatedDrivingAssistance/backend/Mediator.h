@@ -42,9 +42,11 @@ public:
 
     static Mediator* GetInstance();
 #ifdef TEST
-    static void ClearInstance()
+    /// @brief          Clears the mediator instance
+    /// @param p_delete Whether to delete the de mediator
+    static void ClearInstance(bool p_delete = true)
     {
-        delete m_instance;
+        if(p_delete) delete m_instance;
         m_instance = nullptr;
     }
 
