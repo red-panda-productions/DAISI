@@ -27,7 +27,7 @@
 #include "mainmenu.h"
 
 static void
-onAcceptExit(void * /* dummy */)
+OnAcceptExit(void * /* dummy */)
 {
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
     LegacyMenu::self().quit();
@@ -63,16 +63,17 @@ void *ExitMenuInit(void *p_prevMenu, bool p_raceExit, RaceEndType p_saveWayVersi
     void *param = GfuiMenuLoad("exitmenu.xml");
 
     GfuiMenuCreateStaticControls(MenuHandle, param);
+    //looks where the exit game gets called and change the button functionality based on it.
     if (p_raceExit)
     {
         GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", SaveMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
-        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
     }
     else
     {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
-        GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, OnAcceptExit);
     }
+    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
+
 
     GfParmReleaseHandle(param);
 

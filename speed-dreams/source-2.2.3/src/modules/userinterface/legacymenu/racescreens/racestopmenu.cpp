@@ -113,10 +113,9 @@ static void *pvRestartRaceHookHandle = nullptr;
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
+    //if you restart the game it asks you if you want to save the experiment data
     if (pvRestartRaceHookHandle)
         GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RESTART));
-
-    // LmRaceEngine().restartRace();
 }
 
 static void *
@@ -175,6 +174,7 @@ static void *rmStopScrHandle = 0;
 static void
 rmQuitHookActivate(void * /* dummy */)
 {
+    //quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
         GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, EXIT));
 }
