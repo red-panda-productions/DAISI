@@ -5,31 +5,6 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
-#ifdef TEST
-/// @brief        Executes a statement, and fails if it takes longer than the secs parameter
-/// @param p_secs The timeout parameter
-/// @param p_stmt The statement to be executed
-#define DURATION_LE(p_secs, p_stmt, p_line)                                                     \
-    {                                                                                          \
-        std::promise<bool> completed;                                                          \
-        auto stmt_future = completed.get_future();                                             \
-        std::thread([&](std::promise<bool>& completed) {                                       \
-            p_stmt;                                                                            \
-            completed.set_value(true); },                                    \
-                    std::ref(completed))                                                       \
-            .detach();                                                                         \
-        if (stmt_future.wait_for(std::chrono::seconds(p_secs)) == std::future_status::timeout) \
-        { \
-            std::cout << "timed out (> " << p_secs << " seconds) on line " << p_line << std::endl;                  \
-            throw std::exception("timed out");\
-        }\
-    }
-#else
-
-#define DURATION_LE(p_secs,p_stmt, p_line) p_stmt
-
-#endif
-
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
     template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                               \
@@ -90,11 +65,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     std::cout << "sync" << std::endl;
 
     m_server.AwaitClientConnection();
-    DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),93);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
-    DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),97);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     msgpack::unpacked msg;
     msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
     std::vector<std::string> orderVec;
@@ -113,7 +88,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::pack(sbuffer, data);
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
-    DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),116);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
 
     DecisionTuple decisionTuple;
@@ -123,7 +98,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
         SerializeBlackBoxData(sbuffer, &p_tests[i]);
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
-        DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),126);
+        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
     }
 
@@ -145,11 +120,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
 
     if (m_asyncConnection)
     {
-        DURATION_LE(2, m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), 148);
+        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     }
     m_server.ReceiveDataAsync();
     m_server.SendData("STOP", 4);
-    DURATION_LE(2, m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), 152);
+    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
     m_server.CloseServer();
     VariablesToReceive.clear();
@@ -210,15 +185,28 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
 {
     if (!m_asyncConnection)
     {
+        m_server.ReceiveDataAsync();
         msgpack::sbuffer sbuffer;
 
         delete m_currentData;
         m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
         SerializeBlackBoxData(sbuffer, m_currentData);
 
-        m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
-        DURATION_LE(2, m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), 221);
+
+        auto start = std::chrono::system_clock::now();
+
+        bool received = false;
+        while (std::chrono::duration<double> (std::chrono::system_clock::now() - start).count() < 2.0 && !received)
+        {
+            received = m_server.GetData(m_buffer, SBB_BUFFER_SIZE);
+        }
+
+        if (!received)
+        {
+            std::cout << "Failed to receive" << std::endl;
+            throw std::exception();
+        }
 
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
         return true;
@@ -232,6 +220,7 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
     delete m_currentData;
     m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
     SerializeBlackBoxData(sbuffer, m_currentData);
+
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
 
