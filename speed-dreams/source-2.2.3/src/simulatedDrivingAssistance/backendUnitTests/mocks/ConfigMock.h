@@ -11,6 +11,8 @@ private:
     char* m_userID;
     bool* m_indicators;
     bool m_asyncConnection;
+    char m_blackBoxFilePath[256];
+    bool m_replayRecorderOn;
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)
@@ -69,5 +71,25 @@ public:
     bool GetBlackBoxSyncOption() const
     {
         return m_asyncConnection;
+    }
+
+    void SetBlackBoxFilePath(const char* p_blackBoxFilePath)
+    {
+        strcpy_s(m_blackBoxFilePath, 256, p_blackBoxFilePath);
+    }
+
+    const char* GetBlackBoxFilePath()
+    {
+        return m_blackBoxFilePath;
+    }
+
+    void SetReplayRecorderSetting(bool p_replayRecorderOn)
+    {
+        m_replayRecorderOn = p_replayRecorderOn;
+    }
+
+    bool GetReplayRecorderSetting()
+    {
+        return m_replayRecorderOn;
     }
 };

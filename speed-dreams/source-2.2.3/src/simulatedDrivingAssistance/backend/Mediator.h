@@ -54,6 +54,36 @@ public:
     {
         return &m_decisionMaker;
     }
+
+    /// @brief             Sets the tick count of the mediator
+    /// @param p_tickCount The tick count
+    void SetTickCount(unsigned long p_tickCount)
+    {
+        m_tickCount = p_tickCount;
+    }
+
+    /// @brief  Gets the tick count of the mediator
+    /// @return The tick count
+    unsigned long GetTickCount()
+    {
+        return m_tickCount;
+    }
+
+    /// @brief         Sets the in race state of the mediator
+    /// @bool p_inRace Whether the game is in a race
+    void SetInRace(bool p_inRace)
+    {
+        m_inRace = p_inRace;
+    }
+
+    /// @brief  Gets the race state of the mediator
+    /// @return Whether the game is in a race
+    bool GetInRace()
+    {
+        return m_inRace;
+    }
+
+
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour

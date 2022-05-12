@@ -39,7 +39,6 @@ TEST(DecisionsTest, RunInterveneDecisions)
 {
     InitializeMediator();
     tAllowedActions allowedActions = {true, true, true};
-    // SMediator::GetInstance()->SetAllowedActions(allowedActions);
 
     Random random;
 

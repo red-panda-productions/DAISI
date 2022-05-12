@@ -4,6 +4,7 @@
 #include "FileDataStorageMock.h"
 #include "car.h"
 #include "ConfigMock.h"
+#include "Recorder.h"
 
 template <class ConfigMock>
 class DecisionMakerMock
@@ -25,6 +26,17 @@ public:
         Config.SetDataCollectionSettings(p_dataSetting);
     }
 
+    void Initialize(unsigned long p_initialTickCount, tCarElt* p_initialCar, tSituation* p_initialSituation, tTrack* p_track, const std::string& p_blackBoxExecutablePath,
+                    Recorder* p_recorder, BlackBoxData* p_testSituations = nullptr, int p_testAmount = 0)
+    {
+    }
+
+    void RaceStop()
+    {
+        m_stoppedRace = true;
+    }
+
+    bool m_stoppedRace;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;
     bool Decision;

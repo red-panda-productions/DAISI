@@ -5,6 +5,9 @@
 #include "Mediator.inl"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
+#include "mocks/SocketBlackBoxMock.h"
+#include "mocks/SQLDatabaseStorageMock.h"
+#include "mocks/RecorderMock.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
@@ -270,4 +273,81 @@ TEST(MediatorTests, ReplayFolderTest)
         // filesystem::path has overloaded (==) to lexicographically compare two paths
         ASSERT_TRUE(pathSet == SDAConfigMediator::GetInstance()->GetReplayFolder());
     }
+}
+
+/// @brief Tests if the mediator gets and sets the tick count correctly. (For use in the following tests)
+TEST(MediatorTests, TickCountTest)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+    unsigned long tickCount = random.NextUInt();
+    MockMediator::GetInstance()->SetTickCount(tickCount);
+    ASSERT_EQ(tickCount, MockMediator::GetInstance()->GetTickCount());
+}
+
+/// @brief Tests if the mediator advances the simulation correctly
+TEST(MediatorTests, DriveTick)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    tCarElt car = {};
+    tSituation situation = {};
+    Random random;
+    unsigned long tickCount = random.NextUInt();
+    MockMediator::GetInstance()->SetTickCount(tickCount);
+    MockMediator::GetInstance()->DriveTick(&car, &situation);
+    ASSERT_EQ(tickCount + 1, MockMediator::GetInstance()->GetTickCount());
+}
+
+/// @brief                         Tests if the mediator starts the race correctly
+/// @param p_replayRecorderSetting The replay recorder setting
+/// @param p_blackBoxFilePath      The black box file path
+void RaceStartTest(bool p_replayRecorderSetting, const char* p_blackBoxFilePath)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    tTrack track = {};
+    tSituation situation = {};
+    Recorder* recorder = nullptr;
+    MockMediator::GetInstance()->SetReplayRecorderSetting(p_replayRecorderSetting);
+    MockMediator::GetInstance()->SetBlackBoxFilePath(p_blackBoxFilePath);
+    ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStart(&track, nullptr, nullptr, &situation, recorder));
+    ASSERT_TRUE(MockMediator::GetInstance()->GetInRace());
+}
+
+/// @brief Tests if the mediator starts the race correctly
+TEST(MediatorTests, RaceStart)
+{
+    GfInit();
+
+    Random random;
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        char blackBoxFilePath[256];
+        GenerateRandomCharArray(blackBoxFilePath, random.NextInt(256));
+        RaceStartTest(true, blackBoxFilePath);
+        RaceStartTest(false, blackBoxFilePath);
+    }
+
+    GfShutdown();
+}
+
+/// @brief Tests if the mediator stops the race correctly
+TEST(MediatorTests, RaceStop)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->SetInRace(true);
+    MockMediator::GetInstance()->GetDecisionMaker()->m_stoppedRace = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
+    ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->m_stoppedRace);
+
+    MockMediator::GetInstance()->SetInRace(false);
+    MockMediator::GetInstance()->GetDecisionMaker()->m_stoppedRace = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
+    ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
+    ASSERT_FALSE(MockMediator::GetInstance()->GetDecisionMaker()->m_stoppedRace);
 }
