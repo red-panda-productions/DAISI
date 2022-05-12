@@ -197,7 +197,7 @@ static void *QuitHdle[6] = {0, 0, 0, 0, 0, 0};
 typedef struct
 {
     const char *role;  // Button role.
-    void *screen;      // screen to activate if clicked.
+    void *screen;      // Screen to activate if clicked.
 
 } tButtonDesc;
 
