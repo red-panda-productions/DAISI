@@ -98,52 +98,25 @@ TEST(MediatorTests, ReadFromFile)
     DeleteSingletonsFolder();
 }
 
-/// @brief Tests if de mediator sets and gets the threshold settings correctly
-/// Fails if the a local threshold settings xml exists with values different from the defaults
-/// Succeeds if the file has not been changed or does not exist
-TEST(MediatorTests, GetThresholdTest)
+/// @brief Tests if de mediator gets the threshold settings correctly
+void ThresholdTestMediator(float p_accel, float p_brake, float p_steer)
 {
-    // Clear old Mediator instance
-    SMediator::ClearInstance();
+    SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    GfInit();
-    GfSetLocalDir(SD_LOCALDIR);
+    SDAConfigMediator* mediator = SDAConfigMediator::GetInstance();
 
-    // Check if mediator returns standard values if no xml is found
-    SMediator* mediator = SMediator::GetInstance();
-    tThreshold thresholds = mediator->GetThresholdSettings();
-    ASSERT_ALMOST_EQ(thresholds.Accel, STANDARD_THRESHOLD_ACCEL, 0.000001);
-    ASSERT_ALMOST_EQ(thresholds.Brake, STANDARD_THRESHOLD_BRAKE, 0.000001);
-    ASSERT_ALMOST_EQ(thresholds.Steer, STANDARD_THRESHOLD_STEER, 0.000001);
+    tDecisionThresholds thresholdsIn{p_accel, p_brake, p_steer};
+    mediator->SetThresholdSettings(thresholdsIn);
+    tDecisionThresholds thresholdsOut = mediator->GetThresholdSettings();
 
-    // Check if mediator returns standard values if values have been set
-    thresholds = mediator->GetThresholdSettings();
-    ASSERT_ALMOST_EQ(thresholds.Accel, STANDARD_THRESHOLD_ACCEL, 0.000001);
-    ASSERT_ALMOST_EQ(thresholds.Brake, STANDARD_THRESHOLD_BRAKE, 0.000001);
-    ASSERT_ALMOST_EQ(thresholds.Steer, STANDARD_THRESHOLD_STEER, 0.000001);
-
-    // Create Data Directory if not already done.
-    GfSetDataDir(SD_DATADIR_SRC);
-
-    // Test if the mediator returns the right thresholds when it reads from a xml file
-    std::string dstStr("../test_data/test_thresholds.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfDataDir(), dstStr.c_str());
-    void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
-
-    tThreshold xmlThresholds;
-    xmlThresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", 0);
-    xmlThresholds.Brake = GfParmGetNum(paramHandle, "Threshold Settings", "Brake", "%", 0);
-    xmlThresholds.Steer = GfParmGetNum(paramHandle, "Threshold Settings", "Steer", "%", 0);
-
-    mediator->SetThresholdSettings(buf);
-    thresholds = mediator->GetThresholdSettings();
-
-    ASSERT_EQ(thresholds.Accel, xmlThresholds.Accel);
-    ASSERT_EQ(thresholds.Brake, xmlThresholds.Brake);
-    ASSERT_EQ(thresholds.Steer, xmlThresholds.Steer);
+    ASSERT_EQ(thresholdsIn.Accel, thresholdsOut.Accel);
+    ASSERT_EQ(thresholdsIn.Brake, thresholdsOut.Brake);
+    ASSERT_EQ(thresholdsIn.Steer, thresholdsOut.Steer);
 }
+BEGIN_TEST_COMBINATORIAL(MediatorTests, ThresholdTest)
+float floatVals[] = {-1, 0, 0.5, 1, 2};
+END_TEST_COMBINATORIAL3(ThresholdTestMediator, floatVals, 5, floatVals, 5, floatVals, 5)
 
 /// @brief                    Tests if the Mediator sets and gets the interventionType correctly from SDAConfig
 /// @param p_interventionType The interventionType to test for

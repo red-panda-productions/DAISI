@@ -5,6 +5,7 @@
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
+#include "ThresholdConfig.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -16,8 +17,7 @@ namespace filesystem = std::experimental::filesystem;
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
-    template tThreshold Mediator<type>::GetThresholdSettings();                                                                                         \
-    template tThreshold Mediator<type>::SetThresholdSettings(const char* p_filePath);                                                                   \
+    template tDecisionThresholds Mediator<type>::GetThresholdSettings();                                                                                \
     template bool Mediator<type>::GetBlackBoxSyncOption();                                                                                              \
     template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
     template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
@@ -142,39 +142,12 @@ tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
     return m_decisionMaker.Config.GetPControlSettings();
 }
 
-/// @brief  Sets the decision thresholds to what is in the xml file
-/// @param  p_filePath The path to the xml file
-/// @return The new set threshold values
-template <typename DecisionMaker>
-tThreshold Mediator<DecisionMaker>::SetThresholdSettings(const char* p_filePath)
-{
-    void* paramHandle = GfParmReadFile(p_filePath, GFPARM_RMODE_REREAD);
-
-    m_thresholds;
-    m_thresholds.Accel = GfParmGetNum(paramHandle, "Threshold Settings", "Accel", "%", STANDARD_THRESHOLD_ACCEL);
-    m_thresholds.Brake = GfParmGetNum(paramHandle, "Threshold Settings", "Brake", "%", STANDARD_THRESHOLD_BRAKE);
-    m_thresholds.Steer = GfParmGetNum(paramHandle, "Threshold Settings", "Steer", "%", STANDARD_THRESHOLD_STEER);
-
-    GfParmReleaseHandle(paramHandle);
-
-    m_thresholdsSet = true;
-    return m_thresholds;
-}
-
 /// @brief  Returns the decision threshold values
 /// @return The threshold values
 template <typename DecisionMaker>
-tThreshold Mediator<DecisionMaker>::GetThresholdSettings()
+tDecisionThresholds Mediator<DecisionMaker>::GetThresholdSettings()
 {
-    // if thresholds already set, return them
-    if (m_thresholdsSet)
-        return m_thresholds;
-
-    // else set thresholds according to the xml and return those
-    std::string dstStr("config/Threshhold.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), dstStr.c_str());
-    return SetThresholdSettings(buf);
+    return m_thresholds;
 }
 
 /// @brief        Sets the folder that contains all replay data.
@@ -240,6 +213,10 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+
+    // Load decision threshold values from XML
+    sprintf(path, "%s%s", GfLocalDir(), PARAM_FILE);
+    m_thresholds = LoadThresholdSettings(path);
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed

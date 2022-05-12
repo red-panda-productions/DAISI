@@ -17,12 +17,12 @@ SET(CS confscreens)
 SET(CONFSCREENS_SOURCES ${CS}/controlconfig.cpp ${CS}/joystickconfig.cpp 
                         ${CS}/mouseconfig.cpp ${CS}/joy2butconfig.cpp
                         ${CS}/displayconfig.cpp ${CS}/monitorconfig.cpp
-                        ${CS}/soundconfig.cpp ${CS}/ThresholdConfig.cpp)
+                        ${CS}/soundconfig.cpp ${CS}/ThresholdConfigMenu.cpp)
 SET(CONFSCREENS_HEADERS ${CS}/confscreens.h ${CS}/controlconfig.h
                         ${CS}/joystickconfig.h ${CS}/mouseconfig.h
                         ${CS}/joy2butconfig.h ${CS}/monitorconfig.h
                         ${CS}/displayconfig.h ${CS}/soundconfig.h 
-                        ${CS}/ThresholdConfig.h)
+                        ${CS}/ThresholdConfigMenu.h)
 
 IF(OPTION_SDL_FORCEFEEDBACK)
    SET(CONFSCREENS_SOURCES ${CONFSCREENS_SOURCES} ${CS}/forcefeedbackconfig.cpp)

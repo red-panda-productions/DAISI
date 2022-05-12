@@ -36,11 +36,9 @@ public:
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
+    tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
-
-    tThreshold SetThresholdSettings(const char* p_filePath);
-    tThreshold GetThresholdSettings();
 
     static Mediator* GetInstance();
 #ifdef TEST
@@ -53,6 +51,11 @@ public:
     DecisionMaker* GetDecisionMaker()
     {
         return &m_decisionMaker;
+    }
+
+    void SetThresholdSettings(tDecisionThresholds p_thresholds)
+    {
+        m_thresholds = p_thresholds;
     }
 #endif
 
@@ -73,8 +76,7 @@ private:
 
     tTrack* m_track = nullptr;
 
-    tThreshold m_thresholds;
-    bool m_thresholdsSet = false;
+    tDecisionThresholds m_thresholds;
 
     bool m_inRace = false;  // Whether the game is currently in a race
 };

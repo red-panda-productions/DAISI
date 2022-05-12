@@ -52,21 +52,10 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     IndicatorConfig::ClearInstance();
     SMediator* mediator = SMediator::GetInstance();
 
-    // Create Data Directory if not already done.
-    GfSetDataDir(SD_DATADIR_SRC);
-
-    // Test if the mediator returns the right thresholds when it reads from a xml file
-    std::string dstStr("../test_data/test_thresholds_defaults.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfDataDir(), dstStr.c_str());
-
-    mediator->SetThresholdSettings(buf);
-    tThreshold thresholds = mediator->GetThresholdSettings();
-
     Random random;
     BrakeDecision brakeDecision;
 
-    float controlBrakeAmount = random.NextFloat(thresholds.Brake, thresholds.Brake + 10);
+    float controlBrakeAmount = random.NextFloat(STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_BRAKE + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
     brakeDecision.RunInterveneCommands();
 
@@ -75,7 +64,7 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
-    float controlAccelAmount = random.NextFloat(thresholds.Accel, thresholds.Accel + 10);
+    float controlAccelAmount = random.NextFloat(STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_ACCEL + 10);
     accelDecision.AccelAmount = controlAccelAmount;
     accelDecision.RunInterveneCommands();
 
@@ -84,7 +73,7 @@ TEST_F(DecisionTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
-    float controlSteerAmount = random.NextFloat(thresholds.Steer, thresholds.Steer + 10);
+    float controlSteerAmount = random.NextFloat(STANDARD_THRESHOLD_STEER, STANDARD_THRESHOLD_STEER + 10);
     steerDecision.SteerAmount = controlSteerAmount;
     steerDecision.RunInterveneCommands();
 

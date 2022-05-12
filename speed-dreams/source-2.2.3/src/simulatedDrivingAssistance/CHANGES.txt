@@ -23,8 +23,8 @@ Added:
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/
         confscreens/
-            ThresholdConfig.cpp
-            ThresholdConfig.h
+            ThresholdConfigMenu.cpp
+            ThresholdConfigMenu.h
         mainscreens/
             ResearcherMenu.h
             ResearcherMenu.cpp
@@ -50,6 +50,7 @@ Added:
             ResearcherMenu.xml
             DataSelectionMenu.xml
             DeveloperMenu.xml
+            ThresholdConfigMenu.xml
     drivers/
         assistedhuman/
             *

@@ -24,7 +24,7 @@
 #include <soundconfig.h>
 
 // SIMULATED DRIVING ASSISTANCE
-#include "ThresholdConfig.h"
+#include "ThresholdConfigMenu.h"
 
 #include "optionsmenu.h"
 
