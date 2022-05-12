@@ -193,6 +193,7 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder)
 {
+    m_tickCount = 0;
     m_track = p_track;
     tCarElt car;
     bool recordBB = GetReplayRecorderSetting();
