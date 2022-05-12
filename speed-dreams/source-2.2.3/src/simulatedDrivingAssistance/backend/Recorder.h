@@ -46,7 +46,7 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_ALLOWED_ACTION_ACCELERATE "accelerate"
 #define KEY_ALLOWED_ACTION_BRAKE      "brake"
 
-#define CURRENT_RECORDER_VERSION 1
+#define CURRENT_RECORDER_VERSION 2
 
 #define DECISION_RECORD_PARAM_AMOUNT 4
 
