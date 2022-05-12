@@ -28,8 +28,8 @@
 
 #define GFSCR_CONF_FILE                             "config/screen.xml"
 
-#define GFSCR_SECT_VALIDPROPS                       "Validated screen Properties"
-#define GFSCR_SECT_INTESTPROPS                      "In-Test screen Properties"
+#define GFSCR_SECT_VALIDPROPS                       "Validated Screen Properties"
+#define GFSCR_SECT_INTESTPROPS                      "In-Test Screen Properties"
 
 #define GFSCR_ATT_BPP                               "bpp"
 #define GFSCR_ATT_WIN_X                             "window width"

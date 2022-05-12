@@ -54,7 +54,7 @@
       </section>
       <section name="0.role">
           <attstr name="type" val="label"/>
-          <attstr name="tip" val="role in the team"/>
+          <attstr name="tip" val="Role in the team"/>
           <attnum name="max len" val="30"/>
           <attstr name="h align" val="right"/>
           <attnum name="width" val="160"/>
@@ -90,7 +90,7 @@
     </section>
     <section name="1.role">
       <attstr name="type" val="label"/>
-      <attstr name="tip" val="role in the team"/>
+      <attstr name="tip" val="Role in the team"/>
       <attnum name="max len" val="30"/>
       <attstr name="h align" val="right"/>
       <attnum name="width" val="160"/>
@@ -126,7 +126,7 @@
     </section>
     <section name="2.role">
       <attstr name="type" val="label"/>
-      <attstr name="tip" val="role"/>
+      <attstr name="tip" val="Role"/>
       <attnum name="max len" val="30"/>
       <attstr name="h align" val="right"/>
       <attnum name="width" val="160"/>
@@ -225,7 +225,7 @@
     </section>
     <section name="5.role">
       <attstr name="type" val="label"/>
-      <attstr name="tip" val="role"/>
+      <attstr name="tip" val="Role"/>
       <attnum name="max len" val="30"/>
       <attstr name="h align" val="right"/>
       <attnum name="width" val="160"/>

@@ -38,7 +38,7 @@
 				  <attnum name="width" val="430"/>
 			  </section>
 			  <section name="role">
-				  <attstr name="name" val="role"/>
+				  <attstr name="name" val="Role"/>
 				  <attnum name="width" val="170"/>
 			  </section>
 			  <section name="web">
@@ -148,7 +148,7 @@
 			<attnum name="width" val="430"/>
         </section>
         <section name="role">
-			<attstr name="name" val="role"/>
+			<attstr name="name" val="Role"/>
 			<attnum name="width" val="170"/>
         </section>
         <section name="web">
@@ -265,7 +265,7 @@
           <attnum name="width" val="430"/>
         </section>
         <section name="role">
-          <attstr name="name" val="role"/>
+          <attstr name="name" val="Role"/>
           <attnum name="width" val="170"/>
         </section>
         <section name="web">
@@ -542,7 +542,7 @@
           <attnum name="width" val="430"/>
         </section>
         <section name="role">
-          <attstr name="name" val="role"/>
+          <attstr name="name" val="Role"/>
           <attnum name="width" val="170"/>
         </section>
         <section name="web">

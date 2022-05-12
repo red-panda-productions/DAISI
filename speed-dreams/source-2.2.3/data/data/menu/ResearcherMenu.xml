@@ -34,8 +34,8 @@
         <section name="DevButton">
 	        <attstr name="type" val="text button"/>
 	        <attstr name="show box" val="no"/>
-	        <attstr name="text" val="Developer screen"/>
-	        <attstr name="tip" val="Access the Developer screen"/>
+	        <attstr name="text" val="Developer Screen"/>
+	        <attstr name="tip" val="Access the Developer Screen"/>
 	        <attstr name="h align" val="left"/>
 	        <attnum name="x" val="530"/>
 	        <attnum name="y" val="455"/>

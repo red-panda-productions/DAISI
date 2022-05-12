@@ -15,9 +15,9 @@
 
 <!DOCTYPE params SYSTEM "../tgf/params.dtd">
 
-<params name="screen" version="1.19">
+<params name="Screen" version="1.19">
 
-	<section name="Validated screen Properties">
+	<section name="Validated Screen Properties">
 		<attnum name="window width" val="1024"/>
 		<attnum name="window height" val="600"/>
 		<attnum name="bpp" val="32"/>
