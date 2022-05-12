@@ -417,8 +417,8 @@ TEST(RecorderTests, UpgradeFromV0Test)
 
     const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
     const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
+    ASSERT_STREQ(name, "test_highway");
+    ASSERT_STREQ(category, "road");
     delete[] name;
     delete[] category;
 
@@ -443,8 +443,8 @@ TEST(RecorderTests, ValidateV1RecordingTest)
 
     const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
     const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
+    ASSERT_STREQ(name, "test_highway");
+    ASSERT_STREQ(category, "road");
     delete[] name;
     delete[] category;
 

@@ -316,6 +316,11 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
         return false;
     }
 
+    if (version == CURRENT_RECORDER_VERSION) {
+        GfParmReleaseHandle(settingsHandle);
+        return true;
+    }
+
     // Update version 0 to version 1 recording
     if (version == 0)
     {
