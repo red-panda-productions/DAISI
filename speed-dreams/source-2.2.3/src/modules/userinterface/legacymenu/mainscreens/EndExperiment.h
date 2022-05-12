@@ -3,7 +3,7 @@
 #ifndef _ENDEXPERIMENT_H_
 #define _ENDEXPERIMENT_H_
 
-extern void* EndExperimentInit(int p_saveWayVersion);
+extern void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion);
 
 #endif /* _ENDEXPERIMENT_H_ */
 

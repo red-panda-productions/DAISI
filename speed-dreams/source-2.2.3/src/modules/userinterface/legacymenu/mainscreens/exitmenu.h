@@ -20,9 +20,9 @@
 
 #ifndef _EXITMENU_H_
 #define _EXITMENU_H_
+#include "ConfigEnums.h"
 
-
-extern void* ExitMenuInit(void* prevMenu, bool p_raceExit, int p_saveWayVersion);
+extern void* ExitMenuInit(void* prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion);
 
 #endif /* _EXITMENU_H_ */ 
 

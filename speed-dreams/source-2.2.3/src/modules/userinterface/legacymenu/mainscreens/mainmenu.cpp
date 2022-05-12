@@ -27,6 +27,7 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
+#include "ConfigEnums.h"
 
 static void *MenuHandle = 0;
 
@@ -76,7 +77,7 @@ onCreditsMenuActivate(void * /* dummy */)
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle));
+    GfuiScreenActivate(ExitMenuInit(MenuHandle, false, RESTART));
 }
 
 static void

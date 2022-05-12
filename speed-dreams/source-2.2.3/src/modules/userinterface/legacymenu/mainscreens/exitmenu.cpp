@@ -23,6 +23,8 @@
 
 #include "exitmenu.h"
 #include "mainmenu.h"
+#include "ConfigEnums.h"
+#include "EndExperiment.h"
 
 
 static void *MenuHandle = NULL;
@@ -51,7 +53,7 @@ onAcceptExit(void * /* dummy */)
  *	
  */
 
-void *ExitMenuInit(void *prevMenu, bool p_raceExit, int saveWayVersion)
+void *ExitMenuInit(void *prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle) {
 		GfuiScreenRelease(MenuHandle);
@@ -61,8 +63,15 @@ void *ExitMenuInit(void *prevMenu, bool p_raceExit, int saveWayVersion)
 
     void *param = GfuiMenuLoad("exitmenu.xml");
 
-    GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
+    // Looks where the exit game gets called and change the button functionality based on it.
+    if (p_raceExit)
+    {
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
+    }
+    else
+    {
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
+    }
     GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);

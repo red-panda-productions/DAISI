@@ -15,6 +15,14 @@ typedef struct Indicator
     bool Text;
 } tIndicator;
 
+/// @brief the different ways a race can end
+typedef unsigned int RaceEndType;
+
+#define NO_END  0
+#define RESTART 1
+#define EXIT    2
+#define ABORT   3
+
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 

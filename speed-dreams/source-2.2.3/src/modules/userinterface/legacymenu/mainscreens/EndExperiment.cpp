@@ -16,7 +16,7 @@ onAcceptExit(void* /* dummy */)
     LegacyMenu::self().quit();
 }
 
-void* EndExperimentInit(int p_saveWayVersion)
+void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -27,15 +27,28 @@ void* EndExperimentInit(int p_saveWayVersion)
 
     void* param = GfuiMenuLoad("endexperimentscreen.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateStaticControls(MenuHandle, param);
+    //GfuiMenuCreateStaticControls(MenuHandle, param);
 
 
     switch (p_saveWayVersion)
     {
-    case OK:
+    case NO_END:
     {
         GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, onAcceptExit);
+
         break;
+    }
+    case RESTART:
+    {
+    
+    }
+    case EXIT: 
+    {
+    
+    }
+    case ABORT:
+    {
+    
     }
     default:
     {
@@ -43,7 +56,9 @@ void* EndExperimentInit(int p_saveWayVersion)
     }
 
     }
-    GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, onAcceptExit);
+    //GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, onAcceptExit);
+    GfuiAddKey(MenuHandle, GFUIK_SPACE, "No, back to the game", NULL, onAcceptExit, NULL);
+
 
     GfParmReleaseHandle(param);
 
