@@ -251,3 +251,27 @@ void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_interventi
 BEGIN_TEST_COMBINATORIAL(MediatorTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
+/// @brief Tests if the TimeOut function returns the correct time out
+TEST(MediatorTests, TimeOutTest)
+{
+    Random random;
+    char path[256];
+    for (int j = 0; j < TEST_AMOUNT; j++)
+    {
+        SDAConfigMediator::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+
+        int maxTimeMinutes = random.NextInt();
+        SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.SetMaxTime(maxTimeMinutes);
+
+        int currentTick = random.NextInt();
+        SDAConfigMediator::GetInstance()->SetTicks(currentTick);
+
+        float maxTimeSeconds = maxTimeMinutes * 60;
+        float currentTime = currentTick * RCM_MAX_DT_ROBOTS;
+        bool isTimedOut = maxTimeSeconds < currentTime;
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
+
+    }
+}
