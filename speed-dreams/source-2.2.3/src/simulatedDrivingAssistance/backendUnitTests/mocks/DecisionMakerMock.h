@@ -33,10 +33,10 @@ public:
 
     void RaceStop()
     {
-        m_stoppedRace = true;
+        MStoppedRace = true;
     }
 
-    bool m_stoppedRace;
+    bool MStoppedRace;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;
     bool Decision;

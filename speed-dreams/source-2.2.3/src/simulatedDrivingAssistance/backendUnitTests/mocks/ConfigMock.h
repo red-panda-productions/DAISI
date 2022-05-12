@@ -1,6 +1,7 @@
 #pragma once
 #include "InterventionExecutorMock.h"
 #include "ConfigEnums.h"
+#include "string.h"
 
 class ConfigMock
 {
@@ -88,7 +89,7 @@ public:
         m_replayRecorderOn = p_replayRecorderOn;
     }
 
-    bool GetReplayRecorderSetting()
+    bool GetReplayRecorderSetting() const
     {
         return m_replayRecorderOn;
     }

@@ -83,7 +83,6 @@ public:
         return m_inRace;
     }
 
-
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour
