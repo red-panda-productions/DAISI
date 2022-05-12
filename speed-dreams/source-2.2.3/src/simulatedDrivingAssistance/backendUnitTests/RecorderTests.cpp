@@ -479,3 +479,10 @@ TEST(RecorderTests, InvalidTrackPathV0Validation)
 
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
 }
+
+TEST(RecorderTests, MissingTrackPathV0Validation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-missing-track-path-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
