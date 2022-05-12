@@ -104,7 +104,7 @@ void RunTest(const std::string& p_path)
     PROCESS_INFORMATION simulationInfo;
     StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo, SD_EXECUTABLE_WORKING_DIRECTORY);
 
-    //std::this_thread::sleep_for(std::chrono::seconds(1));
+    //std::this_thread::sleep_for(std::chrono::seconds(5));
 
     std::string bbArgs = GenerateBBArguments(bbfile);
 

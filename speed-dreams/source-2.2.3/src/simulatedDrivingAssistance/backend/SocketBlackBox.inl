@@ -62,9 +62,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
         std::cout << "a";
     }
     std::cout << "sync" << std::endl;
+
     m_server.AwaitClientConnection();
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
+    m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     msgpack::unpacked msg;
@@ -83,8 +85,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::sbuffer sbuffer;
     std::string data[1] = {std::to_string(p_amountOfTests)};
     msgpack::pack(sbuffer, data);
+    m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
-
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
 
@@ -93,6 +95,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     {
         sbuffer.clear();
         SerializeBlackBoxData(sbuffer, &p_tests[i]);
+        m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
@@ -103,8 +106,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     if (m_asyncConnection)
     {
         SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
-        m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.ReceiveDataAsync();
+        m_server.SendData(sbuffer.data(), sbuffer.size());
     }
 }
 
@@ -118,6 +121,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     {
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     }
+    m_server.ReceiveDataAsync();
     m_server.SendData("STOP", 4);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
@@ -185,8 +189,9 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
         delete m_currentData;
         m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
         SerializeBlackBoxData(sbuffer, m_currentData);
-        m_server.SendData(sbuffer.data(), sbuffer.size());
 
+        m_server.ReceiveDataAsync();
+        m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
 
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
@@ -201,8 +206,8 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
     delete m_currentData;
     m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
     SerializeBlackBoxData(sbuffer, m_currentData);
-    m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.ReceiveDataAsync();
+    m_server.SendData(sbuffer.data(), sbuffer.size());
 
     DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
 
