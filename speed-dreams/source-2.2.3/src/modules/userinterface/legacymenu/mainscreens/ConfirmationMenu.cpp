@@ -44,7 +44,7 @@ void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
 
     void *param = GfuiMenuLoad("confirmationmenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    switch (p_saveWayVersion) ////add different button functionality based on the RaceEndType
+    switch (p_saveWayVersion)  ////add different button functionality based on the RaceEndType
     {
         case EXIT:
         {
@@ -67,13 +67,13 @@ void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
             throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in configEnum.h?");
         }
     }
-    //add button functionality
+    // add button functionality
     GfuiMenuCreateButtonControl(MenuHandle, param, "waitdontdelete", p_prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    //add keyboard key functionality
+    // add keyboard key functionality
     GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", p_prevMenu, GfuiScreenActivate, nullptr);
 
     return MenuHandle;

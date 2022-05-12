@@ -45,9 +45,9 @@ void *SaveMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
 
     void *param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    //add button functionality
+    // add button functionality
     GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConfirmationMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
-    switch (p_saveWayVersion) //add different button functionality based on the RaceEndType
+    switch (p_saveWayVersion)  // add different button functionality based on the RaceEndType
     {
         case EXIT:
         {
@@ -67,13 +67,13 @@ void *SaveMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
         default:
         {
             // throws an error, invalid option
-            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in ConfigEnum.h?"); 
+            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in ConfigEnum.h?");
         }
     }
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    //add keyboard key functionality
+    // add keyboard key functionality
     GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", p_prevMenu, GfuiScreenActivate, nullptr);
 
     return MenuHandle;
