@@ -365,16 +365,16 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
                 for (const tIndicatorData& indicator : neutral)
                 {
                     if (active.front().Action == INTERVENTION_ACTION_TURN_LEFT || active.front().Action == INTERVENTION_ACTION_TURN_RIGHT || active.front().Action == INTERVENTION_ACTION_STEER_NONE)
-                        ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_BRAKE_NONE);
+                        ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_BRAKE_NONE && indicator.Action != INTERVENTION_ACTION_STEER_NONE);
                     else
-                        ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_STEER_NONE);
+                        ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_STEER_NONE && indicator.Action != INTERVENTION_ACTION_BRAKE_NONE);
                 }
             }
             else
             {
                 // If there are 2 neutral indicators, STEER_NONE is saved first, BRAKE_NONE second
-                ASSERT_TRUE(neutral.front().Action == INTERVENTION_ACTION_STEER_NONE);
-                ASSERT_TRUE(neutral.back().Action == INTERVENTION_ACTION_BRAKE_NONE);
+                ASSERT_TRUE(neutral.front().Action == INTERVENTION_ACTION_STEER_NONE && neutral.front().Action != INTERVENTION_ACTION_BRAKE_NONE);
+                ASSERT_TRUE(neutral.back().Action == INTERVENTION_ACTION_BRAKE_NONE && neutral.back().Action != INTERVENTION_ACTION_STEER_NONE);
             }
         }
     }
@@ -399,9 +399,11 @@ TEST_F(IndicatorConfigLoadingTests, NumberOfIndicators)
 
             // Currently there is only 1 indicator active at the time.
             // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
-
+            
             // There is always at least 1 neutral indicator in the ONLY SIGNALS intervention type
             ASSERT_TRUE(neutral1.size() > 0);
+            // There can never be 2 active indicators in the ONLY SIGNALS intervention type
+            ASSERT_TRUE(active1.size() != 2);
 
             // There are 2 neutral indicators if there are 0 active indicator in the ONLY SIGNALS intervention type
             if (active1.size() == 0)
