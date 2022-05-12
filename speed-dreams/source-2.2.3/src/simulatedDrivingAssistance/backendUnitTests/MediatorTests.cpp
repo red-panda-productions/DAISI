@@ -272,6 +272,5 @@ TEST(MediatorTests, TimeOutTest)
         float currentTime = currentTick * RCM_MAX_DT_ROBOTS;
         bool isTimedOut = maxTimeSeconds < currentTime;
         ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
-
     }
 }

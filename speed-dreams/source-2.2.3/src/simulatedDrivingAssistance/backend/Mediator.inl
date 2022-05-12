@@ -262,7 +262,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
 template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::TimeOut()
 {
-    float maxTime =  m_decisionMaker.Config.GetMaxTime() * 60;
+    float maxTime = m_decisionMaker.Config.GetMaxTime() * 60;
     float currentTime = m_tickCount * RCM_MAX_DT_ROBOTS;
     return maxTime < currentTime;
 }

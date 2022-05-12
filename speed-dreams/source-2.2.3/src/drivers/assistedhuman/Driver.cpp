@@ -64,7 +64,7 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);
 
-    if(SMediator::GetInstance()->TimeOut())
+    if (SMediator::GetInstance()->TimeOut())
     {
         p_situation->raceInfo.state = RM_RACE_ENDED;
     }
