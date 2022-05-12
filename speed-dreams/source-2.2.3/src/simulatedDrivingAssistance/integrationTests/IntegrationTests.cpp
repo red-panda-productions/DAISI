@@ -4,6 +4,7 @@
 #include "Recorder.h"
 #include <fstream>
 #include <thread>
+#include "TestUtils.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
@@ -14,6 +15,8 @@ namespace filesystem = std::experimental::filesystem;
 #define REPLAY_ARG    "--replay \""
 #define SD_EXTRA_ARGS "--textonly"
 #define BB_ARG        "--bbfile "
+
+#define TIMEOUT 60000
 
 /// @brief              Checks if all files for an integration test are present in the folder
 ///                     and returns the path to all files if they are present
@@ -62,7 +65,15 @@ std::string GenerateBBArguments(const filesystem::path& p_bbfile)
 /// @param  p_processInformation The information handle
 void CheckProcess(PROCESS_INFORMATION p_processInformation)
 {
-    WaitForSingleObject(p_processInformation.hProcess, INFINITE);
+    DWORD await = WaitForSingleObject(p_processInformation.hProcess, TIMEOUT);
+
+    if (await == WAIT_TIMEOUT)
+    {
+        CloseHandle(p_processInformation.hProcess);
+        CloseHandle(p_processInformation.hThread);
+
+        FAIL();
+    }
 
     DWORD exitCode;
 
@@ -89,16 +100,16 @@ void RunTest(const std::string& p_path)
     PROCESS_INFORMATION simulationInfo;
     StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo, SD_EXECUTABLE_WORKING_DIRECTORY);
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
 
     std::string bbArgs = GenerateBBArguments(bbfile);
 
     PROCESS_INFORMATION bbInfo;
     StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo, INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY);
 
-    CheckProcess(simulationInfo);
-
     CheckProcess(bbInfo);
+
+    CheckProcess(simulationInfo);
 }
 
 /// @brief The class that instantiates the different integration tests
