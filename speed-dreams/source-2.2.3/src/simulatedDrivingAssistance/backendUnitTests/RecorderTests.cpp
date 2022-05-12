@@ -434,11 +434,31 @@ TEST(RecorderTests, UpgradeFromV0Test)
     ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
     ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION));
     ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION));
+
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER));
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE));
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE));
 }
 
-TEST(RecorderTests, ValidateV1RecordingTest)
+TEST(RecorderTests, UpgradeFromV1Test)
 {
-    INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
+    INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade)
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER));
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE));
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE));
+}
+
+TEST(RecorderTests, ValidateLatestVersion)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v2-recording", toUpgrade);
 
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
 
@@ -456,6 +476,10 @@ TEST(RecorderTests, ValidateV1RecordingTest)
     ASSERT_STRCASEEQ(category, "road");
     delete[] name;
     delete[] category;
+
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER));
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE));
+    ASSERT_TRUE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE));
 
     ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
 }

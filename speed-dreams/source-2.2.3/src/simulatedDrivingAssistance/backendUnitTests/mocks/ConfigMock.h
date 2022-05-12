@@ -1,18 +1,19 @@
 #pragma once
 #include "InterventionExecutorMock.h"
 #include "ConfigEnums.h"
+#include <cstring>
 
 class ConfigMock
 {
 private:
     InterventionType m_interventionType = 0;
     InterventionExecutorMock m_interventionExecutor = InterventionExecutorMock();
-    DataToStore m_dataToStore;
-    char* m_userID;
-    bool* m_indicators;
-    bool m_asyncConnection;
-    char m_blackBoxFilePath[256];
-    bool m_replayRecorderOn;
+    DataToStore m_dataToStore = {};
+    char* m_userID = nullptr;
+    bool* m_indicators = nullptr;
+    bool m_asyncConnection = false;
+    char m_blackBoxFilePath[256] = "";
+    bool m_replayRecorderOn = false;
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)

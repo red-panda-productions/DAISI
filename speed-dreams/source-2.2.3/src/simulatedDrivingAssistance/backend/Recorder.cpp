@@ -273,10 +273,7 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 /// @brief Update a v1 recording to a v2 recording. This means:
 ///  - Adding allowed black box actions
 /// @param p_settingsHandle Handle to the run settings file
-/// @param p_userRecordingFile Path to the user recordings file
-/// @param p_decisionsRecordingFile Path to the decision recordings file
-/// @param p_simulationFile Path to the simulation file
-void UpdateV1RecordingToV2(void* p_settingsHandle, filesystem::path& p_userRecordingFile, filesystem::path& p_decisionsRecordingFile, filesystem::path& p_simulationFile)
+void UpdateV1RecordingToV2(void* p_settingsHandle)
 {
     // All previous recording had all actions allowed
     GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, BoolToString(true));
@@ -340,7 +337,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     // Update version 1 to version 2 recording
     if (version == 1)
     {
-        UpdateV1RecordingToV2(settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile);
+        UpdateV1RecordingToV2(settingsHandle);
     }
 
     // Set the recording to the latest version and save it
