@@ -37,7 +37,7 @@
 		<attstr name="cockpit 3d" val="no"/>
     	<attstr name="span splits" val="no"/>
     	<attnum name="bezel compensation" unit="%" val="110"/>
-    	<attnum name="Screen distance" val="1.0"/>
+    	<attnum name="screen distance" val="1.0"/>
     	<attnum name="arc ratio" val="1.0"/>
     	<attstr name="monitor type" val="none"/>
 		<attstr name="shadow type" val="light shadowmap"/>

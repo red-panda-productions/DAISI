@@ -119,7 +119,7 @@
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Back"/>
 		<attstr name="h align" val="left"/>
-		<attstr name="tip" val="Go back to the data selection Screen"/>
+		<attstr name="tip" val="Go back to the data selection screen"/>
 		<attnum name="x" val="260"/>
 		<attnum name="y" val="162"/>
 		<attnum name="width" val="320"/>

@@ -33,7 +33,7 @@
 			<attstr name="type" val="text button"/>
 			<attstr name="show box" val="no"/>
 			<attstr name="text" val="Wait, don't delete the data"/>
-			<attstr name="tip" val="return to the previous Screen"/>
+			<attstr name="tip" val="return to the previous screen"/>
 			<attstr name="h align" val="left"/>
 			<attnum name="x" val="260"/>
 			<attnum name="y" val="258"/>

@@ -62,7 +62,7 @@
 	<section name="BezelCompEdit">
 		<attstr name="type" val="edit box"/>	  	  	  	  	  
 		<attnum name="max len" val="15"/>
-		<attstr name="tip" val="Width of monitor wrt visible Screen (ie 120%)"/>
+		<attstr name="tip" val="Width of monitor wrt visible screen (ie 120%)"/>
 		<attnum name="x" val="300"/>
 		<attnum name="y" val="258"/>
 		<attnum name="width" val="165"/>

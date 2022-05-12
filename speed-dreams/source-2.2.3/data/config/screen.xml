@@ -15,13 +15,13 @@
 
 <!DOCTYPE params SYSTEM "../tgf/params.dtd">
 
-<params name="Screen" version="1.19">
+<params name="screen" version="1.19">
 
-	<section name="Validated Screen Properties">
+	<section name="Validated screen Properties">
 		<attnum name="window width" val="1024"/>
 		<attnum name="window height" val="600"/>
 		<attnum name="bpp" val="32"/>
-		<attstr name="full-Screen" in="yes,no" val="no"/>
+		<attstr name="full-screen" in="yes,no" val="no"/>
 		<attstr name="stereo-vision" in="yes,no" val="no"/>
 		<attstr name="alpha channel" in="yes,no" val="yes"/>
 		<attnum name="gamma" val="1"/>

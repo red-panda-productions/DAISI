@@ -52,9 +52,9 @@
           <attstr name="font" val="small_t"/>
           <attstr name="color" val="0xFFFFFF"/>
       </section>
-      <section name="0.Role">
+      <section name="0.role">
           <attstr name="type" val="label"/>
-          <attstr name="tip" val="Role in the team"/>
+          <attstr name="tip" val="role in the team"/>
           <attnum name="max len" val="30"/>
           <attstr name="h align" val="right"/>
           <attnum name="width" val="160"/>
@@ -88,9 +88,9 @@
       <attstr name="font" val="small_t"/>
       <attstr name="color" val="0xFFFFFF"/>
     </section>
-    <section name="1.Role">
+    <section name="1.role">
       <attstr name="type" val="label"/>
-      <attstr name="tip" val="Role in the team"/>
+      <attstr name="tip" val="role in the team"/>
       <attnum name="max len" val="30"/>
       <attstr name="h align" val="right"/>
       <attnum name="width" val="160"/>
@@ -124,9 +124,9 @@
       <attstr name="font" val="small_t"/>
       <attstr name="color" val="0xFFFFFF"/>
     </section>
-    <section name="2.Role">
+    <section name="2.role">
       <attstr name="type" val="label"/>
-      <attstr name="tip" val="Role"/>
+      <attstr name="tip" val="role"/>
       <attnum name="max len" val="30"/>
       <attstr name="h align" val="right"/>
       <attnum name="width" val="160"/>
@@ -223,9 +223,9 @@
       <attstr name="font" val="small_t"/>
       <attstr name="color" val="0xFFFFFF"/>
     </section>
-    <section name="5.Role">
+    <section name="5.role">
       <attstr name="type" val="label"/>
-      <attstr name="tip" val="Role"/>
+      <attstr name="tip" val="role"/>
       <attnum name="max len" val="30"/>
       <attstr name="h align" val="right"/>
       <attnum name="width" val="160"/>

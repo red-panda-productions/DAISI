@@ -75,7 +75,7 @@
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Back"/>
-            <attstr name="tip" val="Go back to previous Screen"/>
+            <attstr name="tip" val="Go back to previous screen"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="278"/>
             <attnum name="y" val="82"/>
