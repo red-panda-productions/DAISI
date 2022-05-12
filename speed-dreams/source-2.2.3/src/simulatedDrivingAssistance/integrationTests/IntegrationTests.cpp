@@ -135,7 +135,6 @@ void KillProcessByName(const char* filename)
     BOOL hRes = Process32First(hSnapShot, &pEntry);
     while (hRes)
     {
-        std::cout << filename << std::endl;
         if (strcmp(pEntry.szExeFile, filename) == 0)
         {
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
@@ -173,6 +172,7 @@ TEST_P(IntegrationTests, IntegrationTest)
         KillAllInterveningProcesses();
         succeeded = RunTest(GetParam());
         tries--;
+        if (!succeeded) std::cout << "FAILED INTEGRATION TEST, TRIES LEFT: " << tries;
     }
 
     ASSERT_TRUE(succeeded);
