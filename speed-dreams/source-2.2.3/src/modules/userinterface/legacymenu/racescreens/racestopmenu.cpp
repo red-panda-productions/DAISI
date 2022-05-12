@@ -149,7 +149,7 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
     //Find human cars
     tRmInfo* pCurrReInfo = LmRaceEngine().inData();
     for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
-        if (pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
+        if(pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
             carName.append(pCurrReInfo->s->cars[i]->_carName);
         }
     }
@@ -391,11 +391,11 @@ RmStopRaceMenu()
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
-                buttonRole[1], screen[1],
-                buttonRole[2], screen[2],
-                buttonRole[3], screen[3],
-                buttonRole[4], screen[4],
-                buttonRole[5], screen[5]);
+               buttonRole[1], screen[1],
+               buttonRole[2], screen[2],
+               buttonRole[3], screen[3],
+               buttonRole[4], screen[4],
+               buttonRole[5], screen[5]);
 }
 
 void
