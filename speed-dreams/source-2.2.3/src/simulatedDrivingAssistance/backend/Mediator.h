@@ -46,7 +46,7 @@ public:
     /// @param p_delete Whether to delete the de mediator
     static void ClearInstance(bool p_delete = true)
     {
-        if(p_delete) delete m_instance;
+        if (p_delete) delete m_instance;
         m_instance = nullptr;
     }
 
