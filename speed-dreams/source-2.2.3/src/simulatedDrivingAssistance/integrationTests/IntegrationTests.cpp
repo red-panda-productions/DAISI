@@ -20,7 +20,8 @@ namespace filesystem = std::experimental::filesystem;
 #define SD_EXTRA_ARGS "--textonly"
 #define BB_ARG        "--bbfile "
 
-#define TIMEOUT 15000
+/// @brief 15 seconds for tests
+#define TIMEOUT 15000 
 
 /// @brief              Checks if all files for an integration test are present in the folder
 ///                     and returns the path to all files if they are present
@@ -67,8 +68,14 @@ std::string GenerateBBArguments(const filesystem::path& p_bbfile)
 
 /// @brief                       Checks and waits on a process until it exits
 /// @param  p_processInformation The information handle
-bool CheckProcess(PROCESS_INFORMATION p_processInformation)
+bool CheckProcess(PROCESS_INFORMATION p_processInformation, bool terminate = false)
 {
+    if (terminate)
+    {
+        TerminateProcess(p_processInformation.hProcess, 9);
+        return false;
+    }
+
     DWORD await = WaitForSingleObject(p_processInformation.hProcess, TIMEOUT);
 
     if (await == WAIT_TIMEOUT)
@@ -114,7 +121,7 @@ bool RunTest(const std::string& p_path)
 
     bool p1 = CheckProcess(bbInfo);
 
-    bool p2 = CheckProcess(simulationInfo);
+    bool p2 = CheckProcess(simulationInfo, !p1);
     return p1 && p2;
 }
 
