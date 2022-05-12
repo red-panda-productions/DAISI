@@ -20,7 +20,7 @@ void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::strin
 /// @param p_inputFile name of file with test data to insert
 void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
-    std::string path(TEST_DATA_DIRECTORY "testSimulationData");
+    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
 
     ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile));
 }
@@ -30,7 +30,7 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 /// @param p_inputFile name of file with test data to insert
 void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
-    std::string path(TEST_DATA_DIRECTORY "testSimulationData");
+    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
 
     testing::internal::CaptureStderr();
     p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile);
