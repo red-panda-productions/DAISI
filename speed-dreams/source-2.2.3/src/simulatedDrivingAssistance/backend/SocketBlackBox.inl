@@ -5,6 +5,32 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
+#ifdef TEST
+/// @brief        Executes a statement, and fails if it takes longer than the secs parameter
+/// @param p_secs The timeout parameter
+/// @param p_stmt The statement to be executed
+#define DURATION_LE(p_secs, p_stmt, p_line)                                                     \
+    {                                                                                          \
+        std::promise<bool> completed;                                                          \
+        auto stmt_future = completed.get_future();                                             \
+        std::thread([&](std::promise<bool>& completed) {                                       \
+            p_stmt;                                                                            \
+            completed.set_value(true); },                                    \
+                    std::ref(completed))                                                       \
+            .detach();                                                                         \
+        if (stmt_future.wait_for(std::chrono::seconds(p_secs)) == std::future_status::timeout) \
+        { \
+            std::cout << "timed out (> " << p_secs << " seconds) on line " << p_line << std::endl;                  \
+            throw std::exception("timed out");\
+        }\
+    }
+#else
+
+#define DURATION_LE(p_secs,p_stmt, p_line) p_stmt
+
+#endif
+
+
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
     template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                               \
     template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                     \
@@ -64,11 +90,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     std::cout << "sync" << std::endl;
 
     m_server.AwaitClientConnection();
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),93);
     if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),97);
     msgpack::unpacked msg;
     msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
     std::vector<std::string> orderVec;
@@ -87,7 +113,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::pack(sbuffer, data);
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),116);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
 
     DecisionTuple decisionTuple;
@@ -97,7 +123,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
         SerializeBlackBoxData(sbuffer, &p_tests[i]);
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
-        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+        DURATION_LE(2,m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE),126);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
     }
 
@@ -119,11 +145,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
 
     if (m_asyncConnection)
     {
-        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+        DURATION_LE(2, m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), 148);
     }
     m_server.ReceiveDataAsync();
     m_server.SendData("STOP", 4);
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    DURATION_LE(2, m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), 152);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
     m_server.CloseServer();
     VariablesToReceive.clear();
@@ -192,7 +218,7 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
 
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
-        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+        DURATION_LE(2, m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), 221);
 
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
         return true;

@@ -4,10 +4,10 @@
 #include "Recorder.h"
 #include <fstream>
 #include <thread>
-#include <windows.h>
+#include <Windows.h>
 #include <process.h>
-#include <Tlhelp32.h>
-#include <winbase.h>
+#include <TlHelp32.h>
+#include <Winbase.h>
 #include "TestUtils.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
