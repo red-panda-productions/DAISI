@@ -20,7 +20,7 @@ namespace filesystem = std::experimental::filesystem;
 #define SD_EXTRA_ARGS "--textonly"
 #define BB_ARG        "--bbfile "
 
-#define TIMEOUT 60000
+#define TIMEOUT 15000
 
 /// @brief              Checks if all files for an integration test are present in the folder
 ///                     and returns the path to all files if they are present
@@ -67,16 +67,17 @@ std::string GenerateBBArguments(const filesystem::path& p_bbfile)
 
 /// @brief                       Checks and waits on a process until it exits
 /// @param  p_processInformation The information handle
-void CheckProcess(PROCESS_INFORMATION p_processInformation)
+bool CheckProcess(PROCESS_INFORMATION p_processInformation)
 {
     DWORD await = WaitForSingleObject(p_processInformation.hProcess, TIMEOUT);
 
     if (await == WAIT_TIMEOUT)
     {
+        TerminateProcess(p_processInformation.hProcess,9);
         CloseHandle(p_processInformation.hProcess);
         CloseHandle(p_processInformation.hThread);
 
-        FAIL();
+        return false;
     }
 
     DWORD exitCode;
@@ -86,14 +87,14 @@ void CheckProcess(PROCESS_INFORMATION p_processInformation)
     CloseHandle(p_processInformation.hProcess);
     CloseHandle(p_processInformation.hThread);
 
-    ASSERT_EQ(exitCode, 0);
+    return exitCode == 0;
 
     // extra exit codes can be added here
 }
 
 /// @brief         Runs an integration test
 /// @param  p_path The path to the integration test folder
-void RunTest(const std::string& p_path)
+bool RunTest(const std::string& p_path)
 {
     filesystem::path bbfile;
 
@@ -111,9 +112,10 @@ void RunTest(const std::string& p_path)
     PROCESS_INFORMATION bbInfo;
     StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo, INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY);
 
-    CheckProcess(bbInfo);
+    bool p1 = CheckProcess(bbInfo);
 
-    CheckProcess(simulationInfo);
+    bool p2 = CheckProcess(simulationInfo);
+    return p1 && p2;
 }
 
 /// @brief           https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
@@ -126,6 +128,7 @@ void KillProcessByName(const char* filename)
     BOOL hRes = Process32First(hSnapShot, &pEntry);
     while (hRes)
     {
+        std::cout << filename << std::endl;
         if (strcmp(pEntry.szExeFile, filename) == 0)
         {
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
@@ -155,8 +158,17 @@ class IntegrationTests : public testing::TestWithParam<std::string>
 /// @brief The parameterized test, with all of the information needed for an integration test
 TEST_P(IntegrationTests, IntegrationTest)
 {
-    KillAllInterveningProcesses();
-    RunTest(GetParam());
+    bool succeeded = false;
+    int tries = 3;
+
+    while (!succeeded && tries >= 0)
+    {
+        KillAllInterveningProcesses();
+        succeeded = RunTest(GetParam());
+        tries--;
+    }
+
+    ASSERT_TRUE(succeeded);
 }
 
 /// @brief                  Instantiates the parameterized test

@@ -29,6 +29,16 @@
 #define CONVERT_TO_GEAR_DECISION    DECISION_LAMBDA(p_decisionTuple.SetGear(std::stoi(p_string)))
 #define CONVERT_TO_ACCEL_DECISION   DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
 
+/// @brief		   Checks if the action was reported successfully from IPCLib
+/// @param  p_stmt The action that needs to be checked
+/// @param  p_msg  The message that is pushed to the standard error output when the action has failed
+#define IPC_OK(p_stmt, p_msg)              \
+    if ((p_stmt) != IPCLIB_SUCCEED)        \
+    {                                      \
+        std::cerr << (p_msg) << std::endl; \
+        throw std::exception(p_msg);       \
+    }
+
 template <class BlackBoxData, class PointerManager>
 SocketBlackBox<BlackBoxData, PointerManager>::SocketBlackBox(PCWSTR p_ip, int p_port)
     : m_server(p_ip, p_port)
@@ -192,21 +202,9 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
         m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
         SerializeBlackBoxData(sbuffer, m_currentData);
 
-        m_server.SendData(sbuffer.data(), sbuffer.size());
+        IPC_OK(m_server.SendData(sbuffer.data(), sbuffer.size()), "Failed to send data");
 
-        auto start = std::chrono::system_clock::now();
-
-        bool received = false;
-        while (std::chrono::duration<double> (std::chrono::system_clock::now() - start).count() < 2.0 && !received)
-        {
-            received = m_server.GetData(m_buffer, SBB_BUFFER_SIZE);
-        }
-
-        if (!received)
-        {
-            std::cout << "Failed to receive" << std::endl;
-            throw std::exception();
-        }
+        IPC_OK(m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), "Failed to receive data");
 
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
         return true;
