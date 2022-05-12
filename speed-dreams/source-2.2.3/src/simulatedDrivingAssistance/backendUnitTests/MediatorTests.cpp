@@ -262,10 +262,10 @@ TEST(MediatorTests, TimeOutTest)
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
 
-        int maxTimeMinutes = random.NextInt();
+        int maxTimeMinutes = random.NextInt(0, 1440);
         SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.SetMaxTime(maxTimeMinutes);
 
-        int currentTick = random.NextInt();
+        int currentTick = random.NextInt(0, 14400000);
         SDAConfigMediator::GetInstance()->SetTicks(currentTick);
 
         float maxTimeSeconds = static_cast<float>(maxTimeMinutes) * 60;
