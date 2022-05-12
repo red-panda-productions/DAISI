@@ -82,7 +82,7 @@ TGFCLIENT_API void GfuiShutdown(void);
 
 
 /********************
- * screen Interface *
+ * Screen Interface *
  ********************/
 
 typedef struct ScreenSize
@@ -312,7 +312,7 @@ struct RmInfo;
 typedef struct RmInfo tRmInfo;
 TGFCLIENT_API void (*tfuiIdleCB(tRmInfo *info))(void);
 
-/* screen management */
+/* Screen management */
 TGFCLIENT_API void* GfuiScreenCreate(float *bgColor = 0,
                                      void *userDataOnActivate = 0, tfuiCallback onActivate = 0,
                                      void *userDataOnDeactivate = 0, tfuiCallback onDeactivate = 0,
