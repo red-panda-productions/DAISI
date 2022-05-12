@@ -66,7 +66,7 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 
     if(SMediator::GetInstance()->TimeOut())
     {
-        // TODO: Quick Race now in RACE_STOP state
+        p_situation->raceInfo.state = RM_RACE_ENDED;
     }
 }
 
