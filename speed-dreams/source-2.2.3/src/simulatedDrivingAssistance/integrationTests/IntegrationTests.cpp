@@ -3,6 +3,7 @@
 #include "IntegrationTestConfig.h"
 #include "Recorder.h"
 #include <fstream>
+#include <thread>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
@@ -87,6 +88,8 @@ void RunTest(const std::string& p_path)
 
     PROCESS_INFORMATION simulationInfo;
     StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo, SD_EXECUTABLE_WORKING_DIRECTORY);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     std::string bbArgs = GenerateBBArguments(bbfile);
 
