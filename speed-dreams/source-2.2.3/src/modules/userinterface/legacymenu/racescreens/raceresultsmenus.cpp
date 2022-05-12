@@ -35,14 +35,17 @@
 #include "legacymenu.h"
 #include "racescreens.h"
 
+#include "ConfigEnums.h"
+#include "EndExperiment.h"
+
 
 static int	rmSaveButtonId;
 static int	rmReplayButtonId;
 static void	*rmScrHdle = NULL;
 
-static void rmPracticeResults(void *prevHdle, tRmInfo *info, int start);
-static void rmRaceResults(void *prevHdle, tRmInfo *info, int start);
-static void rmQualifResults(void *prevHdle, tRmInfo *info, const char*pszTitle, int start);
+static void rmPracticeResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion);
+static void rmRaceResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion);
+static void rmQualifResults(void *prevHdle, tRmInfo *info, const char*pszTitle, int start, RaceEndType p_saveWayVersion);
 
 static const int DefaultSimuVersion = 1;
 static const char *SimuVersionList[] =
@@ -109,12 +112,12 @@ rmChgPracticeScreen(void *vprc)
     void		*prevScr = rmScrHdle;
     tRaceCall 	*prc = (tRaceCall*)vprc;
 
-    rmPracticeResults(prc->prevHdle, prc->info, prc->start);
+    rmPracticeResults(prc->prevHdle, prc->info, prc->start, NO_END);
     GfuiScreenRelease(prevScr);
 }
 
 static void
-rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
+rmPracticeResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion)
 {
 	// Used across rmPracticeResults calls when multiple pages.
 	static int NLastLapDamages = 0;
@@ -221,6 +224,9 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
     
     // Add "Continue" button
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
+
+    // Add "Quit" button
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(rmScrHdle, p_saveWayVersion), GfuiScreenActivate);
     
     // Add "Replay" button (if available)
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
@@ -246,6 +252,7 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
 
     GfuiAddKey(rmScrHdle, GFUIK_ESCAPE, "Continue", prevHdle, GfuiScreenReplace, NULL);
     GfuiAddKey(rmScrHdle, GFUIK_RETURN, "Continue", prevHdle, GfuiScreenReplace, NULL);
+    GfuiAddKey(rmScrHdle, GFUIK_SPACE, "Quit", prevHdle, GfuiScreenReplace, NULL);
     GfuiAddKey(rmScrHdle, GFUIK_F12, "Take a Screen Shot", NULL, GfuiScreenShot, NULL);
     GfuiAddKey(rmScrHdle, GFUIK_F1, "Help", rmScrHdle, GfuiHelpScreen, NULL);
 
@@ -259,12 +266,12 @@ rmChgRaceScreen(void *vprc)
     void		*prevScr = rmScrHdle;
     tRaceCall 	*prc = (tRaceCall*)vprc;
 
-    rmRaceResults(prc->prevHdle, prc->info, prc->start);
+    rmRaceResults(prc->prevHdle, prc->info, prc->start, NO_END);
     GfuiScreenRelease(prevScr);
 }
 
 static void
-rmRaceResults(void *prevHdle, tRmInfo *info, int start)
+rmRaceResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion)
 {
     void		*results = info->results;
     const char		*race = info->_reRaceName;
@@ -390,6 +397,9 @@ rmRaceResults(void *prevHdle, tRmInfo *info, int start)
     // Add "Continue" button
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
 
+    // Add "Quit" button
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(rmScrHdle, p_saveWayVersion), GfuiScreenActivate);
+
     // Add "Replay" button (if available)
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
     paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
@@ -429,12 +439,12 @@ rmChgQualifScreen(void *vprc)
     void		*prevScr = rmScrHdle;
     tRaceCall 	*prc = (tRaceCall*)vprc;
 
-    rmQualifResults(prc->prevHdle, prc->info, prc->title, prc->start);
+    rmQualifResults(prc->prevHdle, prc->info, prc->title, prc->start, NO_END);
     GfuiScreenRelease(prevScr);
 }
 
 static void
-rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start)
+rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start, RaceEndType p_saveWayVersion)
 {
     void		*results = info->results;
     const char		*race = info->_reRaceName;
@@ -519,9 +529,9 @@ rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start)
     // Add "Continue" button 
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
     
-    //Create 'save' button in the bottom right
-    //rmSaveButtonId = GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "savebutton", info, rmSaveRes);
-
+    // Add "Quit" button
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(rmScrHdle, p_saveWayVersion), GfuiScreenActivate);
+    
     if (i < nbCars) {
 		RmNextRace.prevHdle = prevHdle;
 		RmNextRace.info     = info;
@@ -712,18 +722,18 @@ RmShowResults(void *prevHdle, tRmInfo *info)
 			}
 			
 			if (bQualif)
-				rmQualifResults(prevHdle, info, "Practice", 0);
+				rmQualifResults(prevHdle, info, "Practice", 0, NO_END);
 			else
-				rmPracticeResults(prevHdle, info, 0);
+				rmPracticeResults(prevHdle, info, 0, NO_END);
 			break;
 		}
 
 		case RM_TYPE_RACE:
-			rmRaceResults(prevHdle, info, 0);
+			rmRaceResults(prevHdle, info, 0, NO_END);
 			break;
 			
 		case RM_TYPE_QUALIF:
-			rmQualifResults(prevHdle, info, "Qualification", 0);
+			rmQualifResults(prevHdle, info, "Qualification", 0, NO_END);
 			break;
     }//switch raceType
 }//RmShowResults

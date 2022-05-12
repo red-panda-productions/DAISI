@@ -183,6 +183,28 @@
       <attstr name="pushed image" val="data/img/arrow-up-pushed.png"/>
     </section>
 
+	  <section name="QuitButton">
+		  <attstr name="type" val="text button"/>
+		  <attstr name="show box" val="no"/>
+		  <attstr name="text" val="Quit"/>
+		  <attstr name="tip" val="Quit the experiment"/>
+		  <attstr name="h align" val="left"/>
+		  <attnum name="x" val="550"/>
+		  <attnum name="y" val="44"/>
+		  <attnum name="width" val="120"/>
+		  <attstr name="font" val="medium"/>
+		  <attstr name="color" val="0xFFFFFF"/>
+		  <attstr name="focused color" val="0xFFFFFF"/>
+		  <attstr name="pushed color" val="0xFFFFFF"/>
+		  <attnum name="image x" val="-10"/>
+		  <attnum name="image y" val="4"/>
+		  <attnum name="image width" val="60"/>
+		  <attnum name="image height" val="16"/>
+		  <attstr name="focused image" val="data/img/button-left-focused.png"/>
+		  <attstr name="enabled image" val="data/img/button-left.png"/>
+		  <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+	  </section>
+
     <section name="ContinueButton">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>

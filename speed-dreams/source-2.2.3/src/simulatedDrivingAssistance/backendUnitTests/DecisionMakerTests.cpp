@@ -171,18 +171,6 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
 }
 
-///
-/* TEST(DecisionMakerTests, EndExperimentTest)
-{
-    TDecisionMaker decisionMaker;
-    InitializeTest(decisionMaker);
-    chdir(SD_DATADIR_SRC);
-    ASSERT_NO_THROW(decisonMaker.ExperimentStop());
-    std::experimental::filesystem::path path = *static_cast << std::experimental::filesystem::path* > (VariableStore::GetInstance()).Variables[0]);
-    ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
-
-}*/
-
 /// @brief Tests if the GetFileDataStorage correctly gets the variable
 TEST(DecisionMakerTests, GetFileDataStorageTest)
 {

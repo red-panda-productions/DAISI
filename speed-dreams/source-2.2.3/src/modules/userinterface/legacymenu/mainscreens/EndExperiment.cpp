@@ -9,9 +9,8 @@
 static void* MenuHandle = NULL;
 
 static void
-onAcceptExit(void* /* dummy */)
+OnAcceptExit(void* /* dummy */)
 {
-    // SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
     LegacyMenu::self().quit();
 }
@@ -27,32 +26,23 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 
     void* param = GfuiMenuLoad("endexperimentscreen.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    // GfuiMenuCreateStaticControls(MenuHandle, param);
 
     switch (p_saveWayVersion)
     {
-        case NO_END:
-        {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, onAcceptExit);
-
-            break;
-        }
+        case NO_END:        
+        case EXIT: 
+        case ABORT:
         case RESTART:
         {
-        }
-        case EXIT:
-        {
-        }
-        case ABORT:
-        {
+            GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, OnAcceptExit);
+            break;
         }
         default:
         {
             throw std::runtime_error("incorrect 'p_experimentWayVersion', have you defined the new option in endexperiment.h?");
         }
     }
-    // GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, onAcceptExit);
-    GfuiAddKey(MenuHandle, GFUIK_SPACE, "No, back to the game", NULL, onAcceptExit, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_SPACE, "No, back to the game", NULL, OnAcceptExit, NULL);
 
     GfParmReleaseHandle(param);
 
