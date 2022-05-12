@@ -20,6 +20,12 @@
 /// @brief The amount of tests for multiple tests
 #define TEST_AMOUNT 20
 
+// @brief The amount of minutes in a day
+#define DAY_MINUTES 1440
+
+// @brief The amount of ticks in a day for 0.006 ms per tick (standard)
+#define DAY_TICKS 14400000
+
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
 
@@ -262,10 +268,10 @@ TEST(MediatorTests, TimeOutTest)
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
 
-        int maxTimeMinutes = random.NextInt(0, 1440);
+        int maxTimeMinutes = random.NextInt(0, DAY_MINUTES);
         SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.SetMaxTime(maxTimeMinutes);
 
-        unsigned long currentTick = random.NextUInt(14400000);
+        unsigned long currentTick = random.NextUInt(DAY_TICKS);
         SDAConfigMediator::GetInstance()->SetTicks(currentTick);
 
         float maxTimeSeconds = static_cast<float>(maxTimeMinutes) * 60;

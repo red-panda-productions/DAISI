@@ -53,9 +53,9 @@ public:
         return &m_decisionMaker;
     }
 
-    void SetTicks(unsigned long tick)
+    void SetTicks(unsigned long p_tick)
     {
-        m_tickCount = tick;
+        m_tickCount = p_tick;
     }
 
 #endif
