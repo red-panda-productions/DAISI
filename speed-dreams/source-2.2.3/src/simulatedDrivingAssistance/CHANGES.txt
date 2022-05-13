@@ -28,6 +28,10 @@ Added:
         DataSelectionMenu.cpp
         DeveloperMenu.h
         DeveloperMenu.cpp
+        SaveMenu.h
+        SaveMenu.cpp
+        Conformation.h
+        Conformation.cpp
   data/
     data/
         config/
@@ -40,12 +44,15 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            head.png
         indicators/
             *
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
             DeveloperMenu.xml
+            SaveMenu.xml
+            ConformationMenu.xml
     drivers/
         assistedhuman/
             *
@@ -190,6 +197,8 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
+                  added    SaveMenu.h and .cpp
+                  added    Confirmation.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                 legacymenu.h
                     ActivateResearcherMenu()
@@ -210,10 +219,18 @@ Changed:
                     changed  MainMenuInit()
                 optionsmenu.cpp
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                exitmenu.h
+                    changed  ExitMenuInit(): more parameters
+                exitmenu.cpp
+                    changed  OnAcceptExit()
+                    changed  ExitMenuInit()
             racescreens/
                 racestopmenu.cpp
                     RmStopRaceMenu()
                     changed  AssistedHuman is a human
+                    changed  rmAbortRaceHookHandle()
+                    changed  rmRestartRaceHooKHandle()
+                    changed  rmQuitHookActive()
                     removed rmProgressiveTimeModifier.start() call
                     removed controls menu
                 racerunningmenus.cpp

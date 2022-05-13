@@ -9,7 +9,8 @@
 static void* MenuHandle = nullptr;
 
 /// @brief tells the mediator to not save experiment data and close SpeedDreams
-static void OnAcceptExit(void* /* dummy */)
+static void 
+OnAcceptExit(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files

@@ -36,6 +36,7 @@
 #include <forcefeedbackconfig.h>
 #endif
 
+
 extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
 
 extern bool rmPreRacePause;
@@ -198,6 +199,7 @@ static void *QuitHdle[6] = { 0, 0, 0, 0, 0, 0 };
 
 // Descriptor for 1 button.
 typedef struct {
+
     const char* role;  // Button role.
     void       *screen; // Screen to activate if clicked.
 
@@ -376,6 +378,7 @@ RmStopRaceMenu()
         if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0) {
             GfLogInfo("Matching human driver found, setting index to %d.\n", j+1);
             curPlayerIdx = j+1;
+
 
 #if SDL_FORCEFEEDBACK
             buttonRole[i] = "forcefeedback";
