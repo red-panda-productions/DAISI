@@ -26,10 +26,10 @@
 #include "SaveMenu.h"
 #include "mainmenu.h"
 
-static void *MenuHandle = NULL;
+static void* MenuHandle = NULL;
 
 static void
-OnAcceptExit(void * /* dummy */)
+OnAcceptExit(void*  /* dummy */)
 {
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
     LegacyMenu::self().quit();
@@ -52,7 +52,7 @@ OnAcceptExit(void * /* dummy */)
  *
  */
 
-void *ExitMenuInit(void *p_prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
+void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -61,7 +61,7 @@ void *ExitMenuInit(void *p_prevMenu, bool p_raceExit, RaceEndType p_saveWayVersi
 
     MenuHandle = GfuiScreenCreate();
 
-    void *param = GfuiMenuLoad("exitmenu.xml");
+    void* param = GfuiMenuLoad("exitmenu.xml");
 
     GfuiMenuCreateStaticControls(MenuHandle, param);
     // looks where the exit game gets called and change the button functionality based on it.

@@ -6,10 +6,10 @@
 #include "ConfirmationMenu.h"
 #include "mainmenu.h"
 
-static void *MenuHandle = nullptr;
+static void* MenuHandle = nullptr;
 
 /// @brief tells the mediator to not save experiment data and close SpeedDreams
-static void OnAcceptExit(void * /* dummy */)
+static void OnAcceptExit(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
@@ -17,14 +17,14 @@ static void OnAcceptExit(void * /* dummy */)
 }
 
 /// @brief tells the mediator to not save experiment data and restart SpeedDreams
-static void OnAcceptRestart(void * /* dummy */)
+static void OnAcceptRestart(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().restartRace();
 }
 
 /// @brief tells the mediator to save experiment data and abort the race
-static void OnAcceptAbort(void * /* dummy */)
+static void OnAcceptAbort(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().abortRace();
@@ -33,7 +33,7 @@ static void OnAcceptAbort(void * /* dummy */)
 /// @brief                  create a confirmation screen
 /// @param p_prevMenu       the previous menu from where it came
 /// @param P_saveWayVersion enum that decided how you got to the save screen
-void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
+void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -42,7 +42,7 @@ void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
 
     MenuHandle = GfuiScreenCreate();
 
-    void *param = GfuiMenuLoad("confirmationmenu.xml");
+    void* param = GfuiMenuLoad("confirmationmenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
     switch (p_saveWayVersion)  ////add different button functionality based on the RaceEndType
     {
@@ -64,7 +64,7 @@ void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
         default:
         {
             // throws an error, invalid option
-            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in configEnum.h?");
+            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in ConfigEnum.h?");
         }
     }
     // add button functionality

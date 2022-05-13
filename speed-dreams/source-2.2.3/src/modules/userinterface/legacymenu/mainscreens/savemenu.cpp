@@ -7,10 +7,10 @@
 #include "SaveMenu.h"
 #include "mainmenu.h"
 
-static void *MenuHandle = nullptr;
+static void* MenuHandle = nullptr;
 
 /// @brief tells the mediator to save experiment data and close SpeedDreams
-static void OnAcceptExit(void * /* dummy */)
+static void OnAcceptExit(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(true);
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
@@ -18,14 +18,14 @@ static void OnAcceptExit(void * /* dummy */)
 }
 
 /// @brief tells the mediator to save experiment data and restart the race
-static void OnAcceptRestart(void * /* dummy */)
+static void OnAcceptRestart(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(true);
     LmRaceEngine().restartRace();
 }
 
 /// @brief tells the mediator to save experiment data and abort the race
-static void OnAcceptAbort(void * /* dummy */)
+static void OnAcceptAbort(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(true);
     LmRaceEngine().abortRace();
@@ -34,7 +34,7 @@ static void OnAcceptAbort(void * /* dummy */)
 /// @brief                  create a save data screen
 /// @param p_prevMenu       the previous menu from where it came
 /// @param P_saveWayVersion enum that decided how you got to the save screen
-void *SaveMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
+void* SaveMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle)
     {
@@ -43,7 +43,7 @@ void *SaveMenuInit(void *p_prevMenu, RaceEndType p_saveWayVersion)
 
     MenuHandle = GfuiScreenCreate();
 
-    void *param = GfuiMenuLoad("savemenu.xml");
+    void* param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
     // add button functionality
     GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConfirmationMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
