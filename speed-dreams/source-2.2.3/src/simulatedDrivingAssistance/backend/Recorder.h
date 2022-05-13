@@ -42,7 +42,7 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_PARTICIPANT_CONTROL_RECORD_SESSION              "record_session"
 #define KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION           "bb_record_session"
 
-#define KEY_MAX_TIME                                        "max_time"
+#define KEY_MAX_TIME "max_time"
 
 #define CURRENT_RECORDER_VERSION 1
 #define DEFAULT_MAX_TIME         10
