@@ -36,7 +36,7 @@
 #include "racescreens.h"
 
 #include "ConfigEnums.h"
-#include "EndExperiment.h"
+#include "EndExperimentMenu.h"
 
 
 static int	rmSaveButtonId;
