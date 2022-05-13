@@ -29,8 +29,8 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 
     switch (p_saveWayVersion)
     {
-        case NO_END:        
-        case EXIT: 
+        case NO_END:
+        case EXIT:
         case ABORT:
         case RESTART:
         {
