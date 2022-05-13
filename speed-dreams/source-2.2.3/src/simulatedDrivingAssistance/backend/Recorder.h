@@ -23,6 +23,7 @@ namespace filesystem = std::experimental::filesystem;
 #define PATH_INTERVENTION_TYPE   "intervention_type"
 #define PATH_INDICATORS          "indicators"
 #define PATH_VERSION             "version"
+#define PATH_MAX_TIME            "max_time"
 
 #define KEY_INDICATOR_AUDIO "audio"
 #define KEY_INDICATOR_ICON  "icon"
@@ -41,7 +42,10 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_PARTICIPANT_CONTROL_RECORD_SESSION              "record_session"
 #define KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION           "bb_record_session"
 
+#define KEY_MAX_TIME                                        "max_time"
+
 #define CURRENT_RECORDER_VERSION 1
+#define DEFAULT_MAX_TIME         10
 
 #define DECISION_RECORD_PARAM_AMOUNT 4
 
