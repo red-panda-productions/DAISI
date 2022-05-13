@@ -29,7 +29,7 @@
 static void* MenuHandle = NULL;
 
 static void
-OnAcceptExit(void*  /* dummy */)
+OnAcceptExit(void * /* dummy */)
 {
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
     LegacyMenu::self().quit();

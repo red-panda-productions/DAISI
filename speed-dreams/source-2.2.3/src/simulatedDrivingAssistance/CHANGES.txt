@@ -222,7 +222,6 @@ Changed:
                 exitmenu.h
                     changed  ExitMenuInit(): more parameters
                 exitmenu.cpp
-                    changed  OnAcceptExit()
                     changed  ExitMenuInit()
             racescreens/
                 racestopmenu.cpp
