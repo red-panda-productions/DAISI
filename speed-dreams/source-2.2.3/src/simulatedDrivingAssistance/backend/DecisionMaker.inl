@@ -154,12 +154,6 @@ void TEMP_DECISIONMAKER::RaceStop()
     m_recorder = nullptr;
 }
 
-/// @brief When the experiment stops, the
-template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-void TEMP_DECISIONMAKER::ExperimentStop()
-{
-}
-
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 {

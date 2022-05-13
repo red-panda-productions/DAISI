@@ -3,13 +3,12 @@
 #include "legacymenu.h"
 
 #include "Mediator.h"
-#include "EndExperiment.h"
+#include "EndExperimentMenu.h"
 #include "mainmenu.h"
 
 static void* MenuHandle = NULL;
 
-static void
-OnAcceptExit(void* /* dummy */)
+static void OnAcceptExit(void* /* dummy */)
 {
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
     LegacyMenu::self().quit();
@@ -24,7 +23,7 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 
     MenuHandle = GfuiScreenCreate();
 
-    void* param = GfuiMenuLoad("endexperimentscreen.xml");
+    void* param = GfuiMenuLoad("EndExperimentMenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
 
     switch (p_saveWayVersion)

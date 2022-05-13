@@ -24,7 +24,7 @@
 #include "exitmenu.h"
 #include "mainmenu.h"
 #include "ConfigEnums.h"
-#include "EndExperiment.h"
+#include "EndExperimentMenu.h"
 
 
 static void *MenuHandle = NULL;
@@ -53,7 +53,7 @@ onAcceptExit(void * /* dummy */)
  *	
  */
 
-void *ExitMenuInit(void *prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
+void* ExitMenuInit(void* prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle) {
 		GfuiScreenRelease(MenuHandle);
