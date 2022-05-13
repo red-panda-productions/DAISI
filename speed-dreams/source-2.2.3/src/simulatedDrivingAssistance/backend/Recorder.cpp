@@ -268,7 +268,6 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 /// @brief Update a v1 recording to a v2 recording. This means:
 ///  - Updating the replay driver to work with the max time
 /// @param p_settingsHandle Handle to the run settings file
-/// @return true if updating was successful
 void UpdateV1RecorderToV2(void* p_settingsHandle)
 {
     GfParmSetNum(p_settingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, DEFAULT_MAX_TIME);
