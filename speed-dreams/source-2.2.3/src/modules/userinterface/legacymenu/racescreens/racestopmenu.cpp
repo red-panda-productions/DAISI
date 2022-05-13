@@ -45,7 +45,7 @@ static void *hscreen = 0;
 static int curPlayerIdx = 0;
 
 // Abort race hook ******************************************************
-static void    *pvAbortRaceHookHandle = nullptr;
+static void    *pvAbortRaceHookHandle = 0;
 
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
@@ -111,7 +111,7 @@ RmBackToRaceHookInit()
 }
 
 // Restart race hook ***************************************************
-static void *pvRestartRaceHookHandle = nullptr;
+static void *pvRestartRaceHookHandle = 0;
 
 static void
 rmRestartRaceHookActivate(void * /* dummy */)

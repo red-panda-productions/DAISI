@@ -6,11 +6,10 @@
 #include "ConfirmationMenu.h"
 #include "mainmenu.h"
 
-static void* MenuHandle = nullptr;
+static void* s_menuHandle = nullptr;
 
 /// @brief tells the mediator to not save experiment data and close SpeedDreams
-static void 
-OnAcceptExit(void* /* dummy */)
+static void OnAcceptExit(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
@@ -36,30 +35,30 @@ static void OnAcceptAbort(void* /* dummy */)
 /// @param P_saveWayVersion enum that decided how you got to the save screen
 void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
 {
-    if (MenuHandle)
+    if (s_menuHandle)
     {
-        GfuiScreenRelease(MenuHandle);
+        GfuiScreenRelease(s_menuHandle);
     }
 
-    MenuHandle = GfuiScreenCreate();
+    s_menuHandle = GfuiScreenCreate();
 
     void* param = GfuiMenuLoad("confirmationmenu.xml");
-    GfuiMenuCreateStaticControls(MenuHandle, param);
+    GfuiMenuCreateStaticControls(s_menuHandle, param);
     switch (p_saveWayVersion)  ////add different button functionality based on the RaceEndType
     {
         case EXIT:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", nullptr, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "imsure", nullptr, OnAcceptExit);
             break;
         }
         case RESTART:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", nullptr, OnAcceptRestart);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "imsure", nullptr, OnAcceptRestart);
             break;
         }
         case ABORT:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "imsure", nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "imsure", nullptr, OnAcceptAbort);
             break;
         }
         default:
@@ -69,13 +68,13 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
         }
     }
     // add button functionality
-    GfuiMenuCreateButtonControl(MenuHandle, param, "waitdontdelete", p_prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, "waitdontdelete", p_prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
 
-    GfuiMenuDefaultKeysAdd(MenuHandle);
+    GfuiMenuDefaultKeysAdd(s_menuHandle);
     // add keyboard key functionality
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", p_prevMenu, GfuiScreenActivate, nullptr);
+    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", p_prevMenu, GfuiScreenActivate, nullptr);
 
-    return MenuHandle;
+    return s_menuHandle;
 }

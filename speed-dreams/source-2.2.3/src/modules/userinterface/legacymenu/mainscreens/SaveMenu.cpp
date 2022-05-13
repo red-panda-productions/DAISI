@@ -7,7 +7,7 @@
 #include "SaveMenu.h"
 #include "mainmenu.h"
 
-static void* MenuHandle = nullptr;
+static void* s_menuHandle = nullptr;
 
 /// @brief tells the mediator to save experiment data and close SpeedDreams
 static void OnAcceptExit(void* /* dummy */)
@@ -36,32 +36,32 @@ static void OnAcceptAbort(void* /* dummy */)
 /// @param P_saveWayVersion enum that decided how you got to the save screen
 void* SaveMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
 {
-    if (MenuHandle)
+    if (s_menuHandle)
     {
-        GfuiScreenRelease(MenuHandle);
+        GfuiScreenRelease(s_menuHandle);
     }
 
-    MenuHandle = GfuiScreenCreate();
+    s_menuHandle = GfuiScreenCreate();
 
     void* param = GfuiMenuLoad("savemenu.xml");
-    GfuiMenuCreateStaticControls(MenuHandle, param);
+    GfuiMenuCreateStaticControls(s_menuHandle, param);
     // add button functionality
-    GfuiMenuCreateButtonControl(MenuHandle, param, "dontsave", ConfirmationMenuInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, "dontsave", ConfirmationMenuInit(s_menuHandle, p_saveWayVersion), GfuiScreenActivate);
     switch (p_saveWayVersion)  // add different button functionality based on the RaceEndType
     {
         case EXIT:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "yessave", nullptr, OnAcceptExit);
             break;
         }
         case RESTART:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, OnAcceptRestart);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "yessave", nullptr, OnAcceptRestart);
             break;
         }
         case ABORT:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "yessave", nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "yessave", nullptr, OnAcceptAbort);
             break;
         }
         default:
@@ -72,9 +72,9 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
     }
     GfParmReleaseHandle(param);
 
-    GfuiMenuDefaultKeysAdd(MenuHandle);
+    GfuiMenuDefaultKeysAdd(s_menuHandle);
     // add keyboard key functionality
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "Wait, changed my mind", p_prevMenu, GfuiScreenActivate, nullptr);
+    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "Wait, changed my mind", p_prevMenu, GfuiScreenActivate, nullptr);
 
-    return MenuHandle;
+    return s_menuHandle;
 }
