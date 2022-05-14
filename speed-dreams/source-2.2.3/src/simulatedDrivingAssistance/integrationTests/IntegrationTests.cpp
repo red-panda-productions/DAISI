@@ -162,7 +162,7 @@ class IntegrationTests : public testing::TestWithParam<std::string>
 };
 
 /// @brief The parameterized test, with all of the information needed for an integration test
-TEST_P(IntegrationTests, IntegrationTest)
+TEST_P(IntegrationTests, RunReplayRecording)
 {
     bool succeeded = false;
     int tries = 3;
