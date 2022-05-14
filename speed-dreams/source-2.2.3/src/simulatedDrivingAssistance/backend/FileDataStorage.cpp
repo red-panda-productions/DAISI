@@ -1,9 +1,11 @@
 #include <ostream>
 #include "FileDataStorage.h"
+#include <map>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 
 #include <experimental/filesystem>
+#include <iostream>
 
 // Write a string to the stream, as the string in text format (without conversion)
 #define WRITE_STRING(stream, string) stream << string << "\n"
@@ -58,6 +60,7 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     // Initialize member variables
     m_saveSettings = p_saveSettings;
     m_outputStream.open(filePath);
+    m_compressionStep = 0;
 
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
@@ -86,6 +89,18 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     return {filePath};
 }
 
+/// @brief Sets the compression rate of the file data storage
+void FileDataStorage::SetCompressionRate(int p_compressionRate)
+{
+    m_compressionRate = p_compressionRate;
+}
+
+/// @brief Gets the compression rate of the file data storage
+int FileDataStorage::GetCompressionRate()
+{
+    return m_compressionRate;
+}
+
 /// @brief Shutdown the file data storage.
 /// End result: any possible final data is written and the file is released.
 void FileDataStorage::Shutdown()
@@ -100,28 +115,55 @@ void FileDataStorage::Shutdown()
 /// @param p_timestamp Current tick
 void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
 {
-    WRITE_VAR(m_outputStream, p_timestamp);
+    // save all values from this time step
     if (m_saveSettings.CarData)
     {
         Posd pos = p_car->pub.DynGCg.pos;
         tDynPt mov = p_car->pub.DynGC;
-        WRITE_VAR(m_outputStream, pos.x);             // x-position
-        WRITE_VAR(m_outputStream, pos.y);             // y-position
-        WRITE_VAR(m_outputStream, pos.z);             // z-position
-        WRITE_VAR(m_outputStream, pos.ax);            // x-direction
-        WRITE_VAR(m_outputStream, pos.ay);            // y-direction
-        WRITE_VAR(m_outputStream, pos.az);            // z-direction
-        WRITE_VAR(m_outputStream, mov.vel.x);         // speed
-        WRITE_VAR(m_outputStream, mov.acc.x);         // acceleration
-        WRITE_VAR(m_outputStream, p_car->priv.gear);  // gear
+        AddForAveraging(m_totalPosX, pos.x);         // x-position
+        AddForAveraging(m_totalPosY, pos.y);         // y-position
+        AddForAveraging(m_totalPosZ, pos.z);         // z-position
+        AddForAveraging(m_totalPosAx, pos.ax);       // x-direction
+        AddForAveraging(m_totalPosAy, pos.ay);       // y-direction
+        AddForAveraging(m_totalPosAz, pos.az);       // z-direction
+        AddForAveraging(m_totalMovVelX, mov.vel.x);  // speed
+        AddForAveraging(m_totalMovAccX, mov.acc.x);  // acceleration
+        // AddToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
     }
     if (m_saveSettings.HumanData)
     {
         tCarCtrl ctrl = p_car->ctrl;
-        WRITE_VAR(m_outputStream, ctrl.steer);      // steer
-        WRITE_VAR(m_outputStream, ctrl.brakeCmd);   // brake
-        WRITE_VAR(m_outputStream, ctrl.accelCmd);   // gas
-        WRITE_VAR(m_outputStream, ctrl.clutchCmd);  // clutch
+        // AddToArray(m_steerValues, ctrl.steer, m_compressionStep);       // steer
+        // AddToArray(m_brakeValues, ctrl.brakeCmd, m_compressionStep);    // brake
+        // AddToArray(m_accelValues, ctrl.accelCmd, m_compressionStep);    // gas
+        // AddToArray(m_clutchValues, ctrl.clutchCmd, m_compressionStep);  // clutch
+    }
+
+    m_compressionStep++;
+
+    // save to the file at the end of the compression time step
+    if (m_compressionStep % m_compressionRate == 0)
+    {
+        WRITE_VAR(m_outputStream, p_timestamp);
+        if (m_saveSettings.CarData)
+        {
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));     // x-position
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));     // y-position
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));     // z-position
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));    // x-direction
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));    // y-direction
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));    // z-direction
+            WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));  // speed
+            WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));  // acceleration
+            // WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+        }
+        if (m_saveSettings.HumanData)
+        {
+            // WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
+            // WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
+            // WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
+            // WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+        }
     }
 }
 
@@ -158,4 +200,84 @@ void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
         WRITE_VAR(m_outputStream, p_decisions.GetLights());
     }
     WRITE_STRING(m_outputStream, "NONE");
+}
+
+/// @brief Add the new value to the total of the current time steps
+/// @param p_total The current total of the variable
+/// @param p_value The new value of this timestep for the variable
+void FileDataStorage::AddForAveraging(float& p_total, float p_value)
+{
+    p_total += p_value;
+}
+
+/// @brief Calculates the average of the past time steps for a variable and resets it
+/// @param p_total The current total of the variable
+/// @return The average of the past time steps for a variable
+float FileDataStorage::GetAverage(float& p_total)
+{
+    float p_average = p_total / static_cast<float>(m_compressionRate);
+    p_total = 0;
+    return p_average;
+}
+
+/// @brief Add the new value to the array in the correct compression step
+/// @param p_values Array with values from the current compression step
+/// @param p_value The new value of this timestep for the variable
+/// @param p_compressionStep The current compression step
+void FileDataStorage::AddToArray(float p_values[], float p_value, unsigned long p_compressionStep)
+{
+    int p_placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(m_compressionRate));
+    p_values[p_placeInArray] = p_value;
+}
+
+/// @brief Get the median of the current compression step
+/// @param p_values Array with values from the current compression step
+/// @return The median of the past time steps for a variable
+float FileDataStorage::GetMedian(float p_values[])
+{
+    std::sort(p_values, p_values + m_compressionRate);
+    int middle = static_cast<int>(std::floor(static_cast<float>(m_compressionRate) / 2));
+    return p_values[middle];
+}
+
+/// @brief Get the least common value of the current compression step
+/// @param p_values Array with values from the current compression step
+/// @return The least common in an array for a variable
+float FileDataStorage::GetLeastCommon(float p_values[])
+{
+    std::map<float, int> p_frequencies;
+
+    // list of all values in p_values
+    float* p_valuesList = new float[m_compressionRate];
+    int p_valueCount = 0;
+
+    // create a map from values in p_values to the corresponding frequencies
+    for (int i = 0; i < m_compressionRate; i++)
+    {
+        if (p_frequencies[p_values[i]])
+        {
+            p_frequencies[p_values[i]]++;
+        }
+        else
+        {
+            p_frequencies[p_values[i]] = 1;
+            p_valuesList[p_valueCount] = p_values[i];
+            p_valueCount++;
+        }
+    }
+
+    float p_leastCommon;
+    int p_minCount = m_compressionRate + 1;
+
+    // find the value with the lowest frequency
+    for (int i = 0; i < p_valueCount; i++)
+    {
+        if (p_frequencies[p_valuesList[i]] < p_minCount)
+        {
+            p_leastCommon = p_valuesList[i];
+            p_minCount = p_frequencies[p_valuesList[i]];
+        }
+    }
+
+    return p_leastCommon;
 }

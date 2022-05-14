@@ -34,6 +34,12 @@
 /// @brief Get an unsigned long variable "tickCount" with a random value
 #define GET_RANDOM_TICKCOUNT unsigned long tickCount = random.NextUInt();
 
+/// @brief The amount of tests for multiple tests
+#define TEST_AMOUNT 20
+
+/// @brief Standard compression rate
+#define COMPRESSION_RATE 5
+
 /// @brief Get a tCarElt variable "car" and fill it with random data for variables relevant to the FileDataStorage system.
 #define GET_RANDOM_CAR                          \
     tCarElt car = {};                           \
@@ -400,3 +406,168 @@ TEST(FileDataStorageTests, WriteSameFileTwice)
 
 /// @brief Test that the FileDataStorage works properly when we only write the initial data and no ticks
 TEST_CASE(FileDataStorageTests, WriteNoTicks, TestNoStorageWithTimestamps, (0))
+
+/// @brief Test for checking the compression rate is correctly set
+TEST(FileDataStorageTests, SetCompressionsRateTest)
+{
+    Random random;
+    FileDataStorage fileDataStorage;
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        int p_compressionRate = random.NextInt();
+        fileDataStorage.SetCompressionRate(p_compressionRate);
+
+        ASSERT_EQ(p_compressionRate, fileDataStorage.GetCompressionRate());
+    }
+}
+/// @brief Test that values correctly gets added to the sum
+TEST(FileDataStorageTests, AddForAveragingTest)
+{
+    Random random;
+    FileDataStorage fileDataStorage;
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        float p_total = random.NextFloat();
+        float p_value = random.NextFloat();
+        float p_newTotal = p_total + p_value;
+
+        fileDataStorage.AddForAveraging(p_total, p_value);
+
+        ASSERT_EQ(p_total, p_newTotal);
+    }
+}
+
+/// @brief Test GetAverage correctly returns the average and sets the value to 0
+TEST(FileDataStorageTests, GetAverageTest)
+{
+    Random random;
+    FileDataStorage fileDataStorage;
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        float p_total = random.NextFloat();
+
+        // compression rate should be uneven and larger than 0
+        int p_compressionRate = random.NextInt(1, 100) * 2 + 1;
+        fileDataStorage.SetCompressionRate(p_compressionRate);
+
+        float average = p_total / static_cast<float>(p_compressionRate);
+
+        ASSERT_EQ(average, fileDataStorage.GetAverage(p_total));
+        ASSERT_EQ(p_total, 0);
+    }
+}
+
+/// @brief Test that values correctly get added to the array
+TEST(FileDataStorageTests, AddToArrayTest)
+{
+    Random random;
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(COMPRESSION_RATE);
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        float p_value = random.NextFloat();
+        auto p_compressionStep = static_cast<unsigned long>(random.NextUInt());
+
+        float p_values[COMPRESSION_RATE];
+        float p_originalValues[COMPRESSION_RATE];
+        for (int j = 0; j < COMPRESSION_RATE; j++)
+        {
+            float p_randomValue = random.NextFloat();
+            p_values[j] = p_randomValue;
+            p_originalValues[j] = p_randomValue;
+        }
+
+        int p_placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(COMPRESSION_RATE));
+
+        fileDataStorage.AddToArray(p_values, p_value, p_compressionStep);
+
+        for (int j = 0; j < COMPRESSION_RATE; j++)
+        {
+            if (j == p_placeInArray)
+            {
+                ASSERT_EQ(p_values[p_placeInArray], p_value);
+            }
+            else
+            {
+                ASSERT_EQ(p_values[j], p_originalValues[j]);
+            }
+        }
+    }
+}
+
+/// @brief Test whether GetMedian returns the median of a given array
+TEST(FileDataStorageTests, GetMedianTest)
+{
+    Random random;
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(COMPRESSION_RATE);
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        float p_median = random.NextFloat(0, 100);
+        float p_values[COMPRESSION_RATE];
+
+        int p_medianPlace = random.NextInt(0, COMPRESSION_RATE);
+
+        for (int j = 0; j < COMPRESSION_RATE; j++)
+        {
+            if (j == p_medianPlace)
+            {
+                p_values[j] = p_median;
+            }
+            else if ((j == 0 && p_medianPlace % 2 != 0) || j % 2 != 0)
+            {
+                p_values[j] = random.NextFloat(p_median, 100);
+            }
+            else
+            {
+                p_values[j] = random.NextFloat(0, p_median);
+            }
+        }
+
+        ASSERT_EQ(p_median, fileDataStorage.GetMedian(p_values));
+    }
+}
+
+/// @brief Test whether GetLeastCommon returns the least common value of a given array
+TEST(FileDataStorageTests, GetLeastCommonTest)
+{
+    Random random;
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(COMPRESSION_RATE);
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        float p_values[COMPRESSION_RATE];
+        float p_leastCommonVal = random.NextFloat();
+        int p_leastCommonFrequency = random.NextInt(1, COMPRESSION_RATE / 2 + 1);
+
+        if (p_leastCommonFrequency > COMPRESSION_RATE / 2)
+        {
+            for (int j = 0; j < COMPRESSION_RATE; j++)
+            {
+                p_values[j] = p_leastCommonVal;
+            }
+        }
+        else
+        {
+            for (int j = 0; j < COMPRESSION_RATE; j++)
+            {
+                if (j < p_leastCommonFrequency)
+                {
+                    p_values[j] = p_leastCommonVal;
+                }
+                else
+                {
+                    p_values[j] = p_leastCommonVal + 1;
+                }
+            }
+        }
+
+        ASSERT_EQ(fileDataStorage.GetLeastCommon(p_values), p_leastCommonVal);
+    }
+}
