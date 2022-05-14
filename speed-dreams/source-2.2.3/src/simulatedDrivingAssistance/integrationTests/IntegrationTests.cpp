@@ -181,6 +181,6 @@ TEST_P(IntegrationTests, IntegrationTest)
 /// @brief                  Instantiates the parameterized test
 /// INTEGRATION_TESTS_PATHS A CMake generated list of paths to different integration tests
 INSTANTIATE_TEST_CASE_P(
-    IntegrationTest,
+    TestReplayRecordings,
     IntegrationTests,
     INTEGRATION_TESTS_PATHS);
