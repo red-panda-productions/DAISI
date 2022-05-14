@@ -76,6 +76,51 @@ TEST(DecisionsTest, RunInterveneDecisions)
     std::cout << " check" << std::endl;
 }
 
+/// @brief Tests if all decisions ignore their RunInterveneCommand correctly
+TEST(DecisionTest, DontRunInterveneDecisions)
+{
+    InitializeMediator();
+    tAllowedActions allowedActions = {false, false, false};
+
+    Random random;
+
+    BrakeDecision brakeDecision;
+    float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
+    float oldBrakeCmd = SMediator::GetInstance()->CarController.GetBrakeCmd();
+    brakeDecision.BrakeAmount = controlBrakeAmount;
+    brakeDecision.RunInterveneCommands(allowedActions);
+
+    std::cout << "Testing brake...";
+    ASSERT_ALMOST_EQ(oldBrakeCmd, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    std::cout << " check" << std::endl;
+
+    AccelDecision accelDecision;
+    float controlAccelAmount = random.NextFloat(ACCEL_THRESHOLD, ACCEL_THRESHOLD + 10);
+    float oldAccelCmd = SMediator::GetInstance()->CarController.GetBrakeCmd();
+    accelDecision.AccelAmount = controlAccelAmount;
+    accelDecision.RunInterveneCommands(allowedActions);
+
+    std::cout << "Testing accel...";
+    ASSERT_ALMOST_EQ(oldAccelCmd, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    std::cout << " check" << std::endl;
+
+    SteerDecision steerDecision;
+    float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
+    float oldSteerCmd = SMediator::GetInstance()->CarController.GetBrakeCmd();
+    steerDecision.SteerAmount = controlSteerAmount;
+    steerDecision.RunInterveneCommands(allowedActions);
+
+    std::cout << "Testing steer...";
+    ASSERT_ALMOST_EQ(oldSteerCmd, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    std::cout << " check" << std::endl;
+
+    std::cout << "Checking if no value was changed that should not have been changed...";
+    ASSERT_ALMOST_EQ(oldBrakeCmd, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(oldAccelCmd, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(oldSteerCmd, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    std::cout << " check" << std::endl;
+}
+
 /// @brief Checks if the brake decision RunIndicateCommand works correctly
 TEST(DecisionTests, BrakeRunIndicateTest)
 {
