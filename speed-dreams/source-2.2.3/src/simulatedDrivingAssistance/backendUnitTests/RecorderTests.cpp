@@ -428,6 +428,8 @@ TEST(RecorderTests, UpgradeFromV0Test)
     ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION));
 }
 
+/// @brief Test whether the upgrade from V1 to V2 is done correctly
+/// in the new version, the max run time was added
 TEST(RecorderTests, UpgradeFromV1Test)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
@@ -442,6 +444,8 @@ TEST(RecorderTests, UpgradeFromV1Test)
     ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, NAN), DEFAULT_MAX_TIME);
 }
 
+/// @brief Test whether the recorder is safely updated to the new version
+/// here, the new version is V2 (max run time added)
 TEST(RecorderTests, ValidateLatestRecordingTest)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v2-recording", toUpgrade);
