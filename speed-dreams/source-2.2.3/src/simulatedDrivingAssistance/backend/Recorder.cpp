@@ -265,6 +265,14 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
     return true;
 }
 
+/// @brief Update a v1 recording to a v2 recording. This means:
+///  - Updating the replay driver to work with the max time
+/// @param p_settingsHandle Handle to the run settings file
+void UpdateV1RecorderToV2(void* p_settingsHandle)
+{
+    GfParmSetNum(p_settingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, DEFAULT_MAX_TIME);
+}
+
 /// @brief Validate a recording, and update it if it is an older version
 /// @param p_recordingFolder Folder of the recording to validate and update
 /// @return true if the recording contains all files and could be updated
@@ -316,6 +324,14 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
             GfParmReleaseHandle(settingsHandle);
             return false;
         }
+        version++;
+    }
+
+    // Update version 1 to version 2 recording
+    if (version == 1)
+    {
+        UpdateV1RecorderToV2(settingsHandle);
+        version++;
     }
 
     // Set the recording to the latest version and save it
