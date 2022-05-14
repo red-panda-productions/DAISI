@@ -504,7 +504,7 @@ TEST(RecorderTests, UpgradeFromV2Test)
     TestV2ToV3Changes(upgradedRunSettingsHandle);
 }
 
-/// @brief Test whether the recorder is safely updated to the new version
+/// @brief Test whether the latest version of recording is correctly validated
 /// @note Currently on version 3
 TEST(RecorderTests, ValidateLatestRecordingTest)
 {
