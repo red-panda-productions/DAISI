@@ -184,8 +184,7 @@ TEST(MediatorTests, MaxTimeTest)
         ASSERT_TRUE(SetupSingletonsFolder());
         int maxTime = random.NextInt();
         SDAConfigMediator::GetInstance()->SetMaxTime(maxTime);
-        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-        ASSERT_EQ(maxTime, config.GetMaxTime());
+        ASSERT_EQ(maxTime, SDAConfigMediator::GetInstance()->GetMaxTime());
     }
 }
 
