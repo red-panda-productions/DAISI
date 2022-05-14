@@ -120,23 +120,23 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
     {
         Posd pos = p_car->pub.DynGCg.pos;
         tDynPt mov = p_car->pub.DynGC;
-        AddForAveraging(m_totalPosX, pos.x);         // x-position
-        AddForAveraging(m_totalPosY, pos.y);         // y-position
-        AddForAveraging(m_totalPosZ, pos.z);         // z-position
-        AddForAveraging(m_totalPosAx, pos.ax);       // x-direction
-        AddForAveraging(m_totalPosAy, pos.ay);       // y-direction
-        AddForAveraging(m_totalPosAz, pos.az);       // z-direction
-        AddForAveraging(m_totalMovVelX, mov.vel.x);  // speed
-        AddForAveraging(m_totalMovAccX, mov.acc.x);  // acceleration
-        // AddToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
+        AddForAveraging(m_totalPosX, pos.x);                            // x-position
+        AddForAveraging(m_totalPosY, pos.y);                            // y-position
+        AddForAveraging(m_totalPosZ, pos.z);                            // z-position
+        AddForAveraging(m_totalPosAx, pos.ax);                          // x-direction
+        AddForAveraging(m_totalPosAy, pos.ay);                          // y-direction
+        AddForAveraging(m_totalPosAz, pos.az);                          // z-direction
+        AddForAveraging(m_totalMovVelX, mov.vel.x);                     // speed
+        AddForAveraging(m_totalMovAccX, mov.acc.x);                     // acceleration
+        AddToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
     }
     if (m_saveSettings.HumanData)
     {
         tCarCtrl ctrl = p_car->ctrl;
-        // AddToArray(m_steerValues, ctrl.steer, m_compressionStep);       // steer
-        // AddToArray(m_brakeValues, ctrl.brakeCmd, m_compressionStep);    // brake
-        // AddToArray(m_accelValues, ctrl.accelCmd, m_compressionStep);    // gas
-        // AddToArray(m_clutchValues, ctrl.clutchCmd, m_compressionStep);  // clutch
+        AddToArray(m_steerValues, ctrl.steer, m_compressionStep);       // steer
+        AddToArray(m_brakeValues, ctrl.brakeCmd, m_compressionStep);    // brake
+        AddToArray(m_accelValues, ctrl.accelCmd, m_compressionStep);    // gas
+        AddToArray(m_clutchValues, ctrl.clutchCmd, m_compressionStep);  // clutch
     }
 
     m_compressionStep++;
@@ -147,22 +147,22 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
         WRITE_VAR(m_outputStream, p_timestamp);
         if (m_saveSettings.CarData)
         {
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));     // x-position
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));     // y-position
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));     // z-position
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));    // x-direction
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));    // y-direction
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));    // z-direction
-            WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));  // speed
-            WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));  // acceleration
-            // WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-direction
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-direction
+            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-direction
+            WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
+            WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
+            WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
         }
         if (m_saveSettings.HumanData)
         {
-            // WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
-            // WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
-            // WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
-            // WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+            WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
+            WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
+            WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
+            WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
         }
     }
 }

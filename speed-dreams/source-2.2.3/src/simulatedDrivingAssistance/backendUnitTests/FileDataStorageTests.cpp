@@ -415,7 +415,7 @@ TEST(FileDataStorageTests, SetCompressionsRateTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        int p_compressionRate = random.NextInt();
+        int p_compressionRate = random.NextInt(COMPRESSION_LIMIT);
         fileDataStorage.SetCompressionRate(p_compressionRate);
 
         ASSERT_EQ(p_compressionRate, fileDataStorage.GetCompressionRate());
@@ -450,7 +450,7 @@ TEST(FileDataStorageTests, GetAverageTest)
         float p_total = random.NextFloat();
 
         // compression rate should be uneven and larger than 0
-        int p_compressionRate = random.NextInt(1, 100) * 2 + 1;
+        int p_compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 + 1;
         fileDataStorage.SetCompressionRate(p_compressionRate);
 
         float average = p_total / static_cast<float>(p_compressionRate);
@@ -470,7 +470,7 @@ TEST(FileDataStorageTests, AddToArrayTest)
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
         float p_value = random.NextFloat();
-        auto p_compressionStep = static_cast<unsigned long>(random.NextUInt());
+        auto p_compressionStep = static_cast<unsigned long>(random.NextUInt(COMPRESSION_LIMIT));
 
         float p_values[COMPRESSION_RATE];
         float p_originalValues[COMPRESSION_RATE];

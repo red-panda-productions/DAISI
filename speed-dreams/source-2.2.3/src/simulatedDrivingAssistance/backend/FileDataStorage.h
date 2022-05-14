@@ -6,6 +6,9 @@
 #include "DecisionTuple.h"
 #include <ctime>
 
+/// @brief the max size of the array in which data is stored
+#define COMPRESSION_LIMIT 50
+
 /// @brief               A class that can store data to a file
 /// @tparam BlackBoxData The data that needs to be stored
 class FileDataStorage
@@ -22,11 +25,7 @@ private:
 
     float m_totalPosX = 0, m_totalPosY = 0, m_totalPosZ = 0, m_totalPosAx = 0, m_totalPosAy = 0, m_totalPosAz = 0;
     float m_totalMovVelX = 0, m_totalMovAccX = 0;
-    // float m_gearValues[];
-    // float m_steerValues[];
-    // float m_brakeValues[];
-    // float m_accelValues[];
-    // float m_clutchValues[];
+    float m_gearValues[COMPRESSION_LIMIT], m_steerValues[COMPRESSION_LIMIT], m_brakeValues[COMPRESSION_LIMIT], m_accelValues[COMPRESSION_LIMIT], m_clutchValues[COMPRESSION_LIMIT];
 
 public:
     std::experimental::filesystem::path Initialize(
