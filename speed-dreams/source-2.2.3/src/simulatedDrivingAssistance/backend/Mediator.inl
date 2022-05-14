@@ -34,6 +34,7 @@ namespace filesystem = std::experimental::filesystem;
     template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template bool Mediator<type>::TimeOut();                                                                                                            \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the allowed actions in SDAConfig to p_allowedActions
@@ -201,6 +202,7 @@ void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder)
 {
+    m_tickCount = 0;
     m_track = p_track;
     tCarElt car;
     bool recordBB = GetReplayRecorderSetting();
@@ -264,4 +266,13 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     int pointerValue = stoi(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
+}
+
+/// @brief returns whether the race has taken longer than the requested amount of minutes
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::TimeOut()
+{
+    float maxTime = m_decisionMaker.Config.GetMaxTime() * 60;
+    float currentTime = m_tickCount * static_cast<float>(RCM_MAX_DT_ROBOTS);
+    return maxTime < currentTime;
 }

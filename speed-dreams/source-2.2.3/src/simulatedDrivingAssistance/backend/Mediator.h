@@ -15,6 +15,7 @@ public:
     void DriveTick(tCarElt* p_car, tSituation* p_situation);
     void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
+    bool TimeOut();
 
     void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
