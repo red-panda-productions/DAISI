@@ -19,6 +19,7 @@ namespace filesystem = std::experimental::filesystem;
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
     template bool Mediator<type>::GetBlackBoxSyncOption();                                                                                              \
     template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
+    template int Mediator<type>::GetMaxTime();                                                                                                          \
     template void Mediator<type>::SetAllowedActions(tAllowedActions p_allowedActions);                                                                  \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
     template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
@@ -180,6 +181,14 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::GetBlackBoxSyncOption()
 {
     return m_decisionMaker.Config.GetBlackBoxSyncOption();
+}
+
+/// @brief  Gets the maximum simulation time
+/// @return The maximum simulation time
+template <typename DecisionMaker>
+int Mediator<DecisionMaker>::GetMaxTime()
+{
+    return m_decisionMaker.Config.GetMaxTime();
 }
 
 /// @brief              Does one drive tick in the framework

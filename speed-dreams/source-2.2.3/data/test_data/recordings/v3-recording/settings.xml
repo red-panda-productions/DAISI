@@ -28,6 +28,10 @@
     <attstr name="force_feedback" val="true"/>
   </section>
 
+  <section name="max_time">
+    <attnum name="max_time" val="10.000000"/>
+  </section>
+
   <section name="allowed_actions">
     <attstr name="steer" val="true"/>
     <attstr name="accelerate" val="true"/>

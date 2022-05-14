@@ -82,8 +82,9 @@ Recorder::~Recorder()
 /// @param p_indicators           The indicator settings
 /// @param p_interventionType     The intervention type settings
 /// @param p_participantControl   The participant control settings
+/// @param p_maxTime             The maximum time for the trial
 /// @param p_allowedActions       The allowed black box actions settings
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const tAllowedActions& p_allowedActions)
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const int p_maxTime, const tAllowedActions& p_allowedActions)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
@@ -105,6 +106,8 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteering));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
+
+    GfParmSetNum(settingsFileHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, (tdble)p_maxTime);
 
     GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, BoolToString(p_allowedActions.Steer));
     GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, BoolToString(p_allowedActions.Accelerate));

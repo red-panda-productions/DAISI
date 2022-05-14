@@ -339,12 +339,14 @@ TEST(RecorderTests, WriteRunSettingsTests)
     participantControl.ControlSteering = random.NextBool();
     participantControl.ForceFeedback = random.NextBool();
 
+    int maxTime = random.NextInt();
+
     tAllowedActions allowedActions;
     allowedActions.Steer = random.NextBool();
     allowedActions.Accelerate = random.NextBool();
     allowedActions.Brake = random.NextBool();
 
-    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl, allowedActions);
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl, maxTime, allowedActions);
 
     filesystem::path settingsPath = GetTestingDirectory();
     settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
@@ -363,6 +365,8 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteering));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
+
+    ASSERT_EQ(GfParmGetNum(handle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, 0), (tdble)maxTime);
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, nullptr), BoolToString(allowedActions.Steer));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, nullptr), BoolToString(allowedActions.Accelerate));
@@ -435,7 +439,7 @@ void TestV0ToV1Changes(void* p_upgradedRunSettingsHandle, filesystem::path& p_to
 /// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
 void TestV1ToV2Changes(void* p_upgradedRunSettingsHandle)
 {
-    ASSERT_EQ(GfParmGetNum(p_upgradedRunSettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, NAN), DEFAULT_MAX_TIME);
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME));
 }
 
 /// @brief                             Tests that the changes from V2 to V3 are present
@@ -504,7 +508,7 @@ TEST(RecorderTests, UpgradeFromV2Test)
     TestV2ToV3Changes(upgradedRunSettingsHandle);
 }
 
-/// @brief Test whether the latest version of recording is correctly validated
+/// @brief Test whether the latest version of recording contains all correct elements
 /// @note Currently on version 3
 TEST(RecorderTests, ValidateLatestRecordingTest)
 {

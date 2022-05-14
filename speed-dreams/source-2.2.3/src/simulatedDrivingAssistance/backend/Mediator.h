@@ -23,8 +23,8 @@ public:
     void SetPControlSettings(tParticipantControl p_pControl);
     void SetReplayRecorderSetting(bool p_replayRecorderOn);
     void SetBlackBoxSyncOption(bool p_sync);
-
     void SetMaxTime(int p_maxTime);
+
     void SetUserId(char* p_userId);
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
@@ -40,6 +40,7 @@ public:
     tParticipantControl GetPControlSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
+    int GetMaxTime();
 
     static Mediator* GetInstance();
 #ifdef TEST
