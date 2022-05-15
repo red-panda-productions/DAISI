@@ -24,6 +24,11 @@ public:
         return m_interventionType;
     }
 
+    int GetCompressionRate()
+    {
+        return 1;
+    }
+
     void SetDataCollectionSettings(DataToStore p_dataToStore)
     {
         m_dataToStore = p_dataToStore;

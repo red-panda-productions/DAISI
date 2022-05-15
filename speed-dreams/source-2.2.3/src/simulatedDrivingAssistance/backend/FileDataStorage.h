@@ -19,7 +19,7 @@ private:
     /// @brief Output filestream to write data to, should be initialized through @link FileDataStorage::Initialize
     std::ofstream m_outputStream = {};
     /// @brief Integer that determines the compression rate
-    int m_compressionRate;
+    int m_compressionRate = 1;
     /// @brief Integer that determines the current step of the compression
     unsigned long m_compressionStep;
 

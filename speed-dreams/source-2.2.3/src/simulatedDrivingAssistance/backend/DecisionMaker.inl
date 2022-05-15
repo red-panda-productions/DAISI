@@ -88,7 +88,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
                                                       trackname,
                                                       trackversion,
                                                       interventiontype);
-    m_fileBufferStorage.SetCompressionRate(1);
+    m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
 }
 
 /// @brief              Tries to get a decision from the black box
