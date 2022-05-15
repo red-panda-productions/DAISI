@@ -420,6 +420,103 @@ TEST(FileDataStorageTests, WriteSameFileTwice)
 /// @brief Test that the FileDataStorage works properly when we only write the initial data and no ticks
 TEST_CASE(FileDataStorageTests, WriteNoTicks, TestNoStorageWithTimestamps, (0))
 
+/// @brief Test for checking data is correctly set for different compression rates for 20 ticks
+/// @param p_compressionRate the compression rate to be tested with
+void TestDataStorageSaveCompressionRates(int p_compressionRate)
+{
+    Random random;
+    tDataToStore params = {true, true, true, false, true};
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(p_compressionRate);
+
+    int p_compressionStep = 0;
+    // Create a string to save all intended random data to
+    std::stringstream expected;
+
+    // Initialise buffer file
+    GET_DUMMY_TIMES;
+    std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
+    expected << "GameState" << std::endl
+             << "UserInput" << std::endl;
+
+    float p_totalPosX = 0, p_totalPosY = 0, p_totalPosZ = 0, p_totalPosAx = 0, p_totalPosAy = 0, p_totalPosAz = 0;
+    float p_totalMovVelX = 0, p_totalMovAccX = 0;
+    int p_gearValues[COMPRESSION_LIMIT];
+    float p_steerValues[COMPRESSION_LIMIT], p_brakeValues[COMPRESSION_LIMIT], p_accelValues[COMPRESSION_LIMIT], p_clutchValues[COMPRESSION_LIMIT];
+
+    for (int i = 0; i < 20; i++)
+    {
+        // Save with random data
+        GET_RANDOM_CAR;
+        GET_RANDOM_SITUATION;
+
+        DecisionTuple tuple;
+
+        fileDataStorage.Save(&car, &situation, tuple, i);
+
+        Posd pos = car.pub.DynGCg.pos;
+        tDynPt mov = car.pub.DynGC;
+        fileDataStorage.AddForAveraging(p_totalPosX, pos.x);                            // x-position
+        fileDataStorage.AddForAveraging(p_totalPosY, pos.y);                            // y-position
+        fileDataStorage.AddForAveraging(p_totalPosZ, pos.z);                            // z-position
+        fileDataStorage.AddForAveraging(p_totalPosAx, pos.ax);                          // x-direction
+        fileDataStorage.AddForAveraging(p_totalPosAy, pos.ay);                          // y-direction
+        fileDataStorage.AddForAveraging(p_totalPosAz, pos.az);                          // z-direction
+        fileDataStorage.AddForAveraging(p_totalMovVelX, mov.vel.x);                     // speed
+        fileDataStorage.AddForAveraging(p_totalMovAccX, mov.acc.x);                     // acceleration
+        fileDataStorage.AddIntToArray(p_gearValues, car.priv.gear, p_compressionStep);  // gear
+        tCarCtrl ctrl = car.ctrl;
+        fileDataStorage.AddToArray(p_steerValues, ctrl.steer, p_compressionStep);       // steer
+        fileDataStorage.AddToArray(p_brakeValues, ctrl.brakeCmd, p_compressionStep);    // brake
+        fileDataStorage.AddToArray(p_accelValues, ctrl.accelCmd, p_compressionStep);    // gas
+        fileDataStorage.AddToArray(p_clutchValues, ctrl.clutchCmd, p_compressionStep);  // clutch
+
+        p_compressionStep++;
+
+        // Define our expectations
+        if (p_compressionStep % p_compressionRate == 0)
+        {
+            expected << std::to_string(i) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalPosX)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalPosY)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalPosZ)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalPosAx)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalPosAy)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalPosAz)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalMovVelX)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(p_totalMovAccX)) << std::endl
+                     << std::to_string(fileDataStorage.GetLeastCommon(p_gearValues)) << std::endl
+                     << std::to_string(fileDataStorage.GetMedian(p_steerValues)) << std::endl
+                     << std::to_string(fileDataStorage.GetMedian(p_brakeValues)) << std::endl
+                     << std::to_string(fileDataStorage.GetMedian(p_accelValues)) << std::endl
+                     << std::to_string(fileDataStorage.GetMedian(p_clutchValues)) << std::endl;
+        }
+    }
+
+    // Finish the buffer file
+    expected << "END";
+    fileDataStorage.Shutdown();
+
+    // Read the written file
+    std::ifstream reader(path);
+    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
+    reader.close();
+
+    // Check contents
+    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
+}
+/// @brief Test for checking data is correctly set for compression rate 1
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates1, TestDataStorageSaveCompressionRates, (1))
+/// @brief Test for checking data is correctly set for compression rate 3
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates3, TestDataStorageSaveCompressionRates, (3))
+/// @brief Test for checking data is correctly set for compression rate 5
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates5, TestDataStorageSaveCompressionRates, (5))
+/// @brief Test for checking data is correctly set for compression rate 7
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates7, TestDataStorageSaveCompressionRates, (7))
+/// @brief Test for checking data is correctly set for compression rate 9
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates10, TestDataStorageSaveCompressionRates, (9))
+
 /// @brief Test for checking the compression rate is correctly set
 TEST(FileDataStorageTests, SetCompressionsRateTest)
 {
