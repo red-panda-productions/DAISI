@@ -38,6 +38,7 @@ public:
     int EnvironmentVersion;
     InterventionType InterventionType;
     DecisionTuple* SavedDecisions;
+    int m_compressionRate;
 
     void Shutdown()
     {
@@ -45,11 +46,12 @@ public:
 
     void Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
     {
+        SavedDecisions = &p_decisions;
     }
 
-    void SaveDecisions(DecisionTuple& p_decisions)
+    void SetCompressionRate(int p_compressionRate)
     {
-        SavedDecisions = &p_decisions;
+        m_compressionRate = p_compressionRate;
     }
 };
 
