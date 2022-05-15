@@ -10,12 +10,15 @@
 #include "../rppUtils/RppUtils.hpp"
 
 #include "IndicatorConfig.h"
+#include "Mediator.h"
 
 /// @brief        Loads the indicator data of every intervention action from config file in the given path
 /// @param p_path The path to the XML file containing the indicator data to load
 void IndicatorConfig::LoadIndicatorData(const char* p_path)
 {
     void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
+
+    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
 
     // Load the indicator data for every intervention action
     char path[PATH_BUF_SIZE];
@@ -25,7 +28,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
         m_indicatorData[i] = {
             (InterventionAction)i,
             LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path)),
+            LoadTexture(xmlHandle, std::string(path), interventionType),
             LoadText(xmlHandle, std::string(path))};
     }
 }
@@ -160,9 +163,10 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 /// @param p_handle The p_handle to the config.xml file
 /// @param p_path   The p_path to the current intervention action to load
 /// @return         The pointer to struct containing the texture data
-tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path)
+tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType)
 {
     p_path += PRM_SECT_TEXTURE;
+    p_path += std::to_string(p_interventionType);
     if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextureData* data = new TextureData;

@@ -29,14 +29,6 @@ typedef unsigned int InterventionType;
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
-//#define INTERVENTION_ACTION_NONE       0
-//#define INTERVENTION_ACTION_TURN_LEFT  1
-//#define INTERVENTION_ACTION_TURN_RIGHT 2
-//#define INTERVENTION_ACTION_BRAKE      3
-//#define INTERVENTION_ACTION_ACCELERATE 4
-
-//#define NUM_INTERVENTION_ACTION 5
-
 #define INTERVENTION_ACTION_STEER_NONE 0
 #define INTERVENTION_ACTION_TURN_LEFT  1
 #define INTERVENTION_ACTION_TURN_RIGHT 2
