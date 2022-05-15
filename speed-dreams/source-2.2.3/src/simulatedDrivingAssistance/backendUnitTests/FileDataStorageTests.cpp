@@ -175,7 +175,8 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 
     for (int i = 0; i < p_numberOfTicks; i++)
     {
-        fileDataStorage.Save(nullptr, nullptr, 0);
+        DecisionTuple tuple;
+        fileDataStorage.Save(nullptr, nullptr, tuple, 0);
         expected << "0" << std::endl;
     }
     fileDataStorage.Shutdown();
@@ -239,7 +240,10 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
         GET_RANDOM_TICKCOUNT;
         GET_RANDOM_CAR;
         GET_RANDOM_SITUATION;
-        fileDataStorage.Save(&car, &situation, tickCount);
+
+        DecisionTuple tuple;
+
+        fileDataStorage.Save(&car, &situation, tuple, tickCount);
 
         // Define our expectations
         expected << std::to_string(tickCount) << std::endl;
@@ -250,6 +254,13 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
         if (p_storeControls)
         {
             WRITE_EXPECTED_CONTROLS;
+        }
+        if (p_storeDecisions)
+        {
+            expected << "Decisions"
+                     << "\n"
+                     << "NONE"
+                     << "\n";
         }
     }
 
@@ -297,9 +308,8 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
 
     // Save any tick
     GET_RANDOM_TICKCOUNT;
-    fileDataStorage.Save(nullptr, nullptr, tickCount);
+    fileDataStorage.Save(nullptr, nullptr, decisions, tickCount);
     expected << std::to_string(tickCount) << std::endl;
-    fileDataStorage.SaveDecisions(decisions);
 
     if (p_storeDecisions)
     {
@@ -365,14 +375,13 @@ TEST(FileDataStorageTests, DecisionsAfterData)
     GET_RANDOM_TICKCOUNT;
     GET_RANDOM_CAR;
     GET_RANDOM_SITUATION;
-    fileDataStorage.Save(&car, &situation, tickCount);
     expected << std::to_string(tickCount) << std::endl;
     WRITE_EXPECTED_CAR;
     WRITE_EXPECTED_CONTROLS;
 
     // Generate and write decisions
     DecisionTuple decisions = GenerateDecisions(random, true, true, true, true, true);
-    fileDataStorage.SaveDecisions(decisions);
+    fileDataStorage.Save(&car, &situation, decisions, tickCount);
     WriteExpectedDecisions(decisions, expected, true, true, true, true, true);
 
     // Finish the buffer file

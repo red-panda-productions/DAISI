@@ -27,6 +27,16 @@ private:
     float m_totalMovVelX = 0, m_totalMovAccX = 0;
     int m_gearValues[COMPRESSION_LIMIT];
     float m_steerValues[COMPRESSION_LIMIT], m_brakeValues[COMPRESSION_LIMIT], m_accelValues[COMPRESSION_LIMIT], m_clutchValues[COMPRESSION_LIMIT];
+    float m_steerDecision[COMPRESSION_LIMIT], m_brakeDecision[COMPRESSION_LIMIT], m_accelDecision[COMPRESSION_LIMIT];
+    int m_gearDecision[COMPRESSION_LIMIT], m_lightDecision[COMPRESSION_LIMIT];
+
+    void SaveCarData(tCarElt* p_car);
+    void SaveHumanData(tCarElt* p_car);
+    void SaveInterventionData(DecisionTuple& p_decisions);
+
+    void WriteCarData();
+    void WriteHumanData();
+    void WriteInterventionData();
 
 public:
     std::experimental::filesystem::path Initialize(
@@ -60,9 +70,7 @@ public:
 
     void Shutdown();
 
-    void Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp);
-
-    void SaveDecisions(DecisionTuple& p_decisions);
+    void Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp);
 
     ~FileDataStorage() = default;
 };

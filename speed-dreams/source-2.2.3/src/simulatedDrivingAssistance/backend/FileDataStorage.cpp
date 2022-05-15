@@ -121,30 +121,21 @@ void FileDataStorage::Shutdown()
 /// @param p_car Current car status in Speed Dreams
 /// @param p_situation Current situation in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
 {
     // save all values from this time step
     if (m_saveSettings.CarData)
     {
-        Posd pos = p_car->pub.DynGCg.pos;
-        tDynPt mov = p_car->pub.DynGC;
-        AddForAveraging(m_totalPosX, pos.x);                               // x-position
-        AddForAveraging(m_totalPosY, pos.y);                               // y-position
-        AddForAveraging(m_totalPosZ, pos.z);                               // z-position
-        AddForAveraging(m_totalPosAx, pos.ax);                             // x-direction
-        AddForAveraging(m_totalPosAy, pos.ay);                             // y-direction
-        AddForAveraging(m_totalPosAz, pos.az);                             // z-direction
-        AddForAveraging(m_totalMovVelX, mov.vel.x);                        // speed
-        AddForAveraging(m_totalMovAccX, mov.acc.x);                        // acceleration
-        AddIntToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
+        SaveCarData(p_car);
     }
     if (m_saveSettings.HumanData)
     {
-        tCarCtrl ctrl = p_car->ctrl;
-        AddToArray(m_steerValues, ctrl.steer, m_compressionStep);       // steer
-        AddToArray(m_brakeValues, ctrl.brakeCmd, m_compressionStep);    // brake
-        AddToArray(m_accelValues, ctrl.accelCmd, m_compressionStep);    // gas
-        AddToArray(m_clutchValues, ctrl.clutchCmd, m_compressionStep);  // clutch
+        SaveHumanData(p_car);
+    }
+
+    if (m_saveSettings.InterventionData)
+    {
+        SaveInterventionData(p_decisions);
     }
 
     m_compressionStep++;
@@ -155,57 +146,170 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
         WRITE_VAR(m_outputStream, p_timestamp);
         if (m_saveSettings.CarData)
         {
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-direction
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-direction
-            WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-direction
-            WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
-            WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
-            WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+            WriteCarData();
         }
         if (m_saveSettings.HumanData)
         {
-            WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
-            WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
-            WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
-            WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+            WriteHumanData();
+        }
+        if (m_saveSettings.InterventionData)
+        {
+            WriteInterventionData();
         }
     }
 }
 
-/// @brief Save all decisions that were taken this tick
-/// @param p_decisions Tuple of decisions taken this tick
-void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
+void FileDataStorage::SaveCarData(tCarElt* p_car)
 {
-    if (!m_saveSettings.InterventionData) return;
+    Posd pos = p_car->pub.DynGCg.pos;
+    tDynPt mov = p_car->pub.DynGC;
+    AddForAveraging(m_totalPosX, pos.x);                               // x-position
+    AddForAveraging(m_totalPosY, pos.y);                               // y-position
+    AddForAveraging(m_totalPosZ, pos.z);                               // z-position
+    AddForAveraging(m_totalPosAx, pos.ax);                             // x-direction
+    AddForAveraging(m_totalPosAy, pos.ay);                             // y-direction
+    AddForAveraging(m_totalPosAz, pos.az);                             // z-direction
+    AddForAveraging(m_totalMovVelX, mov.vel.x);                        // speed
+    AddForAveraging(m_totalMovAccX, mov.acc.x);                        // acceleration
+    AddIntToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
+}
 
-    WRITE_STRING(m_outputStream, "Decisions");
+void FileDataStorage::SaveHumanData(tCarElt* p_car)
+{
+    tCarCtrl ctrl = p_car->ctrl;
+    AddToArray(m_steerValues, ctrl.steer, m_compressionStep);       // steer
+    AddToArray(m_brakeValues, ctrl.brakeCmd, m_compressionStep);    // brake
+    AddToArray(m_accelValues, ctrl.accelCmd, m_compressionStep);    // gas
+    AddToArray(m_clutchValues, ctrl.clutchCmd, m_compressionStep);  // clutch
+}
+
+void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
+{
     if (p_decisions.ContainsSteer())
     {
-        WRITE_STRING(m_outputStream, "SteerDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetSteer());
+        AddToArray(m_steerDecision, p_decisions.GetSteer(), m_compressionStep);
     }
+    else
+    {
+        AddToArray(m_steerDecision, -1, m_compressionStep);
+    }
+
     if (p_decisions.ContainsBrake())
     {
-        WRITE_STRING(m_outputStream, "BrakeDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetBrake());
+        AddToArray(m_brakeDecision, p_decisions.GetBrake(), m_compressionStep);
     }
+    else
+    {
+        AddToArray(m_brakeDecision, -1, m_compressionStep);
+    }
+
     if (p_decisions.ContainsAccel())
     {
-        WRITE_STRING(m_outputStream, "AccelDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetAccel());
+        AddToArray(m_accelDecision, p_decisions.GetAccel(), m_compressionStep);
     }
+    else
+    {
+        AddToArray(m_accelDecision, -1, m_compressionStep);
+    }
+
     if (p_decisions.ContainsGear())
     {
-        WRITE_STRING(m_outputStream, "GearDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetGear());
+        AddIntToArray(m_gearDecision, p_decisions.GetGear(), m_compressionStep);
     }
+    else
+    {
+        AddIntToArray(m_gearDecision, -1, m_compressionStep);
+    }
+
     if (p_decisions.ContainsLights())
     {
+        AddIntToArray(m_lightDecision, p_decisions.GetLights(), m_compressionStep);
+    }
+    else
+    {
+        AddIntToArray(m_lightDecision, -1, m_compressionStep);
+    }
+}
+
+void FileDataStorage::WriteCarData()
+{
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-direction
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-direction
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-direction
+    WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
+    WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
+    WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+}
+
+void FileDataStorage::WriteHumanData()
+{
+    WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
+    WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
+    WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
+    WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+}
+
+void FileDataStorage::WriteInterventionData()
+{
+    bool decisionMade = false;
+    float decision = GetMedian(m_steerDecision);
+    if (decision != -1)
+    {
+        decisionMade = true;
+        WRITE_STRING(m_outputStream, "Decisions");
+        WRITE_STRING(m_outputStream, "SteerDecision");
+        WRITE_VAR(m_outputStream, decision);
+    }
+    decision = GetMedian(m_brakeDecision);
+    if (decision != -1)
+    {
+        if (!decisionMade)
+        {
+            decisionMade = true;
+            WRITE_STRING(m_outputStream, "Decisions");
+        }
+        WRITE_STRING(m_outputStream, "BrakeDecision");
+        WRITE_VAR(m_outputStream, decision);
+    }
+    decision = GetMedian(m_accelDecision);
+    if (decision != -1)
+    {
+        if (!decisionMade)
+        {
+            decisionMade = true;
+            WRITE_STRING(m_outputStream, "Decisions");
+        }
+        WRITE_STRING(m_outputStream, "AccelDecision");
+        WRITE_VAR(m_outputStream, decision);
+    }
+    int intDecision = GetLeastCommon(m_gearDecision);
+    if (intDecision != -1)
+    {
+        if (!decisionMade)
+        {
+            decisionMade = true;
+            WRITE_STRING(m_outputStream, "Decisions");
+        }
+        WRITE_STRING(m_outputStream, "GearDecision");
+        WRITE_VAR(m_outputStream, intDecision);
+    }
+    intDecision = GetLeastCommon(m_lightDecision);
+    if (intDecision != -1)
+    {
+        if (!decisionMade)
+        {
+            decisionMade = true;
+            WRITE_STRING(m_outputStream, "Decisions");
+        }
         WRITE_STRING(m_outputStream, "LightsDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetLights());
+        WRITE_VAR(m_outputStream, intDecision);
+    }
+    if (!decisionMade)
+    {
+        WRITE_STRING(m_outputStream, "Decisions");
     }
     WRITE_STRING(m_outputStream, "NONE");
 }
