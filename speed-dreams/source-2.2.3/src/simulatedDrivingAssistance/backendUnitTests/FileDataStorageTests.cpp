@@ -548,7 +548,7 @@ TEST(FileDataStorageTests, GetLeastCommonTest)
     {
         int p_values[COMPRESSION_RATE];
         int p_leastCommonVal = random.NextInt();
-        int p_leastCommonFrequency = random.NextInt(1, COMPRESSION_RATE / 2 + 1);
+        int p_leastCommonFrequency = random.NextInt(1, COMPRESSION_RATE);
 
         if (p_leastCommonFrequency > COMPRESSION_RATE / 2)
         {
