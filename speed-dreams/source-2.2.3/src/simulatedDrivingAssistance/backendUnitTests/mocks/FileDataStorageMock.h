@@ -38,7 +38,6 @@ public:
     int EnvironmentVersion;
     InterventionType InterventionType;
     DecisionTuple* SavedDecisions;
-    int m_compressionRate;
 
     void Shutdown()
     {
@@ -51,7 +50,6 @@ public:
 
     void SetCompressionRate(int p_compressionRate)
     {
-        m_compressionRate = p_compressionRate;
     }
 };
 

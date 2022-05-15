@@ -54,19 +54,19 @@ public:
 
     void SetCompressionRate(int p_compressionRate);
 
-    int GetCompressionRate();
+    int GetCompressionRate() const;
 
     void AddForAveraging(float& p_total, float p_value);
 
-    float GetAverage(float& p_total);
+    float GetAverage(float& p_total) const;
 
-    void AddToArray(float p_values[], float p_value, unsigned long p_compressionStep);
+    void AddToArray(float p_values[], float p_value, unsigned long p_compressionStep) const;
 
-    void AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep);
+    void AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep) const;
 
-    float GetMedian(float p_values[]);
+    float GetMedian(float p_values[]) const;
 
-    int GetLeastCommon(int p_values[]);
+    int GetLeastCommon(int p_values[]) const;
 
     void Shutdown();
 

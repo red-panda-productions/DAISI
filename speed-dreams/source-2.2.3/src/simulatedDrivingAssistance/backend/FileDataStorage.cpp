@@ -104,7 +104,7 @@ void FileDataStorage::SetCompressionRate(int p_compressionRate)
 }
 
 /// @brief Gets the compression rate of the file data storage
-int FileDataStorage::GetCompressionRate()
+int FileDataStorage::GetCompressionRate() const
 {
     return m_compressionRate;
 }
@@ -325,7 +325,7 @@ void FileDataStorage::AddForAveraging(float& p_total, float p_value)
 /// @brief Calculates the average of the past time steps for a variable and resets it
 /// @param p_total The current total of the variable
 /// @return The average of the past time steps for a variable
-float FileDataStorage::GetAverage(float& p_total)
+float FileDataStorage::GetAverage(float& p_total) const
 {
     float p_average = p_total / static_cast<float>(m_compressionRate);
     p_total = 0;
@@ -336,7 +336,7 @@ float FileDataStorage::GetAverage(float& p_total)
 /// @param p_values Array with values from the current compression step
 /// @param p_value The new value of this timestep for the variable
 /// @param p_compressionStep The current compression step
-void FileDataStorage::AddToArray(float p_values[], float p_value, unsigned long p_compressionStep)
+void FileDataStorage::AddToArray(float p_values[], float p_value, unsigned long p_compressionStep) const
 {
     int p_placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(m_compressionRate));
     p_values[p_placeInArray] = p_value;
@@ -346,7 +346,7 @@ void FileDataStorage::AddToArray(float p_values[], float p_value, unsigned long 
 /// @param p_values Array with values from the current compression step
 /// @param p_value The new value of this timestep for the variable
 /// @param p_compressionStep The current compression step
-void FileDataStorage::AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep)
+void FileDataStorage::AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep) const
 {
     int p_placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(m_compressionRate));
     p_values[p_placeInArray] = p_value;
@@ -355,7 +355,7 @@ void FileDataStorage::AddIntToArray(int p_values[], int p_value, unsigned long p
 /// @brief Get the median of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The median of the past time steps for a variable
-float FileDataStorage::GetMedian(float p_values[])
+float FileDataStorage::GetMedian(float p_values[]) const
 {
     std::sort(p_values, p_values + m_compressionRate);
     int middle = static_cast<int>(std::floor(static_cast<float>(m_compressionRate) / 2));
@@ -365,7 +365,7 @@ float FileDataStorage::GetMedian(float p_values[])
 /// @brief Get the least common value of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The least common in an array for a variable
-int FileDataStorage::GetLeastCommon(int p_values[])
+int FileDataStorage::GetLeastCommon(int p_values[]) const
 {
     std::map<int, int> p_frequencies;
 

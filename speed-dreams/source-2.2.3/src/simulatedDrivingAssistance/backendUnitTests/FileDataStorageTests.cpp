@@ -346,6 +346,15 @@ TEST_CASE(FileDataStorageTests, DecisionsLightStored, TestDataStorageSaveDecisio
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved only gear is made
 TEST_CASE(FileDataStorageTests, DecisionsGearStored, TestDataStorageSaveDecisions, (true, false, false, false, true, false))
 
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only accelerate is made
+TEST_CASE(FileDataStorageTests, DecisionsAccelStored, TestDataStorageSaveDecisions, (true, false, false, true, false, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only brake is made
+TEST_CASE(FileDataStorageTests, DecisionsBrakeStored, TestDataStorageSaveDecisions, (true, false, true, false, false, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only steer is made
+TEST_CASE(FileDataStorageTests, DecisionsSteerStored, TestDataStorageSaveDecisions, (true, true, false, false, false, false))
+
 /// @brief Test whether the FileDataStorage stores properly for every combination of decision made
 TEST(FileDataStorageTests, DecisionsCombinations)
 {
