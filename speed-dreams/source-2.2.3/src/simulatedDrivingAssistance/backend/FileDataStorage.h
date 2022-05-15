@@ -25,7 +25,8 @@ private:
 
     float m_totalPosX = 0, m_totalPosY = 0, m_totalPosZ = 0, m_totalPosAx = 0, m_totalPosAy = 0, m_totalPosAz = 0;
     float m_totalMovVelX = 0, m_totalMovAccX = 0;
-    float m_gearValues[COMPRESSION_LIMIT], m_steerValues[COMPRESSION_LIMIT], m_brakeValues[COMPRESSION_LIMIT], m_accelValues[COMPRESSION_LIMIT], m_clutchValues[COMPRESSION_LIMIT];
+    int m_gearValues[COMPRESSION_LIMIT];
+    float m_steerValues[COMPRESSION_LIMIT], m_brakeValues[COMPRESSION_LIMIT], m_accelValues[COMPRESSION_LIMIT], m_clutchValues[COMPRESSION_LIMIT];
 
 public:
     std::experimental::filesystem::path Initialize(
@@ -51,9 +52,11 @@ public:
 
     void AddToArray(float p_values[], float p_value, unsigned long p_compressionStep);
 
+    void AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep);
+
     float GetMedian(float p_values[]);
 
-    float GetLeastCommon(float p_values[]);
+    int GetLeastCommon(int p_values[]);
 
     void Shutdown();
 

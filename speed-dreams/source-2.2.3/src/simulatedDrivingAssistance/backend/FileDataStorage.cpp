@@ -61,6 +61,14 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     m_saveSettings = p_saveSettings;
     m_outputStream.open(filePath);
     m_compressionStep = 0;
+    m_totalPosX = 0;
+    m_totalPosY = 0;
+    m_totalPosZ = 0;
+    m_totalPosAx = 0;
+    m_totalPosAy = 0;
+    m_totalPosAz = 0;
+    m_totalMovVelX = 0;
+    m_totalMovAccX = 0;
 
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
@@ -128,7 +136,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
         AddForAveraging(m_totalPosAz, pos.az);                          // z-direction
         AddForAveraging(m_totalMovVelX, mov.vel.x);                     // speed
         AddForAveraging(m_totalMovAccX, mov.acc.x);                     // acceleration
-        AddToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
+        AddIntToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
     }
     if (m_saveSettings.HumanData)
     {
@@ -230,6 +238,16 @@ void FileDataStorage::AddToArray(float p_values[], float p_value, unsigned long 
     p_values[p_placeInArray] = p_value;
 }
 
+/// @brief Add the new integer value to the array in the correct compression step
+/// @param p_values Array with values from the current compression step
+/// @param p_value The new value of this timestep for the variable
+/// @param p_compressionStep The current compression step
+void FileDataStorage::AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep)
+{
+    int p_placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(m_compressionRate));
+    p_values[p_placeInArray] = p_value;
+}
+
 /// @brief Get the median of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The median of the past time steps for a variable
@@ -243,12 +261,12 @@ float FileDataStorage::GetMedian(float p_values[])
 /// @brief Get the least common value of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The least common in an array for a variable
-float FileDataStorage::GetLeastCommon(float p_values[])
+int FileDataStorage::GetLeastCommon(int p_values[])
 {
-    std::map<float, int> p_frequencies;
+    std::map<int, int> p_frequencies;
 
     // list of all values in p_values
-    float* p_valuesList = new float[m_compressionRate];
+    int* p_valuesList = new int[m_compressionRate];
     int p_valueCount = 0;
 
     // create a map from values in p_values to the corresponding frequencies
@@ -266,7 +284,7 @@ float FileDataStorage::GetLeastCommon(float p_values[])
         }
     }
 
-    float p_leastCommon;
+    int p_leastCommon;
     int p_minCount = m_compressionRate + 1;
 
     // find the value with the lowest frequency

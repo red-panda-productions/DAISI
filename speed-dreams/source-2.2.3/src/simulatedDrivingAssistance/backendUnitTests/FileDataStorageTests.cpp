@@ -169,6 +169,7 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 
     // Write a file with dummy initialization data, save timestamp 0 as many times as needed, and shut down
     FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
     std::experimental::filesystem::path actualPath = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
 
@@ -214,6 +215,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
         p_storeDecisions,
         p_storeMeta};
     FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
 
     // Create a string to save all intended random data to
     std::stringstream expected;
@@ -281,6 +283,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
         p_storeDecisions,
         false};
     FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
 
     // Create a string to save all intended random data to
     std::stringstream expected;
@@ -346,6 +349,7 @@ TEST(FileDataStorageTests, DecisionsAfterData)
         true,
         true};
     FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
 
     // Create a string to save all intended random data to
     std::stringstream expected;
@@ -542,8 +546,8 @@ TEST(FileDataStorageTests, GetLeastCommonTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        float p_values[COMPRESSION_RATE];
-        float p_leastCommonVal = random.NextFloat();
+        int p_values[COMPRESSION_RATE];
+        int p_leastCommonVal = random.NextInt();
         int p_leastCommonFrequency = random.NextInt(1, COMPRESSION_RATE / 2 + 1);
 
         if (p_leastCommonFrequency > COMPRESSION_RATE / 2)
