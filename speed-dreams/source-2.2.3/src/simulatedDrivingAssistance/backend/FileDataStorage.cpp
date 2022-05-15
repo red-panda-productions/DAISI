@@ -128,14 +128,14 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned lon
     {
         Posd pos = p_car->pub.DynGCg.pos;
         tDynPt mov = p_car->pub.DynGC;
-        AddForAveraging(m_totalPosX, pos.x);                            // x-position
-        AddForAveraging(m_totalPosY, pos.y);                            // y-position
-        AddForAveraging(m_totalPosZ, pos.z);                            // z-position
-        AddForAveraging(m_totalPosAx, pos.ax);                          // x-direction
-        AddForAveraging(m_totalPosAy, pos.ay);                          // y-direction
-        AddForAveraging(m_totalPosAz, pos.az);                          // z-direction
-        AddForAveraging(m_totalMovVelX, mov.vel.x);                     // speed
-        AddForAveraging(m_totalMovAccX, mov.acc.x);                     // acceleration
+        AddForAveraging(m_totalPosX, pos.x);                               // x-position
+        AddForAveraging(m_totalPosY, pos.y);                               // y-position
+        AddForAveraging(m_totalPosZ, pos.z);                               // z-position
+        AddForAveraging(m_totalPosAx, pos.ax);                             // x-direction
+        AddForAveraging(m_totalPosAy, pos.ay);                             // y-direction
+        AddForAveraging(m_totalPosAz, pos.az);                             // z-direction
+        AddForAveraging(m_totalMovVelX, mov.vel.x);                        // speed
+        AddForAveraging(m_totalMovAccX, mov.acc.x);                        // acceleration
         AddIntToArray(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
     }
     if (m_saveSettings.HumanData)
