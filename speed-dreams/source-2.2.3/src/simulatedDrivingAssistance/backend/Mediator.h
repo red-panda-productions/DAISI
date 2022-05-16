@@ -62,7 +62,7 @@ public:
     {
         m_thresholds = p_thresholds;
     }
-  
+
     /// @brief             Sets the tick count of the mediator
     /// @param p_tickCount The tick count
     void SetTickCount(unsigned long p_tickCount)
