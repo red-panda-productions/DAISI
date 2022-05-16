@@ -21,7 +21,7 @@ typedef struct DatabaseSettings
     char Username[256];
     char Password[256];
     char Address[256];
-    char Port[256];
+    int  Port;
     char Schema[256];
     bool UseSSL;
 } tDatabaseSettings;

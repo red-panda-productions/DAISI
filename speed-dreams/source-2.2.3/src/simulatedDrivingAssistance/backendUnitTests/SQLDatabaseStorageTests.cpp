@@ -101,12 +101,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
 {
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the settings file doesn't exist.
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\noSettingsFile"), std::exception)
-    {
-        ASSERT_STREQ("Could not find database settings xml", e.what());
-    }
 }
 
 /// @brief  Tries to convert the port to integer

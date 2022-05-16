@@ -25,6 +25,8 @@ int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
 
+char m_portString[256];
+
 static tDatabaseSettings m_dbsettings;
 
 /// @brief Handle input in the Username textbox
@@ -51,8 +53,16 @@ static void SetAddress(void*)
 /// @brief Handle input in the Port textbox
 static void SetPort(void*)
 {
-    sprintf(m_dbsettings.Port, GfuiEditboxGetString(s_scrHandle, m_portControl));
-    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings.Port);
+    sprintf(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
+    if (sscanf(m_portString, "%f", &m_dbsettings.Port) == 1)
+    {
+        m_dbsettings.Port = std::stoi(m_portString);
+        GfuiEditboxSetString(s_scrHandle, m_portControl, m_portString);
+    }
+    else
+    {
+        GfuiEditboxSetString(s_scrHandle, m_portControl, "Enter a valid port number");
+    }
 }
 
 /// @brief Handle input in the Schema name textbox
@@ -82,7 +92,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, m_dbsettings.Username);
     GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, m_dbsettings.Password);
     GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, m_dbsettings.Address);
-    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_dbsettings.Port);
+    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_portString);
     GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings.Schema);
     GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings.UseSSL));
 
@@ -95,6 +105,7 @@ static void SaveSettings(void* /* dummy */)
 {
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
+    SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
@@ -106,7 +117,7 @@ static void SynchronizeControls()
     GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings.Username);
     GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings.Password);
     GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings.Address);
-    GfuiEditboxSetString(s_scrHandle, m_portControl, m_dbsettings.Port);
+    GfuiEditboxSetString(s_scrHandle, m_portControl, m_portString);
     GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.Schema);
     GfuiCheckboxSetChecked(s_scrHandle, m_useSSLControl, m_dbsettings.UseSSL);
 }
@@ -118,7 +129,7 @@ static void LoadDefaultSettings()
     sprintf(m_dbsettings.Username, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
     sprintf(m_dbsettings.Password, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
     sprintf(m_dbsettings.Address, GfuiEditboxGetString(s_scrHandle, m_addressControl));
-    sprintf(m_dbsettings.Port, GfuiEditboxGetString(s_scrHandle, m_portControl));
+    sprintf(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
     sprintf(m_dbsettings.Schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
     m_dbsettings.UseSSL = GfuiCheckboxIsChecked(s_scrHandle, m_useSSLControl);
 }
@@ -131,7 +142,7 @@ static void LoadConfigSettings(void* p_param)
     sprintf(m_dbsettings.Username, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_dbsettings.Password, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_dbsettings.Address, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_dbsettings.Port, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_portString, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_dbsettings.Schema, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons

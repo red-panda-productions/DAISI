@@ -653,25 +653,9 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             if left out path will be data folder
 void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
-    std::string configPath("data" + p_dirPath);
-    std::string configFile("DatabaseSettingsMenu.xml");
-
-    if (!FindFileDirectory(configPath, configFile))
-        throw std::exception("Could not find database settings xml");
-
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
-    int port;
-    try
-    {
-        port = std::stoi(dbsettings.Port);
-    }
-    catch (std::exception& e)
-    {
-        throw std::exception("Port in database settings config file could not be converted to an int");
-    }
-
-    if (OpenDatabase(dbsettings.Address, port, dbsettings.Username, dbsettings.Password, dbsettings.Schema, dbsettings.UseSSL, p_dirPath))
+    if (OpenDatabase(dbsettings.Address, dbsettings.Port, dbsettings.Username, dbsettings.Password, dbsettings.Schema, dbsettings.UseSSL, p_dirPath))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);
