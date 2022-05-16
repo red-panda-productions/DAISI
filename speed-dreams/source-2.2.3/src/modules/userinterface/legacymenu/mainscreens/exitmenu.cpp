@@ -53,6 +53,7 @@ onAcceptExit(void * /* dummy */)
  *	
  */
 
+// SIMULATED DRIVING ASSISTANCE: added parameters and logic for an end-of-game menu.
 void* ExitMenuInit(void* prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
 {
     if (MenuHandle) {
