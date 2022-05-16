@@ -220,7 +220,7 @@ static void
 rmtsSelect(void * /* dummy */)
 {
 	// Save currently selected track into the race manager.
-	MenuData->pRace->getManager()->setEventTrack(0, PCurTrack);
+	MenuData->setTrack(PCurTrack);
 
 	// Next screen.
 	rmtsDeactivate(MenuData->nextScreen);
@@ -253,7 +253,7 @@ RmTrackSelect(void *vs)
 
 	// Get currently selected track for the current race type
 	// (or the first usable one in the selected category).
-	PCurTrack = MenuData->pRace->getTrack();
+	PCurTrack = MenuData->getTrack();
 	const std::string strReqTrackId = PCurTrack->getId();
 	const std::string strReqTrackCatId = PCurTrack->getCategoryId();
 	PCurTrack =

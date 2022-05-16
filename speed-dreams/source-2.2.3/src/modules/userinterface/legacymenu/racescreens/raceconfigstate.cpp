@@ -30,6 +30,7 @@
 #include <tgfclient.h>
 
 #include <raceman.h>
+#include <racemanagers.h>
 
 #include <race.h>
 #include <tracks.h>
@@ -147,8 +148,9 @@ RmConfigRunState(bool bStart)
 		} else {
 			ts.prevScreen = rmConfigBackHookInit();
 		}
-		ts.pRace = LmRaceEngine().race();
-		ts.piTrackLoader = GfTracks::self()->getTrackLoader();
+                ts.setTrack = [](GfTrack* p_track){LmRaceEngine().race()->getManager()->setEventTrack(0, p_track);};
+		ts.getTrack = []{return LmRaceEngine().race()->getTrack();};
+                ts.piTrackLoader = GfTracks::self()->getTrackLoader();
 		RmTrackSelect(&ts);
 
 	} else if (!strcmp(conf, RM_VAL_DRVSEL)) {

@@ -187,6 +187,10 @@ Changed:
                 added Clamp() helper function
         userinterface/
             legacymenu/
+                racescreens/
+                    raceconfigstate.cpp
+                        included "racemanagers.h"
+                        changed RmConfigRunState(): assign ts.setTrack and ts.getTrack instead of removed ts.pRace
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -228,11 +232,16 @@ Changed:
                     changed rmRaceManMenu()
                 racescreens.h
                     removed networking
+                    included "race.h"
+                    changed RmTrackSelect: replaced GfRace pointer with function pointers to set and get track
                 raceselectmenu.cpp
                     changed rmOnActivate()
                     changed rmOnRaceSelectShutdown()
                     changed rmOnSelectRaceMan()
                     changed RmRaceSelectInit()
+                trackselect.cpp
+                    changed rmtsSelect(): replaced usage of race manager with setTrack function
+                    changed RmTrackSelect(): replaced usage of race manager with getTrack function
                 removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
             confscreens/
                 soundconfig.cpp
@@ -401,6 +410,9 @@ Changed:
                 removed controls and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
+            trackselectmenu.xml
+                changed text on Next and Back buttons
+                changed all instances of the word track to environment
         
   cmake/
     checks.cmake

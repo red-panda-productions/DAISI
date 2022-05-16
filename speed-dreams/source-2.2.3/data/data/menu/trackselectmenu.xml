@@ -59,7 +59,7 @@
 	<section name="trackcatlabel">
 		<attstr name="type" val="label"/>
 		<attnum name="max len" val="25"/>
-		<attstr name="tip" val="Select a track category"/>
+		<attstr name="tip" val="Select an environment category"/>
   		<attnum name="x" val="295"/>
 		<attnum name="y" val="322"/>
 		<attnum name="width" val="220"/>
@@ -94,7 +94,7 @@
 	<section name="tracklabel">
 		<attstr name="type" val="label"/>
 		<attnum name="max len" val="25"/>
-		<attstr name="tip" val="Select a track"/>
+		<attstr name="tip" val="Select an environment"/>
   		<attnum name="x" val="295"/>
 		<attnum name="y" val="292"/>
 		<attnum name="width" val="220"/>
@@ -169,8 +169,8 @@
 	<section name="backbutton">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Back"/>
-		<attstr name="tip" val="Cancel changes and get back to the race type choice menu"/>
+		<attstr name="text" val="Cancel"/>
+		<attstr name="tip" val="Discard changes and get back to the researcher menu"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="278"/>
 		<attnum name="y" val="44"/>
@@ -191,8 +191,8 @@
 	<section name="nextbutton">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Next"/>
-		<attstr name="tip" val="Apply changes and jump to the competitors selection menu"/>
+		<attstr name="text" val="Apply"/>
+		<attstr name="tip" val="Apply changes and get back to the researcher menu"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="435"/>
 		<attnum name="y" val="44"/>

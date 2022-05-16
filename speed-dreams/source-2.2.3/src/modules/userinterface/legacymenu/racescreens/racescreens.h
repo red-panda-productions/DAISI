@@ -26,6 +26,7 @@
 #define __RACESCREENS_H__
 
 #include <raceman.h>
+#include <race.h>
 
 #include <itrackloader.h>
 
@@ -35,7 +36,11 @@ class GfRace;
 
 typedef struct RmTrackSelect
 {
-	GfRace      *pRace; /* The race to update */
+    /// @brief Pointer to function used to set the selected track
+    void (*setTrack)(GfTrack *);
+    /// @brief Pointer to function used to get the selected track
+    /// @return Pointer to selected track
+    GfTrack *(*getTrack)();
     void        *prevScreen;	/* Race manager screen to go back */
     void        *nextScreen;	/* Race manager screen to go after select */
     ITrackLoader	*piTrackLoader;	/* Track loader */
