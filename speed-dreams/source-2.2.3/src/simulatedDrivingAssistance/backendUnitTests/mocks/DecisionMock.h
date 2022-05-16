@@ -11,7 +11,7 @@ public:
     }
 
     // @brief    increases the intervene integer variable by 1
-    void RunInterveneCommands() override
+    void RunInterveneCommands(tAllowedActions p_allowedActions) override
     {
         Intervene++;
     }
