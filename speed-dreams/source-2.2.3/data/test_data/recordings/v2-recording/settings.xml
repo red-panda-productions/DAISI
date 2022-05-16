@@ -26,8 +26,6 @@
     <attstr name="control_intervention_toggle" val="true"/>
     <attstr name="control_steering" val="true"/>
     <attstr name="force_feedback" val="true"/>
-    <attstr name="record_session" val="true"/>
-    <attstr name="bb_record_session" val="true"/>
   </section>
 
   <section name="version">
