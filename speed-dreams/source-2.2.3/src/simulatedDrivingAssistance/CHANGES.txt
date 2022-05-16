@@ -403,6 +403,8 @@ Changed:
                 renamed race button
                 removed weekend
                 removed player
+            raceresultsmenu.xml
+                added a QuitButton
             soundconfigmenu.xml
                 added controls for intervention sound volume
             stopracemenu.xml

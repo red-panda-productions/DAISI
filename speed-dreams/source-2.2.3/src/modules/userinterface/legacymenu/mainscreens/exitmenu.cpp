@@ -66,7 +66,7 @@ void* ExitMenuInit(void* prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion
     // Looks where the exit game gets called and change the button functionality based on it.
     if (p_raceExit)
     {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(MenuHandle, p_saveWayVersion), GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(p_saveWayVersion), GfuiScreenActivate);
     }
     else
     {

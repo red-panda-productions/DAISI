@@ -6,7 +6,7 @@
 #include "EndExperimentMenu.h"
 #include "mainmenu.h"
 
-static void* s_menuHandle = NULL;
+static void* s_menuHandle = nullptr;
 
 /// @brief Abort the simulation/race once the 'ok'/'quit' button has been pressed in the EndExperimentMenu
 static void OnAcceptExit(void* /* dummy */)
@@ -17,7 +17,7 @@ static void OnAcceptExit(void* /* dummy */)
 
 /// @brief Loads the EndExperimentMenu.xml according to the given RaceEndType
 /// @param p_saveWayVersion represents the RaceEndType
-void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
+void* EndExperimentInit(RaceEndType p_saveWayVersion)
 {
     if (s_menuHandle)
     {
@@ -36,7 +36,7 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
         case ABORT:
         case RESTART:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", NULL, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", nullptr, OnAcceptExit);
             break;
         }
         default:
@@ -44,7 +44,7 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
             throw std::runtime_error("incorrect 'p_experimentWayVersion', have you defined the new option in endexperiment.h?");
         }
     }
-    GfuiAddKey(s_menuHandle, GFUIK_SPACE, "No, back to the game", NULL, OnAcceptExit, NULL);
+    GfuiAddKey(s_menuHandle, GFUIK_SPACE, "No, back to the game", nullptr, OnAcceptExit, nullptr);
 
     GfParmReleaseHandle(param);
 
