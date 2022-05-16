@@ -80,6 +80,32 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
+        <!-- Choose black box button-->
+        <section name="ChooseEnvironmentButton">
+	        <attstr name="type" val="text button"/>
+	        <attstr name="show box" val="yes"/>
+            <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces, 
+			as giving a new value to a button's text is only as long as the original length,
+			although even with the small font, a name that long would go off-screen -->
+	        <attstr name="text" val="Choose Environment:                                                                                                                                                                                                                                                                     "/>
+            <attstr name="tip" val="Open a menu to select the driving environment"/>
+	        <attstr name="h align" val="left"/>
+	        <attnum name="x" val="20"/>
+	        <attnum name="y" val="240"/>
+            <attnum name="width" val="145"/>
+	        <attstr name="font" val="medium"/>
+	        <attstr name="color" val="0xFFFFFF"/>
+	        <attstr name="focused color" val="0xFFFFFF"/>
+	        <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
         <!-- Checkboxes for selecting how to indicate an intervention -->
         <section name="CheckboxIndicatorAuditory">
             <attstr name="type" val="check box"/>
@@ -142,26 +168,6 @@
                 </section>
             </section>
             <attnum name="x" val="260"/>
-            <attnum name="y" val="370"/>
-            <attnum name="image width" val="20"/>
-            <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="font" val="small_t"/>
-            <attnum name="selected" val="0"/>
-            <attnum name="distance" val="10"/>
-            <attnum name="minimum of one" val="1"/>
-        </section>
-
-        <!-- RadioButtonList for selecting the environment -->
-        <section name="EnvironmentRadioButtonList">
-            <attstr name="type" val="radio button list"/>
-            <section name="options">
-                <section name="0">
-                    <attstr name="text" val="Highway"/>
-                    <attstr name="tip" val="Set the environment to Highway"/>
-                </section>
-            </section>
-            <attnum name="x" val="380"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>

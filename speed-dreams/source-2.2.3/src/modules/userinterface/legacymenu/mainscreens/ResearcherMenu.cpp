@@ -15,7 +15,6 @@
 #define PRM_INDCTR_VISUAL    "CheckboxIndicatorVisual"
 #define PRM_INDCTR_TEXT      "CheckboxIndicatorTextual"
 #define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
-#define PRM_ENVIRONMENT      "EnvironmentRadioButtonList"
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 #define PRM_CTRL_GAS         "CheckboxPControlGas"
 #define PRM_CTRL_STEERING    "CheckboxPControlSteering"
@@ -23,6 +22,7 @@
 #define PRM_MAX_TIME         "MaxTimeEdit"
 #define PRM_USER_ID          "UserIdEdit"
 #define PRM_BLACKBOX         "ChooseBlackBoxButton"
+#define PRM_ENVIRONMENT      "ChooseEnvironmentButton"
 #define PRM_DEV              "DevButton"
 #define GFMNU_ATTR_PATH      "path"
 
@@ -40,6 +40,10 @@
 #define MSG_BLACK_BOX_NOT_EXE     "Choose Black Box: chosen file was not a .exe"
 #define MSG_APPLY_NORMAL_TEXT     "Apply"
 #define MSG_APPLY_NO_BLACK_BOX    "Apply | You need to select a valid Black Box"
+
+// Messages for environment selection
+#define MSG_ENVIRONMENT_PREFIX       "Choose Environment: "
+#define MSG_ENVIRONMENT_NOT_SELECTED "Choose Environment: None selected"
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
@@ -63,9 +67,6 @@ tIndicator m_indicators;
 // InterventionType
 InterventionType m_interventionType;
 
-// Environment
-Track m_track;
-
 // Participant control
 tParticipantControl m_pControl;
 
@@ -84,6 +85,11 @@ int m_userIdControl;
 int m_blackBoxButton;
 bool m_blackBoxChosen = false;
 char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+
+// Environment
+int m_environmentButton;
+bool m_environmentChosen = false;
+Track m_track;
 
 // Apply Button
 int m_applyButton;
@@ -125,10 +131,11 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
 
 /// @brief        Sets the environment to the selected one
 /// @param p_info Information on the radio button pressed
-static void SelectEnvironment(tRadioButtonInfo* p_info)
+static void SelectEnvironment(void* /* dummy */)
 {
     // TODO: set environment
     // m_track = _something_
+
 }
 
 /// @brief        Enables/disables the possibility for participants to enable/disable interventions
@@ -223,6 +230,9 @@ static void SaveSettingsToDisk()
     // Save black box filepath to xml file
     GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
+    // Save environment filepath to xml file
+    GfParmSetStr(readParam, PRM_ENVIRONMENT, GFMNU_ATTR_PATH, m_track.filename);
+
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
 }
@@ -290,6 +300,13 @@ static void SynchronizeControls()
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    }
+
+    if (m_environmentChosen)
+    {
+        std::string environmentButtonText(MSG_ENVIRONMENT_PREFIX);
+        environmentButtonText.append(m_track.name);
+        GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
     }
 }
 
@@ -427,6 +444,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Choose black box control
     m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
 
+    // Choose environment control
+    m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, s_scrHandle, SelectEnvironment);
+
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
     m_indicatorsControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_VISUAL, nullptr, SelectIcon);
@@ -434,9 +454,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // InterventionTypes radio button controls
     m_interventionTypeControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_INTERVENTIONTYPE, nullptr, SelectInterventionType);
-
-    // Environment checkboxes controls
-    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_ENVIRONMENT, nullptr, SelectEnvironment);
 
     // Dev button control
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, s_scrHandle, DeveloperMenuRun);
