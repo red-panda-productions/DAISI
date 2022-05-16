@@ -27,6 +27,7 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
+#include "ConfigEnums.h"
 
 static void *MenuHandle = 0;
 
@@ -73,10 +74,11 @@ onCreditsMenuActivate(void * /* dummy */)
     CreditsMenuActivate(MenuHandle);
 }
 
+// SIMULATED DRIVING ASSISTANCE: added parameters
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle));
+    GfuiScreenActivate(ExitMenuInit(MenuHandle, false));
 }
 
 static void
