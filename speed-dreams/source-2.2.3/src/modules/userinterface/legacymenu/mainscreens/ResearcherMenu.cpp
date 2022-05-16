@@ -311,7 +311,7 @@ static void SynchronizeControls()
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, ""); // Reset error label
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
     }
 }
 
