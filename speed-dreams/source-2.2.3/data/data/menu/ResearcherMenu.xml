@@ -106,6 +106,7 @@
             <attstr name="tip" val="You must choose a file that could be a correct black box: *.exe"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
+            <attstr name="color" val="0xFFAD34"/>
         </section>
 
         <!-- Checkboxes for selecting how to indicate an intervention -->
