@@ -8,7 +8,9 @@
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY      "test_test_data"
-#define RECORDING_TEST_DATA "test_data/recordings"
+/// @brief Directory relative to the source-2.2.3/data folder wbere data for recorder tests is stored
+#define RECORDING_TEST_DATA "recorderTestData"
+/// @brief Filename in the RECORDING_TEST_DATA folder of the car xml used for testing
 #define TEST_CAR_FILE_NAME  "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
@@ -304,14 +306,14 @@ TEST(RecorderTests, WriteRunSettingsTests)
     GfInit(false);
 
     // Find the car xml
-    std::string path = "test_data/recordings/" TEST_CAR_FILE_NAME;
+    std::string path = RECORDING_TEST_DATA "/" TEST_CAR_FILE_NAME;
 
     // Load the car xml
     auto carHandle = GfParmReadFile(path.c_str(), 0, true);
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml.");  // @NOCOVERAGE, should always be available
+        throw std::exception("Could not load test_car.xml");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
