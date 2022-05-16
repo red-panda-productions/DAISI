@@ -49,16 +49,12 @@ Added:
             DataSelectionMenu.xml
             DeveloperMenu.xml
             EndExperimentMenu.xml
-            raceresultsmenu.xml
     drivers/
         assistedhuman/
             *
 
 Changed:
   src/
-    backend/
-        ConfigEnums.h
-            added RaceEndType enumeration
     libs/
         robottools/
             humandriver.h
@@ -207,10 +203,7 @@ Changed:
                     added    ActivateResearcherMenu()
                     changed  backLoad()
                     changed  activate()
-                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
-            
-           
-              
+                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
             mainscreens/
                 mainmenu.cpp
                     included "DataSelectionMenu.h"

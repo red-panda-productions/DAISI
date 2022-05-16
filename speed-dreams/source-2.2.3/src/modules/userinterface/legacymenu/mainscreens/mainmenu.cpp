@@ -74,6 +74,7 @@ onCreditsMenuActivate(void * /* dummy */)
     CreditsMenuActivate(MenuHandle);
 }
 
+// SIMULATED DRIVING ASSISTANCE: added parameters
 static void
 onExitMenuActivate(void * /*dummy*/)
 {

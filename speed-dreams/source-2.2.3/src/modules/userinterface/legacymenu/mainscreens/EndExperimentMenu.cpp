@@ -8,12 +8,15 @@
 
 static void* s_menuHandle = NULL;
 
+/// @brief Abort the simulation/race once the 'ok'/'quit' button has been pressed in the EndExperimentMenu
 static void OnAcceptExit(void* /* dummy */)
 {
     LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
     LegacyMenu::self().quit();
 }
 
+/// @brief Loads the EndExperimentMenu.xml according to the given RaceEndType
+/// @param p_saveWayVersion represents the RaceEndType
 void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 {
     if (s_menuHandle)
