@@ -14,6 +14,7 @@ static void OnAcceptExit(void* /* dummy */)
     LegacyMenu::self().quit();
 }
 
+
 void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 {
     if (s_menuHandle)
