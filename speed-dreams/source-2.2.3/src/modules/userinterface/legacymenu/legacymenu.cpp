@@ -117,13 +117,6 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
-/// @brief activates the InterventionMenu
-/// @return true if successful
-bool LegacyMenu::ActivateResearcherMenu()
-{
-    return ResearcherMenuRun() == 0;
-}
 
 bool LegacyMenu::startRace()
 {
@@ -181,9 +174,7 @@ bool LegacyMenu::activate()
 	// and finally open the main menu.
 	if (strRaceToStart.empty())
 	{
-        // If not specified, simply open the splash screen, load the menus in the background
-        // SIMULATED DRIVING ASSISTANCE CHANGE: and finally open the intervention menu.
-        fnOnSplashClosed = LegacyMenu::ActivateResearcherMenu;
+        fnOnSplashClosed = LegacyMenu::activateMainMenu;
     }
 
 	// Otherwise, run the selected race.
