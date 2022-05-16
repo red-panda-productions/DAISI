@@ -457,7 +457,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
-    GfuiAddKey(s_scrHandle, GFUIK_BACKSPACE, "Switch to Developer Screen", nullptr, DeveloperMenuRun, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Developer Screen", nullptr, DeveloperMenuRun, nullptr);
 
     // Create random userId
     std::random_device rd;
