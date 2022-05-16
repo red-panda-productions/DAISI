@@ -14,11 +14,13 @@ namespace filesystem = std::experimental::filesystem;
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
+    template tAllowedActions Mediator<type>::GetAllowedActions();                                                                                       \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
     template bool Mediator<type>::GetBlackBoxSyncOption();                                                                                              \
     template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
-    template void Mediator<type>::SetTask(Task p_task);                                                                                                 \
+    template int Mediator<type>::GetMaxTime();                                                                                                          \
+    template void Mediator<type>::SetAllowedActions(tAllowedActions p_allowedActions);                                                                  \
     template void Mediator<type>::SetIndicatorSettings(tIndicator p_indicators);                                                                        \
     template void Mediator<type>::SetInterventionType(InterventionType p_type);                                                                         \
     template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                                                  \
@@ -36,12 +38,12 @@ namespace filesystem = std::experimental::filesystem;
     template bool Mediator<type>::TimeOut();                                                                                                            \
     template Mediator<type>* Mediator<type>::GetInstance();
 
-/// @brief        Sets the task in SDAConfig to p_task
-/// @param p_task The Task
+/// @brief        Sets the allowed actions in SDAConfig to p_allowedActions
+/// @param p_allowedActions The allowed actions
 template <typename DecisionMaker>
-void Mediator<DecisionMaker>::SetTask(Task p_task)
+void Mediator<DecisionMaker>::SetAllowedActions(tAllowedActions p_allowedActions)
 {
-    m_decisionMaker.Config.SetTask(p_task);
+    m_decisionMaker.Config.SetAllowedActions(p_allowedActions);
 }
 
 /// @brief              Sets the settings for indication of interventions
@@ -124,6 +126,14 @@ void Mediator<DecisionMaker>::SetBlackBoxSyncOption(bool p_sync)
     m_decisionMaker.Config.SetBlackBoxSyncOption(p_sync);
 }
 
+/// @brief  Gets the allowed black box actions setting
+/// @return The allowed black box actions
+template <typename DecisionMaker>
+tAllowedActions Mediator<DecisionMaker>::GetAllowedActions()
+{
+    return m_decisionMaker.Config.GetAllowedActions();
+}
+
 /// @brief             Gets the setting for the given indicator
 /// @param p_indicator Indicator whose setting to get
 /// @return true if the indicator is enabled, false when disabled
@@ -171,6 +181,14 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::GetBlackBoxSyncOption()
 {
     return m_decisionMaker.Config.GetBlackBoxSyncOption();
+}
+
+/// @brief  Gets the maximum simulation time
+/// @return The maximum simulation time
+template <typename DecisionMaker>
+int Mediator<DecisionMaker>::GetMaxTime()
+{
+    return m_decisionMaker.Config.GetMaxTime();
 }
 
 /// @brief              Does one drive tick in the framework
