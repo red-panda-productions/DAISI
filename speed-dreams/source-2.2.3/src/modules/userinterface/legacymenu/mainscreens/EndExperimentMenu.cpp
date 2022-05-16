@@ -3,7 +3,6 @@
 #include "legacymenu.h"
 
 #include "EndExperimentMenu.h"
-#include "mainmenu.h"
 
 static void* s_menuHandle = nullptr;
 
