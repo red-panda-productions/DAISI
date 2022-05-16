@@ -69,6 +69,14 @@ static void GoBack(void* /* dummy */)
     GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
 }
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: added onDatabaseSettingsMenuActivate function
+/// @brief Activates the databaseSettingsMenu screen
+static void
+DatabaseSettingsMenuActivate(void * /* dummy */)
+{
+    GfuiScreenActivate(DatabaseSettingsMenuInit(MenuHandle));
+}
+
 static void
 onCreditsMenuActivate(void * /* dummy */)
 {
@@ -84,12 +92,6 @@ onExitMenuActivate(void * /*dummy*/)
 static void
 onMainMenuActivate(void * /* dummy */)
 {
-}
-
-static void
-onDatabaseSettingsMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(DatabaseSettingsMenuInit(MenuHandle));
 }
 
 /*
@@ -134,8 +136,8 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "database", nullptr, onDatabaseSettingsMenuActivate);
+    // SIMULATED DRIVING ASSISTANCE CHANGE: added database button and back button
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "database", nullptr, DatabaseSettingsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);

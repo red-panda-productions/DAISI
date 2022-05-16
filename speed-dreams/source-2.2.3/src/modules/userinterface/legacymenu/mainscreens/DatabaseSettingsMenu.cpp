@@ -27,7 +27,7 @@ int m_useSSLControl;
 
 char m_portString[256];
 
-static tDatabaseSettings m_dbsettings;
+tDatabaseSettings m_dbsettings;
 
 /// @brief Handle input in the Username textbox
 static void SetUsername(void*)
@@ -123,7 +123,6 @@ static void SynchronizeControls()
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
-/// @param p_param The configuration xml file handle
 static void LoadDefaultSettings()
 {
     sprintf(m_dbsettings.Username, GfuiEditboxGetString(s_scrHandle, m_usernameControl));

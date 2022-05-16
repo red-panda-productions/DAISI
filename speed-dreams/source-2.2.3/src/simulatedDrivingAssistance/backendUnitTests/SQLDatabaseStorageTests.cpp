@@ -9,6 +9,8 @@
 
 #include "Mediator.h"
 
+
+#define MAKE_TEST_SETTINGS tDatabaseSettings TestSettings; sprintf(TestSettings.Username, "SDATest"); sprintf(TestSettings.Password, "PASSWORD123"); TestSettings.Port = 3306; sprintf(TestSettings.Address, "127.0.0.1"); sprintf(TestSettings.Schema, "sda_test"); TestSettings.UseSSL = true; 
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
 /// @param p_password password of database to connect to
@@ -81,28 +83,6 @@ void CatchDatabaseError(const std::string& p_password, const char* p_inputFile)
     TestCatchIncorrectTestData(sqlDatabaseStorage, p_inputFile);
 }
 
-/// @brief  Tries to find the database settings file
-///         but wont find it, since there is no directory
-TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data"), std::exception)
-    {
-        ASSERT_STREQ("Could not find database settings xml", e.what());
-    }
-}
-
-/// @brief  Tries to find the database settings file
-///         but wont find it, since there is a directory
-///         but no settings file in that directory
-TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-}
-
 /// @brief  Connects to the database, if the settings in test_data/correctSettings
 ///         has the correct password, otherwise it has the same
 ///         coverage path as TestDatabaseRunIncorrect
@@ -110,14 +90,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    static tDatabaseSettings TestSettings;
-    sprintf(TestSettings.Username, "SDATest");
-    sprintf(TestSettings.Password, "PASSWORD");
-    TestSettings.Port = 3306;
-    sprintf(TestSettings.Address, "127.0.0.1");
-    sprintf(TestSettings.Schema, "sda_test");
-    TestSettings.UseSSL = false;
+    MAKE_TEST_SETTINGS;
 
+    TestSettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
 
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -133,13 +108,9 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    static tDatabaseSettings TestSettings;
-    sprintf(TestSettings.Username, "SDATest");
-    sprintf(TestSettings.Password, "PASSWORD123");
-    TestSettings.Port = 3306;
-    sprintf(TestSettings.Address, "127.0.0.1");
-    sprintf(TestSettings.Schema, "sda_test");
+    MAKE_TEST_SETTINGS;
     TestSettings.UseSSL = false;
+
     SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
 
     chdir(SD_DATADIR_SRC);
@@ -156,13 +127,8 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
-    static tDatabaseSettings TestSettings;
-    sprintf(TestSettings.Username, "SDATest");
-    sprintf(TestSettings.Password, "PASSWORD");
-    TestSettings.Port = 3306;
-    sprintf(TestSettings.Address, "127.0.0.1");
-    sprintf(TestSettings.Schema, "sda_test");
-    TestSettings.UseSSL = true;
+    MAKE_TEST_SETTINGS;
+
     SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
 
     chdir(SD_DATADIR_SRC);
@@ -178,13 +144,8 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    static tDatabaseSettings TestSettings;
-    sprintf(TestSettings.Username, "SDATest");
-    sprintf(TestSettings.Password, "PASSWORD");
-    TestSettings.Port = 3306;
-    sprintf(TestSettings.Address, "127.0.0.1");
-    sprintf(TestSettings.Schema, "sda_test");
-    TestSettings.UseSSL = true;
+    MAKE_TEST_SETTINGS;
+
     SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
 
     chdir(SD_DATADIR_SRC);
@@ -202,13 +163,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    static tDatabaseSettings TestSettings;
-    sprintf(TestSettings.Username, "SDATest");
-    sprintf(TestSettings.Password, "PASSWORD");
-    TestSettings.Port = 3306;
-    sprintf(TestSettings.Address, "127.0.0.1");
-    sprintf(TestSettings.Schema, "sda_test");
-    TestSettings.UseSSL = true;
+    MAKE_TEST_SETTINGS;
 
     SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
 

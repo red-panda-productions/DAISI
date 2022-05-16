@@ -27,6 +27,9 @@
 // @brief The amount of ticks in a day for 0.006 ms per tick (standard)
 #define DAY_TICKS 14400000
 
+// @brief Fake path for a test
+#define FAKE_PATH "Totally/a/path"
+
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
 
@@ -293,8 +296,6 @@ TEST(MediatorTests, DriveTickTest)
     ASSERT_TRUE(&situation == decisionMaker->Situation);
     ASSERT_TRUE(decisionMaker->TickCount == 0);
 }
-
-#define FAKE_PATH "Totally/a/path"
 
 TEST(MediatorTests, RaceStartTest)
 {

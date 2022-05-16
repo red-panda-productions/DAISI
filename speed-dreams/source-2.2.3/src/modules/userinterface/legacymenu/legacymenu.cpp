@@ -35,7 +35,6 @@
 #include "splash.h"
 // SIMULATED DRIVING ASSISTANCE CHANGE: included ResearcherMenu.h, DataSelectionMenu.h
 #include "ResearcherMenu.h"
-#include "DatabaseSettingsMenu.h"
 #include "DataSelectionMenu.h"
 
 #include "mainmenu.h"

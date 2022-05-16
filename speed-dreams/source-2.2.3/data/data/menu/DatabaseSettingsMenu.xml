@@ -5,6 +5,7 @@
 <params name="DatabaseSettings">
 
     <section name="dynamic controls">
+	
         <!-- Input field for username -->
         <section name="UsernameEdit">
             <attstr name="type" val="edit box"/>
