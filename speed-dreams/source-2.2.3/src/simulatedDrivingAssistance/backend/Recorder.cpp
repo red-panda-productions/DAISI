@@ -82,7 +82,9 @@ Recorder::~Recorder()
 /// @param p_indicators           The indicator settings
 /// @param p_interventionType     The intervention type settings
 /// @param p_participantControl   The participant control settings
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl)
+/// @param p_maxTime             The maximum time for the trial
+/// @param p_allowedActions       The allowed black box actions settings
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const int p_maxTime, const tAllowedActions& p_allowedActions)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
@@ -104,6 +106,12 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteering));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
+
+    GfParmSetNum(settingsFileHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, (tdble)p_maxTime);
+
+    GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, BoolToString(p_allowedActions.Steer));
+    GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, BoolToString(p_allowedActions.Accelerate));
+    GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(p_allowedActions.Brake));
 
     GfParmSetNum(settingsFileHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
 
@@ -273,6 +281,17 @@ void UpdateV1RecorderToV2(void* p_settingsHandle)
     GfParmSetNum(p_settingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, DEFAULT_MAX_TIME);
 }
 
+/// @brief Update a v2 recording to a v3 recording. This means:
+///  - Adding allowed black box actions
+/// @param p_settingsHandle Handle to the run settings file
+void UpdateV2RecorderToV3(void* p_settingsHandle)
+{
+    // All previous recording had all actions allowed
+    GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, BoolToString(true));
+    GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, BoolToString(true));
+    GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(true));
+}
+
 /// @brief Validate a recording, and update it if it is an older version
 /// @param p_recordingFolder Folder of the recording to validate and update
 /// @return true if the recording contains all files and could be updated
@@ -331,6 +350,13 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     if (version == 1)
     {
         UpdateV1RecorderToV2(settingsHandle);
+        version++;
+    }
+
+    // Update version 2 to version 3 recording
+    if (version == 2)
+    {
+        UpdateV2RecorderToV3(settingsHandle);
         version++;
     }
 
