@@ -49,6 +49,11 @@
             <attnum name="height" val="20"/>
             <attstr name="font" val="mid"/>
         </section>
+        
+        <section name="3">
+            <attstr name="type" val="background image"/>
+            <attstr name="image" val="data/img/splash-quit.jpg"/>
+        </section>
 
     </section>
 

@@ -63,6 +63,7 @@ void* ExitMenuInit(void* prevMenu, bool p_raceExit)
     MenuHandle = GfuiScreenCreate();
 
     void *param = GfuiMenuLoad("exitmenu.xml");
+    GfuiMenuCreateStaticControls(MenuHandle, param);
 
     // SIMULATED DRIVING ASSISTANCE: Looks where the exit game gets called and change the button functionality based on it.
     if (p_raceExit)
