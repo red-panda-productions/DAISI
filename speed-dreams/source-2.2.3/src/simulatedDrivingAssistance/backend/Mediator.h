@@ -52,12 +52,6 @@ public:
     {
         return &m_decisionMaker;
     }
-
-    void SetTicks(unsigned long p_tick)
-    {
-        m_tickCount = p_tick;
-    }
-
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour
