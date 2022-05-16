@@ -45,7 +45,7 @@ static void *hscreen = 0;
 static int curPlayerIdx = 0;
 
 // Abort race hook ******************************************************
-static void    *pvAbortRaceHookHandle = 0;
+static void *pvAbortRaceHookHandle = 0;
 
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
@@ -71,7 +71,7 @@ rmSkipSessionHookActivate(void * /* dummy */)
     LmRaceEngine().skipRaceSession();
 }
 
-static void     *pvSkipSessionHookHandle = 0;
+static void *pvSkipSessionHookHandle = 0;
 
 static void *
 rmSkipSessionHookInit()
@@ -99,7 +99,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
 }
 
-static void     *pvBackToRaceHookHandle = 0;
+static void *pvBackToRaceHookHandle = 0;
 
 void *
 RmBackToRaceHookInit()
@@ -159,7 +159,7 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
     GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
 }
 
-static void     *pvForceFeedbackConfigHookHandle = 0;
+static void *pvForceFeedbackConfigHookHandle = 0;
 
 static void *
 rmForceFeedbackConfigHookInit()
@@ -172,7 +172,7 @@ rmForceFeedbackConfigHookInit()
 #endif
 
 // Quit race hook ******************************************************
-static void     *rmStopScrHandle = 0;
+static void *rmStopScrHandle = 0;
 
 static void
 rmQuitHookActivate(void * /* dummy */)
@@ -182,7 +182,7 @@ rmQuitHookActivate(void * /* dummy */)
         GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, EXIT));
 }
 
-static void     *pvQuitHookHandle = 0;
+static void *pvQuitHookHandle = 0;
 
 static void *
 rmQuitHookInit()
