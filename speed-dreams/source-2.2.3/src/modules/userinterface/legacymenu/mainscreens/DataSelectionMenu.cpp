@@ -5,6 +5,8 @@
 #include "DataSelectionMenu.h"
 #include "ResearcherMenu.h"
 #include <racescreens.h>
+#include <racemanagers.h>
+#include <string>
 
 #define PRM_ENV_DATA   "CheckboxEnvironmentData"
 #define PRM_CAR_DATA   "CheckboxCarData"
@@ -133,6 +135,28 @@ static void SaveSettings(void* /* dummy */)
     SaveSettingsToDisk();
 
     // Go to the main screen
+        // And run it if there's such a race manager.
+    GfRaceManager* pSelRaceMan = GfRaceManagers::self()->getRaceManager("Quick");
+    if (pSelRaceMan) // Should never happen (checked in activate).
+    {
+        // Initialize the race engine.
+        LmRaceEngine().reset();
+
+        // Give the selected race manager to the race engine.
+        LmRaceEngine().selectRaceman(pSelRaceMan);
+
+        // Configure the new race (but don't enter the config. menu tree).
+        LmRaceEngine().configureRace(/* bInteractive */ false);
+
+        // Start the race engine state automaton
+        LmRaceEngine().startNewRace();
+    }
+    else
+    {
+        GfLogError("No such race type '%s'\n", "Quick".c_str());
+
+        return false;
+    }
     GfuiScreenActivate(RmRaceSelectInit(s_scrHandle));
 }
 
