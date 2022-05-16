@@ -156,7 +156,7 @@ protected:
     /// @brief        Writes the given indicator data object to a xml file.
     /// @param p_data The indicator data
     /// @return       The filepath of the xml file that it has been written to.
-    const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
+    const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data, InterventionType p_interventionType)
     {
         // Open or create the xml file to write to, clean the previous parameters.
         char* path = new char[PATH_BUF_SIZE];
@@ -181,7 +181,9 @@ protected:
 
             if (data.Texture)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
+                char m_interventionNumber[INTERVENTION_BUF_SIZE];
+                std::sprintf(m_interventionNumber, "%d", p_interventionType);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE, m_interventionNumber);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Texture->Path);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
@@ -280,7 +282,7 @@ TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
     {
         // Create random valid indicator data with a chance to generate no sound/texture/text data
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(CAN_GENERATE_NULL);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Load the created xml file into the indicator config and
         // test whether every value matches the original generated value.
@@ -300,7 +302,7 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidScreenPosition)
     {
         // Create random indicator data with invalid screen positions and write it to xml
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_SCR_POS);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::out_of_range);
     }
@@ -313,7 +315,7 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidLoopInterval)
     {
         // Create random indicator data with invalid loop intervals and write it to xml
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_LOOP_INTERVAL);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::runtime_error);
     }
@@ -326,7 +328,7 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
     {
         // Create random valid indicator data
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
@@ -349,7 +351,7 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
     {
         // Create random valid indicator data
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Activate every action and check whether the corresponding action is also returned by GetNeutralIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
@@ -402,7 +404,7 @@ TEST_F(IndicatorConfigLoadingTests, NumberOfIndicators)
     {
         // Create random valid indicator data
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Activate every action and check whether the correct number of indicators are saved.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
