@@ -1,5 +1,5 @@
-#pragma once
-
-extern void* EndExperimentInit(RaceEndType p_saveWayVersion);
+#include "Mediator.h"
 
 #define OK 1
+
+void* EndExperimentInit(RaceEndType p_saveWayVersion);

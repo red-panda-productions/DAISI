@@ -2,7 +2,6 @@
 
 #include "legacymenu.h"
 
-#include "Mediator.h"
 #include "EndExperimentMenu.h"
 #include "mainmenu.h"
 
