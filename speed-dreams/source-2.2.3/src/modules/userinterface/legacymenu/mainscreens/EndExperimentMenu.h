@@ -1,1 +1,2 @@
-void* EndExperimentInit();
+#pragma once
+extern void* EndExperimentInit();
