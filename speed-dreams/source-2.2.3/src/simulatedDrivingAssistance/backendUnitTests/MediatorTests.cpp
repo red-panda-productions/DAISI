@@ -20,6 +20,12 @@
 /// @brief The amount of tests for multiple tests
 #define TEST_AMOUNT 20
 
+// @brief The amount of minutes in a day
+#define DAY_MINUTES 1440
+
+// @brief The amount of ticks in a day for 0.006 ms per tick (standard)
+#define DAY_TICKS 14400000
+
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
 
@@ -251,3 +257,26 @@ void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_interventi
 BEGIN_TEST_COMBINATORIAL(MediatorTests, DataCollectionSettings)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL5(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
+/// @brief Tests if the TimeOut function returns the correct time out
+TEST(MediatorTests, TimeOutTest)
+{
+    Random random;
+    char path[256];
+    for (int j = 0; j < TEST_AMOUNT; j++)
+    {
+        SDAConfigMediator::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+
+        int maxTimeMinutes = random.NextInt(0, DAY_MINUTES);
+        SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.SetMaxTime(maxTimeMinutes);
+
+        unsigned long currentTick = random.NextUInt(DAY_TICKS);
+        SDAConfigMediator::GetInstance()->SetTicks(currentTick);
+
+        float maxTimeSeconds = static_cast<float>(maxTimeMinutes) * 60;
+        float currentTime = static_cast<float>(currentTick) * static_cast<float>(RCM_MAX_DT_ROBOTS);
+        bool isTimedOut = maxTimeSeconds < currentTime;
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
+    }
+}

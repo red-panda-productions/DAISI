@@ -393,6 +393,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
             throw std::exception("Failed to get SDA folder");                               \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
+        std::experimental::filesystem::create_directories(varName);                         \
                                                                                             \
         /* Delete the existing test directory to ensure directories are properly created */ \
         if (std::experimental::filesystem::exists(varName))                                 \
@@ -429,9 +430,27 @@ TEST(RecorderTests, UpgradeFromV0Test)
     ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION));
 }
 
-TEST(RecorderTests, ValidateV1RecordingTest)
+/// @brief Test whether the upgrade from V1 to V2 is done correctly
+/// in the new version, the max run time was added
+TEST(RecorderTests, UpgradeFromV1Test)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, NAN), DEFAULT_MAX_TIME);
+}
+
+/// @brief Test whether the recorder is safely updated to the new version
+/// here, the new version is V2 (max run time added)
+TEST(RecorderTests, ValidateLatestRecordingTest)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v2-recording", toUpgrade);
 
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
 
