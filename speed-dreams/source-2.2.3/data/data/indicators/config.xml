@@ -4,17 +4,17 @@
 	<section name="Interventions">
 		<section name ="steer none">
 			<section name="texture1">
-				<attstr name ="source" val="OnlySignals_Steering_256.png"/>
+				<attstr name ="source" val="SignalsOff_Steering_256.png"/>
 				<attnum name ="xpos"   val="0.75"/>
 				<attnum name ="ypos"   val="0.03"/>
 			</section>
 			<section name="texture2">
-				<attstr name ="source" val="SharedControl_Steering_256.png"/>
+				<attstr name ="source" val="SignalsOff_Steering_256.png"/>
 				<attnum name ="xpos"   val="0.75"/>
 				<attnum name ="ypos"   val="0.03"/>
 			</section>
 			<section name="texture3">
-				<attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
+				<attstr name ="source" val="SignalsOff_Steering_256.png"/>
 				<attnum name ="xpos"   val="0.75"/>
 				<attnum name ="ypos"   val="0.03"/>
 			</section>
@@ -144,12 +144,12 @@
 				<attnum name ="ypos"   val="0.03"/>
 			</section>
 			<section name="texture2">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
 				<attnum name ="xpos"   val="0.85"/>
 				<attnum name ="ypos"   val="0.03"/>
 			</section>
 			<section name="texture3">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
 				<attnum name ="xpos"   val="0.85"/>
 				<attnum name ="ypos"   val="0.03"/>
 			</section>
