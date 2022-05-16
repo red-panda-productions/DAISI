@@ -1,11 +1,12 @@
 #pragma once
 
-/// @brief The different tasks that can be performed
-typedef unsigned int Task;
-
-// TODO: remove no-task
-#define TASK_LANE_KEEPING  0
-#define TASK_SPEED_CONTROL 1
+/// @brief The different actions that a black box can take
+typedef struct AllowedActions
+{
+    bool Steer;
+    bool Accelerate;
+    bool Brake;
+} tAllowedActions;
 
 /// @brief The different ways a user can be indicated about an intervention
 typedef struct Indicator

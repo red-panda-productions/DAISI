@@ -20,13 +20,14 @@ public:
     void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
     tDatabaseSettings GetDatabaseSettings();
     void SetTask(Task p_task);
+    void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
     void SetPControlSettings(tParticipantControl p_pControl);
     void SetReplayRecorderSetting(bool p_replayRecorderOn);
     void SetBlackBoxSyncOption(bool p_sync);
-
     void SetMaxTime(int p_maxTime);
+
     void SetUserId(char* p_userId);
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
@@ -36,17 +37,21 @@ public:
     void SetReplayFolder(const filesystem::path& p_replayFolder);
     const filesystem::path& GetReplayFolder() const;
 
+    tAllowedActions GetAllowedActions();
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
+    int GetMaxTime();
 
     static Mediator* GetInstance();
 #ifdef TEST
-    static void ClearInstance()
+    /// @brief          Clears the mediator instance
+    /// @param p_delete Whether to delete the de mediator
+    static void ClearInstance(bool p_delete = true)
     {
-        delete m_instance;
+        if (p_delete) delete m_instance;
         m_instance = nullptr;
     }
 
@@ -55,9 +60,32 @@ public:
         return &m_decisionMaker;
     }
 
-    void SetTicks(unsigned long p_tick)
+    /// @brief             Sets the tick count of the mediator
+    /// @param p_tickCount The tick count
+    void SetTickCount(unsigned long p_tickCount)
     {
-        m_tickCount = p_tick;
+        m_tickCount = p_tickCount;
+    }
+
+    /// @brief  Gets the tick count of the mediator
+    /// @return The tick count
+    unsigned long GetTickCount()
+    {
+        return m_tickCount;
+    }
+
+    /// @brief         Sets the in race state of the mediator
+    /// @bool p_inRace Whether the game is in a race
+    void SetInRace(bool p_inRace)
+    {
+        m_inRace = p_inRace;
+    }
+
+    /// @brief  Gets the race state of the mediator
+    /// @return Whether the game is in a race
+    bool GetInRace()
+    {
+        return m_inRace;
     }
 
 #endif
