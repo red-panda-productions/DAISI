@@ -135,7 +135,6 @@ static void SelectEnvironment(void* /* dummy */)
 {
     // TODO: set environment
     // m_track = _something_
-
 }
 
 /// @brief        Enables/disables the possibility for participants to enable/disable interventions
@@ -302,12 +301,10 @@ static void SynchronizeControls()
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     }
 
-    if (m_environmentChosen)
-    {
-        std::string environmentButtonText(MSG_ENVIRONMENT_PREFIX);
-        environmentButtonText.append(m_track.name);
-        GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
-    }
+    std::string environmentButtonText = m_environmentChosen
+                                            ? std::string(MSG_ENVIRONMENT_PREFIX).append(m_track.name)
+                                            : std::string(MSG_ENVIRONMENT_NOT_SELECTED);
+    GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
