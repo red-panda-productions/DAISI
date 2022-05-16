@@ -217,7 +217,6 @@ Changed:
                 exitmenu.cpp
                     included "ConfigEnums.h"
                     included "EndExperimentMenu.h"
-                    changed  parameters for ExitMenuInit method
                     changed  functionality of ExitMenuInit method
                 exitmenu.h
                     included "ConfigEnums.h"
@@ -225,9 +224,7 @@ Changed:
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
             racescreens/
                 raceresultsmenus.cpp
-                    included "ConfigEnums.h"
                     included "EndExperimentMenu.h"
-                    changed parameters of rmPracticeResults, rmRaceResults and rmQualifResults functions
                     included several 'Quit' buttons
                 racestopmenu.cpp
                     RmStopRaceMenu()

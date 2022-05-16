@@ -13,9 +13,8 @@ static void OnAcceptExit(void* /* dummy */)
     LegacyMenu::self().quit();
 }
 
-/// @brief Loads the EndExperimentMenu.xml according to the given RaceEndType
-/// @param p_saveWayVersion represents the RaceEndType
-void* EndExperimentInit(RaceEndType p_saveWayVersion)
+/// @brief Loads the EndExperimentMenu.xml after the race results
+void* EndExperimentInit()
 {
     if (s_menuHandle)
     {
@@ -27,21 +26,7 @@ void* EndExperimentInit(RaceEndType p_saveWayVersion)
     void* param = GfuiMenuLoad("EndExperimentMenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
 
-    switch (p_saveWayVersion)
-    {
-        case NO_END:
-        case EXIT:
-        case ABORT:
-        case RESTART:
-        {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", nullptr, OnAcceptExit);
-            break;
-        }
-        default:
-        {
-            throw std::runtime_error("incorrect 'p_experimentWayVersion', have you defined the new option in endexperiment.h?");
-        }
-    }
+    GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", nullptr, OnAcceptExit);
     GfuiAddKey(s_menuHandle, GFUIK_SPACE, "No, back to the game", nullptr, OnAcceptExit, nullptr);
 
     GfParmReleaseHandle(param);

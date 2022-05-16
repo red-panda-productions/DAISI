@@ -53,8 +53,8 @@ onAcceptExit(void * /* dummy */)
  *	
  */
 
-// SIMULATED DRIVING ASSISTANCE: added parameters and logic for an end-of-game menu.
-void* ExitMenuInit(void* prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion)
+// SIMULATED DRIVING ASSISTANCE: added functionality to load the End Experiment menu screen
+void* ExitMenuInit(void* prevMenu, bool p_raceExit)
 {
     if (MenuHandle) {
 		GfuiScreenRelease(MenuHandle);
@@ -67,7 +67,7 @@ void* ExitMenuInit(void* prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion
     // Looks where the exit game gets called and change the button functionality based on it.
     if (p_raceExit)
     {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(p_saveWayVersion), GfuiScreenActivate);
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(), GfuiScreenActivate);
     }
     else
     {

@@ -172,7 +172,7 @@ static void
 rmQuitHookActivate(void * /* dummy */)
 {
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, NO_END));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true));
 }
 
 static void	*pvQuitHookHandle = 0;

@@ -35,17 +35,15 @@
 #include "legacymenu.h"
 #include "racescreens.h"
 
-#include "ConfigEnums.h"
 #include "EndExperimentMenu.h"
 
 static int	rmSaveButtonId;
 static int	rmReplayButtonId;
 static void	*rmScrHdle = NULL;
 
-// SIMULATED DRIVING ASSISTANCE: added RaceEndTypes
-static void rmPracticeResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion);
-static void rmRaceResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion);
-static void rmQualifResults(void *prevHdle, tRmInfo *info, const char*pszTitle, int start, RaceEndType p_saveWayVersion);
+static void rmPracticeResults(void *prevHdle, tRmInfo *info, int start);
+static void rmRaceResults(void *prevHdle, tRmInfo *info, int start);
+static void rmQualifResults(void *prevHdle, tRmInfo *info, const char*pszTitle, int start);
 
 static const int DefaultSimuVersion = 1;
 static const char *SimuVersionList[] =
@@ -112,14 +110,12 @@ rmChgPracticeScreen(void *vprc)
     void		*prevScr = rmScrHdle;
     tRaceCall 	*prc = (tRaceCall*)vprc;
 
-    // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-    rmPracticeResults(prc->prevHdle, prc->info, prc->start, NO_END);
+    rmPracticeResults(prc->prevHdle, prc->info, prc->start);
     GfuiScreenRelease(prevScr);
 }
 
-// SIMULATED DRIVING ASSISTANCE: added parameter RaceEndType
 static void
-rmPracticeResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion)
+rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
 {
 	// Used across rmPracticeResults calls when multiple pages.
 	static int NLastLapDamages = 0;
@@ -228,7 +224,7 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWa
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
 
     // SIMULATED DRIVING ASSISTANCE: Add "Quit" button
-    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(p_saveWayVersion), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(), GfuiScreenActivate);
     
     // Add "Replay" button (if available)
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
@@ -268,14 +264,12 @@ rmChgRaceScreen(void *vprc)
     void		*prevScr = rmScrHdle;
     tRaceCall 	*prc = (tRaceCall*)vprc;
 
-    // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-    rmRaceResults(prc->prevHdle, prc->info, prc->start, NO_END);
+    rmRaceResults(prc->prevHdle, prc->info, prc->start);
     GfuiScreenRelease(prevScr);
 }
 
-// SIMULATED DRIVING ASSISTANCE: added parameter RaceEndType
 static void
-rmRaceResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVersion)
+rmRaceResults(void *prevHdle, tRmInfo *info, int start)
 {
     void		*results = info->results;
     const char		*race = info->_reRaceName;
@@ -402,7 +396,7 @@ rmRaceResults(void *prevHdle, tRmInfo *info, int start, RaceEndType p_saveWayVer
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
 
     // SIMULATED DRIVING ASSISTANCE: Add "Quit" button
-    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(p_saveWayVersion), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(), GfuiScreenActivate);
 
     // Add "Replay" button (if available)
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
@@ -443,14 +437,12 @@ rmChgQualifScreen(void *vprc)
     void		*prevScr = rmScrHdle;
     tRaceCall 	*prc = (tRaceCall*)vprc;
 
-    // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-    rmQualifResults(prc->prevHdle, prc->info, prc->title, prc->start, NO_END);
+    rmQualifResults(prc->prevHdle, prc->info, prc->title, prc->start);
     GfuiScreenRelease(prevScr);
 }
 
-// SIMULATED DRIVING ASSISTANCE: added parameter RaceEndType
 static void
-rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start, RaceEndType p_saveWayVersion)
+rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start)
 {
     void		*results = info->results;
     const char		*race = info->_reRaceName;
@@ -536,7 +528,7 @@ rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start, 
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
     
     // SIMULATED DRIVING ASSISTANCE: Add "Quit" button
-    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(p_saveWayVersion), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(), GfuiScreenActivate);
     
     if (i < nbCars) {
 		RmNextRace.prevHdle = prevHdle;
@@ -728,22 +720,18 @@ RmShowResults(void *prevHdle, tRmInfo *info)
 			}
 			
 			if (bQualif)
-                // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-				rmQualifResults(prevHdle, info, "Practice", 0, NO_END);
+				rmQualifResults(prevHdle, info, "Practice", 0);
 			else
-                // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-				rmPracticeResults(prevHdle, info, 0, NO_END);
+				rmPracticeResults(prevHdle, info, 0);
 			break;
 		}
 
 		case RM_TYPE_RACE:
-            // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-			rmRaceResults(prevHdle, info, 0, NO_END);
+			rmRaceResults(prevHdle, info, 0);
 			break;
 			
 		case RM_TYPE_QUALIF:
-            // SIMULATED DRIVING ASSISTANCE: added RaceEndType
-			rmQualifResults(prevHdle, info, "Qualification", 0, NO_END);
+			rmQualifResults(prevHdle, info, "Qualification", 0);
 			break;
     }//switch raceType
 }//RmShowResults
