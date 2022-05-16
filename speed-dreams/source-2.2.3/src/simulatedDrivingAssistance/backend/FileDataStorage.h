@@ -60,9 +60,11 @@ public:
 
     float GetAverage(float& p_total) const;
 
-    void AddToArray(float p_values[], float p_value, unsigned long p_compressionStep) const;
+    template <typename TNumber>
+    void AddToArray(TNumber p_values[], TNumber p_value, unsigned long p_compressionStep) const;
 
-    void AddIntToArray(int p_values[], int p_value, unsigned long p_compressionStep) const;
+    template <typename TNumber>
+    void WriteDecision(TNumber p_decision, std::string p_decisionType, bool& p_decisionMade);
 
     float GetMedian(float p_values[]) const;
 

@@ -340,19 +340,19 @@ TEST_CASE(FileDataStorageTests, DecisionsDisabledNoDecisions, TestDataStorageSav
 /// @brief Test whether the FileDataStorage stores properly when decisions should not be saved but all decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsDisabledAllDecisions, TestDataStorageSaveDecisions, (false, true, true, true, true, true))
 
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only lights is made
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only light decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsLightStored, TestDataStorageSaveDecisions, (true, false, false, false, false, true))
 
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only gear is made
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only gear decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsGearStored, TestDataStorageSaveDecisions, (true, false, false, false, true, false))
 
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only accelerate is made
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer accelerate are made
 TEST_CASE(FileDataStorageTests, DecisionsAccelStored, TestDataStorageSaveDecisions, (true, false, false, true, false, false))
 
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only brake is made
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only brake decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsBrakeStored, TestDataStorageSaveDecisions, (true, false, true, false, false, false))
 
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved only steer is made
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsSteerStored, TestDataStorageSaveDecisions, (true, true, false, false, false, false))
 
 /// @brief Test whether the FileDataStorage stores properly for every combination of decision made
@@ -472,20 +472,20 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
 
         Posd pos = car.pub.DynGCg.pos;
         tDynPt mov = car.pub.DynGC;
-        fileDataStorage.AddForAveraging(p_totalPosX, pos.x);                            // x-position
-        fileDataStorage.AddForAveraging(p_totalPosY, pos.y);                            // y-position
-        fileDataStorage.AddForAveraging(p_totalPosZ, pos.z);                            // z-position
-        fileDataStorage.AddForAveraging(p_totalPosAx, pos.ax);                          // x-direction
-        fileDataStorage.AddForAveraging(p_totalPosAy, pos.ay);                          // y-direction
-        fileDataStorage.AddForAveraging(p_totalPosAz, pos.az);                          // z-direction
-        fileDataStorage.AddForAveraging(p_totalMovVelX, mov.vel.x);                     // speed
-        fileDataStorage.AddForAveraging(p_totalMovAccX, mov.acc.x);                     // acceleration
-        fileDataStorage.AddIntToArray(p_gearValues, car.priv.gear, p_compressionStep);  // gear
+        fileDataStorage.AddForAveraging(p_totalPosX, pos.x);                              // x-position
+        fileDataStorage.AddForAveraging(p_totalPosY, pos.y);                              // y-position
+        fileDataStorage.AddForAveraging(p_totalPosZ, pos.z);                              // z-position
+        fileDataStorage.AddForAveraging(p_totalPosAx, pos.ax);                            // x-direction
+        fileDataStorage.AddForAveraging(p_totalPosAy, pos.ay);                            // y-direction
+        fileDataStorage.AddForAveraging(p_totalPosAz, pos.az);                            // z-direction
+        fileDataStorage.AddForAveraging(p_totalMovVelX, mov.vel.x);                       // speed
+        fileDataStorage.AddForAveraging(p_totalMovAccX, mov.acc.x);                       // acceleration
+        fileDataStorage.AddToArray<int>(p_gearValues, car.priv.gear, p_compressionStep);  // gear
         tCarCtrl ctrl = car.ctrl;
-        fileDataStorage.AddToArray(p_steerValues, ctrl.steer, p_compressionStep);       // steer
-        fileDataStorage.AddToArray(p_brakeValues, ctrl.brakeCmd, p_compressionStep);    // brake
-        fileDataStorage.AddToArray(p_accelValues, ctrl.accelCmd, p_compressionStep);    // gas
-        fileDataStorage.AddToArray(p_clutchValues, ctrl.clutchCmd, p_compressionStep);  // clutch
+        fileDataStorage.AddToArray<float>(p_steerValues, ctrl.steer, p_compressionStep);       // steer
+        fileDataStorage.AddToArray<float>(p_brakeValues, ctrl.brakeCmd, p_compressionStep);    // brake
+        fileDataStorage.AddToArray<float>(p_accelValues, ctrl.accelCmd, p_compressionStep);    // gas
+        fileDataStorage.AddToArray<float>(p_clutchValues, ctrl.clutchCmd, p_compressionStep);  // clutch
 
         p_compressionStep++;
 
