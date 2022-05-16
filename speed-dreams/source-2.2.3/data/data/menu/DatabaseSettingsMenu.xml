@@ -125,6 +125,12 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+		
+		<section name="CertificateSettings">
+            <attstr name="CA" val="CA.txt"/>
+            <attstr name="public" val="public.txt"/>
+			<attstr name="private" val="private.txt"/>
+        </section>
 
     </section>
 

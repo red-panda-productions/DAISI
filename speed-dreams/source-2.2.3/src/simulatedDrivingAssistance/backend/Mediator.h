@@ -19,7 +19,6 @@ public:
 
     void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
     tDatabaseSettings GetDatabaseSettings();
-    void SetTask(Task p_task);
     void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);

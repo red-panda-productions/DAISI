@@ -12,6 +12,7 @@
 #define PRM_PORT     "PortEdit"
 #define PRM_SCHEMA   "SchemaEdit"
 #define PRM_SSL      "CheckboxUseSSL"
+#define PRM_CERT     "CertificateSettings"
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -143,6 +144,9 @@ static void LoadConfigSettings(void* p_param)
     sprintf(m_dbsettings.Address, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_portString, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_dbsettings.Schema, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
+    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(p_param, PRM_SCHEMA, "CA", nullptr));
+    sprintf(m_dbsettings.publicCertFileName, GfParmGetStr(p_param, PRM_SCHEMA, "public", nullptr));
+    sprintf(m_dbsettings.privateCertFileName, GfParmGetStr(p_param, PRM_SCHEMA, "private", nullptr));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
@@ -198,6 +202,9 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPort);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
     m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSL);
+    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(param, PRM_SCHEMA, "CA", nullptr));
+    sprintf(m_dbsettings.publicCertFileName, GfParmGetStr(param, PRM_SCHEMA, "public", nullptr));
+    sprintf(m_dbsettings.privateCertFileName, GfParmGetStr(param, PRM_SCHEMA, "private", nullptr));
 
     GfParmReleaseHandle(param);
 

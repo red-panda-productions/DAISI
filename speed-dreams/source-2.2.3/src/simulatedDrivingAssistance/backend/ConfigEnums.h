@@ -25,6 +25,9 @@ typedef struct DatabaseSettings
     int  Port;
     char Schema[256];
     bool UseSSL;
+    char CACertFileName[256];
+    char publicCertFileName[256];
+    char privateCertFileName[256];
 } tDatabaseSettings;
 
 /// @brief The different interventions that can be done
