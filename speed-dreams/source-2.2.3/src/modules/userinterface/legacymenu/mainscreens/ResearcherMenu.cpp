@@ -2,7 +2,6 @@
 #include <random>
 #include <forcefeedback.h>
 #include "guimenu.h"
-#include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"

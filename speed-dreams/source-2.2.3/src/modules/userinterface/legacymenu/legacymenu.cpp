@@ -98,7 +98,7 @@ bool LegacyMenu::backLoad()
 
 	// Pre-load the main and race select menus
     // (to be able to get back to them, even when directly starting a given race).
-    if (!RmRaceSelectInit(DatabaseSettingsMenuInit(MainMenuInit(SupportsHumanDrivers))))
+    if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
         return false;
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu

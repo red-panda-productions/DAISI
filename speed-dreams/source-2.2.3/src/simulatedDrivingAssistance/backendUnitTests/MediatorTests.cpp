@@ -172,11 +172,11 @@ void PControlTestMediator(bool p_intervention, bool p_gas, bool p_steer, bool p_
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
     ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
     ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
-
+}
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination (first 3)
 BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL3(PControlTest1Mediator, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                  Tests if the SDAConfig sets and gets the other pControl settings correctly
 /// @param p_force          Whether to enable force feedback
@@ -193,7 +193,7 @@ void PControlTest2Mediator(bool p_force, bool p_record, bool p_blackboxRecord)
 }
 
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
-BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
+BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings2)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
@@ -339,6 +339,7 @@ TEST(MediatorTests, RaceStopTest)
     SDAConfigMediator::GetInstance()->RaceStop();
 
     ASSERT_TRUE(decisionMaker->RaceStopped);
+}
 /// @brief Tests if the TimeOut function returns the correct time out
 TEST(MediatorTests, TimeOutTest)
 {

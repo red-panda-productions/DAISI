@@ -103,29 +103,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
     SQLDatabaseStorage sqlDatabaseStorage;
 }
 
-/// @brief  Tries to convert the port to integer
-///         but it is a string in the settingsfile of the stringPort dir.
-TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
-{
-    ASSERT_TRUE(SetupSingletonsFolder());
-    chdir(SD_DATADIR_SRC);
-    static tDatabaseSettings TestSettings;
-    sprintf(TestSettings.Username, "SDATest");
-    sprintf(TestSettings.Password, "PASSWORD");
-    sprintf(TestSettings.Port, "noIntPort");
-    sprintf(TestSettings.Address, "127.0.0.1");
-    sprintf(TestSettings.Schema, "sda_test");
-    TestSettings.UseSSL = false;
-
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when the port is not an integer
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", "\\test_data\\stringPort"), std::exception)
-    {
-        ASSERT_STREQ("Port in database settings config file could not be converted to an int", e.what());
-    }
-}
-
 /// @brief  Connects to the database, if the settings in test_data/correctSettings
 ///         has the correct password, otherwise it has the same
 ///         coverage path as TestDatabaseRunIncorrect
@@ -136,7 +113,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     static tDatabaseSettings TestSettings;
     sprintf(TestSettings.Username, "SDATest");
     sprintf(TestSettings.Password, "PASSWORD");
-    sprintf(TestSettings.Port, "3306");
+    TestSettings.Port = 3306;
     sprintf(TestSettings.Address, "127.0.0.1");
     sprintf(TestSettings.Schema, "sda_test");
     TestSettings.UseSSL = false;
@@ -159,7 +136,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     static tDatabaseSettings TestSettings;
     sprintf(TestSettings.Username, "SDATest");
     sprintf(TestSettings.Password, "PASSWORD123");
-    sprintf(TestSettings.Port, "3306");
+    TestSettings.Port = 3306;
     sprintf(TestSettings.Address, "127.0.0.1");
     sprintf(TestSettings.Schema, "sda_test");
     TestSettings.UseSSL = false;
@@ -182,7 +159,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
     static tDatabaseSettings TestSettings;
     sprintf(TestSettings.Username, "SDATest");
     sprintf(TestSettings.Password, "PASSWORD");
-    sprintf(TestSettings.Port, "3306");
+    TestSettings.Port = 3306;
     sprintf(TestSettings.Address, "127.0.0.1");
     sprintf(TestSettings.Schema, "sda_test");
     TestSettings.UseSSL = true;
@@ -204,7 +181,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
     static tDatabaseSettings TestSettings;
     sprintf(TestSettings.Username, "SDATest");
     sprintf(TestSettings.Password, "PASSWORD");
-    sprintf(TestSettings.Port, "3306");
+    TestSettings.Port = 3306;
     sprintf(TestSettings.Address, "127.0.0.1");
     sprintf(TestSettings.Schema, "sda_test");
     TestSettings.UseSSL = true;
@@ -228,7 +205,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
     static tDatabaseSettings TestSettings;
     sprintf(TestSettings.Username, "SDATest");
     sprintf(TestSettings.Password, "PASSWORD");
-    sprintf(TestSettings.Port, "3306");
+    TestSettings.Port = 3306;
     sprintf(TestSettings.Address, "127.0.0.1");
     sprintf(TestSettings.Schema, "sda_test");
     TestSettings.UseSSL = true;
