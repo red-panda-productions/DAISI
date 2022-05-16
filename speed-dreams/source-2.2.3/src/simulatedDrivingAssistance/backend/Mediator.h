@@ -15,6 +15,7 @@ public:
     void DriveTick(tCarElt* p_car, tSituation* p_situation);
     void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
+    bool TimeOut();
 
     void SetTask(Task p_task);
     void SetIndicatorSettings(tIndicator p_indicators);
@@ -50,6 +51,11 @@ public:
     DecisionMaker* GetDecisionMaker()
     {
         return &m_decisionMaker;
+    }
+
+    void SetTicks(unsigned long p_tick)
+    {
+        m_tickCount = p_tick;
     }
 
 #endif

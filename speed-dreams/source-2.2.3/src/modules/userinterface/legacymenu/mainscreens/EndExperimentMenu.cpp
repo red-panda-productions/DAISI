@@ -6,7 +6,7 @@
 #include "EndExperimentMenu.h"
 #include "mainmenu.h"
 
-static void* MenuHandle = NULL;
+static void* s_menuHandle = NULL;
 
 static void OnAcceptExit(void* /* dummy */)
 {
@@ -16,15 +16,15 @@ static void OnAcceptExit(void* /* dummy */)
 
 void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
 {
-    if (MenuHandle)
+    if (s_menuHandle)
     {
-        GfuiScreenRelease(MenuHandle);
+        GfuiScreenRelease(s_menuHandle);
     }
 
-    MenuHandle = GfuiScreenCreate();
+    s_menuHandle = GfuiScreenCreate();
 
     void* param = GfuiMenuLoad("EndExperimentMenu.xml");
-    GfuiMenuCreateStaticControls(MenuHandle, param);
+    GfuiMenuCreateStaticControls(s_menuHandle, param);
 
     switch (p_saveWayVersion)
     {
@@ -33,7 +33,7 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
         case ABORT:
         case RESTART:
         {
-            GfuiMenuCreateButtonControl(MenuHandle, param, "ok", NULL, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", NULL, OnAcceptExit);
             break;
         }
         default:
@@ -41,9 +41,9 @@ void* EndExperimentInit(void* p_menuHandle, RaceEndType p_saveWayVersion)
             throw std::runtime_error("incorrect 'p_experimentWayVersion', have you defined the new option in endexperiment.h?");
         }
     }
-    GfuiAddKey(MenuHandle, GFUIK_SPACE, "No, back to the game", NULL, OnAcceptExit, NULL);
+    GfuiAddKey(s_menuHandle, GFUIK_SPACE, "No, back to the game", NULL, OnAcceptExit, NULL);
 
     GfParmReleaseHandle(param);
 
-    return MenuHandle;
+    return s_menuHandle;
 }
