@@ -4,6 +4,7 @@
 #include "Mediator.h"
 #include "DataSelectionMenu.h"
 #include "ResearcherMenu.h"
+#include <racescreens.h>
 
 #define PRM_ENV_DATA   "CheckboxEnvironmentData"
 #define PRM_CAR_DATA   "CheckboxCarData"
@@ -132,7 +133,7 @@ static void SaveSettings(void* /* dummy */)
     SaveSettingsToDisk();
 
     // Go to the main screen
-    GfuiScreenActivate(s_nextHandle);
+    GfuiScreenActivate(RmRaceSelectInit(s_scrHandle));
 }
 
 /// @brief Returns to the researcher menu screen

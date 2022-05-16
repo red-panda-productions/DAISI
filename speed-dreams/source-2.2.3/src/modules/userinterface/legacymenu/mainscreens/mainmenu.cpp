@@ -19,7 +19,7 @@
 
 #include <tgfclient.h>
 
-#include <racescreens.h>
+
 #include <controlconfig.h>
 
 #include "mainmenu.h"
@@ -27,6 +27,7 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
+#include "ResearcherMenu.h"
 
 static void *MenuHandle = 0;
 
@@ -45,7 +46,7 @@ onControlMenuActivate(void * /* dummy */)
 static void
 onRaceSelectMenuActivate(void * /* dummy */)
 {
-    GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
+    GfuiScreenActivate(ResearcherMenuInit(MenuHandle));
 }
 
 //static void
