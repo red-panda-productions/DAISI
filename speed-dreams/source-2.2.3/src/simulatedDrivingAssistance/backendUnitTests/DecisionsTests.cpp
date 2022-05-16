@@ -7,6 +7,37 @@
 #include "IndicatorConfig.h"
 #include <config.h>
 
+#define SETUP_DECISION_TEST                                                               \
+    void SetUp() override                                                                 \
+    {                                                                                     \
+        GfInit(false);                                                                    \
+        GfSetDataDir(SD_DATADIR_SRC);                                                     \
+        SetupSingletonsFolder();                                                          \
+                                                                                          \
+        m_car = new tCarElt;                                                              \
+        m_car->ctrl.brakeCmd = 0;                                                         \
+        m_car->ctrl.accelCmd = 0;                                                         \
+        m_car->ctrl.steer = 0;                                                            \
+                                                                                          \
+        CarController carController;                                                      \
+        carController.SetCar(m_car);                                                      \
+                                                                                          \
+        carController.SetBrakeCmd(0);                                                     \
+        carController.SetAccelCmd(0);                                                     \
+        carController.SetSteerCmd(0);                                                     \
+                                                                                          \
+        SMediator::GetInstance()->CarController = carController;                          \
+                                                                                          \
+        /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/ \
+        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);    \
+    }
+
+#define TEARDOWN_DECISION_TEST \
+    void TearDown() override   \
+    {                          \
+        delete m_car;          \
+    }
+
 // testing fixture for decision tests
 class DecisionTest : public ::testing::TestWithParam<float>
 {
@@ -15,45 +46,33 @@ private:
 
 public:
     /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
-    void SetUp() override
-    {
-        GfInit(false);
-        GfSetDataDir(SD_DATADIR_SRC);
-        SetupSingletonsFolder();
-
-        m_car = new tCarElt;
-        m_car->ctrl.brakeCmd = 0;
-        m_car->ctrl.accelCmd = 0;
-        m_car->ctrl.steer = 0;
-
-        CarController carController;
-        carController.SetCar(m_car);
-
-        carController.SetBrakeCmd(0);
-        carController.SetAccelCmd(0);
-        carController.SetSteerCmd(0);
-
-        SMediator::GetInstance()->CarController = carController;
-
-        /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/
-        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
-    }
+    SETUP_DECISION_TEST
 
     /// @brief deletes the car from the heap at the end of a test
-    void TearDown() override
-    {
-        delete m_car;
-    }
+    TEARDOWN_DECISION_TEST
 };
 
-/// @brief         Tests if all decisions to their RunInterveneCommand correctly
-/// @param p_steer Whether the steer decision is allowed to run
-/// @param p_accel Whether the accel decision is allowed to run
-/// @param p_brake Whether the brake decision is allowed to run
-void RunInterveneDecisionsTest(bool p_steer, bool p_accel, bool p_brake)
+// testing fixture for decision tests
+class DecisionTestCombinatorial : public ::testing::TestWithParam<std::tuple<bool, bool, bool>>
 {
-    InitializeMediator();
-    tAllowedActions allowedActions = {p_steer, p_accel, p_brake};
+private:
+    tCarElt* m_car;
+
+public:
+    /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
+    SETUP_DECISION_TEST
+
+    /// @brief deletes the car from the heap at the end of a test
+    TEARDOWN_DECISION_TEST
+};
+
+/// @brief Tests if all decisions to their RunInterveneCommand correctly
+TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
+{
+    tAllowedActions allowedActions;
+    allowedActions.Accelerate = std::get<0>(GetParam());
+    allowedActions.Brake = std::get<1>(GetParam());
+    allowedActions.Steer = std::get<2>(GetParam());
 
     Random random;
     BrakeDecision brakeDecision;
@@ -98,9 +117,10 @@ void RunInterveneDecisionsTest(bool p_steer, bool p_accel, bool p_brake)
 }
 
 /// @brief Checks RunInterveneDecisions for all possible permutation
-BEGIN_TEST_COMBINATORIAL(DecisionTests, RunInterveneDecisions)
-bool booleans[] = {true, false};
-END_TEST_COMBINATORIAL3(RunInterveneDecisionsTest, booleans, 2, booleans, 2, booleans, 2);
+INSTANTIATE_TEST_SUITE_P(RunInterveneDecisions, DecisionTestCombinatorial,
+                         ::testing::Combine(::testing::Values(true, false),
+                                            ::testing::Values(true, false),
+                                            ::testing::Values(true, false)));
 
 /// @brief Checks if the brake decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, BrakeRunIndicateTest)
