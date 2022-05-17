@@ -99,18 +99,24 @@ tRmTrackSelect m_trackMenuSettings;
 // Apply Button
 int m_applyButton;
 
+/// @brief Save the track at the given filepath as the used environment
+/// @param p_filepath Path to the xml descriptor file of the track
 void LoadTrack(const char* p_filepath)
 {
     //    m_track = ReTrackLoader().load(p_filepath);
     std::cout << "'Loaded' track " << p_filepath << std::endl;
 }
 
+/// @brief Save the given GfTrack as the used environment
+/// @param p_gfTrack Pointer to the GfTrack to use
 void LoadTrackFromGfTrack(GfTrack* p_gfTrack)
 {
     const char* trackPath = p_gfTrack->getDescriptorFile().c_str();
     LoadTrack(trackPath);
 }
 
+/// @brief Get the current selected track as pointer to a GfTrack, or get the first usable track if no track has been selected
+/// @return Pointer to the selected or default track (never nullptr)
 GfTrack* GetTrackAsGfTrack()
 {
     if (!m_track) {
@@ -155,8 +161,7 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
     m_interventionType = (InterventionType)p_info->Selected;
 }
 
-/// @brief        Sets the environment to the selected one
-/// @param p_info Information on the radio button pressed
+/// @brief Opens the menu to select an environment
 static void SelectEnvironment(void* /* dummy */)
 {
     RmTrackSelect(&m_trackMenuSettings);
