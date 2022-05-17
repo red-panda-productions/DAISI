@@ -14,7 +14,6 @@
 #define PRM_CERT     "dynamic controls/CertificateSettings"
 #define PRM_DBSTATUS "DbStatus"
 
-
 // GUI screen handles
 static void* s_scrHandle = nullptr;
 static void* s_nextHandle = nullptr;
@@ -180,7 +179,7 @@ static void GoBack(void* /* dummy */)
     GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
 }
 
-/// @brief Checks if a connection can be established with the database. 
+/// @brief Checks if a connection can be established with the database.
 static void CheckConnection(void* /* dummy */)
 {
     m_dbsettings.UseSSL = false;
@@ -192,7 +191,6 @@ static void CheckConnection(void* /* dummy */)
     }
     catch (std::exception& e)
     {
- 
     }
     if (connectable)
     {
@@ -240,7 +238,6 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     sprintf(m_dbsettings.CACertFileName, GfParmGetStr(param, PRM_CERT, "CA", nullptr));
     sprintf(m_dbsettings.PublicCertFileName, GfParmGetStr(param, PRM_CERT, "public", nullptr));
     sprintf(m_dbsettings.PrivateCertFileName, GfParmGetStr(param, PRM_CERT, "private", nullptr));
-
 
     GfParmReleaseHandle(param);
 

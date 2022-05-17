@@ -27,7 +27,6 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
-#include "DatabaseSettingsMenu.h"
 #include "ConfigEnums.h"
 
 static void *MenuHandle = 0;

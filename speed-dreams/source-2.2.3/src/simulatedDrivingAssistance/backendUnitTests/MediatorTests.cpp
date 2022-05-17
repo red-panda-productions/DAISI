@@ -195,13 +195,7 @@ TEST(MediatorTests, MaxTimeTest)
 /// @brief Tests if the Mediator can check the connection when settings are correct
 TEST(MediatorTests, CheckCorrectConnectionTest)
 {
-    tDatabaseSettings testSettings;
-    sprintf(testSettings.Username, "SDATest");
-    sprintf(testSettings.Password, "PASSWORD");
-    testSettings.Port = 3306;
-    sprintf(testSettings.Address, "127.0.0.1");
-    sprintf(testSettings.Schema, "sda_test");
-    testSettings.UseSSL = false;
+    tDatabaseSettings testSettings{"SDATest", "PASSWORD", "127.0.0.1", 3306, "sda_test", false};
     bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
     ASSERT_TRUE(connectable);
 }
@@ -209,13 +203,7 @@ TEST(MediatorTests, CheckCorrectConnectionTest)
 /// @brief Tests if the Mediator can check the connection when settings are incorrect
 TEST(MediatorTests, CheckIncorrectConnectionTest)
 {
-    DatabaseSettings testSettings;
-    sprintf(testSettings.Username, "SDATest");
-    sprintf(testSettings.Password, "WrongPassword");
-    testSettings.Port = 3306;
-    sprintf(testSettings.Address, "127.0.0.1");
-    sprintf(testSettings.Schema, "sda_test");
-    testSettings.UseSSL = false;
+    tDatabaseSettings testSettings{"SDATest", "WRONGPASSWORD", "127.0.0.1", 3306, "sda_test", false};
     bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
     ASSERT_FALSE(connectable);
 }
