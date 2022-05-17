@@ -19,6 +19,9 @@ typedef struct Indicator
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 
+/// @brief The different types of data compression that can be done
+typedef unsigned int DataCompressionType;
+
 // TODO: remove INTERVENTION_TYPE_ASK_FOR
 #define INTERVENTION_TYPE_NO_SIGNALS        0
 #define INTERVENTION_TYPE_ONLY_SIGNALS      1

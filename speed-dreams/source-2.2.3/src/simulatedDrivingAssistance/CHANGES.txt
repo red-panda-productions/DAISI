@@ -28,6 +28,8 @@ Added:
         DataSelectionMenu.cpp
         DeveloperMenu.h
         DeveloperMenu.cpp
+        DataCompressionMenu.h
+        DataCompressionMenu.cpp
   data/
     data/
         config/
