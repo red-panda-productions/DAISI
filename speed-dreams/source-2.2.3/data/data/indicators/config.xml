@@ -1,168 +1,168 @@
 <?xml version="1.0"?>
 <!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
 <params name="intervention-config" type="template">
-	<section name="Interventions">
-		<section name ="steer none">
-			<section name="texture1">
-				<attstr name ="source" val="SignalsOff_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture2">
-				<attstr name ="source" val="SignalsOff_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture3">
-				<attstr name ="source" val="SignalsOff_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="text">
-				<attstr name ="content"   val="None"/>
-				<attnum name ="xpos"      val="0.75"/>
-				<attnum name ="ypos"      val="0"/>
-				<attstr name ="font"      val="jura-normal.glf"/>
-				<attnum name ="font-size" val="300"/>
-			</section>
-		</section>
-		<section name ="steer left">
-			<section name="texture1">
-				<attstr name ="source" val="OnlySignals_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture2">
-				<attstr name ="source" val="SharedControl_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture3">
-				<attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="text">
-				<attstr name ="content"   val="Steer left"/>
-				<attnum name ="xpos"      val="0.75"/>
-				<attnum name ="ypos"      val="0"/>
-				<attstr name ="font"      val="jura-normal.glf"/>
-				<attnum name ="font-size" val="300"/>
-			</section>
-			<section name="sound">
-				<attstr name ="source" val="warning_left_driftingright.wav"/>
-				<attstr name="looping" val="yes"/>
-				<attnum name="loop-interval" val="3"/>
-			</section>
-		</section>
-		<section name ="steer right">
-			<section name="texture1">
-				<attstr name ="source" val="OnlySignals_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture2">
-				<attstr name ="source" val="SharedControl_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture3">
-				<attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
-				<attnum name ="xpos"   val="0.75"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="text">
-				<attstr name ="content"   val="Steer right"/>
-				<attnum name ="xpos"      val="0.75"/>
-				<attnum name ="ypos"      val="0"/>
-				<attstr name ="font"      val="jura-normal.glf"/>
-				<attnum name ="font-size" val="300"/>
-			</section>
-			<section name="sound">
-				<attstr name ="source" val="warning_right_driftingleft.wav"/>
-				<attstr name="looping" val="no"/>
-			</section>
-		</section>
-		<section name ="brake">
-			<section name="texture1">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture2">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture3">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="text">
-				<attstr name ="content"   val="Brake"/>
-				<attnum name ="xpos"      val="0.85"/>
-				<attnum name ="ypos"      val="0"/>
-				<attstr name ="font"      val="jura-normal.glf"/>
-				<attnum name ="font-size" val="300"/>
-			</section>
-			<section name="sound">
-				<attstr name ="source" val="warning_brake_brake.wav"/>
-			</section>
-		</section>
-		<section name ="accelerate">
-			<section name="texture1">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture2">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture3">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="text">
-				<attstr name ="content"   val="Accelerate"/>
-				<attnum name ="xpos"      val="0.85"/>
-				<attnum name ="ypos"      val="0"/>
-				<attstr name ="font"      val="jura-normal.glf"/>
-				<attnum name ="font-size" val="300"/>
-			</section>
-			<section name="sound">
-				<attstr name ="source" val="warning_brake_brake.wav"/>
-			</section>
-		</section>
-		<section name="brake none">
-			<section name="texture1">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture2">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="texture3">
-				<attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-				<attnum name ="xpos"   val="0.85"/>
-				<attnum name ="ypos"   val="0.03"/>
-			</section>
-			<section name="text">
-				<attstr name ="content"   val="None"/>
-				<attnum name ="xpos"      val="0.85"/>
-				<attnum name ="ypos"      val="0"/>
-				<attstr name ="font"      val="jura-normal.glf"/>
-				<attnum name ="font-size" val="300"/>
-			</section>
-			<section name="sound">
-				<attstr name ="source" val="warning_brake_brake.wav"/>
-			</section>
-		</section>
-	</section>
+    <section name="Interventions">
+        <section name ="steer none">
+            <section name="texture1">
+                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture2">
+                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture3">
+                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="None"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+        </section>
+        <section name ="steer left">
+            <section name="texture1">
+                <attstr name ="source" val="OnlySignals_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture2">
+                <attstr name ="source" val="SharedControl_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture3">
+                <attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Steer left"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_left_driftingright.wav"/>
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop-interval" val="3"/>
+            </section>
+        </section>
+        <section name ="steer right">
+            <section name="texture1">
+                <attstr name ="source" val="OnlySignals_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture2">
+                <attstr name ="source" val="SharedControl_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture3">
+                <attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Steer right"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_right_driftingleft.wav"/>
+                <attstr name="looping" val="no"/>
+            </section>
+        </section>
+        <section name ="brake">
+            <section name="texture1">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture2">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture3">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Brake"/>
+                <attnum name ="xpos"      val="0.85"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_brake_brake.wav"/>
+            </section>
+        </section>
+        <section name ="accelerate">
+            <section name="texture1">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture2">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture3">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Accelerate"/>
+                <attnum name ="xpos"      val="0.85"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_brake_brake.wav"/>
+            </section>
+        </section>
+        <section name="brake none">
+            <section name="texture1">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture2">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture3">
+                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attnum name ="xpos"   val="0.85"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="None"/>
+                <attnum name ="xpos"      val="0.85"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_brake_brake.wav"/>
+            </section>
+        </section>
+    </section>
 </params>
