@@ -41,9 +41,9 @@
 
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT "Choose Black Box: "
-#define MSG_BLACK_BOX_NOT_EXE     "(Hint) You did not select a valid Black Box"
-#define MSG_NO_BLACK_BOX          "(Hint) You need to select a valid Black Box"
-#define MSG_ONLY_HINT             "(Hint)"
+#define MSG_BLACK_BOX_NOT_EXE     "You did not select a valid Black Box"
+#define MSG_NO_BLACK_BOX          "You need to select a valid Black Box"
+#define MSG_ONLY_HINT             ""
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1

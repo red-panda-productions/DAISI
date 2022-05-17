@@ -96,15 +96,16 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
-        <!-- Although this is a label, this is not a static control as we want to change it-->
+        <!-- Although this is a label, this is not a static control as we want to change it -->
         <section name="NoBlackBoxError">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="205"/>
-            <!-- "(Hint) " + 37 Spaces so maxlength is set correctly-->
-            <attstr name="text" val="(Hint)                                      "/>
+            <!-- Label for showing error messages to the user. Needs to be 37 characters long. 
+			Default value contains this many spaces so maxlength is set correctly -->
+            <attstr name="text" val="                                     "/>
             <attstr name="tip" val="You must choose a file that could be a correct black box: *.exe"/>
-            <attnum name="width" val="245"/>
+            <attnum name="width" val="210"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
             <attstr name="color" val="0xFFAD34"/>
