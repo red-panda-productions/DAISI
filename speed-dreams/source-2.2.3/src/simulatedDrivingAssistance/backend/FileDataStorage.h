@@ -67,7 +67,7 @@ public:
     void WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade);
 
     template <typename TNumber>
-    void SaveDecision(bool p_decisionMade, TNumber p_decision, TNumber* p_values, int p_compressionStep);
+    void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, unsigned long p_compressionStep);
 
     float GetMedian(float* p_values) const;
 

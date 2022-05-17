@@ -201,7 +201,7 @@ void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
 /// @param p_values array of values from previous decisions
 /// @param p_compressionStep the current step the program is in
 template <typename TNumber>
-void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep)
+void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, unsigned long p_compressionStep)
 {
     if (p_decisionMade)
     {
