@@ -10,36 +10,40 @@
 #include <experimental/filesystem>
 
 // Parameters used in the xml files
-#define PRM_TASKS            "TaskRadioButtonList"
-#define PRM_INDCTR_AUDITORY  "CheckboxIndicatorAuditory"
-#define PRM_INDCTR_VISUAL    "CheckboxIndicatorVisual"
-#define PRM_INDCTR_TEXT      "CheckboxIndicatorTextual"
-#define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
-#define PRM_ENVIRONMENT      "EnvironmentRadioButtonList"
-#define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
-#define PRM_CTRL_GAS         "CheckboxPControlGas"
-#define PRM_CTRL_STEERING    "CheckboxPControlSteering"
-#define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
-#define PRM_MAX_TIME         "MaxTimeEdit"
-#define PRM_USER_ID          "UserIdEdit"
-#define PRM_BLACKBOX         "ChooseBlackBoxButton"
-#define PRM_DEV              "DevButton"
-#define GFMNU_ATTR_PATH      "path"
+#define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
+#define PRM_ALLOWED_ACCELERATE "CheckboxAllowedAccelerate"
+#define PRM_ALLOWED_BRAKE      "CheckboxAllowedBrake"
+#define PRM_INDCTR_AUDITORY    "CheckboxIndicatorAuditory"
+#define PRM_INDCTR_VISUAL      "CheckboxIndicatorVisual"
+#define PRM_INDCTR_TEXT        "CheckboxIndicatorTextual"
+#define PRM_INTERVENTIONTYPE   "InterventionTypeRadioButtonList"
+#define PRM_ENVIRONMENT        "EnvironmentRadioButtonList"
+#define PRM_CTRL_INTRV_TGGLE   "CheckboxPControlInterventionToggle"
+#define PRM_CTRL_GAS           "CheckboxPControlGas"
+#define PRM_CTRL_STEERING      "CheckboxPControlSteering"
+#define PRM_FORCE_FEEDBACK     "CheckboxForceFeedback"
+#define PRM_MAX_TIME           "MaxTimeEdit"
+#define PRM_USER_ID            "UserIdEdit"
+#define PRM_BLACKBOX           "ChooseBlackBoxButton"
+#define PRM_NO_BLACK_BOX       "NoBlackBoxError"
+#define PRM_DEV                "DevButton"
+#define GFMNU_ATTR_PATH        "path"
 
 // Names for the config file
 #define RESEARCH_FILEPATH    "config/ResearcherMenu.xml"
 #define RESEARCH_SCREEN_NAME "ResearcherMenu"
 
 // Constant numbers
-#define INDICATOR_AMOUNT 3
-#define PCONTROL_AMOUNT  4
-#define MAX_TIME         1440
+#define INDICATOR_AMOUNT       3
+#define PCONTROL_AMOUNT        4
+#define ALLOWED_ACTIONS_AMOUNT 3
+#define MAX_TIME               1440
 
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT "Choose Black Box: "
-#define MSG_BLACK_BOX_NOT_EXE     "Choose Black Box: chosen file was not a .exe"
-#define MSG_APPLY_NORMAL_TEXT     "Apply"
-#define MSG_APPLY_NO_BLACK_BOX    "Apply | You need to select a valid Black Box"
+#define MSG_BLACK_BOX_NOT_EXE     "You did not select a valid Black Box"
+#define MSG_NO_BLACK_BOX          "You need to select a valid Black Box"
+#define MSG_ONLY_HINT             ""
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
@@ -51,11 +55,12 @@ static void* s_nextHandle = nullptr;
 // GUI settings Id's
 int m_indicatorsControl[INDICATOR_AMOUNT];
 int m_pControlControl[PCONTROL_AMOUNT];
+int m_allowedActionsControl[ALLOWED_ACTIONS_AMOUNT];
 int m_taskControl;
 int m_interventionTypeControl;
 
-// Task
-Task m_task;
+// Allowed black box actions
+tAllowedActions m_allowedActions;
 
 // Indicators
 tIndicator m_indicators;
@@ -82,6 +87,7 @@ int m_userIdControl;
 
 // Black Box
 int m_blackBoxButton;
+int m_noBlackBoxLabel;
 bool m_blackBoxChosen = false;
 char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 
@@ -89,10 +95,24 @@ char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 int m_applyButton;
 
 /// @brief        Sets the task to the selected one
-/// @param p_info Information on the radio button pressed
-static void SelectTask(tRadioButtonInfo* p_info)
+/// @param p_info Information on the checkbox
+static void SelectAllowedSteer(tCheckBoxInfo* p_info)
 {
-    m_task = (Task)p_info->Selected;
+    m_allowedActions.Steer = p_info->bChecked;
+}
+
+/// @brief        Sets the task to the selected one
+/// @param p_info Information on the checkbox
+static void SelectAllowedAccelerate(tCheckBoxInfo* p_info)
+{
+    m_allowedActions.Accelerate = p_info->bChecked;
+}
+
+/// @brief        Sets the task to the selected one
+/// @param p_info Information on the checkbox
+static void SelectAllowedBrake(tCheckBoxInfo* p_info)
+{
+    m_allowedActions.Brake = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the auditory indication for interventions
@@ -194,10 +214,10 @@ static void SaveSettingsToDisk()
     sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
-    // Save task settings to xml file
-    char val[32];
-    sprintf(val, "%d", m_task);
-    GfParmSetStr(readParam, PRM_TASKS, GFMNU_ATTR_SELECTED, val);
+    // Save allowed action settings to xml file
+    GfParmSetStr(readParam, PRM_ALLOWED_STEER, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_allowedActions.Steer));
+    GfParmSetStr(readParam, PRM_ALLOWED_ACCELERATE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_allowedActions.Accelerate));
+    GfParmSetStr(readParam, PRM_ALLOWED_BRAKE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_allowedActions.Brake));
 
     // Save indicator settings to xml file
     GfParmSetStr(readParam, PRM_INDCTR_AUDITORY, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_indicators.Audio));
@@ -205,6 +225,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_INDCTR_TEXT, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_indicators.Text));
 
     // Save intervention type settings to xml file
+    char val[32];
     sprintf(val, "%d", m_interventionType);
     GfParmSetStr(readParam, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, val);
 
@@ -232,12 +253,12 @@ static void SaveSettings(void* /* dummy */)
 {
     if (!m_blackBoxChosen)
     {
-        GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NO_BLACK_BOX);
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_NO_BLACK_BOX);
         return;
     }
     // Save settings to the SDAConfig
     SMediator* mediator = SMediator::GetInstance();
-    mediator->SetTask(m_task);
+    mediator->SetAllowedActions(m_allowedActions);
     mediator->SetIndicatorSettings(m_indicators);
     mediator->SetInterventionType(m_interventionType);
     mediator->SetMaxTime(m_maxTime);
@@ -268,7 +289,9 @@ static void SaveSettings(void* /* dummy */)
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_taskControl, (int)m_task);
+    GfuiCheckboxSetChecked(s_scrHandle, m_allowedActionsControl[0], m_allowedActions.Steer);
+    GfuiCheckboxSetChecked(s_scrHandle, m_allowedActionsControl[1], m_allowedActions.Accelerate);
+    GfuiCheckboxSetChecked(s_scrHandle, m_allowedActionsControl[2], m_allowedActions.Brake);
 
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[0], m_indicators.Audio);
     GfuiCheckboxSetChecked(s_scrHandle, m_indicatorsControl[1], m_indicators.Icon);
@@ -290,6 +313,7 @@ static void SynchronizeControls()
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
     }
 }
 
@@ -297,7 +321,9 @@ static void SynchronizeControls()
 /// @param p_param The configuration xml file handle
 static void LoadDefaultSettings()
 {
-    m_task = GfuiRadioButtonListGetSelected(s_scrHandle, m_taskControl);
+    m_allowedActions.Steer = GfuiCheckboxIsChecked(s_scrHandle, m_allowedActionsControl[0]);
+    m_allowedActions.Accelerate = GfuiCheckboxIsChecked(s_scrHandle, m_allowedActionsControl[1]);
+    m_allowedActions.Brake = GfuiCheckboxIsChecked(s_scrHandle, m_allowedActionsControl[2]);
 
     m_indicators.Audio = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[0]);
     m_indicators.Icon = GfuiCheckboxIsChecked(s_scrHandle, m_indicatorsControl[1]);
@@ -318,7 +344,10 @@ static void LoadDefaultSettings()
 static void LoadConfigSettings(void* p_param)
 {
     // Retrieve all setting variables from the xml file and assigning them to the internal variables
-    m_task = std::stoi(GfParmGetStr(p_param, PRM_TASKS, GFMNU_ATTR_SELECTED, nullptr));
+    m_allowedActions.Steer = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_STEER, GFMNU_ATTR_CHECKED, true);
+    m_allowedActions.Accelerate = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_ACCELERATE, GFMNU_ATTR_CHECKED, true);
+    m_allowedActions.Brake = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_BRAKE, GFMNU_ATTR_CHECKED, true);
+    ;
 
     m_indicators.Audio = GfuiMenuControlGetBoolean(p_param, PRM_INDCTR_AUDITORY, GFMNU_ATTR_CHECKED, false);
     m_indicators.Icon = GfuiMenuControlGetBoolean(p_param, PRM_INDCTR_VISUAL, GFMNU_ATTR_CHECKED, false);
@@ -380,20 +409,20 @@ static void SelectBlackBox(void* /* dummy */)
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_NOT_EXE);
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, MSG_BLACK_BOX_NOT_EXE);
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-    GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NORMAL_TEXT);  // Reset the apply button
+    GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_ONLY_HINT);  // Reset error label
 
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
@@ -422,10 +451,13 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
 
     // Task radio button controls
-    m_taskControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_TASKS, nullptr, SelectTask);
+    m_allowedActionsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_STEER, nullptr, SelectAllowedSteer);
+    m_allowedActionsControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_ACCELERATE, nullptr, SelectAllowedAccelerate);
+    m_allowedActionsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_BRAKE, nullptr, SelectAllowedBrake);
 
     // Choose black box control
     m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
+    m_noBlackBoxLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_NO_BLACK_BOX);
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
@@ -457,7 +489,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
-    GfuiAddKey(s_scrHandle, GFUIK_BACKSPACE, "Switch to Developer Screen", nullptr, DeveloperMenuRun, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Developer Screen", nullptr, DeveloperMenuRun, nullptr);
 
     // Create random userId
     std::random_device rd;

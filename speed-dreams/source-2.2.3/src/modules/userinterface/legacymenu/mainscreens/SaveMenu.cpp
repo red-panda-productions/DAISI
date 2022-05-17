@@ -64,12 +64,17 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
             GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
+        case RACE_FINISHED:
+        {
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptAbort);
+            break;
+        }
         default:
         {
             // throws an error, invalid option
             throw std::runtime_error("incorrect 'p_raceEndType', have you defined the new option in ConfigEnum.h?");
         }
-    }
+    }//*/
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(s_menuHandle);

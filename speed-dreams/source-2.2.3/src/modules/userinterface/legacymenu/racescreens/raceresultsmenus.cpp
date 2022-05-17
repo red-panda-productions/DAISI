@@ -35,6 +35,7 @@
 #include "legacymenu.h"
 #include "racescreens.h"
 
+#include "EndExperimentMenu.h"
 
 static int	rmSaveButtonId;
 static int	rmReplayButtonId;
@@ -221,6 +222,9 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
     
     // Add "Continue" button
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
+
+    // SIMULATED DRIVING ASSISTANCE: Add "Quit" button
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(RACE_FINISHED), GfuiScreenActivate);
     
     // Add "Replay" button (if available)
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
@@ -246,12 +250,13 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
 
     GfuiAddKey(rmScrHdle, GFUIK_ESCAPE, "Continue", prevHdle, GfuiScreenReplace, NULL);
     GfuiAddKey(rmScrHdle, GFUIK_RETURN, "Continue", prevHdle, GfuiScreenReplace, NULL);
+    // SIMULATED DRIVING ASSISTANCE: added Quit keyhandle
+    GfuiAddKey(rmScrHdle, GFUIK_SPACE, "Quit", prevHdle, GfuiScreenReplace, NULL);
     GfuiAddKey(rmScrHdle, GFUIK_F12, "Take a Screen Shot", NULL, GfuiScreenShot, NULL);
     GfuiAddKey(rmScrHdle, GFUIK_F1, "Help", rmScrHdle, GfuiHelpScreen, NULL);
 
     GfuiScreenActivate(rmScrHdle);
 }
-
 
 static void
 rmChgRaceScreen(void *vprc)
@@ -390,6 +395,9 @@ rmRaceResults(void *prevHdle, tRmInfo *info, int start)
     // Add "Continue" button
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
 
+    // SIMULATED DRIVING ASSISTANCE: Add "Quit" button
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(RACE_FINISHED), GfuiScreenActivate);
+
     // Add "Replay" button (if available)
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
     paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
@@ -519,9 +527,9 @@ rmQualifResults(void *prevHdle, tRmInfo *info, const char* pszTitle, int start)
     // Add "Continue" button 
     GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "ContinueButton", prevHdle, GfuiScreenReplace);
     
-    //Create 'save' button in the bottom right
-    //rmSaveButtonId = GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "savebutton", info, rmSaveRes);
-
+    // SIMULATED DRIVING ASSISTANCE: Add "Quit" button
+    GfuiMenuCreateButtonControl(rmScrHdle, hmenu, "QuitButton", EndExperimentInit(RACE_FINISHED), GfuiScreenActivate);
+    
     if (i < nbCars) {
 		RmNextRace.prevHdle = prevHdle;
 		RmNextRace.info     = info;

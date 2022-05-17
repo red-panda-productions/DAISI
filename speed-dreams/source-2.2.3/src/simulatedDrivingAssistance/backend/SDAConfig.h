@@ -17,7 +17,7 @@ private:
     InterventionType m_interventionType = 0;
     BlackBoxType m_blackBoxType = 0;
     DataStorageType m_dataStorageType = 0;
-    Task m_task = 0;
+    tAllowedActions m_allowedActions = AllowedActions();
     tDataToStore m_dataCollectionSetting = DataToStore();
     tIndicator m_indicatorSetting = Indicator();
     tParticipantControl m_pControl = ParticipantControl();
@@ -37,8 +37,8 @@ public:
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     tDataToStore GetDataCollectionSetting() const;
 
-    void SetTask(Task p_task);
-    Task GetTask() const;
+    void SetAllowedActions(tAllowedActions p_allowedAction);
+    tAllowedActions GetAllowedActions() const;
 
     void SetIndicatorSettings(tIndicator p_indicators);
     tIndicator GetIndicatorSettings() const;

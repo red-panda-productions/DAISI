@@ -148,7 +148,7 @@ GfTracks::GfTracks()
 				strPreviewFileName = ossFileName.str();
 			}
 			if (!GfFileExists(strPreviewFileName.c_str()))
-				strPreviewFileName = "data/img/splash-trackselect.jpg";
+				strPreviewFileName = "data/img/Main-menu-2.png";
 			
 			ossFileName.str("");
 			ossFileName << "tracks/" << pszCatId << '/' << pszTrackId << '/' << "outline.png";

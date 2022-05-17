@@ -1,17 +1,17 @@
 #include "SDAConfig.h"
 
-/// @brief        Selects the BlackBox to use
-/// @param p_task The blackbox task to use
-void SDAConfig::SetTask(Task p_task)
+/// @brief                  Sets the allowed actions that the black box can take
+/// @param p_allowedActions The allowed actions
+void SDAConfig::SetAllowedActions(tAllowedActions p_allowedActions)
 {
-    m_task = p_task;
+    m_allowedActions = p_allowedActions;
 }
 
 /// @brief  Gets the BlackBox task that is being used
 /// @return The blackbox task
-Task SDAConfig::GetTask() const
+tAllowedActions SDAConfig::GetAllowedActions() const
 {
-    return m_task;
+    return m_allowedActions;
 }
 
 /// @brief              Sets the settings for indication of interventions

@@ -8,7 +8,9 @@
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY      "test_test_data"
-#define RECORDING_TEST_DATA "test_data/recordings"
+/// @brief Directory relative to the source-2.2.3/data folder wbere data for recorder tests is stored
+#define RECORDING_TEST_DATA "recorderTestData"
+/// @brief Filename in the RECORDING_TEST_DATA folder of the car xml used for testing
 #define TEST_CAR_FILE_NAME  "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
@@ -304,14 +306,14 @@ TEST(RecorderTests, WriteRunSettingsTests)
     GfInit(false);
 
     // Find the car xml
-    std::string path = "test_data/recordings/" TEST_CAR_FILE_NAME;
+    std::string path = RECORDING_TEST_DATA "/" TEST_CAR_FILE_NAME;
 
     // Load the car xml
     auto carHandle = GfParmReadFile(path.c_str(), 0, true);
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml.");  // @NOCOVERAGE, should always be available
+        throw std::exception("Could not load test_car.xml");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
@@ -339,7 +341,14 @@ TEST(RecorderTests, WriteRunSettingsTests)
     participantControl.ControlSteering = random.NextBool();
     participantControl.ForceFeedback = random.NextBool();
 
-    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl);
+    int maxTime = random.NextInt();
+
+    tAllowedActions allowedActions;
+    allowedActions.Steer = random.NextBool();
+    allowedActions.Accelerate = random.NextBool();
+    allowedActions.Brake = random.NextBool();
+
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl, maxTime, allowedActions);
 
     filesystem::path settingsPath = GetTestingDirectory();
     settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
@@ -358,6 +367,12 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlGas));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteering));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
+
+    ASSERT_EQ(GfParmGetNum(handle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, 0), (tdble)maxTime);
+
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, nullptr), BoolToString(allowedActions.Steer));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, nullptr), BoolToString(allowedActions.Accelerate));
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, nullptr), BoolToString(allowedActions.Brake));
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_NAME, nullptr), track.name);
     ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_CATEGORY, nullptr), track.category);
@@ -391,6 +406,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
             throw std::exception("Failed to get SDA folder");                               \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
+        std::experimental::filesystem::create_directories(varName);                         \
                                                                                             \
         /* Delete the existing test directory to ensure directories are properly created */ \
         if (std::experimental::filesystem::exists(varName))                                 \
@@ -401,35 +417,104 @@ TEST(RecorderTests, WriteRunSettingsTests)
         filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \
     }
 
+/// @brief                             Tests that the changes from V0 to V1 are present
+/// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
+/// @param p_toUpgrade                 The path to the recording
+void TestV0ToV1Changes(void* p_upgradedRunSettingsHandle, filesystem::path& p_toUpgrade)
+{
+    ASSERT_TRUE(filesystem::exists(filesystem::path(p_toUpgrade).append(USER_INPUT_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(p_toUpgrade).append(SIMULATION_DATA_RECORDING_FILE_NAME)));
+    ASSERT_TRUE(filesystem::exists(filesystem::path(p_toUpgrade).append(DECISIONS_RECORDING_FILE_NAME)));
+
+    const char* name = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    const char* category = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    ASSERT_STRCASEEQ(name, "test_highway");
+    ASSERT_STRCASEEQ(category, "road");
+    delete[] name;
+    delete[] category;
+
+    ASSERT_FALSE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION));
+    ASSERT_FALSE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION));
+}
+
+/// @brief                             Tests that the changes from V1 to V2 are present
+/// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
+void TestV1ToV2Changes(void* p_upgradedRunSettingsHandle)
+{
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME));
+}
+
+/// @brief                             Tests that the changes from V2 to V3 are present
+/// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
+void TestV2ToV3Changes(void* p_upgradedRunSettingsHandle)
+{
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER));
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE));
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE));
+}
+
+/// @brief Tests whether the upgrade from V0 is done correctly
 TEST(RecorderTests, UpgradeFromV0Test)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
 
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
 
-    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(USER_INPUT_RECORDING_FILE_NAME)));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(SIMULATION_DATA_RECORDING_FILE_NAME)));
-    ASSERT_TRUE(filesystem::exists(filesystem::path(toUpgrade).append(DECISIONS_RECORDING_FILE_NAME)));
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    // Now on latest version
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+
+    // Test that all changes that need to be made from this version are present
+    TestV0ToV1Changes(upgradedRunSettingsHandle, toUpgrade);
+    TestV1ToV2Changes(upgradedRunSettingsHandle);
+    TestV2ToV3Changes(upgradedRunSettingsHandle);
+}
+
+/// @brief Tests whether the upgrade from V1 is done correctly
+TEST(RecorderTests, UpgradeFromV1Test)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
 
     void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
 
     ASSERT_NE(upgradedRunSettingsHandle, nullptr);
 
-    const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
-    const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
-    delete[] name;
-    delete[] category;
-
+    // Now on latest version
     ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
-    ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_RECORD_SESSION));
-    ASSERT_FALSE(GfParmExistsParam(upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION));
+
+    // Test that all changes that need to be made from this version are present
+    TestV1ToV2Changes(upgradedRunSettingsHandle);
+    TestV2ToV3Changes(upgradedRunSettingsHandle);
 }
 
-TEST(RecorderTests, ValidateV1RecordingTest)
+/// @brief Test whether the upgrade from V2 is done correctly
+TEST(RecorderTests, UpgradeFromV2Test)
 {
-    INIT_VALIDATE_OR_UPGRADE_TEST("v1-recording", toUpgrade);
+    INIT_VALIDATE_OR_UPGRADE_TEST("v2-recording", toUpgrade)
+
+    ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
+
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+
+    ASSERT_NE(upgradedRunSettingsHandle, nullptr);
+
+    // Now on latest version
+    ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+
+    // Test that all changes that need to be made from this version are present
+    TestV2ToV3Changes(upgradedRunSettingsHandle);
+}
+
+/// @brief Test whether the latest version of recording contains all correct elements
+/// @note Currently on version 3
+TEST(RecorderTests, ValidateLatestRecordingTest)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v3-recording", toUpgrade);
 
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade));
 
@@ -441,14 +526,13 @@ TEST(RecorderTests, ValidateV1RecordingTest)
 
     ASSERT_NE(upgradedRunSettingsHandle, nullptr);
 
-    const char* name = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
-    const char* category = GfParmGetStr(upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
-    delete[] name;
-    delete[] category;
-
+    // Are indeed on latest version
     ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
+
+    // Test that all elements for this version are present
+    TestV0ToV1Changes(upgradedRunSettingsHandle, toUpgrade);
+    TestV1ToV2Changes(upgradedRunSettingsHandle);
+    TestV2ToV3Changes(upgradedRunSettingsHandle);
 }
 
 TEST(RecorderTests, InvalidXMLSettingsFileValidate)

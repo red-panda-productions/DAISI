@@ -61,6 +61,11 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
             GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
+        case RACE_FINISHED:
+        {
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptAbort);
+            break;
+        }
         default:
         {
             // throws an error, invalid option
