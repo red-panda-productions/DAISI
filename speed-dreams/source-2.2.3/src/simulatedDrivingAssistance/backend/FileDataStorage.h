@@ -64,7 +64,7 @@ public:
     void AddToArray(TNumber p_values[], TNumber p_value, unsigned long p_compressionStep) const;
 
     template <typename TNumber>
-    void WriteDecision(TNumber p_decision, std::string const p_decisionType, bool& p_decisionMade);
+    void WriteDecision(TNumber p_decision, std::string p_decisionType, bool& p_decisionMade);
 
     float GetMedian(float p_values[]) const;
 
