@@ -117,8 +117,8 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
-/// @brief activates the InterventionMenu
+// SIMULATED DRIVING ASSISTANCE CHANGE : added researcher menu
+/// @brief activates the ResearcherMenu
 /// @return true if successful
 bool LegacyMenu::ActivateResearcherMenu()
 {
