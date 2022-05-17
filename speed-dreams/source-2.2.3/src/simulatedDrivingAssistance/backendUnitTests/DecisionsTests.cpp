@@ -144,7 +144,7 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, ::testing::Values(-99, -1, 0, 1, 2, 99));
+INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, SteerRunIndicateTests)
@@ -175,7 +175,7 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, ::testing::Values(-2, -1, 0, 1, 2, 99));
+INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -2, -1, 0, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, AccelRunIndicateTests)
@@ -199,4 +199,4 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, ::testing::Values(-1, 0, 1, 2, 99));
+INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));

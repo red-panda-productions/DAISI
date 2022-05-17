@@ -48,12 +48,10 @@ inline void ClampFloat(float* p_f, float p_min, float p_max)
 /// @brief     Converts a float to a const char*
 /// @param p_f The float
 /// @return    The const char*
-inline char* FloatToCharArr(float p_f)
+inline char* FloatToCharArr(float p_f, char p_buf[])
 {
-    char buf[1024];
-    sprintf(buf, "%g", p_f);
-    char* ch = buf;
-    return ch;
+    sprintf(p_buf, "%g", p_f);
+    return p_buf;
 }
 
 /// @brief     Converts a char* to a float

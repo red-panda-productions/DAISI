@@ -235,7 +235,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     // Load decision threshold values from XML
-    sprintf(path, "%s%s", GfLocalDir(), PARAM_FILE);
+    sprintf(path, "%s%s", GfLocalDir(), THRESHOLD_CONFIG_FILE);
     m_thresholds = LoadThresholdSettings(path);
 
     // Initialize the decision maker with the full path to the current black box executable

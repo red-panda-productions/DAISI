@@ -57,22 +57,23 @@ void ClampTest(float p_f, float p_min, float p_max)
         ASSERT_EQ(f, p_f);
 }
 BEGIN_TEST_COMBINATORIAL(RppUtilsTests, ClampFloatTest)
-float val[9]{-99, -2, -1, -0.5, 0, 0.5, 1, 2, 99};
-float min[4]{-2, -1, 0, 1};
-float max[4]{-1, 0, 1, 2};
-END_TEST_COMBINATORIAL3(ClampTest, val, 9, min, 4, max, 4)
+float val[9]{FLT_MIN, -2, -1, -0.5, 0, 0.5, 1, 2, FLT_MAX};
+float min[6]{FLT_MIN, -2, -1, 0, 1, FLT_MAX};
+float max[6]{FLT_MIN, -1, 0, 1, 2, FLT_MAX};
+END_TEST_COMBINATORIAL3(ClampTest, val, 9, min, 6, max, 6)
 
 /// @brief Test if FloatToCharArr and CharArrToFloat work correctly
 TEST(RppUtilsTests, FloatToAndFromCharArrTest)
 {
     Random random;
+    char buf[1048];
     for (int i = 0; i < 10; i++)
     {
         float fIn = random.NextFloat();
-        auto chIn = FloatToCharArr(fIn);
+        auto chIn = FloatToCharArr(fIn, buf);
         auto fOut = CharArrToFloat(chIn);
         ASSERT_ALMOST_EQ(fIn, fOut, 0.000001);
-        auto chOut = FloatToCharArr(fOut);
+        auto chOut = FloatToCharArr(fOut, buf);
         ASSERT_ALMOST_EQ(chIn, chOut, 0.000001);
     }
     std::string str1{"123text"};

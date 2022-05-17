@@ -4,11 +4,11 @@
 #include "../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
 #include "../simulatedDrivingAssistance/rppUtils/FileDialog.hpp"
 
-#define PARAM_FILE    "config/Threshhold.xml"
-#define SCT_THRESHOLD "Threshold Settings"
-#define ATT_ACCEL     "Accel"
-#define ATT_BRAKE     "Brake"
-#define ATT_STEER     "Steer"
+#define THRESHOLD_CONFIG_FILE "config/Threshhold.xml"
+#define SCT_THRESHOLD         "Threshold Settings"
+#define ATT_ACCEL             "Accel"
+#define ATT_BRAKE             "Brake"
+#define ATT_STEER             "Steer"
 
 /// @brief        Read threshold config from local xml file
 /// @param p_path The path to the xml file

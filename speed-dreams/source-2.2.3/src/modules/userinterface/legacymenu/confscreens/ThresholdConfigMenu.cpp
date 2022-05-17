@@ -15,51 +15,46 @@ int m_accelThresholdControl;
 int m_brakeThresholdControl;
 int m_steerThresholdControl;
 
-/// @brief Handle input in the accel threshold textbox
-static void SetAccelThreshold(void*)
+/// @brief                    Read the edit box value and clamp it
+/// @param p_threshold        The value to change
+/// @param p_thresholdControl The edit box to read from and write to
+static void SetThreshold(float& p_threshold, int p_thresholdControl)
 {
-    // Get accel threshold from text box, clamp it between 0 and 1
-    m_decisionThresholds.Accel = CharArrToFloat(GfuiEditboxGetString(s_scrHandle, m_accelThresholdControl));
-    ClampFloat(&m_decisionThresholds.Accel, 0, 1);
+    // Get threshold from text box, clamp it between 0 and 1
+    p_threshold = CharArrToFloat(GfuiEditboxGetString(s_scrHandle, p_thresholdControl));
+    ClampFloat(&p_threshold, 0, 1);
 
     // Write the clamped value to the text box.
     char buf[32];
-    sprintf(buf, "%g", m_decisionThresholds.Accel);
-    GfuiEditboxSetString(s_scrHandle, m_accelThresholdControl, buf);
+    sprintf(buf, "%g", p_threshold);
+    GfuiEditboxSetString(s_scrHandle, p_thresholdControl, buf);
+}
+
+/// @brief Handle input in the accel threshold textbox
+static void SetAccelThreshold(void*)
+{
+    SetThreshold(m_decisionThresholds.Accel, m_accelThresholdControl);
 }
 
 /// @brief Handle input in the brake threshold textbox
 static void SetBrakeThreshold(void*)
 {
-    // Get accel threshold from text box, clamp it between 0 and 1
-    m_decisionThresholds.Brake = CharArrToFloat(GfuiEditboxGetString(s_scrHandle, m_brakeThresholdControl));
-    ClampFloat(&m_decisionThresholds.Brake, 0, 1);
-
-    // Write the clamped value to the text box.
-    char buf[32];
-    sprintf(buf, "%g", m_decisionThresholds.Brake);
-    GfuiEditboxSetString(s_scrHandle, m_brakeThresholdControl, buf);
+    SetThreshold(m_decisionThresholds.Brake, m_brakeThresholdControl);
 }
 
 /// @brief Handle input in the steer threshold textbox
 static void SetSteerThreshold(void*)
 {
-    // Get accel threshold from text box, clamp it between 0 and 1
-    m_decisionThresholds.Steer = CharArrToFloat(GfuiEditboxGetString(s_scrHandle, m_steerThresholdControl));
-    ClampFloat(&m_decisionThresholds.Steer, 0, 1);
-
-    // Write the clamped value to the text box.
-    char buf[32];
-    sprintf(buf, "%g", m_decisionThresholds.Steer);
-    GfuiEditboxSetString(s_scrHandle, m_steerThresholdControl, buf);
+    SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
 }
 
 /// @brief Synchronizes all the menu controls in the threshold config menu to the internal variables
 static void SynchronizeControls()
 {
-    GfuiEditboxSetString(s_scrHandle, m_accelThresholdControl, FloatToCharArr(m_decisionThresholds.Accel));
-    GfuiEditboxSetString(s_scrHandle, m_brakeThresholdControl, FloatToCharArr(m_decisionThresholds.Brake));
-    GfuiEditboxSetString(s_scrHandle, m_steerThresholdControl, FloatToCharArr(m_decisionThresholds.Steer));
+    char buf[1024];
+    GfuiEditboxSetString(s_scrHandle, m_accelThresholdControl, FloatToCharArr(m_decisionThresholds.Accel, buf));
+    GfuiEditboxSetString(s_scrHandle, m_brakeThresholdControl, FloatToCharArr(m_decisionThresholds.Brake, buf));
+    GfuiEditboxSetString(s_scrHandle, m_steerThresholdControl, FloatToCharArr(m_decisionThresholds.Steer, buf));
 }
 
 /// @brief Save the chosen values in the corresponding parameter file.
@@ -69,7 +64,7 @@ static void SaveThresholdOptions(void*)
     GfuiUnSelectCurrent();
 
     char buf[MAX_PATH_SIZE];
-    sprintf(buf, "%s%s", GfLocalDir(), PARAM_FILE);
+    sprintf(buf, "%s%s", GfLocalDir(), THRESHOLD_CONFIG_FILE);
     void* paramHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
     GfParmSetNum(paramHandle, SCT_THRESHOLD, ATT_ACCEL, "%", m_decisionThresholds.Accel);
     GfParmSetNum(paramHandle, SCT_THRESHOLD, ATT_BRAKE, "%", m_decisionThresholds.Brake);
@@ -86,7 +81,7 @@ static void SaveThresholdOptions(void*)
 static void OnActivate(void* /* dummy */)
 {
     char path[MAX_PATH_SIZE];
-    sprintf(path, "%s%s", GfLocalDir(), PARAM_FILE);
+    sprintf(path, "%s%s", GfLocalDir(), THRESHOLD_CONFIG_FILE);
 
     m_decisionThresholds = LoadThresholdSettings(path);
     SynchronizeControls();
