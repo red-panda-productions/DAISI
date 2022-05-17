@@ -80,9 +80,9 @@
             <attstr name="text" val="Back"/>
             <attstr name="tip" val="Go back to previous screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="278"/>
-            <attnum name="y" val="82"/>
-            <attnum name="width" val="120"/>
+            <attnum name="x" val="40"/>
+            <attnum name="y" val="41"/>
+            <attnum name="width" val="130"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -102,8 +102,8 @@
             <attstr name="text" val="Apply"/>
             <attstr name="tip" val="Accept and save changes"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="435"/>
-            <attnum name="y" val="82"/>
+            <attnum name="x" val="550"/>
+            <attnum name="y" val="41"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -124,7 +124,7 @@
 
         <section name="1">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/splash-aiconf.jpg"/> <!-- TODO change background -->
+            <attstr name="image" val="data/img/Main-menu-2.png"/> <!-- TODO change background -->
         </section>
 
         <section name="2">

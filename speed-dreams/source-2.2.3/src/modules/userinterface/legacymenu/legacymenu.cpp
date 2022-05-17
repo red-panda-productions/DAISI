@@ -235,7 +235,7 @@ void LegacyMenu::activateLoadingScreen()
 	else
         snprintf(pszTitle, sizeof (pszTitle), "%s", pReInfo->_reName);
 
-	::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.jpg");
+	::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.png");
 }
 
 void LegacyMenu::addLoadingMessage(const char* pszText)
