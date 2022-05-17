@@ -134,7 +134,7 @@
                 <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="warning_brake_brake.wav"/>
+                <attstr name ="source" val=""/>
             </section>
         </section>
         <section name="brake none">
