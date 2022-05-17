@@ -80,8 +80,8 @@ static void LoadConfigSettings(void* p_param)
 /// @brief Loads the default settings from the controls into the internal variables.
 static void LoadDefaultSettings()
 {
-    m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
+    m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
     m_dataToStore.HumanData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
     m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
     m_dataToStore.MetaData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
