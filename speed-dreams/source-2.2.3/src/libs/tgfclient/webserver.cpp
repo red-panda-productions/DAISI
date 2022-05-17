@@ -361,6 +361,9 @@ void NotificationManager::updateWebserverStatusUi()
     if(this->notifyUiIdBusyIcon > 0 && this->screenHandle == this->prevScreenHandle)
     {
         GfuiVisibilitySet(this->prevScreenHandle, this->notifyUiIdBusyIcon, GFUI_INVISIBLE);
+        // SIMULATED DRIVING ASSISTANCE CHANGE (w.r.t. the initial fork): Applied a commit made to Speed Dreams after our fork
+        // Specifically, commit 7836 (https://sourceforge.net/p/speed-dreams/code/7836/), which solves menu items disappearing
+        this->notifyUiIdBusyIcon = -1;
     }
 
     if(this->screenHandle != NULL)
