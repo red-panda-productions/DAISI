@@ -41,7 +41,9 @@
 
 // Messages for file selection
 #define MSG_BLACK_BOX_NORMAL_TEXT "Choose Black Box: "
-#define MSG_NO_BLACK_BOX          "You need to select a valid Black Box"
+#define MSG_BLACK_BOX_NOT_EXE     "(Hint) You did not select a valid Black Box"
+#define MSG_NO_BLACK_BOX          "(Hint) You need to select a valid Black Box"
+#define MSG_ONLY_HINT             "(Hint)"
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
@@ -407,20 +409,20 @@ static void SelectBlackBox(void* /* dummy */)
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_NO_BLACK_BOX);
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_NO_BLACK_BOX);
+        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
         return;
     }
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
+    GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_ONLY_HINT);  // Reset error label
 
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);

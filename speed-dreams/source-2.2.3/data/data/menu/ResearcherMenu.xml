@@ -101,9 +101,10 @@
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="205"/>
-            <!-- 37 Spaces so maxlength is set correctly-->
-            <attstr name="text" val="                                     "/>
+            <!-- "(Hint) " + 37 Spaces so maxlength is set correctly-->
+            <attstr name="text" val="(Hint)                                      "/>
             <attstr name="tip" val="You must choose a file that could be a correct black box: *.exe"/>
+            <attnum name="width" val="245"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
             <attstr name="color" val="0xFFAD34"/>
