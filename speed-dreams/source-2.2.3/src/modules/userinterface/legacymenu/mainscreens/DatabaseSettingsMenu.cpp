@@ -12,7 +12,9 @@
 #define PRM_PORT     "PortEdit"
 #define PRM_SCHEMA   "SchemaEdit"
 #define PRM_SSL      "CheckboxUseSSL"
-#define PRM_CERT     "CertificateSettings"
+#define PRM_CERT     "dynamic controls/CertificateSettings"
+#define PRM_DBSTATUS "DbStatus"
+
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -25,6 +27,7 @@ int m_addressControl;
 int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
+int m_dbStatusControl;
 
 char m_portString[256];
 
@@ -96,6 +99,9 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_portString);
     GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings.Schema);
     GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings.UseSSL));
+    GfParmSetStr(readParam, PRM_CERT, "CA", GfuiMenuBoolToStr(m_dbsettings.UseSSL));
+    GfParmSetStr(readParam, PRM_CERT, "public", GfuiMenuBoolToStr(m_dbsettings.UseSSL));
+    GfParmSetStr(readParam, PRM_CERT, "private", GfuiMenuBoolToStr(m_dbsettings.UseSSL));
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
@@ -144,9 +150,9 @@ static void LoadConfigSettings(void* p_param)
     sprintf(m_dbsettings.Address, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_portString, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_dbsettings.Schema, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(p_param, PRM_SCHEMA, "CA", nullptr));
-    sprintf(m_dbsettings.publicCertFileName, GfParmGetStr(p_param, PRM_SCHEMA, "public", nullptr));
-    sprintf(m_dbsettings.privateCertFileName, GfParmGetStr(p_param, PRM_SCHEMA, "private", nullptr));
+    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(p_param, PRM_CERT, "CA", nullptr));
+    sprintf(m_dbsettings.PublicCertFileName, GfParmGetStr(p_param, PRM_CERT, "public", nullptr));
+    sprintf(m_dbsettings.PrivateCertFileName, GfParmGetStr(p_param, PRM_CERT, "private", nullptr));
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
@@ -175,6 +181,26 @@ static void GoBack(void* /* dummy */)
     GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
 
+static void CheckConnection(void* /* dummy */)
+{
+    m_dbsettings.UseSSL = false;
+    bool connectable = false;
+    try
+    {
+        connectable = SMediator::GetInstance()->CheckConnection(m_dbsettings);
+    }
+    catch (std::exception& e)
+    {
+ 
+    }
+    if (connectable)
+    {
+        GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Online");
+        return;
+    }
+    GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Offline");
+}
+
 /// @brief            Initializes the database settings menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The databaseSettingsMenu scrHandle
@@ -194,6 +220,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, GoBack);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnection);
 
     // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsername);
@@ -202,9 +229,11 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPort);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
     m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSL);
-    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(param, PRM_SCHEMA, "CA", nullptr));
-    sprintf(m_dbsettings.publicCertFileName, GfParmGetStr(param, PRM_SCHEMA, "public", nullptr));
-    sprintf(m_dbsettings.privateCertFileName, GfParmGetStr(param, PRM_SCHEMA, "private", nullptr));
+    m_dbStatusControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DBSTATUS, false);
+    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(param, PRM_CERT, "CA", nullptr));
+    sprintf(m_dbsettings.PublicCertFileName, GfParmGetStr(param, PRM_CERT, "public", nullptr));
+    sprintf(m_dbsettings.PrivateCertFileName, GfParmGetStr(param, PRM_CERT, "private", nullptr));
+
 
     GfParmReleaseHandle(param);
 

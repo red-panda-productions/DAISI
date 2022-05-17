@@ -126,10 +126,43 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 		
+		<!-- Connection button -->
+		<section name="TestConnectionButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Test connection"/>
+            <attstr name="tip" val="Test for a connection with the database with current settings"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="85"/>
+            <attnum name="y" val="200"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+		
 		<section name="CertificateSettings">
             <attstr name="CA" val="CA.txt"/>
             <attstr name="public" val="public.txt"/>
 			<attstr name="private" val="private.txt"/>
+        </section>
+		
+		<section name="DbStatus">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="130"/>
+            <attnum name="y" val="225"/>
+            <attstr name="text" val="Status"/>
+            <attstr name="tip" val="The schema name of the database server"/>
+            <attstr name="h align" val="center"/>
+            <attstr name="font" val="medium_t"/>
         </section>
 
     </section>
@@ -191,6 +224,16 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
+		<section name="7">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="100"/>
+            <attnum name="y" val="250"/>
+            <attstr name="text" val="Database status:"/>
+            <attstr name="tip" val="The status of the database"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+		
     </section>
 
 </params>

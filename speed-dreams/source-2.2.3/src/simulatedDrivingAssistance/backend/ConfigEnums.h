@@ -22,12 +22,12 @@ typedef struct DatabaseSettings
     char Username[256];
     char Password[256];
     char Address[256];
-    int  Port;
+    int Port;
     char Schema[256];
     bool UseSSL;
     char CACertFileName[256];
-    char publicCertFileName[256];
-    char privateCertFileName[256];
+    char PublicCertFileName[256];
+    char PrivateCertFileName[256];
 } tDatabaseSettings;
 
 /// @brief The different interventions that can be done

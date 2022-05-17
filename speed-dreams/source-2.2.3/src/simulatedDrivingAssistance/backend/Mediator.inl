@@ -5,6 +5,7 @@
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
+#include "SQLDatabaseStorage.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -36,6 +37,7 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::RaceStop();                                                                                                           \
     template void Mediator<type>::SetDatabaseSettings(tDatabaseSettings p_dbSettings);                                                                  \
     template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
+    template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
     template bool Mediator<type>::TimeOut();                                                                                                            \
     template Mediator<type>* Mediator<type>::GetInstance();
 
@@ -255,6 +257,19 @@ template <typename DecisionMaker>
 tDatabaseSettings Mediator<DecisionMaker>::GetDatabaseSettings()
 {
     return m_dbSettings;
+}
+
+/// @brief  Gets the database connection settings
+/// @return The database connection settings
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::CheckConnection(DatabaseSettings p_dbSettings)
+{
+    SQLDatabaseStorage test;
+    if (test.OpenDatabase(p_dbSettings))
+    {
+        return true;
+    }
+    return false;
 }
 
 /// @brief Creates a mediator instance if needed and returns it

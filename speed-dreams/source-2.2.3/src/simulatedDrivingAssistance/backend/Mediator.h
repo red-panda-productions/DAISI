@@ -19,6 +19,7 @@ public:
 
     void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
     tDatabaseSettings GetDatabaseSettings();
+    bool CheckConnection(DatabaseSettings p_dbSettings);
     void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);

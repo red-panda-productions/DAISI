@@ -17,8 +17,8 @@
     sprintf(TestSettings.Schema, "sda_test");               \
     TestSettings.UseSSL = true;                             \
     sprintf(TestSettings.CACertFileName, "CA.txt");         \
-    sprintf(TestSettings.publicCertFileName, "public.txt"); \
-    sprintf(TestSettings.privateCertFileName, "private.txt");
+    sprintf(TestSettings.PublicCertFileName, "public.txt"); \
+    sprintf(TestSettings.PrivateCertFileName, "private.txt");
 
 #define TEST_DATA_DIRECTORY "\\databaseTestData\\"
 
