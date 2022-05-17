@@ -192,7 +192,7 @@ TEST(MediatorTests, MaxTimeTest)
     }
 }
 
-/// @brief Tests if the Mediator sets and gets the MaxTime correctly
+/// @brief Tests if the Mediator can check the connection when settings are correct
 TEST(MediatorTests, CheckCorrectConnectionTest)
 {
     tDatabaseSettings testSettings;
@@ -202,14 +202,11 @@ TEST(MediatorTests, CheckCorrectConnectionTest)
     sprintf(testSettings.Address, "127.0.0.1");
     sprintf(testSettings.Schema, "sda_test");
     testSettings.UseSSL = false;
-    //sprintf(testSettings.CACertFileName, "CA.txt");
-    //sprintf(testSettings.PublicCertFileName, "public.txt");
-    //sprintf(testSettings.PrivateCertFileName, "private.txt");
     bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
     ASSERT_TRUE(connectable);
 }
 
-/// @brief Tests if the Mediator sets and gets the MaxTime correctly
+/// @brief Tests if the Mediator can check the connection when settings are incorrect
 TEST(MediatorTests, CheckIncorrectConnectionTest)
 {
     DatabaseSettings testSettings;

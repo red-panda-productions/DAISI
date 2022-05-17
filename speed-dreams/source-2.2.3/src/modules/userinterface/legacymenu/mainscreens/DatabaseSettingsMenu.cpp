@@ -3,8 +3,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DatabaseSettingsMenu.h"
-#include "mainmenu.h"
-
+#include "DataSelectionMenu.h"
 // Parameters used in the xml files
 #define PRM_USERNAME "UsernameEdit"
 #define PRM_PASSWORD "PasswordEdit"
@@ -178,7 +177,7 @@ static void OnActivate(void* /* dummy */)
 /// @brief Returns to the main menu screen
 static void GoBack(void* /* dummy */)
 {
-    GfuiScreenActivate(MainMenuInit(s_scrHandle));
+    GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
 }
 
 /// @brief Checks if a connection can be established with the database. 
@@ -188,6 +187,7 @@ static void CheckConnection(void* /* dummy */)
     bool connectable = false;
     try
     {
+        GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Connecting...");
         connectable = SMediator::GetInstance()->CheckConnection(m_dbsettings);
     }
     catch (std::exception& e)

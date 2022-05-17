@@ -4,6 +4,7 @@
 #include "Mediator.h"
 #include "DataSelectionMenu.h"
 #include "ResearcherMenu.h"
+#include <DatabaseSettingsMenu.h>
 
 #define PRM_ENV_DATA   "CheckboxEnvironmentData"
 #define PRM_CAR_DATA   "CheckboxCarData"
@@ -142,6 +143,13 @@ static void GoBack(void* /* dummy */)
     GfuiScreenActivate(ResearcherMenuInit(s_scrHandle));
 }
 
+/// @brief Activates the databaseSettingsMenu screen
+static void
+DatabaseSettingsMenuActivate(void* /* dummy */)
+{
+    GfuiScreenActivate(DatabaseSettingsMenuInit(s_scrHandle));
+}
+
 /// @brief            Initializes the data selection menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The dataSelectionMenu scrHandle
@@ -167,6 +175,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "database", nullptr, DatabaseSettingsMenuActivate);
+
 
     GfParmReleaseHandle(param);
 
