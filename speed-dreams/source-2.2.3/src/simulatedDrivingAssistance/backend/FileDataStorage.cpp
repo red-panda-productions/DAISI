@@ -188,49 +188,28 @@ void FileDataStorage::SaveHumanData(tCarElt* p_car)
 /// @brief Saves the intervention data from the last time step
 void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
 {
-    if (p_decisions.ContainsSteer())
-    {
-        AddToArray<float>(m_steerDecision, p_decisions.GetSteer(), m_compressionStep);
-    }
-    else
-    {
-        AddToArray<float>(m_steerDecision, -1, m_compressionStep);
-    }
+    SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteer(), m_steerDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrake(), m_brakeDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsAccel(), p_decisions.GetAccel(), m_accelDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsGear(), p_decisions.GetGear(), m_gearDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsLights(), static_cast<int>(p_decisions.GetLights()), m_lightDecision, m_compressionStep);
+}
 
-    if (p_decisions.ContainsBrake())
+/// @brief Saves the decision data from the last time step
+/// @param p_decisionMade boolean that determines whether a decision is made
+/// @param p_value the value of the decision
+/// @param p_values array of values from previous decisions
+/// @param p_compressionStep the current step the program is in
+template <typename TNumber>
+void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep)
+{
+    if (p_decisionMade)
     {
-        AddToArray<float>(m_brakeDecision, p_decisions.GetBrake(), m_compressionStep);
+        AddToArray<TNumber>(p_values, p_value, p_compressionStep);
     }
     else
     {
-        AddToArray<float>(m_brakeDecision, -1, m_compressionStep);
-    }
-
-    if (p_decisions.ContainsAccel())
-    {
-        AddToArray<float>(m_accelDecision, p_decisions.GetAccel(), m_compressionStep);
-    }
-    else
-    {
-        AddToArray<float>(m_accelDecision, -1, m_compressionStep);
-    }
-
-    if (p_decisions.ContainsGear())
-    {
-        AddToArray<int>(m_gearDecision, p_decisions.GetGear(), m_compressionStep);
-    }
-    else
-    {
-        AddToArray<int>(m_gearDecision, -1, m_compressionStep);
-    }
-
-    if (p_decisions.ContainsLights())
-    {
-        AddToArray<int>(m_lightDecision, p_decisions.GetLights(), m_compressionStep);
-    }
-    else
-    {
-        AddToArray<int>(m_lightDecision, -1, m_compressionStep);
+        AddToArray<TNumber>(p_values, -1, p_compressionStep);
     }
 }
 
@@ -325,7 +304,7 @@ void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, unsigned l
 /// @brief Get the median of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The median of the past time steps for a variable
-float FileDataStorage::GetMedian(float p_values[]) const
+float FileDataStorage::GetMedian(float* p_values) const
 {
     std::sort(p_values, p_values + m_compressionRate);
     int middle = static_cast<int>(std::floor(static_cast<float>(m_compressionRate) / 2));
@@ -335,7 +314,7 @@ float FileDataStorage::GetMedian(float p_values[]) const
 /// @brief Get the least common value of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The least common in an array for a variable
-int FileDataStorage::GetLeastCommon(int p_values[]) const
+int FileDataStorage::GetLeastCommon(int* p_values) const
 {
     std::map<int, int> p_frequencies;
 
