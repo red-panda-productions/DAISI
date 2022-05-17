@@ -32,8 +32,8 @@ static void OnAcceptAbort(void* /* dummy */)
 
 /// @brief                  create a confirmation screen
 /// @param p_prevMenu       the previous menu from where it came
-/// @param P_saveWayVersion enum that decided how you got to the save screen
-void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
+/// @param p_raceEndType enum that decided how you got to the save screen
+void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
 {
     if (s_menuHandle)
     {
@@ -44,31 +44,31 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
 
     void* param = GfuiMenuLoad("confirmationmenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
-    switch (p_saveWayVersion)  ////add different button functionality based on the RaceEndType
+    switch (p_raceEndType)  ////add different button functionality based on the RaceEndType
     {
-        case EXIT:
+        case RACE_EXIT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "imsure", nullptr, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptExit);
             break;
         }
-        case RESTART:
+        case RACE_RESTART:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "imsure", nullptr, OnAcceptRestart);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptRestart);
             break;
         }
-        case ABORT:
+        case RACE_ABORT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "imsure", nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
         default:
         {
             // throws an error, invalid option
-            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in ConfigEnum.h?");
+            throw std::runtime_error("incorrect 'p_raceEndType', have you defined the new option in ConfigEnum.h?");
         }
     }
     // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, "waitdontdelete", p_prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONTDELTE_BUTTON, p_prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
 

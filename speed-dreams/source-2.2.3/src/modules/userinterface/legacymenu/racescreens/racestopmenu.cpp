@@ -51,7 +51,7 @@ static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
     if (pvAbortRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvAbortRaceHookHandle, ABORT));
+        GfuiScreenActivate(SaveMenuInit(pvAbortRaceHookHandle, RACE_ABORT));
     
 }
 
@@ -118,7 +118,7 @@ rmRestartRaceHookActivate(void * /* dummy */)
 {
     //if you restart the game it asks you if you want to save the experiment data
     if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RESTART));
+        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RACE_RESTART));
 }
 
 static void *
@@ -179,7 +179,7 @@ rmQuitHookActivate(void * /* dummy */)
 {
     //quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, EXIT));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, RACE_EXIT));
 }
 
 static void *pvQuitHookHandle = 0;

@@ -33,8 +33,8 @@ static void OnAcceptAbort(void* /* dummy */)
 
 /// @brief                  create a save data screen
 /// @param p_prevMenu       the previous menu from where it came
-/// @param P_saveWayVersion enum that decided how you got to the save screen
-void* SaveMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
+/// @param p_raceEndType enum that decided how you got to the save screen
+void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
 {
     if (s_menuHandle)
     {
@@ -46,28 +46,28 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_saveWayVersion)
     void* param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
     // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, "dontsave", ConfirmationMenuInit(s_menuHandle, p_saveWayVersion), GfuiScreenActivate);
-    switch (p_saveWayVersion)  // add different button functionality based on the RaceEndType
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONTSAVE_BUTTON, ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenActivate);
+    switch (p_raceEndType)  // add different button functionality based on the RaceEndType
     {
-        case EXIT:
+        case RACE_EXIT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "yessave", nullptr, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptExit);
             break;
         }
-        case RESTART:
+        case RACE_RESTART:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "yessave", nullptr, OnAcceptRestart);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptRestart);
             break;
         }
-        case ABORT:
+        case RACE_ABORT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, "yessave", nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
         default:
         {
             // throws an error, invalid option
-            throw std::runtime_error("incorrect 'p_saveWayVersion', have you defined the new option in ConfigEnum.h?");
+            throw std::runtime_error("incorrect 'p_raceEndType', have you defined the new option in ConfigEnum.h?");
         }
     }
     GfParmReleaseHandle(param);

@@ -217,7 +217,8 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
-    m_decisionMaker.RaceStop(m_decisionMaker.Config.GetSaveToDatabaseCheck());
+    bool saveToDatabase = m_decisionMaker.Config.GetSaveToDatabaseCheck();
+    m_decisionMaker.RaceStop(saveToDatabase);
     m_inRace = false;
 }
 
