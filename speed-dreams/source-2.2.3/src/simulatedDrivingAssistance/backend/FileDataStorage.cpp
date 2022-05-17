@@ -279,7 +279,7 @@ void FileDataStorage::WriteInterventionData()
 /// @param p_decisionType the current decision type
 /// @param p_decisionMade if there has already been a decision made
 template <typename TNumber>
-void FileDataStorage::WriteDecision(TNumber p_decision, std::string const p_decisionType, bool& p_decisionMade)
+void FileDataStorage::WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade)
 {
     if (p_decision != -1)
     {
