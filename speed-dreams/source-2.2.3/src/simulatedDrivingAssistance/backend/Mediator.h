@@ -23,6 +23,8 @@ public:
     void SetPControlSettings(tParticipantControl p_pControl);
     void SetReplayRecorderSetting(bool p_replayRecorderOn);
     void SetBlackBoxSyncOption(bool p_sync);
+
+    void SetThresholdSettings(tDecisionThresholds p_thresholds);
     void SetMaxTime(int p_maxTime);
 
     void SetUserId(char* p_userId);
@@ -56,11 +58,6 @@ public:
     DecisionMaker* GetDecisionMaker()
     {
         return &m_decisionMaker;
-    }
-
-    void SetThresholdSettings(tDecisionThresholds p_thresholds)
-    {
-        m_thresholds = p_thresholds;
     }
 
     /// @brief             Sets the tick count of the mediator

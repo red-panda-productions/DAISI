@@ -2,7 +2,7 @@ INCLUDE(../../../cmake/macros.cmake)
 
 SET(_SOURCES IndicatorConfig.cpp)
 
-SET(_HEADERS IndicatorConfig.h IndicatorData.h ThresholdConfig.h)
+SET(_HEADERS IndicatorConfig.h IndicatorData.h)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient backend)

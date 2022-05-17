@@ -6,10 +6,6 @@
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
 #include "mocks/SocketBlackBoxMock.h"
-#include "mocks/SQLDatabaseStorageMock.h"
-#include "mocks/RecorderMock.h"
-#include <sys/types.h>
-#include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 

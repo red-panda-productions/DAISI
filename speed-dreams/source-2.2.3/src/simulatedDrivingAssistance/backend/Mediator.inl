@@ -5,7 +5,6 @@
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
-#include "ThresholdConfig.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
@@ -32,6 +31,7 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
     template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
+    template void Mediator<type>::SetThresholdSettings(tDecisionThresholds p_thresholds);                                                               \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \
     template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
@@ -126,6 +126,14 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetBlackBoxSyncOption(bool p_sync)
 {
     m_decisionMaker.Config.SetBlackBoxSyncOption(p_sync);
+}
+
+/// @brief              Sets the decision threshold values
+/// @param p_thresholds The threshold values
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetThresholdSettings(tDecisionThresholds p_thresholds)
+{
+    m_thresholds = p_thresholds;
 }
 
 /// @brief  Gets the allowed black box actions setting
@@ -233,10 +241,6 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
-
-    // Load decision threshold values from XML
-    sprintf(path, "%s%s", GfLocalDir(), THRESHOLD_CONFIG_FILE);
-    m_thresholds = LoadThresholdSettings(path);
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed

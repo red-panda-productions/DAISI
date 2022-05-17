@@ -23,9 +23,6 @@
 #include <monitorconfig.h>
 #include <soundconfig.h>
 
-// SIMULATED DRIVING ASSISTANCE
-#include "ThresholdConfigMenu.h"
-
 #include "optionsmenu.h"
 
  // SIMULATED DRIVING ASSISTANCE: removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
@@ -60,13 +57,6 @@ onSoundMenuActivate(void * /* dummy */)
     GfuiScreenActivate(SoundMenuInit(MenuHandle));
 }
 
-// SIMULATED DRIVING ASSISTANCE
-/// @brief Activates the threshold config menu
-static void OnThresholdMenuActivate(void* /* dummy */)
-{
-    GfuiScreenActivate(ThresholdConfigMenuInit(MenuHandle));
-}
-
 //SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
 
 void *
@@ -88,8 +78,6 @@ OptionsMenuInit(void *prevMenu)
     GfuiMenuCreateButtonControl(MenuHandle, param, "display", NULL, onDisplayMenuActivate);
 #endif
     GfuiMenuCreateButtonControl(MenuHandle, param, "sound", NULL, onSoundMenuActivate);
-    // SIMULATED DRIVING ASSISTANCE
-    GfuiMenuCreateButtonControl(MenuHandle, param, "Threshold", nullptr, OnThresholdMenuActivate);
 
     GfuiMenuCreateButtonControl(MenuHandle, param, "back", prevMenu, GfuiScreenActivate);
 

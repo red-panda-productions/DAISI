@@ -21,11 +21,7 @@ Added:
     libs/tgfclient/
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
-    modules/userinterface/legacymenu/
-        confscreens/
-            ThresholdConfigMenu.cpp
-            ThresholdConfigMenu.h
-        mainscreens/
+    modules/userinterface/legacymenu/mainscreens/
             ResearcherMenu.h
             ResearcherMenu.cpp
             DataSelectionMenu.h
@@ -52,7 +48,6 @@ Added:
             ResearcherMenu.xml
             DataSelectionMenu.xml
             DeveloperMenu.xml
-            ThresholdConfigMenu.xml
             EndExperimentMenu.xml
     drivers/
         assistedhuman/
@@ -198,7 +193,6 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
-                  added    ThresholdConfig.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    EndExperimentMenu.cpp and .h
@@ -228,9 +222,6 @@ Changed:
                 exitmenu.h
                     included "ConfigEnums.h"
                 optionsmenu.cpp
-                    included "ThresholdConfig.h"
-                    added    OnThresholdMenuActivate()
-                    changed  OptionsMenuInit(): added a button to the threshold config menu
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
             racescreens/
                 raceresultsmenus.cpp
@@ -418,7 +409,6 @@ Changed:
                 removed controls menu
             optionsmenu.xml
                 removed unused menus
-                added a button to the threshold config menu
             creditsmenu.xml
                 added new section
             removed playerconfig.xml

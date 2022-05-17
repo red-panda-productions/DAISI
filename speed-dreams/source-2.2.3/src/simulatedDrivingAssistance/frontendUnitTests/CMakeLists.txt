@@ -24,7 +24,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-SET(_SOURCES IndicatorConfigTests.cpp ThresholdConfigTests.cpp)
+SET(_SOURCES IndicatorConfigTests.cpp)
 
 SET(_HEADERS )
 
