@@ -217,6 +217,9 @@ Section "!Base System" SEC01
   SetOutPath "$INSTDIR\data\cars\models\sc-spirit-300"
   File /r /x *.lib "${BUILD_INST_DIR}\data\cars\models\sc-spirit-300\*.*"
 
+  SetOutPath "$INSTDIR\data\cars\models\primo"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\cars\models\primo\*.*"
+
   ; Base tracks (only Espie)
   SetOutPath "$INSTDIR\data\tracks\circuit\espie"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\circuit\espie\*.*"
