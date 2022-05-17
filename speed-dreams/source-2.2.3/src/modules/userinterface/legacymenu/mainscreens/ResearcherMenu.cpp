@@ -28,7 +28,7 @@
 #define PRM_MAX_TIME             "MaxTimeEdit"
 #define PRM_USER_ID              "UserIdEdit"
 #define PRM_BLACKBOX             "ChooseBlackBoxButton"
-#define PRM_NO_BLACK_BOX         "NoBlackBoxError"
+#define PRM_ERROR_LABEL          "ErrorLabel"
 #define PRM_ENVIRONMENT          "ChooseEnvironmentButton"
 #define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
 #define PRM_ENVIRONMENT_NAME     "EnvironmentName"
@@ -46,13 +46,13 @@
 #define MAX_TIME               1440
 
 // Messages for file selection
-#define MSG_BLACK_BOX_NORMAL_TEXT "Choose Black Box: "
-#define MSG_ENVIRONMENT_PREFIX    "Choose Environment: "
+#define MSG_BLACK_BOX_NORMAL_TEXT    "Choose Black Box: "
+#define MSG_ENVIRONMENT_PREFIX       "Choose Environment: "
 #define MSG_ENVIRONMENT_NOT_SELECTED "None selected"
-#define MSG_BLACK_BOX_NOT_EXE     "You did not select a valid Black Box"
-#define MSG_NO_BLACK_BOX          "You need to select a valid Black Box"
-#define MSG_NO_ENVIRONMENT        "You need to select a valid Environment"
-#define MSG_ONLY_HINT             ""
+#define MSG_ERROR_BLACK_BOX_NOT_EXE  "You did not select a valid Black Box"
+#define MSG_ERROR_NO_BLACK_BOX       "You need to select a valid Black Box"
+#define MSG_ERROR_NO_ENVIRONMENT     "You need to select a valid Environment"
+#define MSG_ONLY_HINT                ""
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
@@ -94,7 +94,7 @@ int m_userIdControl;
 
 // Black Box
 int m_blackBoxButton;
-int m_noBlackBoxLabel;
+int m_errorLabel;
 bool m_blackBoxChosen = false;
 char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 
@@ -295,12 +295,12 @@ static void SaveSettings(void* /* dummy */)
 {
     if (!m_blackBoxChosen)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_NO_BLACK_BOX);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_NO_BLACK_BOX);
         return;
     }
     if (!m_environmentChosen)
     {
-        GfuiButtonSetText(s_scrHandle, m_noBlackBoxLabel, MSG_NO_ENVIRONMENT);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_NO_ENVIRONMENT);
         return;
     }
     // Save settings to the SDAConfig
@@ -359,13 +359,16 @@ static void SynchronizeControls()
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
     }
 
     std::string environmentButtonText = std::string(MSG_ENVIRONMENT_PREFIX).append(m_environmentChosen?
         m_environment->getName()
         : MSG_ENVIRONMENT_NOT_SELECTED);
     GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
+
+    if (m_blackBoxChosen && m_environmentChosen) {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, "");  // Reset error label
+    }
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
@@ -476,20 +479,20 @@ static void SelectBlackBox(void* /* dummy */)
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_ONLY_HINT);  // Reset error label
+    GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);  // Reset error label
 
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
@@ -524,7 +527,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Choose black box control
     m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
-    m_noBlackBoxLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_NO_BLACK_BOX);
+    m_errorLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_ERROR_LABEL);
 
     // Choose environment control
     m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, s_scrHandle, SelectEnvironment);

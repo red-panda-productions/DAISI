@@ -97,14 +97,14 @@
         </section>
 
         <!-- Although this is a label, this is not a static control as we want to change it -->
-        <section name="NoBlackBoxError">
+        <section name="ErrorLabel">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="205"/>
-            <!-- Label for showing error messages to the user. Needs to be 37 characters long.
+            <!-- Label for showing error messages to the user. Needs to be 39 characters long.
 			Default value contains this many spaces so maxlength is set correctly -->
-            <attstr name="text" val="                                     "/>
-            <attstr name="tip" val="You must choose a file that could be a correct black box: *.exe"/>
+            <attstr name="text" val="                                       "/>
+            <attstr name="tip" val="You must choose an environment and a file that could be a correct black box: *.exe"/>
             <attnum name="width" val="210"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
