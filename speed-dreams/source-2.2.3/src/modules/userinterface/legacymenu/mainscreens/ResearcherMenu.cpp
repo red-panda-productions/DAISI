@@ -246,6 +246,7 @@ static void SaveSettingsToDisk()
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -386,6 +387,7 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();

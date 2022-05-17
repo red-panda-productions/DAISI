@@ -92,6 +92,7 @@ static void LoadSettings()
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadSettingsFromFile(param);
+        GfParmReleaseHandle(param);
         SynchronizeControls();
         return;
     }
@@ -119,6 +120,7 @@ static void SaveSettingsToFile()
 
     // Write queued changes
     GfParmWriteFile(nullptr, readParam, DEV_SCREEN_NAME);
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Saves the settings so the mediator (or future instances) can access them

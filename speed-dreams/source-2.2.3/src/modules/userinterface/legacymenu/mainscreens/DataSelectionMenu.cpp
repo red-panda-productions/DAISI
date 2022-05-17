@@ -99,6 +99,7 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
@@ -121,6 +122,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_META_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
 
     GfParmWriteFile(nullptr, readParam, "DataSelectionMenu");
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Configures the SDAConfig with the options selected on this menu
