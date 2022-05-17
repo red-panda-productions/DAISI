@@ -7,6 +7,9 @@
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
 #include "../rppUtils/FileDialog.hpp"
+#include "racescreens.h"
+#include "tracks.h"
+//#include "../../../racing/standardgame/standardgame.h"
 #include <experimental/filesystem>
 
 // Parameters used in the xml files
@@ -48,6 +51,7 @@
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
 
+#define TRACK_LOADER_MODULE_NAME "trackv1"
 // GUI screen handles
 static void* s_scrHandle = nullptr;
 static void* s_nextHandle = nullptr;
@@ -89,10 +93,32 @@ char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 // Environment
 int m_environmentButton;
 bool m_environmentChosen = false;
-Track m_track;
+Track* m_track = nullptr;
+tRmTrackSelect m_trackMenuSettings;
 
 // Apply Button
 int m_applyButton;
+
+void LoadTrack(const char* p_filepath)
+{
+    //    m_track = ReTrackLoader().load(p_filepath);
+    std::cout << "'Loaded' track " << p_filepath << std::endl;
+}
+
+void LoadTrackFromGfTrack(GfTrack* p_gfTrack)
+{
+    const char* trackPath = p_gfTrack->getDescriptorFile().c_str();
+    LoadTrack(trackPath);
+}
+
+GfTrack* GetTrackAsGfTrack()
+{
+    if (!m_track) {
+        return GfTracks::self()->getFirstUsableTrack();
+    }
+    const char* internalName = m_track->internalname;
+    return GfTracks::self()->getTrack(internalName);
+}
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the radio button pressed
@@ -133,8 +159,7 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
 /// @param p_info Information on the radio button pressed
 static void SelectEnvironment(void* /* dummy */)
 {
-    // TODO: set environment
-    // m_track = _something_
+    RmTrackSelect(&m_trackMenuSettings);
 }
 
 /// @brief        Enables/disables the possibility for participants to enable/disable interventions
@@ -229,8 +254,11 @@ static void SaveSettingsToDisk()
     // Save black box filepath to xml file
     GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
-    // Save environment filepath to xml file
-    GfParmSetStr(readParam, PRM_ENVIRONMENT, GFMNU_ATTR_PATH, m_track.filename);
+    // Save environment filepath to xml file if a track has been selected
+    if (m_track)
+    {
+        GfParmSetStr(readParam, PRM_ENVIRONMENT, GFMNU_ATTR_PATH, m_track->filename);
+    }
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
@@ -302,7 +330,7 @@ static void SynchronizeControls()
     }
 
     std::string environmentButtonText = m_environmentChosen
-                                            ? std::string(MSG_ENVIRONMENT_PREFIX).append(m_track.name)
+                                            ? std::string(MSG_ENVIRONMENT_PREFIX).append(m_track->name)
                                             : std::string(MSG_ENVIRONMENT_NOT_SELECTED);
     GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
 }
@@ -354,6 +382,13 @@ static void LoadConfigSettings(void* p_param)
     {
         strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, filePath);
         m_blackBoxChosen = true;
+    }
+
+    const char* environmentFilePath = GfParmGetStr(p_param, PRM_ENVIRONMENT, GFMNU_ATTR_PATH, nullptr);
+    if (environmentFilePath)
+    {
+        LoadTrack(environmentFilePath);
+        m_environmentChosen = true;
     }
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
@@ -443,6 +478,17 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Choose environment control
     m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, s_scrHandle, SelectEnvironment);
+    m_trackMenuSettings = {
+        LoadTrackFromGfTrack,
+        GetTrackAsGfTrack,
+        s_scrHandle,
+        s_scrHandle};
+    // If no track loader has been initialised yet for the environment menu, initialise it
+    if (!GfTracks::self()->getTrackLoader()) {
+        GfModule* trackLoaderModule = GfModule::load("modules/track", TRACK_LOADER_MODULE_NAME);
+        ITrackLoader* trackLoader = trackLoaderModule->getInterface<ITrackLoader>();
+        GfTracks::self()->setTrackLoader(trackLoader);
+    }
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
