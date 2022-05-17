@@ -178,24 +178,6 @@ BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
-/// @brief                  Tests if the SDAConfig sets and gets the other pControl settings correctly
-/// @param p_force          Whether to enable force feedback
-/// @param p_userRecord     Whether to enable user controls session recording
-/// @param p_blackboxRecord Whether to enable blackbox session recording
-void PControlTest2Mediator(bool p_force, bool p_record, bool p_blackboxRecord)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {NULL, NULL, NULL, p_force, p_record, p_blackboxRecord};
-    SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
-    tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
-}
-
-/// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
-BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings2)
-bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
-
 /// @brief Tests if the Mediator sets and gets the MaxTime correctly
 TEST(MediatorTests, MaxTimeTest)
 {
@@ -208,6 +190,37 @@ TEST(MediatorTests, MaxTimeTest)
         SDAConfigMediator::GetInstance()->SetMaxTime(maxTime);
         ASSERT_EQ(maxTime, SDAConfigMediator::GetInstance()->GetMaxTime());
     }
+}
+
+/// @brief Tests if the Mediator sets and gets the MaxTime correctly
+TEST(MediatorTests, CheckCorrectConnectionTest)
+{
+    tDatabaseSettings testSettings;
+    sprintf(testSettings.Username, "SDATest");
+    sprintf(testSettings.Password, "PASSWORD");
+    testSettings.Port = 3306;
+    sprintf(testSettings.Address, "127.0.0.1");
+    sprintf(testSettings.Schema, "sda_test");
+    testSettings.UseSSL = false;
+    //sprintf(testSettings.CACertFileName, "CA.txt");
+    //sprintf(testSettings.PublicCertFileName, "public.txt");
+    //sprintf(testSettings.PrivateCertFileName, "private.txt");
+    bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
+    ASSERT_TRUE(connectable);
+}
+
+/// @brief Tests if the Mediator sets and gets the MaxTime correctly
+TEST(MediatorTests, CheckIncorrectConnectionTest)
+{
+    DatabaseSettings testSettings;
+    sprintf(testSettings.Username, "SDATest");
+    sprintf(testSettings.Password, "WrongPassword");
+    testSettings.Port = 3306;
+    sprintf(testSettings.Address, "127.0.0.1");
+    sprintf(testSettings.Schema, "sda_test");
+    testSettings.UseSSL = false;
+    bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
+    ASSERT_FALSE(connectable);
 }
 
 /// @brief Tests if the Mediator sets and gets the UserID correctly

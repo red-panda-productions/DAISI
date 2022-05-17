@@ -9,16 +9,16 @@
 #include "Mediator.h"
 
 #define MAKE_TEST_SETTINGS                                  \
-    tDatabaseSettings TestSettings;                         \
-    sprintf(TestSettings.Username, "SDATest");              \
-    sprintf(TestSettings.Password, "PASSWORD");             \
-    TestSettings.Port = 3306;                               \
-    sprintf(TestSettings.Address, "127.0.0.1");             \
-    sprintf(TestSettings.Schema, "sda_test");               \
-    TestSettings.UseSSL = true;                             \
-    sprintf(TestSettings.CACertFileName, "CA.txt");         \
-    sprintf(TestSettings.PublicCertFileName, "public.txt"); \
-    sprintf(TestSettings.PrivateCertFileName, "private.txt");
+    tDatabaseSettings testSettings;                         \
+    sprintf(testSettings.Username, "SDATest");              \
+    sprintf(testSettings.Password, "PASSWORD");             \
+    testSettings.Port = 3306;                               \
+    sprintf(testSettings.Address, "127.0.0.1");             \
+    sprintf(testSettings.Schema, "sda_test");               \
+    testSettings.UseSSL = true;                             \
+    sprintf(testSettings.CACertFileName, "CA.txt");         \
+    sprintf(testSettings.PublicCertFileName, "public.txt"); \
+    sprintf(testSettings.PrivateCertFileName, "private.txt");
 
 #define TEST_DATA_DIRECTORY "\\databaseTestData\\"
 
@@ -29,8 +29,8 @@ void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::strin
 {
     MAKE_TEST_SETTINGS;
 
-    TestSettings.UseSSL = false;
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase(TestSettings));
+    testSettings.UseSSL = false;
+    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase(testSettings));
 }
 
 /// @brief Inserts test data in opened database
@@ -104,8 +104,8 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     chdir(SD_DATADIR_SRC);
     MAKE_TEST_SETTINGS;
 
-    TestSettings.UseSSL = false;
-    SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
+    testSettings.UseSSL = false;
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
@@ -121,10 +121,10 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
     MAKE_TEST_SETTINGS;
-    sprintf(TestSettings.Password, "WRONGPASSWORD");
-    TestSettings.UseSSL = false;
+    sprintf(testSettings.Password, "WRONGPASSWORD");
+    testSettings.UseSSL = false;
 
-    SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -142,7 +142,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
     ASSERT_TRUE(SetupSingletonsFolder());
     MAKE_TEST_SETTINGS;
 
-    SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
@@ -161,7 +161,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
     chdir(SD_DATADIR_SRC);
     MAKE_TEST_SETTINGS;
 
-    SMediator::GetInstance()->SetDatabaseSettings(TestSettings);
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;

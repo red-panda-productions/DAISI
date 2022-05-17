@@ -103,7 +103,6 @@ bool LegacyMenu::backLoad()
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
     ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
 
-
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
         return false;

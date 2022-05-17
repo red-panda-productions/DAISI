@@ -265,11 +265,8 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::CheckConnection(DatabaseSettings p_dbSettings)
 {
     SQLDatabaseStorage test;
-    if (test.OpenDatabase(p_dbSettings))
-    {
-        return true;
-    }
-    return false;
+    bool connectable = test.OpenDatabase(p_dbSettings);
+    return connectable;
 }
 
 /// @brief Creates a mediator instance if needed and returns it
