@@ -80,7 +80,7 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
-        <!-- Choose black box button-->
+        <!-- Choose environment button-->
         <section name="ChooseEnvironmentButton">
 	        <attstr name="type" val="text button"/>
 	        <attstr name="show box" val="yes"/>
@@ -310,15 +310,6 @@
             <attnum name="x" val="260"/>
             <attnum name="y" val="400"/>
             <attstr name="text" val="Intervention Type"/>
-            <attstr name="h align" val="left"/>
-            <attstr name="font" val="medium_t"/>
-        </section>
-
-        <section name="5">
-            <attstr name="type" val="label"/>
-            <attnum name="x" val="380"/>
-            <attnum name="y" val="400"/>
-            <attstr name="text" val="Environment"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>

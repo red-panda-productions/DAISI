@@ -30,6 +30,8 @@ public:
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
     void SetBlackBoxFilePath(const char* p_filePath);
+    void SetEnvironmentFilePath(const char* p_filePath);
+    const char* GetEnvironmentFilePath();
 
     void SetReplayFolder(const filesystem::path& p_replayFolder);
     const filesystem::path& GetReplayFolder() const;

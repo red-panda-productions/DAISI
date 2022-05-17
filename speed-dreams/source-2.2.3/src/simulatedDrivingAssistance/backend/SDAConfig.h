@@ -10,6 +10,7 @@
 namespace filesystem = std::experimental::filesystem;
 
 #define BLACKBOX_PATH_SIZE 260  // Windows MAX_PATH
+#define ENVIRONMENT_PATH_SIZE 260  // Windows MAX_PATH
 
 class SDAConfig
 {
@@ -25,6 +26,7 @@ private:
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+    char m_environmentPath[ENVIRONMENT_PATH_SIZE];
     bool m_asyncConnection = true;
     filesystem::path m_currentReplayFolder;
     bool m_replayRecorderOn = false;
@@ -55,6 +57,9 @@ public:
     char* GetUserId() const;
     void SetBlackBoxFilePath(const char* p_filePath);
     const char* GetBlackBoxFilePath() const;
+
+    void SetEnvironmentFilePath(const char* p_filePath);
+    const char* GetEnvironmentFilePath() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType GetInterventionType() const;

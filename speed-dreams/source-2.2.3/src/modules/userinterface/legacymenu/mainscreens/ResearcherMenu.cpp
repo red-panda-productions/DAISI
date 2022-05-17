@@ -7,27 +7,30 @@
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
 #include "../rppUtils/FileDialog.hpp"
+#include "../rppUtils/RppUtils.hpp"
 #include "racescreens.h"
 #include "tracks.h"
 //#include "../../../racing/standardgame/standardgame.h"
 #include <experimental/filesystem>
 
 // Parameters used in the xml files
-#define PRM_TASKS            "TaskRadioButtonList"
-#define PRM_INDCTR_AUDITORY  "CheckboxIndicatorAuditory"
-#define PRM_INDCTR_VISUAL    "CheckboxIndicatorVisual"
-#define PRM_INDCTR_TEXT      "CheckboxIndicatorTextual"
-#define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
-#define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
-#define PRM_CTRL_GAS         "CheckboxPControlGas"
-#define PRM_CTRL_STEERING    "CheckboxPControlSteering"
-#define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
-#define PRM_MAX_TIME         "MaxTimeEdit"
-#define PRM_USER_ID          "UserIdEdit"
-#define PRM_BLACKBOX         "ChooseBlackBoxButton"
-#define PRM_ENVIRONMENT      "ChooseEnvironmentButton"
-#define PRM_DEV              "DevButton"
-#define GFMNU_ATTR_PATH      "path"
+#define PRM_TASKS                "TaskRadioButtonList"
+#define PRM_INDCTR_AUDITORY      "CheckboxIndicatorAuditory"
+#define PRM_INDCTR_VISUAL        "CheckboxIndicatorVisual"
+#define PRM_INDCTR_TEXT          "CheckboxIndicatorTextual"
+#define PRM_INTERVENTIONTYPE     "InterventionTypeRadioButtonList"
+#define PRM_CTRL_INTRV_TGGLE     "CheckboxPControlInterventionToggle"
+#define PRM_CTRL_GAS             "CheckboxPControlGas"
+#define PRM_CTRL_STEERING        "CheckboxPControlSteering"
+#define PRM_FORCE_FEEDBACK       "CheckboxForceFeedback"
+#define PRM_MAX_TIME             "MaxTimeEdit"
+#define PRM_USER_ID              "UserIdEdit"
+#define PRM_BLACKBOX             "ChooseBlackBoxButton"
+#define PRM_ENVIRONMENT          "ChooseEnvironmentButton"
+#define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
+#define PRM_ENVIRONMENT_NAME     "EnvironmentName"
+#define PRM_DEV                  "DevButton"
+#define GFMNU_ATTR_PATH          "path"
 
 // Names for the config file
 #define RESEARCH_FILEPATH    "config/ResearcherMenu.xml"
@@ -43,6 +46,7 @@
 #define MSG_BLACK_BOX_NOT_EXE     "Choose Black Box: chosen file was not a .exe"
 #define MSG_APPLY_NORMAL_TEXT     "Apply"
 #define MSG_APPLY_NO_BLACK_BOX    "Apply | You need to select a valid Black Box"
+#define MSG_APPLY_NO_ENVIRONMENT  "Apply | You need to select a valid Environment"
 
 // Messages for environment selection
 #define MSG_ENVIRONMENT_PREFIX       "Choose Environment: "
@@ -93,37 +97,33 @@ char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 // Environment
 int m_environmentButton;
 bool m_environmentChosen = false;
-Track* m_track = nullptr;
+GfTrack* m_environment = nullptr;
 tRmTrackSelect m_trackMenuSettings;
 
 // Apply Button
 int m_applyButton;
 
-/// @brief Save the track at the given filepath as the used environment
-/// @param p_filepath Path to the xml descriptor file of the track
-void LoadTrack(const char* p_filepath)
-{
-    //    m_track = ReTrackLoader().load(p_filepath);
-    std::cout << "'Loaded' track " << p_filepath << std::endl;
-}
-
 /// @brief Save the given GfTrack as the used environment
 /// @param p_gfTrack Pointer to the GfTrack to use
-void LoadTrackFromGfTrack(GfTrack* p_gfTrack)
+void SetTrackFromGfTrack(GfTrack* p_gfTrack)
 {
-    const char* trackPath = p_gfTrack->getDescriptorFile().c_str();
-    LoadTrack(trackPath);
+    m_environment = p_gfTrack;
+    m_environmentChosen = true;
 }
 
-/// @brief Get the current selected track as pointer to a GfTrack, or get the first usable track if no track has been selected
-/// @return Pointer to the selected or default track (never nullptr)
+/// @brief Get the current selected track as pointer to a GfTrack,
+///  or get the first usable track if no track has been selected
+/// @return Pointer to the selected track, or the first usable track if no track is selected (never nullptr)
 GfTrack* GetTrackAsGfTrack()
 {
-    if (!m_track) {
+    // Return first usable track if none set
+    // While we could use m_environmentChosen here, by not checking it we can jump to
+    //  a track found when loading the config even though it was not an exact match.
+    if (!m_environment)
+    {
         return GfTracks::self()->getFirstUsableTrack();
     }
-    const char* internalName = m_track->internalname;
-    return GfTracks::self()->getTrack(internalName);
+    return m_environment;
 }
 
 /// @brief        Sets the task to the selected one
@@ -260,9 +260,11 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
     // Save environment filepath to xml file if a track has been selected
-    if (m_track)
+    // Speed Dreams identifies tracks by their category and their name, so save these two
+    if (m_environmentChosen)
     {
-        GfParmSetStr(readParam, PRM_ENVIRONMENT, GFMNU_ATTR_PATH, m_track->filename);
+        GfParmSetStr(readParam, PRM_ENVIRONMENT_CATEGORY, GFMNU_ATTR_PATH, m_environment->getCategoryId().c_str());
+        GfParmSetStr(readParam, PRM_ENVIRONMENT_NAME, GFMNU_ATTR_PATH, m_environment->getId().c_str());
     }
 
     // Write all the above queued changed to xml file
@@ -277,6 +279,11 @@ static void SaveSettings(void* /* dummy */)
         GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NO_BLACK_BOX);
         return;
     }
+    if (!m_environmentChosen)
+    {
+        GfuiButtonSetText(s_scrHandle, m_applyButton, MSG_APPLY_NO_ENVIRONMENT);
+        return;
+    }
     // Save settings to the SDAConfig
     SMediator* mediator = SMediator::GetInstance();
     mediator->SetTask(m_task);
@@ -285,6 +292,7 @@ static void SaveSettings(void* /* dummy */)
     mediator->SetMaxTime(m_maxTime);
     mediator->SetPControlSettings(m_pControl);
     mediator->SetBlackBoxFilePath(m_blackBoxFilePath);
+    mediator->SetEnvironmentFilePath(m_environment->getDescriptorFile().c_str());
 
     // Save the encrypted userId in the SDAConfig
     size_t encryptedUserId = std::hash<std::string>{}(m_userId);
@@ -293,8 +301,6 @@ static void SaveSettings(void* /* dummy */)
 
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
-
-    // TODO: Set Environment (Track)
 
     // Enable/Disable force feedback in the force feedback manager
     forceFeedback.effectsConfig["globalEffect"]["enabled"] = m_pControl.ForceFeedback;
@@ -335,7 +341,7 @@ static void SynchronizeControls()
     }
 
     std::string environmentButtonText = m_environmentChosen
-                                            ? std::string(MSG_ENVIRONMENT_PREFIX).append(m_track->name)
+                                            ? std::string(MSG_ENVIRONMENT_PREFIX).append(m_environment->getName())
                                             : std::string(MSG_ENVIRONMENT_NOT_SELECTED);
     GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
 }
@@ -389,11 +395,21 @@ static void LoadConfigSettings(void* p_param)
         m_blackBoxChosen = true;
     }
 
-    const char* environmentFilePath = GfParmGetStr(p_param, PRM_ENVIRONMENT, GFMNU_ATTR_PATH, nullptr);
-    if (environmentFilePath)
+    // Only load from file if no environment has been chosen yet and a category has been saved to file
+    const char* environmentCategory = GfParmGetStr(p_param, PRM_ENVIRONMENT_CATEGORY, GFMNU_ATTR_PATH, nullptr);
+    if (environmentCategory && !m_environmentChosen)
     {
-        LoadTrack(environmentFilePath);
-        m_environmentChosen = true;
+        // Default environment name can be the empty string:
+        //  if no environment name is saved, we can still get the first track in the saved category.
+        //  This will help users find similar environments to the one they used before.
+        const char* environmentName = GfParmGetStr(p_param, PRM_ENVIRONMENT_NAME, GFMNU_ATTR_PATH, "");
+        GfTrack* trackFound = GfTracks::self()->getFirstUsableTrack(environmentCategory, environmentName);
+        SetTrackFromGfTrack(trackFound);
+
+        // An environment has only been chosen if the name and category match the one originally saved.
+        // If not, SD has chosen a different usable track. While this will help users find a track when they open the menu,
+        //  accepting this automatically may cause unexpected issues like lauching the wrong simulation.
+        m_environmentChosen = (environmentName == trackFound->getId()) && (environmentCategory == trackFound->getCategoryId());
     }
 
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
@@ -484,12 +500,13 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Choose environment control
     m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, s_scrHandle, SelectEnvironment);
     m_trackMenuSettings = {
-        LoadTrackFromGfTrack,
+        SetTrackFromGfTrack,
         GetTrackAsGfTrack,
         s_scrHandle,
         s_scrHandle};
     // If no track loader has been initialised yet for the environment menu, initialise it
-    if (!GfTracks::self()->getTrackLoader()) {
+    if (!GfTracks::self()->getTrackLoader())
+    {
         GfModule* trackLoaderModule = GfModule::load("modules/track", TRACK_LOADER_MODULE_NAME);
         ITrackLoader* trackLoader = trackLoaderModule->getInterface<ITrackLoader>();
         GfTracks::self()->setTrackLoader(trackLoader);

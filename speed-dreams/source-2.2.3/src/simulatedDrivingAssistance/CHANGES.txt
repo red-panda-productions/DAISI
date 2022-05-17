@@ -148,6 +148,8 @@ Changed:
                 changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+            racetrack.cpp
+                changed ReTrackInit() to load track from Mediator
 
         sound/snddefault/
             CMakeLists.txt
