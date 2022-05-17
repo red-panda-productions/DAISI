@@ -371,7 +371,7 @@
 
 	<section name="2">
 		<attstr name="type" val="background image"/>
-		<attstr name="image" val="data/img/splash-driverselect.jpg"/>   
+		<attstr name="image" val="data/img/menu-3.png"/>   
 	</section>
 
 	<section name="3">
