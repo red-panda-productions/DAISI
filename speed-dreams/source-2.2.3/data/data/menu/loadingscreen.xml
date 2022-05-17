@@ -57,7 +57,7 @@
 	<section name="titlelabel">
 		<attstr name="type" val="label"/>	  	  	  	  	  
 		<attnum name="max len" val="60"/>
-		<attnum name="x" val="340"/>
+		<attnum name="x" val="150"/>
 		<attnum name="y" val="415"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="h align" val="left"/>
@@ -79,10 +79,10 @@
 
 	<section name="2">
 		<attstr name="type" val="static image"/>
-		<attnum name="x" val="212"/>
-		<attnum name="y" val="410"/>
-		<attnum name="width" val="450"/>
-		<attnum name="height" val="20"/>
+		<attnum name="x" val="-30"/>
+		<attnum name="y" val="400"/>
+		<attnum name="width" val="1050"/>
+		<attnum name="height" val="35"/>
 		<attstr name="image" val="data/img/head-loading.png"/>
 	</section>	
 
