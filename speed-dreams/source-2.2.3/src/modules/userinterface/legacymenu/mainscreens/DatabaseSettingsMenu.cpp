@@ -181,6 +181,7 @@ static void GoBack(void* /* dummy */)
     GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
 
+/// @brief Checks if a connection can be established with the database. 
 static void CheckConnection(void* /* dummy */)
 {
     m_dbsettings.UseSSL = false;
@@ -196,9 +197,15 @@ static void CheckConnection(void* /* dummy */)
     if (connectable)
     {
         GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Online");
+        float color[4] = {0, 1, 0, 1};
+        float* colotPtr = color;
+        GfuiLabelSetColor(s_scrHandle, m_dbStatusControl, colotPtr);
         return;
     }
+    float color[4] = {1, 0, 0, 1};
+    float* colotPtr = color;
     GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Offline");
+    GfuiLabelSetColor(s_scrHandle, m_dbStatusControl, colotPtr);
 }
 
 /// @brief            Initializes the database settings menu
