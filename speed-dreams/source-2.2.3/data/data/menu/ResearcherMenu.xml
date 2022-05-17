@@ -6,71 +6,60 @@
 
     <section name="dynamic controls">
 
-        <!-- RadioButtonList for selecting a Task -->
-        <section name="TaskRadioButtonList">
-            <attstr name="type" val="radio button list"/>
-            <section name="options">
-                <section name="0">
-                    <attstr name="text" val="Lane Keeping"/>
-                    <attstr name="tip" val="Select the Lane Keeping task"/>
-                </section>
-                <section name="1">
-                    <attstr name="text" val="Speed Control"/>
-                    <attstr name="tip" val="Select the Speed Control task"/>
-                </section>
-            </section>
+        <!-- Checkboxes for selecting a the allowed black box action -->
+        <section name="CheckboxAllowedSteer">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Steer"/>
+            <attstr name="tip" val="Enable/Disable the black box being allowed to steer"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="font" val="small_t"/>
-            <attnum name="selected" val="0"/>
-            <attnum name="distance" val="10"/>
-            <attnum name="minimum of one" val="0"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="CheckboxAllowedAccelerate">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Accelerate"/>
+            <attstr name="tip" val="Enable/Disable the black box being allowed to accelerate"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="340"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
+        </section>
+
+        <section name="CheckboxAllowedBrake">
+            <attstr name="type" val="check box"/>
+            <attstr name="text" val="Brake"/>
+            <attstr name="tip" val="Enable/Disable the black box being allowed to brake"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="310"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="small_t"/>
+            <attstr name="checked" val="yes"/>
         </section>
 
         <!-- Button for going to the developer screen -->
         <section name="DevButton">
-	        <attstr name="type" val="text button"/>
-	        <attstr name="show box" val="no"/>
-	        <attstr name="text" val="Developer Screen"/>
-	        <attstr name="tip" val="Access the Developer Screen"/>
-	        <attstr name="h align" val="left"/>
-	        <attnum name="x" val="530"/>
-	        <attnum name="y" val="455"/>
-	        <attnum name="width" val="120"/>
-	        <attstr name="font" val="small"/>
-	        <attstr name="color" val="0xFFFFFF"/>
-	        <attstr name="focused color" val="0xFFFFFF"/>
-	        <attstr name="pushed color" val="0xFFFFFF"/>
-	        <attnum name="image x" val="-10"/>
-	        <attnum name="image y" val="4"/>
-	        <attnum name="image width" val="60"/>
-	        <attnum name="image height" val="16"/>
-	        <attstr name="focused image" val="data/img/button-left-focused.png"/>
-	        <attstr name="enabled image" val="data/img/button-left.png"/>
-	        <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
-        </section>
-
-
-        <!-- Choose black box button-->
-        <section name="ChooseBlackBoxButton">
-	        <attstr name="type" val="text button"/>
-	        <attstr name="show box" val="yes"/>
-            <!-- Below value is "Choose Black Box: " followed by 260 (max filepath size) spaces, 
-			as giving a new value to a button's text is only as long as the original length,
-			although even with the small font, a name that long would go off-screen -->
-	        <attstr name="text" val="Choose Black Box:                                                                                                                                                                                                                                                                     "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
-	        <attstr name="h align" val="left"/>
-	        <attnum name="x" val="20"/>
-	        <attnum name="y" val="220"/>
-            <attnum name="width" val="145"/>
-	        <attstr name="font" val="medium"/>
-	        <attstr name="color" val="0xFFFFFF"/>
-	        <attstr name="focused color" val="0xFFFFFF"/>
-	        <attstr name="pushed color" val="0xFFFFFF"/>
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Developer Screen"/>
+            <attstr name="tip" val="Access the Developer Screen"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="530"/>
+            <attnum name="y" val="455"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="small"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
             <attnum name="image x" val="-10"/>
             <attnum name="image y" val="4"/>
             <attnum name="image width" val="60"/>
@@ -80,11 +69,53 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
+
+        <!-- Choose black box button-->
+        <section name="ChooseBlackBoxButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="yes"/>
+            <!-- Below value is "Choose Black Box: " followed by 260 (max filepath size) spaces, 
+            as giving a new value to a button's text is only as long as the original length,
+            although even with the small font, a name that long would go off-screen -->
+            <attstr name="text" val="Choose Black Box:                                                                                                                                                                                                                                                                     "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="220"/>
+            <attnum name="width" val="145"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Although this is a label, this is not a static control as we want to change it -->
+        <section name="NoBlackBoxError">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="205"/>
+            <!-- Label for showing error messages to the user. Needs to be 37 characters long.
+			Default value contains this many spaces so maxlength is set correctly -->
+            <attstr name="text" val="                                     "/>
+            <attstr name="tip" val="You must choose a file that could be a correct black box: *.exe"/>
+            <attnum name="width" val="210"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+            <attstr name="color" val="0xFFAD34"/>
+        </section>
+
         <!-- Choose environment button-->
         <section name="ChooseEnvironmentButton">
 	        <attstr name="type" val="text button"/>
 	        <attstr name="show box" val="yes"/>
-            <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces, 
+            <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces,
 			as giving a new value to a button's text is only as long as the original length,
 			although even with the small font, a name that long would go off-screen -->
 	        <attstr name="text" val="Choose Environment:                                                                                                                                                                                                                                                                     "/>
@@ -111,7 +142,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Audio"/>
             <attstr name="tip" val="Enable/Disable auditory indication of interventions"/>
-            <attnum name="x" val="140"/>
+            <attnum name="x" val="180"/>
             <attnum name="y" val="370"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -124,7 +155,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Icon"/>
             <attstr name="tip" val="Enable/Disable icon indication of interventions"/>
-            <attnum name="x" val="140"/>
+            <attnum name="x" val="180"/>
             <attnum name="y" val="340"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -137,7 +168,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Text"/>
             <attstr name="tip" val="Enable/Disable text indication of interventions"/>
-            <attnum name="x" val="140"/>
+            <attnum name="x" val="180"/>
             <attnum name="y" val="310"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -241,7 +272,7 @@
             <attnum name="width" val="50"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-			<attstr name="text" val="10"/>
+            <attstr name="text" val="10"/>
         </section>
 
         <!-- Input field for userId -->
@@ -259,10 +290,10 @@
         <section name="ApplyButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
-            <attstr name="text" val="Apply                                                      "/>
+            <attstr name="text" val="Apply"/>
             <attstr name="tip" val="Accept and save changes"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="20"/>
+            <attnum name="x" val="550"/>
             <attnum name="y" val="40"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
@@ -284,21 +315,21 @@
 
         <section name="1">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/splash-aiconf.jpg"/> <!-- TODO change background -->
+            <attstr name="image" val="data/img/Main-menu-2.png"/>
         </section>
 
         <section name="2">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="400"/>
-            <attstr name="text" val="Task"/>
+            <attstr name="text" val="Black Box Control"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
 
         <section name="3">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="140"/>
+            <attnum name="x" val="180"/>
             <attnum name="y" val="400"/>
             <attstr name="text" val="Indicator"/>
             <attstr name="h align" val="left"/>

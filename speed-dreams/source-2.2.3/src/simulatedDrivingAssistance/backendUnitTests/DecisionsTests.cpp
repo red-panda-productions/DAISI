@@ -34,46 +34,61 @@ void InitializeMediator()
     SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);
 }
 
-/// @brief Tests if all decisions do their RunInterveneCommand correctly
-TEST(DecisionsTest, RunInterveneDecisions)
+/// @brief         Tests if all decisions to their RunInterveneCommand correctly
+/// @param p_steer Whether the steer decision is allowed to run
+/// @param p_accel Whether the accel decision is allowed to run
+/// @param p_brake Whether the brake decision is allowed to run
+void RunInterveneDecisionsTest(bool p_steer, bool p_accel, bool p_brake)
 {
     InitializeMediator();
+    tAllowedActions allowedActions = {p_steer, p_accel, p_brake};
 
     Random random;
 
     BrakeDecision brakeDecision;
     float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
-    brakeDecision.RunInterveneCommands();
+    // Determine what the brake amount should be after running
+    float targetBrakeAmount = allowedActions.Brake ? controlBrakeAmount : SMediator::GetInstance()->CarController.GetBrakeCmd();
 
     std::cout << "Testing brake...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    brakeDecision.RunInterveneCommands(allowedActions);
+    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
     float controlAccelAmount = random.NextFloat(ACCEL_THRESHOLD, ACCEL_THRESHOLD + 10);
     accelDecision.AccelAmount = controlAccelAmount;
-    accelDecision.RunInterveneCommands();
+    // Determine what the accel amount should be after running
+    float targetAccelAmount = allowedActions.Accelerate ? controlAccelAmount : SMediator::GetInstance()->CarController.GetAccelCmd();
 
     std::cout << "Testing accel...";
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    accelDecision.RunInterveneCommands(allowedActions);
+    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
     float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
     steerDecision.SteerAmount = controlSteerAmount;
-    steerDecision.RunInterveneCommands();
+    // Determine what the steer amount should be after running
+    float targetSteerAmount = allowedActions.Steer ? controlSteerAmount : SMediator::GetInstance()->CarController.GetSteerCmd();
 
     std::cout << "Testing steer...";
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    steerDecision.RunInterveneCommands(allowedActions);
+    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     std::cout << "Checking if no value was changed that should not have been changed...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
     std::cout << " check" << std::endl;
 }
+
+/// @brief Checks RunInterveneDecisions for all possible permutation
+BEGIN_TEST_COMBINATORIAL(DecisionTests, RunInterveneDecisions)
+bool booleans[] = {true, false};
+END_TEST_COMBINATORIAL3(RunInterveneDecisionsTest, booleans, 2, booleans, 2, booleans, 2);
 
 /// @brief Checks if the brake decision RunIndicateCommand works correctly
 TEST(DecisionTests, BrakeRunIndicateTest)
