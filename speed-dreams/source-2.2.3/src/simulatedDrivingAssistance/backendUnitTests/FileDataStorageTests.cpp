@@ -442,8 +442,8 @@ TEST_CASE(FileDataStorageTests, WriteNoTicks, TestNoStorageWithTimestamps, (0))
 float HelperGetMedian(float* p_values, int p_compressionRate)
 {
     std::sort(p_values, p_values + p_compressionRate);
-    int p_middle = static_cast<int>(std::floor(static_cast<float>(p_compressionRate) / 2));
-    return p_values[p_middle];
+    int middle = static_cast<int>(std::floor(static_cast<float>(p_compressionRate) / 2));
+    return p_values[middle];
 }
 /// @brief Test for checking data is correctly set for different compression rates for 20 ticks
 /// @param p_compressionRate the compression rate to be tested with
@@ -454,7 +454,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(p_compressionRate);
 
-    int p_compressionStep = 0;
+    int compressionStep = 0;
     // Create a string to save all intended random data to
     std::stringstream expected;
 
@@ -465,10 +465,10 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
     expected << "GameState" << std::endl
              << "UserInput" << std::endl;
 
-    float p_totalPosX = 0, p_totalPosY = 0, p_totalPosZ = 0, p_totalPosAx = 0, p_totalPosAy = 0, p_totalPosAz = 0;
-    float p_totalMovVelX = 0, p_totalMovAccX = 0;
-    int p_gearValues[COMPRESSION_LIMIT];
-    float p_steerValues[COMPRESSION_LIMIT], p_brakeValues[COMPRESSION_LIMIT], p_accelValues[COMPRESSION_LIMIT], p_clutchValues[COMPRESSION_LIMIT];
+    float totalPosX = 0, totalPosY = 0, totalPosZ = 0, totalPosAx = 0, totalPosAy = 0, totalPosAz = 0;
+    float totalMovVelX = 0, totalMovAccX = 0;
+    int gearValues[COMPRESSION_LIMIT];
+    float steerValues[COMPRESSION_LIMIT], brakeValues[COMPRESSION_LIMIT], accelValues[COMPRESSION_LIMIT], clutchValues[COMPRESSION_LIMIT];
 
     for (int i = 0; i < 20; i++)
     {
@@ -480,40 +480,40 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
 
         Posd pos = car.pub.DynGCg.pos;
         tDynPt mov = car.pub.DynGC;
-        fileDataStorage.AddForAveraging(p_totalPosX, pos.x);                              // x-position
-        fileDataStorage.AddForAveraging(p_totalPosY, pos.y);                              // y-position
-        fileDataStorage.AddForAveraging(p_totalPosZ, pos.z);                              // z-position
-        fileDataStorage.AddForAveraging(p_totalPosAx, pos.ax);                            // x-direction
-        fileDataStorage.AddForAveraging(p_totalPosAy, pos.ay);                            // y-direction
-        fileDataStorage.AddForAveraging(p_totalPosAz, pos.az);                            // z-direction
-        fileDataStorage.AddForAveraging(p_totalMovVelX, mov.vel.x);                       // speed
-        fileDataStorage.AddForAveraging(p_totalMovAccX, mov.acc.x);                       // acceleration
-        fileDataStorage.AddToArray<int>(p_gearValues, car.priv.gear, p_compressionStep);  // gear
+        fileDataStorage.AddForAveraging(totalPosX, pos.x);                            // x-position
+        fileDataStorage.AddForAveraging(totalPosY, pos.y);                            // y-position
+        fileDataStorage.AddForAveraging(totalPosZ, pos.z);                            // z-position
+        fileDataStorage.AddForAveraging(totalPosAx, pos.ax);                          // x-direction
+        fileDataStorage.AddForAveraging(totalPosAy, pos.ay);                          // y-direction
+        fileDataStorage.AddForAveraging(totalPosAz, pos.az);                          // z-direction
+        fileDataStorage.AddForAveraging(totalMovVelX, mov.vel.x);                     // speed
+        fileDataStorage.AddForAveraging(totalMovAccX, mov.acc.x);                     // acceleration
+        fileDataStorage.AddToArray<int>(gearValues, car.priv.gear, compressionStep);  // gear
         tCarCtrl ctrl = car.ctrl;
-        fileDataStorage.AddToArray<float>(p_steerValues, ctrl.steer, p_compressionStep);       // steer
-        fileDataStorage.AddToArray<float>(p_brakeValues, ctrl.brakeCmd, p_compressionStep);    // brake
-        fileDataStorage.AddToArray<float>(p_accelValues, ctrl.accelCmd, p_compressionStep);    // gas
-        fileDataStorage.AddToArray<float>(p_clutchValues, ctrl.clutchCmd, p_compressionStep);  // clutch
+        fileDataStorage.AddToArray<float>(steerValues, ctrl.steer, compressionStep);       // steer
+        fileDataStorage.AddToArray<float>(brakeValues, ctrl.brakeCmd, compressionStep);    // brake
+        fileDataStorage.AddToArray<float>(accelValues, ctrl.accelCmd, compressionStep);    // gas
+        fileDataStorage.AddToArray<float>(clutchValues, ctrl.clutchCmd, compressionStep);  // clutch
 
-        p_compressionStep++;
+        compressionStep++;
 
         // Define our expectations
-        if (p_compressionStep % p_compressionRate == 0)
+        if (compressionStep % p_compressionRate == 0)
         {
             expected << std::to_string(i) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalPosX)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalPosY)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalPosZ)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalPosAx)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalPosAy)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalPosAz)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalMovVelX)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(p_totalMovAccX)) << std::endl
-                     << std::to_string(fileDataStorage.GetLeastCommon(p_gearValues)) << std::endl
-                     << std::to_string(HelperGetMedian(p_steerValues, p_compressionRate)) << std::endl
-                     << std::to_string(HelperGetMedian(p_brakeValues, p_compressionRate)) << std::endl
-                     << std::to_string(HelperGetMedian(p_accelValues, p_compressionRate)) << std::endl
-                     << std::to_string(HelperGetMedian(p_clutchValues, p_compressionRate)) << std::endl;
+                     << std::to_string(fileDataStorage.GetAverage(totalPosX)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalPosY)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalPosZ)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalPosAx)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalPosAy)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalPosAz)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalMovVelX)) << std::endl
+                     << std::to_string(fileDataStorage.GetAverage(totalMovAccX)) << std::endl
+                     << std::to_string(fileDataStorage.GetLeastCommon(gearValues)) << std::endl
+                     << std::to_string(HelperGetMedian(steerValues, p_compressionRate)) << std::endl
+                     << std::to_string(HelperGetMedian(brakeValues, p_compressionRate)) << std::endl
+                     << std::to_string(HelperGetMedian(accelValues, p_compressionRate)) << std::endl
+                     << std::to_string(HelperGetMedian(clutchValues, p_compressionRate)) << std::endl;
         }
 
         fileDataStorage.Save(&car, &situation, tuple, i);
@@ -550,10 +550,10 @@ TEST(FileDataStorageTests, SetCompressionsRateTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        int p_compressionRate = random.NextInt(COMPRESSION_LIMIT);
-        fileDataStorage.SetCompressionRate(p_compressionRate);
+        int compressionRate = random.NextInt(COMPRESSION_LIMIT);
+        fileDataStorage.SetCompressionRate(compressionRate);
 
-        ASSERT_EQ(p_compressionRate, fileDataStorage.GetCompressionRate());
+        ASSERT_EQ(compressionRate, fileDataStorage.GetCompressionRate());
     }
 }
 /// @brief Test that values correctly gets added to the sum
@@ -564,13 +564,13 @@ TEST(FileDataStorageTests, AddForAveragingTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        float p_total = random.NextFloat();
-        float p_value = random.NextFloat();
-        float p_newTotal = p_total + p_value;
+        float total = random.NextFloat();
+        float value = random.NextFloat();
+        float newTotal = total + value;
 
-        fileDataStorage.AddForAveraging(p_total, p_value);
+        fileDataStorage.AddForAveraging(total, value);
 
-        ASSERT_EQ(p_total, p_newTotal);
+        ASSERT_EQ(total, newTotal);
     }
 }
 
@@ -582,16 +582,16 @@ TEST(FileDataStorageTests, GetAverageTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        float p_total = random.NextFloat();
+        float total = random.NextFloat();
 
         // compression rate should be uneven and larger than 0
-        int p_compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 + 1;
-        fileDataStorage.SetCompressionRate(p_compressionRate);
+        int compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 + 1;
+        fileDataStorage.SetCompressionRate(compressionRate);
 
-        float average = p_total / static_cast<float>(p_compressionRate);
+        float average = total / static_cast<float>(compressionRate);
 
-        ASSERT_EQ(average, fileDataStorage.GetAverage(p_total));
-        ASSERT_EQ(p_total, 0);
+        ASSERT_EQ(average, fileDataStorage.GetAverage(total));
+        ASSERT_EQ(total, 0);
     }
 }
 
@@ -605,34 +605,34 @@ TEST(FileDataStorageTests, AddToArrayTest)
         FileDataStorage fileDataStorage;
 
         // compression rate uneven and > 0
-        int p_compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 - 1;
-        fileDataStorage.SetCompressionRate(p_compressionRate);
+        int compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 - 1;
+        fileDataStorage.SetCompressionRate(compressionRate);
 
-        float p_value = random.NextFloat();
-        auto p_compressionStep = static_cast<unsigned long>(random.NextUInt(p_compressionRate));
+        float value = random.NextFloat();
+        auto compressionStep = static_cast<unsigned long>(random.NextUInt(compressionRate));
 
-        float p_values[COMPRESSION_LIMIT];
-        float p_originalValues[COMPRESSION_LIMIT];
-        for (int j = 0; j < p_compressionRate; j++)
+        float values[COMPRESSION_LIMIT];
+        float originalValues[COMPRESSION_LIMIT];
+        for (int j = 0; j < compressionRate; j++)
         {
-            float p_randomValue = random.NextFloat();
-            p_values[j] = p_randomValue;
-            p_originalValues[j] = p_randomValue;
+            float randomValue = random.NextFloat();
+            values[j] = randomValue;
+            originalValues[j] = randomValue;
         }
 
-        int p_placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(p_compressionRate));
+        int placeInArray = static_cast<int>(compressionStep % static_cast<unsigned long>(compressionRate));
 
-        fileDataStorage.AddToArray(p_values, p_value, p_compressionStep);
+        fileDataStorage.AddToArray(values, value, compressionStep);
 
-        for (int j = 0; j < p_compressionRate; j++)
+        for (int j = 0; j < compressionRate; j++)
         {
-            if (j == p_placeInArray)
+            if (j == placeInArray)
             {
-                ASSERT_EQ(p_values[p_placeInArray], p_value);
+                ASSERT_EQ(values[placeInArray], value);
             }
             else
             {
-                ASSERT_EQ(p_values[j], p_originalValues[j]);
+                ASSERT_EQ(values[j], originalValues[j]);
             }
         }
     }
@@ -645,25 +645,25 @@ TEST(FileDataStorageTests, GetMedianTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        float p_values[COMPRESSION_LIMIT];
-        float p_check[COMPRESSION_LIMIT];
+        float values[COMPRESSION_LIMIT];
+        float check[COMPRESSION_LIMIT];
 
         // compression rate uneven and > 0
-        int p_compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 - 1;
+        int compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 - 1;
 
         FileDataStorage fileDataStorage;
-        fileDataStorage.SetCompressionRate(p_compressionRate);
+        fileDataStorage.SetCompressionRate(compressionRate);
 
-        for (int j = 0; j < p_compressionRate; j++)
+        for (int j = 0; j < compressionRate; j++)
         {
             float rnd = random.NextFloat(0, 100);
-            p_values[j] = rnd;
-            p_check[j] = rnd;
+            values[j] = rnd;
+            check[j] = rnd;
         }
 
-        float p_testMedian = fileDataStorage.GetMedian(p_values);
+        float testMedian = fileDataStorage.GetMedian(values);
 
-        ASSERT_EQ(HelperGetMedian(p_check, p_compressionRate), p_testMedian);
+        ASSERT_EQ(HelperGetMedian(check, compressionRate), testMedian);
     }
 }
 
@@ -676,32 +676,32 @@ TEST(FileDataStorageTests, GetLeastCommonTest)
 
     for (int i = 0; i < TEST_AMOUNT; i++)
     {
-        int p_values[COMPRESSION_RATE];
-        int p_leastCommonVal = random.NextInt();
-        int p_leastCommonFrequency = random.NextInt(1, COMPRESSION_RATE);
+        int values[COMPRESSION_RATE];
+        int leastCommonVal = random.NextInt();
+        int leastCommonFrequency = random.NextInt(1, COMPRESSION_RATE);
 
-        if (p_leastCommonFrequency > COMPRESSION_RATE / 2)
+        if (leastCommonFrequency > COMPRESSION_RATE / 2)
         {
             for (int j = 0; j < COMPRESSION_RATE; j++)
             {
-                p_values[j] = p_leastCommonVal;
+                values[j] = leastCommonVal;
             }
         }
         else
         {
             for (int j = 0; j < COMPRESSION_RATE; j++)
             {
-                if (j < p_leastCommonFrequency)
+                if (j < leastCommonFrequency)
                 {
-                    p_values[j] = p_leastCommonVal;
+                    values[j] = leastCommonVal;
                 }
                 else
                 {
-                    p_values[j] = p_leastCommonVal + 1;
+                    values[j] = leastCommonVal + 1;
                 }
             }
         }
 
-        ASSERT_EQ(fileDataStorage.GetLeastCommon(p_values), p_leastCommonVal);
+        ASSERT_EQ(fileDataStorage.GetLeastCommon(values), leastCommonVal);
     }
 }
