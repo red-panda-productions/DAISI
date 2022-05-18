@@ -605,14 +605,14 @@ TEST(FileDataStorageTests, AddToArrayTest)
         FileDataStorage fileDataStorage;
 
         // compression rate uneven and > 0
-        int p_compressionRate = random.NextInt(1, COMPRESSION_RATE / 2) * 2 - 1;
+        int p_compressionRate = random.NextInt(1, COMPRESSION_LIMIT / 2) * 2 - 1;
         fileDataStorage.SetCompressionRate(p_compressionRate);
 
         float p_value = random.NextFloat();
         auto p_compressionStep = static_cast<unsigned long>(random.NextUInt(p_compressionRate));
 
-        float p_values[COMPRESSION_RATE];
-        float p_originalValues[COMPRESSION_RATE];
+        float p_values[COMPRESSION_LIMIT];
+        float p_originalValues[COMPRESSION_LIMIT];
         for (int j = 0; j < p_compressionRate; j++)
         {
             float p_randomValue = random.NextFloat();
@@ -624,7 +624,7 @@ TEST(FileDataStorageTests, AddToArrayTest)
 
         fileDataStorage.AddToArray(p_values, p_value, p_compressionStep);
 
-        for (int j = 0; j < COMPRESSION_RATE; j++)
+        for (int j = 0; j < p_compressionRate; j++)
         {
             if (j == p_placeInArray)
             {
