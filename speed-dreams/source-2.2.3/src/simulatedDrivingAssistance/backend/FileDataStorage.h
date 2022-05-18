@@ -41,7 +41,7 @@ private:
     void WriteHumanData();
     void WriteInterventionData();
 
-    void GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& a, float& b);
+    void GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_a, float& p_b);
     int RandomPartition(float* p_values, int p_start, int p_end);
     int Partition(float* p_values, int p_start, int p_end);
 
