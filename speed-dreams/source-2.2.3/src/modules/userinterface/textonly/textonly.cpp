@@ -91,6 +91,7 @@ TextOnlyUI::TextOnlyUI(const std::string& strShLibName, void* hShLibHandle)
 {
 }
 
+// SIMULATED DRIVING ASSISTANCE: Add LoadReplayConfiguration()
 /// @brief Load the replay configuration, for example set the track.
 /// @param p_selRaceMan The pointer that should point to the replay race manager.
 /// @return true if the replay configuration was loaded successfully
