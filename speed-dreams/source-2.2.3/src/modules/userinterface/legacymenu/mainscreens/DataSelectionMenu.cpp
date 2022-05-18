@@ -13,7 +13,7 @@
 #define PRM_HUMAN_DATA "CheckboxUserData"
 #define PRM_INTRV_DATA "CheckboxInterventionData"
 #define PRM_META_DATA  "CheckboxMetaData"
-#define RACE_MANAGER_NAME "quickrace"
+#define RACE_MANAGER_NAME "Quick Race"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
@@ -137,12 +137,6 @@ static void SaveSettings(void* /* dummy */)
 
     // Go to the main screen
         // And run it if there's such a race manager.
-    if(!GfRaceManagers::self())
-    {
-        GfLogError("No racemanagers '%s'\n", RACE_MANAGER_NAME);
-        GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
-        return;
-    }
     GfRaceManager* pSelRaceMan = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
     if (pSelRaceMan) // Should never happen (checked in activate).
     {

@@ -33,13 +33,19 @@ IF(OPTION_SDL_FORCEFEEDBACK)
 ENDIF(OPTION_SDL_FORCEFEEDBACK)
 
 SET(RS racescreens)
-SET(RACESCREENS_SOURCES ${RS}/trackselect.cpp 
-                        ${RS}/raceloadingmenu.cpp 
-                        ${RS}/racerunningmenus.cpp
-                        ${RS}/racestopmenu.cpp) 
+SET(RACESCREENS_SOURCES ${RS}/raceselectmenu.cpp 
+                        #${RS}/raceweekendmenu.cpp
+                        ${RS}/racemanmenu.cpp ${RS}/fileselect.cpp 
+                        ${RS}/raceconfigstate.cpp
+                        ${RS}/trackselect.cpp ${RS}/driverselect.cpp ${RS}/garagemenu.cpp
+                        ${RS}/raceparamsmenu.cpp ${RS}/carsetupmenu.cpp
+                        ${RS}/raceloadingmenu.cpp ${RS}/racerunningmenus.cpp
+                        ${RS}/raceoptimizationmenu.cpp 
+                        ${RS}/racestopmenu.cpp ${RS}/racestartmenu.cpp ${RS}/racepitmenu.cpp 
+                        ${RS}/raceresultsmenus.cpp ${RS}/racenexteventmenu.cpp)
 
 
-SET(RACESCREENS_HEADERS ${RS}/racescreens.h)
+SET(RACESCREENS_HEADERS ${RS}/racescreens.h ${RS}/garagemenu.h ${RS}/carsetupmenu.h) #${RS}/raceweekendscreens.h)
 
 
 SET(LEGACYMENU_SOURCES ${MAINSCREENS_SOURCES} 
