@@ -91,6 +91,7 @@ TextOnlyUI::TextOnlyUI(const std::string& strShLibName, void* hShLibHandle)
 {
 }
 
+// SIMULATED DRIVING ASSISTANCE: Add LoadReplayConfiguration()
 /// @brief Load the replay configuration, for example set the track.
 /// @param p_selRaceMan The pointer that should point to the replay race manager.
 /// @return true if the replay configuration was loaded successfully
@@ -137,7 +138,8 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
     InterventionType interventionType = static_cast<InterventionType>(GfParmGetNum(replaySettingsHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, INTERVENTION_TYPE_NO_SIGNALS));
     SMediator::GetInstance()->SetInterventionType(interventionType);
 
-    SMediator::GetInstance()->SetMaxTime(-1);
+    int maxTime = static_cast<int>(GfParmGetNum(replaySettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, -1));
+    SMediator::GetInstance()->SetMaxTime(maxTime);
 
     tParticipantControl participantControl{};
     participantControl.ControlAccel = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
