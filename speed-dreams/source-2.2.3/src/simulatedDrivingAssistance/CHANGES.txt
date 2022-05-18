@@ -47,6 +47,7 @@ Added:
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
+            DataCompressionMenu.xml
             DeveloperMenu.xml
     drivers/
         assistedhuman/

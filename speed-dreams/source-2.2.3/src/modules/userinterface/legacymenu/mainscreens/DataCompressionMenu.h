@@ -1,3 +1,5 @@
 #pragma once
 
-extern void *DataSelectionMenuInit(void* p_nextMenu);
+extern void* DataCompressionMenuInit(void* p_prevMenu);
+extern void DataCompressionMenuRun(void*);
+extern void ConfigureDataCompressionSettings();

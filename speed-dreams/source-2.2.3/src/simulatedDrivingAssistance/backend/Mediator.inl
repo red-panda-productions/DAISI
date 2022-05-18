@@ -102,6 +102,14 @@ void Mediator<DecisionMaker>::SetUserId(char* p_userId)
     m_decisionMaker.Config.SetUserId(p_userId);
 }
 
+/// @brief          Sets the compressionLevel to p_compressionLevel
+/// @param p_compressionLevel The compression level
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetCompressionLevel(int p_compressionLevel)
+{
+    m_decisionMaker.Config.SetCompressionLevel(p_compressionLevel);
+}
+
 /// @brief               Sets the settings for data collection
 /// @param p_dataSetting An array of booleans to enable/disable the collection of simulation data for research
 template <typename DecisionMaker>
