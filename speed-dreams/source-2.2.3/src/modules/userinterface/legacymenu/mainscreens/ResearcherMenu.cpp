@@ -85,7 +85,7 @@ char m_userId[32];
 int m_userIdControl;
 
 // Black Box
-int m_blackBoxButton;
+int m_blackBoxButtonControl;
 int m_noBlackBoxLabel;
 bool m_blackBoxChosen = false;
 char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
@@ -311,7 +311,7 @@ static void SynchronizeControls()
     {
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
         GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
     }
 }
@@ -420,7 +420,7 @@ static void SelectBlackBox(void* /* dummy */)
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
     GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_ONLY_HINT);  // Reset error label
 
     // Only after validation copy into the actual variable
@@ -455,7 +455,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_allowedActionsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_BRAKE, nullptr, SelectAllowedBrake);
 
     // Choose black box control
-    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
+    m_blackBoxButtonControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
     m_noBlackBoxLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_NO_BLACK_BOX);
 
     // Indicator checkboxes controls

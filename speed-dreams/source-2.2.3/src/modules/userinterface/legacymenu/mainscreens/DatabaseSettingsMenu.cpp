@@ -4,15 +4,29 @@
 #include "Mediator.h"
 #include "DatabaseSettingsMenu.h"
 #include "DataSelectionMenu.h"
+#include "../rppUtils/FileDialog.hpp"
+#include <experimental/filesystem>
+
 // Parameters used in the xml files
-#define PRM_USERNAME "UsernameEdit"
-#define PRM_PASSWORD "PasswordEdit"
-#define PRM_ADDRESS  "AddressEdit"
-#define PRM_PORT     "PortEdit"
-#define PRM_SCHEMA   "SchemaEdit"
-#define PRM_SSL      "CheckboxUseSSL"
-#define PRM_CERT     "dynamic controls/CertificateSettings"
-#define PRM_DBSTATUS "DbStatus"
+#define PRM_USERNAME            "UsernameEdit"
+#define PRM_PASSWORD            "PasswordEdit"
+#define PRM_ADDRESS             "AddressEdit"
+#define PRM_PORT                "PortEdit"
+#define PRM_SCHEMA              "SchemaEdit"
+#define PRM_SSL                 "CheckboxUseSSL"
+#define PRM_CERT                "dynamic controls/CertificateSettings"
+#define PRM_DBSTATUS            "DbStatus"
+#define PRM_CA_CERT_DIALOG      "CACertDialog"
+#define PRM_PUBLIC_CERT_DIALOG  "PublicCertDialog"
+#define PRM_PRIVATE_CERT_DIALOG "PrivateCertDialog"
+
+#define MSG_NO_CERT_FILE             "Please select a txt certificate file"
+#define MSG_ONLY_HINT                ""
+#define MSG_CA_CERT_DIALOG_TEXT      "CA:"
+#define MSG_PUBLIC_CERT_DIALOG_TEXT  "Public:"
+#define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
+#define AMOUNT_OF_NAMES              1
+#define CERT_PATH_SIZE               256
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -28,6 +42,14 @@ int m_useSSLControl;
 int m_dbStatusControl;
 
 char m_portString[256];
+
+int m_caCertFileDialogControl;
+int m_publicCertFileDialogControl;
+int m_privateCertFileDialogControl;
+int m_caCertDialogLabel;
+int m_publicCertDialogLabel;
+int m_privateCertDialogLabel;
+bool m_certChosen = false;
 
 tDatabaseSettings m_dbsettings;
 
@@ -56,15 +78,13 @@ static void SetAddress(void*)
 static void SetPort(void*)
 {
     sprintf(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
-    if (sscanf(m_portString, "%f", &m_dbsettings.Port) == 1)
-    {
-        m_dbsettings.Port = std::stoi(m_portString);
-        GfuiEditboxSetString(s_scrHandle, m_portControl, m_portString);
-    }
-    else
-    {
-        GfuiEditboxSetString(s_scrHandle, m_portControl, "Enter a valid port number");
-    }
+    char* endptr;
+    m_dbsettings.Port = (int)strtol(m_portString, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << m_portString << " to int and leftover string is: " << endptr << std::endl;
+    char buf[32];
+    sprintf(buf, "%d", m_dbsettings.Port);
+    GfuiEditboxSetString(s_scrHandle, m_portControl, buf);
 }
 
 /// @brief Handle input in the Schema name textbox
@@ -79,6 +99,9 @@ static void SetSchema(void*)
 static void SetUseSSL(tCheckBoxInfo* p_info)
 {
     m_dbsettings.UseSSL = p_info->bChecked;
+    GfuiVisibilitySet(s_scrHandle, m_caCertFileDialogControl, m_dbsettings.UseSSL);
+    GfuiVisibilitySet(s_scrHandle, m_publicCertFileDialogControl, m_dbsettings.UseSSL);
+    GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, m_dbsettings.UseSSL);
 }
 
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
@@ -97,9 +120,9 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_portString);
     GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings.Schema);
     GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings.UseSSL));
-    GfParmSetStr(readParam, PRM_CERT, "CA", GfuiMenuBoolToStr(m_dbsettings.UseSSL));
-    GfParmSetStr(readParam, PRM_CERT, "public", GfuiMenuBoolToStr(m_dbsettings.UseSSL));
-    GfParmSetStr(readParam, PRM_CERT, "private", GfuiMenuBoolToStr(m_dbsettings.UseSSL));
+    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_CA_CERT, m_dbsettings.CACertFilePath);
+    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, m_dbsettings.PublicCertFilePath);
+    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, m_dbsettings.PrivateCertFilePath);
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
@@ -125,6 +148,25 @@ static void SynchronizeControls()
     GfuiEditboxSetString(s_scrHandle, m_portControl, m_portString);
     GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.Schema);
     GfuiCheckboxSetChecked(s_scrHandle, m_useSSLControl, m_dbsettings.UseSSL);
+
+    std::experimental::filesystem::path path = m_dbsettings.CACertFilePath;
+    std::string buttonText = MSG_CA_CERT_DIALOG_TEXT + path.filename().string();
+    GfuiButtonSetText(s_scrHandle, m_caCertFileDialogControl, buttonText.c_str());
+    GfuiLabelSetText(s_scrHandle, m_caCertDialogLabel, "");
+
+    path = m_dbsettings.PublicCertFilePath;
+    buttonText = MSG_PUBLIC_CERT_DIALOG_TEXT + path.filename().string();
+    GfuiButtonSetText(s_scrHandle, m_publicCertFileDialogControl, buttonText.c_str());
+    GfuiLabelSetText(s_scrHandle, m_publicCertDialogLabel, "");
+
+    path = m_dbsettings.PrivateCertFilePath;
+    buttonText = MSG_PRIVATE_CERT_DIALOG_TEXT + path.filename().string();
+    GfuiButtonSetText(s_scrHandle, m_privateCertFileDialogControl, buttonText.c_str());
+    GfuiLabelSetText(s_scrHandle, m_privateCertDialogLabel, "");
+
+    GfuiVisibilitySet(s_scrHandle, m_caCertFileDialogControl, m_dbsettings.UseSSL);
+    GfuiVisibilitySet(s_scrHandle, m_publicCertFileDialogControl, m_dbsettings.UseSSL);
+    GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, m_dbsettings.UseSSL);
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
@@ -148,10 +190,26 @@ static void LoadConfigSettings(void* p_param)
     sprintf(m_dbsettings.Address, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_portString, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     sprintf(m_dbsettings.Schema, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
-    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(p_param, PRM_CERT, "CA", nullptr));
-    sprintf(m_dbsettings.PublicCertFileName, GfParmGetStr(p_param, PRM_CERT, "public", nullptr));
-    sprintf(m_dbsettings.PrivateCertFileName, GfParmGetStr(p_param, PRM_CERT, "private", nullptr));
+    m_dbsettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
+    sprintf(m_dbsettings.CACertFilePath, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
+    sprintf(m_dbsettings.PublicCertFilePath, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
+    sprintf(m_dbsettings.PrivateCertFilePath, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
 
+    const char* filePath = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr);
+    if (filePath)
+    {
+        strcpy_s(m_dbsettings.CACertFilePath, CERT_PATH_SIZE, filePath);
+    }
+    const char* filePath2 = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr);
+    if (filePath2)
+    {
+        strcpy_s(m_dbsettings.PublicCertFilePath, CERT_PATH_SIZE, filePath2);
+    }
+    const char* filePath3 = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr);
+    if (filePath3)
+    {
+        strcpy_s(m_dbsettings.PrivateCertFilePath, CERT_PATH_SIZE, filePath3);
+    }
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
 }
@@ -191,6 +249,7 @@ static void CheckConnection(void* /* dummy */)
     }
     catch (std::exception& e)
     {
+        GfLogError("Cannot open database. Database is offline or invalid ");
     }
     if (connectable)
     {
@@ -204,6 +263,58 @@ static void CheckConnection(void* /* dummy */)
     float* colotPtr = color;
     GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Offline");
     GfuiLabelSetColor(s_scrHandle, m_dbStatusControl, colotPtr);
+}
+
+/// @brief Select a certificate file and save the path
+static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalText, char* p_filePath)
+{
+    const wchar_t* names[AMOUNT_OF_NAMES] = {(const wchar_t*)L"Certificates"};
+    const wchar_t* extensions[AMOUNT_OF_NAMES] = {(const wchar_t*)L"*.txt"};
+    char buf[MAX_PATH_SIZE];
+    char err[MAX_PATH_SIZE];
+    bool success = SelectFile(buf, err, false, names, extensions, AMOUNT_OF_NAMES);
+    if (!success)
+    {
+        return;
+    }
+
+    // Validate input w.r.t. black boxes
+    std::experimental::filesystem::path path = buf;
+    // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
+    if (path.string().size() <= 7)
+    {
+        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
+        return;
+    }
+    // Enforce that file ends in .exe
+    if (std::strcmp(path.extension().string().c_str(), ".txt") != 0)
+    {
+        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
+        return;
+    }
+
+    // Visual feedback of choice
+    std::string buttonText = p_normalText + path.filename().string();
+    GfuiButtonSetText(s_scrHandle, p_buttonControl, buttonText.c_str());
+    GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_ONLY_HINT);
+
+    // Only after validation copy into the actual variable
+    strcpy_s(p_filePath, CERT_PATH_SIZE, buf);
+}
+
+static void SelectCACert(void* /* dummy */)
+{
+    SelectCert(m_caCertFileDialogControl, m_caCertDialogLabel, MSG_CA_CERT_DIALOG_TEXT, m_dbsettings.CACertFilePath);
+}
+
+static void SelectPublicCert(void* /* dummy */)
+{
+    SelectCert(m_publicCertFileDialogControl, m_publicCertDialogLabel, MSG_PUBLIC_CERT_DIALOG_TEXT, m_dbsettings.PublicCertFilePath);
+}
+
+static void SelectPrivateCert(void* /* dummy */)
+{
+    SelectCert(m_privateCertFileDialogControl, m_privateCertDialogLabel, MSG_PRIVATE_CERT_DIALOG_TEXT, m_dbsettings.PrivateCertFilePath);
 }
 
 /// @brief            Initializes the database settings menu
@@ -226,8 +337,10 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, GoBack);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnection);
-
-    // Textbox controls
+    m_caCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CA_CERT_DIALOG, s_scrHandle, SelectCACert);
+    m_publicCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PUBLIC_CERT_DIALOG, s_scrHandle, SelectPublicCert);
+    m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
+    //  Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsername);
     m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPassword);
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddress);
@@ -235,9 +348,9 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
     m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSL);
     m_dbStatusControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DBSTATUS, false);
-    sprintf(m_dbsettings.CACertFileName, GfParmGetStr(param, PRM_CERT, "CA", nullptr));
-    sprintf(m_dbsettings.PublicCertFileName, GfParmGetStr(param, PRM_CERT, "public", nullptr));
-    sprintf(m_dbsettings.PrivateCertFileName, GfParmGetStr(param, PRM_CERT, "private", nullptr));
+    sprintf(m_dbsettings.CACertFilePath, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
+    sprintf(m_dbsettings.PublicCertFilePath, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
+    sprintf(m_dbsettings.PrivateCertFilePath, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
 
     GfParmReleaseHandle(param);
 

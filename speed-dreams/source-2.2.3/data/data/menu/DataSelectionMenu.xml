@@ -74,7 +74,7 @@
             <attstr name="checked" val="yes"/>
         </section>
 
-		<section name="database">
+		<section name="DatabaseButton">
 			<attstr name="type" val="text button"/>
 			<attstr name="show box" val="no"/>
 			<attstr name="text" val="Database settings"/>

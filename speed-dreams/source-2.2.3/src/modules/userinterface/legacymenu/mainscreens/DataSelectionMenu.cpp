@@ -165,9 +165,11 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // ApplyButton and Back-button controls
+    // ApplyButton, Back-button and Database-button controls
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "DatabaseButton", nullptr, DatabaseSettingsMenuActivate);
+
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
     m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, nullptr, ChangeEnvironmentStorage);
@@ -175,7 +177,6 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "database", nullptr, DatabaseSettingsMenuActivate);
 
 
     GfParmReleaseHandle(param);

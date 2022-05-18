@@ -25,7 +25,7 @@ private:
     void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
+    void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

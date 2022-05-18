@@ -16,9 +16,9 @@
     sprintf(testSettings.Address, "127.0.0.1");             \
     sprintf(testSettings.Schema, "sda_test");               \
     testSettings.UseSSL = true;                             \
-    sprintf(testSettings.CACertFileName, "CA.txt");         \
-    sprintf(testSettings.PublicCertFileName, "public.txt"); \
-    sprintf(testSettings.PrivateCertFileName, "private.txt");
+    sprintf(testSettings.CACertFilePath, "CA.txt");         \
+    sprintf(testSettings.PublicCertFilePath, "public.txt"); \
+    sprintf(testSettings.PrivateCertFilePath, "private.txt");
 
 #define TEST_DATA_DIRECTORY "\\databaseTestData\\"
 
@@ -123,7 +123,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     MAKE_TEST_SETTINGS;
     sprintf(testSettings.Password, "WRONGPASSWORD");
     testSettings.UseSSL = false;
-
     SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     chdir(SD_DATADIR_SRC);
@@ -134,22 +133,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "incorrectSettings");
     std::string output = testing::internal::GetCapturedStderr();
     ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
-}
-
-/// @brief test for crash when there is no certificates folder
-TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
-{
-    ASSERT_TRUE(SetupSingletonsFolder());
-    MAKE_TEST_SETTINGS;
-
-    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
-
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote\\noCertDir"), std::exception)
-    {
-        ASSERT_STREQ("Could not find certificate folder", e.what());
-    }
 }
 
 /// @brief  Tests whether it will throw no exception when there is an encryption file

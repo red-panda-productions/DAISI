@@ -84,16 +84,12 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
 ///                                 needs "\\" in front of it
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
-void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
+/// @param p_dbSettings             The database settings used to retrieve the certificate names.
+void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
 {
-    std::string certificatesPath("data" + p_dirPath + "\\certificates");
-
-    if (!FindFileDirectory(certificatesPath, p_dbSettings.CACertFileName))
-        throw std::exception("Could not find certificate folder");
-
-    p_connectionProperties["sslCA"] = certificatesPath + "\\" + p_dbSettings.CACertFileName;
-    p_connectionProperties["sslCert"] = certificatesPath + "\\" + p_dbSettings.PublicCertFileName;
-    p_connectionProperties["sslKey"] = certificatesPath + "\\" + p_dbSettings.PrivateCertFileName;
+    p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
+    p_connectionProperties["sslCert"] = p_dbSettings.PublicCertFilePath;
+    p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;
 }
 
 /// @brief                  Connect to the specified database.
@@ -128,7 +124,7 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     if (p_dbSettings.UseSSL)
     {
-        PutKeys(p_dirPath, connection_properties, p_dbSettings);
+        PutKeys(connection_properties, p_dbSettings);
     }
 
     try

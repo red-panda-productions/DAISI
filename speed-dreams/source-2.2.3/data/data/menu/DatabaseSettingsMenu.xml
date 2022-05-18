@@ -15,7 +15,7 @@
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-			<attstr name="text" val="Username"/>
+            <attstr name="text" val="Username"/>
         </section>
 
         <!-- Input field for password -->
@@ -27,7 +27,7 @@
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-			<attstr name="text" val="Password"/>
+	        <attstr name="text" val="Password"/>
         </section>
 		
 		<!-- Input field for IP Address -->
@@ -149,10 +149,76 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 		
+	    <section name="CACertDialog">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="yes"/>
+            <attstr name="text" val="Select CA certificate:"/>                                                                                                                                                                                                                                                                 "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="250"/>
+            <attnum name="width" val="145"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+		
+		<section name="PublicCertDialog">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="yes"/>
+            <attstr name="text" val="Select public certificate:"/>                                                                                                                                                                                                                                                                 "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="220"/>
+            <attnum name="width" val="145"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+		
+		<section name="PrivateCertDialog">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="yes"/>
+            <attstr name="text" val="Select private certificate:"/>                                                                                                                                                                                                                                                                 "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="190"/>
+            <attnum name="width" val="145"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+		
 		<section name="CertificateSettings">
-            <attstr name="CA" val="CA.txt"/>
-            <attstr name="public" val="public.txt"/>
-			<attstr name="private" val="private.txt"/>
+            <attstr name="CA certificate" val="CA.txt"/>
+            <attstr name="public certificate" val="public.txt"/>
+			<attstr name="private certificate" val="private.txt"/>
         </section>
 		
 		<section name="DbStatus">
