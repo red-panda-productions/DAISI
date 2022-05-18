@@ -301,7 +301,7 @@ void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, unsigned l
     p_values[p_placeInArray] = p_value;
 }
 
-/// @brief Get the median of the current compression step
+/// @brief Get the median of the current compression step using Randomized QuickSelect
 /// @param p_values Array with values from the current compression step
 /// @return The median of the past time steps for a variable
 float FileDataStorage::GetMedian(float* p_values)
@@ -316,9 +316,9 @@ float FileDataStorage::GetMedian(float* p_values)
 /// @param p_start start of the current section of the array
 /// @param p_end end of the current section of the array
 /// @param p_middle middle of the current section of the array
-/// @param a
-/// @param b
-void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& a, float& b)
+/// @param p_a number before the median of p_values
+/// @param p_b median of p_values
+void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_a, float& p_b)
 {
     if (p_start <= p_end)
     {
