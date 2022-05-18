@@ -135,22 +135,10 @@ TEST(ConfigTests, BlackBoxFilePathTest)
     {
         char path[256];
         int length = 2 + 254 * j / 10;
-        for (int i = 0; i < length - 1; i++)
-        {
-            char c;
-            do
-            {  // Make sure no character is assigned the null character
-                c = (char)random.NextByte();
-            } while (c == '\0');
-            path[i] = c;
-        }
-        path[length - 1] = '\0';
+        GenerateRandomCharArray(path, length - 1);
         config.SetBlackBoxFilePath(path);
         const char* configPath = config.GetBlackBoxFilePath();
-        for (int i = 0; i < length; i++)
-        {
-            ASSERT_EQ(path[i], configPath[i]);
-        }
+        ASSERT_STREQ(path, configPath);
     }
 }
 
@@ -163,22 +151,10 @@ TEST(ConfigTests, EnvironmentFilePathTest)
     {
         char path[256];
         int length = 2 + 254 * j / 10;
-        for (int i = 0; i < length - 1; i++)
-        {
-            char c;
-            do
-            {  // Make sure no character is assigned the null character
-                c = (char)random.NextByte();
-            } while (c == '\0');
-            path[i] = c;
-        }
-        path[length - 1] = '\0';
+        GenerateRandomCharArray(path, length - 1);
         config.SetEnvironmentFilePath(path);
         const char* configPath = config.GetEnvironmentFilePath();
-        for (int i = 0; i < length; i++)
-        {
-            ASSERT_EQ(path[i], configPath[i]);
-        }
+        ASSERT_STREQ(path, configPath);
     }
 }
 
