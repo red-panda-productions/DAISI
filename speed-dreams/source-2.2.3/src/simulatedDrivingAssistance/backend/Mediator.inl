@@ -30,7 +30,7 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
     template void Mediator<type>::SetEnvironmentFilePath(const char* p_filePath);                                                                       \
-    template const char* Mediator<type>::GetEnvironmentFilePath();                                                                                                                                                   \
+    template const char* Mediator<type>::GetEnvironmentFilePath();                                                                                      \
     template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \

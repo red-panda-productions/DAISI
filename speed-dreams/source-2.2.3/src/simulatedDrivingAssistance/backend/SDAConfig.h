@@ -9,7 +9,7 @@
 
 namespace filesystem = std::experimental::filesystem;
 
-#define BLACKBOX_PATH_SIZE 260  // Windows MAX_PATH
+#define BLACKBOX_PATH_SIZE    260  // Windows MAX_PATH
 #define ENVIRONMENT_PATH_SIZE 260  // Windows MAX_PATH
 
 class SDAConfig

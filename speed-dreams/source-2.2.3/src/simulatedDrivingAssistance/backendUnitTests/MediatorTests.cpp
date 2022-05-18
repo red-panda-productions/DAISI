@@ -235,6 +235,10 @@ TEST(MediatorTests, EnvironmentFilePathTest)
         int length = random.NextInt(256);
         GenerateRandomCharArray(path, length);
         SDAConfigMediator::GetInstance()->SetEnvironmentFilePath(path);
+        // Check whether the path returned by the mediator is correct
+        const char* mediatorPath = SDAConfigMediator::GetInstance()->GetEnvironmentFilePath();
+        TestStringEqual(path, mediatorPath, length);
+        // Check whether the path is also set in the config
         const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
         const char* configPath = config.GetEnvironmentFilePath();
         TestStringEqual(path, configPath, length);
