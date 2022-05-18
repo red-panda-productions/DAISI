@@ -1776,9 +1776,10 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     // SIMULATED DRIVING ASSISTANCE: toggle intervention on/off
     tControlCmd input = cmd[CMD_INTERV_TGGLE];
-    if ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
+    if (SMediator::GetInstance()->GetPControlSettings().ControlInterventionToggle && 
+        ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
         || (input.type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[input.val]) 
-        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1))
+        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1)))
     {
         InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
         SMediator::GetInstance()->SetInterventionType(m_prevIntervention);

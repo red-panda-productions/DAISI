@@ -442,7 +442,7 @@
         <attstr name="type" val="text button"/>
         <attstr name="show box" val="no"/>
         <attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
-        <attstr name="tip" val="Click to configure"/>
+        <attstr name="tip" val="Click to configure, cannot be a keyboard key"/>
         <attnum name="x" val="435"/>
         <attnum name="y" val="264"/>
         <attstr name="h align" val="center"/>
