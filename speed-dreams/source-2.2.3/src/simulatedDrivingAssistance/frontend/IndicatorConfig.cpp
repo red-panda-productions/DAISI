@@ -46,9 +46,6 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 /// @return                   The vector of indicator data
 std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionType p_interventionType)
 {
-    // Guard when no signals are to be sent, always return an empty vector.
-    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
-
     return m_activeIndicators;
 }
 
@@ -61,10 +58,15 @@ std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionTy
     // Guard when no signals are to be sent, always return an empty vector.
     if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
 
+    std::vector<tIndicatorData> activeIndicators = GetActiveIndicators(p_interventionType);
+    
+    // Guard when there are 2 active indicators, we return an empty vector because there can be no neutral indicators
+    if (activeIndicators.size() == 2) return {};
+
     // For the indicators that are active, get for the indicators that are neutral
     for (const tIndicatorData& indicator : GetActiveIndicators(p_interventionType))
     {
-        // This if-statement is build around the idea that either braking or steering is active, not both
+        // This if-statement is build around the idea that either braking or steering is currently active, not both
         if (indicator.Action == INTERVENTION_ACTION_BRAKE_NONE || indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
         {
             // Only steering is in neutral

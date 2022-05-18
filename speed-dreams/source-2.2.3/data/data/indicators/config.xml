@@ -3,18 +3,23 @@
 <params name="intervention-config" type="template">
     <section name="Interventions">
         <section name ="steer none">
-            <section name="texture1">
+            <section name="texture0">
                 <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
+            <section name="texture1">
+                <attstr name ="source" val="OnlySignals_Steering_Neutral_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="texture2">
-                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attstr name ="source" val="SharedControl_Steering_Neutral_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
                 <attnum name ="ypos"   val="0.03"/>
             </section>
             <section name="texture3">
-                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attstr name ="source" val="CompleteTakeOver_Neutral_Steering_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
                 <attnum name ="ypos"   val="0.03"/>
             </section>
@@ -27,6 +32,11 @@
             </section>
         </section>
         <section name ="steer left">
+            <section name="texture0">
+                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
             <section name="texture1">
                 <attstr name ="source" val="OnlySignals_Steering_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
@@ -56,6 +66,11 @@
             </section>
         </section>
         <section name ="steer right">
+            <section name="texture0">
+                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
+                <attnum name ="xpos"   val="0.75"/>
+                <attnum name ="ypos"   val="0.03"/>
+            </section>
             <section name="texture1">
                 <attstr name ="source" val="OnlySignals_Steering_256.png"/>
                 <attnum name ="xpos"   val="0.75"/>
