@@ -179,10 +179,10 @@ void FileDataStorage::SaveCarData(tCarElt* p_car)
 void FileDataStorage::SaveHumanData(tCarElt* p_car)
 {
     tCarCtrl ctrl = p_car->ctrl;
-    AddToArray<float>(m_steerValues, ctrl.steer, m_compressionStep);       // steer
-    AddToArray<float>(m_brakeValues, ctrl.brakeCmd, m_compressionStep);    // brake
-    AddToArray<float>(m_accelValues, ctrl.accelCmd, m_compressionStep);    // gas
-    AddToArray<float>(m_clutchValues, ctrl.clutchCmd, m_compressionStep);  // clutch
+    AddToArray<float>(m_steerValues, ctrl.steer, m_compressionStep);
+    AddToArray<float>(m_brakeValues, ctrl.brakeCmd, m_compressionStep);
+    AddToArray<float>(m_accelValues, ctrl.accelCmd, m_compressionStep);
+    AddToArray<float>(m_clutchValues, ctrl.clutchCmd, m_compressionStep);
 }
 
 /// @brief Saves the intervention data from the last time step
@@ -304,11 +304,84 @@ void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, unsigned l
 /// @brief Get the median of the current compression step
 /// @param p_values Array with values from the current compression step
 /// @return The median of the past time steps for a variable
-float FileDataStorage::GetMedian(float* p_values) const
+float FileDataStorage::GetMedian(float* p_values)
 {
-    std::sort(p_values, p_values + m_compressionRate);
-    int middle = static_cast<int>(std::floor(static_cast<float>(m_compressionRate) / 2));
-    return p_values[middle];
+    float a = -1, b = -1;
+    GetMedianUtil(p_values, 0, m_compressionRate - 1, static_cast<int>(m_compressionRate / 2), a, b);
+    return b;
+}
+
+/// @brief Utility function to recursively get the median
+/// @param p_values Array with values from the current compression step
+/// @param p_start start of the current section of the array
+/// @param p_end end of the current section of the array
+/// @param p_middle middle of the current section of the array
+/// @param a
+/// @param b
+void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& a, float& b)
+{
+    if (p_start <= p_end)
+    {
+        int partitionIndex = RandomPartition(p_values, p_start, p_end);
+
+        if (partitionIndex == p_middle)
+        {
+            b = p_values[partitionIndex];
+            if (a != -1)
+            {
+                return;
+            }
+        }
+        else if (partitionIndex == p_middle - 1)
+        {
+            a = p_values[partitionIndex];
+            if (b != -1)
+            {
+                return;
+            }
+        }
+
+        if (partitionIndex >= p_middle)
+        {
+            GetMedianUtil(p_values, p_start, partitionIndex - 1, p_middle, a, b);
+        }
+        else
+        {
+            GetMedianUtil(p_values, partitionIndex + 1, p_end, p_middle, a, b);
+        }
+    }
+}
+
+/// @brief partitions p_values around a randomly picked element
+/// @param p_values Array with values from the current compression step
+/// @param p_start start of the partition
+/// @param p_end end of the partition
+int FileDataStorage::RandomPartition(float* p_values, int p_start, int p_end)
+{
+    int pivot = m_random.NextInt(p_start, p_end + 1);
+    std::swap(p_values[pivot], p_values[p_end]);
+    return Partition(p_values, p_start, p_end);
+}
+
+/// @brief returns the correct position of the pivot element
+/// @param p_values Array with values from the current compression step
+/// @param p_start start of the partition
+/// @param p_end end of the partition
+int FileDataStorage::Partition(float* p_values, int p_start, int p_end)
+{
+    float lst = p_values[p_end];
+    int i = p_start, j = p_start;
+    while (j < p_end)
+    {
+        if (p_values[j] < lst)
+        {
+            std::swap(p_values[i], p_values[j]);
+            i++;
+        }
+        j++;
+    }
+    std::swap(p_values[i], p_values[j]);
+    return i;
 }
 
 /// @brief Get the least common value of the current compression step

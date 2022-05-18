@@ -5,6 +5,7 @@
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
+#include "../rppUtils/Random.hpp"
 
 /// @brief the max size of the array in which data is stored
 #define COMPRESSION_LIMIT 50
@@ -30,6 +31,8 @@ private:
     float m_steerDecision[COMPRESSION_LIMIT], m_brakeDecision[COMPRESSION_LIMIT], m_accelDecision[COMPRESSION_LIMIT];
     int m_gearDecision[COMPRESSION_LIMIT], m_lightDecision[COMPRESSION_LIMIT];
 
+    Random m_random;
+
     void SaveCarData(tCarElt* p_car);
     void SaveHumanData(tCarElt* p_car);
     void SaveInterventionData(DecisionTuple& p_decisions);
@@ -37,6 +40,10 @@ private:
     void WriteCarData();
     void WriteHumanData();
     void WriteInterventionData();
+
+    void GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& a, float& b);
+    int RandomPartition(float* p_values, int p_start, int p_end);
+    int Partition(float* p_values, int p_start, int p_end);
 
 public:
     std::experimental::filesystem::path Initialize(
@@ -69,7 +76,7 @@ public:
     template <typename TNumber>
     void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, unsigned long p_compressionStep);
 
-    float GetMedian(float* p_values) const;
+    float GetMedian(float* p_values);
 
     int GetLeastCommon(int* p_values) const;
 
