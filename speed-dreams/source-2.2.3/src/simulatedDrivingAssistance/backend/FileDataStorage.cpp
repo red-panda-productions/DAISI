@@ -326,16 +326,16 @@ void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int
 
         if (partitionIndex == p_middle)
         {
-            b = p_values[partitionIndex];
-            if (a != -1)
+            p_b = p_values[partitionIndex];
+            if (p_a != -1)
             {
                 return;
             }
         }
         else if (partitionIndex == p_middle - 1)
         {
-            a = p_values[partitionIndex];
-            if (b != -1)
+            p_a = p_values[partitionIndex];
+            if (p_b != -1)
             {
                 return;
             }
@@ -343,11 +343,11 @@ void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int
 
         if (partitionIndex >= p_middle)
         {
-            GetMedianUtil(p_values, p_start, partitionIndex - 1, p_middle, a, b);
+            GetMedianUtil(p_values, p_start, partitionIndex - 1, p_middle, p_a, p_b);
         }
         else
         {
-            GetMedianUtil(p_values, partitionIndex + 1, p_end, p_middle, a, b);
+            GetMedianUtil(p_values, partitionIndex + 1, p_end, p_middle, p_a, p_b);
         }
     }
 }
