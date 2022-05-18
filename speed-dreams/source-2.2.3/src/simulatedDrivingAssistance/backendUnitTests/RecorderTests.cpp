@@ -7,11 +7,11 @@
 #include <experimental/filesystem>
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
-#define TEST_DIRECTORY      "test_test_data"
+#define TEST_DIRECTORY "test_test_data"
 /// @brief Directory relative to the source-2.2.3/data folder wbere data for recorder tests is stored
 #define RECORDING_TEST_DATA "recorderTestData"
 /// @brief Filename in the RECORDING_TEST_DATA folder of the car xml used for testing
-#define TEST_CAR_FILE_NAME  "test_car.xml"
+#define TEST_CAR_FILE_NAME "test_car.xml"
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
 #define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
@@ -422,10 +422,10 @@ TEST(RecorderTests, WriteRunSettingsTests)
 class RecorderUpgradeTests : public ::testing::Test
 {
 protected:
-    void* UpgradedRunSettingsHandle;
+    void* UpgradedRunSettingsHandle = nullptr;
     filesystem::path ToUpgrade;
 
-    /// @brief Upgrades the recording starting from the base v0-recording. 
+    /// @brief Upgrades the recording starting from the base v0-recording.
     ///        Performs initial checks on whether the file was correctly created and whether the final version was reached.
     void SetUp() override
     {

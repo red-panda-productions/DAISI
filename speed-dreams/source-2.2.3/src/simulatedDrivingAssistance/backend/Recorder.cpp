@@ -294,7 +294,7 @@ void UpdateV2RecorderToV3(void* p_settingsHandle)
 }
 
 /// @brief Update a v3 recording to a v4 recording. This means:
-///  - Adding an additional partipant control options to the settings.              
+///  - Adding an additional partipant control options to the settings.
 /// @param p_settingsHandle Handle to the run settings file
 void UpdateV3RecorderToV4(void* p_settingsHandle)
 {
