@@ -148,8 +148,8 @@ RmConfigRunState(bool bStart)
 		} else {
 			ts.prevScreen = rmConfigBackHookInit();
 		}
-                ts.setTrack = [](GfTrack* p_track){LmRaceEngine().race()->getManager()->setEventTrack(0, p_track);};
-		ts.getTrack = []{return LmRaceEngine().race()->getTrack();};
+                ts.SetTrack = [](GfTrack* p_track){LmRaceEngine().race()->getManager()->setEventTrack(0, p_track);};
+		ts.GetTrack = []{return LmRaceEngine().race()->getTrack();};
                 ts.piTrackLoader = GfTracks::self()->getTrackLoader();
 		RmTrackSelect(&ts);
 

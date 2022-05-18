@@ -37,10 +37,10 @@ class GfRace;
 typedef struct RmTrackSelect
 {
     /// @brief Pointer to function used to set the selected track
-    void (*setTrack)(GfTrack *);
+    void (*SetTrack)(GfTrack *);
     /// @brief Pointer to function used to get the selected track
     /// @return Pointer to selected track
-    GfTrack *(*getTrack)();
+    GfTrack *(*GetTrack)();
     void        *prevScreen;	/* Race manager screen to go back */
     void        *nextScreen;	/* Race manager screen to go after select */
     ITrackLoader	*piTrackLoader;	/* Track loader */

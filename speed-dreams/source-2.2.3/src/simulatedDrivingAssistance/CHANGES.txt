@@ -195,7 +195,7 @@ Changed:
                 racescreens/
                     raceconfigstate.cpp
                         included "racemanagers.h"
-                        changed RmConfigRunState(): assign ts.setTrack and ts.getTrack instead of removed ts.pRace
+                        changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -258,8 +258,8 @@ Changed:
                     changed rmOnSelectRaceMan()
                     changed RmRaceSelectInit()
                 trackselect.cpp
-                    changed rmtsSelect(): replaced usage of race manager with setTrack function
-                    changed RmTrackSelect(): replaced usage of race manager with getTrack function
+                    changed rmtsSelect(): replaced usage of race manager with SetTrack function
+                    changed RmTrackSelect(): replaced usage of race manager with GetTrack function
                 removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
             confscreens/
                 soundconfig.cpp
