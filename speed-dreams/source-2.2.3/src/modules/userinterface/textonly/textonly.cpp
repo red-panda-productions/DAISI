@@ -137,7 +137,7 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
     InterventionType interventionType = static_cast<InterventionType>(GfParmGetNum(replaySettingsHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, INTERVENTION_TYPE_NO_SIGNALS));
     SMediator::GetInstance()->SetInterventionType(interventionType);
 
-    int maxTime = GfParmGetNum(replaySettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, -1);
+    int maxTime = static_cast<int>(GfParmGetNum(replaySettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, -1));
     SMediator::GetInstance()->SetMaxTime(maxTime);
 
     tParticipantControl participantControl{};
