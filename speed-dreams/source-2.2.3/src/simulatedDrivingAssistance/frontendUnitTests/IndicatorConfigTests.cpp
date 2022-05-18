@@ -361,41 +361,25 @@ TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
             std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
             std::vector<tIndicatorData> neutral = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-            if (active.size() == 0)
+            if (active.size() == 1)
             {
-                    // Currently there is only 1 indicator active at the time.
-                    // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
-                    
-                //for (const tIndicatorData& indicator : neutral)
-                //    {
-                        //AssertIndicator(neutral[0], indicator);
-
-                        if (active.front().Action == INTERVENTION_ACTION_TURN_LEFT || active.front().Action == INTERVENTION_ACTION_TURN_RIGHT || active.front().Action == INTERVENTION_ACTION_STEER_NONE)
-                        {
-                            //ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_BRAKE_NONE);
-                            //ASSERT_TRUE(indicator.Action != INTERVENTION_ACTION_STEER_NONE);
-                            ASSERT_TRUE(neutral[0].Action == INTERVENTION_ACTION_BRAKE_NONE);
-                        }
-                        else
-                        {   
-                            ASSERT_TRUE(neutral[0].Action == INTERVENTION_ACTION_STEER_NONE);
-                            //ASSERT_TRUE(indicator.Action == INTERVENTION_ACTION_STEER_NONE);
-                            //ASSERT_TRUE(indicator.Action != INTERVENTION_ACTION_BRAKE_NONE);
-                        }
-                  //  }
+                if (active.front().Action == INTERVENTION_ACTION_TURN_LEFT || active.front().Action == INTERVENTION_ACTION_TURN_RIGHT || active.front().Action == INTERVENTION_ACTION_STEER_NONE)
+                {
+                    ASSERT_TRUE(neutral[0].Action == INTERVENTION_ACTION_BRAKE_NONE);
+                }
+                else
+                {   
+                    ASSERT_TRUE(neutral[0].Action == INTERVENTION_ACTION_STEER_NONE);
+                }
             }
             else if(active.size() == 0)
             {
-                    // If there are 2 neutral indicators, STEER_NONE is saved first, BRAKE_NONE second                 ;
-                    ASSERT_TRUE(active.empty());
-                    ASSERT_TRUE(neutral.front().Action == INTERVENTION_ACTION_STEER_NONE);
-                    ASSERT_TRUE(neutral.front().Action != INTERVENTION_ACTION_BRAKE_NONE);
-                    ASSERT_TRUE(neutral.back().Action == INTERVENTION_ACTION_BRAKE_NONE);
-                    ASSERT_TRUE(neutral.back().Action != INTERVENTION_ACTION_STEER_NONE);
-            }
-            else 
-            {
-            
+                // If there are 2 neutral indicators, STEER_NONE is saved first, BRAKE_NONE second                 ;
+                ASSERT_TRUE(active.empty());
+                ASSERT_TRUE(neutral.front().Action == INTERVENTION_ACTION_STEER_NONE);
+                ASSERT_TRUE(neutral.front().Action != INTERVENTION_ACTION_BRAKE_NONE);
+                ASSERT_TRUE(neutral.back().Action == INTERVENTION_ACTION_BRAKE_NONE);
+                ASSERT_TRUE(neutral.back().Action != INTERVENTION_ACTION_STEER_NONE);
             }
         }
     }
@@ -415,31 +399,26 @@ TEST_F(IndicatorConfigLoadingTests, NumberOfIndicators)
         for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            std::vector<tIndicatorData> active1 = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-            std::vector<tIndicatorData> neutral1 = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+            std::vector<tIndicatorData> neutral = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
             // Currently there is only 1 indicator active at the time.
             // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
 
-            // There is always at least 1 neutral indicator in the ONLY SIGNALS intervention type
-            ASSERT_TRUE(neutral1.size() > 0);
-            // There can never be 2 active indicators in the ONLY SIGNALS intervention type
-            ASSERT_TRUE(active1.size() != 2);
+            // There is always at least 1 active indicator in the ONLY SIGNALS intervention type
+            ASSERT_TRUE(active.size() > 0);
+
+            // There are 0 neutral indicators if there are 2 active indicator in the ONLY SIGNALS intervention type
+            if (active.size() == 2)
+                ASSERT_TRUE(neutral.size() == 0);
 
             // There is 1 neutral indicator if there is 1 active indicator in the ONLY SIGNALS intervention type
-            if (active1.size() == 1)
-                ASSERT_TRUE(neutral1.size() == 1);
+            if (active.size() == 1)
+                ASSERT_TRUE(neutral.size() == 1);
             
             // There are 2 neutral indicators if there are 0 active indicator in the ONLY SIGNALS intervention type
-            if(active1.size() == 0)
-                ASSERT_TRUE(neutral1.size() == 2);
-
-            std::vector<tIndicatorData> active2 = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_NO_SIGNALS);
-            std::vector<tIndicatorData> neutral2 = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_NO_SIGNALS);
-
-            // There are neither active nor neutral indicators in the NO SIGNALS intervention type context
-            ASSERT_TRUE(neutral2.size() == 0);
-            ASSERT_TRUE(active2.size() == 0);
+            if(active.size() == 0)
+                ASSERT_TRUE(neutral.size() == 2);
         }
     }
 }

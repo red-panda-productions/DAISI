@@ -108,10 +108,43 @@ tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action)
 /// @param p_action The intervention to activate the indicators for
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
-    // TODO: add to the vector instead of overwriting it, this also requires
-    //       a way to remove the indicator after some time has passed.
+    // TODO: make the functionality for being able to have more than 1 active indicator below
+    // (if statement) better
     std::vector<tIndicatorData> m_indicatorData = IndicatorConfig::GetInstance()->GetIndicatorData();
-    m_activeIndicators = {m_indicatorData[p_action]};
+
+    // If the m_indicatorData is already 'full' (if it already has 2 active indicators), remove the first element
+    if (m_indicatorData.size() == 2)
+        m_indicatorData.erase(m_indicatorData.begin());
+
+    // If the only element in the indicator data vector is the same or is of the same kind of intervention
+    // as the current intervention action, replace the indicator data with the current intervention action
+    // and return so that the intervention action is not added (pushed) to the same vector twice
+    if (m_indicatorData.front().Action == p_action)
+    {
+         m_activeIndicators = {m_indicatorData[p_action]};
+    }
+    else if (m_indicatorData.front().Action == INTERVENTION_ACTION_STEER_NONE ||
+             m_indicatorData.front().Action == INTERVENTION_ACTION_TURN_LEFT ||
+             m_indicatorData.front().Action == INTERVENTION_ACTION_TURN_RIGHT &&
+             p_action == INTERVENTION_ACTION_STEER_NONE ||
+             p_action == INTERVENTION_ACTION_TURN_LEFT ||
+             p_action == INTERVENTION_ACTION_TURN_RIGHT)
+    {
+         m_activeIndicators = {m_indicatorData[p_action]};
+    }
+    else if (m_indicatorData.front().Action == INTERVENTION_ACTION_BRAKE ||
+             m_indicatorData.front().Action == INTERVENTION_ACTION_ACCELERATE ||
+             m_indicatorData.front().Action == INTERVENTION_ACTION_BRAKE_NONE &&
+             p_action == INTERVENTION_ACTION_BRAKE ||
+             p_action == INTERVENTION_ACTION_ACCELERATE ||
+             p_action == INTERVENTION_ACTION_BRAKE_NONE)
+    {
+         m_activeIndicators = {m_indicatorData[p_action]};
+    }
+    else 
+         m_activeIndicators.push_back(m_indicatorData[p_action]);
+
+    
 }
 
 /// @brief          Loads the sound indicator data from the indicator config.xml
