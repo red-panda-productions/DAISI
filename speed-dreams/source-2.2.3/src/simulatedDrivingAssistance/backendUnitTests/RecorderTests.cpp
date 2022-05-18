@@ -336,9 +336,10 @@ TEST(RecorderTests, WriteRunSettingsTests)
     InterventionType interventionType = random.NextInt(0, NUM_INTERVENTION_TYPES);
 
     tParticipantControl participantControl;
-    participantControl.ControlInterventionToggle = random.NextBool();
-    participantControl.ControlAccel = random.NextBool();
     participantControl.ControlSteer = random.NextBool();
+    participantControl.ControlAccel = random.NextBool();
+    participantControl.ControlBrake = random.NextBool();
+    participantControl.ControlInterventionToggle = random.NextBool();
     participantControl.ForceFeedback = random.NextBool();
 
     int maxTime = random.NextInt();

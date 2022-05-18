@@ -102,9 +102,10 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_CATEGORY, p_track->category);
     GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_NAME, p_track->name);
 
-    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlAccel));
-    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteer));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlAccel));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(p_participantControl.ControlBrake));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
 
     GfParmSetNum(settingsFileHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, (tdble)p_maxTime);
@@ -292,6 +293,11 @@ void UpdateV2RecorderToV3(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(true));
 }
 
+void UpdateV3RecorderToV4(void* p_settingsHandle)
+{
+    GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
+}
+
 /// @brief Validate a recording, and update it if it is an older version
 /// @param p_recordingFolder Folder of the recording to validate and update
 /// @return true if the recording contains all files and could be updated
@@ -357,6 +363,12 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     if (version == 2)
     {
         UpdateV2RecorderToV3(settingsHandle);
+        version++;
+    }
+
+    if (version == 3)
+    {
+        UpdateV3RecorderToV4(settingsHandle);
         version++;
     }
 

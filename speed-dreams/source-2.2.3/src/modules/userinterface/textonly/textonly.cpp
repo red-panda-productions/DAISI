@@ -142,9 +142,10 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
     SMediator::GetInstance()->SetMaxTime(maxTime);
 
     tParticipantControl participantControl{};
-    participantControl.ControlAccel = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
-    participantControl.ControlInterventionToggle = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, "false"));
     participantControl.ControlSteer = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, "false"));
+    participantControl.ControlAccel = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
+    participantControl.ControlBrake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, "false"));
+    participantControl.ControlInterventionToggle = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, "false"));
     participantControl.ForceFeedback = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, "false"));
     SMediator::GetInstance()->SetPControlSettings(participantControl);
 
