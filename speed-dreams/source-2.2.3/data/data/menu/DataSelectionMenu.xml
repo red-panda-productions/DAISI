@@ -71,13 +71,36 @@
             <attstr name="checked" val="yes"/>
         </section>
 
+        <!-- Button for going to the developer screen -->
+        <section name="CompButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Advanced Settings"/>
+            <attstr name="tip" val="Access the the data compression settings"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
         <section name="BackButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Back"/>
             <attstr name="tip" val="Go back to previous screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="278"/>
+            <attnum name="x" val="20"/>
             <attnum name="y" val="82"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>

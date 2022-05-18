@@ -26,6 +26,7 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetPControlSettings(tParticipantControl p_pControl);                                                                  \
     template void Mediator<type>::SetReplayRecorderSetting(bool p_replayRecorderOn);                                                                    \
     template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
+    template void Mediator<type>::SetCompressionLevel(int p_compressionLevel);                                                                          \
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
@@ -107,7 +108,7 @@ void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetCompressionLevel(int p_compressionLevel)
 {
-    m_decisionMaker.Config.SetCompressionLevel(p_compressionLevel);
+    // TODO: m_decisionMaker.Config.SetCompressionLevel(p_compressionLevel);
 }
 
 /// @brief               Sets the settings for data collection

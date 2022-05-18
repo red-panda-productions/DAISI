@@ -134,6 +134,9 @@ static void SaveSettings(void* /* dummy */)
 
     SaveSettingsToDisk();
 
+    // Make sure data compression screen is also saving its settings
+    ConfigureDataCompressionSettings();
+
     // Go to the main screen
     GfuiScreenActivate(s_nextHandle);
 }

@@ -2,12 +2,12 @@
 #include "guimenu.h"
 #include "legacymenu.h"
 #include "Mediator.h"
-#include "DataSelectionMenu.h"
+#include "ConfigEnums.h"
 #include "DataCompressionMenu.h"
 
 // Parameters used in the xml files
-#define PRM_DATA_COMPRESSION         "DataCompressionRadioButtonList"
-#define PRM_CUSTOM_COMPRESSION_LEVEL "CustomCompressionLevelEdit"
+#define PRM_DATA_COMPRESSION   "DataCompressionRadioButtonList"
+#define PRM_CUSTOM_COMPRESSION "CustomCompressionEdit"
 
 // Names for the config file
 #define COMPRESSION_FILEPATH    "config/DataCompressionMenu.xml"
@@ -20,7 +20,7 @@ static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 
 // GUI settings Id's
-int m_compressionLevelControl;
+int m_compressionButtonList;
 
 // InterventionType
 DataCompressionType m_dataCompressionType;
@@ -36,25 +36,25 @@ int m_applyButtonComp;
 /// @param p_param A handle to the parameter file
 static void LoadSettingsFromFile(void* p_param)
 {
-    m_dataCompressionType = std::stoi(GfParmGetStr(p_param, PRM_SYNC, GFMNU_ATTR_SELECTED, "1"));
-
-    // TODO: custom compression level
+    m_dataCompressionType = std::stoi(GfParmGetStr(p_param, PRM_DATA_COMPRESSION, GFMNU_ATTR_SELECTED, "1"));
+    m_customCompressionLevel = std::stoi(GfParmGetStr(p_param, PRM_CUSTOM_COMPRESSION, GFMNU_ATTR_TEXT, nullptr));
 }
 
 /// @brief Makes sure all visuals display the internal values
 static void SynchronizeControls()
 {
-    GfuiRadioButtonListSetSelected(s_scrHandle, m_syncButtonList, (int)m_dataCompressionType);
+    GfuiRadioButtonListSetSelected(s_scrHandle, m_compressionButtonList, static_cast<int>(m_dataCompressionType));
 
-    // TODO: custom compression level
+    char buf[32];
+    sprintf(buf, "%d", m_customCompressionLevel);
+    GfuiEditboxSetString(s_scrHandle, m_customCompressionLevelControl, buf);
 }
 
 /// @brief Loads default settings
 static void LoadDefaultSettings()
 {
-    m_dataCompressionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_syncButtonList);
-
-    // TODO: custom compression level
+    m_dataCompressionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_compressionButtonList);
+    m_customCompressionLevel = std::stoi(GfuiEditboxGetString(s_scrHandle, m_customCompressionLevelControl));
 }
 
 /// @brief Loads (if possible) the settings; otherwise, the control's default settings will be used
@@ -81,7 +81,7 @@ static void SaveSettingsToFile()
     sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
-    // Write sync type
+    // Write data compression type
     char val[32];
     sprintf(val, "%d", m_dataCompressionType);
     GfParmSetStr(readParam, PRM_DATA_COMPRESSION, GFMNU_ATTR_SELECTED, val);
@@ -124,7 +124,6 @@ static void SaveSettings()
     }
 
     SMediator* mediator = SMediator::GetInstance();
-
     mediator->SetCompressionLevel(compressionLevel);
 
     SaveSettingsToFile();
@@ -153,7 +152,7 @@ static void SaveAndGoBack(void* /* dummy */)
 
 /// @brief        Sets the type of data compression
 /// @param p_info Information about the radio button list
-static void SelectSync(tRadioButtonInfo* p_info)
+static void SelectCompression(tRadioButtonInfo* p_info)
 {
     m_dataCompressionType = (DataCompressionType)p_info->Selected;
 }
@@ -190,7 +189,7 @@ static void SetCompressionLevel(void*)
 /// @brief            Initializes the developer menu
 /// @param p_prevMenu A handle to the previous menu
 /// @returns          A handle to the developer menu
-void* DeveloperMenuInit(void* p_prevMenu)
+void* DataCompressionMenuInit(void* p_prevMenu)
 {
     // screen already created
     if (s_scrHandle) return s_scrHandle;
@@ -206,7 +205,10 @@ void* DeveloperMenuInit(void* p_prevMenu)
                                 s_scrHandle, SwitchToDataSelectionMenu);
     m_applyButtonComp = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton",
                                                     s_scrHandle, SaveAndGoBack);
-    m_compButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
+    m_compressionButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_DATA_COMPRESSION, nullptr, SelectCompression);
+
+    // Textbox controls
+    m_customCompressionLevelControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_CUSTOM_COMPRESSION, nullptr, nullptr, SetCompressionLevel);
 
     GfParmReleaseHandle(param);
 
