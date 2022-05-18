@@ -361,12 +361,11 @@ static void SynchronizeControls()
         GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
     }
 
-    std::string environmentButtonText = std::string(MSG_ENVIRONMENT_PREFIX).append(m_environmentChosen?
-        m_environment->getName()
-        : MSG_ENVIRONMENT_NOT_SELECTED);
+    std::string environmentButtonText = std::string(MSG_ENVIRONMENT_PREFIX).append(m_environmentChosen ? m_environment->getName() : MSG_ENVIRONMENT_NOT_SELECTED);
     GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
 
-    if (m_blackBoxChosen && m_environmentChosen) {
+    if (m_blackBoxChosen && m_environmentChosen)
+    {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, "");  // Reset error label
     }
 }
