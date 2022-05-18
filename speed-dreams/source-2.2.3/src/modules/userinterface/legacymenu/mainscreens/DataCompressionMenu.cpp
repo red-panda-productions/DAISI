@@ -86,6 +86,11 @@ static void SaveSettingsToFile()
     sprintf(val, "%d", m_dataCompressionType);
     GfParmSetStr(readParam, PRM_DATA_COMPRESSION, GFMNU_ATTR_SELECTED, val);
 
+    // Save custom compression to xml file
+    char buf[32];
+    sprintf(buf, "%d", m_customCompressionLevel);
+    GfParmSetStr(readParam, PRM_CUSTOM_COMPRESSION, GFMNU_ATTR_TEXT, buf);
+
     // Write queued changes
     GfParmWriteFile(nullptr, readParam, COMPRESSION_SCREEN_NAME);
 }
@@ -129,13 +134,13 @@ static void SaveSettings()
     SaveSettingsToFile();
 }
 
-/// @brief Takes actions that need to be run on activation of the developer screen
+/// @brief Takes actions that need to be run on activation of the data selection screen
 static void OnActivate(void* /* dummy */)
 {
     LoadSettings();
 }
 
-/// @brief Switches back to the reseacher menu
+/// @brief Switches back to the data selection menu
 static void SwitchToDataSelectionMenu(void* /* dummy */)
 {
     // go back to the researcher screen
@@ -186,9 +191,9 @@ static void SetCompressionLevel(void*)
     GfuiEditboxSetString(s_scrHandle, m_customCompressionLevelControl, buf);
 }
 
-/// @brief            Initializes the developer menu
+/// @brief            Initializes the data compression menu
 /// @param p_prevMenu A handle to the previous menu
-/// @returns          A handle to the developer menu
+/// @returns          A handle to the data compression menu
 void* DataCompressionMenuInit(void* p_prevMenu)
 {
     // screen already created
