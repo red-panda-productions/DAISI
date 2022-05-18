@@ -293,6 +293,9 @@ void UpdateV2RecorderToV3(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(true));
 }
 
+/// @brief Update a v3 recording to a v4 recording. This means:
+///  - Adding an additional partipant control options to the settings.              
+/// @param p_settingsHandle Handle to the run settings file
 void UpdateV3RecorderToV4(void* p_settingsHandle)
 {
     GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
@@ -366,6 +369,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
         version++;
     }
 
+    // Update from version 3 to version 4 recording
     if (version == 3)
     {
         UpdateV3RecorderToV4(settingsHandle);
