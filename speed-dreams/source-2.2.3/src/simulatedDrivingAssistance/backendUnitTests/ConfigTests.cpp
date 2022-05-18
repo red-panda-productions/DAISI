@@ -73,8 +73,8 @@ void PControlTest(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
-    ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
+    ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
+    ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
