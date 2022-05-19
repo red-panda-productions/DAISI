@@ -420,6 +420,7 @@ Changed:
             soundconfig.xml
                 removed sound system option
             stopracemenu.xml
+                changed button tips and text
                 removed controls, abandon and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
