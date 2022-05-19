@@ -1301,7 +1301,7 @@ void TDriver::InitTrack
     LogSimplix.debug("#oMaxFuel (TORCS)   = %.1f\n",oMaxFuel);
 
     oFuelCons = GfParmGetNum(CarHandle             // Fuel consumption factor
-                             , SECT_ENGINE, PRM_FUELCONS
+                             , SECT_ENGINE, NULL
                              , (char*) NULL, 1.0);
     LogSimplix.debug("#oFuelCons (TORCS)  = %.2f\n",oFuelCons);
 
@@ -1858,7 +1858,6 @@ int TDriver::PitCmd()
     oUnstucking = false;                           // Reset pending flag
 
     // Tell TORCS ...
-    oCar->pitcmd.fuel = oStrategy->PitRefuel();    // ... how much to refuel
     oCar->pitcmd.repair = oStrategy->PitRepair();  // and to repair
     oCar->pitcmd.stopType = RM_PIT_REPAIR;         // Set repair flag
 
@@ -1870,7 +1869,6 @@ int TDriver::PitCmd()
     LogSimplix.trace("#%s refueling: %.2f\n",                // show who and how much
       oBotName,oCar->pitcmd.fuel);
 */
-    oFuelNeeded += oCar->pitcmd.fuel;
     oRepairNeeded += oCar->pitcmd.repair;
 
     return ROB_PIT_IM;                             // Ready to be serviced
@@ -3551,8 +3549,7 @@ void TDriver::EvaluateCollisionFlags(
         {
             IgnoreTeamMate =
                     OppInfo.GotFlags(F_TEAMMATE)
-                    && (CarLaps < OppCar->_laps
-                        || CarDamage + 1000 >= OppInfo.TeamMateDamage);
+                    && (CarLaps < OppCar->_laps);
         }
         else
         {
@@ -3660,8 +3657,7 @@ void TDriver::EvaluateCollisionFlags(
         oTreatTeamMateAsLapper =
                 OppInfo.GotFlags(F_TEAMMATE | F_REAR)
                 && OppInfo.State.RelPos > -50
-                && ((CarLaps < OppCar->_laps)
-                    || (CarDamage > OppInfo.TeamMateDamage + 1000));
+                && ((CarLaps < OppCar->_laps));
     }
     else
     {
@@ -3672,8 +3668,7 @@ void TDriver::EvaluateCollisionFlags(
     {
         if (oStayTogether > 50
                 && OppInfo.GotFlags(F_TEAMMATE | F_REAR)
-                && OppInfo.State.RelPos > -oStayTogether
-                && CarDamage + 1000 > OppInfo.TeamMateDamage)
+                && OppInfo.State.RelPos > -oStayTogether)
         {
             Coll.LappersBehind |= OppInfo.State.CarDistLat < 0 ? F_LEFT : F_RIGHT;
             IsLapper = true;
@@ -5064,22 +5059,10 @@ bool TDriver::SaveToFile()
     if (F == 0)
         return false;
 
-    fprintf(F, "%s: %7.2f km/h ( %7.2f m/s / %d laps / %g m / %15.2f s)\n",
-            oCar->_name,oCar->_distRaced/CurrSimTime/1000*3600,oCar->_distRaced/CurrSimTime,oCar->_laps,oCar->_distRaced,CurrSimTime);
-    fprintf(F, "Dammages: %.0f (%.0f per lap / Repair: %.0f / Dammage remaining: %d)\n",
-            oCar->_dammage + oRepairNeeded, (oCar->_dammage + oRepairNeeded)/oCar->_laps, oRepairNeeded, oCar->_dammage);
-
     double CarFactor = oFuelCons*oFuelCons*oFuelCons*sqrt(oMaxTorque)*oRevsLimiter/10000.0;
-    double FuelCons = (oFuelNeeded - oCar->_fuel)/oCar->_distRaced*100000;
+    double FuelCons = (oFuelNeeded)/oCar->_distRaced*100000;
     double TrackScale = FuelCons / CarFactor;
     double Estimation = CarFactor * 2.1;
-
-    fprintf(F, "Fuel consumtion: %.2f kg/100km (Fuel remaining: %.2f kg / Fuel filled in: %.2f kg / Fuel consumed: %.2f kg)\n",
-            FuelCons, oCar->_fuel, oFuelNeeded,oFuelNeeded - oCar->_fuel);
-    fprintf(F, "Fuel Consumption Factor^3: %.3f * Sqrt(Max Trq): %.3f * RPM Limit: %.0f / 10000 = CarFactor %.3f\n",
-            oFuelCons*oFuelCons*oFuelCons, sqrt(oMaxTorque),oRevsLimiter,CarFactor);
-    fprintf(F, "Fuel estimated: %.1f kg/100km Fuel consumtion: %.3f kg/100km = CarFactor %.3f * TrackScale %.3f\n",
-            Estimation,FuelCons, CarFactor, TrackScale);
 
     fclose(F);
 

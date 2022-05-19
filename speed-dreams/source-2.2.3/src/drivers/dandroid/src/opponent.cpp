@@ -55,13 +55,11 @@ void Opponent::update(PSituation s)
     calcBasics();
     calcSpeed();
     // Detect backmarkers
-    if ((car->_distRaced + track->length / 2.0 < mycar->_distRaced)
-    || (teammate && car->_dammage > mycar->_dammage + 1000)) {
+    if (car->_distRaced + track->length / 2.0 < mycar->_distRaced) {
       backmarker = true;
     }
     // Let opponent pass
-    if ((car->_distRaced - track->length / 2.0 > mycar->_distRaced)
-    || (teammate && car->_dammage < mycar->_dammage - 1000 && !backmarker)) {
+    if (car->_distRaced - track->length / 2.0 > mycar->_distRaced) {
       letpass = true;
     }
     // Update special data

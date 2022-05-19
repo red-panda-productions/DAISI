@@ -251,22 +251,6 @@ SimReConfig(tCarElt *carElt)
 
     tCar *car = &(SimCarTable[carElt->index]);
 
-    if (carElt->pitcmd.fuel > 0)
-    {
-        car->fuel += carElt->pitcmd.fuel;
-
-        if (car->fuel > car->tank)
-            car->fuel = car->tank;
-    }
-
-    if (carElt->pitcmd.repair > 0)
-    {
-        car->dammage -= carElt->pitcmd.repair;
-
-        if (car->dammage < 0)
-            car->dammage = 0;
-    }
-
     carElt->setup.reqRepair.desired_value = 0.0;
 
     if (carElt->setup.reqTireset.desired_value > 0.9)
@@ -494,9 +478,7 @@ SimUpdate(tSituation *s, double deltaTime)
         carElt->_gear = car->transmission.gearbox.gear;
         carElt->_gearNext = car->transmission.gearbox.gearNext;
         carElt->_enginerpm = car->engine.rads;
-        carElt->_fuel = car->fuel;
         carElt->priv.collision |= car->collision;
-        carElt->_dammage = car->dammage;
 
         carElt->_steerTqCenter = -car->ctrl->steer;
         carElt->_steerTqAlign = car->wheel[FRNT_RGT].torqueAlign + car->wheel[FRNT_LFT].torqueAlign;
@@ -623,9 +605,7 @@ SimUpdateSingleCar(int index, double deltaTime,tSituation *s)
     carElt->_gear = car->transmission.gearbox.gear;
     carElt->_gearNext = car->transmission.gearbox.gearNext;
     carElt->_enginerpm = car->engine.rads;
-    carElt->_fuel = car->fuel;
     carElt->priv.collision |= car->collision;
-    carElt->_dammage = car->dammage;
 
     carElt->_steerTqCenter = -car->ctrl->steer;
     carElt->_steerTqAlign = car->wheel[FRNT_RGT].torqueAlign + car->wheel[FRNT_LFT].torqueAlign;

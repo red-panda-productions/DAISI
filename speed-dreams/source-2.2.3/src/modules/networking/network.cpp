@@ -518,7 +518,6 @@ void NetNetwork::SendCarStatusPacket(tSituation *s,bool bForce)
             msg.pack_int(local[i]->pub.state);
             msg.pack_int(local[i]->info.startRank);
             msg.pack_int(local[i]->priv.dammage);
-            msg.pack_float(local[i]->priv.fuel);
         }
     }
     catch (const PackedBufferException&)

@@ -324,7 +324,6 @@ bool TOpponent::Classify(
   if (RtIsTeamMate(MyCar,oCar))                  // If Opp. is teammate
   {
     oInfo.Flags |= F_TEAMMATE;                   // Set teammate flag
-    oInfo.TeamMateDamage = oCar->_dammage;       // Save his damages
   }
 
   // Check Lappers

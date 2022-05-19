@@ -186,10 +186,10 @@ void TDriver::InitTrack(PTrack Track, PCarHandle CarHandle, PCarSettings* CarPar
 
     if (mLearning)
     {
-        GfParmSetNum(*CarParmHandle, SECT_ENGINE, PRM_FUELCONS, (char*)NULL, 0.0);
+        GfParmSetNum(*CarParmHandle, SECT_ENGINE, NULL, (char*)NULL, 0.0);
     }
 
-    GfParmSetNum(*CarParmHandle, SECT_CAR, PRM_FUEL, (char*)NULL, NULL);
+    GfParmSetNum(*CarParmHandle, SECT_CAR, NULL, (char*)NULL, NULL);
 
     // Get skill level
     handle = NULL;
