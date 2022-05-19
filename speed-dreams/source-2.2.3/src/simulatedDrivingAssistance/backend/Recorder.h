@@ -69,7 +69,7 @@ public:
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
-    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder);
+    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder, int p_targetVersion = CURRENT_RECORDER_VERSION);
 
 private:
     static bool CheckSameInput(const float* p_input, const float* p_prevInput, int p_paramAmount);

@@ -301,10 +301,46 @@ void UpdateV3RecorderToV4(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
 }
 
-/// @brief Validate a recording, and update it if it is an older version
+/// @brief                          Upgrades the recording from given version to the next version.  
+/// @param p_currVersion            The current version of the recording to upgrade.
+/// @param p_settingsHandle         Handle to the run settings file
+/// @param p_userRecordingFile      Path to the user recordings file
+/// @param p_decisionsRecordingFile Path to the decision recordings file
+/// @param p_simulationFile         Path to the simulation file
+/// @return                         true if the upgrade succeeds, false if it fails.
+bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::path& userRecordingFile, 
+    filesystem::path& decisionsRecordingFile, filesystem::path& simulationFile)
+{
+    switch (p_currVersion)
+    {
+        case 0:
+            if (!UpdateV0RecorderToV1(p_settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile))
+            {
+                GfParmReleaseHandle(p_settingsHandle);
+                return false;
+            }
+            return true;
+        case 1:
+            UpdateV1RecorderToV2(p_settingsHandle);
+            return true;
+        case 2:
+            UpdateV2RecorderToV3(p_settingsHandle);
+            return true;
+        case 3:
+            UpdateV3RecorderToV4(p_settingsHandle);
+            return true;
+        default:
+            GfLogError("There is no more possible upgrade from the current version");
+            return false;
+    }
+}
+
+
+/// @brief                   Validate a recording, and update it if it is an older version
 /// @param p_recordingFolder Folder of the recording to validate and update
-/// @return true if the recording contains all files and could be updated
-bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder)
+/// @param p_targetVersion   The targeted version to upgrade to, by default RECORDER_CURRENT_VERSION
+/// @return                  True if the recording contains all files and could be updated
+bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder, int p_targetVersion)
 {
     // Make sure the settings file exists
     const filesystem::path settingsFile = filesystem::path(p_recordingFolder).append(RUN_SETTINGS_FILE_NAME);
@@ -344,42 +380,21 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
         return false;
     }
 
-    // Update version 0 to version 1 recording
-    if (version == 0)
+    // Upgrade the version to the target version.
+    for (/* version is already initialised */; version < p_targetVersion; version++)
     {
-        if (!UpdateV0RecorderToV1(settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile))
-        {
-            GfParmReleaseHandle(settingsHandle);
-            return false;
-        }
-        version++;
+        if (UpgradeRecording(version, settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile)) continue;
+        
+        // If upgrading fails, release handle and exit loop.
+        GfParmReleaseHandle(settingsHandle);
+        return false;      
     }
 
-    // Update version 1 to version 2 recording
-    if (version == 1)
-    {
-        UpdateV1RecorderToV2(settingsHandle);
-        version++;
-    }
-
-    // Update version 2 to version 3 recording
-    if (version == 2)
-    {
-        UpdateV2RecorderToV3(settingsHandle);
-        version++;
-    }
-
-    // Update from version 3 to version 4 recording
-    if (version == 3)
-    {
-        UpdateV3RecorderToV4(settingsHandle);
-        version++;
-    }
-
-    // Set the recording to the latest version and save it
-    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
+    // Set the recording to the target version and save it
+    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, p_targetVersion);
 
     GfParmWriteFile(settingsFile.string().c_str(), settingsHandle, "Run Settings");
     GfParmReleaseHandle(settingsHandle);
     return true;
 }
+
