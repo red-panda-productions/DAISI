@@ -38,7 +38,6 @@ public:
   void   readPrivateSection(const MyParam& param);
   void   readVarSpecs(const MyParam& param);
   void   readConstSpecs(void* CarHandle);
-  double calcFuel(double dist) const;
   void   update(double dt);
   void   setControls(double accel, double brake, double steer);
   double brakeForce(double speed, double curvature, double curv_z, double mu, double pitchAngle, double rollAngle, PathType pathtype) const;
@@ -67,9 +66,7 @@ public:
   double wallDist() const { return mWalldist; }
   double wallToMiddleAbs() const { return mWallToMiddleAbs; }
   bool   pointingToWall() const { return mPointingToWall; }
-  int    damageDiff() const { return mDamageDiff; }
   double sideSlip() const { return mSideSlip; }
-  double FuelperMeter() const { return mFuelPerMeter; }
   bool   learningOfftrack();
   double filterABS(double brake);
   double filterTCL(double accel);
@@ -125,8 +122,6 @@ private:
   double mAngleToTrack;
   double mBorderDist;
   double mBorderFriction;
-  int mDamageDiff;
-  int mLastDamage;
   double mWalldist;
   double mWallToMiddleAbs;
   bool mPointingToWall;
@@ -136,8 +131,6 @@ private:
   double mBrakeMuFactor;
   double mMuScaleLR;
   double mBumpSpeedFactor;
-  double mFuelPerMeter;
-  double mFuelWeightFactor;
   double mTireWearPerMeter;
 
   // Configuration file constants

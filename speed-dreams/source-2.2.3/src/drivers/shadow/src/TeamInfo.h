@@ -37,9 +37,7 @@ public:
     {
         int			index;			// index of car in race.
         const char*	teamName;		// name of team.
-        int			damage;			// damage of this team member.
         bool		usingPit;		// true if entering pits or in pit.
-        double		lapsUntilPit;	// how many more laps until need to pit due to fuel.
         Item*		pOther;			// the other team member.
         CarElt*		pCar;			// the car of this team member.
     };

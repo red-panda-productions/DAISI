@@ -39,8 +39,6 @@ CarModel::CarModel()
 //	FLAGS(F_SEPARATE_FRONT_REAR),
     FLAGS(F_SEPARATE_FRONT_REAR | F_USE_KV),
     MASS(0),
-    FUEL(0),
-    DAMAGE(0),
     WIDTH(2),
     TYRE_MU(0),
     TYRE_MU_F(0),
@@ -208,7 +206,6 @@ void    CarModel::configCar( void* hCar )
       LogSHADOW.info("#Car has TCL no\n");
 
     MASS = GfParmGetNum(hCar, SECT_CAR, PRM_MASS, NULL, 1000.0);
-    FUEL = GfParmGetNum(hCar, SECT_CAR, PRM_FUEL, NULL, 95.0);
 
     float fwingarea	= GfParmGetNum(hCar, SECT_FRNTWING, PRM_WINGAREA,  NULL, 0.0);
     WING_ANGLE_F	= GfParmGetNum(hCar, SECT_FRNTWING, PRM_WINGANGLE, NULL, 0.0);
@@ -481,7 +478,7 @@ double	CarModel::CalcMaxSpeedAeroOld(
     //	with the reality (the car goes too slowly otherwise, aarrgh!).
     //
 
-    double	M  = MASS + FUEL;
+    double	M  = MASS;
 
     double	mua, muf, mur;
 
@@ -582,15 +579,15 @@ double	CarModel::calcPredictedLoad(
     double cos_roll,
     double cos_pitch ) const
 {
-    double	load_g = (MASS + FUEL) * weight_fraction * G * cos_roll * cos_pitch;
+    double	load_g = MASS * weight_fraction * G * cos_roll * cos_pitch;
     double	load_a = downforce_constant * speed * speed;
-//	double	load_h = (MASS + FUEL) * weight_fraction * sin_roll * k  * speed * speed;
-//	double	load_v = (MASS + FUEL) * weight_fraction * cos_roll * kz/6 * speed * speed;	// /6 as kz is already *6
+//	double	load_h = MASS * weight_fraction * sin_roll * k  * speed * speed;
+//	double	load_v = MASS * weight_fraction * cos_roll * kz/6 * speed * speed;	// /6 as kz is already *6
     double	load_v;
     if( FLAGS & F_USE_KV )
-        load_v = (MASS + FUEL) * weight_fraction * kv * KV_SCALE * speed * speed;
+        load_v = MASS * weight_fraction * kv * KV_SCALE * speed * speed;
     else
-        load_v = (MASS + FUEL) * weight_fraction * cos_roll * kz * KZ_SCALE * speed * speed;
+        load_v = MASS * weight_fraction * cos_roll * kz * KZ_SCALE * speed * speed;
 //	return	load_g + load_a;// + load_h + load_v;
     return	load_g + load_a + /*load_h*/ + load_v;
 }
@@ -683,7 +680,7 @@ double	CarModel::AxleCalcMaxSpeed(
     double	sgnK = SGN(k);
 
     double	af = wx / ax;
-    double	Ma = wf * (MASS + FUEL);
+    double	Ma = wf * MASS;
     double	Ca = Cg + Cw * af;
 
     double	opLoad = OP_LOAD * wf;
@@ -736,7 +733,7 @@ double	CarModel::CalcBraking(
     double spd1, double dist, double trackMu,
     double trackRollAngle, double trackPitchAngle ) const
 {
-    double	M  = MASS + FUEL;
+    double	M  = MASS;
 
     double	MU = trackMu * TYRE_MU;
     double	MU_F = MU;
@@ -748,7 +745,7 @@ double	CarModel::CalcBraking(
         MU   = (MU_F + MU_R) * 0.5;
     }
 
-    double	CD = CD_BODY * (1.0 + DAMAGE / 10000.0) + CD_WING;
+    double	CD = CD_BODY + CD_WING;
 
     MU *= BRAKE_MU_SCALE * SKILL;
 
@@ -916,9 +913,9 @@ double	CarModel::CalcAcceleration(
     double spd0, double dist, double trackMu,
     double trackRollAngle, double trackPitchAngle ) const
 {
-    double	M  = MASS + FUEL;
+    double	M  = MASS;
     double	MU = trackMu * TYRE_MU;
-    double	CD = CD_BODY * (1.0 + DAMAGE / 10000.0) + CD_WING;
+    double	CD = CD_BODY + CD_WING;
 
     // when under braking we keep some grip in reserve.
     //MU *= BRAKE_MU_SCALE;
@@ -1019,7 +1016,7 @@ double	CarModel::CalcMaxSpdK() const
 
 double	CarModel::CalcMaxLateralF( double spd, double trackMu ) const
 {
-    double	M  = MASS + FUEL;
+    double	M  = MASS;
     double	MU = trackMu * TYRE_MU;	// * GRIP_SCALE; ???
 
     double	vv = spd * spd;
@@ -1047,7 +1044,7 @@ void	CarModel::CalcSimuSpeeds(
     // max_a = M * G * MU;
     // max_spd = sqrt(max_a r) = sqrt(M * G * MU / k)
 
-    //double	M  = MASS + FUEL;
+    //double	M  = MASS;
 //	double	MU = trackMu * TYRE_MU * (GRIP_SCALE_F + GRIP_SCALE_R) * 0.5;
     double	MU = trackMu * TYRE_MU * MN(GRIP_SCALE_F, GRIP_SCALE_R);
 
@@ -1105,7 +1102,7 @@ void	CarModel::CalcSimuSpeedRanges(
     // max_a = M * G * MU;
     // max_spd = sqrt(max_a r) = sqrt(M * G * MU / k)
 
-    //double	M  = MASS + FUEL;
+    //double	M  = MASS;
 //	double	MU = trackMu * TYRE_MU * (GRIP_SCALE_F + GRIP_SCALE_R) * 0.5;
     double	MU = trackMu * TYRE_MU * MN(GRIP_SCALE_F, GRIP_SCALE_R);
 

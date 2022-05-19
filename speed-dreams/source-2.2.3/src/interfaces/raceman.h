@@ -135,7 +135,6 @@ typedef struct
     double	startPitTime;
     tdble	topSpd;
     tdble	botSpd;
-    tdble	fuel;
 } tReCarInfo;
 
 #define	RM_DISP_MODE_NONE    0x00
@@ -202,10 +201,6 @@ typedef struct RmRaceRules
     };
 
     int   enabled;
-    tdble fuelFactor;
-    tdble damageFactor;
-    tdble refuelFuelFlow;
-    tdble damageRepairFactor;
     tdble pitstopBaseTime;
     tdble tireFactor;
     tdble allTiresChangeTime;
@@ -315,7 +310,6 @@ typedef struct RmInfo
 #define RM_ATTR_INITSPEED	"initial speed"
 #define RM_ATTR_INITHEIGHT	"initial height"
 #define RM_ATTR_SHOW_RACE	"show race"
-#define RM_ATTR_MAX_DMG		"maximum damage"
 #define RM_ATTR_DISTANCE	"distance"
 #define RM_ATTR_LAPS		"laps"
 #define RM_ATTR_SESSIONTIME	"sessiontime"
@@ -330,12 +324,8 @@ typedef struct RmInfo
 #define RM_ATTR_INVALIDATE_BEST_LAP_WALL_TOUCH  "invalidate best lap on wall touch"
 #define RM_ATTR_INVALIDATE_BEST_LAP_CORNER_CUT  "invalidate best lap on corner cutting"
 #define RM_ATTR_CORNER_CUT_TIME_PENALTY         "corner cutting time penalty"
-#define RM_ATTR_DAMAGE_FACTOR                   "damage factor"
-#define RM_ATTR_FUEL_FACTOR                     "fuel consumption factor"
 #define RM_ATTR_TIRE_FACTOR                     "tire factor"
 #define RM_ATTR_PIT_SPEED_LIMIT                 "pit speed limit"
-#define RM_ATTR_REFUEL_FUEL_FLOW                "refuel fuel flow"
-#define RM_ATTR_DAMAGE_REPAIR_FACTOR            "damage repair factor"
 #define RM_ATTR_PITSTOP_BASE_TIME               "pitstop base time"
 #define RM_ATTR_ALL_TIRES_CHANGE_TIME           "all tires change time"
 
@@ -543,7 +533,6 @@ typedef struct RmInfo
 #define RE_ATTR_SESSIONTIME	"session time"
 #define RE_ATTR_TOP_SPEED	"top speed"
 #define RE_ATTR_BOT_SPEED	"bottom speed"
-#define RE_ATTR_DAMMAGES	"damages"
 #define RE_ATTR_NB_PIT_STOPS	"pit stops"
 #define RE_ATTR_POINTS		"points"
 #define RE_ATTR_PENALTYTIME	"penaltytime"

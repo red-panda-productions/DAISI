@@ -103,8 +103,6 @@ private:
 public:
     int		FLAGS;			// options that modify calculations
     double	MASS;			// fixed mass of car.
-    double	FUEL;			// mass of fuel in car.
-    double	DAMAGE;			// damage of this car.
     double	WIDTH;			// width of car (m).
     double	TYRE_MU;		// mu value of tyres (min of those avail).
     double	TYRE_MU_F;		// mu value of front tyres.

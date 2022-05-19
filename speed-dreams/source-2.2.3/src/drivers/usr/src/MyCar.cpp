@@ -38,7 +38,6 @@ void MyCar::init(tCarElt* car, MyTrack* track)
     mCar = car;
     mTrack = track;
     mYaw = 0.0;
-    mLastDamage = 0;
     mPrevGear = mCar->_gear;
     mGlobalPos = Vec3d(mCar->_pos_X, mCar->_pos_Y, mCar->_pos_Z);
     mFrontAxleOffset = mCar->priv.wheel[0].relPos.x;
@@ -56,8 +55,6 @@ void MyCar::readPrivateSection(const MyParam& param)
     mBrakeMuFactor = param.getNum("private", "brake mu factor");
     mMuScaleLR = param.getNum("private", "LR mu scale");
     mBumpSpeedFactor = param.getNum("private", "bump speed factor");
-    mFuelPerMeter = param.getNum("private", "fuel per meter");
-    mFuelWeightFactor = param.getNum("private", "fuel weight factor");
     mTireWearPerMeter = param.getNum("private", "tire wear per meter");
     mSideSlipTCL = param.getNum("private", "TCL side slip");
     mSideSlipTCLQualy = param.getNum("private", "TCL side slip qualy");
@@ -193,22 +190,10 @@ void MyCar::initBrakes()
     mBrakeForceMax = maxf + maxr;
 }
 
-double MyCar::calcFuel(double dist) const
-{
-    double tiredist = dist / mTireWearPerMeter;
-    LogUSR.info("Tire distance : %.7f\n", tiredist);
-    double mindist = MIN(dist, tiredist);
-    LogUSR.info("Minimum distance : %.3f\n", mindist);
-    double fuel = mindist * mFuelPerMeter;
-    LogUSR.info("calcul fuel : %.3f\n", fuel);
-
-    return Utils::clip(fuel, 0.0, mTankVol);
-}
-
 void MyCar::update(double dt)
 {
     mDeltaTime = dt;
-    mMass = mCarMass + mFuelWeightFactor * mCar->_fuel;
+    mMass = mCarMass;
     mSpeedX = mCar->_speed_x;
     mTires.update();
 
@@ -242,8 +227,6 @@ void MyCar::update(double dt)
 
     mAngleToTrack = Utils::normPiPi(mTrack->yaw(mCar->_distFromStartLine) - mYaw);
     mBorderDist = mCar->_trkPos.seg->width / 2.0 - fabs(mToMiddle) - mCar->_dimension_y / 2.0;
-    mDamageDiff = mCar->_dammage - mLastDamage;
-    mLastDamage = mCar->_dammage;
     bool mOnLeftSide = toMid() > 0.0 ? true : false;
 
     if (mCar->_trkPos.seg->side[mOnLeftSide] != NULL)
@@ -558,10 +541,8 @@ bool MyCar::learningOfftrack()
     }
 
     // Barrier collisions
-    if (damageDiff() > 0 && wallDist() - mCar->_dimension_y / 2.0 < 0.5)
+    if (wallDist() - mCar->_dimension_y / 2.0 < 0.5)
     {
-        LogUSR.info("barrier coll : %u\n", damageDiff());
-
         return true;
     }
 
