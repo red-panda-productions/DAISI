@@ -117,8 +117,8 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
-/// @brief activates the InterventionMenu
+// SIMULATED DRIVING ASSISTANCE CHANGE : added researcher menu
+/// @brief activates the ResearcherMenu
 /// @return true if successful
 bool LegacyMenu::ActivateResearcherMenu()
 {
@@ -235,7 +235,7 @@ void LegacyMenu::activateLoadingScreen()
 	else
         snprintf(pszTitle, sizeof (pszTitle), "%s", pReInfo->_reName);
 
-	::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.jpg");
+	::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.png");
 }
 
 void LegacyMenu::addLoadingMessage(const char* pszText)

@@ -29,7 +29,17 @@
   </section>
 
   <section name="version">
-    <attnum name="version" val="1.000000"/>
+    <attnum name="version" val="3.000000"/>
+  </section>
+
+  <section name="max_time">
+    <attnum name="max_time" val="10.000000"/>
+  </section>
+
+  <section name="allowed_actions">
+    <attstr name="steer" val="true"/>
+    <attstr name="accelerate" val="true"/>
+    <attstr name="brake" val="true"/>
   </section>
 
 </params>
