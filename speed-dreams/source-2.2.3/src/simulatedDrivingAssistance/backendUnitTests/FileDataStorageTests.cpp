@@ -610,7 +610,7 @@ TEST(FileDataStorageTests, AddToArrayTest)
         fileDataStorage.SetCompressionRate(compressionRate);
 
         float value = random.NextFloat();
-        auto compressionStep = random.NextUInt(compressionRate);
+        int compressionStep = random.NextInt(0, compressionRate);
 
         float values[COMPRESSION_LIMIT];
         float originalValues[COMPRESSION_LIMIT];
@@ -621,15 +621,13 @@ TEST(FileDataStorageTests, AddToArrayTest)
             originalValues[j] = randomValue;
         }
 
-        int placeInArray = compressionStep;
-
-        fileDataStorage.AddToArray(values, value, compressionStep);
+        fileDataStorage.AddToArray<float>(values, value, compressionStep);
 
         for (int j = 0; j < compressionRate; j++)
         {
-            if (j == placeInArray)
+            if (j == compressionStep)
             {
-                ASSERT_EQ(values[placeInArray], value);
+                ASSERT_EQ(values[compressionStep], value);
                 continue;
             }
             ASSERT_EQ(values[j], originalValues[j]);
