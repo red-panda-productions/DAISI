@@ -5,11 +5,11 @@ on:
   schedule:
   - cron: "0 3 * * *"
 
-  pull-request:
-    branches: [ main ]
-
   # Allow manually triggering from the actions tab
   workflow_dispatch:
+
+  pull-request:
+    branches: [ main ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -24,9 +24,6 @@ jobs:
     # The CMake configure and build commands are platform agnostic anda should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    #if: github.event_name != 'pull_request' || github.event.label.name == 'integrationtests'
-    #if: github.event.label.name == 'integrationtest'
-
     runs-on: windows-latest
     
     steps:
