@@ -3,30 +3,11 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DatabaseSettingsMenu.h"
+#include "DatabaseConnectionCheck.h"
 #include "DataSelectionMenu.h"
 #include "../rppUtils/FileDialog.hpp"
+
 #include <experimental/filesystem>
-
-// Parameters used in the xml files
-#define PRM_USERNAME            "UsernameEdit"
-#define PRM_PASSWORD            "PasswordEdit"
-#define PRM_ADDRESS             "AddressEdit"
-#define PRM_PORT                "PortEdit"
-#define PRM_SCHEMA              "SchemaEdit"
-#define PRM_SSL                 "CheckboxUseSSL"
-#define PRM_CERT                "dynamic controls/CertificateSettings"
-#define PRM_DBSTATUS            "DbStatus"
-#define PRM_CA_CERT_DIALOG      "CACertDialog"
-#define PRM_PUBLIC_CERT_DIALOG  "PublicCertDialog"
-#define PRM_PRIVATE_CERT_DIALOG "PrivateCertDialog"
-
-#define CERT_PEM                     ".pem"
-#define CERT_KEY                     ".key"
-#define MSG_ONLY_HINT                ""
-#define MSG_CA_CERT_DIALOG_TEXT      "CA:"
-#define MSG_PUBLIC_CERT_DIALOG_TEXT  "Public:"
-#define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
-#define AMOUNT_OF_NAMES              1
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -39,7 +20,6 @@ int m_addressControl;
 int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
-int m_dbStatusControl;
 
 char m_portString[256];
 
@@ -49,6 +29,7 @@ int m_privateCertFileDialogControl;
 int m_caCertDialogLabel;
 int m_publicCertDialogLabel;
 int m_privateCertDialogLabel;
+int m_dbStatusControl;
 bool m_certChosen = false;
 
 tDatabaseSettings m_dbsettings;
@@ -139,130 +120,30 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
-/// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
-static void SynchronizeControls()
-{
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, m_dbsettings.Username);
-    GfuiEditboxSetString(s_scrHandle, m_passwordControl, m_dbsettings.Password);
-    GfuiEditboxSetString(s_scrHandle, m_addressControl, m_dbsettings.Address);
-    GfuiEditboxSetString(s_scrHandle, m_portControl, m_portString);
-    GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.Schema);
-    GfuiCheckboxSetChecked(s_scrHandle, m_useSSLControl, m_dbsettings.UseSSL);
-
-    std::experimental::filesystem::path path = m_dbsettings.CACertFilePath;
-    std::string buttonText = MSG_CA_CERT_DIALOG_TEXT + path.filename().string();
-    GfuiButtonSetText(s_scrHandle, m_caCertFileDialogControl, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_caCertDialogLabel, "");
-
-    path = m_dbsettings.PublicCertFilePath;
-    buttonText = MSG_PUBLIC_CERT_DIALOG_TEXT + path.filename().string();
-    GfuiButtonSetText(s_scrHandle, m_publicCertFileDialogControl, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_publicCertDialogLabel, "");
-
-    path = m_dbsettings.PrivateCertFilePath;
-    buttonText = MSG_PRIVATE_CERT_DIALOG_TEXT + path.filename().string();
-    GfuiButtonSetText(s_scrHandle, m_privateCertFileDialogControl, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_privateCertDialogLabel, "");
-
-    GfuiVisibilitySet(s_scrHandle, m_caCertFileDialogControl, m_dbsettings.UseSSL);
-    GfuiVisibilitySet(s_scrHandle, m_publicCertFileDialogControl, m_dbsettings.UseSSL);
-    GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, m_dbsettings.UseSSL);
-}
-
-/// @brief         Loads the default menu settings from the controls into the internal variables
-static void LoadDefaultSettings()
-{
-    strcpy_s(m_dbsettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
-    strcpy_s(m_dbsettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
-    strcpy_s(m_dbsettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_addressControl));
-    strcpy_s(m_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_portControl));
-    strcpy_s(m_dbsettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
-    m_dbsettings.UseSSL = SETTINGS_NAME_LENGTH, GfuiCheckboxIsChecked(s_scrHandle, m_useSSLControl);
-}
-
-/// @brief        Loads the settings from the config file into the internal variables
-/// @param p_param The configuration xml file handle
-static void LoadConfigSettings(void* p_param)
-{
-    // Set the max time setting from the xml file
-    strcpy_s(m_dbsettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(m_dbsettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(m_dbsettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(m_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(m_dbsettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
-    m_dbsettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
-    strcpy_s(m_dbsettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
-    strcpy_s(m_dbsettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
-    strcpy_s(m_dbsettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
-
-    const char* filePath = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr);
-    if (filePath)
-    {
-        strcpy_s(m_dbsettings.CACertFilePath, SETTINGS_NAME_LENGTH, filePath);
-    }
-    const char* filePath2 = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr);
-    if (filePath2)
-    {
-        strcpy_s(m_dbsettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, filePath2);
-    }
-    const char* filePath3 = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr);
-    if (filePath3)
-    {
-        strcpy_s(m_dbsettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, filePath3);
-    }
-    // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
-    SynchronizeControls();
-}
-
-/// @brief Loads the user menu settings from the local config file or the default values will be loaded
 static void OnActivate(void* /* dummy */)
 {
-    // Retrieves the saved user xml file, if it doesn't exist the default values will be loaded
-    std::string strPath("config/DatabaseSettingsMenu.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
-    if (GfFileExists(buf))
-    {
-        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
-        // Initialize settings with the retrieved xml file
-        LoadConfigSettings(param);
-        return;
-    }
-    LoadDefaultSettings();
+    tDbControlSettings control;
+    control.Username = m_usernameControl;
+    control.Password = m_passwordControl;
+    control.Address = m_addressControl;
+    control.Port = m_portControl;
+    control.PortString = m_portString;
+    control.Schema = m_schemaControl;
+    control.UseSSL = m_useSSLControl;
+    control.CACertificateButton = m_caCertFileDialogControl;
+    control.CACertificateLabel = m_caCertDialogLabel;
+    control.PublicCertificateButton = m_publicCertFileDialogControl;
+    control.PublicCertificateLabel = m_publicCertDialogLabel;
+    control.PrivateCertificateButton = m_privateCertFileDialogControl;
+    control.PrivateCertificateLabel = m_publicCertDialogLabel;
+    LoadDBSettings(s_scrHandle, m_dbsettings, control);
+    SynchronizeControls(s_scrHandle, m_dbsettings, control);
 }
 
 /// @brief Returns to the main menu screen
 static void GoBack(void* /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
-}
-
-/// @brief Checks if a connection can be established with the database.
-static void CheckConnection(void* /* dummy */)
-{
-    m_dbsettings.UseSSL = false;
-    bool connectable = false;
-    try
-    {
-        GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Connecting...");
-        connectable = SMediator::GetInstance()->CheckConnection(m_dbsettings);
-    }
-    catch (std::exception& e)
-    {
-        GfLogError("Cannot open database. Database is offline or invalid ");
-    }
-    if (connectable)
-    {
-        GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Online");
-        float color[4] = {0, 1, 0, 1};
-        float* colotPtr = color;
-        GfuiLabelSetColor(s_scrHandle, m_dbStatusControl, colotPtr);
-        return;
-    }
-    float color[4] = {1, 0, 0, 1};
-    float* colotPtr = color;
-    GfuiLabelSetText(s_scrHandle, m_dbStatusControl, "Offline");
-    GfuiLabelSetColor(s_scrHandle, m_dbStatusControl, colotPtr);
 }
 
 /// @brief Select a certificate file and save the path
@@ -319,6 +200,11 @@ static void SelectPrivateCert(void* /* dummy */)
     SelectCert(m_privateCertFileDialogControl, m_privateCertDialogLabel, MSG_PRIVATE_CERT_DIALOG_TEXT, m_dbsettings.PrivateCertFilePath, extensions);
 }
 
+static void CheckConnectionCallback(void* /* dummy */)
+{
+    CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings);
+}
+
 /// @brief            Initializes the database settings menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The databaseSettingsMenu scrHandle
@@ -338,7 +224,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, GoBack);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnection);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnectionCallback);
     m_caCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CA_CERT_DIALOG, s_scrHandle, SelectCACert);
     m_publicCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PUBLIC_CERT_DIALOG, s_scrHandle, SelectPublicCert);
     m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
@@ -362,6 +248,8 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     // Set m_dbsettings on start so that the menu doesn't have to be activated manually
     OnActivate(s_scrHandle);
     SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
+
+    CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings);
 
     return s_scrHandle;
 }

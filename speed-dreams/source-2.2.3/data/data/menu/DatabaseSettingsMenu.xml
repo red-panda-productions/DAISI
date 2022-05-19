@@ -225,7 +225,7 @@
             <attstr name="type" val="label"/>
             <attnum name="x" val="120"/>
             <attnum name="y" val="225"/>
-            <attstr name="text" val="Unknown"/>
+            <attstr name="text" val="Unknown      "/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium_t"/>
         </section>

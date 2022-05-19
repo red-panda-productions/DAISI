@@ -6,20 +6,27 @@
 #include "ResearcherMenu.h"
 #include <DatabaseSettingsMenu.h>
 
-#define PRM_ENV_DATA   "CheckboxEnvironmentData"
-#define PRM_CAR_DATA   "CheckboxCarData"
-#define PRM_HUMAN_DATA "CheckboxUserData"
-#define PRM_INTRV_DATA "CheckboxInterventionData"
-#define PRM_META_DATA  "CheckboxMetaData"
+#include "DatabaseConnectionCheck.h"
+
+#define PRM_ENV_DATA        "CheckboxEnvironmentData"
+#define PRM_CAR_DATA        "CheckboxCarData"
+#define PRM_HUMAN_DATA      "CheckboxUserData"
+#define PRM_INTRV_DATA      "CheckboxInterventionData"
+#define PRM_META_DATA       "CheckboxMetaData"
+#define PRM_DATABASE_STATUS "DatabaseStatusLabel"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 static void* s_nextHandle = nullptr;
+static void* s_dbSettingsMenu = nullptr;
 
 // Data to store
 tDataToStore m_dataToStore;
 
 int m_dataToStoreControl[5];
+int m_dbStatus;
+
+DatabaseSettings m_dbSettings;
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
@@ -91,6 +98,12 @@ static void LoadDefaultSettings()
 /// @brief Loads the user menu settings from the local config file
 static void OnActivate(void* /* dummy */)
 {
+    char portString[SETTINGS_NAME_LENGTH];
+    tDbControlSettings control;
+    control.PortString = portString;
+    LoadDBSettings(s_dbSettingsMenu, m_dbSettings, control);
+    CheckConnection(s_scrHandle, m_dbStatus, m_dbSettings);
+
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
     std::string strPath("config/DataSelectionMenu.xml");
     char buf[512];
@@ -147,8 +160,10 @@ static void GoBack(void* /* dummy */)
 static void
 DatabaseSettingsMenuActivate(void* /* dummy */)
 {
-    GfuiScreenActivate(DatabaseSettingsMenuInit(s_scrHandle));
+    GfuiScreenActivate(s_dbSettingsMenu);
 }
+
+
 
 /// @brief            Initializes the data selection menu
 /// @param p_nextMenu The scrHandle of the next menu
@@ -161,6 +176,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
+
+    s_dbSettingsMenu = DatabaseSettingsMenuInit(s_scrHandle);
 
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
@@ -176,6 +193,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
+    m_dbStatus = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DATABASE_STATUS);
 
     GfParmReleaseHandle(param);
 
