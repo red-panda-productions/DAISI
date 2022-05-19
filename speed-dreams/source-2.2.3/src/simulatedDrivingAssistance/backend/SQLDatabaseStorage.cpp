@@ -81,8 +81,6 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @brief  gets the keys for secure database connection in the data/certificates folder
 ///         and adds them to the connection properties
 ///         name of the keys are set in the database_encryption_settings.txt file
-/// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
-///                                 needs "\\" in front of it
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
 /// @param p_dbSettings             The database settings used to retrieve the certificate names.
 void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
@@ -94,12 +92,7 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties,
 
 /// @brief                  Connect to the specified database.
 ///                         Initialise the database with the proper tables if they don't exist yet.
-/// @param p_hostName       Hostname of the database to connect to. Should be a TCP-IP address.
-/// @param p_port           Port the database is located on on the host.
-/// @param p_username       Username to connect with to the database.
-/// @param p_password       Password to connect with to the database.
-/// @param p_schemaName     Name of the database schema to use.
-/// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
+/// @param p_dbSettings     Struct containing all settings for a database connection
 /// @param p_dirPath        optional: path relative to the datafolder in which the
 ///                         "database_encryption_settings.txt" file is located
 ///                         needs "\\" in front
@@ -407,7 +400,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
         "intervention_mode = " +
         values)
 
-    int settingsId;
+    int settingsId = -1;
     GET_INT_FROM_RESULTS(settingsId);
 
     values = "'" + trialDate + ' ' + trialTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
@@ -417,7 +410,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     EXECUTE(INSERT_INTO("Trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()");
 
-    int trialId;
+    int trialId = -1;
     SELECT_LAST_ID(trialId);
 
     return trialId;

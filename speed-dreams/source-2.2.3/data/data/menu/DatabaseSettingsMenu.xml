@@ -5,7 +5,7 @@
 <params name="DatabaseSettings">
 
     <section name="dynamic controls">
-	
+    
         <!-- Input field for username -->
         <section name="UsernameEdit">
             <attstr name="type" val="edit box"/>
@@ -27,10 +27,10 @@
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-	        <attstr name="text" val="Password"/>
+            <attstr name="text" val="Password"/>
         </section>
-		
-		<!-- Input field for IP Address -->
+        
+        <!-- Input field for IP Address -->
         <section name="AddressEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -39,10 +39,10 @@
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-			<attstr name="text" val="Url"/>
+            <attstr name="text" val="Url"/>
         </section>
-		
-		<!-- Input field for the port -->
+        
+        <!-- Input field for the port -->
         <section name="PortEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
@@ -51,11 +51,11 @@
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-			<attstr name="text" val="Port"/>
+            <attstr name="text" val="Port"/>
         </section>
-		
-		<!-- Input field for the database schema name -->
-		<section name="SchemaEdit">
+        
+        <!-- Input field for the database schema name -->
+        <section name="SchemaEdit">
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
@@ -63,11 +63,11 @@
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
-			<attstr name="text" val="SchemaName"/>
+            <attstr name="text" val="SchemaName"/>
         </section>
-		
-		<!-- Checkbox for SSL option -->
-		<section name="CheckboxUseSSL">
+        
+        <!-- Checkbox for SSL option -->
+        <section name="CheckboxUseSSL">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Use SSL"/>
             <attstr name="tip" val="Enable/Disable the usage of SSL"/>
@@ -102,9 +102,9 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-		
-		<!-- Back button -->
-		<section name="BackButton">
+        
+        <!-- Back button -->
+        <section name="BackButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Back"/>
@@ -125,9 +125,9 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-		
-		<!-- Connection button -->
-		<section name="TestConnectionButton">
+        
+        <!-- Connection button -->
+        <section name="TestConnectionButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Test connection"/>
@@ -148,8 +148,8 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-		
-	    <section name="CACertDialog">
+        
+        <section name="CACertDialog">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="yes"/>
             <attstr name="text" val="Select CA certificate:"/>                                                                                                                                                                                                                                                                 "/>
@@ -170,8 +170,8 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-		
-		<section name="PublicCertDialog">
+        
+        <section name="PublicCertDialog">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="yes"/>
             <attstr name="text" val="Select public certificate:"/>                                                                                                                                                                                                                                                                 "/>
@@ -192,8 +192,8 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-		
-		<section name="PrivateCertDialog">
+        
+        <section name="PrivateCertDialog">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="yes"/>
             <attstr name="text" val="Select private certificate:"/>                                                                                                                                                                                                                                                                 "/>
@@ -214,14 +214,14 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-		
-		<section name="CertificateSettings">
-            <attstr name="CA certificate" val="CA.txt"/>
-            <attstr name="public certificate" val="public.txt"/>
-           <attstr name="private certificate" val="private.txt"/>
+        
+        <section name="CertificateSettings">
+            <attstr name="CA certificate" val="CA.pem"/>
+            <attstr name="public certificate" val="public.pem"/>
+           <attstr name="private certificate" val="private.key"/>
         </section>
-		
-		<section name="DbStatus">
+        
+        <section name="DbStatus">
             <attstr name="type" val="label"/>
             <attnum name="x" val="120"/>
             <attnum name="y" val="225"/>
@@ -238,7 +238,7 @@
             <attstr name="type" val="background image"/>
             <attstr name="image" val="data/img/Main-menu-2.png"/>
         </section>
-		
+        
         <section name="2">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
@@ -258,8 +258,8 @@
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
-		
-		<section name="4">
+        
+        <section name="4">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="250"/>
@@ -268,8 +268,8 @@
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
-		
-		<section name="5">
+        
+        <section name="5">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="200"/>
@@ -278,8 +278,8 @@
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
-		
-		<section name="6">
+        
+        <section name="6">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="150"/>
@@ -289,7 +289,7 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
-		<section name="7">
+        <section name="7">
             <attstr name="type" val="label"/>
             <attnum name="x" val="100"/>
             <attnum name="y" val="250"/>
@@ -298,7 +298,7 @@
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
         </section>
-		
+        
     </section>
 
 </params>

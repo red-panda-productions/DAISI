@@ -128,7 +128,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: added database button and back button
+    // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);

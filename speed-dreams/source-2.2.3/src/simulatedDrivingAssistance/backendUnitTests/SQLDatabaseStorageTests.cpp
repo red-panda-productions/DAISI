@@ -8,17 +8,17 @@
 #include <config.h>
 #include "Mediator.h"
 
-#define MAKE_TEST_SETTINGS                                  \
-    tDatabaseSettings testSettings;                         \
-    sprintf(testSettings.Username, "SDATest");              \
-    sprintf(testSettings.Password, "PASSWORD");             \
-    testSettings.Port = 3306;                               \
-    sprintf(testSettings.Address, "127.0.0.1");             \
-    sprintf(testSettings.Schema, "sda_test");               \
-    testSettings.UseSSL = true;                             \
-    sprintf(testSettings.CACertFilePath, "CA.txt");         \
-    sprintf(testSettings.PublicCertFilePath, "public.txt"); \
-    sprintf(testSettings.PrivateCertFilePath, "private.txt");
+#define MAKE_TEST_SETTINGS                                                         \
+    tDatabaseSettings testSettings;                                                \
+    strcpy_s(testSettings.Username, SETTINGS_NAME_LENGTH, "SDATest");              \
+    strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, "PASSWORD");             \
+    testSettings.Port = 3306;                                                      \
+    strcpy_s(testSettings.Address, SETTINGS_NAME_LENGTH, "127.0.0.1");             \
+    strcpy_s(testSettings.Schema, "sda_test");                                     \
+    testSettings.UseSSL = true;                                                    \
+    strcpy_s(testSettings.CACertFilePath, SETTINGS_NAME_LENGTH, "CA.txt");         \
+    strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
+    strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt");
 
 #define TEST_DATA_DIRECTORY "\\databaseTestData\\"
 
