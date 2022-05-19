@@ -61,7 +61,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 
     if (p_blackBoxExecutablePath.empty())
     {
-        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!");
+        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!\n");
         return;
     }
 

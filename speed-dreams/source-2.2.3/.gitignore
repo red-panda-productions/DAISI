@@ -36,8 +36,9 @@ Folder.DotSettings.user
 
 temp/
 
-RppUtilsCoverage.bat
+src/simulatedDrivingAssistance/integrationTests/IntegrationTestConfig.h
 
+RppUtilsCoverage.bat
 
 Folder.DotSettings.user
 

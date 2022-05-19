@@ -34,6 +34,8 @@ public:
 
     bool HasReceivedMessage() const;
 
+    bool StartedReceiving() const;
+
     int GetErrorCode() const;
 
     void StartReceive();
@@ -49,6 +51,7 @@ private:
 
     bool m_stop = false;
     bool m_receiving = false;
+    bool m_startedReceiving = false;
     bool m_received = false;
 
     int m_error = 0;
