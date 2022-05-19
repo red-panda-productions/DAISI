@@ -236,7 +236,10 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 {
     const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
 
-    if (trackFileName == nullptr) return false;
+    if (trackFileName == nullptr) {
+        GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
+        return false;
+    }
 
     void* trackHandle = GfParmReadFile(trackFileName, 0, true);
 
@@ -247,6 +250,8 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 
     if (category == nullptr || name == nullptr)
     {
+        GfLogWarning("Failed to read category or name.\n");
+
         free((void*)category);
         free((void*)name);
         return false;
@@ -302,6 +307,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
 
     if (!exists(settingsFile))
     {
+        GfLogWarning("Settings file %s doesn't exist\n", settingsFile.string().c_str());
         return false;
     }
 
@@ -310,6 +316,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     // If it cannot be parsed the recording is invalid
     if (settingsHandle == nullptr)
     {
+        GfLogWarning("Settings file could not be read.\n");
         return false;
     }
 
@@ -332,7 +339,13 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     // Make sure all recordings exists
     if (!exists(carSettingsFile) || !exists(settingsFile) || !exists(decisionsRecordingFile) || !exists(userRecordingFile) || !exists(simulationFile))
     {
+        GfLogWarning("Missing one of the recording files.\n");
         return false;
+    }
+
+    if (version == CURRENT_RECORDER_VERSION) {
+        GfParmReleaseHandle(settingsHandle);
+        return true;
     }
 
     // Update version 0 to version 1 recording
@@ -340,6 +353,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     {
         if (!UpdateV0RecorderToV1(settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile))
         {
+            GfLogWarning("Failed to update to V1 from V0.\n");
             GfParmReleaseHandle(settingsHandle);
             return false;
         }

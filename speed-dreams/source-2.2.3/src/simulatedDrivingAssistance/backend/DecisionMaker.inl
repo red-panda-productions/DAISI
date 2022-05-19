@@ -61,7 +61,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 
     if (p_blackBoxExecutablePath.empty())
     {
-        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!");
+        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!\n");
         return;
     }
 
@@ -88,6 +88,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
                                                       trackname,
                                                       trackversion,
                                                       interventiontype);
+    m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -98,18 +99,12 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
-    m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
-
     const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
+    m_fileBufferStorage.Save(p_car, p_situation, m_decision, p_tickCount);
 
-    if (decisionMade)
+    if (decisionMade && m_recorder)
     {
-        m_fileBufferStorage.SaveDecisions(m_decision);
-
-        if (m_recorder)
-        {
-            m_recorder->WriteDecisions(&m_decision, p_tickCount);
-        }
+        m_recorder->WriteDecisions(&m_decision, p_tickCount);
     }
 
     int decisionCount = 0;
