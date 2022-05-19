@@ -139,24 +139,23 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTupl
 
     m_compressionStep++;
 
+    if (m_compressionStep != m_compressionRate) return;
+
     // save to the file at the end of the compression time step
-    if (m_compressionStep == m_compressionRate)
+    WRITE_VAR(m_outputStream, p_timestamp);
+    if (m_saveSettings.CarData)
     {
-        WRITE_VAR(m_outputStream, p_timestamp);
-        if (m_saveSettings.CarData)
-        {
-            WriteCarData();
-        }
-        if (m_saveSettings.HumanData)
-        {
-            WriteHumanData();
-        }
-        if (m_saveSettings.InterventionData)
-        {
-            WriteInterventionData();
-        }
-        m_compressionStep = 0;
+        WriteCarData();
     }
+    if (m_saveSettings.HumanData)
+    {
+        WriteHumanData();
+    }
+    if (m_saveSettings.InterventionData)
+    {
+        WriteInterventionData();
+    }
+    m_compressionStep = 0;
 }
 
 /// @brief Saves the car data from the last time step
