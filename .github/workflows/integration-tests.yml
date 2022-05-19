@@ -6,7 +6,7 @@ on:
   - cron: "0 3 * * *"
 
   pull-request:
-    types: [ labeled ]
+    branches: [ main ]
 
   # Allow manually triggering from the actions tab
   workflow_dispatch:
