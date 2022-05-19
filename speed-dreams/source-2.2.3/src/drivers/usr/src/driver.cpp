@@ -160,17 +160,6 @@ void Driver::InitTrack(tTrack* Track, void* carHandle, void** carParmHandle, tSi
     else
         distance = 1.05 * situation->_totLaps * mTrack.length();
 
-    LogUSR.info("distance fuel = %.3f\n", distance);
-
-    double startfuel = mCar.calcFuel(distance);
-    LogUSR.info("Start fuel : %.3f\n", startfuel);
-    double initFuel = param.getNum("private", "max fuel");
-
-    if (initFuel > 1.0)
-        startfuel = MIN(startfuel, initFuel);
-
-    param.setNum(SECT_CAR, PRM_FUEL, startfuel);
-
     // load the global skill level, range 0 - 10
     snprintf(buffer, sizeof(buffer), "%sconfig/raceman/extra/skill.xml", GetLocalDir());
     void *skillHandle = GfParmReadFile(buffer, GFPARM_RMODE_REREAD);
@@ -530,7 +519,6 @@ void Driver::printInfos()
             double laptime = lapsimtime - mLapSimTime;
             LogUSR.debug("%.3f %s laptime %.3f\n", mSimTime, flagstring.c_str(), laptime);
             mLapSimTime = lapsimtime;
-            LogUSR.debug("%.3f %s avgfuelperlap %.3f\n", mSimTime, flagstring.c_str(), mPit.avgFuelPerLap());
         }
     }
 
@@ -744,13 +732,11 @@ double Driver::getAccel(double maxspeed)
     {
         if (mOpps.oppNear()->dist() > 5.0 && mOpps.oppNear()->dist() < 25.0)
         {
-            if (!mOpps.oppNear()->backMarker() && !mOpps.oppNear()->damaged())
+            if (mCar.v() > 0.9 * maxspeed)
             {
-                if (mCar.v() > 0.9 * maxspeed)
-                {
                     accel *= 0.5;
-                }
             }
+            
         }
     }
 

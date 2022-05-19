@@ -623,12 +623,8 @@ void	Driver::NewRace( int index, tCarElt* pCar, tSituation* pS )
     LogSHADOW.info( "RIGHT:  MU_SC %g   KZ_SCALE %g   FLY_HEIGHT %g\n",
                     m_cm[PATH_RIGHT].MU_SCALE, m_cm[PATH_RIGHT].KZ_SCALE, m_priv[PATH_RIGHT].FLY_HEIGHT );
 
-    m_cm[PATH_NORMAL].FUEL = pCar->_fuel;
-    LogSHADOW.info("FUEL : %.7f\n", m_cm[PATH_NORMAL].FUEL);
-
     for( int p = PATH_LEFT; p <= PATH_RIGHT; p++ )
     {
-        m_cm[p].FUEL	= m_cm[PATH_NORMAL].FUEL;
         m_cm[p].CD_BODY	= m_cm[PATH_NORMAL].CD_BODY;
         m_cm[p].CD_WING	= m_cm[PATH_NORMAL].CD_WING;
         m_cm[p].WIDTH	= m_cm[PATH_NORMAL].WIDTH;
@@ -791,9 +787,6 @@ void	Driver::NewRace( int index, tCarElt* pCar, tSituation* pS )
 
     TeamInfo::Item*	pItem = new TeamInfo::Item();
     pItem->index = pCar->index;
-    pItem->teamName = pCar->_teamname;
-    pItem->damage = pCar->_dammage;
-    pItem->lapsUntilPit = 999;
     pItem->usingPit = false;
     pItem->pOther = 0;
     pItem->pCar = pCar;
@@ -2508,24 +2501,6 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
     double	gripScaleF = GripFactor(car, true);
     double	gripScaleR = GripFactor(car, false);
 
-    if( fabs(m_cm[PATH_NORMAL].FUEL			- carFuel)			> 2		||
-            fabs(m_cm[PATH_NORMAL].DAMAGE		- car->_dammage)	> 250	||
-            fabs(m_cm[PATH_NORMAL].GRIP_SCALE_F	- gripScaleF)		> 0.05	||
-            fabs(m_cm[PATH_NORMAL].GRIP_SCALE_R	- gripScaleR)		> 0.05 )
-    {
-        m_cm[PATH_NORMAL].FUEL			= 2 * floor(carFuel / 2);
-        m_cm[PATH_NORMAL].DAMAGE		= car->_dammage;
-        m_cm[PATH_NORMAL].GRIP_SCALE_F	= gripScaleF;
-        m_cm[PATH_NORMAL].GRIP_SCALE_R	= gripScaleR;
-
-        for( int p = PATH_LEFT; p <= PATH_RIGHT; p++ )
-        {
-            m_cm[p].FUEL			= m_cm[PATH_NORMAL].FUEL;
-            m_cm[p].DAMAGE			= m_cm[PATH_NORMAL].DAMAGE;
-            m_cm[p].GRIP_SCALE_F	= m_cm[PATH_NORMAL].GRIP_SCALE_F;
-            m_cm[p].GRIP_SCALE_R	= m_cm[PATH_NORMAL].GRIP_SCALE_R;
-        }
-
 #if !(defined(DEV) && defined(BRAKING_TEST))
         for( int p = PATH_NORMAL; p <= PATH_RIGHT; p++ )
         {
@@ -2534,7 +2509,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
             m_path[p].PropagateAcceleration( m_cm[p] );
         }
 #endif
-    }
+ 
 
     //	DEBUGF( "**** wheel fz %g %g %g %g\n", h[0], h[1], h[2], h[3] );
 
@@ -2607,7 +2582,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
         double	sysLoad = car->priv.reaction[0] + car->priv.reaction[1] + car->priv.reaction[2] + car->priv.reaction[3];
         LogSHADOW.debug( "[%d] load ratio %g %g path speed %g  overspeed %g  offset to path %g  engine acc %g\n",
                          pi.idx, load / opLoad, sysLoad / opLoad, pi.spd, spd0 - pi.spd, pi.offs + car->pub.trkPos.toMiddle,
-                         cm.AccForceFromSpeed(pp.accSpd) / (cm.MASS + cm.FUEL) );
+                         cm.AccForceFromSpeed(pp.accSpd) / (cm.MASS) );
     }
 
     double	targetSpd = pi.spd;
@@ -2960,8 +2935,6 @@ void	Driver::AvoidOtherCars(
         bool*				close,
         bool*				lapper )
 {
-    m_pShared->m_teamInfo.GetAt(car->index)->damage = car->_dammage;
-
     // double	trackLen = m_track.GetLength();
     // double	myPos = RtGetDistFromStart(const_cast<tCarElt*>(car));
     double	mySpd = hypot(car->_speed_X, car->_speed_Y);

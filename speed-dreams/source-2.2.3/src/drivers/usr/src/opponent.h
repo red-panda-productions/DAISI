@@ -46,7 +46,6 @@ public:
   bool   teamMate() const { return mTeamMate; };
   bool   backMarker() const { return mBackMarker; };
   bool   letPass() const { return mLetpass; };
-  bool   damaged() const { return mDamaged; };
   bool   leftOfMe() const { return mLeftOfMe; };
 
 private:
@@ -77,7 +76,6 @@ private:
   double mBorderDist;
   bool   mBackMarker;
   bool   mLetpass;
-  bool   mDamaged;
   bool   mLeftOfMe;
 
   CarElt* mOppCar; // pointer to the opponents car

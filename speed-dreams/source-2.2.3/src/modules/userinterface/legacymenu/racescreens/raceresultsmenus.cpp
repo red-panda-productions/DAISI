@@ -168,7 +168,6 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
 		NLastLapDamages = 0; 
 	else {
 		snprintf(path, sizeof(path), "%s/%s/%s/%d", info->track->name, RE_SECT_RESULTS, race, start - 1);
-		NLastLapDamages =  (int)(GfParmGetNum(results, path, RE_ATTR_DAMMAGES, NULL, 0)); 
 	}
 
     for (i = 0 + start; i < MIN(start + nMaxLines, totLaps); i++) {
@@ -200,13 +199,6 @@ rmPracticeResults(void *prevHdle, tRmInfo *info, int start)
 		snprintf(buf, sizeof(buf), "%3.1f", (GfParmGetNum(results, path, RE_ATTR_BOT_SPEED, NULL, 0) * 3.6));
 		GfuiMenuCreateLabelControl(rmScrHdle, hmenu, "MinSpeed", true, // From template.
 								   buf, GFUI_TPL_X, y);
-
-		/* Damages in current lap + (total so far) */
-		damages =  (int)(GfParmGetNum(results, path, RE_ATTR_DAMMAGES, NULL, 0)); 
-		snprintf(buf, sizeof(buf), "%d (%d)", damages ? damages - NLastLapDamages : 0, damages); 
-		GfuiMenuCreateLabelControl(rmScrHdle, hmenu, "Damages", true, // From template.
-								   buf, GFUI_TPL_X, y);
-		NLastLapDamages = damages; 
 
 		y -= yLineShift;
     }
@@ -367,11 +359,6 @@ rmRaceResults(void *prevHdle, tRmInfo *info, int start)
         //Top speed
         snprintf(buf, sizeof(buf), "%3.1f", (GfParmGetNum(results, path, RE_ATTR_TOP_SPEED, NULL, 0) * 3.6));
 		GfuiMenuCreateLabelControl(rmScrHdle, hmenu, "TopSpeed", true, // From template.
-								   buf, GFUI_TPL_X, y);
-        
-        //Damage
-        snprintf(buf, sizeof(buf), "%d", (int)(GfParmGetNum(results, path, RE_ATTR_DAMMAGES, NULL, 0)));
-		GfuiMenuCreateLabelControl(rmScrHdle, hmenu, "Damages", true, // From template.
 								   buf, GFUI_TPL_X, y);
         
         //Pitstops

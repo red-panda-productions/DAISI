@@ -298,7 +298,6 @@ ReStoreRaceResults(const char *race)
 				GfParmSetNum(results, path, RE_ATTR_TIME, NULL, (tdble)car->_curTime);
 				GfParmSetNum(results, path, RE_ATTR_BEST_LAP_TIME, NULL, (tdble)car->_bestLapTime);
 				GfParmSetNum(results, path, RE_ATTR_TOP_SPEED, NULL, car->_topSpeed);
-				GfParmSetNum(results, path, RE_ATTR_DAMMAGES, NULL, (tdble)car->_dammage);
 				GfParmSetNum(results, path, RE_ATTR_NB_PIT_STOPS, NULL, (tdble)car->_nbPitStops);
 			
 				GfParmSetStr(results, path, RE_ATTR_MODULE, car->_modName);
@@ -433,7 +432,6 @@ ReStoreRaceResults(const char *race)
 					GfParmSetNum(results, path, RE_ATTR_TIME, NULL, (tdble)car->_curTime);
 					GfParmSetNum(results, path, RE_ATTR_BEST_LAP_TIME, NULL, (tdble)car->_bestLapTime);
 					GfParmSetNum(results, path, RE_ATTR_TOP_SPEED, NULL, car->_topSpeed);
-					GfParmSetNum(results, path, RE_ATTR_DAMMAGES, NULL, (tdble)car->_dammage);
 					GfParmSetNum(results, path, RE_ATTR_NB_PIT_STOPS, NULL, (tdble)car->_nbPitStops);
 				
 					GfParmSetStr(results, path, RE_ATTR_MODULE, car->_modName);
@@ -728,5 +726,4 @@ ReSavePracticeLap(tCarElt *car)
     GfParmSetNum(results, path, RE_ATTR_BEST_LAP_TIME, NULL, (tdble)car->_bestLapTime);
     GfParmSetNum(results, path, RE_ATTR_TOP_SPEED, NULL, info->topSpd);
     GfParmSetNum(results, path, RE_ATTR_BOT_SPEED, NULL, info->botSpd);
-    GfParmSetNum(results, path, RE_ATTR_DAMMAGES, NULL, (tdble)car->_dammage);
 }

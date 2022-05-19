@@ -496,7 +496,6 @@ TGeneticParameterTOC::TGeneticParameterTOC():
 	Author(NULL),
 	Private(NULL),
 	OptimisationLoops(1000),
-	WeightOfDamages(1.0f),
 	GetInitialVal(true)
 {
 };        
@@ -508,7 +507,6 @@ TGeneticParameterTOC::TGeneticParameterTOC
 	char* AuthorName,			// Name of author of setup
 	char* PrivateSection,		// Name of private data section
 	int Loops,					// Number of optimisation loops
-	float WeightDamages,		// Weight of damages
 	bool InitialVal				// get initial value from setup file
 )
 {
@@ -522,7 +520,6 @@ TGeneticParameterTOC::TGeneticParameterTOC
 	else
 		Private = NULL;
 	OptimisationLoops = Loops; 
-	WeightOfDamages = WeightDamages;
 	GetInitialVal = InitialVal;
 };
 
@@ -543,8 +540,6 @@ int TGeneticParameterTOC::Set()
 		SECT_TOC, PRM_PRIVATE, Private);
 	GfParmSetNum(Handle, 
 		SECT_TOC, PRM_LOOPS, 0, (float) OptimisationLoops);
-	GfParmSetNum(Handle, 
-		SECT_TOC, PRM_DAMAGES, 0, (float) WeightOfDamages);
 	if (GetInitialVal)
 	  GfParmSetNum(Handle, 
 	  	SECT_TOC, PRM_INITIAL, 0, 1);
@@ -578,8 +573,6 @@ int TGeneticParameterTOC::Get()
 
 	OptimisationLoops = (int) GfParmGetNum(Handle, 
 		SECT_TOC, PRM_LOOPS, 0, (float) OptimisationLoops);
-	WeightOfDamages = GfParmGetNum(Handle, 
-		SECT_TOC, PRM_DAMAGES, 0, (float) WeightOfDamages);
 	GetInitialVal = 0 < GfParmGetNum(Handle, 
 		SECT_TOC, PRM_INITIAL, 0, 1);
 

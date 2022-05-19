@@ -188,14 +188,9 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
     if( pTeamInfo->pOther &&
             (pTeamInfo->pOther->pCar->pub.state & RM_CAR_STATE_NO_SIMU) == 0 )
     {
-        int myIntLapsUntilPit = (int)floor(pTeamInfo->lapsUntilPit);
-        int oIntLapsUntilPit  = (int)floor(pTeamInfo->pOther->lapsUntilPit);
         // if same number of laps left until pit required, raise min pit laps
         // for the car with most urgent need.
-        if( myIntLapsUntilPit == oIntLapsUntilPit &&
-                pTeamInfo->lapsUntilPit < pTeamInfo->pOther->lapsUntilPit &&
-                nPitsForFuel > 0 )
-            minPitLaps = 2;
+        minPitLaps = 2;
         pitAvailable = !pTeamInfo->pOther->usingPit;
     }
     //#endif
@@ -203,9 +198,8 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
     //	bool	likeToPit = pCar->_dammage >=  500 || pCar->_fuel < 90;
     //	bool	likeToPit = pCar->_dammage + damagePerLap >= repairLimit ||
     m_pitType = PT_NORMAL;
-    bool	likeToPit = pitAvailable && (pCar->_dammage >= repairLimit ||
-             (raceLaps > 20 &&
-             pTeamInfo->lapsUntilPit < minPitLaps) || tyreWear < m_warnTyreLimit);
+    bool likeToPit = pitAvailable && (raceLaps > 20 &&
+                                      tyreWear < m_warnTyreLimit);
 
 #if defined(DEV) && 0  // don't want to leave this in the code by mistake for TRB races.
     likeToPit = true;
@@ -372,7 +366,6 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
     //	if( m_pitPath.CanStop(trackPos) )
     //		pTeamInfo->lapsUntilPit = pCar->_fuel / fuelPerLap - 1;
     double	fuelToPit = m_pitPath.EntryToPitDistance() * fuelPerM;
-    pTeamInfo->lapsUntilPit = (pCar->_fuel - fuelToPit) / fuelPerLap;// - 1;
     pTeamInfo->usingPit = m_state == PIT_ENTER || m_state == PIT_ASKED;
 }
 
