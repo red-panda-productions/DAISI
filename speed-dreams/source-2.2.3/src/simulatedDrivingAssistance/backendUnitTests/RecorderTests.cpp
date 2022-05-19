@@ -518,6 +518,7 @@ INSTANTIATE_TEST_CASE_P(
     RecorderUpgradeVersionTestFixture,
     ::testing::Range(1, CURRENT_RECORDER_VERSION + 1));
 
+
 TEST(RecorderTests, UpgradeToUnkownVersion)
 {
     int unknownVersion = CURRENT_RECORDER_VERSION + 1;
@@ -551,6 +552,13 @@ TEST(RecorderTests, MissingFilesValidation)
 TEST(RecorderTests, InvalidTrackPathV0Validation)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-invalid-track-path-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingTrackPathV0Validation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-missing-track-path-recording", toValidate);
 
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
 }

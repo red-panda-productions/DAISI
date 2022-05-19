@@ -14,22 +14,22 @@ It is ordered by: if a file is added or changed, then if the file is in src or d
 Added:
   src/
     drivers/assistedhuman/
-        assistedhuman.cpp
-        CmakeList.txt
-        Driver.cpp
-        Driver.h
+            assistedhuman.cpp
+            CmakeList.txt
+            Driver.cpp
+            Driver.h
     libs/tgfclient/
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
-        ResearcherMenu.h
-        ResearcherMenu.cpp
-        DataSelectionMenu.h
-        DataSelectionMenu.cpp
-        DeveloperMenu.h
-        DeveloperMenu.cpp
-        EndExperimentMenu.cpp
-        EndExperimentMenu.h
+            ResearcherMenu.h
+            ResearcherMenu.cpp
+            DataSelectionMenu.h
+            DataSelectionMenu.cpp
+            DeveloperMenu.h
+            DeveloperMenu.cpp
+            EndExperimentMenu.cpp
+            EndExperimentMenu.h
   data/
     data/
         config/
@@ -198,6 +198,7 @@ Changed:
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                  removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    EndExperimentMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()

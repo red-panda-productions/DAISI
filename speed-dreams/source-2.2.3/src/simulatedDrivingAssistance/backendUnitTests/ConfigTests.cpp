@@ -128,6 +128,20 @@ TEST(ConfigTests, UserIDTest)
     }
 }
 
+/// @brief Tests if the SDAConfig sets and gets the CompressionRate correctly
+TEST(ConfigTests, CompressionRateTest)
+{
+    SDAConfig config;
+    Random random;
+
+    for (int i = 0; i < 20; i++)
+    {
+        int compressionRate = random.NextInt();
+        config.SetCompressionRate(compressionRate);
+        ASSERT_EQ(compressionRate, config.GetCompressionRate());
+    }
+}
+
 /// @brief Tests if the SDAConfig sets and gets the BlackBoxFilePath correctly
 TEST(ConfigTests, BlackBoxFilePathTest)
 {
