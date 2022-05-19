@@ -422,6 +422,7 @@ Changed:
             stopracemenu.xml
                 changed button tips and text
                 removed controls, abandon and force feedback buttons
+                changed functionality of quit button to be that of the abandon button
             racemanmenu.xml
                 changed player button to control button
         
