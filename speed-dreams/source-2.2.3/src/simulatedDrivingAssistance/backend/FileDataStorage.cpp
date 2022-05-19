@@ -205,11 +205,9 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
     if (p_decisionMade)
     {
         AddToArray<TNumber>(p_values, p_value, p_compressionStep);
+        return;
     }
-    else
-    {
-        AddToArray<TNumber>(p_values, -1, p_compressionStep);
-    }
+    AddToArray<TNumber>(p_values, -1, p_compressionStep);
 }
 
 /// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
