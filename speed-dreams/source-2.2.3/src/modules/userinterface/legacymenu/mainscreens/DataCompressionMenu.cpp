@@ -3,6 +3,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
+#include "../rppUtils/RppUtils.hpp"
 #include "DataCompressionMenu.h"
 
 // Parameters used in the xml files
@@ -99,24 +100,24 @@ static void SaveSettingsToFile()
 static void SaveSettings()
 {
     int compressionLevel;
-    switch (m_customCompressionLevel)
+    switch (m_dataCompressionType)
     {
-        case 0:  // none
+        case COMPRESSION_NONE:
         {
             compressionLevel = 1;
             break;
         }
-        case 1:  // Minimum
+        case COMPRESSION_MINIMUM:
         {
             compressionLevel = 3;
             break;
         }
-        case 2:  // Medium
+        case COMPRESSION_MEDIUM:
         {
             compressionLevel = 5;
             break;
         }
-        case 3:  // Maximum
+        case COMPRESSION_MAXIMUM:
         {
             compressionLevel = 9;
             break;
@@ -177,14 +178,7 @@ static void SetCompressionLevel(void*)
         m_customCompressionLevel++;
     }
 
-    if (m_customCompressionLevel > MAX_COMPRESSION_LEVEL)
-    {
-        m_customCompressionLevel = MAX_COMPRESSION_LEVEL;
-    }
-    else if (m_customCompressionLevel < 1)
-    {
-        m_customCompressionLevel = 1;
-    }
+    Clamp(m_customCompressionLevel, 1, MAX_COMPRESSION_LEVEL);
 
     char buf[32];
     sprintf(buf, "%d", m_customCompressionLevel);
