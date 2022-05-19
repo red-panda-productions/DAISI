@@ -22,7 +22,6 @@ Added:
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
-<<<<<<< HEAD
         ResearcherMenu.h
         ResearcherMenu.cpp
         DataSelectionMenu.h
@@ -35,16 +34,8 @@ Added:
         Conformation.cpp
         EndExperimentMenu.h
         EndExperimentMenu.cpp
-=======
-            ResearcherMenu.h
-            ResearcherMenu.cpp
-            DataSelectionMenu.h
-            DataSelectionMenu.cpp
-            DeveloperMenu.h
-            DeveloperMenu.cpp
-            EndExperimentMenu.cpp
-            EndExperimentMenu.h
->>>>>>> main
+        ResearcherMenu.h
+        ResearcherMenu.cpp
   data/
     data/
         config/
