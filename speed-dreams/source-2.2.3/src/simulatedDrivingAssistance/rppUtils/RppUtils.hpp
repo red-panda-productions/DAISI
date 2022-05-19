@@ -28,6 +28,44 @@ inline float stringToFloat(const std::string& p_s)
     }
 }
 
+/// @brief       Clamps a float
+/// @param p_f   The float
+/// @param p_min The minimum value
+/// @param p_max The maximum value
+inline void ClampFloat(float& p_f, float p_min, float p_max)
+{
+    float val = p_f;
+    if (val > p_max)
+    {
+        p_f = p_max;
+    }
+    else if (val < p_min)
+    {
+        p_f = p_min;
+    }
+}
+
+/// @brief     Converts a float to a const char*
+/// @param p_f The float
+/// @return    The const char*
+inline char* FloatToCharArr(float p_f, char p_buf[])
+{
+    sprintf(p_buf, "%g", p_f);
+    return p_buf;
+}
+
+/// @brief     Converts a char* to a float
+/// @param p_c The char*
+/// @return    The float
+inline float CharArrToFloat(const char* p_c)
+{
+    char* endptr;
+    float val = strtof(p_c, &endptr);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << p_c << " to long and leftover string is: " << endptr << std::endl;
+    return val;
+}
+
 /// @brief                    Finds a file in a directory
 /// @param  p_knownPathToFile The known path to the file
 /// @param  p_fileToFind      The filename
