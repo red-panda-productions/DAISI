@@ -109,6 +109,42 @@ TEST(MediatorTests, ReadFromFile)
     DeleteSingletonsFolder();
 }
 
+/// @brief Tests if de mediator gets the threshold settings correctly
+void ThresholdTestMediator(float p_accel, float p_brake, float p_steer)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    SDAConfigMediator * mediator = SDAConfigMediator::GetInstance();
+
+    tDecisionThresholds thresholdsIn{ p_accel, p_brake, p_steer };
+    mediator->SetThresholdSettings(thresholdsIn);
+    tDecisionThresholds thresholdsOut = mediator->GetThresholdSettings();
+
+    ASSERT_EQ(thresholdsIn.Accel, thresholdsOut.Accel);
+    ASSERT_EQ(thresholdsIn.Brake, thresholdsOut.Brake);
+    ASSERT_EQ(thresholdsIn.Steer, thresholdsOut.Steer);
+}
+BEGIN_TEST_COMBINATORIAL(MediatorTests, ThresholdTest)
+float floatVals[] = { -1, 0, 0.5, 1, 2 };
+END_TEST_COMBINATORIAL3(ThresholdTestMediator, floatVals, 5, floatVals, 5, floatVals, 5)
+
+/// @brief                    Tests if the Mediator sets and gets the interventionType correctly from SDAConfig
+/// @param p_interventionType The interventionType to test for
+void InterventionTypeTestMediator(InterventionType p_interventionType)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
+    const InterventionType it = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Type;
+    ASSERT_EQ(p_interventionType, it);
+}
+
+TEST_CASE(MediatorTests, InterventionTypeTestNoSignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_NO_SIGNALS))
+TEST_CASE(MediatorTests, InterventionTypeTestOnlySignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
+TEST_CASE(MediatorTests, InterventionTypeTestSharedControl, InterventionTypeTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
+TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+
 /// @brief              Tests if the mediator sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer
 /// @param p_accelerate Whether the black box can give gas
