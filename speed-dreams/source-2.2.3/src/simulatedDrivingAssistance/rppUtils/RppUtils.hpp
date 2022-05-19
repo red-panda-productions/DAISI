@@ -32,16 +32,16 @@ inline float stringToFloat(const std::string& p_s)
 /// @param p_f   The float
 /// @param p_min The minimum value
 /// @param p_max The maximum value
-inline void ClampFloat(float* p_f, float p_min, float p_max)
+inline void ClampFloat(float& p_f, float p_min, float p_max)
 {
-    float val = *p_f;
+    float val = p_f;
     if (val > p_max)
     {
-        *p_f = p_max;
+        p_f = p_max;
     }
     else if (val < p_min)
     {
-        *p_f = p_min;
+        p_f = p_min;
     }
 }
 
