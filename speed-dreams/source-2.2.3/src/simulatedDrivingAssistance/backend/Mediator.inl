@@ -108,7 +108,7 @@ void Mediator<DecisionMaker>::SetUserId(char* p_userId)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetCompressionLevel(int p_compressionLevel)
 {
-    // TODO: m_decisionMaker.Config.SetCompressionLevel(p_compressionLevel);
+    m_decisionMaker.Config.SetCompressionRate(p_compressionLevel);
 }
 
 /// @brief               Sets the settings for data collection
