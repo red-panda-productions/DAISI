@@ -63,7 +63,6 @@ TDriver::TDriver(int index)
     mTargetToMiddle = 0.0;
     mCentrifugal = 0.0;
     mSectSpeedfactor = 1.0;
-    mLastDamage = 0;
     mCatchingOpp = false;
     mStateChange = false;
     mPathChange = false;
@@ -184,15 +183,13 @@ void TDriver::InitTrack(PTrack Track, PCarHandle CarHandle, PCarSettings* CarPar
 
     // Set initial fuel
     double distance = Situation->_totLaps * mTrack->length;
-    mFuelStart = getFuel(distance);
 
     if (mLearning)
     {
-        mFuelStart = 5.0;
         GfParmSetNum(*CarParmHandle, SECT_ENGINE, PRM_FUELCONS, (char*)NULL, 0.0);
     }
 
-    GfParmSetNum(*CarParmHandle, SECT_CAR, PRM_FUEL, (char*)NULL, (tdble)mFuelStart);
+    GfParmSetNum(*CarParmHandle, SECT_CAR, PRM_FUEL, (char*)NULL, NULL);
 
     // Get skill level
     handle = NULL;
@@ -326,7 +323,7 @@ void TDriver::updateTimer()
 
 void TDriver::updateBasics()
 {
-    mMass = mCARMASS + mFUELWEIGHTFACTOR * oCar->_fuel;
+    mMass = mCARMASS;
     mSpeed = oCar->_speed_x;
 
     mAccelAvgSum += mAccel;
@@ -417,8 +414,6 @@ void TDriver::updateBasics()
         mPathChangeTime += RCM_MAX_DT_ROBOTS;
     }
 
-    mDamageDiff = oCar->_dammage - mLastDamage;
-    mLastDamage = oCar->_dammage;
     mRacePosChange = mPrevRacePos - oCar->_pos;
     mPrevRacePos = oCar->_pos;
 
@@ -1800,8 +1795,6 @@ void TDriver::readPrivateSection(PCarSettings* CarParmHandle)
     mMUSCALE = GfParmGetNum(*CarParmHandle, "private", "muscale", (char*)NULL, 0.9);
     mBRAKESCALE = GfParmGetNum(*CarParmHandle, "private", "brakescale", (char*)NULL, 1.9);
     mBUMPSPEEDFACTOR = GfParmGetNum(*CarParmHandle, "private", "bumpspeedfactor", (char*)NULL, 3.0);
-    mFUELPERMETER = GfParmGetNum(*CarParmHandle, "private", "fuelpermeter", (char*)NULL, 0.001f);
-    mFUELWEIGHTFACTOR = GfParmGetNum(*CarParmHandle, "private", "fuelweightfactor", (char*)NULL, 1.0);
     mPITDAMAGE = (int)GfParmGetNum(*CarParmHandle, "private", "pitdamage", (char*)NULL, 5000);
     mPITENTRYMARGIN = GfParmGetNum(*CarParmHandle, "private", "pitentrymargin", (char*)NULL, 200.0);
     mPITENTRYSPEED = GfParmGetNum(*CarParmHandle, "private", "pitentryspeed", (char*)NULL, 25.0);
@@ -1842,8 +1835,6 @@ void TDriver::printSetup()
     LogDANDROID.debug("%s: brakeforcefactor=%g\n", oCar->_name, mBRAKEFORCEFACTOR);
     LogDANDROID.debug("%s: brakeforcemin=%g\n", oCar->_name, mBRAKEFORCEMIN);
     LogDANDROID.debug("%s: bumpspeedfactor=%g\n", oCar->_name, mBUMPSPEEDFACTOR);
-    LogDANDROID.debug("%s: fuelpermeter=%g\n", oCar->_name, mFUELPERMETER);
-    LogDANDROID.debug("%s: fuelweightfactor=%g\n", oCar->_name, mFUELWEIGHTFACTOR);
     LogDANDROID.debug("%s: pitdamage=%d\n", oCar->_name, mPITDAMAGE);
     LogDANDROID.debug("%s: pitentrymargin=%g\n", oCar->_name, mPITENTRYMARGIN);
     LogDANDROID.debug("%s: pitentryspeed=%g\n", oCar->_name, mPITENTRYSPEED);
@@ -2198,10 +2189,8 @@ bool TDriver::offtrack()
         return true;
     }
     // Barrier collisions
-    if (mDamageDiff > 0 && mWalldist - oCar->_dimension_y / 2.0 < 0.5)
+    if (mWalldist - oCar->_dimension_y / 2.0 < 0.5)
     {
-        LogDANDROID.debug("barrier coll damage: %d\n", mDamageDiff);
-
         return true;
     }
     return false;
@@ -2675,15 +2664,6 @@ bool TDriver::hysteresis(bool lastout, double in, double hyst)
             return true;
         }
     }
-}
-
-double TDriver::getFuel(double dist)
-{
-    double fuel = dist * mFUELPERMETER;
-    if (mTestpitstop) {
-        fuel = 1.0 * mTrack->length * mFUELPERMETER;
-    }
-    return fuel = MAX(MIN(fuel, mTANKVOL), 0.0);
 }
 
 void TDriver::writeSectorSpeeds()
