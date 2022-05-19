@@ -127,6 +127,8 @@ Changed:
 
                 added   GfuiDrawString(): overload
                 added   GfuiFontClass: expose to API
+            webserver.cpp
+                changed NotificationManager::updateWebserverStatusUi
     main/
         main.cpp
             added singletonfolder setup
