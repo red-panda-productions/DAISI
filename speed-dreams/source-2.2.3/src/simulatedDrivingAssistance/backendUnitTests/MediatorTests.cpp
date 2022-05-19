@@ -115,9 +115,9 @@ void ThresholdTestMediator(float p_accel, float p_brake, float p_steer)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    SDAConfigMediator * mediator = SDAConfigMediator::GetInstance();
+    SDAConfigMediator* mediator = SDAConfigMediator::GetInstance();
 
-    tDecisionThresholds thresholdsIn{ p_accel, p_brake, p_steer };
+    tDecisionThresholds thresholdsIn{p_accel, p_brake, p_steer};
     mediator->SetThresholdSettings(thresholdsIn);
     tDecisionThresholds thresholdsOut = mediator->GetThresholdSettings();
 
@@ -126,7 +126,7 @@ void ThresholdTestMediator(float p_accel, float p_brake, float p_steer)
     ASSERT_EQ(thresholdsIn.Steer, thresholdsOut.Steer);
 }
 BEGIN_TEST_COMBINATORIAL(MediatorTests, ThresholdTest)
-float floatVals[] = { -1, 0, 0.5, 1, 2 };
+float floatVals[] = {-1, 0, 0.5, 1, 2};
 END_TEST_COMBINATORIAL3(ThresholdTestMediator, floatVals, 5, floatVals, 5, floatVals, 5)
 
 /// @brief                    Tests if the Mediator sets and gets the interventionType correctly from SDAConfig
@@ -423,7 +423,7 @@ TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
     ASSERT_TRUE(SetupSingletonsFolder());
     Random random;
 
-    for(int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
     {
         bool controlBool = random.NextBool();
         SDAConfigMediator::GetInstance()->SetSaveRaceToDatabase(controlBool);
