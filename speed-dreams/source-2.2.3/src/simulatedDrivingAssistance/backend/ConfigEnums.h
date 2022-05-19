@@ -30,16 +30,16 @@ typedef unsigned int InterventionType;
 /// @brief the different ways a race can end
 typedef unsigned int RaceEndType;
 
-#define NORMAL_EXIT  0
-#define RACE_RESTART 1
-#define RACE_EXIT    2
-#define RACE_ABORT   3
+#define NORMAL_EXIT   0
+#define RACE_RESTART  1
+#define RACE_EXIT     2
+#define RACE_ABORT    3
 #define RACE_FINISHED 4
 
 /// @brief the different string names of the buttons
+#define PRM_YESSAVE_BUTTON   "yessave"
 #define PRM_IMSURE_BUTTON    "imsure"
 #define PRM_DONTSAVE_BUTTON  "dontsave"
-#define PRM_YESSAVE_BUTTON   "yessave"
 #define PRM_DONTDELTE_BUTTON "waitdontdelete"
 
 /// @brief The different actions that can be performed

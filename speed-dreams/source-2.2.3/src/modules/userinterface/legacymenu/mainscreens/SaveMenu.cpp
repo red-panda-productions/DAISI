@@ -74,7 +74,7 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
             // throws an error, invalid option
             throw std::runtime_error("incorrect 'p_raceEndType', have you defined the new option in ConfigEnum.h?");
         }
-    }//*/
+    }  //*/
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(s_menuHandle);

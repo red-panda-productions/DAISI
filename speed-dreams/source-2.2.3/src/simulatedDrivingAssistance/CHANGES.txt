@@ -32,7 +32,7 @@ Added:
         SaveMenu.cpp
         Conformation.h
         Conformation.cpp
-		EndExperimentMenu.h
+        EndExperimentMenu.h
         EndExperimentMenu.cpp
   data/
     data/
