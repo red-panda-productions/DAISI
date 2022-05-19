@@ -257,16 +257,16 @@ void FileDataStorage::WriteInterventionData()
 template <typename TNumber>
 void FileDataStorage::WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade)
 {
-    if (p_decision != -1)
+    if (p_decision == -1) return;
+
+    if (!p_decisionMade)
     {
-        if (!p_decisionMade)
-        {
-            p_decisionMade = true;
-            WRITE_STRING(m_outputStream, "Decisions");
-        }
-        WRITE_STRING(m_outputStream, p_decisionType);
-        WRITE_VAR(m_outputStream, p_decision);
+        p_decisionMade = true;
+        WRITE_STRING(m_outputStream, "Decisions");
     }
+
+    WRITE_STRING(m_outputStream, p_decisionType);
+    WRITE_VAR(m_outputStream, p_decision);
 }
 
 /// @brief Add the new value to the total of the current time steps
@@ -316,28 +316,19 @@ float FileDataStorage::GetMedian(float* p_values)
 /// @param p_b median of p_values
 void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_startPartition, float& p_endPartition)
 {
-    if (p_start > p_end)
-    {
-        return;
-    }
+    if (p_start > p_end) return;
 
     int partitionIndex = RandomPartition(p_values, p_start, p_end);
 
     if (partitionIndex == p_middle)
     {
         p_endPartition = p_values[partitionIndex];
-        if (p_startPartition != -1)
-        {
-            return;
-        }
+        if (p_startPartition != -1) return;
     }
     else if (partitionIndex == p_middle - 1)
     {
         p_startPartition = p_values[partitionIndex];
-        if (p_endPartition != -1)
-        {
-            return;
-        }
+        if (p_endPartition != -1) return;
     }
 
     if (partitionIndex >= p_middle)
