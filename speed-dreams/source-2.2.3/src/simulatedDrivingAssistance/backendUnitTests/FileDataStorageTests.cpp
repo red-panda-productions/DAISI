@@ -498,7 +498,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
         compressionStep++;
 
         // Define our expectations
-        if (compressionStep % p_compressionRate == 0)
+        if (compressionStep == p_compressionRate)
         {
             expected << std::to_string(i) << std::endl
                      << std::to_string(fileDataStorage.GetAverage(totalPosX)) << std::endl
@@ -610,7 +610,7 @@ TEST(FileDataStorageTests, AddToArrayTest)
         fileDataStorage.SetCompressionRate(compressionRate);
 
         float value = random.NextFloat();
-        auto compressionStep = static_cast<unsigned long>(random.NextUInt(compressionRate));
+        auto compressionStep = random.NextUInt(compressionRate);
 
         float values[COMPRESSION_LIMIT];
         float originalValues[COMPRESSION_LIMIT];
@@ -621,7 +621,7 @@ TEST(FileDataStorageTests, AddToArrayTest)
             originalValues[j] = randomValue;
         }
 
-        int placeInArray = static_cast<int>(compressionStep % static_cast<unsigned long>(compressionRate));
+        int placeInArray = compressionStep;
 
         fileDataStorage.AddToArray(values, value, compressionStep);
 
