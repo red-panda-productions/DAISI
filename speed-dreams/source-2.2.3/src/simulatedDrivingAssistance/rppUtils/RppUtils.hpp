@@ -160,16 +160,17 @@ inline bool SetupSingletonsFolder()
 }
 
 /// @brief Start running a separate executable with no command-line arguments
+///        Should either be an absolute path or relative to the current directory.
+///        Path must include file extension; no default extension is assumed.
+///        Path is assumed to refer to an existing executable file
 /// @param p_executablePath The path to the executable.
-///// Should either be an absolute path or relative to the current directory.
-///// Path must include file extension; no default extension is assumed.
-///// Path is assumed to refer to an existing executable file
-inline void StartExecutable(const std::string& p_executablePath)
+/// @param p_args           The arguments for the executable
+inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
     // WARNING: This method of starting a process is Windows-exclusive.
     // Add a different method to run a process here if a Linux build is planned.
 
-    LPSTR args = _strdup("");                                       // Create an empty string of arguments for process
+    LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
     PROCESS_INFORMATION processInformation;                         // Allocate space for PROCESS_INFORMATION
     // Start the process. Nullpointers correspond to default values for this method.
@@ -186,10 +187,43 @@ inline void StartExecutable(const std::string& p_executablePath)
                   &processInformation);
 }
 
+/// @brief                       Starts a process from which you can also get the process handle
+/// @param  p_executablePath     The path to the executable
+/// @param  p_args               The arguments for the executable
+/// @param  p_processInformation The information about the process, this contains the handles
+inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
+{
+    std::string fullArgs = p_executablePath + " " + p_args;
+    LPSTR args = _strdup(fullArgs.c_str());
+    STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
+    // Start the process. Nullpointers correspond to default values for this method.
+    // Inherit handles is not necessary for our use case and is thus false.
+
+    LPCSTR workingDirectory = nullptr;
+    if (!p_workingDirectory.empty())
+    {
+        workingDirectory = p_workingDirectory.c_str();
+    }
+    CreateProcess(p_executablePath.c_str(),
+                  args,
+                  nullptr,
+                  nullptr,
+                  false,
+                  0,
+                  nullptr,
+                  workingDirectory,
+                  &startupInformation,
+                  &p_processInformation);
+}
+
+/// @brief                Execute a command in the CLI
+/// @param  p_command     The command
+/// @param  p_showCommand Whether to show the output of the command
 inline void ExecuteCLI(const char* p_command, bool p_showCommand)
 {
     WinExec(p_command, p_showCommand);
 }
+
 /// @brief          Returns true with certain chance
 /// @param p_rnd    The random generator reference to use
 /// @param p_chance The chance to succeed [0-100]
