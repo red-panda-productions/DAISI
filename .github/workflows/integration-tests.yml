@@ -6,7 +6,7 @@ on:
   - cron: "0 3 * * *"
 
   pull_request:
-    branches: [ main ]
+    tags: [ IntegrationTests ]
 
   # Allow manually triggering from the actions tab
   workflow_dispatch:
