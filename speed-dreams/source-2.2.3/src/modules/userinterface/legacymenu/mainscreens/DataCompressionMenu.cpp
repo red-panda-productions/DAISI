@@ -159,7 +159,7 @@ static void SaveAndGoBack(void* /* dummy */)
 /// @param p_info Information about the radio button list
 static void SelectCompression(tRadioButtonInfo* p_info)
 {
-    m_dataCompressionType = (DataCompressionType)p_info->Selected;
+    m_dataCompressionType = static_cast<DataCompressionType>(p_info->Selected);
 }
 
 /// @brief Handle input in the custom compression type textbox
