@@ -100,6 +100,20 @@ char* SDAConfig::GetUserId() const
     return m_userId;
 }
 
+/// @brief           Sets the compression rate to p_compressionRate
+/// @param p_compressionRate The compression rate
+void SDAConfig::SetCompressionRate(int p_compressionRate)
+{
+    m_compressionRate = p_compressionRate;
+}
+
+/// @brief  Gets the compressionRate
+/// @return The compression rate
+int SDAConfig::GetCompressionRate() const
+{
+    return m_compressionRate;
+}
+
 /// @brief               Sets the settings for what data should be collected from the simulation
 /// @param p_dataSetting A struct consisting of booleans for selecting the data to be collected in real-time
 void SDAConfig::SetDataCollectionSettings(tDataToStore p_dataSetting)

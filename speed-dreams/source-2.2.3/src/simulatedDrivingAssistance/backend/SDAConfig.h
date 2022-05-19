@@ -29,6 +29,7 @@ private:
     bool m_asyncConnection = true;
     filesystem::path m_currentReplayFolder;
     bool m_replayRecorderOn = false;
+    int m_compressionRate = 1;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -51,6 +52,9 @@ public:
 
     void SetMaxTime(int p_maxTime);
     int GetMaxTime() const;
+
+    void SetCompressionRate(int p_compressionRate);
+    int GetCompressionRate() const;
 
     void SetUserId(char* p_userId);
     char* GetUserId() const;
