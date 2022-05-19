@@ -337,8 +337,9 @@ RmStopRaceMenu()
     }
 #endif
 
+    // SIMULATED DRIVING ASSISTANCE CHANGE: changed quit button to be abort
     buttonRole[i] = "quit";
-    screen[i++] = rmQuitHookInit();
+    screen[i++] = rmAbortRaceHookInit();
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
