@@ -564,9 +564,6 @@ void	Driver::InitTrack(
     LogSHADOW.info( "intiial fuel: %g\n\n", fuel );
     GfParmSetNum( hCarParm, SECT_CAR, PRM_FUEL, (char*) NULL, fuel );
 
-    m_Strategy.SetDamageLimits( m_priv[PATH_NORMAL].PIT_DAMAGE_WARN,
-                                m_priv[PATH_NORMAL].PIT_DAMAGE_DANGER, m_cm[PATH_NORMAL].HASTYC );
-
     m_Strategy.SetTyreLimits( m_priv[PATH_NORMAL].PIT_TIRE_WARN, m_priv[PATH_NORMAL].PIT_TIRE_DANGER);
 
     // override params for car type on track of specific race type.
@@ -2488,7 +2485,6 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
     if( car->race.laps != m_lastLap )
     {
         m_lastLap = car->race.laps;
-        LogSHADOW.debug( "[%d] Average fuel/m: %g\n", car->index, m_Strategy.FuelPerM(car) );
         double a, b;
         m_accBrkCoeff.CalcCoeffs(&a, &b);
         LogSHADOW.debug( "[%d] accbrk: a=%g, b=%g\n", car->index, a, b );

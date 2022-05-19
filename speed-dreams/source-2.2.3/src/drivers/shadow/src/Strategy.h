@@ -43,14 +43,12 @@ public:
     Strategy( const MyTrack& track, const PitPath& pitPath );
     ~Strategy();
 
-    void	SetDamageLimits( int warnDamage, int dangerDamage, bool tyc );
     void    SetTyreLimits( double warnTyre, double dangerTyre);
     void	Process( CarElt* pCar, TeamInfo::Item* pMyInfo );
 
     bool	WantToPit() const;
     int		PitType() const;		// type of pit requested.
 
-    double	FuelPerM( const CarElt* pCar ) const;
 
 private:
     enum
@@ -66,8 +64,6 @@ private:
     const MyTrack&	m_track;
     const PitPath&	m_pitPath;
 
-    int				m_warnDamageLimit;
-    int				m_dangerDamageLimit;
     double          m_warnTyreLimit;
     double          m_dangerTyreLimit;
 
@@ -75,10 +71,6 @@ private:
 
     int				m_state;
 
-    double			m_lastFuel;
-    double			m_totalFuel;
-    double			m_lastDamage;
-    double			m_totalDamage;
     double			m_lastTyreWear;
     double			m_totalTyreWear;
     int				m_lastLap;
