@@ -23,7 +23,6 @@
 #include <monitorconfig.h>
 #include <soundconfig.h>
 
-
 #include "optionsmenu.h"
 
  // SIMULATED DRIVING ASSISTANCE: removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
@@ -59,6 +58,7 @@ onSoundMenuActivate(void * /* dummy */)
 }
 
 //SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+
 void *
 OptionsMenuInit(void *prevMenu)
 {
@@ -78,6 +78,7 @@ OptionsMenuInit(void *prevMenu)
     GfuiMenuCreateButtonControl(MenuHandle, param, "display", NULL, onDisplayMenuActivate);
 #endif
     GfuiMenuCreateButtonControl(MenuHandle, param, "sound", NULL, onSoundMenuActivate);
+
     GfuiMenuCreateButtonControl(MenuHandle, param, "back", prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
