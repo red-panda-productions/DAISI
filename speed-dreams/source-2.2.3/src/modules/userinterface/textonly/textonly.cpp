@@ -124,7 +124,6 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
 
 
     p_selRaceMan = GfRaceManagers::self()->getRaceManager("replay");
-    auto handle = p_selRaceMan->getDescriptorHandle();
 
     SMediator::GetInstance()->SetBlackBoxFilePath("");
 
