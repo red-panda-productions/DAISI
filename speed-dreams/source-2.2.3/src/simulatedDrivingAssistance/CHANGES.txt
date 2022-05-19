@@ -231,9 +231,9 @@ Changed:
                         included several 'Quit' buttons
                     racestopmenu.cpp
                         RmStopRaceMenu()
-                        changed  AssistedHuman is a human
+                        changed AssistedHuman is a human
                         removed rmProgressiveTimeModifier.start() call
-                        removed controls menu
+                        removed controls menu, force feedback menu and abandon button
                         changed parameters of GfuiScreenActive() function
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
@@ -420,7 +420,7 @@ Changed:
             soundconfig.xml
                 removed sound system option
             stopracemenu.xml
-                removed controls and force feedback buttons
+                removed controls, abandon and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
         

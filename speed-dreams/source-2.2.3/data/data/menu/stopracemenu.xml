@@ -34,12 +34,8 @@
 		<!-- button texts and tips -->
 		<attstr name="restart.text" val="Restart"/>
 		<attstr name="restart.tip" val="Restart the simulation"/>
-		<attstr name="abort.text" val="Abandon"/>
-		<attstr name="abort.tip" val="Abort the simulation"/>
 		<attstr name="resume.text" val="Resume"/>
-		<attstr name="resume.tip" val="Return the simulation"/>
-        <attstr name="forcefeedback.text" val="Adjust Force Feedback"/>
-        <attstr name="forcefeedback.tip" val="Adjust the Force Feedback configuration for the current car"/>
+		<attstr name="resume.tip" val="Return to the simulation"/>
 		<attstr name="skip.text" val="Skip Session"/>
 		<attstr name="skip.tip" val="Skip the current session"/>
 		<attstr name="quit.text" val="Quit Game"/>
