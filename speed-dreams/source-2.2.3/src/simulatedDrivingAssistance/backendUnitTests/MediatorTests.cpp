@@ -13,7 +13,6 @@
 
 namespace filesystem = std::experimental::filesystem;
 
-
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
 
