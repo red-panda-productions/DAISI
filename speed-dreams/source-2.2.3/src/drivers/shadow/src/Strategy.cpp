@@ -225,7 +225,6 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
             {
                 pCar->pitcmd.stopType = pPenalty->penalty == RM_PENALTY_STOPANDGO ?
                             RM_PIT_STOPANDGO : RM_PIT_REPAIR;
-                pCar->pitcmd.fuel		= 0;
                 pCar->pitcmd.repair		= 0;
                 pCar->pitcmd.tireChange	= tCarPitCmd::NONE;
             }
@@ -233,8 +232,6 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
             {
                 //					double	fuel = distToRace * fuelPerM * 1.02 + fuelPerLap - pCar->_fuel;
                 //					double	fuel = distToRace * fuelPerM * 1.02 + fuelPerLap;
-                double	fuel = distToRace * 1.02;
-
                 pCar->pitcmd.stopType	= RM_PIT_REPAIR;
 
                 if(m_HasTYC)
