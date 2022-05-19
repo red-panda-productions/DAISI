@@ -518,7 +518,6 @@ INSTANTIATE_TEST_CASE_P(
     RecorderUpgradeVersionTestFixture,
     ::testing::Range(1, CURRENT_RECORDER_VERSION + 1));
 
-
 TEST(RecorderTests, UpgradeToUnkownVersion)
 {
     int unknownVersion = CURRENT_RECORDER_VERSION + 1;

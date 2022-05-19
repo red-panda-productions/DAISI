@@ -237,7 +237,8 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 {
     const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
 
-    if (trackFileName == nullptr) {
+    if (trackFileName == nullptr)
+    {
         GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
         return false;
     }
@@ -306,20 +307,20 @@ void UpdateV3RecorderToV4(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
 }
 
-/// @brief                          Upgrades the recording from given version to the next version.  
+/// @brief                          Upgrades the recording from given version to the next version.
 /// @param p_currVersion            The current version of the recording to upgrade.
 /// @param p_settingsHandle         Handle to the run settings file
 /// @param p_userRecordingFile      Path to the user recordings file
 /// @param p_decisionsRecordingFile Path to the decision recordings file
 /// @param p_simulationFile         Path to the simulation file
 /// @return                         true if the upgrade succeeds, false if it fails.
-bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::path& userRecordingFile, 
-    filesystem::path& decisionsRecordingFile, filesystem::path& simulationFile)
+bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::path& p_userRecordingFile,
+                      filesystem::path& p_decisionsRecordingFile, filesystem::path& p_simulationFile)
 {
     switch (p_currVersion)
     {
         case 0:
-            if (!UpdateV0RecorderToV1(p_settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile))
+            if (!UpdateV0RecorderToV1(p_settingsHandle, p_userRecordingFile, p_decisionsRecordingFile, p_simulationFile))
             {
                 GfParmReleaseHandle(p_settingsHandle);
                 return false;
@@ -339,7 +340,6 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
             return false;
     }
 }
-
 
 /// @brief                   Validate a recording, and update it if it is an older version
 /// @param p_recordingFolder Folder of the recording to validate and update
@@ -392,17 +392,16 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     for (/* version is already initialised */; version < p_targetVersion; version++)
     {
         if (UpgradeRecording(version, settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile)) continue;
-        
+
         // If upgrading fails, release handle and exit loop.
         GfParmReleaseHandle(settingsHandle);
-        return false;      
+        return false;
     }
 
     // Set the recording to the target version and save it
-    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, p_targetVersion);
+    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, static_cast<tdble>(p_targetVersion));
 
     GfParmWriteFile(settingsFile.string().c_str(), settingsHandle, "Run Settings");
     GfParmReleaseHandle(settingsHandle);
     return true;
 }
-
