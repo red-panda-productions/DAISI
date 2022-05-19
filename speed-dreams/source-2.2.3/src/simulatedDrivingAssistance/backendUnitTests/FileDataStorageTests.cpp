@@ -514,6 +514,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
                      << std::to_string(HelperGetMedian(brakeValues, p_compressionRate)) << std::endl
                      << std::to_string(HelperGetMedian(accelValues, p_compressionRate)) << std::endl
                      << std::to_string(HelperGetMedian(clutchValues, p_compressionRate)) << std::endl;
+            compressionStep = 0;
         }
 
         fileDataStorage.Save(&car, &situation, tuple, i);
@@ -629,11 +630,9 @@ TEST(FileDataStorageTests, AddToArrayTest)
             if (j == placeInArray)
             {
                 ASSERT_EQ(values[placeInArray], value);
+                continue;
             }
-            else
-            {
-                ASSERT_EQ(values[j], originalValues[j]);
-            }
+            ASSERT_EQ(values[j], originalValues[j]);
         }
     }
 }
@@ -686,20 +685,17 @@ TEST(FileDataStorageTests, GetLeastCommonTest)
             {
                 values[j] = leastCommonVal;
             }
+            ASSERT_EQ(fileDataStorage.GetLeastCommon(values), leastCommonVal);
+            continue;
         }
-        else
+        for (int j = 0; j < COMPRESSION_RATE; j++)
         {
-            for (int j = 0; j < COMPRESSION_RATE; j++)
+            if (j < leastCommonFrequency)
             {
-                if (j < leastCommonFrequency)
-                {
-                    values[j] = leastCommonVal;
-                }
-                else
-                {
-                    values[j] = leastCommonVal + 1;
-                }
+                values[j] = leastCommonVal;
+                continue;
             }
+            values[j] = leastCommonVal + 1;
         }
 
         ASSERT_EQ(fileDataStorage.GetLeastCommon(values), leastCommonVal);

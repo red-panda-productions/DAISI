@@ -60,7 +60,6 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     // Initialize member variables
     m_saveSettings = p_saveSettings;
     m_outputStream.open(filePath);
-    m_compressionStep = 0;
     m_totalPosX = 0;
     m_totalPosY = 0;
     m_totalPosZ = 0;
@@ -141,7 +140,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTupl
     m_compressionStep++;
 
     // save to the file at the end of the compression time step
-    if (m_compressionStep % m_compressionRate == 0)
+    if (m_compressionStep == m_compressionRate)
     {
         WRITE_VAR(m_outputStream, p_timestamp);
         if (m_saveSettings.CarData)
@@ -156,6 +155,7 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTupl
         {
             WriteInterventionData();
         }
+        m_compressionStep = 0;
     }
 }
 
@@ -201,7 +201,7 @@ void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
 /// @param p_values array of values from previous decisions
 /// @param p_compressionStep the current step the program is in
 template <typename TNumber>
-void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, unsigned long p_compressionStep)
+void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep)
 {
     if (p_decisionMade)
     {
@@ -295,10 +295,9 @@ float FileDataStorage::GetAverage(float& p_total) const
 /// @param p_value The new value of this time step for the variable
 /// @param p_compressionStep The current compression step
 template <typename TNumber>
-void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, unsigned long p_compressionStep) const
+void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, int p_compressionStep) const
 {
-    int placeInArray = static_cast<int>(p_compressionStep % static_cast<unsigned long>(m_compressionRate));
-    p_values[placeInArray] = p_value;
+    p_values[p_compressionStep] = p_value;
 }
 
 /// @brief Get the median of the current compression step using Randomized QuickSelect
@@ -320,36 +319,36 @@ float FileDataStorage::GetMedian(float* p_values)
 /// @param p_b median of p_values
 void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_startPartition, float& p_endPartition)
 {
-    if (p_start <= p_end)
+    if (p_start > p_end)
     {
-        int partitionIndex = RandomPartition(p_values, p_start, p_end);
+        return;
+    }
 
-        if (partitionIndex == p_middle)
-        {
-            p_endPartition = p_values[partitionIndex];
-            if (p_startPartition != -1)
-            {
-                return;
-            }
-        }
-        else if (partitionIndex == p_middle - 1)
-        {
-            p_startPartition = p_values[partitionIndex];
-            if (p_endPartition != -1)
-            {
-                return;
-            }
-        }
+    int partitionIndex = RandomPartition(p_values, p_start, p_end);
 
-        if (partitionIndex >= p_middle)
+    if (partitionIndex == p_middle)
+    {
+        p_endPartition = p_values[partitionIndex];
+        if (p_startPartition != -1)
         {
-            GetMedianUtil(p_values, p_start, partitionIndex - 1, p_middle, p_startPartition, p_endPartition);
-        }
-        else
-        {
-            GetMedianUtil(p_values, partitionIndex + 1, p_end, p_middle, p_startPartition, p_endPartition);
+            return;
         }
     }
+    else if (partitionIndex == p_middle - 1)
+    {
+        p_startPartition = p_values[partitionIndex];
+        if (p_endPartition != -1)
+        {
+            return;
+        }
+    }
+
+    if (partitionIndex >= p_middle)
+    {
+        GetMedianUtil(p_values, p_start, partitionIndex - 1, p_middle, p_startPartition, p_endPartition);
+        return;
+    }
+    GetMedianUtil(p_values, partitionIndex + 1, p_end, p_middle, p_startPartition, p_endPartition);
 }
 
 /// @brief partitions p_values around a randomly picked element
@@ -401,13 +400,11 @@ int FileDataStorage::GetLeastCommon(int* p_values) const
         if (frequencies[p_values[i]])
         {
             frequencies[p_values[i]]++;
+            continue;
         }
-        else
-        {
-            frequencies[p_values[i]] = 1;
-            valuesList[valueCount] = p_values[i];
-            valueCount++;
-        }
+        frequencies[p_values[i]] = 1;
+        valuesList[valueCount] = p_values[i];
+        valueCount++;
     }
 
     int leastCommon;
@@ -416,11 +413,9 @@ int FileDataStorage::GetLeastCommon(int* p_values) const
     // find the value with the lowest frequency
     for (int i = 0; i < valueCount; i++)
     {
-        if (frequencies[valuesList[i]] < minCount)
-        {
-            leastCommon = valuesList[i];
-            minCount = frequencies[valuesList[i]];
-        }
+        if (frequencies[valuesList[i]] >= minCount) continue;
+        leastCommon = valuesList[i];
+        minCount = frequencies[valuesList[i]];
     }
 
     return leastCommon;

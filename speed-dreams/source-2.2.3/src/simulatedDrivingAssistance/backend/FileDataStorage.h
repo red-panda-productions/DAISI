@@ -22,7 +22,7 @@ private:
     /// @brief Integer that determines the compression rate
     int m_compressionRate = 1;
     /// @brief Integer that determines the current step of the compression
-    unsigned long m_compressionStep;
+    int m_compressionStep = 0;
 
     float m_totalPosX = 0, m_totalPosY = 0, m_totalPosZ = 0, m_totalPosAx = 0, m_totalPosAy = 0, m_totalPosAz = 0;
     float m_totalMovVelX = 0, m_totalMovAccX = 0;
@@ -68,13 +68,13 @@ public:
     float GetAverage(float& p_total) const;
 
     template <typename TNumber>
-    void AddToArray(TNumber* p_values, TNumber p_value, unsigned long p_compressionStep) const;
+    void AddToArray(TNumber* p_values, TNumber p_value, int p_compressionStep) const;
 
     template <typename TNumber>
     void WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade);
 
     template <typename TNumber>
-    void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, unsigned long p_compressionStep);
+    void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep);
 
     float GetMedian(float* p_values);
 
