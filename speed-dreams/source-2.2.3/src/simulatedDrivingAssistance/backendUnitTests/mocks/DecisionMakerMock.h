@@ -36,6 +36,11 @@ public:
         MStoppedRace = true;
     }
 
+    /*void SetSaveToDatabaseCheck(bool p_saveToDatabase)
+    {
+        Config.SetSaveToDatabaseCheck(p_saveToDatabase);
+    }*/
+
     bool MStoppedRace;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;

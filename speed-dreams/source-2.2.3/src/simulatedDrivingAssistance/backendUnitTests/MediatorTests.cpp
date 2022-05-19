@@ -378,3 +378,13 @@ TEST(MediatorTests, TimeOutTest)
         ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
     }
 }
+
+/// @brief tests if you can change the bool value to save to a database to true or to false
+
+TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    ASSERT_NO_THROW(SDAConfigMediator::GetInstance()->SetSaveRaceToDatabase(true));
+    ASSERT_NO_THROW(SDAConfigMediator::GetInstance()->SetSaveRaceToDatabase(false));
+}
