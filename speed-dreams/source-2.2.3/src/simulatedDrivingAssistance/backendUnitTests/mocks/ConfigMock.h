@@ -70,7 +70,7 @@ public:
         m_saveToDatabase = p_saveToDatabase;
     }
 
-    bool GetSaveToDatabaseCheck()
+    bool GetSaveToDatabaseCheck() const
     {
         return m_saveToDatabase;
     }
