@@ -17,6 +17,7 @@ namespace filesystem = std::experimental::filesystem;
     template tAllowedActions Mediator<type>::GetAllowedActions();                                                                                       \
     template tIndicator Mediator<type>::GetIndicatorSettings();                                                                                         \
     template tParticipantControl Mediator<type>::GetPControlSettings();                                                                                 \
+    template tDecisionThresholds Mediator<type>::GetThresholdSettings();                                                                                \
     template bool Mediator<type>::GetBlackBoxSyncOption();                                                                                              \
     template bool Mediator<type>::GetReplayRecorderSetting();                                                                                           \
     template int Mediator<type>::GetMaxTime();                                                                                                          \
@@ -31,6 +32,7 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
     template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
+    template void Mediator<type>::SetThresholdSettings(tDecisionThresholds p_thresholds);                                                               \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
     template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \
     template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
@@ -135,6 +137,14 @@ void Mediator<DecisionMaker>::SetBlackBoxSyncOption(bool p_sync)
     m_decisionMaker.Config.SetBlackBoxSyncOption(p_sync);
 }
 
+/// @brief              Sets the decision threshold values
+/// @param p_thresholds The threshold values
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetThresholdSettings(tDecisionThresholds p_thresholds)
+{
+    m_thresholds = p_thresholds;
+}
+
 /// @brief  Gets the allowed black box actions setting
 /// @return The allowed black box actions
 template <typename DecisionMaker>
@@ -158,6 +168,14 @@ template <typename DecisionMaker>
 tParticipantControl Mediator<DecisionMaker>::GetPControlSettings()
 {
     return m_decisionMaker.Config.GetPControlSettings();
+}
+
+/// @brief  Returns the decision threshold values
+/// @return The threshold values
+template <typename DecisionMaker>
+tDecisionThresholds Mediator<DecisionMaker>::GetThresholdSettings()
+{
+    return m_thresholds;
 }
 
 /// @brief        Sets the folder that contains all replay data.
