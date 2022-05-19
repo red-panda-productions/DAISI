@@ -56,7 +56,6 @@ static void* s_nextHandle = nullptr;
 int m_indicatorsControl[INDICATOR_AMOUNT];
 int m_pControlControl[PCONTROL_AMOUNT];
 int m_allowedActionsControl[ALLOWED_ACTIONS_AMOUNT];
-int m_taskControl;
 int m_interventionTypeControl;
 
 // Allowed black box actions
