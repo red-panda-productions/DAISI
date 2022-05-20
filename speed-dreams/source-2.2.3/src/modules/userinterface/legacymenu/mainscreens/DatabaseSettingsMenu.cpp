@@ -29,7 +29,6 @@ int m_privateCertDialogLabel;
 int m_dbStatusControl;
 bool m_certChosen = false;
 
-
 /// @brief Handle input in the Username textbox
 static void SetUsername(void*)
 {
@@ -80,8 +79,6 @@ static void SetUseSSL(tCheckBoxInfo* p_info)
     GfuiVisibilitySet(s_scrHandle, m_publicCertFileDialogControl, s_dbSettings.UseSSL);
     GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, s_dbSettings.UseSSL);
 }
-
-
 
 /// @brief Saves the settings and activates the next menu
 static void SaveSettings(void* /* dummy */)
