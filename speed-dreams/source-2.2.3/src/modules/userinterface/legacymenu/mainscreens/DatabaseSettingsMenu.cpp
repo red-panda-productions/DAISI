@@ -21,7 +21,7 @@ int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
 
-char m_portString[256];
+char m_portString[SETTINGS_NAME_LENGTH];
 
 int m_caCertFileDialogControl;
 int m_publicCertFileDialogControl;
@@ -59,7 +59,7 @@ static void SetAddress(void*)
 /// @brief Handle input in the Port textbox
 static void SetPort(void*)
 {
-    sprintf(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
+    strcpy_s(m_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_portControl));
     char* endptr;
     m_dbsettings.Port = (int)strtol(m_portString, &endptr, 0);
     if (*endptr != '\0')
