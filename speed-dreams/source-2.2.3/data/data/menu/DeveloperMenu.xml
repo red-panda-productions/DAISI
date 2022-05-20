@@ -12,11 +12,11 @@
             <section name="options">
                 <section name="0">
                     <attstr name="text" val="Synchronous Black Box"/>
-                    <attstr name="tip" val="Select for the simulation to wait on the black box"/>
+                    <attstr name="tip" val="Select for the simulation to wait on the black box interventions"/>
                 </section>
                 <section name="1">
                     <attstr name="text" val="Asynchronous Black Box"/>
-                    <attstr name="tip" val="Select for the simulation to not wait on the black box"/>
+                    <attstr name="tip" val="Select for the simulation to not wait on the black box interventions"/>
                 </section>
             </section>
             <attnum name="x" val="20"/>
@@ -52,7 +52,7 @@
 			as giving a new value to a button's text is only as long as the original length,
 			although even with the small font, a name that long would go off-screen -->
 	        <attstr name="text" val="Choose Replay File:                                                                                                                                                                                                                                                                     "/>
-	        <attstr name="tip" val="Open a file dialog to choose the location of a replay file"/>
+	        <attstr name="tip" val="Open a file dialog to choose the location of the desired replay file"/>
 	        <attstr name="h align" val="left"/>
 	        <attnum name="x" val="20"/>
 	        <attnum name="y" val="220"/>
@@ -179,6 +179,7 @@
             <attnum name="x" val="380"/>
             <attnum name="y" val="400"/>
             <attstr name="text" val="Decision thresholds"/>
+            <attstr name="tip" val="Edit the thresholds when the black box intervenes"/>
             <attstr name="h align" val="left"/>
             <attnum name="width" val="220"/>
             <attstr name="font" val="medium_t"/>

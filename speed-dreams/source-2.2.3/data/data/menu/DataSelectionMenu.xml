@@ -9,7 +9,7 @@
         <section name="CheckboxEnvironmentData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Environment data"/>
-            <attstr name="tip" val="Save the settings from the chosen environment"/>
+            <attstr name="tip" val="Collect data from the chosen environment"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="275"/>
             <attnum name="image width" val="20"/>
@@ -51,7 +51,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Intervention data"/>
             <attstr name="tip"
-                    val="Save the steer, brake, acceleration, and clutch action from the decision maker for each time step"/>
+                    val="Save the steer, brake, acceleration, and clutch action from the black box for each time step"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="200"/>
             <attnum name="image width" val="20"/>
@@ -64,7 +64,7 @@
         <section name="CheckboxMetaData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Internal meta data"/>
-            <attstr name="tip" val="Save the settings from the chosen decision maker"/>
+            <attstr name="tip" val="Save the data from the chosen black box"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="175"/>
             <attnum name="image width" val="20"/>
