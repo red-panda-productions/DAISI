@@ -24,7 +24,6 @@
 
 #include "legacymenu.h"
 #include "exitmenu.h"
-#include "SaveMenu.h"
 #include "ConfigEnums.h"
 #include "racescreens.h"
 
@@ -35,7 +34,6 @@
 #if SDL_FORCEFEEDBACK
 #include <forcefeedbackconfig.h>
 #endif
-
 
 extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
 
@@ -50,16 +48,16 @@ static void *pvAbortRaceHookHandle = 0;
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
-    if (pvAbortRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvAbortRaceHookHandle, RACE_ABORT));
-    
+    // if (pvAbortRaceHookHandle)
+    //     GfuiScreenActivate(SaveMenuInit(pvAbortRaceHookHandle, RACE_ABORT));
+    RmShowEndExperiment(RACE_ABORT);
 }
 
 static void *
 rmAbortRaceHookInit()
 {
     if (!pvAbortRaceHookHandle)
-        pvAbortRaceHookHandle = GfuiHookCreate(0, rmAbortRaceHookActivate);
+        pvAbortRaceHookHandle = GfuiHookCreate(nullptr, rmAbortRaceHookActivate);
 
     return pvAbortRaceHookHandle;
 }
@@ -116,9 +114,9 @@ static void *pvRestartRaceHookHandle = 0;
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
-    //if you restart the game it asks you if you want to save the experiment data
+    // if you restart the game it asks you if you want to save the experiment data
     if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RACE_RESTART));
+        SaveMenuInit(RACE_RESTART);
 }
 
 static void *
@@ -130,7 +128,7 @@ rmRestartRaceHookInit()
     return pvRestartRaceHookHandle;
 }
 
-//SIMULATED DRIVING ASSISTANCE: removed controls settings
+// SIMULATED DRIVING ASSISTANCE: removed controls settings
 #if SDL_FORCEFEEDBACK
 // ForceFeedbackConfig hook ********************************************
 static void
@@ -144,17 +142,17 @@ rmForceFeedbackConfigHookActivate(void * /* dummy */)
 
     snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, curPlayerIdx);
 
-
     std::string carName = "";
 
-    //Find human cars
-    tRmInfo* pCurrReInfo = LmRaceEngine().inData();
-    for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
-        if(pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
+    // Find human cars
+    tRmInfo *pCurrReInfo = LmRaceEngine().inData();
+    for (int i = 0; i < pCurrReInfo->s->_ncars; i++)
+    {
+        if (pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN)
+        {
             carName.append(pCurrReInfo->s->cars[i]->_carName);
         }
     }
-
 
     GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
 }
@@ -177,7 +175,7 @@ static void *rmStopScrHandle = 0;
 static void
 rmQuitHookActivate(void * /* dummy */)
 {
-    //quit game asks you if you want to quit the game.
+    // quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
         GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, RACE_EXIT));
 }
@@ -195,18 +193,18 @@ rmQuitHookInit()
 
 // 2, 3, 4 or 5 buttons "Stop race" menu *******************************
 
-static void *QuitHdle[6] = { 0, 0, 0, 0, 0, 0 };
+static void *QuitHdle[6] = {0, 0, 0, 0, 0, 0};
 
 // Descriptor for 1 button.
-typedef struct {
-
-    const char* role;  // Button role.
-    void       *screen; // Screen to activate if clicked.
+typedef struct
+{
+    const char *role;  // Button role.
+    void *screen;      // Screen to activate if clicked.
 
 } tButtonDesc;
 
 // Generic function for creating and activating the menu.
-static void*
+static void *
 rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
 {
     // Create screen, load menu XML descriptor and create static controls.
@@ -221,21 +219,21 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
     const int dy = (int)GfuiMenuGetNumProperty(hmenu, "buttonShift", 30);
     int ypos = (int)GfuiMenuGetNumProperty(hmenu, "yTopButton", 380);
     char pszPropName[64];
-    const char* pszCancelTip = "";
+    const char *pszCancelTip = "";
     for (int nButInd = 0; nButInd < nButtons; nButInd++)
     {
         // Get text and tip from button role and menu properties.
         sprintf(pszPropName, "%s.text", aButtons[nButInd].role);
-        const char* pszText = GfuiMenuGetStrProperty(hmenu, pszPropName, "");
+        const char *pszText = GfuiMenuGetStrProperty(hmenu, pszPropName, "");
         sprintf(pszPropName, "%s.tip", aButtons[nButInd].role);
-        const char* pszTip = GfuiMenuGetStrProperty(hmenu, pszPropName, "");
+        const char *pszTip = GfuiMenuGetStrProperty(hmenu, pszPropName, "");
         if (nButInd == nCancelIndex)
             pszCancelTip = pszTip;
 
         // Create the button from the template.
         GfuiMenuCreateTextButtonControl(hscreen, hmenu, "button",
                                         aButtons[nButInd].screen, GfuiScreenActivate, 0, 0, 0,
-                                        true, // From template.
+                                        true,  // From template.
                                         pszText, pszTip, xpos, ypos);
 
         // Next button if not last.
@@ -257,7 +255,7 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
 }
 
 // Simpler front-end function for creating and activating the menu.
-static void*
+static void *
 rmStopRaceMenu(const char *buttonRole1, void *screen1,
                const char *buttonRole2, void *screen2,
                const char *buttonRole3 = 0, void *screen3 = 0,
@@ -266,14 +264,14 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                const char *buttonRole6 = 0, void *screen6 = 0)
 {
     const tButtonDesc aButtons[6] =
-    {
-        { buttonRole1, screen1 },
-        { buttonRole2, screen2 },
-        { buttonRole3, screen3 },
-        { buttonRole4, screen4 },
-        { buttonRole5, screen5 },
-        { buttonRole6, screen6 },
-    };
+        {
+            {buttonRole1, screen1},
+            {buttonRole2, screen2},
+            {buttonRole3, screen3},
+            {buttonRole4, screen4},
+            {buttonRole5, screen5},
+            {buttonRole6, screen6},
+        };
 
     int nButtons = 2;
     if (buttonRole3 && screen3)
@@ -293,20 +291,19 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
         }
     }
 
-    if (QuitHdle[nButtons-1])
-        GfuiScreenRelease(QuitHdle[nButtons-1]);
+    if (QuitHdle[nButtons - 1])
+        GfuiScreenRelease(QuitHdle[nButtons - 1]);
 
-    QuitHdle[nButtons-1] = rmStopRaceMenu(aButtons, nButtons, nButtons-1);
+    QuitHdle[nButtons - 1] = rmStopRaceMenu(aButtons, nButtons, nButtons - 1);
 
-    return QuitHdle[nButtons-1];
+    return QuitHdle[nButtons - 1];
 }
 
 // SIMULATED DRIVING ASSISTANCE: Assisted driver is also a human
-void
-RmStopRaceMenu()
+void RmStopRaceMenu()
 {
-    void* params = LmRaceEngine().outData()->params;
-    const char* pszRaceName = LmRaceEngine().outData()->_reRaceName;
+    void *params = LmRaceEngine().outData()->params;
+    const char *pszRaceName = LmRaceEngine().outData()->_reRaceName;
 
     const char *buttonRole[6];
     void *screen[6];
@@ -336,7 +333,8 @@ RmStopRaceMenu()
     if (LegacyMenu::self().soundEngine())
         LegacyMenu::self().soundEngine()->mute();
 
-    for(i=0; i < 6; i++) {
+    for (i = 0; i < 6; i++)
+    {
         buttonRole[i] = "";
         screen[i] = NULL;
     }
@@ -368,17 +366,18 @@ RmStopRaceMenu()
     GfLogInfo("Current driver (on active split screen) is '%s'\n", cur_name);
 
     // Attempt to find a human driver
-    for (j=0; ; j++) {
-        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j+1);
+    for (j = 0;; j++)
+    {
+        snprintf(buf, sizeof(buf), "%s/%s/%d", ROB_SECT_ROBOTS, ROB_LIST_INDEX, j + 1);
         human_test_name = GfParmGetStr(hdHandle, buf, ROB_ATTR_NAME, "");
         assisted_test_name = GfParmGetStr(ahdHandle, buf, ROB_ATTR_NAME, "");
 
         if (strlen(human_test_name) == 0 && strlen(assisted_test_name) == 0) break;
 
-        if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0) {
-            GfLogInfo("Matching human driver found, setting index to %d.\n", j+1);
-            curPlayerIdx = j+1;
-
+        if (strcmp(cur_name, human_test_name) == 0 || strcmp(cur_name, assisted_test_name) == 0)
+        {
+            GfLogInfo("Matching human driver found, setting index to %d.\n", j + 1);
+            curPlayerIdx = j + 1;
 
 #if SDL_FORCEFEEDBACK
             buttonRole[i] = "forcefeedback";
@@ -394,15 +393,14 @@ RmStopRaceMenu()
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
-               buttonRole[1], screen[1],
-               buttonRole[2], screen[2],
-               buttonRole[3], screen[3],
-               buttonRole[4], screen[4],
-               buttonRole[5], screen[5]);
+                                     buttonRole[1], screen[1],
+                                     buttonRole[2], screen[2],
+                                     buttonRole[3], screen[3],
+                                     buttonRole[4], screen[4],
+                                     buttonRole[5], screen[5]);
 }
 
-void
-RmStopRaceMenuShutdown()
+void RmStopRaceMenuShutdown()
 {
     GfuiHookRelease(pvAbortRaceHookHandle);
     pvAbortRaceHookHandle = 0;

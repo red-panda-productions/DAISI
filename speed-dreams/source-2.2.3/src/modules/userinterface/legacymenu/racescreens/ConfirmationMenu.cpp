@@ -1,9 +1,9 @@
-#include <tgfclient.h>
+#include "tgfclient.h"
 
 #include "legacymenu.h"
 #include "ConfigEnums.h"
-#include "mediator.h"
-#include "ConfirmationMenu.h"
+#include "Mediator.h"
+#include "racescreens.h"
 #include "mainmenu.h"
 
 #define PRM_IM_SURE_BUTTON    "imsure"
@@ -27,10 +27,22 @@ static void OnAcceptRestart(void* /* dummy */)
 }
 
 /// @brief tells the mediator to save experiment data and abort the race
-static void OnAcceptAbort(void* /* dummy */)
+static void OnAcceptAbort(void* p_prevMenu)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(false);
     LmRaceEngine().abortRace();
+    GfuiScreenActivate(MainMenuInit((p_prevMenu)));
+    LmRaceEngine().cleanup();
+    LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
+}
+
+/// @brief tells the mediator to save experiment data
+static void OnAcceptFinished(void* p_prevMenu)
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(true);
+    GfuiScreenActivate(MainMenuInit((p_prevMenu)));
+    LmRaceEngine().cleanup();
+    LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
 }
 
 /// @brief                  create a confirmation screen
@@ -38,15 +50,10 @@ static void OnAcceptAbort(void* /* dummy */)
 /// @param p_raceEndType enum that decided how you got to the save screen
 void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
 {
-    if (s_menuHandle)
-    {
-        GfuiScreenRelease(s_menuHandle);
-    }
-
     s_menuHandle = GfuiScreenCreate();
-
     void* param = GfuiMenuLoad("confirmationmenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
+
     switch (p_raceEndType)
     {
         case RACE_EXIT:
@@ -66,7 +73,7 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
         }
         case RACE_FINISHED:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptFinished);
             break;
         }
         default:
@@ -76,13 +83,13 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
         }
     }
     // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_DELTE_BUTTON, p_prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_DELTE_BUTTON, p_prevMenu, GfuiScreenReplace);
 
     GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(s_menuHandle);
     // add keyboard key functionality
-    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", p_prevMenu, GfuiScreenActivate, nullptr);
+    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "Wait, don't delete the data", p_prevMenu, GfuiScreenReplace, nullptr);
 
     return s_menuHandle;
 }
