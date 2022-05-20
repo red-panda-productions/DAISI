@@ -22,7 +22,7 @@
             <attnum name="image x" val="-48"/>
             <attnum name="image y" val="0"/>
             <attnum name="image width" val="320"/>
-            <attnum name="image height" val="31"/>
+            <attnum name="image height" val="40"/>
             <attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
             <attstr name="enabled image" val="data/img/bg-button-big.png"/>
             <attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -44,9 +44,10 @@
             <attnum name="image x" val="-48"/>
             <attnum name="image y" val="0"/>
             <attnum name="image width" val="320"/>
-            <attnum name="image height" val="33"/>
-            <attstr name="focused image" val="data/img/bg-button-big-focused-last.png"/>
-            <attstr name="pushed image" val="data/img/bg-button-big-pushed-last.png"/>
+            <attnum name="image height" val="40"/>
+            <attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
+            <attstr name="enabled image" val="data/img/bg-button-big.png"/>
+            <attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
         </section>
 
     </section>
