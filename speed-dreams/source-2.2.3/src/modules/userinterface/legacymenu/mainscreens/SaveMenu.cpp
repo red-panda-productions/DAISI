@@ -7,6 +7,9 @@
 #include "SaveMenu.h"
 #include "mainmenu.h"
 
+#define PRM_YESSAVE_BUTTON  "yessave"
+#define PRM_DONTSAVE_BUTTON "dontsave"
+
 static void* s_menuHandle = nullptr;
 
 /// @brief tells the mediator to save experiment data and close SpeedDreams
@@ -47,7 +50,7 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
     GfuiMenuCreateStaticControls(s_menuHandle, param);
     // add button functionality
     GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONTSAVE_BUTTON, ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenActivate);
-    switch (p_raceEndType)  // add different button functionality based on the RaceEndType
+    switch (p_raceEndType)
     {
         case RACE_EXIT:
         {

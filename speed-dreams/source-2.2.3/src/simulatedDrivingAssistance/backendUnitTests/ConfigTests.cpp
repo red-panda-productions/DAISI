@@ -213,6 +213,8 @@ TEST(ConfigTests, ReplayFolderTest)
     ASSERT_EQ(config.GetReplayFolder(), randomPath);
 }
 
+/// @brief        Tests if the saveToDatabse bool gets correctly changed in the config file
+/// @param p_save boolean that returns decides if the data should or should not be saved.
 void SaveRaceToDatabaseTestConf(bool p_save)
 {
     SDAConfig config;

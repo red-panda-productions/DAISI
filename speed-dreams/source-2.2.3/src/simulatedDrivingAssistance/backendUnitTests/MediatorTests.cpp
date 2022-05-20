@@ -416,7 +416,6 @@ TEST(MediatorTests, TimeOutTest)
 }
 
 /// @brief tests if you can change the bool value to save to a database to true or to false
-
 TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
 {
     SDAConfigMediator::ClearInstance();

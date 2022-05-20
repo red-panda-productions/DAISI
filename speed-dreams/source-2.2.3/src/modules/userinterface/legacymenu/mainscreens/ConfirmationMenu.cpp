@@ -6,6 +6,9 @@
 #include "ConfirmationMenu.h"
 #include "mainmenu.h"
 
+#define PRM_IMSURE_BUTTON    "imsure"
+#define PRM_DONTDELTE_BUTTON "waitdontdelete"
+
 static void* s_menuHandle = nullptr;
 
 /// @brief tells the mediator to not save experiment data and close SpeedDreams
@@ -44,7 +47,7 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
 
     void* param = GfuiMenuLoad("confirmationmenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
-    switch (p_raceEndType)  ////add different button functionality based on the RaceEndType
+    switch (p_raceEndType)
     {
         case RACE_EXIT:
         {
