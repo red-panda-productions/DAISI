@@ -14,6 +14,30 @@
 #define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
+/// @brief Saves the settings into the DatabaseSettingsMenu.xml file
+void SaveDBSettingsToDisk(DatabaseSettings& p_dbSettings, const char* p_portString)
+{
+    // Copies xml to documents folder and then opens file parameter
+    std::string dstStr("config/DatabaseSettingsMenu.xml");
+    char dst[512];
+    sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
+    void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+
+    // Save max time to xml file
+    GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, p_dbSettings.Username);
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, p_dbSettings.Password);
+    GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, p_dbSettings.Address);
+    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, p_portString);
+    GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, p_dbSettings.Schema);
+    GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(p_dbSettings.UseSSL));
+    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_CA_CERT, p_dbSettings.CACertFilePath);
+    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, p_dbSettings.PublicCertFilePath);
+    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, p_dbSettings.PrivateCertFilePath);
+
+    // Write all the above queued changed to xml file
+    GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
+}
+
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_dbSettings The selected database settings
@@ -60,6 +84,7 @@ void LoadDefaultSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbC
     strcpy_s(p_control.PortString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Port));
     strcpy_s(p_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Schema));
     p_dbSettings.UseSSL = SETTINGS_NAME_LENGTH, GfuiCheckboxIsChecked(p_scrHandle, p_control.UseSSL);
+    SaveDBSettingsToDisk(p_dbSettings, p_control.PortString);
 }
 
 /// @brief        Loads the settings from the config file into the internal variables

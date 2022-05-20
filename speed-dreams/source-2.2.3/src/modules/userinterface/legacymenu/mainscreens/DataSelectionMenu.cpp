@@ -100,7 +100,7 @@ static void LoadDefaultSettings()
 /// @brief Loads the user menu settings from the local config file
 static void OnActivate(void* /* dummy */)
 {
-    char portString[SETTINGS_NAME_LENGTH];
+    char portString[SETTINGS_NAME_LENGTH] = DEFAULT_PORT;
     tDbControlSettings control;
     control.PortString = portString;
     LoadDBSettings(s_dbSettingsMenu, m_dbSettings, control);

@@ -23,6 +23,7 @@
 #define MSG_PUBLIC_CERT_DIALOG_TEXT  "Public:"
 #define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
 #define AMOUNT_OF_NAMES              1
+#define DEFAULT_PORT                 "port"
 
 typedef struct DbControlSettings
 {
@@ -40,6 +41,8 @@ typedef struct DbControlSettings
     int PrivateCertificateButton;
     int PrivateCertificateLabel;
 } tDbControlSettings;
+
+void SaveDBSettingsToDisk(DatabaseSettings& p_dbSettings, const char* p_portString);
 
 void SynchronizeControls(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control);
 

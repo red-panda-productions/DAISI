@@ -20,7 +20,7 @@ int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
 
-char m_portString[SETTINGS_NAME_LENGTH];
+char m_portString[SETTINGS_NAME_LENGTH] = DEFAULT_PORT;
 
 int m_caCertFileDialogControl;
 int m_publicCertFileDialogControl;
@@ -85,35 +85,13 @@ static void SetUseSSL(tCheckBoxInfo* p_info)
     GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, m_dbsettings.UseSSL);
 }
 
-/// @brief Saves the settings into the DatabaseSettingsMenu.xml file
-static void SaveSettingsToDisk()
-{
-    // Copies xml to documents folder and then opens file parameter
-    std::string dstStr("config/DatabaseSettingsMenu.xml");
-    char dst[512];
-    sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
-    void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
-    // Save max time to xml file
-    GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, m_dbsettings.Username);
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, m_dbsettings.Password);
-    GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, m_dbsettings.Address);
-    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, m_portString);
-    GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, m_dbsettings.Schema);
-    GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dbsettings.UseSSL));
-    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_CA_CERT, m_dbsettings.CACertFilePath);
-    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, m_dbsettings.PublicCertFilePath);
-    GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, m_dbsettings.PrivateCertFilePath);
-
-    // Write all the above queued changed to xml file
-    GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
-}
 
 /// @brief Saves the settings and activates the next menu
 static void SaveSettings(void* /* dummy */)
 {
     // Save settings in the ResearcherMenu.xml
-    SaveSettingsToDisk();
+    SaveDBSettingsToDisk(m_dbsettings,m_portString);
     SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
 
     // Go to the next screen
