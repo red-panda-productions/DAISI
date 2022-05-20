@@ -196,4 +196,3 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     // TODO: else
 }
 INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));
-
