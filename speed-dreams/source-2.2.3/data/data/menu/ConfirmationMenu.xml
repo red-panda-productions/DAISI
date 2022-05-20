@@ -12,7 +12,7 @@
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Delete the experiment file"/>
             <attstr name="tip" val="delete the experiment data. WARNING: THIS CANNOT BE UNDONE!"/>
-            <attnum name="x" val="260"/>
+            <attnum name="x" val="200"/>
             <attnum name="y" val="290"/>
             <attnum name="width" val="320"/>
             <attstr name="h align" val="left"/>
@@ -20,9 +20,9 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
             <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-48"/>
+            <attnum name="image x" val="-100"/>
             <attnum name="image y" val="0"/>
-            <attnum name="image width" val="320"/>
+            <attnum name="image width" val="600"/>
             <attnum name="image height" val="40"/>
             <attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
             <attstr name="enabled image" val="data/img/bg-button-big.png"/>
@@ -35,16 +35,16 @@
             <attstr name="text" val="Wait, don't delete the data"/>
             <attstr name="tip" val="return to the previous screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="260"/>
+            <attnum name="x" val="200"/>
             <attnum name="y" val="258"/>
-            <attnum name="width" val="320"/>
+            <attnum name="width" val="500"/>
             <attstr name="font" val="big"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
             <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-48"/>
+            <attnum name="image x" val="-100"/>
             <attnum name="image y" val="0"/>
-            <attnum name="image width" val="320"/>
+            <attnum name="image width" val="600"/>
             <attnum name="image height" val="40"/>
             <attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
             <attstr name="enabled image" val="data/img/bg-button-big.png"/>
