@@ -104,7 +104,7 @@ void LoadDBSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbContro
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 /// @param  p_dbSettings      The settings of the database
-void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings)
+void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings, bool* p_controlBoolean)
 {
     p_dbSettings.UseSSL = false;
     bool connectable = false;
@@ -132,14 +132,17 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     float* colotPtr = color;
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, "Offline");
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
+    *p_controlBoolean = false;
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 /// @param  p_dbSettings      The settings of the database
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings)
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings, bool* p_controlBoolean)
 {
-    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, p_dbSettings);
+    if (*p_controlBoolean) return;
+    *p_controlBoolean = true;
+    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, p_dbSettings, p_controlBoolean);
     t.detach();
 }

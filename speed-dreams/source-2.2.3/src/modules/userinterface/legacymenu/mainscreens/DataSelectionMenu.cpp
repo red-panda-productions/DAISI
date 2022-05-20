@@ -26,6 +26,8 @@ tDataToStore m_dataToStore;
 int m_dataToStoreControl[5];
 int m_dbStatus;
 
+bool m_connectionBool = false;
+
 DatabaseSettings m_dbSettings;
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
@@ -102,7 +104,7 @@ static void OnActivate(void* /* dummy */)
     tDbControlSettings control;
     control.PortString = portString;
     LoadDBSettings(s_dbSettingsMenu, m_dbSettings, control);
-    CheckConnection(s_scrHandle, m_dbStatus, m_dbSettings);
+    CheckConnection(s_scrHandle, m_dbStatus, m_dbSettings, &m_connectionBool);
 
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
     std::string strPath("config/DataSelectionMenu.xml");

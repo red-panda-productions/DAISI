@@ -207,7 +207,7 @@ void PControlTestMediator(bool p_intervention, bool p_gas, bool p_steer, bool p_
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
-/// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination (first 3)
+/// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
 bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)

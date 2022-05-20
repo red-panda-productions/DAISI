@@ -48,6 +48,6 @@ void LoadConfigSettings(void* p_param, DatabaseSettings& p_dbSettings, tDbContro
 
 void LoadDBSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control);
 
-void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings);
+void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings, bool* p_controlBoolean);
 
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings);
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings, bool* p_controlBoolean);

@@ -31,6 +31,7 @@ int m_publicCertDialogLabel;
 int m_privateCertDialogLabel;
 int m_dbStatusControl;
 bool m_certChosen = false;
+bool m_connectionBool = false;
 
 tDatabaseSettings m_dbsettings;
 
@@ -147,12 +148,12 @@ static void GoBack(void* /* dummy */)
 }
 
 /// @brief Select a certificate file and save the path
-static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalText, char* p_filePath, const wchar_t** extensions)
+static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalText, char* p_filePath, const char* p_extension, const wchar_t** p_extensions)
 {
     const wchar_t* names[AMOUNT_OF_NAMES] = {L"Certificates"};
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, err, false, names, extensions, AMOUNT_OF_NAMES);
+    bool success = SelectFile(buf, err, false, names, p_extensions, AMOUNT_OF_NAMES);
     if (!success)
     {
         return;
@@ -163,13 +164,13 @@ static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalTe
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {
-        GfuiLabelSetText(s_scrHandle, p_labelControl, "please select an appropriate filename");
+        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_FILE_EXTENSION);
         return;
     }
     // Enforce that file ends in the extension
-    if (std::strcmp(path.extension().string().c_str(), CERT_PEM) != 0)
+    if (std::strcmp(path.extension().string().c_str(), p_extension) != 0)
     {
-        GfuiLabelSetText(s_scrHandle, p_labelControl, "please select an appropriate filename");
+        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_FILE_EXTENSION);
         return;
     }
 
@@ -185,24 +186,24 @@ static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalTe
 static void SelectCACert(void* /* dummy */)
 {
     const wchar_t* extensions[AMOUNT_OF_NAMES] = {L"*" CERT_PEM ""};
-    SelectCert(m_caCertFileDialogControl, m_caCertDialogLabel, MSG_CA_CERT_DIALOG_TEXT, m_dbsettings.CACertFilePath, extensions);
+    SelectCert(m_caCertFileDialogControl, m_caCertDialogLabel, MSG_CA_CERT_DIALOG_TEXT, m_dbsettings.CACertFilePath, CERT_PEM, extensions);
 }
 
 static void SelectPublicCert(void* /* dummy */)
 {
     const wchar_t* extensions[AMOUNT_OF_NAMES] = {L"*" CERT_PEM ""};
-    SelectCert(m_publicCertFileDialogControl, m_publicCertDialogLabel, MSG_PUBLIC_CERT_DIALOG_TEXT, m_dbsettings.PublicCertFilePath, extensions);
+    SelectCert(m_publicCertFileDialogControl, m_publicCertDialogLabel, MSG_PUBLIC_CERT_DIALOG_TEXT, m_dbsettings.PublicCertFilePath, CERT_PEM, extensions);
 }
 
 static void SelectPrivateCert(void* /* dummy */)
 {
     const wchar_t* extensions[AMOUNT_OF_NAMES] = {L"*" CERT_KEY ""};
-    SelectCert(m_privateCertFileDialogControl, m_privateCertDialogLabel, MSG_PRIVATE_CERT_DIALOG_TEXT, m_dbsettings.PrivateCertFilePath, extensions);
+    SelectCert(m_privateCertFileDialogControl, m_privateCertDialogLabel, MSG_PRIVATE_CERT_DIALOG_TEXT, m_dbsettings.PrivateCertFilePath, CERT_KEY, extensions);
 }
 
 static void CheckConnectionCallback(void* /* dummy */)
 {
-    CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings);
+    CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings, &m_connectionBool);
 }
 
 /// @brief            Initializes the database settings menu
@@ -249,7 +250,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     OnActivate(s_scrHandle);
     SMediator::GetInstance()->SetDatabaseSettings(m_dbsettings);
 
-    CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings);
+    CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings, &m_connectionBool);
 
     return s_scrHandle;
 }
