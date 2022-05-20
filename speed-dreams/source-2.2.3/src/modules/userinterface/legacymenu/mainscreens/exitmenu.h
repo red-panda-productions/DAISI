@@ -21,6 +21,6 @@
 #define _EXITMENU_H_
 #include "ConfigEnums.h"
 
-extern void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_saveWayVersion);
+extern void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_raceEndType);
 
 #endif /* _EXITMENU_H_ */
