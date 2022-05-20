@@ -19,7 +19,6 @@ static bool m_loadedSettings = false;
 static tDatabaseSettings s_dbSettings;
 static char s_portString[SETTINGS_NAME_LENGTH];
 
-
 void ConvertPortString()
 {
     try
