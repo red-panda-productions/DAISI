@@ -23,7 +23,6 @@
 #define MSG_PUBLIC_CERT_DIALOG_TEXT  "Public:"
 #define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
 #define AMOUNT_OF_NAMES              1
-#define DEFAULT_PORT                 "port"
 
 typedef struct DbControlSettings
 {
