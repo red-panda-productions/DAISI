@@ -22,7 +22,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
 
     // Load the indicator data for every intervention action
     char path[PATH_BUF_SIZE];
-    for (int i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
+    for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
         snprintf(path, PATH_BUF_SIZE, "%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i]);
         float actionType = GfParmGetNum(xmlHandle, path, PRM_ATTR_ACT_TYPE_ID, nullptr, 5.0);

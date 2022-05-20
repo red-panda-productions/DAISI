@@ -141,8 +141,8 @@ protected:
     /// @return      The vector of generated indicator data
     std::vector<tIndicatorData> CreateRandomIndicatorData(DataGeneration p_gen)
     {
-        std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_TOTAL);
-        for (int i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
+        std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
+        for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             data[i] = {
                 static_cast<InterventionAction>(i),
@@ -168,7 +168,7 @@ protected:
 
         // Write all data to the xml file.
         char xmlSection[PATH_BUF_SIZE];
-        for (int i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
+        for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             tIndicatorData data = p_data[i];
 
@@ -318,7 +318,7 @@ TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
         // test whether every value matches the original generated value.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
         std::vector<tIndicatorData> loadedData = IndicatorConfig::GetInstance()->GetIndicatorData();
-        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION_TOTAL; action++)
+        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION; action++)
         {
             AssertIndicator(loadedData[action], rndData[action]);
         }
@@ -363,7 +363,7 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
 
-        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION_TOTAL; action++)
+        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION; action++)
         {
             IndicatorConfig::GetInstance()->ActivateIndicator(action);
             std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators();

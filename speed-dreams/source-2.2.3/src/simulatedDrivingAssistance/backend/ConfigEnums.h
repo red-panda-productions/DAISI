@@ -47,7 +47,7 @@ typedef unsigned int InterventionAction;
 #define INTERVENTION_ACTION_SPEED_ACCEL   4
 #define INTERVENTION_ACTION_SPEED_BRAKE   5
 
-#define NUM_INTERVENTION_ACTION_TOTAL 6
+#define NUM_INTERVENTION_ACTION 6
 
 /// @brief The different types of intervention actions: steer, speed control
 typedef unsigned int InterventionActionType;

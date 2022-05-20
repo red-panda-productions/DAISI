@@ -30,7 +30,7 @@
 #define VAL_YES "yes"
 #define VAL_NO  "no"
 
-static const char* s_interventionActionString[NUM_INTERVENTION_ACTION_TOTAL] = {
+static const char* s_interventionActionString[NUM_INTERVENTION_ACTION] = {
     "steer neutral", "steer left", "steer right",
     "speed neutral", "accelerate", "brake"};
 
@@ -69,7 +69,7 @@ private:
     IndicatorConfig() = default;
     static IndicatorConfig* m_instance;
 
-    std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_TOTAL);
+    std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
     std::vector<tIndicatorData> m_activeIndicators = {};
 
     // Loading helpers
