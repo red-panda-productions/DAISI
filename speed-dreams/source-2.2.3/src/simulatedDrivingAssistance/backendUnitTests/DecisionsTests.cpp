@@ -104,20 +104,18 @@ TEST(DecisionTests, BrakeRunIndicateTest)
     brakeDecision.BrakeAmount = 1;
     brakeDecision.RunIndicateCommands();
 
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    // if the break amount is above the BRAKE_THRESHOLD defined in BrakeDecision.cpp, INTERVENTION_ACTION_BRAKE indicator should be active
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+    // if the break amount is above the BRAKE_THRESHOLD defined in BrakeDecision.cpp, INTERVENTION_ACTION_SPEED_BRAKE indicator should be active
+    ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_BRAKE));
 
     brakeDecision.BrakeAmount = 0;
     brakeDecision.RunIndicateCommands();
 
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the break amount is below the BRAKE_THRESHOLD defined in BrakeDecision.cpp, no indicator should have been changed
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+    ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_BRAKE));
 }
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
@@ -135,18 +133,16 @@ TEST(DecisionsTest, SteerRunIndicateTests)
     steerDecision.RunIndicateCommands();
 
     // TODO: Update to have multiple indicators when indicator code is updated
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
+    ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_RIGHT));
 
     steerDecision.SteerAmount = 1;
     steerDecision.RunIndicateCommands();
 
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
+    ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_LEFT));
 }
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
@@ -163,18 +159,17 @@ TEST(DecisionsTest, AccelRunIndicateTests)
     accelDecision.AccelAmount = 1;
     accelDecision.RunIndicateCommands();
 
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_ACCELERATE indicator should be active
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+    // if the accelerate amount is above the ACCEL_THRESHOLD defined in AccelDecision.cpp, INTERVENTION_ACTION_SPEED_ACCEL indicator should be active
+    ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
+
 
     accelDecision.AccelAmount = 0;
     accelDecision.RunIndicateCommands();
 
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the accelerate amount is below the ACCEL_THRESHOLD defined in AccelDecision.cpp, no indicator should have been changed
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+    ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
 }

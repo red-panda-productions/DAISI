@@ -54,11 +54,9 @@ private:
     void grDispCounterBoard2();
 
     // SIMULATED DRIVING ASSISTANCE: add display indicator methods
-    void DispActiveIndicators(tIndicator settings, InterventionType interventionType);
-    void DispNeutralIndicators(tIndicator settings, InterventionType interventionType);
-    void DispIndicatorsHelper(tIndicatorData m_indicator, tIndicator settings);
-    void DispIndicatorIcon(tTextureData *p_data, ssgSimpleState *p_texture);
-    void DispIndicatorText(tTextData *p_data);
+    void DispActiveIndicators();
+    void DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture);
+    void DispIndicatorText(tTextData* p_data);
 
 private:
     // Dash colour handling

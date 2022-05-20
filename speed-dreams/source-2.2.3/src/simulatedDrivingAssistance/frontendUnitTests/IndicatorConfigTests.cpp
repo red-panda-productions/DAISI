@@ -141,11 +141,12 @@ protected:
     /// @return      The vector of generated indicator data
     std::vector<tIndicatorData> CreateRandomIndicatorData(DataGeneration p_gen)
     {
-        std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
-        for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        std::vector<tIndicatorData> data = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_TOTAL);
+        for (int i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
         {
             data[i] = {
-                (InterventionAction)i,
+                static_cast<InterventionAction>(i),
+                static_cast<InterventionActionType>(i),
                 CreateRandomSoundData(p_gen),
                 CreateRandomTextureData(p_gen),
                 CreateRandomTextData(p_gen)};
@@ -167,13 +168,13 @@ protected:
 
         // Write all data to the xml file.
         char xmlSection[PATH_BUF_SIZE];
-        for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        for (int i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
         {
             tIndicatorData data = p_data[i];
 
             if (data.Sound)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_interventionActionString[i], PRM_SECT_SOUND);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_SOUND);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Sound->Path);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_LOOPING, GfuiMenuBoolToStr(data.Sound->Looping));
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_LOOP_INTERVAL, nullptr, data.Sound->LoopInterval);
@@ -183,7 +184,7 @@ protected:
             {
                 char m_interventionNumber[INTERVENTION_BUF_SIZE];
                 std::sprintf(m_interventionNumber, "%d", p_interventionType);
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s%s", PRM_SECT_INTERVENTIONS, s_interventionActionString[i], PRM_SECT_TEXTURES, m_interventionNumber);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES, m_interventionNumber);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Texture->Path);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
@@ -191,7 +192,7 @@ protected:
 
             if (data.Text)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_interventionActionString[i], PRM_SECT_TEXT);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXT);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Text->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Text->ScrPos.Y);
@@ -288,7 +289,7 @@ TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
         // test whether every value matches the original generated value.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
         std::vector<tIndicatorData> loadedData = IndicatorConfig::GetInstance()->GetIndicatorData();
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
         {
             AssertIndicator(loadedData[i], rndData[i]);
         }
@@ -332,93 +333,14 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
 
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
         {
             IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
             // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
-            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.            
-            
+            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.                       
             AssertIndicator(active[0], rndData[i]);
-        }
-    }
-}
-
-/// @brief Tests whether the IndicatorConfig can retrieve the correct neutral indicators.
-TEST_F(IndicatorConfigLoadingTests, NeutralIndicator)
-{
-    for (int i = 0; i < NUM_OF_TESTS; i++)
-    {
-        // Create random valid indicator data
-        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
-        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
-
-        // Activate every action and check whether the corresponding action is also returned by GetNeutralIndicators.
-        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
-        {
-            IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-            std::vector<tIndicatorData> neutral = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
-            if (active.size() == 1)
-            {
-                if (active.front().Action == INTERVENTION_ACTION_TURN_LEFT || active.front().Action == INTERVENTION_ACTION_TURN_RIGHT || active.front().Action == INTERVENTION_ACTION_STEER_NONE)
-                {
-                    ASSERT_TRUE(neutral[0].Action == INTERVENTION_ACTION_BRAKE_NONE);
-                }
-                else
-                {   
-                    ASSERT_TRUE(neutral[0].Action == INTERVENTION_ACTION_STEER_NONE);
-                }
-            }
-            else if(active.size() == 0)
-            {
-                // If there are 2 neutral indicators, STEER_NONE is saved first, BRAKE_NONE second                 ;
-                ASSERT_TRUE(active.empty());
-                ASSERT_TRUE(neutral.front().Action == INTERVENTION_ACTION_STEER_NONE);
-                ASSERT_TRUE(neutral.front().Action != INTERVENTION_ACTION_BRAKE_NONE);
-                ASSERT_TRUE(neutral.back().Action == INTERVENTION_ACTION_BRAKE_NONE);
-                ASSERT_TRUE(neutral.back().Action != INTERVENTION_ACTION_STEER_NONE);
-            }
-        }
-    }
-}
-
-/// @brief Tests whether the IndicatorConfig gets the correct number of neutral and active indicators
-TEST_F(IndicatorConfigLoadingTests, NumberOfIndicators)
-{
-    for (int i = 0; i < NUM_OF_TESTS; i++)
-    {
-        // Create random valid indicator data
-        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
-        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
-
-        // Activate every action and check whether the correct number of indicators are saved.
-        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
-        {
-            IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-            std::vector<tIndicatorData> neutral = IndicatorConfig::GetInstance()->GetNeutralIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
-            // Currently there is only 1 indicator active at the time.
-            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
-
-            // There is always at least 1 active indicator in the ONLY SIGNALS intervention type
-            ASSERT_TRUE(active.size() > 0);
-
-            // There are 0 neutral indicators if there are 2 active indicator in the ONLY SIGNALS intervention type
-            if (active.size() == 2)
-                ASSERT_TRUE(neutral.size() == 0);
-
-            // There is 1 neutral indicator if there is 1 active indicator in the ONLY SIGNALS intervention type
-            if (active.size() == 1)
-                ASSERT_TRUE(neutral.size() == 1);
-            
-            // There are 2 neutral indicators if there are 0 active indicator in the ONLY SIGNALS intervention type
-            if(active.size() == 0)
-                ASSERT_TRUE(neutral.size() == 2);
         }
     }
 }

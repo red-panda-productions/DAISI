@@ -368,12 +368,10 @@ void cGrBoard::grDispCounterBoard2()
     glTranslatef(0, -(speedoRise * TOP_ANCHOR / 100), 0);
 }  // grDispCounterBoard2
 
-/// @brief Initializes the dashboard by creating a trackmap object.
 void cGrBoard::initBoard(void)
 {
 }
 
-/// @brief Shuts down the dashboard by releasing the trackmap object memory.
 void cGrBoard::shutdown(void)
 {
 }
@@ -388,11 +386,8 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo *frameInfo,
 {
     car_ = currCar;
 
-    // SIMULATED DRIVING ASSISTANCE: displays the current active and neutral intervention indicators
-    tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
-    DispActiveIndicators(settings, interventionType);
-    DispNeutralIndicators(settings, interventionType);
+    // SIMULATED DRIVING ASSISTANCE: displays all currently active indicators
+    DispActiveIndicators();
 
     grDispCounterBoard2();
 
@@ -405,42 +400,25 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo *frameInfo,
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispActiveIndicators(tIndicator settings, InterventionType interventionType)
+void cGrBoard::DispActiveIndicators()
 {
-    for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType))
+    // Guard when the current intervention type on NO_SIGNALS, don't display any indicators.
+    if (SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_NO_SIGNALS) return;
+
+    tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
+    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators())
     {
-        DispIndicatorsHelper(indicator, settings);
+        if (settings.Icon) DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
+
+        if (settings.Text) DispIndicatorText(indicator.Text);
     }
-}
-
-// SIMULATED DRIVING ASSISTANCE
-/// @brief Displays the currently neutral indicators from IndicatorConfig
-///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispNeutralIndicators(tIndicator settings, InterventionType interventionType)
-{
-    for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetNeutralIndicators(interventionType))
-    {
-        DispIndicatorsHelper(indicator, settings);
-    }
-}
-
-// SIMULATED DRIVING ASSISTANCE
-/// @brief Helper function for displaying active and neutral indicators from IndicatorConfig
-///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispIndicatorsHelper(tIndicatorData m_indicator, tIndicator settings)
-{
-    if (settings.Icon)
-        DispIndicatorIcon(m_indicator.Texture, m_textures[m_indicator.Action]);
-
-    if (settings.Text)
-        DispIndicatorText(m_indicator.Text);
 }
 
 // SIMULATED DRIVING ASSISTANCE
 /// @brief           Displays the icon indicator (if the texture was loaded correctly)
 /// @param p_data    Pointer to struct containing data about the texture, like its position
 /// @param p_texture Pointer to the object containing the actual loaded OpenGL texture
-void cGrBoard::DispIndicatorIcon(tTextureData *p_data, ssgSimpleState *p_texture)
+void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
 {
     // Guard if texture data is null or the texture itself is null
     if (!p_data || !p_texture) return;
@@ -467,15 +445,11 @@ void cGrBoard::DispIndicatorIcon(tTextureData *p_data, ssgSimpleState *p_texture
     // glTexCoord2f defines point of the texture that you take (0-1).
     // glVertex2f then defines where to place this on the screen (relative to the current matrix)
     glBegin(GL_TRIANGLE_STRIP);
-    glColor4f(1.0, 1.0, 1.0, 0.0);
-    glTexCoord2f(0.0, 0.0);
-    glVertex2f(0, 0);
-    glTexCoord2f(0.0, 1.0);
-    glVertex2f(0, iconHeight);
-    glTexCoord2f(1.0, 0.0);
-    glVertex2f(iconWidth, 0);
-    glTexCoord2f(1.0, 1.0);
-    glVertex2f(iconWidth, iconHeight);
+    glColor4f(1.0, 1.0, 1.0, 0.0); 
+    glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0, iconHeight);
+    glTexCoord2f(1.0, 0.0); glVertex2f(iconWidth, 0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(iconWidth, iconHeight);
     glEnd();
 
     // Unbind the texture and pop the translated matrix of the stack.
@@ -486,7 +460,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData *p_data, ssgSimpleState *p_texture
 // SIMULATED DRIVING ASSISTANCE
 /// @brief        Displays the intervention indicator text
 /// @param p_data Pointer to struct containing data about the text, like its position
-void cGrBoard::DispIndicatorText(tTextData *p_data)
+void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
     // Guard if no text data is defined for this indicator
     if (!p_data) return;
@@ -499,20 +473,20 @@ void cGrBoard::DispIndicatorText(tTextData *p_data)
 
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Loads the textures for the indicators from their filepaths.
-///        MUST BE CALLED AFTER THE TEXTURE DIRECTORY HAS BEEN ADDED TO grFilePath
-///        which happens in grInitBoardCar.
+///        Must ONLY be called after the texture directory has been added to
+///        grFilePath in grInitBoardCar, otherwise textures won't load.
 void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
 
-    m_textures = new ssgSimpleState *[indicators.size()];
-    for (const tIndicatorData &indicator : indicators)
+    m_textures = new ssgSimpleState*[indicators.size()];
+    for (const tIndicatorData& indicator : indicators)
     {
-        ssgSimpleState *texture = nullptr;
+        ssgSimpleState* texture = nullptr;
         if (indicator.Texture)
         {
             // Guard if there is no texture data for this action.
-            texture = (ssgSimpleState *)grSsgLoadTexState(indicator.Texture->Path);
+            texture = (ssgSimpleState*)grSsgLoadTexState(indicator.Texture->Path);
         }
         m_textures[indicator.Action] = texture;
     }

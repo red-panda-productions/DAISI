@@ -22,14 +22,18 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
 
     // Load the indicator data for every intervention action
     char path[PATH_BUF_SIZE];
-    for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
+    for (int i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
     {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_interventionActionString[i]);
+        snprintf(path, PATH_BUF_SIZE, "%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i]);
+        float actionType = GfParmGetNum(xmlHandle, path, PRM_ATTR_ACT_TYPE_ID, nullptr, 5.0);
+
+        std::string sectPath = std::string(path) + "/";
         m_indicatorData[i] = {
-            (InterventionAction)i,
-            LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path), interventionType),
-            LoadText(xmlHandle, std::string(path))};
+            static_cast<InterventionAction>(i),
+            static_cast<InterventionActionType>(actionType),
+            LoadSound(xmlHandle, sectPath),
+            LoadTexture(xmlHandle, sectPath, interventionType),
+            LoadText(xmlHandle, sectPath)};
     }
 }
 
@@ -44,107 +48,23 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 ///                           if and only if the interventions are turned on (not on NO_SIGNALS).
 /// @param p_interventionType The intervention type setting
 /// @return                   The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionType p_interventionType)
+std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
 {
     return m_activeIndicators;
 }
 
-/// @brief                    Returns a vector containing indicator data for all neutral indicators,
-///                           if and only if the interventions are turned on (not on NO_SIGNALS).
-/// @param p_interventionType The intervention type setting
-/// @return                   The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetNeutralIndicators(InterventionType p_interventionType)
-{
-    // Guard when no signals are to be sent, always return an empty vector.
-    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
-
-    std::vector<tIndicatorData> activeIndicators = GetActiveIndicators(p_interventionType);
-    
-    // Guard when there are 2 active indicators, we return an empty vector because there can be no neutral indicators
-    if (activeIndicators.size() == 2) return {};
-
-    // For the indicators that are active, get for the indicators that are neutral
-    for (const tIndicatorData& indicator : GetActiveIndicators(p_interventionType))
-    {
-        // This if-statement is build around the idea that either braking or steering is currently active, not both
-        if (indicator.Action == INTERVENTION_ACTION_BRAKE_NONE || indicator.Action == INTERVENTION_ACTION_BRAKE || indicator.Action == INTERVENTION_ACTION_ACCELERATE)
-        {
-            // Only steering is in neutral
-            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE);
-            m_neutralIndicators = {m_neutralSteer};
-        }
-        else if (indicator.Action == INTERVENTION_ACTION_STEER_NONE || indicator.Action == INTERVENTION_ACTION_TURN_LEFT || indicator.Action == INTERVENTION_ACTION_TURN_RIGHT)
-        {
-            // Only braking is in neutral
-            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE);
-            m_neutralIndicators = {m_neutralBrake};
-        }
-        else
-        {
-            // Both braking and steering are in neutral
-            tIndicatorData m_neutralSteer = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_STEER_NONE);
-            tIndicatorData m_neutralBrake = IndicatorConfig::GetInstance()->GetNeutralIndicator(INTERVENTION_ACTION_BRAKE_NONE);
-            m_neutralIndicators = {m_neutralSteer, m_neutralBrake};
-        }
-    }
-    return m_neutralIndicators;
-}
-
-/// @brief          Returns an element containing indicator data for only a neutral indicator
-/// @return         The element of neutral indicator data
-tIndicatorData IndicatorConfig::GetNeutralIndicator(InterventionAction action)
-{
-    std::vector<tIndicatorData> m_neutralIndicator;
-    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetIndicatorData())
-    {
-        if (indicator.Action == action)
-            m_neutralIndicator.insert(m_neutralIndicator.end(), indicator);
-    }
-    tIndicatorData first = m_neutralIndicator.front();
-    return first;
-}
-
-/// @brief          Activates the given intervention indicator
+/// @brief          Activates the given intervention action and ensures that all other types are neutral.              
 /// @param p_action The intervention to activate the indicators for
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
-    // TODO: make the functionality for being able to have more than 1 active indicator below
-    // (if statement) better
-    std::vector<tIndicatorData> m_indicatorData = IndicatorConfig::GetInstance()->GetIndicatorData();
+    // By default the neutral indicators are active
+    m_activeIndicators = {
+        m_indicatorData[INTERVENTION_ACTION_STEER_NONE], 
+        m_indicatorData[INTERVENTION_ACTION_SPEED_NONE]};
 
-    // If the m_indicatorData is already 'full' (if it already has 2 active indicators), remove the first element
-    if (m_indicatorData.size() == 2)
-        m_indicatorData.erase(m_indicatorData.begin());
-
-    // If the only element in the indicator data vector is the same or is of the same kind of intervention
-    // as the current intervention action, replace the indicator data with the current intervention action
-    // and return so that the intervention action is not added (pushed) to the same vector twice
-    if (m_indicatorData.front().Action == p_action)
-    {
-         m_activeIndicators = {m_indicatorData[p_action]};
-    }
-    else if (m_indicatorData.front().Action == INTERVENTION_ACTION_STEER_NONE ||
-             m_indicatorData.front().Action == INTERVENTION_ACTION_TURN_LEFT ||
-             m_indicatorData.front().Action == INTERVENTION_ACTION_TURN_RIGHT &&
-             p_action == INTERVENTION_ACTION_STEER_NONE ||
-             p_action == INTERVENTION_ACTION_TURN_LEFT ||
-             p_action == INTERVENTION_ACTION_TURN_RIGHT)
-    {
-         m_activeIndicators = {m_indicatorData[p_action]};
-    }
-    else if (m_indicatorData.front().Action == INTERVENTION_ACTION_BRAKE ||
-             m_indicatorData.front().Action == INTERVENTION_ACTION_ACCELERATE ||
-             m_indicatorData.front().Action == INTERVENTION_ACTION_BRAKE_NONE &&
-             p_action == INTERVENTION_ACTION_BRAKE ||
-             p_action == INTERVENTION_ACTION_ACCELERATE ||
-             p_action == INTERVENTION_ACTION_BRAKE_NONE)
-    {
-         m_activeIndicators = {m_indicatorData[p_action]};
-    }
-    else 
-         m_activeIndicators.push_back(m_indicatorData[p_action]);
-
-    
+    // Replace the neutral indicator that has the same type as the newly activated one.
+    tIndicatorData activate = m_indicatorData[p_action];
+    m_activeIndicators[activate.Type] = activate;
 }
 
 /// @brief          Loads the sound indicator data from the indicator config.xml

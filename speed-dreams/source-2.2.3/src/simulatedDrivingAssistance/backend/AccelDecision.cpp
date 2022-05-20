@@ -5,7 +5,7 @@ void AccelDecision::RunIndicateCommands()
 {
     if (AccelAmount < ACCEL_THRESHOLD) return;
 
-    SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_ACCELERATE);
+    SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_SPEED_ACCEL);
 }
 
 /// @brief Runs the intervene commands

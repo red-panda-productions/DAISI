@@ -30,16 +30,23 @@ typedef unsigned int InterventionType;
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
-#define INTERVENTION_ACTION_STEER_NONE 0
-#define INTERVENTION_ACTION_TURN_LEFT  1
-#define INTERVENTION_ACTION_TURN_RIGHT 2
-#define INTERVENTION_ACTION_BRAKE      3
-#define INTERVENTION_ACTION_ACCELERATE 4
-#define INTERVENTION_ACTION_BRAKE_NONE 5
+#define INTERVENTION_ACTION_STEER_NONE  0
+#define INTERVENTION_ACTION_STEER_LEFT  1
+#define INTERVENTION_ACTION_STEER_RIGHT 2
+
+#define INTERVENTION_ACTION_SPEED_NONE  3
+#define INTERVENTION_ACTION_SPEED_ACCEL 4
+#define INTERVENTION_ACTION_SPEED_BRAKE 5
 
 #define NUM_INTERVENTION_ACTION_BRAKE 3
 #define NUM_INTERVENTION_ACTION_STEER 3
-#define NUM_INTERVENTION_ACTION       6
+#define NUM_INTERVENTION_ACTION_TOTAL 6
+
+/// @brief The different types of intervention actions: steer, speed control
+typedef unsigned int InterventionActionType;
+
+#define INTERVENTION_ACTION_TYPE_STEER 0
+#define INTERVENTION_ACTION_TYPE_SPEED 1
 
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl

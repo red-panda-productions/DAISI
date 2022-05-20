@@ -5,7 +5,7 @@
 #include "IndicatorData.h"
 
 // Size of the path buffers, this will be used unchecked.
-#define PATH_BUF_SIZE 256
+#define PATH_BUF_SIZE         256
 #define INTERVENTION_BUF_SIZE 11
 
 // Location of the config.xml file with respect to the root data directory.
@@ -13,11 +13,12 @@
 #define SOUNDS_DIR_FORMAT     "%sdata/indicators/sound/%s"
 
 // Parameters of sections and attributes used to search in the XML file.
-#define PRM_SECT_INTERVENTIONS "Interventions"
-#define PRM_SECT_TEXTURES      "textures"
-#define PRM_SECT_SOUND         "sound"
-#define PRM_SECT_TEXT          "text"
+#define PRM_SECT_INDICATORS "indicators"
+#define PRM_SECT_TEXTURES   "textures"
+#define PRM_SECT_SOUND      "sound"
+#define PRM_SECT_TEXT       "text"
 
+#define PRM_ATTR_ACT_TYPE_ID   "action-type-id"
 #define PRM_ATTR_XPOS          "xpos"
 #define PRM_ATTR_YPOS          "ypos"
 #define PRM_ATTR_SRC           "source"
@@ -30,13 +31,12 @@
 #define VAL_YES "yes"
 #define VAL_NO  "no"
 
-static const char* s_interventionActionString[NUM_INTERVENTION_ACTION] = {
-    "steer none", "steer left", "steer right", "brake", "accelerate", "brake none"
-};
+static const char* s_interventionActionString[NUM_INTERVENTION_ACTION_TOTAL] = {
+    "steer neutral", "steer left", "steer right",
+    "speed neutral", "accelerate", "brake"};
 
 static const char* s_interventionTypeString[NUM_INTERVENTION_TYPES] = {
-    "no-help", "singals-only", "shared-control", "complete-takeover"
-};
+    "no-help", "signals-only", "shared-control", "complete-takeover"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
@@ -48,10 +48,7 @@ public:
 
     std::vector<tIndicatorData> GetIndicatorData();
 
-    std::vector<tIndicatorData> GetActiveIndicators(InterventionType p_interventionType);
-    std::vector<tIndicatorData> GetNeutralIndicators(InterventionType p_interventionType);
-
-    tIndicatorData GetNeutralIndicator(InterventionAction action);
+    std::vector<tIndicatorData> GetActiveIndicators();
 
     static IndicatorConfig* GetInstance();
 
@@ -73,10 +70,8 @@ private:
     IndicatorConfig() = default;
     static IndicatorConfig* m_instance;
 
-    std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
-
+    std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_TOTAL);
     std::vector<tIndicatorData> m_activeIndicators = {};
-    std::vector<tIndicatorData> m_neutralIndicators = {};
 
     // Loading helpers
     tSoundData* LoadSound(void* p_handle, std::string p_path);
