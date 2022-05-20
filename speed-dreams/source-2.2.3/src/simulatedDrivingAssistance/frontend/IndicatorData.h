@@ -43,7 +43,6 @@ typedef struct TextData
 typedef struct IndicatorData
 {
     InterventionAction Action;
-    InterventionActionType Type;
     tSoundData* Sound;
     tTextureData* Texture;
     tTextData* Text;

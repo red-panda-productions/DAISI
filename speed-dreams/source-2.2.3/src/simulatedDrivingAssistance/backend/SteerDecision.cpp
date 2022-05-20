@@ -4,12 +4,12 @@
 void SteerDecision::RunIndicateCommands()
 {
     float threshold = SMediator::GetInstance()->GetThresholdSettings().Steer;
-    if (SteerAmount < -threshold)
+    if (SteerAmount <= -threshold)
     {
         SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_STEER_RIGHT);
         return;
     }
-    if (SteerAmount > threshold)
+    if (SteerAmount >= threshold)
     {
         SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_STEER_LEFT);
     }

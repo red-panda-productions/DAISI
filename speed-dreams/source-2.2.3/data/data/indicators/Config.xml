@@ -5,7 +5,6 @@
 
         <!--Steering actions-->
         <section name ="steer neutral">
-            <attnum name ="action-type-id" val="0"/>
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.03"/>
@@ -23,7 +22,6 @@
             </section>
         </section>
         <section name ="steer left">
-            <attnum name ="action-type-id" val="0"/>
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.03"/>
@@ -46,7 +44,6 @@
             </section>
         </section>
         <section name ="steer right">
-            <attnum name ="action-type-id" val="0"/>
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.03"/>
@@ -71,7 +68,6 @@
         
         <!--Speed control actions-->
         <section name="speed neutral">
-            <attnum name ="action-type-id" val="1"/>
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.03"/>
@@ -88,7 +84,6 @@
             </section>
         </section>
         <section name ="accelerate">
-            <attnum name ="action-type-id" val="1"/>
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.03"/>
@@ -110,7 +105,6 @@
             </section>
         </section>
         <section name ="brake">
-            <attnum name ="action-type-id" val="1"/>
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.03"/>

@@ -43,8 +43,8 @@ TEST(UtilsTests, RandomCharArray)
 TEST(UtilsTests, ActiveIndicators)
 {
     std::vector<tIndicatorData> mockData = {
-        {INTERVENTION_ACTION_STEER_NEUTRAL, INTERVENTION_ACTION_TYPE_STEER, nullptr, nullptr, nullptr},
-        {INTERVENTION_ACTION_SPEED_BRAKE, INTERVENTION_ACTION_TYPE_SPEED, nullptr, nullptr, nullptr}};
+        {INTERVENTION_ACTION_STEER_NEUTRAL, nullptr, nullptr, nullptr},
+        {INTERVENTION_ACTION_SPEED_BRAKE, nullptr, nullptr, nullptr}};
 
     ASSERT_TRUE(ActiveIndicatorsContains(mockData, INTERVENTION_ACTION_STEER_NEUTRAL));
     ASSERT_FALSE(ActiveIndicatorsContains(mockData, INTERVENTION_ACTION_SPEED_ACCEL));

@@ -146,7 +146,6 @@ protected:
         {
             data[i] = {
                 static_cast<InterventionAction>(i),
-                static_cast<InterventionActionType>(m_rnd.NextInt(NUM_INTERVENTION_ACTION_TYPES)),
                 CreateRandomSoundData(p_gen),
                 CreateRandomTextureData(p_gen),
                 CreateRandomTextData(p_gen)};
@@ -171,9 +170,6 @@ protected:
         for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             tIndicatorData data = p_data[i];
-
-            snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i]);
-            GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_ACT_TYPE_ID, nullptr, data.Type);
 
             if (data.Sound)
             {
@@ -271,7 +267,6 @@ protected:
     void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndicator)
     {
         ASSERT_EQ(p_loadedIndicator.Action, p_rndIndicator.Action);
-        ASSERT_EQ(p_loadedIndicator.Type, p_rndIndicator.Type);
         AssertSound(p_loadedIndicator.Sound, p_rndIndicator.Sound);
         AssertTexture(p_loadedIndicator.Texture, p_rndIndicator.Texture);
         AssertText(p_loadedIndicator.Text, p_rndIndicator.Text);
@@ -351,8 +346,8 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidLoopInterval)
     }
 }
 
-/// @brief Tests whether the IndicatorConfig can activate an indicator and retrieve the correct values.
-TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
+/// @brief Tests whether the IndicatorConfig can activate multiple indicators of different types.
+TEST_F(IndicatorConfigLoadingTests, ActivateMultipleIndicators)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
@@ -363,13 +358,14 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
 
-        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION; action++)
-        {
-            IndicatorConfig::GetInstance()->ActivateIndicator(action);
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators();
+        // Must be of different type: speed / steer.
+        IndicatorConfig::GetInstance()->ActivateIndicator(INTERVENTION_ACTION_STEER_LEFT);
+        IndicatorConfig::GetInstance()->ActivateIndicator(INTERVENTION_ACTION_SPEED_ACCEL);
 
-            AssertActivatedIndicator(active, rndData, action);            
-        }
+        auto active = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+        AssertIndicator(active[INTERVENTION_ACTION_TYPE_STEER], rndData[INTERVENTION_ACTION_STEER_LEFT]);
+        AssertIndicator(active[INTERVENTION_ACTION_TYPE_SPEED], rndData[INTERVENTION_ACTION_SPEED_ACCEL]);
     }
 }
 

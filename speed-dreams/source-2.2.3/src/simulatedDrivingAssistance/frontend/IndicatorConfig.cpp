@@ -24,16 +24,12 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
     char path[PATH_BUF_SIZE];
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i]);
-        float actionType = GfParmGetNum(xmlHandle, path, PRM_ATTR_ACT_TYPE_ID, nullptr, 0);
-
-        std::string sectPath = std::string(path) + "/";
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INDICATORS, s_interventionActionString[i]);
         m_indicatorData[i] = {
             static_cast<InterventionAction>(i),
-            static_cast<InterventionActionType>(actionType),
-            LoadSound(xmlHandle, sectPath),
-            LoadTexture(xmlHandle, sectPath, interventionType),
-            LoadText(xmlHandle, sectPath)};
+            LoadSound(xmlHandle, std::string(path)),
+            LoadTexture(xmlHandle, std::string(path), interventionType),
+            LoadText(xmlHandle, std::string(path))};
     }
 
     // Initially the active indicators are the neutral indicators.
@@ -58,13 +54,12 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
     return m_activeIndicators;
 }
 
-/// @brief          Activates the given intervention action.            
+/// @brief          Activates the given intervention action by replacing 
+///                 the indicator of matching type with the newly activated indicator.          
 /// @param p_action The intervention for which to show the the indicator
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
-    // Replace the indicator that has the same type as the newly activated one.
-    tIndicatorData activate = m_indicatorData[p_action];
-    m_activeIndicators[activate.Type] = activate;
+    m_activeIndicators[s_actionToActionType[p_action]] = m_indicatorData[p_action];
 }
 
 /// @brief          Loads the sound indicator data from the indicator config.xml

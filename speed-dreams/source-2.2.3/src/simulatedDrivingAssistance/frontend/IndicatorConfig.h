@@ -17,7 +17,6 @@
 #define PRM_SECT_SOUND      "sound"
 #define PRM_SECT_TEXT       "text"
 
-#define PRM_ATTR_ACT_TYPE_ID   "action-type-id"
 #define PRM_ATTR_XPOS          "xpos"
 #define PRM_ATTR_YPOS          "ypos"
 #define PRM_ATTR_SRC           "source"

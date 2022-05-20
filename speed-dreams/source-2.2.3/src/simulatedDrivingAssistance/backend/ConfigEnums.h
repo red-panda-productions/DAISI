@@ -50,12 +50,22 @@ typedef unsigned int InterventionAction;
 #define NUM_INTERVENTION_ACTION 6
 
 /// @brief The different types of intervention actions: steer, speed control
+///        Used to index the active indicators in the IndicatorConfig.
 typedef unsigned int InterventionActionType;
 
 #define INTERVENTION_ACTION_TYPE_STEER 0
 #define INTERVENTION_ACTION_TYPE_SPEED 1
 
 #define NUM_INTERVENTION_ACTION_TYPES 2
+
+// Map all intervention actions to their corresponding sub-type
+static constexpr InterventionActionType s_actionToActionType[NUM_INTERVENTION_ACTION] = {
+    INTERVENTION_ACTION_TYPE_STEER,
+    INTERVENTION_ACTION_TYPE_STEER,
+    INTERVENTION_ACTION_TYPE_STEER,
+    INTERVENTION_ACTION_TYPE_SPEED,
+    INTERVENTION_ACTION_TYPE_SPEED,
+    INTERVENTION_ACTION_TYPE_SPEED};
 
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl
