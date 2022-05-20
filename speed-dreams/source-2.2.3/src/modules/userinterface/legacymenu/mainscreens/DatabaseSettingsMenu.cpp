@@ -40,7 +40,16 @@ static void SetUsername(void*)
 static void SetPassword(void*)
 {
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
-    GfuiEditboxSetString(s_scrHandle, m_passwordControl, s_dbSettings.Password);
+
+    char replacement[SETTINGS_NAME_LENGTH];
+    int length = strlen(s_dbSettings.Password);
+    for (int i = 0; i < length; i++)
+    {
+        replacement[i] = '*';
+    }
+    replacement[length] = '\0';
+
+    GfuiEditboxSetString(s_scrHandle, m_passwordControl, replacement);
 }
 
 /// @brief Handle input in the Address textbox
@@ -108,6 +117,7 @@ static void OnActivate(void* /* dummy */)
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
     SynchronizeControls(s_scrHandle, control);
+    SetPassword(nullptr);
 }
 
 /// @brief Returns to the main menu screen
@@ -200,7 +210,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
     // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsername);
-    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPassword);
+    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, SetPassword, SetPassword);
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddress);
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPort);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
