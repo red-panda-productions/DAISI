@@ -18,6 +18,7 @@
 #define CERT_PEM                     ".pem"
 #define CERT_KEY                     ".key"
 #define MSG_ONLY_HINT                ""
+#define MSG_NO_CERT_FILE             "Please select an appropriate filename"
 #define MSG_CA_CERT_DIALOG_TEXT      "CA:"
 #define MSG_PUBLIC_CERT_DIALOG_TEXT  "Public:"
 #define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"

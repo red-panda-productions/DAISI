@@ -6,7 +6,6 @@
 #include "DatabaseConnectionCheck.h"
 #include "DataSelectionMenu.h"
 #include "../rppUtils/FileDialog.hpp"
-
 #include <experimental/filesystem>
 
 // GUI screen handles
@@ -58,7 +57,7 @@ static void SetAddress(void*)
 /// @brief Handle input in the Port textbox
 static void SetPort(void*)
 {
-    sprintf(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
+    strcpy_s(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
     char* endptr;
     m_dbsettings.Port = (int)strtol(m_portString, &endptr, 0);
     if (*endptr != '\0')
@@ -71,7 +70,7 @@ static void SetPort(void*)
 /// @brief Handle input in the Schema name textbox
 static void SetSchema(void*)
 {
-    sprintf(m_dbsettings.Schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
+    strcpy_s(m_dbsettings.Schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
     GfuiEditboxSetString(s_scrHandle, m_schemaControl, m_dbsettings.Schema);
 }
 
@@ -147,12 +146,12 @@ static void GoBack(void* /* dummy */)
 }
 
 /// @brief Select a certificate file and save the path
-static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalText, char* p_filePath, const wchar_t** extensions)
+static void SelectCert(int p_buttonControl, int p_labelControl, const char* p_normalText, char* p_filePath, const wchar_t** p_extensions)
 {
     const wchar_t* names[AMOUNT_OF_NAMES] = {L"Certificates"};
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, err, false, names, extensions, AMOUNT_OF_NAMES);
+    bool success = SelectFile(buf, err, false, names, p_extensions, AMOUNT_OF_NAMES);
     if (!success)
     {
         return;
@@ -163,13 +162,13 @@ static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalTe
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {
-        GfuiLabelSetText(s_scrHandle, p_labelControl, "please select an appropriate filename");
+        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
         return;
     }
     // Enforce that file ends in the extension
     if (std::strcmp(path.extension().string().c_str(), CERT_PEM) != 0)
     {
-        GfuiLabelSetText(s_scrHandle, p_labelControl, "please select an appropriate filename");
+        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
         return;
     }
 
@@ -228,7 +227,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_caCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CA_CERT_DIALOG, s_scrHandle, SelectCACert);
     m_publicCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PUBLIC_CERT_DIALOG, s_scrHandle, SelectPublicCert);
     m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
-    //  Textbox controls
+    // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsername);
     m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPassword);
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddress);
@@ -252,13 +251,4 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     CheckConnection(s_scrHandle, m_dbStatusControl, m_dbsettings);
 
     return s_scrHandle;
-}
-
-/// @brief  Activates the database settings menu screen
-/// @return 0 if successful, otherwise -1
-int DatabaseSettingsMenuRun()
-{
-    GfuiScreenActivate(s_scrHandle);
-
-    return 0;
 }

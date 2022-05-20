@@ -7,11 +7,17 @@
 #include <string>
 #include "guimenu.h"
 
-#define CONNECTING "Connecting..."
-#define OFFLINE    "Online       "
-#define ONLINE     "Offline      "
+#define CONNECTING            "Connecting..."
+#define OFFLINE               "Online       "
+#define ONLINE                "Offline      "
+#define CONNECTING_TEXT_COLOR {1, 1, 1, 1};
+#define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
+#define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_dbSettings The selected database settings
+/// @param p_control the corresponding ui element control integers
 void SynchronizeControls(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, p_dbSettings.Username);
@@ -42,6 +48,9 @@ void SynchronizeControls(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbC
 }
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_dbSettings The selected database settings
+/// @param p_control the corresponding ui element control integers
 void LoadDefaultSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control)
 {
     strcpy_s(p_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Username));
@@ -54,6 +63,8 @@ void LoadDefaultSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbC
 
 /// @brief        Loads the settings from the config file into the internal variables
 /// @param p_param The configuration xml file handle
+/// @param p_dbSettings The selected database settings
+/// @param p_control the corresponding ui element control integers
 void LoadConfigSettings(void* p_param, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
@@ -85,6 +96,9 @@ void LoadConfigSettings(void* p_param, DatabaseSettings& p_dbSettings, tDbContro
 }
 
 /// @brief Loads the user menu settings from the local config file or the default values will be loaded
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_dbSettings The selected database settings
+/// @param p_control the corresponding ui element control integers
 void LoadDBSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control)
 {
     // Retrieves the saved user xml file, if it doesn't exist the default values will be loaded
@@ -100,20 +114,20 @@ void LoadDBSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbContro
     }
     LoadDefaultSettings(p_scrHandle, p_dbSettings, p_control);
 }
+
 /// @brief                    The async function to check if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 /// @param  p_dbSettings      The settings of the database
 void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings)
 {
-    p_dbSettings.UseSSL = false;
     bool connectable = false;
     try
     {
-        float color[4] = {1, 1, 1, 1};
+        float color[4] = CONNECTING_TEXT_COLOR;
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
-        GfuiLabelSetText(p_scrHandle, p_dbStatusControl, "Connecting...");
+        GfuiLabelSetText(p_scrHandle, p_dbStatusControl, CONNECTING);
         connectable = SMediator::GetInstance()->CheckConnection(p_dbSettings);
     }
     catch (std::exception& e)
@@ -122,15 +136,15 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     }
     if (connectable)
     {
-        GfuiLabelSetText(p_scrHandle, p_dbStatusControl, "Online");
-        float color[4] = {0, 1, 0, 1};
+        GfuiLabelSetText(p_scrHandle, p_dbStatusControl, ONLINE);
+        float color[4] = ONLINE_TEXT_COLOR;
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
         return;
     }
-    float color[4] = {1, 0, 0, 1};
+    float color[4] = OFFLINE_TEXT_COLOR;
     float* colotPtr = color;
-    GfuiLabelSetText(p_scrHandle, p_dbStatusControl, "Offline");
+    GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
 }
 
