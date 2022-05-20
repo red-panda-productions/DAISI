@@ -30,7 +30,7 @@ int m_publicCertDialogLabel;
 int m_privateCertDialogLabel;
 int m_dbStatusControl;
 bool m_certChosen = false;
-bool m_connectionBool = false;
+
 
 /// @brief Handle input in the Username textbox
 static void SetUsername(void*)
@@ -178,7 +178,7 @@ static void SelectPrivateCert(void* /* dummy */)
 
 static void CheckConnectionCallback(void* /* dummy */)
 {
-    CheckConnection(s_scrHandle, m_dbStatusControl, s_dbsettings, &m_connectionBool);
+    CheckConnection(s_scrHandle, m_dbStatusControl, s_dbsettings);
 }
 
 /// @brief            Initializes the database settings menu
@@ -225,7 +225,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     OnActivate(s_scrHandle);
     SMediator::GetInstance()->SetDatabaseSettings(s_dbsettings);
 
-    CheckConnection(s_scrHandle, m_dbStatusControl, s_dbsettings, &m_connectionBool);
+    CheckConnection(s_scrHandle, m_dbStatusControl, s_dbsettings);
 
     return s_scrHandle;
 }

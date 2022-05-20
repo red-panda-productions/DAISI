@@ -14,6 +14,8 @@
 #define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
+static bool m_isconnecting = false;
+
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
 void SaveDBSettingsToDisk(DatabaseSettings& p_dbSettings, const char* p_portString)
 {
@@ -145,7 +147,7 @@ void LoadDBSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbContro
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 /// @param  p_dbSettings      The settings of the database
-void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings, bool* p_controlBoolean)
+void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings)
 {
     bool connectable = false;
     try
@@ -172,7 +174,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     float* colotPtr = color;
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
-    *p_controlBoolean = false;
+    m_isconnecting = false;
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database
@@ -180,10 +182,10 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 /// @param  p_dbSettings      The settings of the database
 /// @param  p_controlBoolean  A boolean that will control whether or not to run the async thread
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings, bool* p_controlBoolean)
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings)
 {
-    if (*p_controlBoolean) return;
-    *p_controlBoolean = true;
-    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, p_dbSettings, p_controlBoolean);
+    if (m_isconnecting) return;
+    m_isconnecting = true;
+    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, p_dbSettings);
     t.detach();
 }
