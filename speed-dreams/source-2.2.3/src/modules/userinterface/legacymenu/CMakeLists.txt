@@ -4,10 +4,10 @@ SET(MS mainscreens)
 # SIMULATED DRIVING ASSISTANCE CHANGE: added InterventionMenu.h and .cpp, DataSelectionMenu.h and .cpp and DatabaseSettingsMenu.h and .cpp
 SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu.cpp ${MS}/DataSelectionMenu.cpp
                         ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp ${MS}/DeveloperMenu.cpp
-                        ${MS}/DatabaseSettingsMenu.cpp ${MS}/DatabaseConnectionCheck.cpp ${MS}/EndExperimentMenu.cpp)
+                        ${MS}/DatabaseSettingsMenu.cpp ${MS}/DatabaseConnectionManager.cpp ${MS}/EndExperimentMenu.cpp)
 SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.h ${MS}/DataSelectionMenu.h
                         ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h
-                        ${MS}/DatabaseSettingsMenu.h ${MS}/DatabaseConnectionCheck.h ${MS}/EndExperimentMenu.h)
+                        ${MS}/DatabaseSettingsMenu.h ${MS}/DatabaseConnectionManager.h ${MS}/EndExperimentMenu.h)
 
 IF(MSVC)
     # errno.cpp should only be included with MSVC

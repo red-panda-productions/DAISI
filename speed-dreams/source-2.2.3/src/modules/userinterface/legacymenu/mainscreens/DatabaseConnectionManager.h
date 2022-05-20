@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConfigEnums.h"
+#include "tgfclient.h"
 
 // Parameters used in the xml files
 #define PRM_USERNAME            "UsernameEdit"
@@ -24,9 +25,6 @@
 #define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
 #define AMOUNT_OF_NAMES              1
 
-static tDatabaseSettings s_dbSettings;
-static char s_portString[SETTINGS_NAME_LENGTH];
-
 typedef struct DbControlSettings
 {
     int Username;
@@ -43,6 +41,10 @@ typedef struct DbControlSettings
     int PrivateCertificateLabel;
 } tDbControlSettings;
 
+#define CA_CERTIFICATE      0
+#define PUBLIC_CERTIFIATE   1
+#define PRIVATE_CERTIFICATE 2
+
 void SaveDBSettingsToDisk();
 
 void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control);
@@ -56,3 +58,21 @@ void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control);
 void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings);
 
 void CheckConnection(void* p_scrHandle, int p_dbStatusControl);
+
+void SetUsername(void* p_scrHandle, int p_usernameControl);
+
+void SetPassword(void* p_scrHandle, int p_passwordControl);
+
+void SetAddress(void* p_scrHandle, int p_addressControl);
+
+void SetPort(void* p_scrHandle, int p_portControl);
+
+void SetSchema(void* p_scrHandle, int p_schemaControl);
+
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl);
+
+void InitCertificates(void* p_param);
+
+void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, const char* p_normalText, int p_certificate, const char* p_extension, const wchar_t** p_extensions);
+
+void SetDBSettings();

@@ -26,8 +26,10 @@ Added:
             ResearcherMenu.cpp
             DataSelectionMenu.h
             DataSelectionMenu.cpp
-            DataSettingsMenu.h
-            DataSettingsMenu.cpp
+            DatabaseSettingsMenu.h
+            DatabaseSettingsMenu.cpp
+            DatabaseConnectionManager.h
+            DatabaseConnectionManager.h
             DeveloperMenu.h
             DeveloperMenu.cpp 
             EndExperimentMenu.cpp

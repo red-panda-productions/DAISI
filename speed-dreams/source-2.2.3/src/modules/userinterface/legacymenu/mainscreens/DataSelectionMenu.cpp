@@ -6,7 +6,7 @@
 #include "ResearcherMenu.h"
 #include <DatabaseSettingsMenu.h>
 
-#include "DatabaseConnectionCheck.h"
+#include "DatabaseConnectionManager.h"
 
 #define PRM_ENV_DATA        "CheckboxEnvironmentData"
 #define PRM_CAR_DATA        "CheckboxCarData"

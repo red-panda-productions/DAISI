@@ -1,8 +1,9 @@
-#include "DatabaseConnectionCheck.h"
+#include "DatabaseConnectionManager.h"
 #include <thread>
 #include "Mediator.h"
 #include "tgfclient.h"
 #include "tgf.h"
+#include "../rppUtils/FileDialog.hpp"
 #include <experimental/filesystem>
 #include <string>
 #include "guimenu.h"
@@ -15,6 +16,9 @@
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
 static bool m_isconnecting = false;
+static bool m_loadedSettings = false;
+static tDatabaseSettings s_dbSettings;
+static char s_portString[SETTINGS_NAME_LENGTH];
 
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
 void SaveDBSettingsToDisk()
@@ -124,6 +128,8 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 /// @param p_control the corresponding ui element control integers
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
 {
+    if (m_loadedSettings) return;
+    m_loadedSettings = true;
     // Retrieves the saved user xml file, if it doesn't exist the default values will be loaded
     std::string strPath("config/DatabaseSettingsMenu.xml");
     char buf[512];
@@ -162,6 +168,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         float color[4] = ONLINE_TEXT_COLOR;
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
+        m_isconnecting = false;
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
@@ -180,4 +187,118 @@ void CheckConnection(void* p_scrHandle, int p_dbStatusControl)
     m_isconnecting = true;
     std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_dbSettings);
     t.detach();
+}
+
+/// @brief Handle input in the Username textbox
+void SetUsername(void* p_scrHandle, int p_usernameControl)
+{
+    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_usernameControl));
+    GfuiEditboxSetString(p_scrHandle, p_usernameControl, s_dbSettings.Username);
+}
+
+/// @brief Handle input in the Password textbox
+void SetPassword(void* p_scrHandle, int p_passwordControl)
+{
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
+
+    char replacement[SETTINGS_NAME_LENGTH];
+    int length = strlen(s_dbSettings.Password);
+    for (int i = 0; i < length; i++)
+    {
+        replacement[i] = '*';
+    }
+    replacement[length] = '\0';
+
+    GfuiEditboxSetString(p_scrHandle, p_passwordControl, replacement);
+}
+
+/// @brief Handle input in the Address textbox
+void SetAddress(void* p_scrHandle, int p_addressControl)
+{
+    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_addressControl));
+    GfuiEditboxSetString(p_scrHandle, p_addressControl, s_dbSettings.Address);
+}
+
+/// @brief Handle input in the Port textbox
+void SetPort(void* p_scrHandle, int p_portControl)
+{
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_portControl));
+    char* endptr;
+    s_dbSettings.Port = (int)strtol(s_portString, &endptr, 0);
+    if (*endptr != '\0')
+        std::cerr << "Could not convert " << s_portString << " to int and leftover string is: " << endptr << std::endl;
+    char buf[32];
+    sprintf(buf, "%d", s_dbSettings.Port);
+    GfuiEditboxSetString(p_scrHandle, p_portControl, buf);
+}
+
+/// @brief Handle input in the Schema name textbox
+void SetSchema(void* p_scrHandle, int p_schemaControl)
+{
+    strcpy_s(s_dbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
+    GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_dbSettings.Schema);
+}
+
+/// @brief        Enables/disables the SSL option
+/// @param p_info Information on the checkbox
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl)
+{
+    s_dbSettings.UseSSL = p_info->bChecked;
+    GfuiVisibilitySet(p_scrHandle, p_caControl, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicControl, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateControl, s_dbSettings.UseSSL);
+}
+
+void InitCertificates(void* p_param)
+{
+    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
+    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
+    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
+}
+
+/// @brief Select a certificate file and save the path
+void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, const char* p_normalText, int p_certificate, const char* p_extension, const wchar_t** p_extensions)
+{
+    const wchar_t* names[AMOUNT_OF_NAMES] = {L"Certificates"};
+    char buf[MAX_PATH_SIZE];
+    char err[MAX_PATH_SIZE];
+    bool success = SelectFile(buf, err, false, names, p_extensions, AMOUNT_OF_NAMES);
+    if (!success)
+    {
+        GfLogError(err);
+        return;
+    }
+
+    // Validate input w.r.t. black boxes
+    std::experimental::filesystem::path path = buf;
+    // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
+    if (path.string().size() <= 7)
+    {
+        GfuiLabelSetText(p_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
+        return;
+    }
+    // Enforce that file ends in the extension
+    if (std::strcmp(path.extension().string().c_str(), p_extension) != 0)
+    {
+        GfuiLabelSetText(p_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
+        return;
+    }
+
+    // Visual feedback of choice
+    std::string buttonText = p_normalText + path.filename().string();
+    GfuiButtonSetText(p_scrHandle, p_buttonControl, buttonText.c_str());
+    GfuiLabelSetText(p_scrHandle, p_labelControl, MSG_ONLY_HINT);
+
+    char* filepath = nullptr;
+    if (p_certificate == CA_CERTIFICATE) filepath = s_dbSettings.CACertFilePath;
+    if (p_certificate == PUBLIC_CERTIFIATE) filepath = s_dbSettings.PublicCertFilePath;
+    if (p_certificate == PRIVATE_CERTIFICATE) filepath = s_dbSettings.PrivateCertFilePath;
+
+    // Only after validation copy into the actual variable
+    strcpy_s(filepath, SETTINGS_NAME_LENGTH, buf);
+}
+
+void SetDBSettings()
+{
+    SMediator::GetInstance()->SetDatabaseSettings(s_dbSettings);
 }
