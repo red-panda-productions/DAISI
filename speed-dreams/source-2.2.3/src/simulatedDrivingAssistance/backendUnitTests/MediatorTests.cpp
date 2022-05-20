@@ -6,10 +6,13 @@
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
 #include "mocks/SocketBlackBoxMock.h"
+#include "mocks/SQLDatabaseStorageMock.h"
+#include "mocks/RecorderMock.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
-
-namespace filesystem = std::experimental::filesystem;
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
@@ -409,5 +412,20 @@ TEST(MediatorTests, TimeOutTest)
         float currentTime = static_cast<float>(currentTick) * static_cast<float>(RCM_MAX_DT_ROBOTS);
         bool isTimedOut = maxTimeSeconds < currentTime;
         ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
+    }
+}
+
+/// @brief tests if you can change the bool value to save to a database to true or to false
+TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool controlBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetSaveRaceToDatabase(controlBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.GetSaveToDatabaseCheck(), controlBool);
     }
 }
