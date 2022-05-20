@@ -35,6 +35,11 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
             LoadTexture(xmlHandle, sectPath, interventionType),
             LoadText(xmlHandle, sectPath)};
     }
+
+    // Initially the active indicators are the neutral indicators.
+    m_activeIndicators = {
+        m_indicatorData[INTERVENTION_ACTION_STEER_NEUTRAL],
+        m_indicatorData[INTERVENTION_ACTION_SPEED_NEUTRAL]};
 }
 
 /// @brief  Returns a vector of the indicator data
@@ -53,16 +58,11 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
     return m_activeIndicators;
 }
 
-/// @brief          Activates the given intervention action and ensures that all other types are neutral.              
-/// @param p_action The intervention to activate the indicators for
+/// @brief          Activates the given intervention action.            
+/// @param p_action The intervention for which to show the the indicator
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
-    // By default the neutral indicators are active
-    m_activeIndicators = {
-        m_indicatorData[INTERVENTION_ACTION_STEER_NEUTRAL], 
-        m_indicatorData[INTERVENTION_ACTION_SPEED_NEUTRAL]};
-
-    // Replace the neutral indicator that has the same type as the newly activated one.
+    // Replace the indicator that has the same type as the newly activated one.
     tIndicatorData activate = m_indicatorData[p_action];
     m_activeIndicators[activate.Type] = activate;
 }

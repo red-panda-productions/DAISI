@@ -69,7 +69,10 @@ private:
     IndicatorConfig() = default;
     static IndicatorConfig* m_instance;
 
+    // A vector containing indicator data of every single intervetion action, including the neutral actions.
     std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
+
+    // A vector containing the active indiators per intervention action type, indexed by an IndicatorActionType.
     std::vector<tIndicatorData> m_activeIndicators = {};
 
     // Loading helpers

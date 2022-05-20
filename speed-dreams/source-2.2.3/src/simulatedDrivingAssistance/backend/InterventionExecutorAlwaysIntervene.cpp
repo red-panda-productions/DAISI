@@ -8,6 +8,8 @@ void InterventionExecutorAlwaysIntervene::RunDecision(IDecision** p_decisions, i
 {
     SMediator* mediator = SMediator::GetInstance();
     mediator->CarController.ShowIntervention(INTERVENTION_ACTION_STEER_NEUTRAL);
+    mediator->CarController.ShowIntervention(INTERVENTION_ACTION_SPEED_NEUTRAL);
+
     tAllowedActions allowedActions = mediator->GetAllowedActions();
     for (int i = 0; i < p_decisionCount; i++)
     {

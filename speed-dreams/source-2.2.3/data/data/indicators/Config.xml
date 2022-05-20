@@ -64,7 +64,8 @@
             </section>
             <section name="sound">
                 <attstr name ="source" val="warning_right_driftingleft.wav"/>
-                <attstr name="looping" val="no"/>
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop-interval" val="3"/>
             </section>
         </section>
         
@@ -104,6 +105,8 @@
             </section>
             <section name="sound">
                 <!--TODO: create accelerate warning sound-->
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop-interval" val="3"/>
             </section>
         </section>
         <section name ="brake">
@@ -124,6 +127,8 @@
             </section>
             <section name="sound">
                 <attstr name ="source" val="warning_brake_brake.wav"/>
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop-interval" val="3"/>
             </section>
         </section>
     </section>
