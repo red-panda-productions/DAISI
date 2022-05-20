@@ -7,8 +7,8 @@
 #include "SaveMenu.h"
 #include "mainmenu.h"
 
-#define PRM_YESSAVE_BUTTON  "yessave"
-#define PRM_DONTSAVE_BUTTON "dontsave"
+#define PRM_YES_SAVE_BUTTON  "yessave"
+#define PRM_DONT_SAVE_BUTTON "dontsave"
 
 static void* s_menuHandle = nullptr;
 
@@ -49,27 +49,27 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
     void* param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
     // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONTSAVE_BUTTON, ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_SAVE_BUTTON, ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenActivate);
     switch (p_raceEndType)
     {
         case RACE_EXIT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YES_SAVE_BUTTON, nullptr, OnAcceptExit);
             break;
         }
         case RACE_RESTART:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptRestart);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YES_SAVE_BUTTON, nullptr, OnAcceptRestart);
             break;
         }
         case RACE_ABORT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YES_SAVE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
         case RACE_FINISHED:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YESSAVE_BUTTON, nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YES_SAVE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
         default:

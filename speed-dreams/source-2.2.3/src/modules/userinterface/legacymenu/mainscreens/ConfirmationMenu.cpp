@@ -6,8 +6,8 @@
 #include "ConfirmationMenu.h"
 #include "mainmenu.h"
 
-#define PRM_IMSURE_BUTTON    "imsure"
-#define PRM_DONTDELTE_BUTTON "waitdontdelete"
+#define PRM_IM_SURE_BUTTON    "imsure"
+#define PRM_DONT_DELTE_BUTTON "waitdontdelete"
 
 static void* s_menuHandle = nullptr;
 
@@ -51,22 +51,22 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
     {
         case RACE_EXIT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptExit);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptExit);
             break;
         }
         case RACE_RESTART:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptRestart);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptRestart);
             break;
         }
         case RACE_ABORT:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
         case RACE_FINISHED:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IMSURE_BUTTON, nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptAbort);
             break;
         }
         default:
@@ -76,7 +76,7 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
         }
     }
     // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONTDELTE_BUTTON, p_prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_DELTE_BUTTON, p_prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
 
