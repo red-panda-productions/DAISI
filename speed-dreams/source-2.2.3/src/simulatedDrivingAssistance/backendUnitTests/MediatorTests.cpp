@@ -238,8 +238,8 @@ TEST(MediatorTests, UserIDTest)
     }
 }
 
-/// @brief Tests if the Mediator sets and gets the compression level correctly
-TEST(MediatorTests, CompressionLevelTest)
+/// @brief Tests if the Mediator sets and gets the compression rate correctly
+TEST(MediatorTests, CompressionRateTest)
 {
     Random random;
     char buf[32];
@@ -247,10 +247,10 @@ TEST(MediatorTests, CompressionLevelTest)
     {
         SDAConfigMediator::ClearInstance();
         ASSERT_TRUE(SetupSingletonsFolder());
-        int compressionLevel = random.NextInt();
-        SDAConfigMediator::GetInstance()->SetCompressionLevel(compressionLevel);
+        int compressionRate = random.NextInt();
+        SDAConfigMediator::GetInstance()->SetCompressionRate(compressionRate);
         const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
-        ASSERT_EQ(compressionLevel, config.GetCompressionRate());
+        ASSERT_EQ(compressionRate, config.GetCompressionRate());
     }
 }
 

@@ -14,7 +14,7 @@
 #define COMPRESSION_FILEPATH    "config/DataCompressionMenu.xml"
 #define COMPRESSION_SCREEN_NAME "DataCompressionMenu"
 
-#define MAX_COMPRESSION_LEVEL 49
+#define MAX_COMPRESSION_RATE 49
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -27,8 +27,8 @@ int m_compressionButtonList;
 DataCompressionType m_dataCompressionType;
 
 // Custom compression level
-int m_customCompressionLevel;
-int m_customCompressionLevelControl;
+int m_customCompressionRate;
+int m_customCompressionRateControl;
 
 // Apply Button
 int m_applyButtonComp;
@@ -38,7 +38,7 @@ int m_applyButtonComp;
 static void LoadSettingsFromFile(void* p_param)
 {
     m_dataCompressionType = std::stoi(GfParmGetStr(p_param, PRM_DATA_COMPRESSION, GFMNU_ATTR_SELECTED, "1"));
-    m_customCompressionLevel = std::stoi(GfParmGetStr(p_param, PRM_CUSTOM_COMPRESSION, GFMNU_ATTR_TEXT, nullptr));
+    m_customCompressionRate = std::stoi(GfParmGetStr(p_param, PRM_CUSTOM_COMPRESSION, GFMNU_ATTR_TEXT, nullptr));
 }
 
 /// @brief Makes sure all visuals display the internal values
@@ -47,15 +47,15 @@ static void SynchronizeControls()
     GfuiRadioButtonListSetSelected(s_scrHandle, m_compressionButtonList, static_cast<int>(m_dataCompressionType));
 
     char buf[32];
-    sprintf(buf, "%d", m_customCompressionLevel);
-    GfuiEditboxSetString(s_scrHandle, m_customCompressionLevelControl, buf);
+    sprintf(buf, "%d", m_customCompressionRate);
+    GfuiEditboxSetString(s_scrHandle, m_customCompressionRateControl, buf);
 }
 
 /// @brief Loads default settings
 static void LoadDefaultSettings()
 {
     m_dataCompressionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_compressionButtonList);
-    m_customCompressionLevel = std::stoi(GfuiEditboxGetString(s_scrHandle, m_customCompressionLevelControl));
+    m_customCompressionRate = std::stoi(GfuiEditboxGetString(s_scrHandle, m_customCompressionRateControl));
 }
 
 /// @brief Loads (if possible) the settings; otherwise, the control's default settings will be used
@@ -89,7 +89,7 @@ static void SaveSettingsToFile()
 
     // Save custom compression to xml file
     char buf[32];
-    sprintf(buf, "%d", m_customCompressionLevel);
+    sprintf(buf, "%d", m_customCompressionRate);
     GfParmSetStr(readParam, PRM_CUSTOM_COMPRESSION, GFMNU_ATTR_TEXT, buf);
 
     // Write queued changes
@@ -99,38 +99,44 @@ static void SaveSettingsToFile()
 /// @brief Saves the settings so the mediator (or future instances) can access them
 static void SaveSettings()
 {
-    int compressionLevel;
+    int compressionRate;
     switch (m_dataCompressionType)
     {
         case COMPRESSION_NONE:
         {
-            compressionLevel = 1;
+            compressionRate = 1;
             break;
         }
         case COMPRESSION_MINIMUM:
         {
-            compressionLevel = 3;
+            compressionRate = 3;
             break;
         }
         case COMPRESSION_MEDIUM:
         {
-            compressionLevel = 5;
+            compressionRate = 5;
             break;
         }
         case COMPRESSION_MAXIMUM:
         {
-            compressionLevel = 9;
+            compressionRate = 9;
             break;
         }
-        default:  // Custom
+        case COMPRESSION_CUSTOM:
         {
-            compressionLevel = m_customCompressionLevel;
+            compressionRate = m_customCompressionRate;
+            break;
+        }
+        default:
+        {
+            GfLogError("Compression type not found");
+            compressionRate = 1;
             break;
         }
     }
 
     SMediator* mediator = SMediator::GetInstance();
-    mediator->SetCompressionLevel(compressionLevel);
+    mediator->SetCompressionRate(compressionRate);
 
     SaveSettingsToFile();
 }
@@ -164,25 +170,25 @@ static void SelectCompression(tRadioButtonInfo* p_info)
 }
 
 /// @brief Handle input in the custom compression type textbox
-static void SetCompressionLevel(void*)
+static void SetCompressionRate(void*)
 {
-    char* val = GfuiEditboxGetString(s_scrHandle, m_customCompressionLevelControl);
+    char* val = GfuiEditboxGetString(s_scrHandle, m_customCompressionRateControl);
     char* endptr;
-    m_customCompressionLevel = (int)strtol(val, &endptr, 0);
+    m_customCompressionRate = (int)strtol(val, &endptr, 0);
     if (*endptr != '\0')
         std::cerr << "Could not convert " << val << " to long and leftover string is: " << endptr << std::endl;
 
-    // the compression level needs to be uneven
-    if (m_customCompressionLevel % 2 == 0)
+    // the compression rate needs to be uneven
+    if (m_customCompressionRate % 2 == 0)
     {
-        m_customCompressionLevel++;
+        m_customCompressionRate++;
     }
 
-    Clamp(m_customCompressionLevel, 1, MAX_COMPRESSION_LEVEL);
+    Clamp(m_customCompressionRate, 1, MAX_COMPRESSION_RATE);
 
     char buf[32];
-    sprintf(buf, "%d", m_customCompressionLevel);
-    GfuiEditboxSetString(s_scrHandle, m_customCompressionLevelControl, buf);
+    sprintf(buf, "%d", m_customCompressionRate);
+    GfuiEditboxSetString(s_scrHandle, m_customCompressionRateControl, buf);
 }
 
 /// @brief            Initializes the data compression menu
@@ -206,8 +212,8 @@ void* DataCompressionMenuInit(void* p_prevMenu)
                                                     s_scrHandle, SaveAndGoBack);
     m_compressionButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_DATA_COMPRESSION, nullptr, SelectCompression);
 
-    // Textbox controls
-    m_customCompressionLevelControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_CUSTOM_COMPRESSION, nullptr, nullptr, SetCompressionLevel);
+    // Textbox control
+    m_customCompressionRateControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_CUSTOM_COMPRESSION, nullptr, nullptr, SetCompressionRate);
 
     GfParmReleaseHandle(param);
 

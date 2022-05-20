@@ -238,7 +238,7 @@ static void SetThreshold(float& p_threshold, int p_thresholdControl)
 {
     // Get threshold from text box, clamp it between 0 and 1
     p_threshold = CharArrToFloat(GfuiEditboxGetString(s_scrHandle, p_thresholdControl));
-    Clamp(p_threshold, static_cast<float>(0), static_cast<float>(1));
+    Clamp(p_threshold, 0.0f, 1.0f);
 
     // Write the clamped value to the text box.
     char buf[32];

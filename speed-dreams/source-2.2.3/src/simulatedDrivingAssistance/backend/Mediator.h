@@ -29,7 +29,7 @@ public:
 
     void SetUserId(char* p_userId);
 
-    void SetCompressionLevel(int p_compressionLevel);
+    void SetCompressionRate(int p_compressionRate);
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
