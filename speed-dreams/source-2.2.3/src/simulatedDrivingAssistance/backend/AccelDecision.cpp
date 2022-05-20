@@ -3,7 +3,7 @@
 
 void AccelDecision::RunIndicateCommands()
 {
-    if (AccelAmount < ACCEL_THRESHOLD) return;
+    if (AccelAmount < SMediator::GetInstance()->GetThresholdSettings().Accel) return;
 
     SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_SPEED_ACCEL);
 }

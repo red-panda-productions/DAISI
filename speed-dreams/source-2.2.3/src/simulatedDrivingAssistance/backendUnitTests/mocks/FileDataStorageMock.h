@@ -43,13 +43,13 @@ public:
     {
     }
 
-    void Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
-    {
-    }
-
-    void SaveDecisions(DecisionTuple& p_decisions)
+    void Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
     {
         SavedDecisions = &p_decisions;
+    }
+
+    void SetCompressionRate(int p_compressionRate)
+    {
     }
 };
 

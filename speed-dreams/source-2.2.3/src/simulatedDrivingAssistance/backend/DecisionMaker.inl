@@ -18,7 +18,7 @@
     template bool DecisionMaker<type1, type2, type3, type4, type5>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
-    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop();                                                                 \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
@@ -61,7 +61,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 
     if (p_blackBoxExecutablePath.empty())
     {
-        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!");
+        GfLogWarning("No black box set to launch (p_blackBoxExecutablePath is empty), start one manually!\n");
         return;
     }
 
@@ -88,6 +88,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
                                                       trackname,
                                                       trackversion,
                                                       interventiontype);
+    m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -98,18 +99,12 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
-    m_fileBufferStorage.Save(p_car, p_situation, p_tickCount);
-
     const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
+    m_fileBufferStorage.Save(p_car, p_situation, m_decision, p_tickCount);
 
-    if (decisionMade)
+    if (decisionMade && m_recorder)
     {
-        m_fileBufferStorage.SaveDecisions(m_decision);
-
-        if (m_recorder)
-        {
-            m_recorder->WriteDecisions(&m_decision, p_tickCount);
-        }
+        m_recorder->WriteDecisions(&m_decision, p_tickCount);
     }
 
     int decisionCount = 0;
@@ -142,14 +137,18 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 {
 }
 
-/// @brief When the race stops, the simulation data collected will be stored in the database
+/// @brief                  When the race stops, the simulation needs to be shutdown correctly and check if it needs to be stroed in the database
+/// @param p_saveToDatabase bool that determines if the simulation data collected will be stored in the database
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-void TEMP_DECISIONMAKER::RaceStop()
+void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
 {
     BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
-    SQLDatabaseStorage sqlDatabaseStorage;
-    sqlDatabaseStorage.Run(m_bufferFilePath);
+    if (p_saveToDatabase)
+    {
+        SQLDatabaseStorage sqlDatabaseStorage;
+        sqlDatabaseStorage.Run(m_bufferFilePath);
+    }
     m_recorder = nullptr;
 }
 

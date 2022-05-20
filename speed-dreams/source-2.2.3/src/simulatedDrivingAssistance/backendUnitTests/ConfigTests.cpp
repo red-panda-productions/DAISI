@@ -126,6 +126,20 @@ TEST(ConfigTests, UserIDTest)
     }
 }
 
+/// @brief Tests if the SDAConfig sets and gets the CompressionRate correctly
+TEST(ConfigTests, CompressionRateTest)
+{
+    SDAConfig config;
+    Random random;
+
+    for (int i = 0; i < 20; i++)
+    {
+        int compressionRate = random.NextInt();
+        config.SetCompressionRate(compressionRate);
+        ASSERT_EQ(compressionRate, config.GetCompressionRate());
+    }
+}
+
 /// @brief Tests if the SDAConfig sets and gets the BlackBoxFilePath correctly
 TEST(ConfigTests, BlackBoxFilePathTest)
 {
@@ -198,3 +212,16 @@ TEST(ConfigTests, ReplayFolderTest)
     config.SetReplayFolder(randomPath);
     ASSERT_EQ(config.GetReplayFolder(), randomPath);
 }
+
+/// @brief        Tests if the saveToDatabse bool gets correctly changed in the config file
+/// @param p_save boolean that returns decides if the data should or should not be saved.
+void SaveRaceToDatabaseTestConf(bool p_save)
+{
+    SDAConfig config;
+
+    config.SetSaveToDatabaseCheck(p_save);
+    ASSERT_EQ(p_save, config.GetSaveToDatabaseCheck());
+}
+
+TEST_CASE(ConfigTests, SaveDataToDatabase, SaveRaceToDatabaseTestConf, (true))
+TEST_CASE(ConfigTests, DontSaveDataToDatabase, SaveRaceToDatabaseTestConf, (false))
