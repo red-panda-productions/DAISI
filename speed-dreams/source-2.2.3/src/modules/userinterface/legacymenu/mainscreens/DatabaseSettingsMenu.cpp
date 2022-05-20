@@ -20,7 +20,7 @@ int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
 
-char m_portString[SETTINGS_NAME_LENGTH] = DEFAULT_PORT;
+char m_portString[SETTINGS_NAME_LENGTH];
 
 int m_caCertFileDialogControl;
 int m_publicCertFileDialogControl;
