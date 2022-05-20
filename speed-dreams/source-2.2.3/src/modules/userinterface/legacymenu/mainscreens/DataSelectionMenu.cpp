@@ -99,8 +99,8 @@ static void OnActivate(void* /* dummy */)
     char portString[SETTINGS_NAME_LENGTH];
     tDbControlSettings control;
     control.PortString = portString;
-    LoadDBSettings(s_dbSettingsMenu, s_dbsettings, control);
-    CheckConnection(s_scrHandle, m_dbStatus, s_dbsettings);
+    LoadDBSettings(s_dbSettingsMenu, control);
+    CheckConnection(s_scrHandle, m_dbStatus);
 
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
     std::string strPath("config/DataSelectionMenu.xml");

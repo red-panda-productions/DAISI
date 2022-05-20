@@ -35,22 +35,22 @@ bool m_certChosen = false;
 /// @brief Handle input in the Username textbox
 static void SetUsername(void*)
 {
-    strcpy_s(s_dbsettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
-    GfuiEditboxSetString(s_scrHandle, m_usernameControl, s_dbsettings.Username);
+    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_usernameControl));
+    GfuiEditboxSetString(s_scrHandle, m_usernameControl, s_dbSettings.Username);
 }
 
 /// @brief Handle input in the Password textbox
 static void SetPassword(void*)
 {
-    strcpy_s(s_dbsettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
-    GfuiEditboxSetString(s_scrHandle, m_passwordControl, s_dbsettings.Password);
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_passwordControl));
+    GfuiEditboxSetString(s_scrHandle, m_passwordControl, s_dbSettings.Password);
 }
 
 /// @brief Handle input in the Address textbox
 static void SetAddress(void*)
 {
-    strcpy_s(s_dbsettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_addressControl));
-    GfuiEditboxSetString(s_scrHandle, m_addressControl, s_dbsettings.Address);
+    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_addressControl));
+    GfuiEditboxSetString(s_scrHandle, m_addressControl, s_dbSettings.Address);
 }
 
 /// @brief Handle input in the Port textbox
@@ -58,29 +58,29 @@ static void SetPort(void*)
 {
     strcpy_s(m_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_portControl));
     char* endptr;
-    s_dbsettings.Port = (int)strtol(m_portString, &endptr, 0);
+    s_dbSettings.Port = (int)strtol(m_portString, &endptr, 0);
     if (*endptr != '\0')
         std::cerr << "Could not convert " << m_portString << " to int and leftover string is: " << endptr << std::endl;
     char buf[32];
-    sprintf(buf, "%d", s_dbsettings.Port);
+    sprintf(buf, "%d", s_dbSettings.Port);
     GfuiEditboxSetString(s_scrHandle, m_portControl, buf);
 }
 
 /// @brief Handle input in the Schema name textbox
 static void SetSchema(void*)
 {
-    strcpy_s(s_dbsettings.Schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
-    GfuiEditboxSetString(s_scrHandle, m_schemaControl, s_dbsettings.Schema);
+    strcpy_s(s_dbSettings.Schema, GfuiEditboxGetString(s_scrHandle, m_schemaControl));
+    GfuiEditboxSetString(s_scrHandle, m_schemaControl, s_dbSettings.Schema);
 }
 
 /// @brief        Enables/disables the SSL option
 /// @param p_info Information on the checkbox
 static void SetUseSSL(tCheckBoxInfo* p_info)
 {
-    s_dbsettings.UseSSL = p_info->bChecked;
-    GfuiVisibilitySet(s_scrHandle, m_caCertFileDialogControl, s_dbsettings.UseSSL);
-    GfuiVisibilitySet(s_scrHandle, m_publicCertFileDialogControl, s_dbsettings.UseSSL);
-    GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, s_dbsettings.UseSSL);
+    s_dbSettings.UseSSL = p_info->bChecked;
+    GfuiVisibilitySet(s_scrHandle, m_caCertFileDialogControl, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(s_scrHandle, m_publicCertFileDialogControl, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(s_scrHandle, m_privateCertFileDialogControl, s_dbSettings.UseSSL);
 }
 
 
@@ -89,8 +89,8 @@ static void SetUseSSL(tCheckBoxInfo* p_info)
 static void SaveSettings(void* /* dummy */)
 {
     // Save settings in the ResearcherMenu.xml
-    SaveDBSettingsToDisk(s_dbsettings, m_portString);
-    SMediator::GetInstance()->SetDatabaseSettings(s_dbsettings);
+    SaveDBSettingsToDisk(m_portString);
+    SMediator::GetInstance()->SetDatabaseSettings(s_dbSettings);
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
@@ -112,8 +112,8 @@ static void OnActivate(void* /* dummy */)
     control.PublicCertificateLabel = m_publicCertDialogLabel;
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
-    LoadDBSettings(s_scrHandle, s_dbsettings, control);
-    SynchronizeControls(s_scrHandle, s_dbsettings, control);
+    LoadDBSettings(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control);
 }
 
 /// @brief Returns to the main menu screen
@@ -161,24 +161,24 @@ static void SelectCert(int p_buttonControl, int p_labelControl, const char* p_no
 static void SelectCACert(void* /* dummy */)
 {
     const wchar_t* extensions[AMOUNT_OF_NAMES] = {L"*" CERT_PEM ""};
-    SelectCert(m_caCertFileDialogControl, m_caCertDialogLabel, MSG_CA_CERT_DIALOG_TEXT, s_dbsettings.CACertFilePath, CERT_PEM, extensions);
+    SelectCert(m_caCertFileDialogControl, m_caCertDialogLabel, MSG_CA_CERT_DIALOG_TEXT, s_dbSettings.CACertFilePath, CERT_PEM, extensions);
 }
 
 static void SelectPublicCert(void* /* dummy */)
 {
     const wchar_t* extensions[AMOUNT_OF_NAMES] = {L"*" CERT_PEM ""};
-    SelectCert(m_publicCertFileDialogControl, m_publicCertDialogLabel, MSG_PUBLIC_CERT_DIALOG_TEXT, s_dbsettings.PublicCertFilePath, CERT_PEM, extensions);
+    SelectCert(m_publicCertFileDialogControl, m_publicCertDialogLabel, MSG_PUBLIC_CERT_DIALOG_TEXT, s_dbSettings.PublicCertFilePath, CERT_PEM, extensions);
 }
 
 static void SelectPrivateCert(void* /* dummy */)
 {
     const wchar_t* extensions[AMOUNT_OF_NAMES] = {L"*" CERT_KEY ""};
-    SelectCert(m_privateCertFileDialogControl, m_privateCertDialogLabel, MSG_PRIVATE_CERT_DIALOG_TEXT, s_dbsettings.PrivateCertFilePath, CERT_KEY, extensions);
+    SelectCert(m_privateCertFileDialogControl, m_privateCertDialogLabel, MSG_PRIVATE_CERT_DIALOG_TEXT, s_dbSettings.PrivateCertFilePath, CERT_KEY, extensions);
 }
 
 static void CheckConnectionCallback(void* /* dummy */)
 {
-    CheckConnection(s_scrHandle, m_dbStatusControl, s_dbsettings);
+    CheckConnection(s_scrHandle, m_dbStatusControl);
 }
 
 /// @brief            Initializes the database settings menu
@@ -212,20 +212,20 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchema);
     m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSL);
     m_dbStatusControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DBSTATUS, false);
-    strcpy_s(s_dbsettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
-    strcpy_s(s_dbsettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
-    strcpy_s(s_dbsettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
+    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
+    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
+    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
 
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
 
-    // Set s_dbsettings on start so that the menu doesn't have to be activated manually
+    // Set s_dbSettings on start so that the menu doesn't have to be activated manually
     OnActivate(s_scrHandle);
-    SMediator::GetInstance()->SetDatabaseSettings(s_dbsettings);
+    SMediator::GetInstance()->SetDatabaseSettings(s_dbSettings);
 
-    CheckConnection(s_scrHandle, m_dbStatusControl, s_dbsettings);
+    CheckConnection(s_scrHandle, m_dbStatusControl);
 
     return s_scrHandle;
 }

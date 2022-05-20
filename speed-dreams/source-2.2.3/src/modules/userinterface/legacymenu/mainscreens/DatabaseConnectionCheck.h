@@ -24,7 +24,7 @@
 #define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
 #define AMOUNT_OF_NAMES              1
 
-static tDatabaseSettings s_dbsettings;
+static tDatabaseSettings s_dbSettings;
 
 typedef struct DbControlSettings
 {
@@ -43,16 +43,16 @@ typedef struct DbControlSettings
     int PrivateCertificateLabel;
 } tDbControlSettings;
 
-void SaveDBSettingsToDisk(DatabaseSettings& p_dbSettings, const char* p_portString);
+void SaveDBSettingsToDisk(const char* p_portString);
 
-void SynchronizeControls(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control);
+void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control);
 
-void LoadDefaultSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control);
+void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
-void LoadConfigSettings(void* p_param, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control);
+void LoadConfigSettings(void* p_param, tDbControlSettings& p_control);
 
-void LoadDBSettings(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control);
+void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
 void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings);
 
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings);
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl);
