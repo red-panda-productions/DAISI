@@ -125,6 +125,7 @@ static void SelectCert(int p_buttonControl, int p_labelControl, const char* p_no
     bool success = SelectFile(buf, err, false, names, p_extensions, AMOUNT_OF_NAMES);
     if (!success)
     {
+        GfLogError(err);
         return;
     }
 
