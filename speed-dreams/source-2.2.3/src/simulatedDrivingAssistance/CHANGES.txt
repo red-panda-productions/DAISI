@@ -425,3 +425,52 @@ Changed:
   cmake/
     checks.cmake
         changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
+
+Deleted:
+src/
+   drivers/
+       shadow/src/
+           CarModel.cpp and .h
+               Removed Fuel and Damage properties and functionalities
+           Driver.cpp
+               Removed fuel and damage properties and functionalities
+           Strategy.cpp and .h
+               Removed fuel and damage properties and functionalities
+           TeamInfo.h
+               Removed fuel and damage properties
+      usr/src/
+          MyCar.cpp and .h
+              Removed fuel and damage properties and functionalities
+          driver.cpp
+              Removed fuel and damage functionalities
+          opponent.cpp and .h
+              Removed fuel and damage properties and functionalities
+   interfaces/
+       raceman.h
+           Removed fuel and damage properties
+   modules/
+      racing/
+         genproptv1/
+             genetic.cpp and .h
+                 Removed fuel and damage initialisations
+             racemain.cpp
+                 Removed fuel and damage code
+             raceresults.cpp
+                 Removed fuel and damage definitions
+         standardgame/
+             racecars.cpp
+                 Removed damage code
+             racemain.cpp
+                 Removed fuel and damage consumption factors
+             raceresults.cpp
+                 Removed damage code
+      simu/
+         simuv2.1/
+            simu.cpp
+                Removed 'RemoveCar' function
+         simu4/
+            simu.cpp
+               Removed 'RemoveCar' function
+       userinterface/legacymenu/racescreens/
+          raceresultsmenus.cpp
+              Removed damage functionality

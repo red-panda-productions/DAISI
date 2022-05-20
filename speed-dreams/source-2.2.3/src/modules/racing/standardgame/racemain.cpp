@@ -222,8 +222,15 @@ void ReInitRules(tRmInfo* ReInfo)
         ReInfo->raceRules.enabled |= RmRaceRules::CORNER_CUTTING_TIME_PENALTY;
     }
 
+    /// SIMULATED DRIVING ASSISTANCE: removed fuel and damage factors
+
+    // Tire model factor, for 0.0 the model is switched completely off
+    tdble number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_TIRE_FACTOR, NULL, 1.0f);
+    if (number < 0.0f) number = 0.0f;  // Avoid negative factor
+    ReInfo->raceRules.tireFactor = number;
+
     // Pit stop base time (time for a stop even if nothing is done)
-    tdble number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_PITSTOP_BASE_TIME, NULL, 2.0f);
+    number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_PITSTOP_BASE_TIME, NULL, 2.0f);
     if (number < 0.0f) number = 0.0f;	// Avoid negative pit times
     ReInfo->raceRules.pitstopBaseTime = number;
 
