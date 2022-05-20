@@ -26,7 +26,7 @@ int m_compressionButtonList;
 // InterventionType
 DataCompressionType m_dataCompressionType;
 
-// Custom compression level
+// Number of timesteps to average over when storing the data.
 int m_customCompressionRate;
 int m_customCompressionRateControl;
 
