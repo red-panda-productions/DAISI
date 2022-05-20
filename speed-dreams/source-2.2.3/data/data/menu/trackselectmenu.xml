@@ -108,7 +108,7 @@
 		<attstr name="type" val="label"/>
 		<attnum name="max len" val="50"/>
 		<attnum name="x" val="270"/>
-		<attnum name="y" val="240"/>
+		<attnum name="y" val="230"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="medium"/>
 	</section>
@@ -263,18 +263,18 @@
 	</section>
         <section name="7">
 		<attstr name="type" val="label"/>
-		<attstr name="text" val="Catergory:"/>
+		<attstr name="text" val="Category:"/>
 		<attstr name="font" val="small_t"/>
-		<attnum name="x" val="295"/>
-		<attnum name="y" val="360"/>
+		<attnum name="x" val="275"/>
+		<attnum name="y" val="365"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
         <section name="8">
 		<attstr name="type" val="label"/>
-		<attstr name="text" val="Catergory:"/>
+		<attstr name="text" val="Environment:"/>
 		<attstr name="font" val="small_t"/>
-		<attnum name="x" val="295"/>
-		<attnum name="y" val="360"/>
+		<attnum name="x" val="275"/>
+		<attnum name="y" val="305"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
 
