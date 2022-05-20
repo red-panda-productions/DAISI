@@ -71,6 +71,7 @@ using namespace std;
 #define PRV_PIT_DAMAGE_DANGER		"pit damage danger limit"
 #define PRV_PIT_TIRE_WARN			"pit tire warn limit"
 #define PRV_PIT_TIRE_DANGER		    "pit tire danger limit"
+#define PRV_PRACTICE_INIT_FUEL      "practice init fuel"
 #define PRV_PIT_TEST_STOP           "pit test stop"
 #define PRV_SKID_FACTOR				"skid factor"
 #define PRV_SKID_FACTOR_TRAFFIC		"skid factor traffic"
@@ -534,9 +535,39 @@ void	Driver::InitTrack(
     m_track.NewTrack( pTrack, &m_priv[PATH_NORMAL].INNER_MOD, false, &sideMod[PATH_NORMAL],
                       m_priv[PATH_NORMAL].PIT_START_BUF_SEGS);
 
-    m_Strategy.SetTyreLimits( m_priv[PATH_NORMAL].PIT_TIRE_WARN, m_priv[PATH_NORMAL].PIT_TIRE_DANGER);
+    // setup initial fuel for race.
+    double	fuelPerM        = SafeParmGetNum(hCarParm, SECT_PRIV, "fuel per m", 0, 0.001f);
+    double	maxFuel			= SafeParmGetNum(hCarParm, SECT_CAR, PRM_TANK, (char*)NULL, 100.0f);
+    int pittest             = SafeParmGetNum(hCarParm, SECT_PRIV, PRV_PIT_TEST_STOP, (char*)NULL, 0);
+    LogSHADOW.info(" # Pit test stop = %i\n", pittest);
+    double	fullRaceFuel	= 1.02 * pS->_totLaps * (double)pTrack->length * fuelPerM;
+    double	fuel			= fullRaceFuel;
 
-    /// SIMULATED DRIVING ASSISTANCE: removed fuel and damage functionality
+    if( raceType == RM_TYPE_PRACTICE )
+    {
+        fuel = SafeParmGetNum(hCarParm, SECT_PRIV, PRV_PRACTICE_INIT_FUEL , "Kg", fuel);
+        LogSHADOW.info( "practice initial fuel: %g\n", fuel );
+
+        if (pittest > 0)
+            fuel = 1.04 * pTrack->length * fuelPerM;
+    }
+
+    if( fuel > maxFuel )
+    {
+        // pit required, so work out how much fuel per pit if divided equally.
+        int nTanks = int(ceil(fullRaceFuel / maxFuel));
+        fuel = fullRaceFuel / nTanks + fuelPerM * pTrack->length * (nTanks - 1);
+        LogSHADOW.info( "number of pitstops: %d\n", nTanks - 1 );
+    }
+    LogSHADOW.info( "max fuel in tank: %g\n", maxFuel );
+    LogSHADOW.info( "initial fuel per m: %g\n", fuelPerM );
+    LogSHADOW.info( "intiial fuel: %g\n\n", fuel );
+    GfParmSetNum( hCarParm, SECT_CAR, PRM_FUEL, (char*) NULL, fuel );
+
+    m_Strategy.SetDamageLimits( m_priv[PATH_NORMAL].PIT_DAMAGE_WARN,
+                                m_priv[PATH_NORMAL].PIT_DAMAGE_DANGER, m_cm[PATH_NORMAL].HASTYC );
+
+    m_Strategy.SetTyreLimits( m_priv[PATH_NORMAL].PIT_TIRE_WARN, m_priv[PATH_NORMAL].PIT_TIRE_DANGER);
 
     // override params for car type on track of specific race type.
     snprintf( buf, sizeof(buf), "%sdrivers/%s/%s/track-%s",
@@ -592,9 +623,12 @@ void	Driver::NewRace( int index, tCarElt* pCar, tSituation* pS )
     LogSHADOW.info( "RIGHT:  MU_SC %g   KZ_SCALE %g   FLY_HEIGHT %g\n",
                     m_cm[PATH_RIGHT].MU_SCALE, m_cm[PATH_RIGHT].KZ_SCALE, m_priv[PATH_RIGHT].FLY_HEIGHT );
 
+    m_cm[PATH_NORMAL].FUEL = pCar->_fuel;
+    LogSHADOW.info("FUEL : %.7f\n", m_cm[PATH_NORMAL].FUEL);
+
     for( int p = PATH_LEFT; p <= PATH_RIGHT; p++ )
     {
-        /// SIMULATED DRIVING ASSISTANCE: removed fuel
+        m_cm[p].FUEL	= m_cm[PATH_NORMAL].FUEL;
         m_cm[p].CD_BODY	= m_cm[PATH_NORMAL].CD_BODY;
         m_cm[p].CD_WING	= m_cm[PATH_NORMAL].CD_WING;
         m_cm[p].WIDTH	= m_cm[PATH_NORMAL].WIDTH;
@@ -758,6 +792,8 @@ void	Driver::NewRace( int index, tCarElt* pCar, tSituation* pS )
     TeamInfo::Item*	pItem = new TeamInfo::Item();
     pItem->index = pCar->index;
     pItem->teamName = pCar->_teamname;
+    pItem->damage = pCar->_dammage;
+    pItem->lapsUntilPit = 999;
     pItem->usingPit = false;
     pItem->pOther = 0;
     pItem->pCar = pCar;
@@ -2459,6 +2495,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
     if( car->race.laps != m_lastLap )
     {
         m_lastLap = car->race.laps;
+        LogSHADOW.debug( "[%d] Average fuel/m: %g\n", car->index, m_Strategy.FuelPerM(car) );
         double a, b;
         m_accBrkCoeff.CalcCoeffs(&a, &b);
         LogSHADOW.debug( "[%d] accbrk: a=%g, b=%g\n", car->index, a, b );
@@ -2467,10 +2504,27 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
     if( m_priv[PATH_NORMAL].SAVE_PATHS )
         m_pathOffsets.update(m_track, car);
 
-    /// SIMULATED DRIVING ASSISTANCE: removed more fuel and damage functionality
+    double	carFuel = car->_fuel;
     double	gripScaleF = GripFactor(car, true);
     double	gripScaleR = GripFactor(car, false);
 
+    if( fabs(m_cm[PATH_NORMAL].FUEL			- carFuel)			> 2		||
+            fabs(m_cm[PATH_NORMAL].DAMAGE		- car->_dammage)	> 250	||
+            fabs(m_cm[PATH_NORMAL].GRIP_SCALE_F	- gripScaleF)		> 0.05	||
+            fabs(m_cm[PATH_NORMAL].GRIP_SCALE_R	- gripScaleR)		> 0.05 )
+    {
+        m_cm[PATH_NORMAL].FUEL			= 2 * floor(carFuel / 2);
+        m_cm[PATH_NORMAL].DAMAGE		= car->_dammage;
+        m_cm[PATH_NORMAL].GRIP_SCALE_F	= gripScaleF;
+        m_cm[PATH_NORMAL].GRIP_SCALE_R	= gripScaleR;
+
+        for( int p = PATH_LEFT; p <= PATH_RIGHT; p++ )
+        {
+            m_cm[p].FUEL			= m_cm[PATH_NORMAL].FUEL;
+            m_cm[p].DAMAGE			= m_cm[PATH_NORMAL].DAMAGE;
+            m_cm[p].GRIP_SCALE_F	= m_cm[PATH_NORMAL].GRIP_SCALE_F;
+            m_cm[p].GRIP_SCALE_R	= m_cm[PATH_NORMAL].GRIP_SCALE_R;
+        }
 
 #if !(defined(DEV) && defined(BRAKING_TEST))
         for( int p = PATH_NORMAL; p <= PATH_RIGHT; p++ )
@@ -2480,7 +2534,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
             m_path[p].PropagateAcceleration( m_cm[p] );
         }
 #endif
- 
+    }
 
     //	DEBUGF( "**** wheel fz %g %g %g %g\n", h[0], h[1], h[2], h[3] );
 
@@ -2553,7 +2607,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
         double	sysLoad = car->priv.reaction[0] + car->priv.reaction[1] + car->priv.reaction[2] + car->priv.reaction[3];
         LogSHADOW.debug( "[%d] load ratio %g %g path speed %g  overspeed %g  offset to path %g  engine acc %g\n",
                          pi.idx, load / opLoad, sysLoad / opLoad, pi.spd, spd0 - pi.spd, pi.offs + car->pub.trkPos.toMiddle,
-                         cm.AccForceFromSpeed(pp.accSpd) / (cm.MASS) );
+                         cm.AccForceFromSpeed(pp.accSpd) / (cm.MASS + cm.FUEL) );
     }
 
     double	targetSpd = pi.spd;
@@ -2906,6 +2960,8 @@ void	Driver::AvoidOtherCars(
         bool*				close,
         bool*				lapper )
 {
+    m_pShared->m_teamInfo.GetAt(car->index)->damage = car->_dammage;
+
     // double	trackLen = m_track.GetLength();
     // double	myPos = RtGetDistFromStart(const_cast<tCarElt*>(car));
     double	mySpd = hypot(car->_speed_X, car->_speed_Y);

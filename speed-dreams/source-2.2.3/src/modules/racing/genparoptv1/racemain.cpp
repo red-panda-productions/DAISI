@@ -380,6 +380,9 @@ RePreRace(void)
 		//ReUI().addOptimizationMessage("Multi Track Optimization");
 	}
 
+	// Get session max dammages.
+	ReInfo->s->_maxDammage = (int)GfParmGetNum(params, raceName, RM_ATTR_MAX_DMG, NULL, 10000);
+
 	// Get session type (race, qualification or practice).
 	raceType = GfParmGetStr(params, raceName, RM_ATTR_TYPE, RM_VAL_RACE);
 	if (!strcmp(raceType, RM_VAL_RACE)) {
@@ -772,15 +775,16 @@ ReRaceEnd(void)
 	// Pick up optimization results ...
 	Data->car = ReInfo->s->cars[0];
 
+	Data->DamagesTotal = Data->car->_dammage;
 	if (Data->car->_bestLapTime > 0)
 		Data->BestLapTime = Data->car->_bestLapTime;
 	else
 		Data->BestLapTime = 99*60;
 
 	if (Data->WeightedBestLapTime == FLT_MAX)
-		Data->WeightedBestLapTime = Data->BestLapTime * 0.007f;
+		Data->WeightedBestLapTime = Data->BestLapTime + Data->WeightOfDamages * Data->DamagesTotal * 0.007f;
 	else
-		Data->WeightedBestLapTime += Data->BestLapTime * 0.007f;
+		Data->WeightedBestLapTime += Data->BestLapTime + Data->WeightOfDamages * Data->DamagesTotal * 0.007f;
 	// ... pick up optimization results
 
 	ReShutdownUpdaters();
@@ -981,6 +985,9 @@ ReInitialiseGeneticOptimisation()
 	Data->WeightedBestLapTime = FLT_MAX;
 	Data->LastWeightedBestLapTime = FLT_MAX;
 
+	Data->DamagesTotal = 0;
+	Data->LastDamagesTotal = 0;
+
 	// Setup pointer to car data and track, car type and robot name
 	Data->car = &ReInfo->carList[0];
 	snprintf(Data->TrackNameBuffer, sizeof(Data->TrackNameBuffer),
@@ -992,7 +999,9 @@ ReInitialiseGeneticOptimisation()
 
 	// Check weather conditions
 	Data->WeatherCode = GetWeather(ReInfo->track);
-	
+	if (Data->WeatherCode > 0)		// In case of rain, ...
+		Data->WeightOfDamages = 100;// ... use a heigh weight for penalties
+
 	// Setup path to car setup file (xml and opt)
 	Data->XmlFileName = SetupGlobalFileName(Data->BufferXML, FILENAME_MAX, Data, ".xml");
 	Data->OptFileName = SetupGlobalFileName(Data->BufferOPT, FILENAME_MAX, Data, ".opt");
@@ -1118,6 +1127,9 @@ ReImportGeneticParameters()
 	// Update author name
 	snprintf(Data->PrivateSection,sizeof(Data->PrivateSectionBuffer),"%s",TOC->Private);
 
+	// How to handle damage as time penalty
+	Data->WeightOfDamages = TOC->WeightOfDamages;
+
 	// If switched off in meta data, disable reading of initial values
 	if (!TOC->GetInitialVal)
 		Data->GetInitialVal = false;
@@ -1126,8 +1138,13 @@ ReImportGeneticParameters()
 	snprintf(buf,sizeof(buf),"%scars/models/%s/%s.xml",
 		GetDataDir(),Data->CarType,Data->CarType);
 	void* Handle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-	
+	Data->MaxFuel = (float) GfParmGetNum(Handle, 
+		SECT_CAR, PRM_TANK, "l", (float) 60.0);
 	GfParmReleaseHandle(Handle);
+
+	// Store tank capacity as initial fuel
+	GfParmSetNum(Data->Handle, Data->PrivateSection, PRM_FUEL,    
+		(char*) NULL, Data->MaxFuel, -1.0, Data->MaxFuel);
 
 	// Set optimisation flag for robot
 	GfParmSetNum(Data->Handle, Data->PrivateSection, PRV_OPTI,    
@@ -1452,6 +1469,11 @@ ReCleanupGeneticOptimisation()
 	//ReUI().addOptimizationMessage("Setup path to best setup found");
 	void* Handle = GfParmReadFile(Data->OptFileName, GFPARM_RMODE_REREAD);
 
+	ReLogOptim.info("Reset fuel control\n");
+	//ReUI().addOptimizationMessage("Reset fuel control");
+	GfParmSetNum(Handle, Data->PrivateSection, PRM_FUEL,    
+		(char*) NULL, -1, -1.0, Data->MaxFuel);
+
 	ReLogOptim.info("Reset optimisation flag for robot\n");
 	//ReUI().addOptimizationMessage("Reset optimisation flag for robot");
 	GfParmSetNum(Handle, Data->PrivateSection, PRV_OPTI,    
@@ -1764,6 +1786,7 @@ ReEvolution()
 
 		// Push the result data to be reused in case of a back step later
 		Data->LastWeightedBestLapTime = Data->WeightedBestLapTime;
+		Data->LastDamagesTotal = Data->DamagesTotal;	
 
 		// Store current parameters to be reused in case of a back step later
 		for (int I = 0; I < Data->NbrOfParam; I++)
@@ -1794,6 +1817,7 @@ ReEvolution()
 
 		// Pop the stored result data
 		Data->WeightedBestLapTime = Data->LastWeightedBestLapTime;
+		Data->DamagesTotal = Data->LastDamagesTotal;	
 
 		// Pop the stored genetic parameter data
 		for (int I = 0; I < Data->NbrOfParam; I++)

@@ -222,12 +222,30 @@ void ReInitRules(tRmInfo* ReInfo)
         ReInfo->raceRules.enabled |= RmRaceRules::CORNER_CUTTING_TIME_PENALTY;
     }
 
-    /// SIMULATED DRIVING ASSISTANCE: removed fuel and damage factors
+    // Fuel consumption factor
+    tdble number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_FUEL_FACTOR, NULL, 1.0f);
+    if (number < 0.0f) number = 0.0f;	// Avoid negative factor
+    ReInfo->raceRules.fuelFactor = number;
+
+    // Damage factor
+    number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_DAMAGE_FACTOR, NULL, 1.0f);
+    if (number < 0.0f) number = 0.0f;	// Avoid negative factor
+    ReInfo->raceRules.damageFactor = number;
 
     // Tire model factor, for 0.0 the model is switched completely off
-    tdble number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_TIRE_FACTOR, NULL, 1.0f);
-    if (number < 0.0f) number = 0.0f;  // Avoid negative factor
+    number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_TIRE_FACTOR, NULL, 1.0f);
+    if (number < 0.0f) number = 0.0f;	// Avoid negative factor
     ReInfo->raceRules.tireFactor = number;
+
+    // Refuel fuel flow
+    number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_REFUEL_FUEL_FLOW, NULL, 8.0f);
+    if (number < 1.0f) number = 1.0f;	// Avoid division by zero or negative pit times
+    ReInfo->raceRules.refuelFuelFlow = number;
+
+    // Damage repair factor
+    number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_DAMAGE_REPAIR_FACTOR, NULL, 0.007f);
+    if (number < 0.0f) number = 0.0f;	// Avoid negative pit times
+    ReInfo->raceRules.damageRepairFactor = number;
 
     // Pit stop base time (time for a stop even if nothing is done)
     number = GfParmGetNum(ReInfo->params, ReInfo->_reRaceName, RM_ATTR_PITSTOP_BASE_TIME, NULL, 2.0f);
@@ -416,6 +434,9 @@ RePreRace(void)
         GfParmSetNum(results, RE_SECT_CURRENT, RE_ATTR_CUR_RACE, NULL, 1);
         return RM_SYNC | RM_NEXT_RACE | RM_NEXT_STEP;
     }
+
+    // Get session max dammages.
+    ReInfo->s->_maxDammage = (int)GfParmGetNum(params, raceName, RM_ATTR_MAX_DMG, NULL, 10000);
 
     // Get session type (race, qualification or practice).
     raceType = GfParmGetStr(params, raceName, RM_ATTR_TYPE, RM_VAL_RACE);

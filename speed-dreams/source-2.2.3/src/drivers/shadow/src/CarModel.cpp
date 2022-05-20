@@ -39,7 +39,6 @@ CarModel::CarModel()
 //	FLAGS(F_SEPARATE_FRONT_REAR),
     FLAGS(F_SEPARATE_FRONT_REAR | F_USE_KV),
     MASS(0),
-    /// SIMULATED DRIVING ASSISTANCE: removed properties 'Fuel' and 'Damage'
     WIDTH(2),
     TYRE_MU(0),
     TYRE_MU_F(0),
@@ -207,7 +206,6 @@ void    CarModel::configCar( void* hCar )
       LogSHADOW.info("#Car has TCL no\n");
 
     MASS = GfParmGetNum(hCar, SECT_CAR, PRM_MASS, NULL, 1000.0);
-    /// SIMULATED DRIVING ASSISTANCE: removed initiation of Fuel
 
     float fwingarea	= GfParmGetNum(hCar, SECT_FRNTWING, PRM_WINGAREA,  NULL, 0.0);
     WING_ANGLE_F	= GfParmGetNum(hCar, SECT_FRNTWING, PRM_WINGANGLE, NULL, 0.0);
@@ -735,7 +733,6 @@ double	CarModel::CalcBraking(
     double spd1, double dist, double trackMu,
     double trackRollAngle, double trackPitchAngle ) const
 {
-    /// SIMULATED DRIVING ASSSITANCE: removed 'Fuel' from defition of MASS
     double	M  = MASS;
 
     double	MU = trackMu * TYRE_MU;

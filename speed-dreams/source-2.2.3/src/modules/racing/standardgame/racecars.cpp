@@ -67,8 +67,8 @@ ReCarsUpdateCarPitTime(tCarElt *car)
     {
         case RM_PIT_REPAIR:
             //info->totalPitTime = 2.0f + fabs((double)(car->_pitFuel)) / 8.0f + (tdble)(fabs((double)(car->_pitRepair))) * 0.007f;
-            info->totalPitTime = ReInfo->raceRules.pitstopBaseTime + fabs((double)(car->_pitFuel)) +
-                    (tdble)(fabs((double)(car->_pitRepair)));
+            info->totalPitTime = ReInfo->raceRules.pitstopBaseTime + fabs((double)(car->_pitFuel)) / ReInfo->raceRules.refuelFuelFlow +
+                    (tdble)(fabs((double)(car->_pitRepair))) * ReInfo->raceRules.damageRepairFactor + car->_penaltyTime;
 
             // Add time for tire change
             if (car->pitcmd.tireChange == tCarPitCmd::ALL && car->info.skillLevel == 3 && ReInfo->raceRules.tireFactor > 0.0f)

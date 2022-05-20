@@ -40,6 +40,7 @@ void Opponent::update()
     // Init state
     mBackMarker = false;
     mLetpass    = false;
+    mDamaged    = false;
     mRacing     = true;
 
     // Check for cars out
@@ -72,6 +73,12 @@ void Opponent::update()
                 || (mTeamMate && (mOppCar->_dammage < mCar->_dammage - 1000 || tiretempdiff < -20.0) && !mBackMarker))
         {
             mLetpass = true;
+        }
+
+        // Damaged opponent?
+        if (mOppCar->_dammage > mCar->_dammage + 2000)
+        {
+            mDamaged = true;
         }
 
         // Update special data

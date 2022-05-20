@@ -52,6 +52,7 @@
 #define PRM_AUTHOR		"author"
 #define PRM_PRIVATE		"private"
 #define PRM_LOOPS		"optimisation loops"
+#define PRM_DAMAGES		"weight of damages"
 #define PRM_INITIAL		"get initial value"
 
 #define PRV_OPTI	    "genetic optimisation"
@@ -129,6 +130,7 @@ typedef struct genData
 
 	// Strategic data, car setup depending on optimization state
     // int Type;			// 0: race; 1: qualifying
+	float MaxFuel;			// Default = 60
 	float TotalWeight;		// Total of parameters individual weight
 	bool First;				// First race with unchanged parameters
 	bool GetInitialVal;		// Allow to get initial value from setup
@@ -137,6 +139,10 @@ typedef struct genData
 	double BestLapTime;				// Best laptime (without penalties)
 	double WeightedBestLapTime;	    // Best laptime increased by time penalty for damages
     double LastWeightedBestLapTime;	// Last best value
+
+	int DamagesTotal;				// Total of damages taken in race
+	int LastDamagesTotal;			// Last total
+	double WeightOfDamages;			// Factor to weight damages as time penalties
 
 	//double TopSpeed;				// Max velocity
 	//double LastTopSpeed;			// Last max value
@@ -313,6 +319,7 @@ class TGeneticParameterTOC
 		char* Author = NULL,		// Name of author of setup
 		char* Private = NULL,		// Name of private data section
 		int Loops = 1000,			// Number of optimisation loops
+		float WeightDamages = 1.0,	// Weight of damages as time penalty
 		bool GetInitialVal = true   // Read initial value from setup
 	);
 
@@ -326,6 +333,7 @@ class TGeneticParameterTOC
 	char* Author;					// Name of author of setup
 	char* Private;					// Name of private data section
 	int OptimisationLoops;			// Number of optimisation loops
+	float WeightOfDamages;	        // Weight of damages as time penalty
 	bool GetInitialVal;				// Read initial value from setup
 
 };
