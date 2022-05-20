@@ -55,9 +55,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control);
 
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
-void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings);
-
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl);
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
 
 void SetUsername(void* p_scrHandle, int p_usernameControl);
 

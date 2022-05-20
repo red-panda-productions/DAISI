@@ -1,12 +1,8 @@
 #include <tgfclient.h>
-#include "guimenu.h"
-#include "legacymenu.h"
 #include "Mediator.h"
 #include "DatabaseSettingsMenu.h"
 #include "DatabaseConnectionManager.h"
 #include "DataSelectionMenu.h"
-
-#include <experimental/filesystem>
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -28,6 +24,8 @@ int m_publicCertDialogLabel;
 int m_privateCertDialogLabel;
 int m_dbStatusControl;
 bool m_certChosen = false;
+
+bool m_connecting = false;
 
 void SelectCACert(void* /* dummy */)
 {
@@ -86,7 +84,7 @@ static void GoBack(void* /* dummy */)
 
 static void CheckConnectionCallback(void* /* dummy */)
 {
-    CheckConnection(s_scrHandle, m_dbStatusControl);
+    CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
 }
 
 static void SetUsernameCallback(void*)
@@ -161,7 +159,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     OnActivate(s_scrHandle);
     
 
-    CheckConnection(s_scrHandle, m_dbStatusControl);
+    CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
 
     return s_scrHandle;
 }

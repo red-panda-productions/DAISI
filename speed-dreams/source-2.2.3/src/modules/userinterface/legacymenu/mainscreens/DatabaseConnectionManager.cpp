@@ -15,10 +15,23 @@
 #define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
-static bool m_isconnecting = false;
 static bool m_loadedSettings = false;
 static tDatabaseSettings s_dbSettings;
 static char s_portString[SETTINGS_NAME_LENGTH];
+
+
+void ConvertPortString()
+{
+    try
+    {
+        s_dbSettings.Port = std::stoi(s_portString);
+    }
+    catch (std::exception&)
+    {
+        std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
+        s_dbSettings.Port = 0;
+    }
+}
 
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
 void SaveDBSettingsToDisk()
@@ -100,6 +113,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    ConvertPortString();
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
     s_dbSettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
     strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
@@ -147,7 +161,7 @@ void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
 /// @brief                    The async function to check if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
-void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings)
+void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings, bool* p_isConnecting)
 {
     bool connectable = false;
     try
@@ -168,24 +182,24 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         float color[4] = ONLINE_TEXT_COLOR;
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
-        m_isconnecting = false;
+        *p_isConnecting = false;
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
     float* colotPtr = color;
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
-    m_isconnecting = false;
+    *p_isConnecting = false;
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl)
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
 {
-    if (m_isconnecting) return;
-    m_isconnecting = true;
-    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_dbSettings);
+    if (*p_isConnecting) return;
+    *p_isConnecting = true;
+    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_dbSettings, p_isConnecting);
     t.detach();
 }
 
@@ -231,10 +245,9 @@ void SetAddress(void* p_scrHandle, int p_addressControl)
 void SetPort(void* p_scrHandle, int p_portControl)
 {
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_portControl));
-    char* endptr;
-    s_dbSettings.Port = (int)strtol(s_portString, &endptr, 0);
-    if (*endptr != '\0')
-        std::cerr << "Could not convert " << s_portString << " to int and leftover string is: " << endptr << std::endl;
+
+    ConvertPortString();
+
     char buf[32];
     sprintf(buf, "%d", s_dbSettings.Port);
     GfuiEditboxSetString(p_scrHandle, p_portControl, buf);
