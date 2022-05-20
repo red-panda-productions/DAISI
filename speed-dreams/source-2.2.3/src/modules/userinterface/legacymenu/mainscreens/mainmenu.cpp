@@ -28,7 +28,7 @@
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
 #include "BeginExperimentMenu.h"
-
+#include "ConfigEnums.h"
 
 static void *MenuHandle = 0;
 
