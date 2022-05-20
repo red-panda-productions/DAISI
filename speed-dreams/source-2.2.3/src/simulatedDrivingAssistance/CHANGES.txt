@@ -29,7 +29,7 @@ Added:
             DataSettingsMenu.h
             DataSettingsMenu.cpp
             DeveloperMenu.h
-            DeveloperMenu.cpp
+            DeveloperMenu.cpp 
             EndExperimentMenu.cpp
             EndExperimentMenu.h
   data/

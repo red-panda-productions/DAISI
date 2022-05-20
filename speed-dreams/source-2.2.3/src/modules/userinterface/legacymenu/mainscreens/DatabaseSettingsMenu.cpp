@@ -58,11 +58,7 @@ static void SetAddress(void*)
 /// @brief Handle input in the Port textbox
 static void SetPort(void*)
 {
-<<<<<<< HEAD
     strcpy_s(m_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_portControl));
-=======
-    strcpy_s(m_portString, GfuiEditboxGetString(s_scrHandle, m_portControl));
->>>>>>> 8f9721809a854737138b3d235a599fd415d19764
     char* endptr;
     m_dbsettings.Port = (int)strtol(m_portString, &endptr, 0);
     if (*endptr != '\0')
@@ -151,11 +147,7 @@ static void GoBack(void* /* dummy */)
 }
 
 /// @brief Select a certificate file and save the path
-<<<<<<< HEAD
-static void SelectCert(int p_buttonControl, int p_labelControl, char* p_normalText, char* p_filePath, const char* p_extension, const wchar_t** p_extensions)
-=======
-static void SelectCert(int p_buttonControl, int p_labelControl, const char* p_normalText, char* p_filePath, const wchar_t** p_extensions)
->>>>>>> 8f9721809a854737138b3d235a599fd415d19764
+static void SelectCert(int p_buttonControl, int p_labelControl, const char* p_normalText, char* p_filePath, const char* p_extension, const wchar_t** p_extensions)
 {
     const wchar_t* names[AMOUNT_OF_NAMES] = {L"Certificates"};
     char buf[MAX_PATH_SIZE];
@@ -171,21 +163,13 @@ static void SelectCert(int p_buttonControl, int p_labelControl, const char* p_no
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {
-<<<<<<< HEAD
-        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_FILE_EXTENSION);
-=======
         GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
->>>>>>> 8f9721809a854737138b3d235a599fd415d19764
         return;
     }
     // Enforce that file ends in the extension
     if (std::strcmp(path.extension().string().c_str(), p_extension) != 0)
     {
-<<<<<<< HEAD
-        GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_FILE_EXTENSION);
-=======
         GfuiLabelSetText(s_scrHandle, p_labelControl, MSG_NO_CERT_FILE);
->>>>>>> 8f9721809a854737138b3d235a599fd415d19764
         return;
     }
 
