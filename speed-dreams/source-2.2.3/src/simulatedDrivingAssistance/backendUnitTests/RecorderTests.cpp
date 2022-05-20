@@ -482,7 +482,7 @@ void AssertTargetVersionChanges(void* p_upgradedRunSettingsHandle, filesystem::p
             AssertV3ToV4Changes(p_upgradedRunSettingsHandle);
             break;
         default:
-            SUCCEED();
+            throw std::exception("Unknown target version, cannot assert");
     }
 }
 
@@ -491,7 +491,7 @@ class RecorderUpgradeVersionTestFixture : public ::testing::TestWithParam<int>
 {
 };
 
-/// @brief Tests whether the base-recording is succesfully upgrade to the target version.
+/// @brief Tests whether the base-recording is successfully upgrade to the target version.
 TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 {
     int targetVersion = GetParam();
@@ -513,17 +513,18 @@ TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 
 /// @brief       Generates all the tests for the recording upgrades
 /// @param Range The versions to upgrade the recordings to, is a range from [1..RECORDER_VERSION]
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     RecorderUpgradeVersionTests,
     RecorderUpgradeVersionTestFixture,
     ::testing::Range(1, CURRENT_RECORDER_VERSION + 1));
 
+/// @brief Attempts to upgrade to a non-existent recording version, which should fail.
 TEST(RecorderTests, UpgradeToUnkownVersion)
 {
     int unknownVersion = CURRENT_RECORDER_VERSION + 1;
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, unknownVersion));
-    AssertTargetVersionChanges(nullptr, toUpgrade, unknownVersion);
+    ASSERT_THROW(AssertTargetVersionChanges(nullptr, toUpgrade, unknownVersion), std::exception);
 }
 
 TEST(RecorderTests, InvalidXMLSettingsFileValidate)

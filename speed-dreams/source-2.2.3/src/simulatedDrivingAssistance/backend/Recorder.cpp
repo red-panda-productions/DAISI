@@ -393,7 +393,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     {
         if (UpgradeRecording(version, settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile)) continue;
 
-        // If upgrading fails, release handle and exit loop.
+        // If upgrading fails, release handle and exit function.
         GfParmReleaseHandle(settingsHandle);
         return false;
     }
