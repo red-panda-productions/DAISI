@@ -219,7 +219,7 @@ void SetPassword(void* p_scrHandle, int p_passwordControl)
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
 
     char replacement[SETTINGS_NAME_LENGTH];
-    int length = strlen(s_dbSettings.Password);
+    auto length = strlen(s_dbSettings.Password);
     for (int i = 0; i < length; i++)
     {
         replacement[i] = '*';
