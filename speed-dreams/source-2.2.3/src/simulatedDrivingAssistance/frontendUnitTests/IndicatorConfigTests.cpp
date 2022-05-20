@@ -146,7 +146,7 @@ protected:
         {
             data[i] = {
                 static_cast<InterventionAction>(i),
-                static_cast<InterventionActionType>(i),
+                static_cast<InterventionActionType>(m_rnd.NextInt(NUM_INTERVENTION_ACTION_TYPES)),
                 CreateRandomSoundData(p_gen),
                 CreateRandomTextureData(p_gen),
                 CreateRandomTextData(p_gen)};
@@ -172,6 +172,9 @@ protected:
         {
             tIndicatorData data = p_data[i];
 
+            snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i]);
+            GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_ACT_TYPE_ID, nullptr, data.Type);
+
             if (data.Sound)
             {
                 snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_SOUND);
@@ -182,12 +185,12 @@ protected:
 
             if (data.Texture)
             {
-                char m_interventionNumber[INTERVENTION_BUF_SIZE];
-                std::sprintf(m_interventionNumber, "%d", p_interventionType);
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES, m_interventionNumber);
-                GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Texture->Path);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
+
+                // Only need to write to this specific type, because that is the only one that is loaded in again.
+                GfParmSetStr(fileHandle, xmlSection, s_interventionTypeString[p_interventionType], data.Texture->Path);
             }
 
             if (data.Text)
@@ -211,7 +214,7 @@ protected:
 
     /// @brief             Asserts whether the loaded sound is equal to the generated random sound.
     /// @param p_loadedSnd The sound loaded into the indicator config
-    /// @param p_rndSnd    The randomly generated sound
+    /// @param p_rndSnd    The randomly generated sound, the path will get appended to the sound data directory.
     void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
     {
         // If the generated sound is null, only check whether the loaded sound is also null
@@ -264,13 +267,39 @@ protected:
 
     /// @brief                    Asserts whether the loaded indicator is equal to the generated indicator
     /// @param p_loadedIndicator  The indicator loaded into the indicator config
-    /// @param p_rndIndicator     The randomly generated indicator
+    /// @param p_rndIndicator     The randomly generated indicator, beware that the AssertSound will append the sound path again.
     void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndicator)
     {
         ASSERT_EQ(p_loadedIndicator.Action, p_rndIndicator.Action);
+        ASSERT_EQ(p_loadedIndicator.Type, p_rndIndicator.Type);
         AssertSound(p_loadedIndicator.Sound, p_rndIndicator.Sound);
         AssertTexture(p_loadedIndicator.Texture, p_rndIndicator.Texture);
         AssertText(p_loadedIndicator.Text, p_rndIndicator.Text);
+    }
+
+    /// @brief           Asserts whether the right active indicator data was returned.
+    /// @param p_active  The active indicators
+    /// @param p_rndData The random indicator data that was used to in the IndicatorConfig
+    /// @param p_action  The action to check whether it is present.
+    void AssertActivatedIndicator(std::vector<tIndicatorData> p_active, std::vector<tIndicatorData> p_rndData, InterventionAction p_action)
+    {
+        // Loop over all the activated indiactors:
+        // If the active indicator is a neutral indicator, it should match the corresponding one.
+        // If the active indicator is something else, it should match the indicator data of the activated action.
+        for (int j = 0; j < p_active.size(); j++)
+        {
+            switch (p_active[j].Action)
+            {
+                case INTERVENTION_ACTION_STEER_NEUTRAL:
+                    AssertIndicator(p_active[j], p_rndData[INTERVENTION_ACTION_STEER_NEUTRAL]);
+                    break;
+                case INTERVENTION_ACTION_SPEED_NEUTRAL:
+                    AssertIndicator(p_active[j], p_rndData[INTERVENTION_ACTION_SPEED_NEUTRAL]);
+                    break;
+                default:
+                    AssertIndicator(p_active[j], p_rndData[p_action]);
+            }
+        }
     }
 };
 
@@ -289,9 +318,9 @@ TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
         // test whether every value matches the original generated value.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
         std::vector<tIndicatorData> loadedData = IndicatorConfig::GetInstance()->GetIndicatorData();
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
+        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION_TOTAL; action++)
         {
-            AssertIndicator(loadedData[i], rndData[i]);
+            AssertIndicator(loadedData[action], rndData[action]);
         }
     }
 }
@@ -333,14 +362,13 @@ TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
 
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION_TOTAL; i++)
+
+        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION_TOTAL; action++)
         {
-            IndicatorConfig::GetInstance()->ActivateIndicator(i);
+            IndicatorConfig::GetInstance()->ActivateIndicator(action);
             std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-            // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
-            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.                       
-            AssertIndicator(active[0], rndData[i]);
+            AssertActivatedIndicator(active, rndData, action);            
         }
     }
 }

@@ -6,7 +6,6 @@
 
 // Size of the path buffers, this will be used unchecked.
 #define PATH_BUF_SIZE         256
-#define INTERVENTION_BUF_SIZE 11
 
 // Location of the config.xml file with respect to the root data directory.
 #define CONFIG_XML_DIR_FORMAT "%sdata/indicators/config.xml"

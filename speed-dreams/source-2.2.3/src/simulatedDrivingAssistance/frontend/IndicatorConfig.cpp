@@ -59,8 +59,8 @@ void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
     // By default the neutral indicators are active
     m_activeIndicators = {
-        m_indicatorData[INTERVENTION_ACTION_STEER_NONE], 
-        m_indicatorData[INTERVENTION_ACTION_SPEED_NONE]};
+        m_indicatorData[INTERVENTION_ACTION_STEER_NEUTRAL], 
+        m_indicatorData[INTERVENTION_ACTION_SPEED_NEUTRAL]};
 
     // Replace the neutral indicator that has the same type as the newly activated one.
     tIndicatorData activate = m_indicatorData[p_action];

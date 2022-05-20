@@ -15,7 +15,7 @@
                 <attstr name ="complete-takeover" val="CompleteTakeOver_Neutral_Steering_256.png"/>               
             </section>            
             <section name="text">
-                <attstr name ="content"   val="Neutral"/>
+                <attstr name ="content"   val="Steering"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
@@ -33,7 +33,7 @@
                 <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
             </section>
             <section name="text">
-                <attstr name ="content"   val="Steer left"/>
+                <attstr name ="content"   val="Steering"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
@@ -56,7 +56,7 @@
                 <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
             </section>
             <section name="text">
-                <attstr name ="content"   val="Steer right"/>
+                <attstr name ="content"   val="Steering"/>
                 <attnum name ="xpos"      val="0.75"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
@@ -79,7 +79,7 @@
                 <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Off.png"/>
             </section>
             <section name="text">
-                <attstr name ="content"   val="Neutral"/>
+                <attstr name ="content"   val="Speed"/>
                 <attnum name ="xpos"      val="0.85"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
@@ -96,7 +96,7 @@
                 <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
             </section>
             <section name="text">
-                <attstr name ="content"   val="Accelerate"/>
+                <attstr name ="content"   val="Speed"/>
                 <attnum name ="xpos"      val="0.85"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
@@ -116,7 +116,7 @@
                 <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
             </section>
             <section name="text">
-                <attstr name ="content"   val="Brake"/>
+                <attstr name ="content"   val="Speed"/>
                 <attnum name ="xpos"      val="0.85"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
