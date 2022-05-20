@@ -33,6 +33,7 @@ MyCar::MyCar() :
 {
 }
 
+/// SIMULATED DRIVING ASSISTANCE: removed fuel and damage properties
 void MyCar::init(tCarElt* car, MyTrack* track)
 {
     mCar = car;

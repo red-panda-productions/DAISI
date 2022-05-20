@@ -307,37 +307,18 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
                 pCar->pitcmd.repair		= 0;
                 pCar->pitcmd.tireChange	= tCarPitCmd::NONE;
             }
+            /// SIMULATED DRIVING ASSISTANCE: removed fuel and damage functionality from else-statement
             else
             {
-                //					double	fuel = distToRace * fuelPerM * 1.02 + fuelPerLap - pCar->_fuel;
-                //					double	fuel = distToRace * fuelPerM * 1.02 + fuelPerLap;
-                double	fuel = distToRace * fuelPerM * 1.02;
-
-                if( fuel > pCar->info.tank )
-                {
-                    int nTanks = int(ceil(fuel / pCar->info.tank));
-                    fuel = MN(pCar->info.tank, fuel / nTanks + fuelPerLap * 2);
-                }
-
-                double	predDamage = pCar->_dammage + distToRace * damagePerM * 2;
-                //		int		repair = int(ceil(predDamage - 5000));
-                int		repair = pCar->_dammage;
-
-                double	distWithMaxFuel = pCar->_tank / fuelPerM;
-
-                if( nPitsForFuel <= 1 && distToRace < distWithMaxFuel / 2 )
-                    repair = int(ceil(predDamage - 4000));
 
                 pCar->pitcmd.stopType	= RM_PIT_REPAIR;
-                pCar->pitcmd.fuel		= (tdble)MX(0, fuel - pCar->_fuel);
-                pCar->pitcmd.repair		= MX(0, MN(repair, pCar->_dammage));
 
                 if(m_HasTYC)
                     pCar->pitcmd.tireChange	= tyreWear < 0.5 ? tCarPitCmd::ALL : tCarPitCmd::NONE;
             }
 
-            LogSHADOW.debug( "****** PIT  fuel %g  repair %d  twear %0.4f  tchg 0x%x\n",
-                             pCar->pitcmd.fuel, pCar->pitcmd.repair, tyreWear, pCar->pitcmd.tireChange );
+            LogSHADOW.debug( "******  repair %d  twear %0.4f  tchg 0x%x\n",
+                             pCar->pitcmd.repair, tyreWear, pCar->pitcmd.tireChange );
         }
         else
         {
@@ -382,12 +363,4 @@ int		Strategy::PitType() const
     //	return PT_NORMAL;
 }
 
-double	Strategy::FuelPerM( const CarElt* pCar ) const
-{
-    double	fuelPerM = 0.001;
-
-    if( pCar->_distRaced > 0 )
-        fuelPerM = m_totalFuel / pCar->_distRaced;
-
-    return fuelPerM;
-}
+/// SIMULATED DRIVING ASSISTANCE: Removed FuelPerM function
