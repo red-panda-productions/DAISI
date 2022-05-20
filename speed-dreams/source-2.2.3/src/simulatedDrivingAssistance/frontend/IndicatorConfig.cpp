@@ -25,7 +25,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
         snprintf(path, PATH_BUF_SIZE, "%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i]);
-        float actionType = GfParmGetNum(xmlHandle, path, PRM_ATTR_ACT_TYPE_ID, nullptr, 5.0);
+        float actionType = GfParmGetNum(xmlHandle, path, PRM_ATTR_ACT_TYPE_ID, nullptr, 0);
 
         std::string sectPath = std::string(path) + "/";
         m_indicatorData[i] = {
