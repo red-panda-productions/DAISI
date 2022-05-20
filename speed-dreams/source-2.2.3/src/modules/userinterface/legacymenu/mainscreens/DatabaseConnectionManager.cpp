@@ -76,7 +76,7 @@ void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
     GfuiVisibilitySet(p_scrHandle, p_control.PrivateCertificateButton, s_dbSettings.UseSSL);
 }
 
-/// @brief         Loads the default menu settings from the controls into the internal variables
+/// @brief Loads the default menu settings from the controls into the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_control the corresponding ui element control integers
 void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
@@ -190,6 +190,8 @@ void CheckConnection(void* p_scrHandle, int p_dbStatusControl)
 }
 
 /// @brief Handle input in the Username textbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_usernameControl the corresponding ui element control integers
 void SetUsername(void* p_scrHandle, int p_usernameControl)
 {
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_usernameControl));
@@ -197,6 +199,8 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
 }
 
 /// @brief Handle input in the Password textbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_passwordControl the corresponding ui element control integers
 void SetPassword(void* p_scrHandle, int p_passwordControl)
 {
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
@@ -213,6 +217,8 @@ void SetPassword(void* p_scrHandle, int p_passwordControl)
 }
 
 /// @brief Handle input in the Address textbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_addressControl the corresponding ui element control integers
 void SetAddress(void* p_scrHandle, int p_addressControl)
 {
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_addressControl));
@@ -220,6 +226,8 @@ void SetAddress(void* p_scrHandle, int p_addressControl)
 }
 
 /// @brief Handle input in the Port textbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_portControl the corresponding ui element control integers
 void SetPort(void* p_scrHandle, int p_portControl)
 {
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_portControl));
@@ -233,6 +241,8 @@ void SetPort(void* p_scrHandle, int p_portControl)
 }
 
 /// @brief Handle input in the Schema name textbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_schemaControl the corresponding ui element control integers
 void SetSchema(void* p_scrHandle, int p_schemaControl)
 {
     strcpy_s(s_dbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
@@ -241,6 +251,10 @@ void SetSchema(void* p_scrHandle, int p_schemaControl)
 
 /// @brief        Enables/disables the SSL option
 /// @param p_info Information on the checkbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_caControl the corresponding ui element control integers
+/// @param p_publicControl the corresponding ui element control integers
+/// @param p_privateControl the corresponding ui element control integers
 void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl)
 {
     s_dbSettings.UseSSL = p_info->bChecked;
@@ -249,6 +263,8 @@ void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_
     GfuiVisibilitySet(p_scrHandle, p_privateControl, s_dbSettings.UseSSL);
 }
 
+/// @brief Initializes the certificate filepaths.
+/// @param The param element for initializing a menu
 void InitCertificates(void* p_param)
 {
     strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
@@ -257,6 +273,13 @@ void InitCertificates(void* p_param)
 }
 
 /// @brief Select a certificate file and save the path
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_buttonControl the corresponding ui element control integers
+/// @param p_labelControl the corresponding ui element control integers
+/// @param p_normalText Normal text of the button
+/// @param p_certificate The ca certificate id
+/// @param p_extension The extension that needs to be checked
+/// @param p_extensions The array of extensions that needs to be checked
 void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, const char* p_normalText, int p_certificate, const char* p_extension, const wchar_t** p_extensions)
 {
     const wchar_t* names[AMOUNT_OF_NAMES] = {L"Certificates"};
@@ -298,6 +321,7 @@ void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, cons
     strcpy_s(filepath, SETTINGS_NAME_LENGTH, buf);
 }
 
+/// @brief Sets the DB settings in mediator
 void SetDBSettings()
 {
     SMediator::GetInstance()->SetDatabaseSettings(s_dbSettings);
