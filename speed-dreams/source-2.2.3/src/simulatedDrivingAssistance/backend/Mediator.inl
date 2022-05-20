@@ -36,6 +36,7 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetReplayFolder(const filesystem::path& p_replayFolder);                                                              \
     template const filesystem::path& Mediator<type>::GetReplayFolder() const;                                                                           \
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
+    template void Mediator<type>::SetSaveRaceToDatabase(bool p_saveToDatabase);                                                                         \
     template void Mediator<type>::RaceStop();                                                                                                           \
     template bool Mediator<type>::TimeOut();                                                                                                            \
     template Mediator<type>* Mediator<type>::GetInstance();
@@ -254,8 +255,17 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
-    m_decisionMaker.RaceStop();
+    bool saveToDatabase = m_decisionMaker.Config.GetSaveToDatabaseCheck();
+    m_decisionMaker.RaceStop(saveToDatabase);
     m_inRace = false;
+}
+
+/// @brief                  Tells the decionmaker that the experiment data should be saved or not.
+/// @param p_saveToDatabase boolean that determines the value of the m_decisionMaker.
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetSaveRaceToDatabase(bool p_saveToDatabase)
+{
+    m_decisionMaker.Config.SetSaveToDatabaseCheck(p_saveToDatabase);
 }
 
 /// @brief Creates a mediator instance if needed and returns it

@@ -27,6 +27,15 @@ typedef unsigned int InterventionType;
 
 #define NUM_INTERVENTION_TYPES 4
 
+/// @brief the different ways a race can end
+typedef unsigned int RaceEndType;
+
+#define NORMAL_EXIT   0
+#define RACE_RESTART  1
+#define RACE_EXIT     2
+#define RACE_ABORT    3
+#define RACE_FINISHED 4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 

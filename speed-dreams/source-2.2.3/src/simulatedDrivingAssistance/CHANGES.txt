@@ -22,14 +22,20 @@ Added:
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
-            ResearcherMenu.h
-            ResearcherMenu.cpp
-            DataSelectionMenu.h
-            DataSelectionMenu.cpp
-            DeveloperMenu.h
-            DeveloperMenu.cpp
-            EndExperimentMenu.cpp
-            EndExperimentMenu.h
+        ResearcherMenu.h
+        ResearcherMenu.cpp
+        DataSelectionMenu.h
+        DataSelectionMenu.cpp
+        DeveloperMenu.h
+        DeveloperMenu.cpp
+        SaveMenu.h
+        SaveMenu.cpp
+        Conformation.h
+        Conformation.cpp
+        EndExperimentMenu.h
+        EndExperimentMenu.cpp
+        ResearcherMenu.h
+        ResearcherMenu.cpp
   data/
     data/
         config/
@@ -42,12 +48,15 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            head.png
         indicators/
             *
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
             DeveloperMenu.xml
+            SaveMenu.xml
+            ConformationMenu.xml
             EndExperimentMenu.xml
     drivers/
         assistedhuman/
@@ -195,6 +204,8 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
+                  added    SaveMenu.h and .cpp
+                  added    Confirmation.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    EndExperimentMenu.cpp and .h
@@ -225,6 +236,10 @@ Changed:
                     included "ConfigEnums.h"
                 optionsmenu.cpp
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                exitmenu.h
+                    changed  ExitMenuInit(): more parameters
+                exitmenu.cpp
+                    changed  ExitMenuInit()
             racescreens/
                 raceresultsmenus.cpp
                     included "EndExperimentMenu.h"
@@ -232,6 +247,9 @@ Changed:
                 racestopmenu.cpp
                     RmStopRaceMenu()
                     changed  AssistedHuman is a human
+                    changed  rmAbortRaceHookHandle()
+                    changed  rmRestartRaceHooKHandle()
+                    changed  rmQuitHookActive()
                     removed rmProgressiveTimeModifier.start() call
                     removed controls menu
                     changed parameters of GfuiScreenActive() function
