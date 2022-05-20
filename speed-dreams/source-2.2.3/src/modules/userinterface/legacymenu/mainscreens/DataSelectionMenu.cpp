@@ -165,8 +165,6 @@ DatabaseSettingsMenuActivate(void* /* dummy */)
     GfuiScreenActivate(s_dbSettingsMenu);
 }
 
-
-
 /// @brief            Initializes the data selection menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The dataSelectionMenu scrHandle
