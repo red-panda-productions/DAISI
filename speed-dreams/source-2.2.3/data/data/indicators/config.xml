@@ -3,26 +3,14 @@
 <params name="intervention-config" type="template">
     <section name="Interventions">
         <section name ="steer none">
-            <section name="texture0">
-                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture1">
-                <attstr name ="source" val="OnlySignals_Steering_Neutral_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture2">
-                <attstr name ="source" val="SharedControl_Steering_Neutral_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture3">
-                <attstr name ="source" val="CompleteTakeOver_Neutral_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
+                <attstr name ="signals-only"      val="OnlySignals_Steering_Neutral_256.png"/>
+                <attstr name ="shared-control"    val="SharedControl_Steering_Neutral_256.png"/>
+                <attstr name ="complete-takeover" val="CompleteTakeOver_Neutral_Steering_256.png"/>               
+            </section>            
             <section name="text">
                 <attstr name ="content"   val="None"/>
                 <attnum name ="xpos"      val="0.75"/>
@@ -32,25 +20,13 @@
             </section>
         </section>
         <section name ="steer left">
-            <section name="texture0">
-                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture1">
-                <attstr name ="source" val="OnlySignals_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture2">
-                <attstr name ="source" val="SharedControl_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture3">
-                <attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
+                <attstr name ="signals-only"      val="OnlySignals_Steering_256.png"/>
+                <attstr name ="shared-control"    val="SharedControl_Steering_256.png"/>
+                <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steer left"/>
@@ -66,25 +42,13 @@
             </section>
         </section>
         <section name ="steer right">
-            <section name="texture0">
-                <attstr name ="source" val="SignalsOff_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture1">
-                <attstr name ="source" val="OnlySignals_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture2">
-                <attstr name ="source" val="SharedControl_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture3">
-                <attstr name ="source" val="CompleteTakeOver_Steering_256.png"/>
-                <attnum name ="xpos"   val="0.75"/>
-                <attnum name ="ypos"   val="0.03"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
+                <attstr name ="signals-only"      val="OnlySignals_Steering_256.png"/>
+                <attstr name ="shared-control"    val="SharedControl_Steering_256.png"/>
+                <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steer right"/>
@@ -99,20 +63,12 @@
             </section>
         </section>
         <section name ="brake">
-            <section name="texture1">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture2">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture3">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.85"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Brake"/>
@@ -126,20 +82,12 @@
             </section>
         </section>
         <section name ="accelerate">
-            <section name="texture1">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture2">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture3">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.85"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Accelerate"/>
@@ -153,21 +101,13 @@
             </section>
         </section>
         <section name="brake none">
-            <section name="texture1">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture2">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
-            <section name="texture3">
-                <attstr name ="source" val="Prototypes_V02_Speed_Style_C_Off.png"/>
-                <attnum name ="xpos"   val="0.85"/>
-                <attnum name ="ypos"   val="0.03"/>
-            </section>
+            <section name="textures">
+                <attnum name ="xpos" val="0.85"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Off.png"/>
+            </section>            
             <section name="text">
                 <attstr name ="content"   val="None"/>
                 <attnum name ="xpos"      val="0.85"/>

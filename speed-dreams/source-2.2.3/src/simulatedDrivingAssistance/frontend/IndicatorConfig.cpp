@@ -24,7 +24,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
     char path[PATH_BUF_SIZE];
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_interventionActionString[i]);
         m_indicatorData[i] = {
             (InterventionAction)i,
             LoadSound(xmlHandle, std::string(path)),
@@ -200,12 +200,11 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 /// @return         The pointer to struct containing the texture data
 tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType)
 {
-    p_path += PRM_SECT_TEXTURE;
-    p_path += std::to_string(p_interventionType);
+    p_path += PRM_SECT_TEXTURES;
     if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextureData* data = new TextureData;
-    data->Path = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_SRC, "");
+    data->Path = GfParmGetStr(p_handle, p_path.c_str(), s_interventionTypeString[p_interventionType], "");
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
     return data;
 }

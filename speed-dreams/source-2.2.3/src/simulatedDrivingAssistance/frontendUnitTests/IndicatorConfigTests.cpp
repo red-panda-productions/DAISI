@@ -173,7 +173,7 @@ protected:
 
             if (data.Sound)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_SOUND);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_interventionActionString[i], PRM_SECT_SOUND);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Sound->Path);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_LOOPING, GfuiMenuBoolToStr(data.Sound->Looping));
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_LOOP_INTERVAL, nullptr, data.Sound->LoopInterval);
@@ -183,7 +183,7 @@ protected:
             {
                 char m_interventionNumber[INTERVENTION_BUF_SIZE];
                 std::sprintf(m_interventionNumber, "%d", p_interventionType);
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE, m_interventionNumber);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s%s", PRM_SECT_INTERVENTIONS, s_interventionActionString[i], PRM_SECT_TEXTURES, m_interventionNumber);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Texture->Path);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
@@ -191,7 +191,7 @@ protected:
 
             if (data.Text)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_interventionActionString[i], PRM_SECT_TEXT);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Text->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Text->ScrPos.Y);

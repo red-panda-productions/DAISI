@@ -14,7 +14,7 @@
 
 // Parameters of sections and attributes used to search in the XML file.
 #define PRM_SECT_INTERVENTIONS "Interventions"
-#define PRM_SECT_TEXTURE       "texture"
+#define PRM_SECT_TEXTURES      "textures"
 #define PRM_SECT_SOUND         "sound"
 #define PRM_SECT_TEXT          "text"
 
@@ -30,8 +30,13 @@
 #define VAL_YES "yes"
 #define VAL_NO  "no"
 
-static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "steer none", "steer left", "steer right", "brake", "accelerate", "brake none"};
+static const char* s_interventionActionString[NUM_INTERVENTION_ACTION] = {
+    "steer none", "steer left", "steer right", "brake", "accelerate", "brake none"
+};
+
+static const char* s_interventionTypeString[NUM_INTERVENTION_TYPES] = {
+    "no-help", "singals-only", "shared-control", "complete-takeover"
+};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
