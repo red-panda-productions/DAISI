@@ -39,6 +39,17 @@ TEST(UtilsTests, RandomCharArray)
     }
 }
 
+/// @brief Tests whether the contains on active indicator data works correctly.
+TEST(UtilsTests, ActiveIndicators)
+{
+    std::vector<tIndicatorData> mockData = {
+        {INTERVENTION_ACTION_STEER_NONE, INTERVENTION_ACTION_TYPE_STEER, nullptr, nullptr, nullptr},
+        {INTERVENTION_ACTION_SPEED_BRAKE, INTERVENTION_ACTION_TYPE_SPEED, nullptr, nullptr, nullptr}};
+
+    ASSERT_TRUE(ActiveIndicatorsContains(mockData, INTERVENTION_ACTION_STEER_NONE));
+    ASSERT_FALSE(ActiveIndicatorsContains(mockData, INTERVENTION_ACTION_SPEED_ACCEL));
+}
+
 /// @brief		  Sample function
 /// @param  p_x	  Sample parameter
 /// @param  p_msg Sample parameter
