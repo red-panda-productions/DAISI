@@ -8,8 +8,8 @@
 #include "guimenu.h"
 
 #define CONNECTING            "Connecting..."
-#define OFFLINE               "Online       "
-#define ONLINE                "Offline      "
+#define ONLINE                "Online       "
+#define OFFLINE               "Offline      "
 #define CONNECTING_TEXT_COLOR {1, 1, 1, 1};
 #define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
