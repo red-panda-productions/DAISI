@@ -38,8 +38,8 @@
 		<attstr name="resume.tip" val="Return to the simulation"/>
 		<attstr name="skip.text" val="Skip Session"/>
 		<attstr name="skip.tip" val="Skip the current session"/>
-		<attstr name="quit.text" val="Stop"/>
-		<attstr name="quit.tip" val="Stop the simulation"/>
+		<attstr name="abort.text" val="Stop"/>
+		<attstr name="abort.tip" val="Stop the simulation"/>
 
 	</section>
 

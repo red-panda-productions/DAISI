@@ -310,7 +310,7 @@ RmStopRaceMenu()
         screen[i++] = rmRestartRaceHookInit();
     }
 
-    // SIMUlATED DRIVING ASSISTANCE CHANGE: Removed abort button
+    // SIMULATED DRIVING ASSISTANCE CHANGE: Removed abort button
 
 #if 1
     // get current driver
@@ -338,7 +338,7 @@ RmStopRaceMenu()
 #endif
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: changed quit button to be abort
-    buttonRole[i] = "quit";
+    buttonRole[i] = "abort";
     screen[i++] = rmAbortRaceHookInit();
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
