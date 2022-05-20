@@ -39,7 +39,6 @@
 #include "raceresults.h"
 #include "racestate.h"
 #include "racetrack.h" // ReTrackInit, ReTrackUpdate
-#include "BeginExperiment.h"
 
 #include "teammanager.h"
 #include "genetic.h"
@@ -189,11 +188,6 @@ ReRaceEventInit(void)
 	ReUI().onOptimizationInitializing();
 	
 	ReInfo->s->_features = RmGetFeaturesList(ReInfo->params);
-
-	// Load the begin experiment screen
-	BeginExperimentInit(p_menuHandle, p_saveWayVersion);
-	// Wait for 3 seconds before the simulation is started
-	sleep(3);
 
 	ReTrackInit();
 	
