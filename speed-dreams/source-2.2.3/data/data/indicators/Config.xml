@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
+<params name="indicator-config" type="template">
+    <section name="indicators">
+
+        <!--Steering actions-->
+        <section name ="steer neutral">
+            <attnum name ="action-type-id" val="0"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
+                <attstr name ="signals-only"      val="OnlySignals_Steering_Neutral_256.png"/>
+                <attstr name ="shared-control"    val="SharedControl_Steering_Neutral_256.png"/>
+                <attstr name ="complete-takeover" val="CompleteTakeOver_Neutral_Steering_256.png"/>               
+            </section>            
+            <section name="text">
+                <attstr name ="content"   val="Steering"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+        </section>
+        <section name ="steer left">
+            <attnum name ="action-type-id" val="0"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
+                <attstr name ="signals-only"      val="OnlySignals_Steering_256.png"/>
+                <attstr name ="shared-control"    val="SharedControl_Steering_256.png"/>
+                <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Steering"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_left_driftingright.wav"/>
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop-interval" val="3"/>
+            </section>
+        </section>
+        <section name ="steer right">
+            <attnum name ="action-type-id" val="0"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
+                <attstr name ="signals-only"      val="OnlySignals_Steering_256.png"/>
+                <attstr name ="shared-control"    val="SharedControl_Steering_256.png"/>
+                <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Steering"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_right_driftingleft.wav"/>
+                <attstr name="looping" val="no"/>
+            </section>
+        </section>
+        
+        <!--Speed control actions-->
+        <section name="speed neutral">
+            <attnum name ="action-type-id" val="1"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.85"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Off.png"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Speed"/>
+                <attnum name ="xpos"      val="0.86"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+        </section>
+        <section name ="accelerate">
+            <attnum name ="action-type-id" val="1"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.85"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Speed"/>
+                <attnum name ="xpos"      val="0.86"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <!--TODO: create accelerate warning sound-->
+            </section>
+        </section>
+        <section name ="brake">
+            <attnum name ="action-type-id" val="1"/>
+            <section name="textures">
+                <attnum name ="xpos" val="0.85"/>
+                <attnum name ="ypos" val="0.03"/>
+                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
+                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Speed"/>
+                <attnum name ="xpos"      val="0.86"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_brake_brake.wav"/>
+            </section>
+        </section>
+    </section>
+</params>
