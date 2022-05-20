@@ -33,7 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-// SIMULATED DRIVING ASSISTANCE CHANGE: included InterventionMenu.h and ResearcherMenu.h
+// SIMULATED DRIVING ASSISTANCE CHANGE: included ResearcherMenu.h, DataSelectionMenu.h
 #include "ResearcherMenu.h"
 #include "DataSelectionMenu.h"
 
@@ -100,7 +100,7 @@ bool LegacyMenu::backLoad()
     if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
         return false;
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu and the Researcher menu
+    // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
     ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
 
     // Pre-load race managers, drivers, tracks, cars stuff.
@@ -117,8 +117,8 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE : added intervention menu
-/// @brief activates the InterventionMenu
+// SIMULATED DRIVING ASSISTANCE CHANGE : added researcher menu
+/// @brief activates the ResearcherMenu
 /// @return true if successful
 bool LegacyMenu::ActivateResearcherMenu()
 {
@@ -235,7 +235,7 @@ void LegacyMenu::activateLoadingScreen()
 	else
         snprintf(pszTitle, sizeof (pszTitle), "%s", pReInfo->_reName);
 
-	::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.jpg");
+	::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.png");
 }
 
 void LegacyMenu::addLoadingMessage(const char* pszText)

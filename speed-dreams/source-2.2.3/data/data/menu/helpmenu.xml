@@ -102,15 +102,15 @@
 
 	<section name="2">
 		<attstr name="type" val="background image"/>
-		<attstr name="image" val="data/img/splash-help.jpg"/>
+		<attstr name="image" val="data/img/main-menu-2.png"/>
 	</section>    
 
 	<section name="3">
 		<attstr name="type" val="static image"/>
-		<attnum name="x" val="212"/>
+		<attnum name="x" val="-30"/>
 		<attnum name="y" val="400"/>
-		<attnum name="width" val="450"/>
-		<attnum name="height" val="20"/>
+		<attnum name="width" val="1050"/>
+		<attnum name="height" val="35"/>
 		<attstr name="image" val="data/img/head-help.png"/>
 	</section>
   </section>

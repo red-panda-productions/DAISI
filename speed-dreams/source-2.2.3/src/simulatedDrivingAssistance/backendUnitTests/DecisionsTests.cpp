@@ -4,144 +4,199 @@
 #include "Mediator.h"
 #include "Mediator.inl"
 #include "mocks/DecisionMakerMock.h"
-#include "../rppUtils/Random.hpp"
-#include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include <config.h>
 
-/// @brief Initialize SMediator with a car which values are set to 0
-void InitializeMediator()
+#define SETUP_DECISION_TEST                                                               \
+    void SetUp() override                                                                 \
+    {                                                                                     \
+        GfInit(false);                                                                    \
+        GfSetDataDir(SD_DATADIR_SRC);                                                     \
+        SetupSingletonsFolder();                                                          \
+                                                                                          \
+        m_car = new tCarElt;                                                              \
+        m_car->ctrl.brakeCmd = 0;                                                         \
+        m_car->ctrl.accelCmd = 0;                                                         \
+        m_car->ctrl.steer = 0;                                                            \
+                                                                                          \
+        CarController carController;                                                      \
+        carController.SetCar(m_car);                                                      \
+                                                                                          \
+        carController.SetBrakeCmd(0);                                                     \
+        carController.SetAccelCmd(0);                                                     \
+        carController.SetSteerCmd(0);                                                     \
+                                                                                          \
+        SMediator::GetInstance()->CarController = carController;                          \
+                                                                                          \
+        /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/ \
+        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);    \
+    }
+
+#define TEARDOWN_DECISION_TEST \
+    void TearDown() override   \
+    {                          \
+        delete m_car;          \
+    }
+
+// testing fixture for decision tests
+class DecisionTest : public ::testing::TestWithParam<float>
 {
-    GfInit();
-    GfSetDataDir(SD_DATADIR_SRC);
-    SetupSingletonsFolder();
+private:
+    tCarElt* m_car;
 
-    tCarElt car;
-    car.ctrl.brakeCmd = 0;
-    car.ctrl.accelCmd = 0;
-    car.ctrl.steer = 0;
+public:
+    /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
+    SETUP_DECISION_TEST
 
-    CarController carController;
-    carController.SetCar(&car);
+    /// @brief deletes the car from the heap at the end of a test
+    TEARDOWN_DECISION_TEST
+};
 
-    carController.SetBrakeCmd(0);
-    carController.SetAccelCmd(0);
-    carController.SetSteerCmd(0);
-
-    SMediator::GetInstance()->CarController = carController;
-}
-
-/// @brief Tests if all decisions do their RunInterveneCommand correctly
-TEST(DecisionsTest, RunInterveneDecisions)
+// testing fixture for decision tests
+class DecisionTestCombinatorial : public ::testing::TestWithParam<std::tuple<bool, bool, bool>>
 {
-    InitializeMediator();
+private:
+    tCarElt* m_car;
+
+public:
+    /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
+    SETUP_DECISION_TEST
+
+    /// @brief deletes the car from the heap at the end of a test
+    TEARDOWN_DECISION_TEST
+};
+
+/// @brief Tests if all decisions to their RunInterveneCommand correctly
+TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
+{
+    tAllowedActions allowedActions;
+    allowedActions.Accelerate = std::get<0>(GetParam());
+    allowedActions.Brake = std::get<1>(GetParam());
+    allowedActions.Steer = std::get<2>(GetParam());
 
     Random random;
-
     BrakeDecision brakeDecision;
-    float controlBrakeAmount = random.NextFloat(BRAKE_THRESHOLD, BRAKE_THRESHOLD + 10);
+
+    float controlBrakeAmount = random.NextFloat(STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_BRAKE + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
-    brakeDecision.RunInterveneCommands();
+    // Determine what the brake amount should be after running
+    float targetBrakeAmount = allowedActions.Brake ? controlBrakeAmount : SMediator::GetInstance()->CarController.GetBrakeCmd();
 
     std::cout << "Testing brake...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    brakeDecision.RunInterveneCommands(allowedActions);
+    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     AccelDecision accelDecision;
-    float controlAccelAmount = random.NextFloat();
+    float controlAccelAmount = random.NextFloat(STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_ACCEL + 10);
     accelDecision.AccelAmount = controlAccelAmount;
-    accelDecision.RunInterveneCommands();
+    // Determine what the accel amount should be after running
+    float targetAccelAmount = allowedActions.Accelerate ? controlAccelAmount : SMediator::GetInstance()->CarController.GetAccelCmd();
 
     std::cout << "Testing accel...";
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    accelDecision.RunInterveneCommands(allowedActions);
+    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     SteerDecision steerDecision;
-    float controlSteerAmount = random.NextFloat(SDA_STEERING_THRESHOLD, SDA_STEERING_THRESHOLD + 10);
+    float controlSteerAmount = random.NextFloat(STANDARD_THRESHOLD_STEER, STANDARD_THRESHOLD_STEER + 10);
     steerDecision.SteerAmount = controlSteerAmount;
-    steerDecision.RunInterveneCommands();
+    // Determine what the steer amount should be after running
+    float targetSteerAmount = allowedActions.Steer ? controlSteerAmount : SMediator::GetInstance()->CarController.GetSteerCmd();
 
     std::cout << "Testing steer...";
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    steerDecision.RunInterveneCommands(allowedActions);
+    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     std::cout << "Checking if no value was changed that should not have been changed...";
-    ASSERT_ALMOST_EQ(controlBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(controlAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(controlSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
     std::cout << " check" << std::endl;
 }
 
-/// @brief Checks if the brake decision RunIndicateCommand works correctly
-TEST(DecisionTests, BrakeRunIndicateTest)
-{
-    InitializeMediator();
+/// @brief Checks RunInterveneDecisions for all possible permutation
+INSTANTIATE_TEST_SUITE_P(RunInterveneDecisions, DecisionTestCombinatorial,
+                         ::testing::Combine(::testing::Values(true, false),
+                                            ::testing::Values(true, false),
+                                            ::testing::Values(true, false)));
 
+/// @brief Checks if the brake decision RunIndicateCommand works correctly
+TEST_P(DecisionTest, BrakeRunIndicateTest)
+{
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     BrakeDecision brakeDecision;
-    brakeDecision.BrakeAmount = 1;
+    brakeDecision.BrakeAmount = GetParam();
     brakeDecision.RunIndicateCommands();
 
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-    // if the break amount is above the BRAKE_THRESHOLD defined in BrakeDecision.cpp, INTERVENTION_ACTION_BRAKE indicator should be active
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
-
-    brakeDecision.BrakeAmount = 0;
-    brakeDecision.RunIndicateCommands();
-
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
-
-    // if the break amount is below the BRAKE_THRESHOLD defined in BrakeDecision.cpp, no indicator should have been changed
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+    // if the break amount is above the STANDARD_THRESHOLD_BRAKE, INTERVENTION_ACTION_BRAKE indicator should be active
+    if (brakeDecision.BrakeAmount >= STANDARD_THRESHOLD_BRAKE)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+    }
+    // TODO: else
 }
+INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
-TEST(DecisionsTest, SteerRunIndicateTests)
+TEST_P(DecisionTest, SteerRunIndicateTests)
 {
-    InitializeMediator();
-
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     SteerDecision steerDecision;
-    steerDecision.SteerAmount = -1;
+    steerDecision.SteerAmount = GetParam();
     steerDecision.RunIndicateCommands();
 
     // TODO: Update to have multiple indicators when indicator code is updated
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
-
-    steerDecision.SteerAmount = 1;
-    steerDecision.RunIndicateCommands();
-
-    activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
-
-    ASSERT_EQ(activeIndicators.size(), 1);
-    ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
+    // if the steer amount is above the STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_LEFT indicator should be active
+    if (steerDecision.SteerAmount >= STANDARD_THRESHOLD_STEER)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
+    }
+    // if the steer amount is below the -STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_RIGHT indicator should be active
+    else if (steerDecision.SteerAmount <= -STANDARD_THRESHOLD_STEER)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
+    }
+    // TODO: else
 }
+INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -2, -1, 0, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
-TEST(DecisionsTest, AccelRunIndicateTests)
+TEST_P(DecisionTest, AccelRunIndicateTests)
 {
-    IndicatorConfig::ClearInstance();
-    InitializeMediator();
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     AccelDecision accelDecision;
-    accelDecision.AccelAmount = 1;
+    accelDecision.AccelAmount = GetParam();
     accelDecision.RunIndicateCommands();
 
-    // TODO: Ensure this works when it gets implemented
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
-    ASSERT_EQ(activeIndicators.size(), 0);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+
+    // if the accelerate amount is above the STANDARD_THRESHOLD_ACCEL, INTERVENTION_ACTION_ACCELERATE indicator should be active
+    if (accelDecision.AccelAmount >= STANDARD_THRESHOLD_ACCEL)
+    {
+        ASSERT_EQ(activeIndicators.size(), 1);
+        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+    }
+    // TODO: else
 }
+INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));

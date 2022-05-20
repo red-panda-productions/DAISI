@@ -65,11 +65,11 @@
 		<attstr name="pushed image" val="data/img/button-left-pushed.png"/>    
 	</section>
 
-	<section name="ConfigurePlayersButton">
+	<section name="ControlsButton">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Players"/>
-		<attstr name="tip" val="Configure players and their controls"/>
+		<attstr name="text" val="Controls"/>
+		<attstr name="tip" val="Configure controls"/>
 		<attnum name="x" val="140"/>
 		<attnum name="y" val="44"/>
 		<attnum name="width" val="100"/>

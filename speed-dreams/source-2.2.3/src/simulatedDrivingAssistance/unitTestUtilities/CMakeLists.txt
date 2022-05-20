@@ -2,6 +2,17 @@ INCLUDE(../../../cmake/macros.cmake)
 
 project(unitTestUtilities)
 
+ADD_INTERFACE_INCLUDEDIR()
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend)
+
+IF(OPTION_SDL2)
+    ADD_SDL2_INCLUDEDIR()
+ELSE(OPTION_SDL2)
+    ADD_SDL_INCLUDEDIR()
+ENDIF(OPTION_SDL2)
+
+ADD_PLIB_INCLUDEDIR()
+
 set(INSTALL_GTEST OFF)
 
 include(FetchContent)
@@ -14,14 +25,20 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 SET(_SOURCES PairWiseTestGenerator.cpp 
-			 VariableStore.cpp)
+			 VariableStore.cpp
+             ComparerUtils.cpp
+             GeneratorUtils.cpp
+             )
 
 SET(_INLINES PairWiseTestGenerator.inl)
 
 SET(_HEADERS TestUtils.h
 			 ../rppUtils/Random.hpp
 			 PairWiseTestGenerator.h
-			 VariableStore.h)
+			 VariableStore.h
+			 ComparerUtils.h
+			 GeneratorUtils.h
+             )
 
 SD_ADD_LIBRARY(unitTestUtilities STATIC ${_INLINES} ${_SOURCES} ${_HEADERS} )
 SET_TARGET_PROPERTIES(unitTestUtilities PROPERTIES LINKER_LANGUAGE CXX)

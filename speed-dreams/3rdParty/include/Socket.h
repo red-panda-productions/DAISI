@@ -20,10 +20,11 @@
 #define IPCLIB_WARNING(p_message) \
     std::cerr << p_message << std::endl;
 
-#define WSA_ERROR           -1
-#define IPCLIB_SERVER_ERROR 1
-#define IPCLIB_CLIENT_ERROR 2
-#define IPCLIB_SUCCEED      0
+#define WSA_ERROR                      -1
+#define IPCLIB_SUCCEED                 0
+#define IPCLIB_SERVER_ERROR            1
+#define IPCLIB_RECEIVE_ERROR           2
+#define IPCLIB_CLOSED_CONNECTION_ERROR 3
 
 /// @brief A worker thread that can be commanded to receive data
 class IPCLIB_EXPORT ReceivingThread
@@ -32,6 +33,10 @@ public:
     explicit ReceivingThread(const std::function<void()>& p_receiveDataFunc);
 
     bool HasReceivedMessage() const;
+
+    bool StartedReceiving() const;
+
+    int GetErrorCode() const;
 
     void StartReceive();
 
@@ -46,7 +51,10 @@ private:
 
     bool m_stop = false;
     bool m_receiving = false;
+    bool m_startedReceiving = false;
     bool m_received = false;
+
+    int m_error = 0;
 
     std::function<void()>* m_receiveDataFunc = nullptr;
 
@@ -59,7 +67,7 @@ class IPCLIB_EXPORT Socket
 public:
     void ReceiveDataAsync();
 
-    void AwaitData(char* p_dataBuffer, int p_size);
+    int AwaitData(char* p_dataBuffer, int p_size);
 
     bool GetData(char* p_dataBuffer, int p_size);
 

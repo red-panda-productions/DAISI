@@ -1,11 +1,12 @@
 #pragma once
 
-/// @brief The different tasks that can be performed
-typedef unsigned int Task;
-
-// TODO: remove no-task
-#define TASK_LANE_KEEPING  0
-#define TASK_SPEED_CONTROL 1
+/// @brief The different actions that a black box can take
+typedef struct AllowedActions
+{
+    bool Steer;
+    bool Accelerate;
+    bool Brake;
+} tAllowedActions;
 
 /// @brief The different ways a user can be indicated about an intervention
 typedef struct Indicator
@@ -24,6 +25,8 @@ typedef unsigned int InterventionType;
 #define INTERVENTION_TYPE_SHARED_CONTROL    2
 #define INTERVENTION_TYPE_COMPLETE_TAKEOVER 3
 
+#define NUM_INTERVENTION_TYPES 4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
@@ -31,8 +34,9 @@ typedef unsigned int InterventionAction;
 #define INTERVENTION_ACTION_TURN_LEFT  1
 #define INTERVENTION_ACTION_TURN_RIGHT 2
 #define INTERVENTION_ACTION_BRAKE      3
+#define INTERVENTION_ACTION_ACCELERATE 4
 
-#define NUM_INTERVENTION_ACTION 4
+#define NUM_INTERVENTION_ACTION 5
 
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl
@@ -42,8 +46,6 @@ typedef struct ParticipantControl
     bool ControlSteering;
 
     bool ForceFeedback;
-    bool RecordSession;
-    bool BBRecordSession;
 } tParticipantControl;
 
 /// @brief The different types of black boxes
@@ -57,6 +59,12 @@ typedef unsigned int DataStorageType;
 #define DATA_STORAGE_TYPE_SOCKET 0
 #define DATA_STORAGE_TYPE_SQL    1
 
+/// @brief The different types of sync between simulation and black box
+typedef unsigned int SyncType;
+
+#define SYNC_SYNCHRONOUS  0
+#define SYNC_ASYNCHRONOUS 1
+
 /// @brief The different types of data that can be stored
 typedef struct DataToStore
 {
@@ -66,3 +74,15 @@ typedef struct DataToStore
     bool InterventionData;
     bool MetaData;
 } tDataToStore;
+
+/// @brief The threshold amounts for decisions. floats are values between 0 and 1.
+typedef struct DecisionThresholds
+{
+    float Accel;
+    float Brake;
+    float Steer;
+} tDecisionThresholds;
+
+#define STANDARD_THRESHOLD_ACCEL 0.9f
+#define STANDARD_THRESHOLD_BRAKE 0.9f
+#define STANDARD_THRESHOLD_STEER 0.04f

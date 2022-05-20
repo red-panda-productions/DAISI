@@ -23,6 +23,8 @@
 
 #include "exitmenu.h"
 #include "mainmenu.h"
+#include "ConfigEnums.h"
+#include "EndExperimentMenu.h"
 
 
 static void *MenuHandle = NULL;
@@ -51,7 +53,8 @@ onAcceptExit(void * /* dummy */)
  *	
  */
 
-void* ExitMenuInit(void *prevMenu)
+// SIMULATED DRIVING ASSISTANCE: added functionality to load the End Experiment menu screen
+void* ExitMenuInit(void* prevMenu, bool p_raceExit)
 {
     if (MenuHandle) {
 		GfuiScreenRelease(MenuHandle);
@@ -60,9 +63,17 @@ void* ExitMenuInit(void *prevMenu)
     MenuHandle = GfuiScreenCreate();
 
     void *param = GfuiMenuLoad("exitmenu.xml");
-
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
+
+    // SIMULATED DRIVING ASSISTANCE: Looks where the exit game gets called and change the button functionality based on it.
+    if (p_raceExit)
+    {
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(), GfuiScreenActivate);
+    }
+    else
+    {
+        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
+    }
     GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);

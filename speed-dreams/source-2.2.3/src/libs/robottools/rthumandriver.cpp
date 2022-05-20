@@ -58,6 +58,7 @@
 #include <robot.h>
 #include <playerpref.h>
 #include <car.h>
+#include "Mediator.h"
 
 
 #include "humandriver.h"
@@ -67,6 +68,9 @@
 extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 #endif
+
+// SIMULATED DRIVING ASSISTANCE: include mediator
+#include "Mediator.h"
 
 typedef enum { eTransAuto, eTransSeq, eTransGrid, eTransHbox } eTransmission;
 
@@ -165,6 +169,8 @@ static std::vector<tHumanContext*> HCtx;
 static bool speedLimiter = false;
 static tdble speedLimit;
 
+// SIMULATED DRIVING ASSISTANCE: store the last intervention type for toggling on/off
+InterventionType m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
 
 typedef struct
 {
@@ -241,8 +247,10 @@ static const tControlCmd CmdControlRef[] = {
     {HM_ATT_DASHB_NEXT ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_NEXT_MIN, 0.0, 0.0, HM_ATT_DASHB_NEXT_MAX, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_PREV ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_PREV_MIN, 0.0, 0.0, HM_ATT_DASHB_PREV_MAX, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_INC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_INC_MIN,  0.0, 0.0, HM_ATT_DASHB_INC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
-    {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0}
-};
+    {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
+
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off
+    {HM_ATT_INTERV_TGGLE, GFCTRL_TYPE_NOT_AFFECTED, -1, nullptr, 0.0, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0}};
 
 static const int NbCmdControl = sizeof(CmdControlRef) / sizeof(CmdControlRef[0]);
 
@@ -602,9 +610,16 @@ void HumanDriver::init_track(int index,
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: Save car when a race starts
+    // SIMULATED DRIVING ASSISTANCE: Save initial run settings
     if (m_recorder) {
-        m_recorder->WriteCar(car);
+        auto mediator = SMediator::GetInstance();
+        tIndicator indicatorSettings = mediator->GetIndicatorSettings();
+        InterventionType interventionType = mediator->GetInterventionType();
+        tParticipantControl participantControlSettings = mediator->GetPControlSettings();
+        int maxTime = mediator->GetMaxTime();
+        tAllowedActions allowedActions = mediator->GetAllowedActions();
+
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, maxTime, allowedActions);
     }
     const int idx = index - 1;
 
@@ -1690,6 +1705,18 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }//if speedLimiter
 
 
+    // SIMULATED DRIVING ASSISTANCE: toggle intervention on/off
+    tControlCmd input = cmd[CMD_INTERV_TGGLE];
+    if ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
+        || (input.type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[input.val]) 
+        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1))
+    {
+        InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+        SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
+        m_prevIntervention = currentType;
+    }
+
+
 #ifndef WIN32
 #ifdef TELEMETRY
     if ((car->_laps > 1) && (car->_laps < 5)) {
@@ -1962,6 +1989,31 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
  */
 void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
 {
+    // SIMULATED DRIVING ASSISTANCE: added recording of simulation data
+    if(m_recorder) {
+        float params[SIMULATION_RECORD_PARAM_AMOUNT] = {
+            car->pub.DynGCg.pos.x,
+            car->pub.DynGCg.pos.y,
+            car->pub.DynGCg.pos.z,
+            car->pub.DynGCg.vel.x,
+            car->pub.DynGCg.vel.y,
+            car->pub.DynGCg.vel.z,
+            car->pub.DynGCg.acc.x,
+            car->pub.DynGCg.acc.y,
+            car->pub.DynGCg.acc.z,
+            car->pub.DynGC.pos.x,
+            car->pub.DynGC.pos.y,
+            car->pub.DynGC.pos.z,
+            car->pub.DynGC.vel.x,
+            car->pub.DynGC.vel.y,
+            car->pub.DynGC.vel.z,
+            car->pub.DynGC.acc.x,
+            car->pub.DynGC.acc.y,
+            car->pub.DynGC.acc.z,
+        };
+        m_recorder->WriteSimulationData(params,s->currentTime, false);
+    }
+
     const int idx = index - 1;
 
     tControlCmd *cmd = HCtx[idx]->cmdControl;

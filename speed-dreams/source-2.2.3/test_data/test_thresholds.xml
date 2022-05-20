@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE params SYSTEM "params.dtd">
+
+
+<params name="Threshhold">
+  <section name="Threshold Settings">
+    <attnum name="Accel" unit="%" val="0.194270"/>
+    <attnum name="Brake" unit="%" val="0.488600"/>
+    <attnum name="Steer" unit="%" val="0.039090"/>
+  </section>
+
+</params>

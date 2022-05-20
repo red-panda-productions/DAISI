@@ -1,9 +1,11 @@
 #include <ostream>
 #include "FileDataStorage.h"
+#include <map>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 
 #include <experimental/filesystem>
+#include <iostream>
 
 // Write a string to the stream, as the string in text format (without conversion)
 #define WRITE_STRING(stream, string) stream << string << "\n"
@@ -52,12 +54,20 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
 {
     // Create file directory if not yet exists
     std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
-    filePath.append(p_fileName);
+    filePath.append(p_fileName.c_str());
     create_directories(filePath.parent_path());
 
     // Initialize member variables
     m_saveSettings = p_saveSettings;
     m_outputStream.open(filePath);
+    m_totalPosX = 0;
+    m_totalPosY = 0;
+    m_totalPosZ = 0;
+    m_totalPosAx = 0;
+    m_totalPosAy = 0;
+    m_totalPosAz = 0;
+    m_totalMovVelX = 0;
+    m_totalMovAccX = 0;
 
     // User and trial data
     WRITE_STRING(m_outputStream, p_userId);
@@ -86,6 +96,18 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     return {filePath};
 }
 
+/// @brief Sets the compression rate of the file data storage
+void FileDataStorage::SetCompressionRate(int p_compressionRate)
+{
+    m_compressionRate = p_compressionRate;
+}
+
+/// @brief Gets the compression rate of the file data storage
+int FileDataStorage::GetCompressionRate() const
+{
+    return m_compressionRate;
+}
+
 /// @brief Shutdown the file data storage.
 /// End result: any possible final data is written and the file is released.
 void FileDataStorage::Shutdown()
@@ -98,64 +120,291 @@ void FileDataStorage::Shutdown()
 /// @param p_car Current car status in Speed Dreams
 /// @param p_situation Current situation in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
 {
-    WRITE_VAR(m_outputStream, p_timestamp);
-    if (m_saveSettings.EnvironmentData)
+    // save all values from this time step
+    if (m_saveSettings.CarData)
     {
-        Posd pos = p_car->pub.DynGCg.pos;
-        tDynPt mov = p_car->pub.DynGC;
-        WRITE_VAR(m_outputStream, pos.x);             // x-position
-        WRITE_VAR(m_outputStream, pos.y);             // y-position
-        WRITE_VAR(m_outputStream, pos.z);             // z-position
-        WRITE_VAR(m_outputStream, pos.ax);            // x-direction
-        WRITE_VAR(m_outputStream, pos.ay);            // y-direction
-        WRITE_VAR(m_outputStream, pos.az);            // z-direction
-        WRITE_VAR(m_outputStream, mov.vel.x);         // speed
-        WRITE_VAR(m_outputStream, mov.acc.x);         // acceleration
-        WRITE_VAR(m_outputStream, p_car->priv.gear);  // gear
+        SaveCarData(p_car);
     }
     if (m_saveSettings.HumanData)
     {
-        tCarCtrl ctrl = p_car->ctrl;
-        WRITE_VAR(m_outputStream, ctrl.steer);      // steer
-        WRITE_VAR(m_outputStream, ctrl.brakeCmd);   // brake
-        WRITE_VAR(m_outputStream, ctrl.accelCmd);   // gas
-        WRITE_VAR(m_outputStream, ctrl.clutchCmd);  // clutch
+        SaveHumanData(p_car);
     }
+
+    if (m_saveSettings.InterventionData)
+    {
+        SaveInterventionData(p_decisions);
+    }
+
+    m_compressionStep++;
+
+    if (m_compressionStep != m_compressionRate) return;
+
+    // save to the file at the end of the compression time step
+    WRITE_VAR(m_outputStream, p_timestamp);
+    if (m_saveSettings.CarData)
+    {
+        WriteCarData();
+    }
+    if (m_saveSettings.HumanData)
+    {
+        WriteHumanData();
+    }
+    if (m_saveSettings.InterventionData)
+    {
+        WriteInterventionData();
+    }
+    m_compressionStep = 0;
 }
 
-/// @brief Save all decisions that were taken this tick
-/// @param p_decisions Tuple of decisions taken this tick
-void FileDataStorage::SaveDecisions(DecisionTuple& p_decisions)
+/// @brief Saves the car data from the last time step
+void FileDataStorage::SaveCarData(tCarElt* p_car)
 {
-    if (!m_saveSettings.InterventionData) return;
+    Posd pos = p_car->pub.DynGCg.pos;
+    tDynPt mov = p_car->pub.DynGC;
+    AddForAveraging(m_totalPosX, pos.x);                                 // x-position
+    AddForAveraging(m_totalPosY, pos.y);                                 // y-position
+    AddForAveraging(m_totalPosZ, pos.z);                                 // z-position
+    AddForAveraging(m_totalPosAx, pos.ax);                               // x-direction
+    AddForAveraging(m_totalPosAy, pos.ay);                               // y-direction
+    AddForAveraging(m_totalPosAz, pos.az);                               // z-direction
+    AddForAveraging(m_totalMovVelX, mov.vel.x);                          // speed
+    AddForAveraging(m_totalMovAccX, mov.acc.x);                          // acceleration
+    AddToArray<int>(m_gearValues, p_car->priv.gear, m_compressionStep);  // gear
+}
 
-    WRITE_STRING(m_outputStream, "Decisions");
-    if (p_decisions.ContainsSteer())
+/// @brief Saves the human data from the last time step
+void FileDataStorage::SaveHumanData(tCarElt* p_car)
+{
+    tCarCtrl ctrl = p_car->ctrl;
+    AddToArray<float>(m_steerValues, ctrl.steer, m_compressionStep);
+    AddToArray<float>(m_brakeValues, ctrl.brakeCmd, m_compressionStep);
+    AddToArray<float>(m_accelValues, ctrl.accelCmd, m_compressionStep);
+    AddToArray<float>(m_clutchValues, ctrl.clutchCmd, m_compressionStep);
+}
+
+/// @brief Saves the intervention data from the last time step
+void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
+{
+    SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteer(), m_steerDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrake(), m_brakeDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsAccel(), p_decisions.GetAccel(), m_accelDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsGear(), p_decisions.GetGear(), m_gearDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsLights(), static_cast<int>(p_decisions.GetLights()), m_lightDecision, m_compressionStep);
+}
+
+/// @brief Saves the decision data from the last time step
+/// @param p_decisionMade boolean that determines whether a decision is made
+/// @param p_value the value of the decision
+/// @param p_values array of values from previous decisions
+/// @param p_compressionStep the current step the program is in
+template <typename TNumber>
+void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep)
+{
+    if (p_decisionMade)
     {
-        WRITE_STRING(m_outputStream, "SteerDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetSteer());
+        AddToArray<TNumber>(p_values, p_value, p_compressionStep);
+        return;
     }
-    if (p_decisions.ContainsBrake())
+    AddToArray<TNumber>(p_values, -1, p_compressionStep);
+}
+
+/// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
+void FileDataStorage::WriteCarData()
+{
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-rotation
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-rotation
+    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-rotation
+    WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
+    WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
+    WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+}
+
+/// @brief Writes the human data from the last m_compressionRate time steps to the buffer file
+void FileDataStorage::WriteHumanData()
+{
+    WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
+    WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
+    WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
+    WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+}
+
+/// @brief Writes the intervention data from the last m_compressionRate time steps to the buffer file
+void FileDataStorage::WriteInterventionData()
+{
+    bool decisionMade = false;
+    WriteDecision(GetMedian(m_steerDecision), "SteerDecision", decisionMade);
+    WriteDecision(GetMedian(m_brakeDecision), "BrakeDecision", decisionMade);
+    WriteDecision(GetMedian(m_accelDecision), "AccelDecision", decisionMade);
+    WriteDecision(GetLeastCommon(m_gearDecision), "GearDecision", decisionMade);
+    WriteDecision(GetLeastCommon(m_lightDecision), "LightsDecision", decisionMade);
+
+    if (!decisionMade)
     {
-        WRITE_STRING(m_outputStream, "BrakeDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetBrake());
-    }
-    if (p_decisions.ContainsAccel())
-    {
-        WRITE_STRING(m_outputStream, "AccelDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetAccel());
-    }
-    if (p_decisions.ContainsGear())
-    {
-        WRITE_STRING(m_outputStream, "GearDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetGear());
-    }
-    if (p_decisions.ContainsLights())
-    {
-        WRITE_STRING(m_outputStream, "LightsDecision");
-        WRITE_VAR(m_outputStream, p_decisions.GetLights());
+        WRITE_STRING(m_outputStream, "Decisions");
     }
     WRITE_STRING(m_outputStream, "NONE");
+}
+
+/// @brief Writes the p_decisionType data from the last m_compressionRate time steps to the buffer file
+/// @param p_decision the value of the p_decisionType of the last time m_comrpessionRate time steps
+/// @param p_decisionType the current decision type
+/// @param p_decisionMade if there has already been a decision made
+template <typename TNumber>
+void FileDataStorage::WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade)
+{
+    if (p_decision == -1) return;
+
+    if (!p_decisionMade)
+    {
+        p_decisionMade = true;
+        WRITE_STRING(m_outputStream, "Decisions");
+    }
+
+    WRITE_STRING(m_outputStream, p_decisionType);
+    WRITE_VAR(m_outputStream, p_decision);
+}
+
+/// @brief Add the new value to the total of the current time steps
+/// @param p_total The current total of the variable
+/// @param p_value The new value of this timestep for the variable
+void FileDataStorage::AddForAveraging(float& p_total, float p_value)
+{
+    p_total += p_value;
+}
+
+/// @brief Calculates the average of the past time steps for a variable and resets it
+/// @param p_total The current total of the variable
+/// @return The average of the past time steps for a variable
+float FileDataStorage::GetAverage(float& p_total) const
+{
+    float average = p_total / static_cast<float>(m_compressionRate);
+    p_total = 0;
+    return average;
+}
+
+/// @brief Add the new value to the array in the correct compression step
+/// @param p_values Array with values from the current compression step
+/// @param p_value The new value of this time step for the variable
+/// @param p_compressionStep The current compression step
+template <typename TNumber>
+void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, int p_compressionStep) const
+{
+    p_values[p_compressionStep] = p_value;
+}
+
+/// @brief Get the median of the current compression step using Randomized QuickSelect
+/// @param p_values Array with values from the current compression step
+/// @return The median of the past time steps for a variable
+float FileDataStorage::GetMedian(float* p_values)
+{
+    float startPartition = -1, median = -1;
+    GetMedianUtil(p_values, 0, m_compressionRate - 1, static_cast<int>(m_compressionRate / 2), startPartition, median);
+    return median;
+}
+
+/// @brief Utility function to recursively get the median
+/// @param p_values Array with values from the current compression step
+/// @param p_start start of the current section of the array
+/// @param p_end end of the current section of the array
+/// @param p_middle middle of the current section of the array
+/// @param p_a number before the median of p_values
+/// @param p_b median of p_values
+void FileDataStorage::GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_startPartition, float& p_endPartition)
+{
+    if (p_start > p_end) return;
+
+    int partitionIndex = RandomPartition(p_values, p_start, p_end);
+
+    if (partitionIndex == p_middle)
+    {
+        p_endPartition = p_values[partitionIndex];
+        if (p_startPartition != -1) return;
+    }
+    else if (partitionIndex == p_middle - 1)
+    {
+        p_startPartition = p_values[partitionIndex];
+        if (p_endPartition != -1) return;
+    }
+
+    if (partitionIndex >= p_middle)
+    {
+        GetMedianUtil(p_values, p_start, partitionIndex - 1, p_middle, p_startPartition, p_endPartition);
+        return;
+    }
+    GetMedianUtil(p_values, partitionIndex + 1, p_end, p_middle, p_startPartition, p_endPartition);
+}
+
+/// @brief partitions p_values around a randomly picked element
+/// @param p_values Array with values from the current compression step
+/// @param p_start start of the partition
+/// @param p_end end of the partition
+int FileDataStorage::RandomPartition(float* p_values, int p_start, int p_end)
+{
+    int pivot = m_random.NextInt(p_start, p_end + 1);
+    std::swap(p_values[pivot], p_values[p_end]);
+    return Partition(p_values, p_start, p_end);
+}
+
+/// @brief returns the correct position of the pivot element
+/// @param p_values Array with values from the current compression step
+/// @param p_start start of the partition
+/// @param p_end end of the partition
+int FileDataStorage::Partition(float* p_values, int p_start, int p_end)
+{
+    float lastValue = p_values[p_end];
+    int i = p_start, j = p_start;
+    while (j < p_end)
+    {
+        if (p_values[j] < lastValue)
+        {
+            std::swap(p_values[i], p_values[j]);
+            i++;
+        }
+        j++;
+    }
+    std::swap(p_values[i], p_values[j]);
+    return i;
+}
+
+/// @brief Get the least common value of the current compression step
+/// @param p_values Array with values from the current compression step
+/// @return The least common in an array for a variable
+int FileDataStorage::GetLeastCommon(int* p_values) const
+{
+    std::map<int, int> frequencies;
+
+    // list of all values in p_values
+    int valuesList[COMPRESSION_LIMIT];
+    int valueCount = 0;
+
+    // create a map from values in p_values to the corresponding frequencies
+    for (int i = 0; i < m_compressionRate; i++)
+    {
+        if (frequencies[p_values[i]])
+        {
+            frequencies[p_values[i]]++;
+            continue;
+        }
+        frequencies[p_values[i]] = 1;
+        valuesList[valueCount] = p_values[i];
+        valueCount++;
+    }
+
+    int leastCommon;
+    int minCount = m_compressionRate + 1;
+
+    // find the value with the lowest frequency
+    for (int i = 0; i < valueCount; i++)
+    {
+        if (frequencies[valuesList[i]] >= minCount) continue;
+        leastCommon = valuesList[i];
+        minCount = frequencies[valuesList[i]];
+    }
+
+    return leastCommon;
 }

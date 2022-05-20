@@ -20,7 +20,6 @@
 
 #include <isoundengine.h>
 
-#include <playerconfig.h>
 #include <controlconfig.h>
 
 #include "legacymenu.h"
@@ -124,49 +123,8 @@ rmRestartRaceHookInit()
 
     return pvRestartRaceHookHandle;
 }
-// Controls hook *******************************************************
-static void
-rmControlsHookActivate(void * /* dummy */)
-{
-#if 0
-    GfuiScreenActivate(PlayerConfigMenuInit(hscreen));
-#else
-    void *prHandle;
-    char buf[100];
-    const char *str;
-    tGearChangeMode gearChangeMode;
 
-    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
-    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-
-    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, curPlayerIdx);
-    str = GfParmGetStr(prHandle, buf, HM_ATT_TRANS, HM_VAL_AUTO);
-
-    if (!strcmp(str, HM_VAL_AUTO)) {
-        gearChangeMode = GEAR_MODE_AUTO;
-    } else if (!strcmp(str, HM_VAL_GRID)) {
-        gearChangeMode = GEAR_MODE_GRID;
-    } else if (!strcmp(str, HM_VAL_HBOX)) {
-        gearChangeMode = GEAR_MODE_HBOX;
-    } else {
-        gearChangeMode = GEAR_MODE_SEQ;
-    }
-
-    GfuiScreenActivate(ControlMenuInit(hscreen, prHandle, curPlayerIdx, gearChangeMode, 1));
-#endif
-}
-
-static void	*pvControlsHookHandle = 0;
-
-static void *
-rmControlsHookInit()
-{
-    if (!pvControlsHookHandle)
-        pvControlsHookHandle = GfuiHookCreate(0, rmControlsHookActivate);
-
-    return pvControlsHookHandle;
-}
-
+//SIMULATED DRIVING ASSISTANCE: removed controls settings
 #if SDL_FORCEFEEDBACK
 // ForceFeedbackConfig hook ********************************************
 static void
@@ -214,7 +172,7 @@ static void
 rmQuitHookActivate(void * /* dummy */)
 {
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true));
 }
 
 static void	*pvQuitHookHandle = 0;
@@ -298,10 +256,9 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                const char *buttonRole3 = 0, void *screen3 = 0,
                const char *buttonRole4 = 0, void *screen4 = 0,
                const char *buttonRole5 = 0, void *screen5 = 0,
-               const char *buttonRole6 = 0, void *screen6 = 0,
-               const char *buttonRole7 = 0, void *screen7 = 0)
+               const char *buttonRole6 = 0, void *screen6 = 0)
 {
-    const tButtonDesc aButtons[7] =
+    const tButtonDesc aButtons[6] =
     {
         { buttonRole1, screen1 },
         { buttonRole2, screen2 },
@@ -309,7 +266,6 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
         { buttonRole4, screen4 },
         { buttonRole5, screen5 },
         { buttonRole6, screen6 },
-        { buttonRole7, screen7 }
     };
 
     int nButtons = 2;
@@ -325,8 +281,6 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                 if (buttonRole6 && screen6)
                 {
                     nButtons++;
-                    if (buttonRole7 && screen7)
-                        nButtons++;
                 }
             }
         }
@@ -347,8 +301,8 @@ RmStopRaceMenu()
     void* params = LmRaceEngine().outData()->params;
     const char* pszRaceName = LmRaceEngine().outData()->_reRaceName;
 
-    const char *buttonRole[7];
-    void *screen[7];
+    const char *buttonRole[6];
+    void *screen[6];
     int i;
 
 #if 1
@@ -375,7 +329,7 @@ RmStopRaceMenu()
     if (LegacyMenu::self().soundEngine())
         LegacyMenu::self().soundEngine()->mute();
 
-    for(i=0; i < 7; i++) {
+    for(i=0; i < 6; i++) {
         buttonRole[i] = "";
         screen[i] = NULL;
     }
@@ -399,7 +353,6 @@ RmStopRaceMenu()
 
     buttonRole[i] = "abort";
     screen[i++] = rmAbortRaceHookInit();
-
 #if 1
     // get current driver
     j = (int)GfParmGetNum(grHandle, GR_SCT_DISPMODE, GR_ATT_CUR_SCREEN, NULL, 0.0);
@@ -419,8 +372,6 @@ RmStopRaceMenu()
             GfLogInfo("Matching human driver found, setting index to %d.\n", j+1);
             curPlayerIdx = j+1;
 
-            buttonRole[i] = "controls";
-            screen[i++] = rmControlsHookInit();
 
 #if SDL_FORCEFEEDBACK
             buttonRole[i] = "forcefeedback";
@@ -434,13 +385,13 @@ RmStopRaceMenu()
     buttonRole[i] = "quit";
     screen[i++] = rmQuitHookInit();
 
+    // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
                buttonRole[1], screen[1],
                buttonRole[2], screen[2],
                buttonRole[3], screen[3],
                buttonRole[4], screen[4],
-               buttonRole[5], screen[5],
-               buttonRole[6], screen[6]);
+               buttonRole[5], screen[5]);
 }
 
 void
@@ -457,9 +408,6 @@ RmStopRaceMenuShutdown()
 
     GfuiHookRelease(pvRestartRaceHookHandle);
     pvRestartRaceHookHandle = 0;
-
-    GfuiHookRelease(pvControlsHookHandle);
-    pvControlsHookHandle = 0;
 
     GfuiHookRelease(pvQuitHookHandle);
     pvQuitHookHandle = 0;

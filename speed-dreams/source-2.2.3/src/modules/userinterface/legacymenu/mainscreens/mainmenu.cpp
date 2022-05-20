@@ -20,27 +20,31 @@
 #include <tgfclient.h>
 
 #include <racescreens.h>
-#include <playerconfig.h>
+#include <controlconfig.h>
 
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
+<<<<<<< HEAD
 #include "BeginExperimentMenu.h"
+=======
+>>>>>>> main
 #include "ConfigEnums.h"
 
 static void *MenuHandle = 0;
 
-
+// SIMULATED DRIVING ASSISTANCE: renamed from onPlayerConfigMenuActivate
 static void
-onPlayerConfigMenuActivate(void * /* dummy */)
+onControlMenuActivate(void * /* dummy */)
 {
     /* Here, we need to call OptionOptionInit each time the firing button
        is pressed, and not only once at the Main menu initialization,
        because the previous menu has to be saved (ESC, Back) and because it can be this menu,
        as well as the Raceman menu */
-    GfuiScreenActivate(PlayerConfigMenuInit(MenuHandle));
+       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
+    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
 }
 
 static void
@@ -75,10 +79,11 @@ onCreditsMenuActivate(void * /* dummy */)
     CreditsMenuActivate(MenuHandle);
 }
 
+// SIMULATED DRIVING ASSISTANCE: added parameters
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle));
+    GfuiScreenActivate(ExitMenuInit(MenuHandle, false));
 }
 
 static void
@@ -120,10 +125,11 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "race", NULL, onRaceSelectMenuActivate);
+    // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
 	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onPlayerConfigMenuActivate);
+		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 

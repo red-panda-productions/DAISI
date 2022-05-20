@@ -24,46 +24,24 @@
 <params name="mainmenu">
 
 	<section name="dynamic controls">
-
-	<section name="race">
+    <!-- SIMULATED DRIVING ASSISTANCE: Changed section and button name from race to start -->
+    <section name="start">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Race"/>
+		<attstr name="text" val="Start"/>
 		<attstr name="tip" val="Setup and start a race, championship or career"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="290"/>
+		<attnum name="x" val="50"/>
+		<attnum name="y" val="330"/>
 		<attnum name="width" val="320"/>
 		<attstr name="h align" val="left"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
-	</section>
-
-	<section name="weekend">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Race Weekend"/>
-		<attstr name="tip" val="Race Weekend mode Career"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="258"/>
-		<attnum name="width" val="320"/>
-		<attstr name="h align" val="left"/>
-		<attstr name="font" val="big"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
-		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -72,20 +50,20 @@
 	<section name="configure">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
-		<attstr name="text" val="Players &amp; Controls"/>
-		<attstr name="tip" val="Create players and configure their controls"/>
+		<attstr name="text" val="Controls"/>
+		<attstr name="tip" val="configure controls"/>
 		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="258"/>
+		<attnum name="x" val="50"/>
+		<attnum name="y" val="275"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -97,17 +75,17 @@
 		<attstr name="text" val="Options"/>
 		<attstr name="tip" val="Options for graphics, sound and opponents"/>
 		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="226"/>
+		<attnum name="x" val="50"/>
+		<attnum name="y" val="220"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -117,19 +95,19 @@
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Credits"/>
-		<attstr name="h align" val="left"/>
+		<attstr name="h align" val="Left"/>
 		<attstr name="tip" val="All people behind Speed Dreams"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="194"/>
+		<attnum name="x" val="50"/>
+		<attnum name="y" val="165"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -141,17 +119,17 @@
 		<attstr name="text" val="Back"/>
 		<attstr name="h align" val="left"/>
 		<attstr name="tip" val="Go back to the data selection screen"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="162"/>
+		<attnum name="x" val="50"/>
+		<attnum name="y" val="110"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="31"/>
+		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
 		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
@@ -163,19 +141,20 @@
 		<attstr name="text" val="Quit"/>
 		<attstr name="tip" val="Quit Speed Dreams"/>
 		<attstr name="h align" val="left"/>
-		<attnum name="x" val="260"/>
-		<attnum name="y" val="130"/>
+		<attnum name="x" val="50"/>
+		<attnum name="y" val="55"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="focused color" val="0xFFFFFF"/>
 		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-48"/>
-		<attnum name="image y" val="0"/>
+		<attnum name="image x" val="-60"/>
+		<attnum name="image y" val="-15"/>
 		<attnum name="image width" val="320"/>
-		<attnum name="image height" val="33"/>
-		<attstr name="focused image" val="data/img/bg-button-big-focused-last.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-pushed-last.png"/>
+		<attnum name="image height" val="70"/>
+		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
+                <attstr name="enabled image" val="data/img/bg-button-big.png"/>
+		<attstr name="pushed image" val="data/img/bg-button-big-focused.png"/>
 	</section>
 
 	</section>
@@ -193,15 +172,15 @@
 
 	<section name="2">
 		<attstr name="type" val="background image"/>
-		<attstr name="image" val="data/img/splash-main.jpg"/>
+		<attstr name="image" val="data/img/Main-menu.png"/>
 	</section>
 
 	<section name="3">
 		<attstr name="type" val="static image"/>
-		<attnum name="x" val="212"/>
+		<attnum name="x" val="-30"/>
 		<attnum name="y" val="400"/>
-		<attnum name="width" val="450"/>
-		<attnum name="height" val="20"/>
+		<attnum name="width" val="1050"/>
+		<attnum name="height" val="35"/>
 		<attstr name="image" val="data/img/head-welcome.png"/>
 	</section>
 

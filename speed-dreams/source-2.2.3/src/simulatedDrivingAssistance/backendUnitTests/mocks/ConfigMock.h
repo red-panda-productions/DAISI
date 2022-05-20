@@ -1,15 +1,19 @@
 #pragma once
 #include "InterventionExecutorMock.h"
 #include "ConfigEnums.h"
+#include <cstring>
 
 class ConfigMock
 {
 private:
     InterventionType m_interventionType = 0;
     InterventionExecutorMock m_interventionExecutor = InterventionExecutorMock();
-    DataToStore m_dataToStore;
-    char* m_userID;
-    bool* m_indicators;
+    DataToStore m_dataToStore = {};
+    char* m_userID = nullptr;
+    bool* m_indicators = nullptr;
+    bool m_asyncConnection = false;
+    char m_blackBoxFilePath[256] = "";
+    bool m_replayRecorderOn = false;
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)
@@ -23,6 +27,11 @@ public:
         return m_interventionType;
     }
 
+    int GetCompressionRate()
+    {
+        return 1;
+    }
+
     void SetDataCollectionSettings(DataToStore p_dataToStore)
     {
         m_dataToStore = p_dataToStore;
@@ -33,7 +42,7 @@ public:
         return m_dataToStore;
     }
 
-    void SetTask(Task p_task)
+    void SetAllowedActions(tAllowedActions p_allowedActions)
     {
     }
 
@@ -63,5 +72,30 @@ public:
     char* GetUserId() const
     {
         return m_userID;
+    }
+
+    bool GetBlackBoxSyncOption() const
+    {
+        return m_asyncConnection;
+    }
+
+    void SetBlackBoxFilePath(const char* p_blackBoxFilePath)
+    {
+        strcpy_s(m_blackBoxFilePath, 256, p_blackBoxFilePath);
+    }
+
+    const char* GetBlackBoxFilePath()
+    {
+        return m_blackBoxFilePath;
+    }
+
+    void SetReplayRecorderSetting(bool p_replayRecorderOn)
+    {
+        m_replayRecorderOn = p_replayRecorderOn;
+    }
+
+    bool GetReplayRecorderSetting() const
+    {
+        return m_replayRecorderOn;
     }
 };
