@@ -1,2 +1,3 @@
 #pragma once
-extern void* EndExperimentInit();
+#include "ConfigEnums.h"
+extern void* EndExperimentInit(RaceEndType p_raceEndType);

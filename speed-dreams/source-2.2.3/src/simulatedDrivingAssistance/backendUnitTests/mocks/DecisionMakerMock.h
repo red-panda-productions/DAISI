@@ -48,7 +48,7 @@ public:
         Config.SetDataCollectionSettings(p_dataSetting);
     }
 
-    void RaceStop()
+    void RaceStop(bool p_saveToDatabase)
     {
         MStoppedRace = true;
     }
