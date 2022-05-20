@@ -309,7 +309,7 @@ Changed:
 
                     added   m_textures array
 
-                    added   DispIndicators()
+                    added   DispActiveIndicators()
                     added   DispIndicatorIcon();
                     added   DispIndicatorText();
                     added   LoadIndicatorTextures()
