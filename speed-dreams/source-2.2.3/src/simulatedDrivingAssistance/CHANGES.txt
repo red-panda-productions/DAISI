@@ -26,6 +26,8 @@ Added:
             ResearcherMenu.cpp
             DataSelectionMenu.h
             DataSelectionMenu.cpp
+            DataSettingsMenu.h
+            DataSettingsMenu.cpp
             DeveloperMenu.h
             DeveloperMenu.cpp
             EndExperimentMenu.cpp
