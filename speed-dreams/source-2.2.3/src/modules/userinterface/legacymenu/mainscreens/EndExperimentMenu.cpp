@@ -9,7 +9,8 @@
 
 static void* s_menuHandle = nullptr;
 
-/// @brief Loads the EndExperimentMenu.xml after the race results
+/// @brief               Loads the EndExperimentMenu.xml after the race results
+/// @param p_raceEndType Enum value that describes how you got to EndExperiment screen
 void* EndExperimentInit(RaceEndType p_raceEndType)
 {
     if (s_menuHandle)
