@@ -25,6 +25,7 @@
 #define AMOUNT_OF_NAMES              1
 
 static tDatabaseSettings s_dbSettings;
+static char s_portString[SETTINGS_NAME_LENGTH];
 
 typedef struct DbControlSettings
 {
@@ -32,7 +33,6 @@ typedef struct DbControlSettings
     int Password;
     int Address;
     int Port;
-    char* PortString;
     int Schema;
     int UseSSL;
     int CACertificateButton;
@@ -43,7 +43,7 @@ typedef struct DbControlSettings
     int PrivateCertificateLabel;
 } tDbControlSettings;
 
-void SaveDBSettingsToDisk(const char* p_portString);
+void SaveDBSettingsToDisk();
 
 void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control);
 

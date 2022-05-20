@@ -20,8 +20,6 @@ int m_portControl;
 int m_schemaControl;
 int m_useSSLControl;
 
-char m_portString[SETTINGS_NAME_LENGTH];
-
 int m_caCertFileDialogControl;
 int m_publicCertFileDialogControl;
 int m_privateCertFileDialogControl;
@@ -56,11 +54,11 @@ static void SetAddress(void*)
 /// @brief Handle input in the Port textbox
 static void SetPort(void*)
 {
-    strcpy_s(m_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_portControl));
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(s_scrHandle, m_portControl));
     char* endptr;
-    s_dbSettings.Port = (int)strtol(m_portString, &endptr, 0);
+    s_dbSettings.Port = (int)strtol(s_portString, &endptr, 0);
     if (*endptr != '\0')
-        std::cerr << "Could not convert " << m_portString << " to int and leftover string is: " << endptr << std::endl;
+        std::cerr << "Could not convert " << s_portString << " to int and leftover string is: " << endptr << std::endl;
     char buf[32];
     sprintf(buf, "%d", s_dbSettings.Port);
     GfuiEditboxSetString(s_scrHandle, m_portControl, buf);
@@ -89,7 +87,7 @@ static void SetUseSSL(tCheckBoxInfo* p_info)
 static void SaveSettings(void* /* dummy */)
 {
     // Save settings in the ResearcherMenu.xml
-    SaveDBSettingsToDisk(m_portString);
+    SaveDBSettingsToDisk();
     SMediator::GetInstance()->SetDatabaseSettings(s_dbSettings);
 
     // Go to the next screen
@@ -103,7 +101,6 @@ static void OnActivate(void* /* dummy */)
     control.Password = m_passwordControl;
     control.Address = m_addressControl;
     control.Port = m_portControl;
-    control.PortString = m_portString;
     control.Schema = m_schemaControl;
     control.UseSSL = m_useSSLControl;
     control.CACertificateButton = m_caCertFileDialogControl;

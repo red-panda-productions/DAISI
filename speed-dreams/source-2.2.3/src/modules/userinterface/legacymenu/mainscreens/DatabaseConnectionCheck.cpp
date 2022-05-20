@@ -17,7 +17,7 @@
 static bool m_isconnecting = false;
 
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
-void SaveDBSettingsToDisk(const char* p_portString)
+void SaveDBSettingsToDisk()
 {
     // Copies xml to documents folder and then opens file parameter
     std::string dstStr("config/DatabaseSettingsMenu.xml");
@@ -29,7 +29,7 @@ void SaveDBSettingsToDisk(const char* p_portString)
     GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, s_dbSettings.Username);
     GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, s_dbSettings.Password);
     GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, s_dbSettings.Address);
-    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, p_portString);
+    GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, s_portString);
     GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, s_dbSettings.Schema);
     GfParmSetStr(readParam, PRM_SSL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(s_dbSettings.UseSSL));
     GfParmSetStr(readParam, PRM_CERT, GFMNU_ATTR_CA_CERT, s_dbSettings.CACertFilePath);
@@ -42,15 +42,13 @@ void SaveDBSettingsToDisk(const char* p_portString)
 
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
-/// @param s_dbSettings The selected database settings
 /// @param p_control the corresponding ui element control integers
-/// @param  p_controlBoolean  A boolean that will control whether or not to run the async thread
 void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, s_dbSettings.Username);
     GfuiEditboxSetString(p_scrHandle, p_control.Password, s_dbSettings.Password);
     GfuiEditboxSetString(p_scrHandle, p_control.Address, s_dbSettings.Address);
-    GfuiEditboxSetString(p_scrHandle, p_control.Port, p_control.PortString);
+    GfuiEditboxSetString(p_scrHandle, p_control.Port, s_portString);
     GfuiEditboxSetString(p_scrHandle, p_control.Schema, s_dbSettings.Schema);
     GfuiCheckboxSetChecked(p_scrHandle, p_control.UseSSL, s_dbSettings.UseSSL);
 
@@ -76,22 +74,20 @@ void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
 
 /// @brief         Loads the default menu settings from the controls into the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
-/// @param s_dbSettings The selected database settings
 /// @param p_control the corresponding ui element control integers
 void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
 {
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Username));
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Password));
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Address));
-    strcpy_s(p_control.PortString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Port));
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Port));
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Schema));
     s_dbSettings.UseSSL = SETTINGS_NAME_LENGTH, GfuiCheckboxIsChecked(p_scrHandle, p_control.UseSSL);
-    SaveDBSettingsToDisk(p_control.PortString);
+    SaveDBSettingsToDisk();
 }
 
 /// @brief        Loads the settings from the config file into the internal variables
 /// @param p_param The configuration xml file handle
-/// @param s_dbSettings The selected database settings
 /// @param p_control the corresponding ui element control integers
 void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
@@ -99,7 +95,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(p_control.PortString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
     s_dbSettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
     strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
@@ -125,7 +121,6 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 
 /// @brief Loads the user menu settings from the local config file or the default values will be loaded
 /// @param p_scrHandle The screen handle which to operate the functions on
-/// @param s_dbSettings The selected database settings
 /// @param p_control the corresponding ui element control integers
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
 {
@@ -146,7 +141,6 @@ void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
 /// @brief                    The async function to check if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
-/// @param  s_dbSettings      The settings of the database
 void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings p_dbSettings)
 {
     bool connectable = false;
@@ -180,8 +174,6 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
 /// @brief                    Checks if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
-/// @param  s_dbSettings      The settings of the database
-/// @param  p_controlBoolean  A boolean that will control whether or not to run the async thread
 void CheckConnection(void* p_scrHandle, int p_dbStatusControl)
 {
     if (m_isconnecting) return;
