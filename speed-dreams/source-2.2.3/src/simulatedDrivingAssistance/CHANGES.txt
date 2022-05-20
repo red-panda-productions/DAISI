@@ -444,3 +444,15 @@ Changed:
   cmake/
     checks.cmake
         changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
+
+
+Deleted:
+   src/
+      modules/
+         simu/
+            simuv2.1/
+               simu.cpp
+                   Removed 'RemoveCar' function
+            simu4/
+               simu.cpp
+                  Removed 'RemoveCar' function

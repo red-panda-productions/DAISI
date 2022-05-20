@@ -1300,9 +1300,7 @@ void TDriver::InitTrack
                             , (char*) NULL, 100.0);
     LogSimplix.debug("#oMaxFuel (TORCS)   = %.1f\n",oMaxFuel);
 
-    oFuelCons = GfParmGetNum(CarHandle             // Fuel consumption factor
-                             , SECT_ENGINE, PRM_FUELCONS
-                             , (char*) NULL, 1.0);
+    oFuelCons = 0;
     LogSimplix.debug("#oFuelCons (TORCS)  = %.2f\n",oFuelCons);
 
     tdble TireLimitFront = 0.0;
