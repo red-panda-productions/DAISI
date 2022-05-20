@@ -225,6 +225,7 @@ void ReSituation::setPitCommand(int nCarIndex, const tCarPitCmd *pPitCmd)
         {
             // Found : update its pit command information from pit menu data.
             pCurrCar = _pReInfo->s->cars[nCarInd];
+            pCurrCar->_pitFuel = pPitCmd->fuel;
             pCurrCar->_pitRepair = pPitCmd->repair;
             pCurrCar->_pitStopType = pPitCmd->stopType;
             break;
@@ -402,7 +403,7 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
                 webServer.sendLap(
                     webServer.raceId,						//race_id
                     pCurrReInfo->s->cars[i]->_lastLapTime,	//laptime
-                    NULL,
+                    pCurrReInfo->s->cars[i]->_fuel,			//car remaining fuel at the end of the lap
                     pCurrReInfo->s->cars[i]->_pos,			//car position
                     trackLocal->water						//level of water on track
                     //VERSION_LONG, 						//speed dreams version
@@ -824,7 +825,10 @@ tRmInfo* ReSituationUpdater::copySituation(tRmInfo*& pTarget, const tRmInfo* pSo
         // 4) priv (field by field copy)
         memcpy(&pTgtCar->priv.wheel[0], &pSrcCar->priv.wheel[0], 4*sizeof(tWheelState));
         memcpy(&pTgtCar->priv.corner[0], &pSrcCar->priv.corner[0], 4*sizeof(tPosd));
-        pTgtCar->_gear = pSrcCar->_gear;    
+        pTgtCar->_gear = pSrcCar->_gear;
+        pTgtCar->_fuel = pSrcCar->_fuel;
+        pTgtCar->_fuelTotal = pSrcCar->_fuelTotal;
+        pTgtCar->_fuelInstant = pSrcCar->_fuelInstant;
         pTgtCar->_enginerpm = pSrcCar->_enginerpm;
         memcpy(&pTgtCar->priv.skid[0], &pSrcCar->priv.skid[0], 4*sizeof(tdble));
         memcpy(&pTgtCar->priv.reaction[0], &pSrcCar->priv.reaction[0], 4*sizeof(tdble));
@@ -832,6 +836,7 @@ tRmInfo* ReSituationUpdater::copySituation(tRmInfo*& pTarget, const tRmInfo* pSo
         pTgtCar->_smoke = pSrcCar->_smoke;
         pTgtCar->_normal = pSrcCar->_normal;
         pTgtCar->_coll2Pos = pSrcCar->_coll2Pos;
+        pTgtCar->_dammage = pSrcCar->_dammage;
         //pTgtCar->_debug = pSrcCar->_debug; // Ever used anywhere ?
         pTgtCar->priv.collision_state = pSrcCar->priv.collision_state;
         //pTgtCar->_memoryPool ...; // ???? Memory pool copy ??????

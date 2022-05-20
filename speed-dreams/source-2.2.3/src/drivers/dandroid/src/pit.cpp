@@ -199,17 +199,32 @@ void Pit::update(double fromstart)
     }
     // fuel update
     int id = car->_trkPos.seg->id;
-    
+    if (id >= 0 && id <= 5 && !fuelchecked) {
+      if (car->race.laps > 1) {
+        maxfuelperlap = MAX(maxfuelperlap, (lastfuel + lastpitfuel - car->priv.fuel));
+        totalfuel += lastfuel + lastpitfuel - car->priv.fuel;
+        fuellapscounted++;
+        avgfuelperlap = totalfuel / fuellapscounted;
+        //GfOut("Car:%s fuelpermeter:%g\n", car->_name, avgfuelperlap / track->length);
+      }
+      lastfuel = car->priv.fuel;
+      lastpitfuel = 0.0;
+      fuelchecked = true;
+    } else if (id > 5) {
+      fuelchecked = false;
+    }
     if (!getPitstop() && remainingLaps > 0) {
       // check for damage
       bool pitdamage = false;
-      if (remainingLaps * track->length > MAX_DAMAGE_DIST && lastfuel > 15.0) {
+      if ((car->_dammage > PIT_DAMAGE && remainingLaps * track->length > MAX_DAMAGE_DIST && lastfuel > 15.0)
+      || car->_dammage > MAX_DAMAGE) {
         pitdamage = true;
       }
       double teamcarfuel;
       if (teamcar == NULL || teamcar->_state & RM_CAR_STATE_OUT) {
         teamcarfuel = 0.0;
       } else {
+        teamcarfuel = teamcar->_fuel;
         if (teamcarfuel < 2.0 * maxfuelperlap) {
           pitdamage = false;
         }
@@ -217,9 +232,15 @@ void Pit::update(double fromstart)
       if (pitdamage) {
         setPitstop(true);
       }
-      double maxpittime = 15.0 + 0.007;
+      double maxpittime = 15.0 + 0.007 * car->_dammage;
       double pitlapdiff = ceil((80.0 * maxpittime + 2000.0) / track->length);
-      
+      if (car->_fuel < 1.0 * maxfuelperlap) {
+        setPitstop(true);
+      } else if (car->_fuel < teamcarfuel
+      && teamcarfuel < (1.1 + pitlapdiff) * maxfuelperlap
+      && car->_fuel < remainingLaps * maxfuelperlap) {
+          setPitstop(true);
+      }
     }
   }
 }
@@ -235,8 +256,9 @@ double Pit::getFuel()
   if (pitstops && (stintfuel / car->_tank > 0.95)) {
     stintfuel = car->_tank;
   }
+  double fuel = MAX(MIN(stintfuel - car->_fuel, car->_tank - car->_fuel), 0.0);
   //GfOut("fromStart:%g laps:%g lapsBehindLeader:%d fueltoend:%g pitstops:%d stintfuel:%g fuel:%g\n", mFromStart, laps, car->_lapsBehindLeader, fueltoend, pitstops, stintfuel, fuel);
-  return NULL;
+  return fuel;
 }
 
 
@@ -244,9 +266,9 @@ double Pit::getFuel()
 int Pit::getRepair()
 {
   if ((car->_remainingLaps - car->_lapsBehindLeader) * track->length < MAX_DAMAGE_DIST) {
-    return NULL;
+    return (int)(0.5 * car->_dammage);
   }
-  return NULL;
+  return car->_dammage;
 }
 
 
@@ -288,5 +310,7 @@ double Pit::getSideDist()
 void Pit::pitCommand()
 {
   car->_pitRepair = getRepair();
+  lastpitfuel = getFuel();
+  car->_pitFuel = (tdble) lastpitfuel;
   setPitstop(false);
 }

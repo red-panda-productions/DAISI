@@ -309,7 +309,8 @@ void Pit::update()
     mPenalty = 0; // fuel, damage and tires served before penalty
     bool pittyres = false;
     // Check for fuel, damage and tyres
-    bool pitdamage = remaininglaps * mTrack->length > mMaxDamageDist && mLastFuel > 15.0;
+    bool pitfuel = mCar->_fuel < (mAvgFuelPerLap + 2.0);
+    bool pitdamage = (mCar->_dammage > mPitDamage && remaininglaps * mTrack->length > mMaxDamageDist && mLastFuel > 15.0) || (mCar->_dammage > mMaxDamage);
     //bool pittyres = (mMyCar->tires()->distLeft() < 1.0 * mTrack->length && mMyCar->tires()->gripFactor() < mPitGripFactor && remaininglaps * mTrack->length > 10000.0);
 
     if(mMyCar->HASTYC)
@@ -323,7 +324,7 @@ void Pit::update()
         {
             setPitstop(true);
         }
-        else if (pitdamage || pittyres)
+        else if (pitfuel || pitdamage || pittyres)
         {
             setPitstop(true);
         }
@@ -347,6 +348,11 @@ bool Pit::pitBeforeTeammate(int remaininglaps) const
 
     if (teamcarrunning)
     {
+        teamcarfuel = mTeamCar->_fuel;
+    }
+
+    if (teamcarrunning && (mCar->_fuel < teamcarfuel) && (mCar->_fuel < remaininglaps * mAvgFuelPerLap))
+    {
         double matelaps = teamcarfuel / mAvgFuelPerLap;
         double matetoentry;
 
@@ -361,7 +367,7 @@ bool Pit::pitBeforeTeammate(int remaininglaps) const
 
         double matefulllaps = floor(matelaps - matetoentry / mTrack->length);
         double matetime = (matefulllaps + matetoentry / mTrack->length) * mTeamCar->_bestLapTime;
-        double maxstoptime = 15.0 + 0.007 + mTiresChangeTime;
+        double maxstoptime = 15.0 + 0.007 * mCar->_dammage + mTiresChangeTime;
         double mytime = mCar->_bestLapTime + maxstoptime + 60.0;
         bool matepitasked = mTeamCar->_raceCmd == RM_CMD_PIT_ASKED;
         bool matestop = mTeamCar->_state & RM_CAR_STATE_PIT;
@@ -412,14 +418,84 @@ void Pit::updateInPitLane(double fromstart)
     }
 }
 
+void Pit::updateFuel(double fromstart)
+{
+    if (fromstart <= 3.0 && !mFuelChecked)
+    {
+        if (mCar->race.laps > 1)
+        {
+            mTotalFuel += mLastFuel + mLastPitFuel - mCar->priv.fuel;
+            mFuelLapsCounted++;
+            mAvgFuelPerLap = mTotalFuel / mFuelLapsCounted;
+        }
+
+        mLastFuel = mCar->priv.fuel;
+        mLastPitFuel = 0.0;
+        mFuelChecked = true;
+    }
+    else if (fromstart > 3.0 && fromstart < 6.0)
+    {
+        mFuelChecked = false;
+    }
+}
+
+double Pit::calcRefuel()
+{
+    double laps = mCar->_remainingLaps + (mTrack->length - mCar->_distFromStartLine) / mTrack->length;
+
+    // Calc fuel pitstops
+    double fueltoend = (laps - mCar->_lapsBehindLeader) * mAvgFuelPerLap;
+    int fuelpitstops = int(floor(fueltoend / mCar->_tank));
+
+    // Calc tires pitstops
+    double disttoend = (laps - mCar->_lapsBehindLeader) * mTrack->length;
+    double tiresstintdist = 1.0 / mMyCar->tires()->avgWearPerMeter() + 10000.0;
+    int tirespitstops = int(floor(disttoend / tiresstintdist));
+
+    // Need fuel or tires stops?
+    int pitstops = std::max(fuelpitstops, tirespitstops);
+
+    // Calc the stint fuel
+    double stintfuel = fueltoend / (pitstops + 1) +2.0;
+
+    if (pitstops)
+    {
+        // Stay out a little longer, if possible
+        stintfuel += 0.5 * mAvgFuelPerLap;
+    }
+
+    stintfuel = Utils::clip(stintfuel, 0.0, (double)(mCar->_tank));
+
+    // Tire strategy
+    double tiresdist = mMyCar->tires()->distLeft() - 1000.0;
+    double stintdist = stintfuel * (mTrack->length / mAvgFuelPerLap);
+
+    if (tiresdist < stintdist || (mMyCar->tires()->wear() > 1.03 - ((double)mCar->_remainingLaps / 10)))
+    {
+        mTireChange = false;
+    }
+    else
+    {
+        mTireChange = false;
+    }
+
+    // Print infos
+    //std::cout << "Fuel pitstops " << fuelpitstops << std::endl;
+    //std::cout << "Fuel per meter " << mAvgFuelPerLap / mTrack->length << std::endl;
+    //std::cout << "Tire pitstops " << tirespitstops << std::endl;
+    //std::cout << "Tire wear per meter " << mMyCar->tires()->avgWearPerMeter() << std::endl;
+
+    return stintfuel - mCar->_fuel;
+}
+
 int Pit::calcRepair() const
 {
     if ((mCar->_remainingLaps - mCar->_lapsBehindLeader) * mTrack->length < mMaxDamageDist)
     {
-        return 0;
+        return (int)(0.5 * mCar->_dammage);
     }
 
-    return 0;
+    return mCar->_dammage;
 }
 
 double Pit::dist()
@@ -446,6 +522,8 @@ void Pit::pitCommand()
     else
     {
         mCar->_pitRepair = calcRepair();
+        mLastPitFuel = calcRefuel();
+        mCar->_pitFuel = (tdble) mLastPitFuel;
 
         if (mTireChange)
         {

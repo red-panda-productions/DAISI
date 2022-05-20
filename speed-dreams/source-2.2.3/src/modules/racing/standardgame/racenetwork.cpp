@@ -88,10 +88,15 @@ reNetworkSetCarStatus(CarStatus *pStatus)
 
 	tCarElt *pCar = ReInfo->s->cars[idx];
 
+	if (pStatus->dammage > 0.0)
+		pCar->priv.dammage = pStatus->dammage;
+	if (pStatus->fuel >0.0)
+		pCar->priv.fuel = pStatus->fuel;
 	if (pStatus->topSpeed >0.0)
 		pCar->race.topSpeed = pStatus->topSpeed;
 
 	pCar->pub.state = pStatus->state;
+	
 
 }
 

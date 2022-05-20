@@ -46,6 +46,18 @@ static tfuiCallback rmCallback;
 
 
 static void
+rmUpdtFuel(void * /* dummy */)
+{
+    char	*val;
+    char	buf[32];
+    
+    val = GfuiEditboxGetString(menuHandle, fuelId);
+    rmCar->pitcmd.fuel = (tdble)strtod(val, (char **)NULL);
+    sprintf(buf, "%.1f", rmCar->pitcmd.fuel);
+    GfuiEditboxSetString(menuHandle, fuelId, buf);
+}
+
+static void
 rmUpdtRepair(void * /* dummy */)
 {
     char	*val;
@@ -122,7 +134,15 @@ RmPitMenuStart(tCarElt *car, tSituation *s, tfuiCallback callback)
     }
     GfuiLabelSetText(menuHandle, remainLapsTimeId, buf);
 
-    // Create edit boxes for repair amounts.
+    int remainFuelId = GfuiMenuCreateLabelControl(menuHandle, menuXMLDescHdle, "remainingfuellabel");
+    snprintf(buf, sizeof(buf), "%.1f", car->_fuel);
+    GfuiLabelSetText(menuHandle, remainFuelId, buf);
+
+    // Create edit boxes for fuel and repair amounts.
+    fuelId = GfuiMenuCreateEditControl(menuHandle, menuXMLDescHdle, "fuelamountedit", NULL, NULL, rmUpdtFuel);
+    snprintf(buf, sizeof(buf), "%.1f", car->pitcmd.fuel);
+    GfuiEditboxSetString(menuHandle, fuelId, buf);
+
     repairId = GfuiMenuCreateEditControl(menuHandle, menuXMLDescHdle, "repairamountedit", NULL, NULL, rmUpdtRepair);
     snprintf(buf, sizeof(buf), "%d", (int)car->pitcmd.repair);
     GfuiEditboxSetString(menuHandle, repairId, buf);

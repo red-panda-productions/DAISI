@@ -397,6 +397,7 @@ typedef struct
 /* number of instant types */
 #define NR_DI_INSTANT				9
 /* types for dashboardRequest */
+#define DI_FUEL					32
 #define DI_REPAIR				33
 #define DI_TYRE_SET				34
 #define DI_FRONT_WING_ANGLE			35
@@ -417,6 +418,9 @@ typedef struct
     tPosd	corner[4];              /**< car's corners position */
     int		gear;                   /**< current gear */
     int		gearNext;               /**< next gear while shiting */
+    tdble	fuel;                   /**< remaining fuel (liters) */
+    tdble   fuel_consumption_total; // l
+    tdble   fuel_consumption_instant; // l/100km (>100 means infinity)
     tdble	enginerpm;
     tdble	enginerpmRedLine;
     tdble	enginerpmMax;
@@ -449,6 +453,8 @@ typedef struct
     int		dashboardActiveItem;	/**< active item in dashboard, 0 .. dashboardInstantNb+dashboardRequestNb-1 */
 } tPrivCar;
 /* structure access */
+#define _fuelTotal      priv.fuel_consumption_total
+#define _fuelInstant    priv.fuel_consumption_instant
 #define _driverIndex	priv.driverIndex
 #define _moduleIndex	priv.moduleIndex
 #define _paramsHandle	priv.paramsHandle
@@ -464,11 +470,13 @@ typedef struct
 #define _gearRatio      priv.gearRatio
 #define _gearNb         priv.gearNb
 #define _gearOffset     priv.gearOffset
+#define _fuel           priv.fuel
 #define _gear           priv.gear
 #define _gearNext       priv.gearNext
 #define _debug          priv.debug
 #define _skid           priv.skid
 #define _reaction       priv.reaction
+#define _dammage        priv.dammage
 #define _driveSkill     priv.driveSkill
 #define _collision      priv.collision
 
@@ -564,6 +572,7 @@ struct RobotItf;
 typedef struct
 {
     tCarSetupItem FRWeightRep, FRLWeightRep, RRLWeightRep;
+    tCarSetupItem fuel;
     tCarSetupItem wingAngle[2];
     tCarSetupItem revsLimiter;
     tCarSetupItem gearRatio[MAX_GEARS];
@@ -589,6 +598,7 @@ typedef struct
 /** Command issued by the car during pit stop */
 typedef struct CarPitCmd
 {
+    tdble		fuel;
     int			repair;
 #define RM_PIT_REPAIR		0
 #define RM_PIT_STOPANDGO	1
@@ -599,6 +609,7 @@ typedef struct CarPitCmd
     TireChange tireChange;
 } tCarPitCmd;
 /* structure access */
+#define _pitFuel	pitcmd.fuel
 #define _pitRepair	pitcmd.repair
 #define _pitStopType	pitcmd.stopType
 
@@ -682,6 +693,7 @@ typedef struct CarElt
 #define PRM_RRLWEIGHTREP	"rear right-left weight repartition"
 #define PRM_GCHEIGHT		"GC height"
 #define PRM_TANK			"fuel tank"
+#define PRM_FUEL			"initial fuel"
 #define PRM_CENTR			"mass repartition coefficient"
 #define PRM_ROLLROTINERTIA		"roll rotational inertia"
 #define PRM_PITCHROTINERTIA		"pitch rotational inertia"
@@ -780,6 +792,7 @@ typedef struct CarElt
 #define PRM_RPM				"rpm"
 #define PRM_TQ				"Tq"
 #define ARR_DATAPTS			"data points"
+#define PRM_FUELCONS		"fuel cons factor"
 #define PRM_ENGBRKCOEFF		"brake coefficient"
 #define PRM_ENGBRKLINCOEFF	"brake linear coefficient"
 #define PRM_POWER			"power"

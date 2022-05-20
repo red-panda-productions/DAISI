@@ -142,6 +142,7 @@ class TDriver {
   bool controlAttackAngle(double& targetangle);
   void controlYawRate(double& targetangle);
   bool hysteresis(bool lastout, double in, double hyst);
+  double getFuel(double dist);
   void writeSectorSpeeds();
   bool readSectorSpeeds();
   void driverMsg(std::string desc);
@@ -192,7 +193,7 @@ class TDriver {
   int mDriverMsgCarIndex;
   Pit mPit;
   double mMu;    // friction coefficient
-  double mMass;  // mass of car
+  double mMass;  // mass of car + fuel
   double mSpeed;
   double mClutchtime;
   int mPrevgear;
@@ -237,6 +238,8 @@ class TDriver {
   bool mPointingToWall;
   double mWallToMiddleAbs;
   double mWalldist;
+  int mLastDamage;
+  int mDamageDiff;
   int mPrevRacePos;
   int mRacePosChange;
   double mAccel;
@@ -291,6 +294,7 @@ class TDriver {
   double mCollOvershooting;
   bool mWait;
   double mTANKVOL;
+  double mFuelStart;
   double mPathOffs;
   double mAccelX;
   double mAccelXSum;
@@ -320,6 +324,8 @@ class TDriver {
   double mMUSCALE;
   double mBRAKESCALE;
   double mBUMPSPEEDFACTOR;
+  double mFUELPERMETER;
+  double mFUELWEIGHTFACTOR;
   int mPITDAMAGE;
   double mPITENTRYMARGIN;
   double mPITENTRYSPEED;

@@ -67,7 +67,7 @@ ReCarsUpdateCarPitTime(tCarElt *car)
     {
         case RM_PIT_REPAIR:
             //info->totalPitTime = 2.0f + fabs((double)(car->_pitFuel)) / 8.0f + (tdble)(fabs((double)(car->_pitRepair))) * 0.007f;
-            info->totalPitTime = ReInfo->raceRules.pitstopBaseTime +
+            info->totalPitTime = ReInfo->raceRules.pitstopBaseTime + fabs((double)(car->_pitFuel)) +
                     (tdble)(fabs((double)(car->_pitRepair)));
 
             // Add time for tire change
@@ -99,8 +99,8 @@ ReCarsUpdateCarPitTime(tCarElt *car)
                 car->_tyreT_out(i) = 50.0f;
             }
 
-            GfLogInfo("%s in repair pit stop for %.1f s, repairing by %d).\n",
-                      car->_name, info->totalPitTime, car->_pitRepair);
+            GfLogInfo("%s in repair pit stop for %.1f s (refueling by %.1f l, repairing by %d).\n",
+                      car->_name, info->totalPitTime, car->_pitFuel, car->_pitRepair);
             break;
 
         case RM_PIT_STOPANDGO:
@@ -553,7 +553,8 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
         // If the driver asks for a pit, check if the car is in the right conditions
         // (position, speed, ...) and start up pitting process if so.
         } else if ((car->ctrl.raceCmd & RM_CMD_PIT_ASKED) &&
-                   car->_pit->pitCarIndex == TR_PIT_STATE_FREE) {
+                   car->_pit->pitCarIndex == TR_PIT_STATE_FREE &&
+                   (s->_maxDammage == 0 || car->_dammage <= s->_maxDammage)) {
             snprintf(car->ctrl.msg[2], RM_CMD_MAX_MSG_SIZE, "Pit request");
             car->ctrl.msg[2][RM_CMD_MAX_MSG_SIZE-1] = 0; // Some snprintf implementations fail to do so.
 

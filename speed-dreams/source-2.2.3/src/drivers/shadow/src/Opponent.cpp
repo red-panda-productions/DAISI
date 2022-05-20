@@ -263,6 +263,7 @@ void	Opponent::ProcessMyCar(
     if( pTeamInfo->IsTeamMate(myCar, oCar) )
     {
         m_info.flags |= F_TEAMMATE;
+        m_info.tmDamage = oCar->_dammage;
     }
 
     if( oSit.relPos > 0 && oSit.relPos < 10 )

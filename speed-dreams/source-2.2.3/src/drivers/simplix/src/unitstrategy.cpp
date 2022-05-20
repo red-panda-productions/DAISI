@@ -179,11 +179,68 @@ void TAbstractStrategy::PitRelease()
 //==========================================================================*
 
 //==========================================================================*
+// Tanken
+//--------------------------------------------------------------------------*
+float TSimpleStrategy::PitRefuel()
+{
+  float FuelConsum;                              // Spritverbrauch kg/m
+  float Fuel;                                    // Menge in kg
+
+  if (oFuelPerM == 0.0)                          // Wenn kein Messwert
+    FuelConsum = oExpectedFuelPerM;              //   vorliegt, sch�tzen
+  else                                           // ansonsten
+    FuelConsum = oFuelPerM;                      //   Messwert nehmen
+
+  FuelConsum *= 1.10f;                           // ggf. ohne Windschatten!
+
+  oRemainingDistance =                           // Restliche Strecke des
+    oRaceDistance - DistanceRaced;               //   Rennens ermitteln
+
+  Fuel =                                         // Bedarf an Treibstoff
+    (oRemainingDistance + oReserve) * FuelConsum;// f�r restliche Strecke
+
+  if (Fuel > oMaxFuel)                           // Wenn mehr als eine Tank-
+  {                                              //   f�llung ben�tigt wird
+    if (Fuel / 2 < oMaxFuel)                     // Bei zwei Tankf�llungen
+      Fuel = Fuel / 2;                           //   die H�lfte tanken
+    else if (Fuel / 3 < oMaxFuel)                // Bei drei Tankf�llungen.
+      Fuel = Fuel / 3;                           //   ein Drittel tanken
+    else if (Fuel / 4 < oMaxFuel)                // Bei vier Tankf�llungen.
+      Fuel = Fuel / 4;                           //   ein Viertel tanken
+    else                                         // Bei f�nf Tankf�llungen
+      Fuel = Fuel / 5;                           //   ein F�nftel tanken
+  };
+
+  if (Fuel > oMaxFuel - CarFuel)                 // Menge ggf. auf freien
+    Fuel = oMaxFuel - CarFuel;                   // Tankinhalt begrenzen
+  else                                           // ansonsten Bedarf
+    Fuel = Fuel - CarFuel;                       // abz�gl. Tankinhalt
+
+  //Fuel = MIN(Fuel,10.0);                         // NUR ZUM TEST DES TEAMMANAGERS
+
+  oLastPitFuel = (float) MAX(Fuel,0.0);          // Wenn genug da ist = 0.0
+
+  return oLastPitFuel;                           // Menge an TORCS melden
+};
+//==========================================================================*
+
+//==========================================================================*
 // Umfang der Reparaturen festlegen
 //--------------------------------------------------------------------------*
 int TSimpleStrategy::RepairWanted(int AcceptedDammage)
 {
-    return 0;
+  if (oCar->_dammage < AcceptedDammage)
+	return 0;
+  else if (oRemainingDistance > 5.5 * oTrackLength)
+    return oCar->_dammage;
+  else if (oRemainingDistance > 4.5 * oTrackLength)
+    return MAX(0,oCar->_dammage - cPIT_DAMMAGE);
+  else if (oRemainingDistance > 3.5 * oTrackLength)
+    return MAX(0,oCar->_dammage - cPIT_DAMMAGE - 1000);
+  else if (oRemainingDistance > 2.5 * oTrackLength)
+    return MAX(0,oCar->_dammage - cPIT_DAMMAGE - 2000);
+  else
+    return MAX(0,oCar->_dammage - cPIT_DAMMAGE - 3000);
 }
 //==========================================================================*
 
@@ -230,7 +287,7 @@ double TSimpleStrategy::SetFuelAtRaceStart
 	  && (oStartFuel > 0))
   {
     oLastFuel = (float) oStartFuel;              // volltanken
-    GfParmSetNum(*CarSettings,SECT_CAR,NULL, // Gew�nschte Tankf�llung
+    GfParmSetNum(*CarSettings,SECT_CAR,PRM_FUEL, // Gew�nschte Tankf�llung
       (char*) NULL, oLastFuel);                  //   an TORCS melden
     return oLastFuel;    
   }
@@ -259,7 +316,7 @@ double TSimpleStrategy::SetFuelAtRaceStart
   //oLastFuel = MIN(oLastFuel,15.0);               // NUR ZUM TEST DES TEAMMANAGERS
 
   oLastFuel = MIN(oLastFuel, oMaxFuel);          // �berlaufen verhindern
-  GfParmSetNum(*CarSettings, SECT_CAR, NULL, // Gew�nschte Tankf�llung
+  GfParmSetNum(*CarSettings, SECT_CAR, PRM_FUEL, // Gew�nschte Tankf�llung
     (char*) NULL, oLastFuel);                    //   an TORCS melden
 
   return oLastFuel;
@@ -338,7 +395,12 @@ void TSimpleStrategy::Update(PtCarElt Car,
   if ((DL < oDistToSwitch) && (DL > 50) && (!oFuelChecked))
   { // We passed the line to check our fuel consume!
     if (CarLaps > 1)                             // Start at lap 2
-    {   
+    {                                            //   to get values
+      CurrentFuelConsum =                        // Current consume =
+        (oLastFuel                               // Last tank capacity
+        + oLastPitFuel                           // + refueled
+        - oCar->priv.fuel)                       // - current capacity
+        / oTrackLength;                          // related to track length
 
       if (oFuelPerM == 0.0)                      // At first time we use
         oFuelPerM = (float) CurrentFuelConsum;    //   our initial estimation
@@ -348,6 +410,10 @@ void TSimpleStrategy::Update(PtCarElt Car,
 		  / (CarLaps + 1));
 
     };
+
+    oLastFuel = oCar->priv.fuel;                 // Capacity at this estimation
+    oLastPitFuel = 0.0;                          // Refueled
+    oFuelChecked = true;                         // We did the estimation in this lap
 
     if (!oGoToPit)                               // If decision isn't made
   	  oGoToPit = NeedPitStop();                  // Check if we should have a pitstop

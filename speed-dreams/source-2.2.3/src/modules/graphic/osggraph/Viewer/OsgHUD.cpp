@@ -977,9 +977,18 @@ void SDHUD::Refresh(tSituation *s, const SDFrameInfo* frameInfo,
         }
     }
 
+//fuel
+    temp.str("");
+    temp << std::fixed << std::setprecision(1) << currCar->_fuel;
+    hudTextElements["fuel-info-quantity-number"]->setText(temp.str());
+
+    temp.str("");
+
     //when we have done at least one lap calculate remaining fuel
     if (currCar->_laps > data.carLaps && currCar->_laps > 1)
     {
+        float fuelConsumpionPerLap = currCar->_fuelTotal / (float)(currCar->_laps-1);
+        data.remainingFuelForLaps = currCar->_fuel / fuelConsumpionPerLap;
         data.carLaps = currCar->_laps;
     }
 
@@ -994,6 +1003,13 @@ void SDHUD::Refresh(tSituation *s, const SDFrameInfo* frameInfo,
     }
 
     hudTextElements["fuel-info-laps-number"]->setText(temp.str());
+
+    float carFuel = (float)((float)currCar->_fuel / (float)currCar->_tank);
+
+    //update fuel bar
+    changeImageSize(this->hudImgElements["fuel-icon-empty"], 1.0-carFuel, "top", this->hudScale);
+    changeImageSize(this->hudImgElements["fuel-icon-full"], carFuel, "bottom", this->hudScale);
+
 
 //abs
 //tcs
@@ -1040,6 +1056,13 @@ void SDHUD::Refresh(tSituation *s, const SDFrameInfo* frameInfo,
     //get speed in km/h
     temp << (int)(currCar->_speed_x * 3.6);
     hudTextElements["speed-number"]->setText(temp.str());
+
+
+//damage
+    float carDamage = (float)((currCar->_dammage) / (float)s->_maxDammage);
+    changeImageSize(this->hudImgElements["engine-icon"], 1.0-carDamage, "top", this->hudScale);
+    changeImageSize(this->hudImgElements["engine-icon-damaged"], carDamage, "bottom", this->hudScale);
+
 
 //rpm
     float rpmWidth = 1.0 / currCar->_enginerpmMax * currCar->_enginerpm;
@@ -1103,6 +1126,11 @@ void SDHUD::Refresh(tSituation *s, const SDFrameInfo* frameInfo,
         std::ostringstream value2;
         switch (item->type)
         {
+        case DI_FUEL:
+            description = strFuel;
+            value1 << std::fixed << std::setprecision(1) << item->setup->desired_value << " l";
+            value2 << std::fixed << std::setprecision(1) << item->setup->value << " l";
+            break;
         case DI_REPAIR:
             description = strRepair;
             value1 << std::fixed << std::setprecision(1) << item->setup->desired_value;

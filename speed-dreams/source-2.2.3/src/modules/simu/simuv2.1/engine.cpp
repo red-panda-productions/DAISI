@@ -40,6 +40,7 @@ SimEngineConfig(tCar *car)
 	car->carElt->_enginerpmMax = car->engine.revsMax;
 	car->engine.tickover    = GfParmGetNum(hdle, SECT_ENGINE, PRM_TICKOVER, (char*)NULL, 150);
 	car->engine.I           = GfParmGetNum(hdle, SECT_ENGINE, PRM_INERTIA, (char*)NULL, 0.2423f);
+	car->engine.fuelcons    = GfParmGetNum(hdle, SECT_ENGINE, PRM_FUELCONS, (char*)NULL, 0.0622f);
 	car->engine.brakeCoeff  = GfParmGetNum(hdle, SECT_ENGINE, PRM_ENGBRKCOEFF, (char*)NULL, 0.03f);
 	car->engine.brakeLinCoeff= GfParmGetNum(hdle, SECT_ENGINE, PRM_ENGBRKLINCOEFF, (char*)NULL, 0.03f);
 	car->engine.exhaust_pressure = 0.0f;

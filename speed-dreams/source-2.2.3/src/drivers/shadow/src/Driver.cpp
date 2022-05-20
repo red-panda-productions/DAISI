@@ -535,7 +535,37 @@ void	Driver::InitTrack(
     m_track.NewTrack( pTrack, &m_priv[PATH_NORMAL].INNER_MOD, false, &sideMod[PATH_NORMAL],
                       m_priv[PATH_NORMAL].PIT_START_BUF_SEGS);
 
-    GfParmSetNum( hCarParm, SECT_CAR, NULL, (char*) NULL, NULL );
+    // setup initial fuel for race.
+    double	fuelPerM        = SafeParmGetNum(hCarParm, SECT_PRIV, "fuel per m", 0, 0.001f);
+    double	maxFuel			= SafeParmGetNum(hCarParm, SECT_CAR, PRM_TANK, (char*)NULL, 100.0f);
+    int pittest             = SafeParmGetNum(hCarParm, SECT_PRIV, PRV_PIT_TEST_STOP, (char*)NULL, 0);
+    LogSHADOW.info(" # Pit test stop = %i\n", pittest);
+    double	fullRaceFuel	= 1.02 * pS->_totLaps * (double)pTrack->length * fuelPerM;
+    double	fuel			= fullRaceFuel;
+
+    if( raceType == RM_TYPE_PRACTICE )
+    {
+        fuel = SafeParmGetNum(hCarParm, SECT_PRIV, PRV_PRACTICE_INIT_FUEL , "Kg", fuel);
+        LogSHADOW.info( "practice initial fuel: %g\n", fuel );
+
+        if (pittest > 0)
+            fuel = 1.04 * pTrack->length * fuelPerM;
+    }
+
+    if( fuel > maxFuel )
+    {
+        // pit required, so work out how much fuel per pit if divided equally.
+        int nTanks = int(ceil(fullRaceFuel / maxFuel));
+        fuel = fullRaceFuel / nTanks + fuelPerM * pTrack->length * (nTanks - 1);
+        LogSHADOW.info( "number of pitstops: %d\n", nTanks - 1 );
+    }
+    LogSHADOW.info( "max fuel in tank: %g\n", maxFuel );
+    LogSHADOW.info( "initial fuel per m: %g\n", fuelPerM );
+    LogSHADOW.info( "intiial fuel: %g\n\n", fuel );
+    GfParmSetNum( hCarParm, SECT_CAR, PRM_FUEL, (char*) NULL, fuel );
+
+    m_Strategy.SetDamageLimits( m_priv[PATH_NORMAL].PIT_DAMAGE_WARN,
+                                m_priv[PATH_NORMAL].PIT_DAMAGE_DANGER, m_cm[PATH_NORMAL].HASTYC );
 
     m_Strategy.SetTyreLimits( m_priv[PATH_NORMAL].PIT_TIRE_WARN, m_priv[PATH_NORMAL].PIT_TIRE_DANGER);
 
@@ -2458,6 +2488,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
     if( car->race.laps != m_lastLap )
     {
         m_lastLap = car->race.laps;
+        LogSHADOW.debug( "[%d] Average fuel/m: %g\n", car->index, m_Strategy.FuelPerM(car) );
         double a, b;
         m_accBrkCoeff.CalcCoeffs(&a, &b);
         LogSHADOW.debug( "[%d] accbrk: a=%g, b=%g\n", car->index, a, b );
@@ -2466,6 +2497,7 @@ void	Driver::Drive( int index, tCarElt* car, tSituation* s )
     if( m_priv[PATH_NORMAL].SAVE_PATHS )
         m_pathOffsets.update(m_track, car);
 
+    double	carFuel = car->_fuel;
     double	gripScaleF = GripFactor(car, true);
     double	gripScaleR = GripFactor(car, false);
 
@@ -3024,7 +3056,8 @@ void	Driver::AvoidOtherCars(
             }
 
             bool	ignoreTeamMate = oi.GotFlags(Opponent::F_TEAMMATE) &&
-                    (car->_laps < oCar->_laps);
+                    (car->_laps < oCar->_laps ||
+                     car->_dammage + 200 >= oi.tmDamage);
 
             oi.avoidLatchTime = MX(0, oi.avoidLatchTime - s->deltaTime);
 
@@ -3112,6 +3145,7 @@ void	Driver::AvoidOtherCars(
                 oi.GotFlags(Opponent::F_TEAMMATE | Opponent::F_REAR) &&
                 oi.sit.relPos > -25 &&
                 car->_laps == oCar->_laps &&
+                car->_dammage > oi.tmDamage + 300 &&
                 ai.nearbyCars <= 1;
 
         if( oi.GotFlags(Opponent::F_LAPPER) || treatTeamMateAsLapper )
