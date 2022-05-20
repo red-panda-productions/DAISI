@@ -18,6 +18,7 @@
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_dbSettings The selected database settings
 /// @param p_control the corresponding ui element control integers
+/// @param  p_controlBoolean  A boolean that will control whether or not to run the async thread
 void SynchronizeControls(void* p_scrHandle, DatabaseSettings& p_dbSettings, tDbControlSettings& p_control)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, p_dbSettings.Username);
@@ -153,6 +154,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 /// @param  p_dbSettings      The settings of the database
+/// @param  p_controlBoolean  A boolean that will control whether or not to run the async thread
 void CheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSettings& p_dbSettings, bool* p_controlBoolean)
 {
     if (*p_controlBoolean) return;
