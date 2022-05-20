@@ -32,17 +32,14 @@ extern GfLogger* PLogSHADOW;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+/// SIMULATED DRIVING ASSISTANCE: removed fuel and damage properties
 Strategy::Strategy( const MyTrack& track, const PitPath& pitPath ):
     m_track(track),
     m_pitPath(pitPath),
-      m_warnDamageLimit(5000),
-      m_dangerDamageLimit(7000),
       m_warnTyreLimit(0.3),
       m_dangerTyreLimit(0.03),
       m_HasTYC(false),
       m_state(PIT_NONE),
-      m_lastFuel(0),
-      m_totalFuel(0),
       m_lastTyreWear(1.0),
       m_totalLaps(0),
       m_pitType(PT_NORMAL)
@@ -53,13 +50,6 @@ Strategy::~Strategy()
 {
 }
 
-void	Strategy::SetDamageLimits( int warnDamageLimit, int dangerDamageLimit, bool tyc )
-{
-    m_warnDamageLimit	= warnDamageLimit;
-    m_dangerDamageLimit	= dangerDamageLimit;
-    m_HasTYC = tyc;
-}
-
 void	Strategy::SetTyreLimits( double warnTireLimit, double dangerTireLimit )
 {
     m_warnTyreLimit	= warnTireLimit;
@@ -67,6 +57,7 @@ void	Strategy::SetTyreLimits( double warnTireLimit, double dangerTireLimit )
     LogSHADOW.info(" # Tyre warn %.2f - Tyre Danger = %.2f\n", m_warnTyreLimit, m_dangerTyreLimit);
 }
 
+/// SIMULATED DRIVING ASSISTANCE: removed fuel and damage functionalities
 void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
 {
     //
@@ -81,28 +72,14 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
 
         LogSHADOW.debug(" # Tyre wear = %.8f\n", tyreWear);
 
-        if( pCar->_fuel	> m_lastFuel || pCar->_dammage < m_lastDamage || tyreWear > m_lastTyreWear )
+        if(tyreWear > m_lastTyreWear )
         {
             // been in pits... reset.
             LogSHADOW.debug( "***** Been in pits... resetting stats.\n" );
-            m_lastFuel		= pCar->_fuel;
-            m_lastDamage	= pCar->_dammage;
             m_lastTyreWear	= tyreWear;
         }
         else
         {
-            if( pCar->_fuel < m_lastFuel )
-            {
-                m_totalFuel += (m_lastFuel - pCar->_fuel);
-                m_lastFuel = pCar->_fuel;
-            }
-
-            if( pCar->_dammage > m_lastDamage )
-            {
-                m_totalDamage += (pCar->_dammage - m_lastDamage);
-                m_lastDamage = pCar->_dammage;
-            }
-
             if( tyreWear < m_lastTyreWear )
             {
                 m_totalTyreWear += (tyreWear - m_lastTyreWear);
@@ -111,52 +88,19 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
             }
         }
     }
-    else
-    {
-        if( pCar->_fuel	> m_lastFuel || pCar->_dammage < m_lastDamage )
-        {
-            // been in pits... reset.
-            LogSHADOW.debug( "***** Been in pits... resetting stats.\n" );
-            m_lastFuel		= pCar->_fuel;
-            m_lastDamage	= pCar->_dammage;
-        }
-        else
-        {
-            if( pCar->_fuel < m_lastFuel )
-            {
-                m_totalFuel += (m_lastFuel - pCar->_fuel);
-                m_lastFuel = pCar->_fuel;
-            }
-
-            if( pCar->_dammage > m_lastDamage )
-            {
-                m_totalDamage += (pCar->_dammage - m_lastDamage);
-                m_lastDamage = pCar->_dammage;
-            }
-        }
-    }
 
     //
     //	work out fuel economy, and damage rate.
     //
 
-    double	fuelPerM = 0.001;
-    double	damagePerM = 0;
     double	tyreWearPerM = 0;
 
     if( pCar->_distRaced > 0 )
     {
-        fuelPerM = m_totalFuel / pCar->_distRaced;
-        damagePerM = m_totalDamage / pCar->_distRaced;
-
         if(m_HasTYC)
         {
             tyreWearPerM = (1.0 - m_lastTyreWear) / pCar->_distRaced;
-            LogSHADOW.debug(" # Fuel per meter = %.6f - Damage per meter = %.1f - Wear per meter = %.8f\n", fuelPerM, damagePerM, tyreWearPerM);
-        }
-        else
-        {
-            LogSHADOW.debug(" # Fuel per meter = %.6f - Damage per meter = %.1f\n", fuelPerM, damagePerM);
+            LogSHADOW.debug(" # - Wear per meter = %.8f\n", tyreWearPerM);
         }
     }
 
@@ -167,15 +111,12 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
     int		raceLaps = pCar->_laps + pCar->_remainingLaps;
     double	trackLen = m_track.GetLength();
     double	distToRace = trackLen * raceLaps - pCar->_distRaced;
-    double	fuelForRace = 1.1 * fuelPerM * distToRace - pCar->_fuel;
-    int		nPitsForFuel = int(ceil(fuelForRace / pCar->_tank));
-    double	fuelIfPitNow = fuelForRace - (pCar->_tank - pCar->_fuel);
-    int		nPitsIfPitNow = 1 + int(ceil(fuelIfPitNow / pCar->_tank));
+    int		nPitsForFuel = int(ceil(pCar->_tank));
+    int		nPitsIfPitNow = 1 + int(ceil(pCar->_tank));
 
     bool	delayRepair = nPitsForFuel < nPitsIfPitNow;
-    double	repairLimit = delayRepair ? m_dangerDamageLimit : m_warnDamageLimit;
+    double	repairLimit = delayRepair;
 
-    double	fuelPerLap = fuelPerM * trackLen;
     // double	damagePerLap = damagePerM * trackLen;
 
     // if(m_HasTYC)
@@ -346,7 +287,6 @@ void	Strategy::Process( CarElt* pCar, TeamInfo::Item* pTeamInfo )
 
     //	if( m_pitPath.CanStop(trackPos) )
     //		pTeamInfo->lapsUntilPit = pCar->_fuel / fuelPerLap - 1;
-    double	fuelToPit = m_pitPath.EntryToPitDistance() * fuelPerM;
     pTeamInfo->usingPit = m_state == PIT_ENTER || m_state == PIT_ASKED;
 }
 
