@@ -24,6 +24,8 @@
 #define MSG_PRIVATE_CERT_DIALOG_TEXT "Private:"
 #define AMOUNT_OF_NAMES              1
 
+static tDatabaseSettings s_dbsettings;
+
 typedef struct DbControlSettings
 {
     int Username;

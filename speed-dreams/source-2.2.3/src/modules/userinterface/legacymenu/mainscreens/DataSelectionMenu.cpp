@@ -28,8 +28,6 @@ int m_dbStatus;
 
 bool m_controlBool = false;
 
-DatabaseSettings m_dbSettings;
-
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
 static void ChangeEnvironmentStorage(tCheckBoxInfo* p_info)
@@ -103,8 +101,8 @@ static void OnActivate(void* /* dummy */)
     char portString[SETTINGS_NAME_LENGTH];
     tDbControlSettings control;
     control.PortString = portString;
-    LoadDBSettings(s_dbSettingsMenu, m_dbSettings, control);
-    CheckConnection(s_scrHandle, m_dbStatus, m_dbSettings, &m_controlBool);
+    LoadDBSettings(s_dbSettingsMenu, s_dbsettings, control);
+    CheckConnection(s_scrHandle, m_dbStatus, s_dbsettings, &m_controlBool);
 
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
     std::string strPath("config/DataSelectionMenu.xml");
