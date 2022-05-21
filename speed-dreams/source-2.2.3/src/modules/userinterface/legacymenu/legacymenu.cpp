@@ -493,6 +493,7 @@ void LegacyMenu::onRaceFinishing()
     }
 }
 
+// SIMULATED DRIVING ASSISTANCE: Made the screen go to the end of experiment screen
 bool LegacyMenu::onRaceFinished(bool bEndOfSession)
 {
     tRmInfo* pReInfo = _piRaceEngine->inData();

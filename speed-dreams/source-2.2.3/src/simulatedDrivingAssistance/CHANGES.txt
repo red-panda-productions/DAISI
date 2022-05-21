@@ -28,14 +28,12 @@ Added:
         DataSelectionMenu.cpp
         DeveloperMenu.h
         DeveloperMenu.cpp
-        SaveMenu.h
-        SaveMenu.cpp
-        Conformation.h
-        Conformation.cpp
-        EndExperimentMenu.h
-        EndExperimentMenu.cpp
         ResearcherMenu.h
         ResearcherMenu.cpp
+    modules/userinterface/legacymenu/racescreens/
+        SaveMenu.cpp
+        EndExperimentMenu.cpp
+        Conformation.cpp
   data/
     data/
         config/
@@ -204,8 +202,9 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
-                  added    SaveMenu.h and .cpp
-                  added    Confirmation.h and .cpp
+                  added    endexperimentscreen.cpp
+                  added    SaveMenu.cpp
+                  added    Confirmation.cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    EndExperimentMenu.cpp and .h
@@ -217,6 +216,7 @@ Changed:
                     added    ActivateResearcherMenu()
                     changed  backLoad()
                     changed  activate()
+                    changed onRaceFinished();
                     removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
             mainscreens/
                 mainmenu.cpp
@@ -231,7 +231,6 @@ Changed:
                 exitmenu.cpp
                     included "ConfigEnums.h"
                     included "EndExperimentMenu.h"
-                    changed  functionality of ExitMenuInit method
                 exitmenu.h
                     included "ConfigEnums.h"
                 optionsmenu.cpp
@@ -265,6 +264,11 @@ Changed:
                     changed rmRaceManMenu()
                 racescreens.h
                     removed networking
+                    included "ConfigEnums.h"
+                    added RmShowEndExperiment()
+                    added ConfirmationMenuInit()
+                    added SaveMenuInit()
+                    removed RmShowResults()
                 raceselectmenu.cpp
                     changed rmOnActivate()
                     changed rmOnRaceSelectShutdown()

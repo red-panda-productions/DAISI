@@ -52,7 +52,6 @@ onAcceptExit(void* /* dummy */)
  *
  */
 
-// SIMULATED DRIVING ASSISTANCE: added functionality to load the End Experiment menu screen
 void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_raceEndType)
 {
     if (MenuHandle)
