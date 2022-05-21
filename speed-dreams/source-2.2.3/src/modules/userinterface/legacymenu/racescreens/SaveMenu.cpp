@@ -1,10 +1,9 @@
-#include <tgfclient.h>
+#include "tgfclient.h"
 
 #include "legacymenu.h"
 #include "ConfigEnums.h"
 #include "Mediator.h"
-#include "ConfirmationMenu.h"
-#include "SaveMenu.h"
+#include "racescreens.h"
 #include "mainmenu.h"
 
 #define PRM_YES_SAVE_BUTTON  "yessave"
@@ -16,7 +15,7 @@ static void* s_menuHandle = nullptr;
 static void OnAcceptExit(void* /* dummy */)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(true);
-    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
+    LmRaceEngine().abortRace();
     LegacyMenu::self().quit();
 }
 
@@ -28,28 +27,36 @@ static void OnAcceptRestart(void* /* dummy */)
 }
 
 /// @brief tells the mediator to save experiment data and abort the race
-static void OnAcceptAbort(void* /* dummy */)
+static void OnAcceptAbort(void* p_prevMenu)
 {
     SMediator::GetInstance()->SetSaveRaceToDatabase(true);
     LmRaceEngine().abortRace();
+    GfuiScreenActivate(MainMenuInit((p_prevMenu)));
+    LmRaceEngine().cleanup();
+    LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
+}
+
+/// @brief tells the mediator to save experiment data
+static void OnAcceptFinished(void* p_prevMenu)
+{
+    SMediator::GetInstance()->SetSaveRaceToDatabase(true);
+    GfuiScreenActivate(MainMenuInit((p_prevMenu)));
+    LmRaceEngine().cleanup();
+    LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
 }
 
 /// @brief                  create a save data screen
 /// @param p_prevMenu       the previous menu from where it came
 /// @param p_raceEndType enum that decided how you got to the save screen
-void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
+void* SaveMenuInit(RaceEndType p_raceEndType)
 {
-    if (s_menuHandle)
-    {
-        GfuiScreenRelease(s_menuHandle);
-    }
-
     s_menuHandle = GfuiScreenCreate();
 
     void* param = GfuiMenuLoad("savemenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
+
     // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_SAVE_BUTTON, ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_SAVE_BUTTON, ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenReplace);
     switch (p_raceEndType)
     {
         case RACE_EXIT:
@@ -69,7 +76,7 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
         }
         case RACE_FINISHED:
         {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YES_SAVE_BUTTON, nullptr, OnAcceptAbort);
+            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_YES_SAVE_BUTTON, nullptr, OnAcceptFinished);
             break;
         }
         default:
@@ -78,11 +85,15 @@ void* SaveMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
             throw std::runtime_error("incorrect 'p_raceEndType', have you defined the new option in ConfigEnum.h?");
         }
     }  //*/
-    GfParmReleaseHandle(param);
 
     GfuiMenuDefaultKeysAdd(s_menuHandle);
     // add keyboard key functionality
-    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "Wait, changed my mind", p_prevMenu, GfuiScreenActivate, nullptr);
+    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "I don't want to save the data", ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenReplace, nullptr);
+
+    if (p_raceEndType == RACE_RESTART)
+    {
+        GfuiScreenActivate(s_menuHandle);
+    }
 
     return s_menuHandle;
 }

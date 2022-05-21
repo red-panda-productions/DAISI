@@ -30,12 +30,10 @@ Added:
             DeveloperMenu.cpp
             DataCompressionMenu.h
             DataCompressionMenu.cpp
-            SaveMenu.h
+    modules/userinterface/legacymenu/racescreens/
             SaveMenu.cpp
-            Conformation.h
-            Conformation.cpp
             EndExperimentMenu.cpp
-            EndExperimentMenu.h
+            ConformationMenu.cpp
   data/
     data/
         config/
@@ -207,11 +205,10 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
-                  added    SaveMenu.h and .cpp
-                  added    Confirmation.h and .cpp
+                  added    SaveMenu.cpp
+                  added    ConfirmationMenu.cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
-                  added    EndExperimentMenu.cpp and .h
                   added    DataCompressionMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()
@@ -221,7 +218,8 @@ Changed:
                     added    ActivateResearcherMenu()
                     changed  backLoad()
                     changed  activate()
-                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
+                    changed onRaceFinished();
+                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                 mainscreens/
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
@@ -268,6 +266,11 @@ Changed:
                         changed rmRaceManMenu()
                     racescreens.h
                         removed networking
+                        included "ConfigEnums.h"
+                        added RmShowEndExperiment()
+                        added ConfirmationMenuInit()
+                        added SaveMenuInit()
+                        removed RmShowResults()
                     raceselectmenu.cpp
                         changed rmOnActivate()
                         changed rmOnRaceSelectShutdown()
@@ -451,7 +454,7 @@ Changed:
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
-        
+
   cmake/
     checks.cmake
         changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
