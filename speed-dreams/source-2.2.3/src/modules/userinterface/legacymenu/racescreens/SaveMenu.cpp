@@ -88,7 +88,7 @@ void* SaveMenuInit(RaceEndType p_raceEndType)
 
     GfuiMenuDefaultKeysAdd(s_menuHandle);
     // add keyboard key functionality
-    // GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "Wait, changed my mind", p_prevMenu, GfuiScreenActivate, nullptr);
+    GfuiAddKey(s_menuHandle, GFUIK_ESCAPE, "I don't want to save the data", ConfirmationMenuInit(s_menuHandle, p_raceEndType), GfuiScreenReplace, nullptr);
 
     if (p_raceEndType == RACE_RESTART)
     {

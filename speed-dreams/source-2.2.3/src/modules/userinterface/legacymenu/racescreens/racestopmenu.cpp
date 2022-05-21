@@ -46,7 +46,7 @@ static int curPlayerIdx = 0;
 // Abort race hook ******************************************************
 static void *pvAbortRaceHookHandle = 0;
 
-// DRIVING SIMULATOR ASSISTANT: Go to the show end of experiment screen instead of start screen
+// SIMULATED DRIVING ASSISTANT: Go to the show end of experiment screen instead of start screen
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
