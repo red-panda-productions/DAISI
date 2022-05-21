@@ -5,6 +5,7 @@
 #include "mocks/DecisionMakerMock.h"
 #include "../rppUtils/RppUtils.hpp"
 #include "mocks/DecisionMock.h"
+#include "IndicatorConfig.h"
 
 /// @brief                      framework for a test that checks if a mode get run
 /// @param p_interventionType  parameter that determines the mode.
@@ -15,8 +16,14 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     int decisionCount = random.NextInt(1, 10);  // choses a random value of amount of decisions the decisionMaker gets sent
 
     // setting up the config
-    SetupSingletonsFolder();
-    GfInit(true);
+    ASSERT_TRUE(SetupSingletonsFolder());
+    GfInit(GF_LOGGING_DISABLE);
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+
     SDAConfig config;
 
     InterventionExecutor* intervention = config.SetInterventionType(p_interventionType);  // determines the interventiontype that will be run
