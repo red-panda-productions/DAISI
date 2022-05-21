@@ -1,10 +1,10 @@
 /**************************************************************************
 
-file        : racestartstop.cpp
-           copyright   : (C) 2011 by Jean-Philippe Meuret
-      email       : pouillot@users.sourceforge.net
-              version     : $Id: racestopmenu.cpp 6922 2020-04-15 15:29:02Z iobyte $
-                 ***************************************************************************/
+    file        : racestartstop.cpp
+    copyright   : (C) 2011 by Jean-Philippe Meuret
+    email       : pouillot@users.sourceforge.net
+    version     : $Id: racestopmenu.cpp 6922 2020-04-15 15:29:02Z iobyte $
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -36,7 +36,7 @@ file        : racestartstop.cpp
 #endif
 
 
-             extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
+extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
 
 extern bool rmPreRacePause;
 
@@ -265,14 +265,14 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
                const char *buttonRole6 = 0, void *screen6 = 0)
 {
     const tButtonDesc aButtons[6] =
-        {
-            { buttonRole1, screen1 },
-            { buttonRole2, screen2 },
-            { buttonRole3, screen3 },
-            { buttonRole4, screen4 },
-            { buttonRole5, screen5 },
-            { buttonRole6, screen6 },
-        };
+    {
+        { buttonRole1, screen1 },
+        { buttonRole2, screen2 },
+        { buttonRole3, screen3 },
+        { buttonRole4, screen4 },
+        { buttonRole5, screen5 },
+        { buttonRole6, screen6 },
+    };
 
     int nButtons = 2;
     if (buttonRole3 && screen3)
@@ -393,11 +393,11 @@ RmStopRaceMenu()
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
-                                     buttonRole[1], screen[1],
-                                     buttonRole[2], screen[2],
-                                     buttonRole[3], screen[3],
-                                     buttonRole[4], screen[4],
-                                     buttonRole[5], screen[5]);
+               buttonRole[1], screen[1],
+               buttonRole[2], screen[2],
+               buttonRole[3], screen[3],
+               buttonRole[4], screen[4],
+               buttonRole[5], screen[5]);
 }
 
 void
