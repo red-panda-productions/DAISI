@@ -128,6 +128,20 @@ tDataToStore SDAConfig::GetDataCollectionSetting() const
     return m_dataCollectionSetting;
 }
 
+/// @brief                  Sets the boolean that determines if a experiment file will be sent to the database or not.
+/// @param p_saveToDatabase A boolean given by a button press of the user that says if they want to save the data.
+void SDAConfig::SetSaveToDatabaseCheck(bool p_saveToDatabase)
+{
+    m_saveRaceToDatabase = p_saveToDatabase;
+}
+
+/// @brief  Gets the boolean value that determines if the experimental file will be sent to the database.
+/// @return A boolean value that returns true if it should be sent to the database and false if it should not.
+bool SDAConfig::GetSaveToDatabaseCheck() const
+{
+    return m_saveRaceToDatabase;
+}
+
 /// @brief            Sets the filepath for the black box executable
 /// @param p_filePath A const char* representing the filepath of the black box executable
 void SDAConfig::SetBlackBoxFilePath(const char* p_filePath)

@@ -4,17 +4,14 @@
 
 #include "EndExperimentMenu.h"
 
+#include "ConfigEnums.h"
+#include "SaveMenu.h"
+
 static void* s_menuHandle = nullptr;
 
-/// @brief Abort the simulation/race once the 'ok'/'quit' button has been pressed in the EndExperimentMenu
-static void OnAcceptExit(void* /* dummy */)
-{
-    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
-    LegacyMenu::self().quit();
-}
-
-/// @brief Loads the EndExperimentMenu.xml after the race results
-void* EndExperimentInit()
+/// @brief               Loads the EndExperimentMenu.xml after the race results
+/// @param p_raceEndType Enum value that describes how you got to EndExperiment screen
+void* EndExperimentInit(RaceEndType p_raceEndType)
 {
     if (s_menuHandle)
     {
@@ -26,8 +23,8 @@ void* EndExperimentInit()
     void* param = GfuiMenuLoad("EndExperimentMenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
 
-    GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", nullptr, OnAcceptExit);
-    GfuiAddKey(s_menuHandle, GFUIK_SPACE, "No, back to the game", nullptr, OnAcceptExit, nullptr);
+    GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", SaveMenuInit(s_menuHandle, p_raceEndType), GfuiScreenActivate);
+    GfuiAddKey(s_menuHandle, GFUIK_SPACE, "No, back to the game", nullptr, GfuiScreenActivate, nullptr);
 
     GfParmReleaseHandle(param);
 
