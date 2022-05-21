@@ -5,12 +5,10 @@ SET(MS mainscreens)
 SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu.cpp ${MS}/DataSelectionMenu.cpp
                         ${MS}/EndExperimentMenu.cpp
                         ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp ${MS}/DeveloperMenu.cpp
-                        ${MS}/BeginExperimentMenu.cpp
                         ${MS}/EndExperimentMenu.cpp)
 SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.h ${MS}/DataSelectionMenu.h
                         ${MS}/EndExperimentMenu.h
                         ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h
-                        ${MS}/BeginExperimentMenu.h
                         ${MS}/EndExperimentMenu.h)
 
 IF(MSVC)

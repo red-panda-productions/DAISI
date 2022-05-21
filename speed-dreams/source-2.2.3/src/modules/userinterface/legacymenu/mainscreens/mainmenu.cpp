@@ -27,10 +27,6 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
-<<<<<<< HEAD
-#include "BeginExperimentMenu.h"
-=======
->>>>>>> main
 #include "ConfigEnums.h"
 
 static void *MenuHandle = 0;
@@ -50,8 +46,7 @@ onControlMenuActivate(void * /* dummy */)
 static void
 onRaceSelectMenuActivate(void * /* dummy */)
 {
-    //GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
-    GfuiScreenActivate(BeginExperimentInit(MenuHandle));
+    GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
 }
 
 //static void
