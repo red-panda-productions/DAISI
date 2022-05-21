@@ -192,23 +192,24 @@ END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, boolean
 /// @param p_gas          Control gas option
 /// @param p_steer        Control steering option
 /// @param p_force        Force feedback option
-void PControlTestMediator(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
+void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
+    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention, p_force};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
+    ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
+    ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
+    ASSERT_EQ(arr.ControlBrake, pControl.ControlBrake);
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
-    ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
-BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
+BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL5(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the Mediator sets and gets the MaxTime correctly
 TEST(MediatorTests, MaxTimeTest)

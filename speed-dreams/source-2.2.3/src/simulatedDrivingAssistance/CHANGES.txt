@@ -75,7 +75,9 @@ Changed:
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
-                changed common_drive(): added check for input of intervention toggle on/off
+                changed common_drive(): 
+                    added check for input of intervention toggle on/off
+                    added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
                 added   m_prevIntervention member
                 added   NO_KEYBOARD define: clarify magic number
@@ -278,6 +280,7 @@ Changed:
                     changed readSoundCfg()
                 controlconfig.cpp
                     added cmd info for intervention toggle on/off to the Cmd[] member variable.
+                    added cmd disp info for intervention toggle on/off to the CmdDispInfo[] member.
                     included <deque>
                     added static void *PlayerHdle = NULL; from removed playerconfig.cpp
                     added SkillLevelString from removed playerconfig.cpp
