@@ -131,27 +131,18 @@ static void SaveSettingsToDisk()
     GfParmReleaseHandle(readParam);
 }
 
-/// @brief Configures the SDAConfig with the options selected on this menu
-static void SaveSettings(void* /* dummy */)
+static void LoadEnvironment()
 {
-    // Add the functionality of the function here
-    SMediator::GetInstance()->SetDataCollectionSettings(m_dataToStore);
-
-    SaveSettingsToDisk();
-
-    // Make sure data compression screen is also saving its settings
-    ConfigureDataCompressionSettings();
-
     // Go to the main screen
-        // And run it if there's such a race manager.
-    GfRaceManager* pSelRaceMan = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
-    if (pSelRaceMan) // Should never happen (checked in activate).
+// And run it if there's such a race manager.
+    GfRaceManager* RaceManager = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
+    if (RaceManager) // Should never happen (checked in activate).
     {
         // Initialize the race engine.
         LmRaceEngine().reset();
 
         // Give the selected race manager to the race engine.
-        LmRaceEngine().selectRaceman(pSelRaceMan);
+        LmRaceEngine().selectRaceman(RaceManager);
 
         // Configure the new race (but don't enter the config. menu tree).
         LmRaceEngine().configureRace(/* bInteractive */ false);
@@ -163,8 +154,20 @@ static void SaveSettings(void* /* dummy */)
     {
         GfLogError("No such race type '%s'\n", RACE_MANAGER_NAME);
         GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
-        return;
     }
+}
+/// @brief Configures the SDAConfig with the options selected on this menu
+static void StartExperiment(void* /* dummy */)
+{
+    // Add the functionality of the function here
+    SMediator::GetInstance()->SetDataCollectionSettings(m_dataToStore);
+
+    SaveSettingsToDisk();
+
+    // Make sure data compression screen is also saving its settings
+    ConfigureDataCompressionSettings();
+
+    LoadEnvironment();
 }
 
 /// @brief Returns to the researcher menu screen
@@ -191,7 +194,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // ApplyButton and Back-button controls
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "StartButton", s_scrHandle, StartExperiment);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
