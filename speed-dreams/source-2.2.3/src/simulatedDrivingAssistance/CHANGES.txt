@@ -209,7 +209,6 @@ Changed:
                   added    Confirmation.cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
-                  added    EndExperimentMenu.cpp and .h
                   added    DataCompressionMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()
