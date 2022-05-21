@@ -8,10 +8,10 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.03"/>
-                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
-                <attstr name ="signals-only"      val="OnlySignals_Steering_Neutral_256.png"/>
-                <attstr name ="shared-control"    val="SharedControl_Steering_Neutral_256.png"/>
-                <attstr name ="complete-takeover" val="CompleteTakeOver_Neutral_Steering_256.png"/>               
+                <attstr name ="no-help"           val="Steering_Off.png"/>
+                <attstr name ="signals-only"      val="Steering_Warning_Off.png"/>
+                <attstr name ="shared-control"    val="Steering_SharedControl_Off.png"/>
+                <attstr name ="complete-takeover" val="Steering_AI_Off.png"/>               
             </section>            
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
@@ -25,10 +25,10 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.03"/>
-                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
-                <attstr name ="signals-only"      val="OnlySignals_Steering_256.png"/>
-                <attstr name ="shared-control"    val="SharedControl_Steering_256.png"/>
-                <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
+                <attstr name ="no-help"           val="Steering_Off.png"/>
+                <attstr name ="signals-only"      val="Steering_Warning.png"/>
+                <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
+                <attstr name ="complete-takeover" val="Steering_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
@@ -47,10 +47,10 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.03"/>
-                <attstr name ="no-help"           val="SignalsOff_Steering_256.png"/>
-                <attstr name ="signals-only"      val="OnlySignals_Steering_256.png"/>
-                <attstr name ="shared-control"    val="SharedControl_Steering_256.png"/>
-                <attstr name ="complete-takeover" val="CompleteTakeOver_Steering_256.png"/>
+                <attstr name ="no-help"           val="Steering_Off.png"/>
+                <attstr name ="signals-only"      val="Steering_Warning.png"/>
+                <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
+                <attstr name ="complete-takeover" val="Steering_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
