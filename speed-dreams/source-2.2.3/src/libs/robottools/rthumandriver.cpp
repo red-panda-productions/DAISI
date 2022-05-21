@@ -147,6 +147,7 @@ typedef struct HumanContext
 } tHumanContext;
 
 static const int FuelReserve = 3;
+// SIMULATED DRIVING ASSISTANCE: changed the MaxFuelPerMeter value
 static const tdble MaxFuelPerMeter = 0;	// [kg/m] fuel consumption.
 
 static void updateKeys(void);
@@ -2241,6 +2242,7 @@ static void SetFuelAtRaceStart(tTrack* track, void *carHandle, void **carParmHan
         fuel_requested = initial_fuel;
     } else {
         // We must load and calculate parameters.
+        // SIMULATED DRIVING ASSISTANCE: changed the fuel_const_factor value
         const tdble fuel_cons_factor =
             0;
         tdble fuel_per_lap = track->length * MaxFuelPerMeter * fuel_cons_factor;
