@@ -22,18 +22,18 @@ Added:
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
-        ResearcherMenu.h
-        ResearcherMenu.cpp
-        DataSelectionMenu.h
-        DataSelectionMenu.cpp
-        DeveloperMenu.h
-        DeveloperMenu.cpp
-        ResearcherMenu.h
-        ResearcherMenu.cpp
+            ResearcherMenu.h
+            ResearcherMenu.cpp
+            DataSelectionMenu.h
+            DataSelectionMenu.cpp
+            DeveloperMenu.h
+            DeveloperMenu.cpp
+            DataCompressionMenu.h
+            DataCompressionMenu.cpp
     modules/userinterface/legacymenu/racescreens/
-        SaveMenu.cpp
-        EndExperimentMenu.cpp
-        Conformation.cpp
+            SaveMenu.cpp
+            EndExperimentMenu.cpp
+            Conformation.cpp
   data/
     data/
         config/
@@ -52,6 +52,7 @@ Added:
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
+            DataCompressionMenu.xml
             DeveloperMenu.xml
             SaveMenu.xml
             ConformationMenu.xml
@@ -208,6 +209,7 @@ Changed:
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    EndExperimentMenu.cpp and .h
+                  added    DataCompressionMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()
                 legacymenu.cpp
@@ -217,7 +219,7 @@ Changed:
                     changed  backLoad()
                     changed  activate()
                     changed onRaceFinished();
-                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
+                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
             mainscreens/
                 mainmenu.cpp
                     included "DataSelectionMenu.h"
@@ -231,14 +233,13 @@ Changed:
                 exitmenu.cpp
                     included "ConfigEnums.h"
                     included "EndExperimentMenu.h"
+                    changed  functionality of ExitMenuInit method
+                    changed  ExitMenuInit()
                 exitmenu.h
                     included "ConfigEnums.h"
+                    changed  ExitMenuInit(): more parameters
                 optionsmenu.cpp
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
-                exitmenu.h
-                    changed  ExitMenuInit(): more parameters
-                exitmenu.cpp
-                    changed  ExitMenuInit()
             racescreens/
                 raceresultsmenus.cpp
                     included "EndExperimentMenu.h"

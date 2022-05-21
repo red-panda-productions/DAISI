@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE params SYSTEM "../tgf/params.dtd">
+
+<params name="DataCompressionMenu">
+
+    <section name="dynamic controls">
+
+        <!-- Button list to determining whether to run async- or synchronously-->
+        <section name="DataCompressionRadioButtonList">
+            <attstr name="type" val="radio button list"/>
+            <section name="options">
+                <section name="0">
+                    <attstr name="text" val="None"/>
+                    <attstr name="tip"
+                            val="Select for saving the data every timestep. This equals to compressing 0% of the data"/>
+                </section>
+                <section name="1">
+                    <attstr name="text" val="Minimum"/>
+                    <attstr name="tip"
+                            val="Select for saving the data every 3 timesteps. This equals to compressing 66% of the data"/>
+                </section>
+                <section name="2">
+                    <attstr name="text" val="Medium"/>
+                    <attstr name="tip"
+                            val="Select for saving the data every 5 timesteps. This equals to compressing 80% of the data"/>
+                </section>
+                <section name="3">
+                    <attstr name="text" val="Maximum"/>
+                    <attstr name="tip"
+                            val="Select for saving the data every 9 timesteps. This equals to compressing 89% of the data"/>
+                </section>
+                <section name="4">
+                    <attstr name="text" val="Custom:"/>
+                    <attstr name="tip" val="Select for saving the data every custom number of timesteps."/>
+                </section>
+            </section>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="275"/>
+            <attnum name="image width" val="20"/>
+            <attnum name="image height" val="20"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attnum name="selected" val="1"/>
+            <attnum name="distance" val="10"/>
+            <attnum name="minimum of one" val="1"/>
+        </section>
+
+
+        <!-- Input field for data compression -->
+        <section name="CustomCompressionEdit">
+            <attstr name="type" val="edit box"/>
+            <attnum name="max len" val="16"/>
+            <attnum name="x" val="335"/>
+            <attnum name="y" val="155"/>
+            <attnum name="width" val="50"/>
+            <attstr name="h align" val="center"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="text" val="1"/>
+        </section>
+
+        <section name="CancelButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Cancel"/>
+            <attstr name="tip" val="Cancel changes"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="50"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Apply button-->
+        <section name="ApplyButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Apply"/>
+            <attstr name="tip" val="Accept and save changes"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="435"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+    </section>
+
+    <section name="static controls">
+
+        <section name="1">
+            <attstr name="type" val="background image"/>
+            <attstr name="image" val="data/img/splash-aiconf.jpg"/> <!-- TODO change background -->
+        </section>
+
+        <section name="2">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="280"/>
+            <attstr name="text" val="Data Compression:"/>
+            <attstr name="h align" val="right"/>
+            <attnum name="width" val="220"/>
+            <attstr name="font" val="medium"/>
+        </section>
+
+    </section>
+
+</params>
