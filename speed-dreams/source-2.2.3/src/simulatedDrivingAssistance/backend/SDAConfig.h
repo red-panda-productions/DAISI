@@ -25,6 +25,7 @@ private:
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+    bool m_saveRaceToDatabase = false;
     bool m_asyncConnection = true;
     filesystem::path m_currentReplayFolder;
     bool m_replayRecorderOn = false;
@@ -59,6 +60,8 @@ public:
     char* GetUserId() const;
     void SetBlackBoxFilePath(const char* p_filePath);
     const char* GetBlackBoxFilePath() const;
+    void SetSaveToDatabaseCheck(bool p_saveToDatabase);
+    bool GetSaveToDatabaseCheck() const;
 
     InterventionExecutor* SetInterventionType(InterventionType p_type);
     InterventionType GetInterventionType() const;

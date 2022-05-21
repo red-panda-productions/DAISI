@@ -29,8 +29,10 @@ public:
 
     void SetUserId(char* p_userId);
 
-    void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void SetCompressionRate(int p_compressionRate);
 
+    void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void SetSaveRaceToDatabase(bool p_saveToDatabase);
     void SetBlackBoxFilePath(const char* p_filePath);
 
     void SetReplayFolder(const filesystem::path& p_replayFolder);

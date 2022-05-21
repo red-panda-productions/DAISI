@@ -24,6 +24,8 @@
 
 #include "legacymenu.h"
 #include "exitmenu.h"
+#include "SaveMenu.h"
+#include "ConfigEnums.h"
 #include "racescreens.h"
 
 #include <graphic.h>
@@ -41,13 +43,15 @@ static void *hscreen = 0;
 static int curPlayerIdx = 0;
 
 // Abort race hook ******************************************************
+static void *pvAbortRaceHookHandle = 0;
+
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
-    LmRaceEngine().abortRace();
+    if (pvAbortRaceHookHandle)
+        GfuiScreenActivate(SaveMenuInit(pvAbortRaceHookHandle, RACE_ABORT));
+    
 }
-
-static void *pvAbortRaceHookHandle = 0;
 
 static void *
 rmAbortRaceHookInit()
@@ -65,7 +69,7 @@ rmSkipSessionHookActivate(void * /* dummy */)
     LmRaceEngine().skipRaceSession();
 }
 
-static void	*pvSkipSessionHookHandle = 0;
+static void *pvSkipSessionHookHandle = 0;
 
 static void *
 rmSkipSessionHookInit()
@@ -93,7 +97,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
 }
 
-static void	*pvBackToRaceHookHandle = 0;
+static void *pvBackToRaceHookHandle = 0;
 
 void *
 RmBackToRaceHookInit()
@@ -105,13 +109,15 @@ RmBackToRaceHookInit()
 }
 
 // Restart race hook ***************************************************
+static void *pvRestartRaceHookHandle = 0;
+
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
-    LmRaceEngine().restartRace();
+    //if you restart the game it asks you if you want to save the experiment data
+    if (pvRestartRaceHookHandle)
+        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RACE_RESTART));
 }
-
-static void	*pvRestartRaceHookHandle = 0;
 
 static void *
 rmRestartRaceHookInit()
@@ -125,16 +131,17 @@ rmRestartRaceHookInit()
 //SIMULATED DRIVING ASSISTANCE: removed controls settings, removed force feedback settings
 
 // Quit race hook ******************************************************
-static void	*rmStopScrHandle = 0;
+static void *rmStopScrHandle = 0;
 
 static void
 rmQuitHookActivate(void * /* dummy */)
 {
+    //quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, RACE_EXIT));
 }
 
-static void	*pvQuitHookHandle = 0;
+static void *pvQuitHookHandle = 0;
 
 static void *
 rmQuitHookInit()

@@ -77,9 +77,9 @@ static void LoadSettingsFromFile(void* p_param)
     m_decisionThresholds.Steer = GfParmGetNum(p_param, PRM_DECISION_THRESHOLD, GFMNU_ATT_STEER, "%", STANDARD_THRESHOLD_STEER);
 
     // Clamp threshold values
-    ClampFloat(m_decisionThresholds.Accel, 0.0f, 1.0f);
-    ClampFloat(m_decisionThresholds.Brake, 0.0f, 1.0f);
-    ClampFloat(m_decisionThresholds.Steer, 0.0f, 1.0f);
+    Clamp(m_decisionThresholds.Accel, 0.0f, 1.0f);
+    Clamp(m_decisionThresholds.Brake, 0.0f, 1.0f);
+    Clamp(m_decisionThresholds.Steer, 0.0f, 1.0f);
 
     GfParmReleaseHandle(p_param);
 }
@@ -239,7 +239,7 @@ static void SetThreshold(float& p_threshold, int p_thresholdControl)
 {
     // Get threshold from text box, clamp it between 0 and 1
     p_threshold = CharArrToFloat(GfuiEditboxGetString(s_scrHandle, p_thresholdControl));
-    ClampFloat(p_threshold, 0, 1);
+    Clamp(p_threshold, 0.0f, 1.0f);
 
     // Write the clamped value to the text box.
     char buf[32];

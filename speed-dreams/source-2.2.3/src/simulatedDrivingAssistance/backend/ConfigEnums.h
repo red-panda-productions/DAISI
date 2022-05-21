@@ -27,6 +27,24 @@ typedef unsigned int InterventionType;
 
 #define NUM_INTERVENTION_TYPES 4
 
+/// @brief the different ways a race can end
+typedef unsigned int RaceEndType;
+
+#define NORMAL_EXIT   0
+#define RACE_RESTART  1
+#define RACE_EXIT     2
+#define RACE_ABORT    3
+#define RACE_FINISHED 4
+
+/// @brief The different types of data compression that can be done
+typedef unsigned int DataCompressionType;
+
+#define COMPRESSION_NONE    0
+#define COMPRESSION_MINIMUM 1
+#define COMPRESSION_MEDIUM  2
+#define COMPRESSION_MAXIMUM 3
+#define COMPRESSION_CUSTOM  4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
