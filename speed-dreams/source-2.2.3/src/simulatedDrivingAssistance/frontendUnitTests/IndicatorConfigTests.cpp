@@ -153,9 +153,10 @@ protected:
         return data;
     }
 
-    /// @brief        Writes the given indicator data object to a xml file.
-    /// @param p_data The indicator data
-    /// @return       The filepath of the xml file that it has been written to.
+    /// @brief                    Writes the given indicator data object to a xml file.
+    /// @param p_data             The indicator data
+    /// @param p_interventionType The intervention type to load the indicators of.
+    /// @return                   The filepath of the xml file that it has been written to.
     const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data, InterventionType p_interventionType)
     {
         // Open or create the xml file to write to, clean the previous parameters.

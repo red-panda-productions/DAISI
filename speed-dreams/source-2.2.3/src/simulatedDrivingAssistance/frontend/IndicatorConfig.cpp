@@ -109,10 +109,11 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     return {xPos, yPos};
 }
 
-/// @brief          Loads the texture indicator data from the indicator config.xml
-/// @param p_handle The p_handle to the config.xml file
-/// @param p_path   The p_path to the current intervention action to load
-/// @return         The pointer to struct containing the texture data
+/// @brief                    Loads the texture indicator data from the indicator config.xml
+/// @param p_handle           The p_handle to the config.xml file
+/// @param p_path             The p_path to the current intervention action to load
+/// @param p_interventionType The intervention type to load the texture for.
+/// @return                   The pointer to struct containing the texture data
 tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType)
 {
     p_path += PRM_SECT_TEXTURES;
