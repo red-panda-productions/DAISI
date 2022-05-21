@@ -30,6 +30,10 @@ Added:
             DeveloperMenu.cpp
             DataCompressionMenu.h
             DataCompressionMenu.cpp
+            SaveMenu.h
+            SaveMenu.cpp
+            Conformation.h
+            Conformation.cpp
             EndExperimentMenu.cpp
             EndExperimentMenu.h
   data/
@@ -44,6 +48,7 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            head.png
         indicators/
             *
         menu/
@@ -51,6 +56,8 @@ Added:
             DataSelectionMenu.xml
             DataCompressionMenu.xml
             DeveloperMenu.xml
+            SaveMenu.xml
+            ConformationMenu.xml
             EndExperimentMenu.xml
     drivers/
         assistedhuman/
@@ -198,6 +205,8 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
+                  added    SaveMenu.h and .cpp
+                  added    Confirmation.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    EndExperimentMenu.cpp and .h
@@ -225,8 +234,10 @@ Changed:
                     included "ConfigEnums.h"
                     included "EndExperimentMenu.h"
                     changed  functionality of ExitMenuInit method
+                    changed  ExitMenuInit()
                 exitmenu.h
                     included "ConfigEnums.h"
+                    changed  ExitMenuInit(): more parameters
                 optionsmenu.cpp
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
             racescreens/
@@ -236,6 +247,9 @@ Changed:
                 racestopmenu.cpp
                     RmStopRaceMenu()
                     changed  AssistedHuman is a human
+                    changed  rmAbortRaceHookHandle()
+                    changed  rmRestartRaceHooKHandle()
+                    changed  rmQuitHookActive()
                     removed rmProgressiveTimeModifier.start() call
                     removed controls menu
                     changed parameters of GfuiScreenActive() function

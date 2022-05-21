@@ -156,6 +156,10 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
 
     SMediator::GetInstance()->SetBlackBoxSyncOption(false);
 
+    // TODO: Recording should have these values
+    tDecisionThresholds decisionThresholds = {STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_STEER};
+    SMediator::GetInstance()->SetThresholdSettings(decisionThresholds);
+
     GfParmReleaseHandle(replaySettingsHandle);
 
     return true;
