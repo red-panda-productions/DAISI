@@ -131,12 +131,13 @@ static void SaveSettingsToDisk()
     GfParmReleaseHandle(readParam);
 }
 
-static void LoadEnvironment()
+/// @brief Starts the raceEngine according to legacymenu.cpp::startRace
+static void StartRaceEngine()
 {
-    // Go to the main screen
-// And run it if there's such a race manager.
+
+    // get the racemanager and run it if there's such a race manager.
     GfRaceManager* RaceManager = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
-    if (RaceManager) // Should never happen (checked in activate).
+    if (RaceManager)
     {
         // Initialize the race engine.
         LmRaceEngine().reset();
@@ -156,7 +157,8 @@ static void LoadEnvironment()
         GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
     }
 }
-/// @brief Configures the SDAConfig with the options selected on this menu
+/// @brief  Configures the SDAConfig with the options selected on this menu
+///         and starts the race
 static void StartExperiment(void* /* dummy */)
 {
     // Add the functionality of the function here
@@ -167,7 +169,7 @@ static void StartExperiment(void* /* dummy */)
     // Make sure data compression screen is also saving its settings
     ConfigureDataCompressionSettings();
 
-    LoadEnvironment();
+    StartRaceEngine();
 }
 
 /// @brief Returns to the researcher menu screen
