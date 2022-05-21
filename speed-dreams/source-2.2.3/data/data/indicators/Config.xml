@@ -71,9 +71,10 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.03"/>
-                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Off.png"/>
-                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Off.png"/>
-                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Off.png"/>
+                <attstr name ="no-help"           val="Speed_Off.png"/>
+                <attstr name ="signals-only"      val="Speed_Warning_Off.png"/>
+                <attstr name ="shared-control"    val="Speed_SharedControl_Off.png"/>
+                <attstr name ="complete-takeover" val="Speed_AI_Off.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
@@ -87,9 +88,10 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.03"/>
-                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
-                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attstr name ="no-help"           val="Speed_Off.png"/>
+                <attstr name ="signals-only"      val="Speed_Warning.png"/>
+                <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
+                <attstr name ="complete-takeover" val="Speed_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
@@ -108,9 +110,10 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.03"/>
-                <attstr name ="signals-only"      val="Prototypes_V02_Speed_Style_C_Light_Action.png"/>
-                <attstr name ="shared-control"    val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
-                <attstr name ="complete-takeover" val="Prototypes_V02_Speed_Style_C_Heavy_Action.png"/>
+                <attstr name ="no-help"           val="Speed_Off.png"/>
+                <attstr name ="signals-only"      val="Speed_Warning.png"/>
+                <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
+                <attstr name ="complete-takeover" val="Speed_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
