@@ -23,12 +23,14 @@ public:
     void SetPControlSettings(tParticipantControl p_pControl);
     void SetReplayRecorderSetting(bool p_replayRecorderOn);
     void SetBlackBoxSyncOption(bool p_sync);
+
+    void SetThresholdSettings(tDecisionThresholds p_thresholds);
     void SetMaxTime(int p_maxTime);
 
     void SetUserId(char* p_userId);
 
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
-
+    void SetSaveRaceToDatabase(bool p_saveToDatabase);
     void SetBlackBoxFilePath(const char* p_filePath);
 
     void SetReplayFolder(const filesystem::path& p_replayFolder);
@@ -38,6 +40,7 @@ public:
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
+    tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
     int GetMaxTime();
@@ -84,7 +87,6 @@ public:
     {
         return m_inRace;
     }
-
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour
@@ -103,6 +105,9 @@ private:
     unsigned long m_tickCount = 0;
 
     tTrack* m_track = nullptr;
+
+    tDecisionThresholds m_thresholds;
+
     bool m_inRace = false;  // Whether the game is currently in a race
 };
 

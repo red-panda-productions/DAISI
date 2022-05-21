@@ -3,9 +3,11 @@ INCLUDE(../../../../cmake/macros.cmake)
 SET(MS mainscreens)
 # SIMULATED DRIVING ASSISTANCE CHANGE: added InterventionMenu.h and .cpp and  DataSelectionMenu.h and .cpp
 SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu.cpp ${MS}/DataSelectionMenu.cpp
-                        ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp ${MS}/DeveloperMenu.cpp)
+                        ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp ${MS}/DeveloperMenu.cpp
+                        ${MS}/SaveMenu.cpp ${MS}/ConfirmationMenu.cpp ${MS}/EndExperimentMenu.cpp)
 SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.h ${MS}/DataSelectionMenu.h
-                        ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h)
+                        ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h
+                        ${MS}/SaveMenu.h ${MS}/ConfirmationMenu.h ${MS}/EndExperimentMenu.h)
 
 IF(MSVC)
     # errno.cpp should only be included with MSVC
@@ -14,18 +16,14 @@ IF(MSVC)
 ENDIF(MSVC)
 
 SET(CS confscreens)
-SET(CONFSCREENS_SOURCES ${CS}/controlconfig.cpp
-                        ${CS}/joystickconfig.cpp ${CS}/mouseconfig.cpp
-                        ${CS}/joy2butconfig.cpp
-                        ${CS}/displayconfig.cpp 
-                        ${CS}/monitorconfig.cpp
+SET(CONFSCREENS_SOURCES ${CS}/controlconfig.cpp ${CS}/joystickconfig.cpp 
+                        ${CS}/mouseconfig.cpp ${CS}/joy2butconfig.cpp
+                        ${CS}/displayconfig.cpp ${CS}/monitorconfig.cpp
                         ${CS}/soundconfig.cpp)
-SET(CONFSCREENS_HEADERS ${CS}/confscreens.h 
-                        ${CS}/controlconfig.h
+SET(CONFSCREENS_HEADERS ${CS}/confscreens.h ${CS}/controlconfig.h
                         ${CS}/joystickconfig.h ${CS}/mouseconfig.h
                         ${CS}/joy2butconfig.h ${CS}/monitorconfig.h
-                        ${CS}/displayconfig.h   
-                        ${CS}/soundconfig.h)
+                        ${CS}/displayconfig.h ${CS}/soundconfig.h)
 
 IF(OPTION_SDL_FORCEFEEDBACK)
    SET(CONFSCREENS_SOURCES ${CONFSCREENS_SOURCES} ${CS}/forcefeedbackconfig.cpp)

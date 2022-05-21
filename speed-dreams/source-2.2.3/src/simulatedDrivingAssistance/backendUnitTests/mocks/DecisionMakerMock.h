@@ -31,7 +31,7 @@ public:
     {
     }
 
-    void RaceStop()
+    void RaceStop(bool p_saveToDatabase)
     {
         MStoppedRace = true;
     }

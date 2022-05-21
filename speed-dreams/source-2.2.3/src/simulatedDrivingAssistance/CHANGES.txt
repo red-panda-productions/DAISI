@@ -14,10 +14,10 @@ It is ordered by: if a file is added or changed, then if the file is in src or d
 Added:
   src/
     drivers/assistedhuman/
-        assistedhuman.cpp
-        CmakeList.txt
-        Driver.cpp
-        Driver.h
+            assistedhuman.cpp
+            CmakeList.txt
+            Driver.cpp
+            Driver.h
     libs/tgfclient/
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
@@ -28,6 +28,14 @@ Added:
         DataSelectionMenu.cpp
         DeveloperMenu.h
         DeveloperMenu.cpp
+        SaveMenu.h
+        SaveMenu.cpp
+        Conformation.h
+        Conformation.cpp
+        EndExperimentMenu.h
+        EndExperimentMenu.cpp
+        ResearcherMenu.h
+        ResearcherMenu.cpp
   data/
     data/
         config/
@@ -40,12 +48,16 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            head.png
         indicators/
             *
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
             DeveloperMenu.xml
+            SaveMenu.xml
+            ConformationMenu.xml
+            EndExperimentMenu.xml
     drivers/
         assistedhuman/
             *
@@ -124,6 +136,8 @@ Changed:
 
                 added   GfuiDrawString(): overload
                 added   GfuiFontClass: expose to API
+            webserver.cpp
+                changed NotificationManager::updateWebserverStatusUi
     main/
         main.cpp
             added singletonfolder setup
@@ -190,7 +204,11 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
+                  added    SaveMenu.h and .cpp
+                  added    Confirmation.h and .cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
+                  removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
+                  added    EndExperimentMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()
                 legacymenu.cpp
@@ -199,7 +217,7 @@ Changed:
                     added    ActivateResearcherMenu()
                     changed  backLoad()
                     changed  activate()
-                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
+                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
             mainscreens/
                 mainmenu.cpp
                     included "DataSelectionMenu.h"
@@ -208,14 +226,33 @@ Changed:
                     changed  MainMenuInit()
                     changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
                     changed  MainMenuInit()
+                    included "ConfigEnums.h"
+                    changed  onExitMenuActive() method
+                exitmenu.cpp
+                    included "ConfigEnums.h"
+                    included "EndExperimentMenu.h"
+                    changed  functionality of ExitMenuInit method
+                exitmenu.h
+                    included "ConfigEnums.h"
                 optionsmenu.cpp
                     removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                exitmenu.h
+                    changed  ExitMenuInit(): more parameters
+                exitmenu.cpp
+                    changed  ExitMenuInit()
             racescreens/
+                raceresultsmenus.cpp
+                    included "EndExperimentMenu.h"
+                    included several 'Quit' buttons
                 racestopmenu.cpp
                     RmStopRaceMenu()
                     changed  AssistedHuman is a human
+                    changed  rmAbortRaceHookHandle()
+                    changed  rmRestartRaceHooKHandle()
+                    changed  rmQuitHookActive()
                     removed rmProgressiveTimeModifier.start() call
                     removed controls menu
+                    changed parameters of GfuiScreenActive() function
                 racerunningmenus.cpp
                     removed RmProgressiveTimeModifier implementation and calls
                 racemanmenu.cpp
@@ -384,6 +421,8 @@ Changed:
                 renamed race button
                 removed weekend
                 removed player
+            raceresultsmenu.xml
+                added a QuitButton
             soundconfigmenu.xml
                 added controls for intervention sound volume
             stopracemenu.xml

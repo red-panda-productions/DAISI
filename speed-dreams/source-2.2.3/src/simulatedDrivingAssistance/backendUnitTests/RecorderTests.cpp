@@ -492,6 +492,7 @@ TEST(RecorderTests, UpgradeFromV1Test)
     TestV2ToV3Changes(upgradedRunSettingsHandle);
 }
 
+
 /// @brief Test whether the upgrade from V2 is done correctly
 TEST(RecorderTests, UpgradeFromV2Test)
 {
@@ -527,6 +528,7 @@ TEST(RecorderTests, ValidateLatestRecordingTest)
     ASSERT_NE(upgradedRunSettingsHandle, nullptr);
 
     // Are indeed on latest version
+
     ASSERT_EQ(GfParmGetNum(upgradedRunSettingsHandle, PATH_VERSION, KEY_VERSION, nullptr, NAN), CURRENT_RECORDER_VERSION);
 
     // Test that all elements for this version are present
@@ -560,6 +562,13 @@ TEST(RecorderTests, MissingFilesValidation)
 TEST(RecorderTests, InvalidTrackPathV0Validation)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-invalid-track-path-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingTrackPathV0Validation)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-missing-track-path-recording", toValidate);
 
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
 }

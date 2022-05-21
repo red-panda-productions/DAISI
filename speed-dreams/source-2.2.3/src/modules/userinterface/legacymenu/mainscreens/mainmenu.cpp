@@ -22,11 +22,13 @@
 #include <racescreens.h>
 #include <controlconfig.h>
 
+#include "ConfigEnums.h"
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
+#include "ConfigEnums.h"
 
 static void *MenuHandle = 0;
 
@@ -73,10 +75,12 @@ onCreditsMenuActivate(void * /* dummy */)
     CreditsMenuActivate(MenuHandle);
 }
 
+// SIMULATED DRIVING ASSISTANCE: added parameters
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle));
+    // just exit the game, don't ask if you want to save (replay) data
+    GfuiScreenActivate(ExitMenuInit(MenuHandle, false, NORMAL_EXIT));
 }
 
 static void

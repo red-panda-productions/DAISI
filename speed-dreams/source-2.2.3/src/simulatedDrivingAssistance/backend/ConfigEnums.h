@@ -27,6 +27,15 @@ typedef unsigned int InterventionType;
 
 #define NUM_INTERVENTION_TYPES 4
 
+/// @brief the different ways a race can end
+typedef unsigned int RaceEndType;
+
+#define NORMAL_EXIT   0
+#define RACE_RESTART  1
+#define RACE_EXIT     2
+#define RACE_ABORT    3
+#define RACE_FINISHED 4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
@@ -74,3 +83,15 @@ typedef struct DataToStore
     bool InterventionData;
     bool MetaData;
 } tDataToStore;
+
+/// @brief The threshold amounts for decisions. floats are values between 0 and 1.
+typedef struct DecisionThresholds
+{
+    float Accel;
+    float Brake;
+    float Steer;
+} tDecisionThresholds;
+
+#define STANDARD_THRESHOLD_ACCEL 0.9f
+#define STANDARD_THRESHOLD_BRAKE 0.9f
+#define STANDARD_THRESHOLD_STEER 0.04f
