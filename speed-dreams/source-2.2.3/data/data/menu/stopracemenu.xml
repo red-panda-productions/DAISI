@@ -33,13 +33,13 @@
 		<!--SIMULATED DRIVING ASSISTANCE: removed controls and force feedback-->
 		<!-- button texts and tips -->
 		<attstr name="restart.text" val="Restart"/>
-		<attstr name="restart.tip" val="Restart the simulation"/>
+		<attstr name="restart.tip" val="Restart the experiment"/>
 		<attstr name="resume.text" val="Resume"/>
-		<attstr name="resume.tip" val="Return to the simulation"/>
+		<attstr name="resume.tip" val="Return to the experiment"/>
 		<attstr name="skip.text" val="Skip Session"/>
 		<attstr name="skip.tip" val="Skip the current session"/>
 		<attstr name="abort.text" val="Stop"/>
-		<attstr name="abort.tip" val="Stop the simulation"/>
+		<attstr name="abort.tip" val="Stop the experiment"/>
 
 	</section>
 
