@@ -122,6 +122,7 @@ static void LoadSettings()
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadSettingsFromFile(param);
+        GfParmReleaseHandle(param);
         SynchronizeControls();
         return;
     }

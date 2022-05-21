@@ -61,7 +61,6 @@ static void* s_nextHandle = nullptr;
 int m_indicatorsControl[INDICATOR_AMOUNT];
 int m_pControlControl[PCONTROL_AMOUNT];
 int m_allowedActionsControl[ALLOWED_ACTIONS_AMOUNT];
-int m_taskControl;
 int m_interventionTypeControl;
 
 // Allowed black box actions
@@ -258,6 +257,7 @@ static void SaveSettingsToDisk()
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -400,6 +400,7 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
