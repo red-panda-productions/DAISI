@@ -130,10 +130,7 @@ Section "!Base System" SEC01
   File /r "${BUILD_INST_DIR}\data\config\raceman\extra\*.*"
 
   SetOutPath "$INSTDIR\data\config\raceman"
-  File "${BUILD_INST_DIR}\data\config\raceman\practice.xml"
   File "${BUILD_INST_DIR}\data\config\raceman\quickrace.xml"
-  File "${BUILD_INST_DIR}\data\config\raceman\singleevent-challenge.xml"
-  File "${BUILD_INST_DIR}\data\config\raceman\singleevent-endurance.xml"
 
   ; Moved to 'speed-dreams-wip-cars-and-tracks.nsi' for version 2.1.0
   ;File "${BUILD_INST_DIR}\data\config\raceman\networkrace.xml"
@@ -216,6 +213,9 @@ Section "!Base System" SEC01
 
   SetOutPath "$INSTDIR\data\cars\models\sc-spirit-300"
   File /r /x *.lib "${BUILD_INST_DIR}\data\cars\models\sc-spirit-300\*.*"
+
+  SetOutPath "$INSTDIR\data\cars\models\primo"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\cars\models\primo\*.*"
 
   ; Base tracks (only Espie)
   SetOutPath "$INSTDIR\data\tracks\circuit\espie"
