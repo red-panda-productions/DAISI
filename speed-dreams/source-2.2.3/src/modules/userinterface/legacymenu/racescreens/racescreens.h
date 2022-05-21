@@ -1,12 +1,12 @@
 /***************************************************************************
 
-    file                 : racescreens.h
-    created              : Sat Mar 18 23:33:01 CET 2000
-    copyright            : (C) 2000 by Eric Espie
-    email                : torcs@free.fr
-    version              : $Id: racescreens.h 6496 2017-01-12 23:43:21Z beaglejoe $
+file                 : racescreens.h
+           created              : Sat Mar 18 23:33:01 CET 2000
+                     copyright            : (C) 2000 by Eric Espie
+                                 email                : torcs@free.fr
+                                         version              : $Id: racescreens.h 6496 2017-01-12 23:43:21Z beaglejoe $
 
- ***************************************************************************/
+                 ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -26,59 +26,55 @@
 #define __RACESCREENS_H__
 
 #include <raceman.h>
-#include "ConfigEnums.h"
+
 #include <itrackloader.h>
 
-#include <tgfclient.h>  // tfuiCallback
+#include <tgfclient.h> // tfuiCallback
 
-class GfRace;
+             class GfRace;
 
 typedef struct RmTrackSelect
 {
-    GfRace *pRace;               /* The race to update */
-    void *prevScreen;            /* Race manager screen to go back */
-    void *nextScreen;            /* Race manager screen to go after select */
-    ITrackLoader *piTrackLoader; /* Track loader */
+    GfRace      *pRace; /* The race to update */
+    void        *prevScreen;	/* Race manager screen to go back */
+    void        *nextScreen;	/* Race manager screen to go after select */
+    ITrackLoader	*piTrackLoader;	/* Track loader */
 } tRmTrackSelect;
 
 typedef struct RmDriverSelect
 {
-    GfRace *pRace;    /* The race to update */
-    void *prevScreen; /* Race manager screen to go back */
-    void *nextScreen; /* Race manager screen to go after select */
+    GfRace      *pRace; /* The race to update */
+    void        *prevScreen;	/* Race manager screen to go back */
+    void        *nextScreen;	/* Race manager screen to go after select */
 } tRmDriverSelect;
 
 typedef struct RmRaceParam
 {
-    GfRace *pRace;       /* The race to update */
-    std::string session; /* The race session to configure (RM_VAL_ANYRACE for all of them) */
-    void *prevScreen;    /* Race manager screen to go back */
-    void *nextScreen;    /* Race manager screen to go after select */
+    GfRace          *pRace; /* The race to update */
+    std::string		session; /* The race session to configure (RM_VAL_ANYRACE for all of them) */
+    void        	*prevScreen;	/* Race manager screen to go back */
+    void        	*nextScreen;	/* Race manager screen to go after select */
 } tRmRaceParam;
 #ifdef CLIENT_SERVER
 typedef struct RmNetworkSetting
 {
-    GfRace *pRace;    /* The race to update */
-    void *prevScreen; /* Race manager screen to go back */
-    void *nextScreen; /* Race manager screen to go after select */
+    GfRace      *pRace; /* The race to update */
+    void        *prevScreen;	/* Race manager screen to go back */
+    void        *nextScreen;	/* Race manager screen to go after select */
 } tRmNetworkSetting;
 #endif
 
-typedef void (*tfSelectFile)(const char *);
+typedef void (*tfSelectFile) (const char *);
 
-enum RmFileSelectMode
-{
-    RmFSModeLoad,
-    RmFSModeSave
-};
+enum RmFileSelectMode { RmFSModeLoad, RmFSModeSave };
 
 typedef struct RmFileSelect
 {
-    std::string title;
-    std::string dirPath;
+    std::string	title;
+    std::string	dirPath;
     std::string namePrefix;
     std::string nameSuffix;
-    void *prevScreen;
+    void* prevScreen;
     tfSelectFile select;
     RmFileSelectMode mode;
 } tRmFileSelect;
@@ -100,59 +96,59 @@ extern void RmLoadingScreenShutdown();
 
 extern void RmOptimizationScreenStart(const char * /* text */, const char * /* bgimg */);
 extern void RmOptimizationScreenSetText(const char * /* text */);
-extern void RmOptimizationScreenSetParameterText(int /* n */, char ** /* label */, char ** /* value */, char ** /* range */);
+extern void RmOptimizationScreenSetParameterText(int /* n */, char** /* label */, char** /* value */, char** /* range */);
 extern void RmOptimizationScreenSetStatusText(int, int, double, double, double, double);
 extern void RmOptimizationScreenShutdown();
 
 extern void RmGameScreen();
 
+// SIMULATED DRIVING ASSISTANT: Remove show results, instead show end of experiment screen and save/confirmation screens
 extern void RmShowEndExperiment(RaceEndType p_raceEndType);
-
-extern void *RmBackToRaceHookInit();
-extern void RmStopRaceMenu();
-extern void RmStopRaceMenuShutdown();
-
 extern void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_raceEndType);
 extern void *SaveMenuInit(RaceEndType p_raceEndType);
+
+extern void* RmBackToRaceHookInit();
+extern void RmStopRaceMenu();
+extern void RmStopRaceMenuShutdown();
 
 extern void RmStartRaceMenu();
 extern void RmStartRaceMenuShutdown();
 
-extern void RmRaceParamsMenu(void *vrp);
+extern void RmRaceParamsMenu(void* vrp);
 
-extern void RmShowStandings(void *prevHdle, tRmInfo *info, int start = 0);
+extern void RmShowStandings(void* prevHdle, tRmInfo *info, int start = 0);
 
-extern void *RmFileSelect(void *vs);
+extern void* RmFileSelect(void* vs);
 
 // From racemanmenus.
 extern void RmRacemanMenu();
 extern void RmNextEventMenu();
-extern void RmConfigureRace(void * /* dummy */);
-extern void RmSetRacemanMenuHandle(void *handle);
+extern void RmConfigureRace(void*  /* dummy */);
+extern void RmSetRacemanMenuHandle(void*  handle);
 
-extern void *RmGetRacemanMenuHandle();
+extern void* RmGetRacemanMenuHandle();
 
 extern void RmConfigRunState(bool bStart = false);
 
 // From raceselectmenu.
-extern void *RmRaceSelectInit(void *precMenu);
+extern void* RmRaceSelectInit(void* precMenu);
 
 // From racerunningmenus.
-extern void *RmScreenInit();
+extern void* RmScreenInit();
 extern void RmScreenShutdown();
-extern void *RmInitReUpdateStateHook();
+extern void* RmInitReUpdateStateHook();
 extern void RmShutdownReUpdateStateHook();
 extern bool RmCheckPitRequest();
 
-extern void *RmResScreenInit();
+extern void* RmResScreenInit();
 extern void RmResScreenShutdown();
 extern void RmResScreenSetTitles(const char *pszTitle, const char *pszSubTitle);
 extern void RmResScreenSetHeader(const char *pszHeader);
 extern void RmResScreenAddText(const char *pszText);
 extern void RmResScreenSetText(const char *pszText, int nRowIndex, int nColorIndex);
 extern void RmResScreenRemoveText(int nRowIndex);
-// extern void RmResShowCont(); // Never used : remove ?
-extern int RmResGetRows();
+//extern void RmResShowCont(); // Never used : remove ?
+extern int  RmResGetRows();
 extern void RmResEraseScreen();
 
 extern void RmAddPreRacePauseItems();
@@ -168,6 +164,7 @@ extern void *RmRaceSelectMenuHandle;
 class RmProgressiveTimeModifier
 {
 public:
+
     //! Constructor.
     RmProgressiveTimeModifier();
 
@@ -181,10 +178,12 @@ public:
     void execute();
 
 private:
+
     //! For when the ramp up is over.
     void terminate();
 
 private:
+
     // Should we run the manager at next simu step ?
     bool _bExecRunning;
 
@@ -201,6 +200,7 @@ private:
     double _fResetterTimeMultiplier;
 
 private:
+
     // Config: Set how much time will take to restore to normal speed (after the delay)
     static const double _sfTimeMultiplier;
 
@@ -209,6 +209,7 @@ private:
 
     // Config: Set how much the time will be initially changed (as a fraction of the current time)
     static const double _sfTimeLapse;
+
 };
 
 #endif /* __RACESCREENS_H__ */
