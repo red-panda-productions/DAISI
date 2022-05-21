@@ -506,9 +506,6 @@ bool LegacyMenu::onRaceFinished(bool bEndOfSession)
         if (!_hscrReUpdateStateHook)
             _hscrReUpdateStateHook = ::RmInitReUpdateStateHook();
 
-        // This is now the "game" screen.
-        _hscrGame = _hscrReUpdateStateHook;
-
         // Display the end screen menu (will activate the game screen on exit).
         ::RmShowEndExperiment(RACE_FINISHED);
 

@@ -26,7 +26,7 @@
 #include "mainmenu.h"
 #include "ConfigEnums.h"
 
-static void* MenuHandle = NULL;
+static void* MenuHandle = nullptr;
 
 static void
 onAcceptExit(void* /* dummy */)
