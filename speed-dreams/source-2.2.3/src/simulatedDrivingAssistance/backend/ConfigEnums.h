@@ -79,9 +79,10 @@ static constexpr InterventionActionType s_actionToActionType[NUM_INTERVENTION_AC
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl
 {
+    bool ControlSteer;
+    bool ControlAccel;
+    bool ControlBrake;
     bool ControlInterventionToggle;
-    bool ControlGas;
-    bool ControlSteering;
 
     bool ForceFeedback;
 } tParticipantControl;
