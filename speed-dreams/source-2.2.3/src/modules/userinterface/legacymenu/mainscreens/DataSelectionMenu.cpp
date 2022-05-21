@@ -14,13 +14,12 @@
 #define PRM_HUMAN_DATA "CheckboxUserData"
 #define PRM_INTRV_DATA "CheckboxInterventionData"
 #define PRM_META_DATA  "CheckboxMetaData"
-#define RACE_MANAGER_NAME "Quick Race"
+#define RACE_MANAGER_NAME "quickrace"
 
 #define PRM_COMP "CompButton"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
-static void* s_nextHandle = nullptr;
 
 // Data to store
 tDataToStore m_dataToStore;
@@ -166,7 +165,6 @@ static void SaveSettings(void* /* dummy */)
         GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
         return;
     }
-    GfuiScreenActivate(RmRaceSelectInit(s_scrHandle));
 }
 
 /// @brief Returns to the researcher menu screen
@@ -185,8 +183,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     if (s_scrHandle) return s_scrHandle;
 
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
-                                   nullptr, (tfuiCallback) nullptr, 1);
-    s_nextHandle = p_nextMenu;
+        nullptr, (tfuiCallback) nullptr, 1);
 
     DataCompressionMenuInit(s_scrHandle);
 

@@ -62,12 +62,7 @@ onOptionsMenuActivate(void * /* dummy */)
     GfuiScreenActivate(OptionsMenuInit(MenuHandle));
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
-/// @brief Activates the dataSelectionMenu screen
-static void GoBack(void* /* dummy */)
-{
-    GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
-}
+
 
 static void
 onCreditsMenuActivate(void * /* dummy */)
@@ -130,8 +125,6 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
 
