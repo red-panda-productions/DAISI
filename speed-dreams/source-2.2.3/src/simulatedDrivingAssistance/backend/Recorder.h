@@ -36,9 +36,10 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_NAME     "name"
 #define KEY_VERSION  "version"
 
-#define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
-#define KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE "control_intervention_toggle"
 #define KEY_PARTICIPANT_CONTROL_CONTROL_STEERING            "control_steering"
+#define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
+#define KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE               "control_brake"
+#define KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE "control_intervention_toggle"
 #define KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK              "force_feedback"
 #define KEY_PARTICIPANT_CONTROL_RECORD_SESSION              "record_session"
 #define KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION           "bb_record_session"
@@ -49,7 +50,7 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_ALLOWED_ACTION_ACCELERATE "accelerate"
 #define KEY_ALLOWED_ACTION_BRAKE      "brake"
 
-#define CURRENT_RECORDER_VERSION 3
+#define CURRENT_RECORDER_VERSION 4
 #define DEFAULT_MAX_TIME         10
 
 #define DECISION_RECORD_PARAM_AMOUNT 4
@@ -68,7 +69,7 @@ public:
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
-    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder);
+    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder, int p_targetVersion = CURRENT_RECORDER_VERSION);
 
 private:
     static bool CheckSameInput(const float* p_input, const float* p_prevInput, int p_paramAmount);
