@@ -241,6 +241,22 @@ TEST(MediatorTests, UserIDTest)
     }
 }
 
+/// @brief Tests if the Mediator sets and gets the compression rate correctly
+TEST(MediatorTests, CompressionRateTest)
+{
+    Random random;
+    char buf[32];
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        SDAConfigMediator::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+        int compressionRate = random.NextInt();
+        SDAConfigMediator::GetInstance()->SetCompressionRate(compressionRate);
+        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
+        ASSERT_EQ(compressionRate, config.GetCompressionRate());
+    }
+}
+
 /// @brief Tests if the Mediator sets and gets the BlackBoxFilePath correctly
 TEST(MediatorTests, BlackBoxFilePathTest)
 {
