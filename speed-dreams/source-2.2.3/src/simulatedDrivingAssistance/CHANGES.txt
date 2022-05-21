@@ -426,7 +426,7 @@ Changed:
         removed singleeven-endurance.xml
       cars/models/primo/
         primo.xml
-           Changed the value of 'fuel cons factor' to 0
+           removed the fuel cons factor
       data/
         credits.xml
             added Simulated driving assistance developers

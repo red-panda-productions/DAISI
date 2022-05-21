@@ -184,7 +184,7 @@
 		<attnum name="revs maxi" unit="rpm" val="10000"/>
 		<attnum name="revs limiter" unit="rpm" val="4500"/>
 		<attnum name="tickover" unit="rpm" val="100"/>
-		<attnum name="fuel cons factor" val="0"/>
+		<!-- SIMULATED DRIVING ASSISTANCE: fuel cons factor has been removed -->
 		<attstr name="turbo" in="true,false" val="false"/>
 		<attnum name="turbo rpm" unit="rpm" val="0"/>
 		<attnum name="turbo factor" val="0.0"/>
