@@ -111,12 +111,13 @@ RmBackToRaceHookInit()
 // Restart race hook ***************************************************
 static void *pvRestartRaceHookHandle = 0;
 
+// SIMULATED DRIVING ASSISTANT: go to the save menu screen
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
     //if you restart the game it asks you if you want to save the experiment data
     if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RACE_RESTART));
+        SaveMenuInit(RACE_RESTART);
 }
 
 static void *

@@ -534,6 +534,7 @@ void LegacyMenu::onRaceEventFinishing()
     }
 }
 
+// SIMULATED DRIVING ASSISTANT: remove showing standings
 void LegacyMenu::showStandings()
 {
     // Create the "Race Engine update state" hook if not already done.
@@ -542,9 +543,6 @@ void LegacyMenu::showStandings()
 
     // This is now the "game" screen.
     _hscrGame = _hscrReUpdateStateHook;
-
-    // Display the standings menu (will activate the game screen on exit).
-    ::RmShowStandings(_hscrGame, _piRaceEngine->inData(), 0);
 }
 
 bool LegacyMenu::onRaceEventFinished(bool bMultiEvent, bool careerNonHumanGroup)

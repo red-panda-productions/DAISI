@@ -26,6 +26,7 @@ file                 : racescreens.h
 #define __RACESCREENS_H__
 
 #include <raceman.h>
+#include "ConfigEnums.h"
 
 #include <itrackloader.h>
 
