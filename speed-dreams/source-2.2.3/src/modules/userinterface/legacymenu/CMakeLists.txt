@@ -31,8 +31,7 @@ IF(OPTION_SDL_FORCEFEEDBACK)
 ENDIF(OPTION_SDL_FORCEFEEDBACK)
 
 SET(RS racescreens)
-SET(RACESCREENS_SOURCES ${RS}/fileselect.cpp
-                        ${RS}/raceloadingmenu.cpp ${RS}/racerunningmenus.cpp
+SET(RACESCREENS_SOURCES ${RS}/raceloadingmenu.cpp ${RS}/racerunningmenus.cpp
                         ${RS}/raceoptimizationmenu.cpp
                         ${RS}/racestopmenu.cpp ${RS}/racestartmenu.cpp
                         ${RS}/racepitmenu.cpp
