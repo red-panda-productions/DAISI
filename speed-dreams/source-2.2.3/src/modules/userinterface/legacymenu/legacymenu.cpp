@@ -1,11 +1,11 @@
 /***************************************************************************
 
-    file                 : legacymenu.cpp
-    copyright            : (C) 2011 by Jean-Philippe Meuret
-    email                : pouillot@users.sourceforge.net
-    version              : $Id: legacymenu.cpp 6941 2020-04-24 02:38:55Z scttgs0 $
+file                 : legacymenu.cpp
+           copyright            : (C) 2011 by Jean-Philippe Meuret
+      email                : pouillot@users.sourceforge.net
+              version              : $Id: legacymenu.cpp 6941 2020-04-24 02:38:55Z scttgs0 $
 
- ***************************************************************************/
+                 ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -23,6 +23,8 @@
 #include <igraphicsengine.h>
 #include <isoundengine.h>
 
+
+
 #include <tgf.hpp>
 #include <portability.h>
 #include <tgfclient.h>
@@ -38,13 +40,13 @@
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "racescreens.h"
-#include "ConfigEnums.h"
 
 #include "legacymenu.h"
 #include "displayconfig.h"
 
-// The LegacyMenu singleton.
-LegacyMenu* LegacyMenu::_pSelf = 0;
+
+             // The LegacyMenu singleton.
+             LegacyMenu* LegacyMenu::_pSelf = 0;
 
 int openGfModule(const char* pszShLibName, void* hShLibHandle)
 {
@@ -82,7 +84,8 @@ LegacyMenu& LegacyMenu::self()
 }
 
 LegacyMenu::LegacyMenu(const std::string& strShLibName, void* hShLibHandle)
-    : GfModule(strShLibName, hShLibHandle), _piRaceEngine(0), _piGraphicsEngine(0), _piSoundEngine(0), _hscrReUpdateStateHook(0), _hscrGame(0), _bfGraphicsState(0)
+    : GfModule(strShLibName, hShLibHandle), _piRaceEngine(0), _piGraphicsEngine(0), _piSoundEngine(0),
+      _hscrReUpdateStateHook(0), _hscrGame(0), _bfGraphicsState(0)
 {
 }
 
@@ -131,7 +134,7 @@ bool LegacyMenu::startRace()
 
     // And run it if there's such a race manager.
     GfRaceManager* pSelRaceMan = GfRaceManagers::self()->getRaceManager(strRaceToStart);
-    if (pSelRaceMan)  // Should never happen (checked in activate).
+    if (pSelRaceMan) // Should never happen (checked in activate).
     {
         // Initialize the race engine.
         LmRaceEngine().reset();
@@ -165,11 +168,12 @@ bool LegacyMenu::activate()
 
     // Get the race to start if specified, and check if it's an available one.
     std::string strRaceToStart;
-    if (GfApp().hasOption("startrace", strRaceToStart) && !GfRaceManagers::self()->getRaceManager(strRaceToStart))
+    if (GfApp().hasOption("startrace", strRaceToStart)
+        && !GfRaceManagers::self()->getRaceManager(strRaceToStart))
     {
         GfLogError("No such race type '%s', falling back to interactive choice\n",
                    strRaceToStart.c_str());
-        strRaceToStart.clear();  // Cancel wrong choice.
+        strRaceToStart.clear(); // Cancel wrong choice.
     }
 
     // If no specified race to start, or if not an available one,
@@ -226,10 +230,10 @@ void LegacyMenu::activateLoadingScreen()
     if (_piRaceEngine->race()->getManager()->hasSubFiles())
     {
         const char* pszGroup = GfParmGetStr(pReInfo->params, RM_SECT_HEADER, RM_ATTR_NAME, "<no group>");
-        snprintf(pszTitle, sizeof(pszTitle), "%s - %s", pReInfo->_reName, pszGroup);
+        snprintf(pszTitle, sizeof (pszTitle), "%s - %s", pReInfo->_reName, pszGroup);
     }
     else
-        snprintf(pszTitle, sizeof(pszTitle), "%s", pReInfo->_reName);
+        snprintf(pszTitle, sizeof (pszTitle), "%s", pReInfo->_reName);
 
     ::RmLoadingScreenStart(pszTitle, "data/img/splash-raceload.png");
 }
@@ -256,7 +260,7 @@ void LegacyMenu::addOptimizationMessage(const char* pszText)
 
 void LegacyMenu::addOptimizationParameterMessage(int n, char** Labels, char** Values, char** Ranges)
 {
-    ::RmOptimizationScreenSetParameterText(n, Labels, Values, Ranges);
+    ::RmOptimizationScreenSetParameterText(n,Labels,Values,Ranges);
 }
 
 void LegacyMenu::addOptimizationStatusMessage(
@@ -290,7 +294,7 @@ bool LegacyMenu::onRaceEventStarting(bool careerNonHumanGroup)
         {
             ::RmNextEventMenu();
 
-            return false;  // Tell the race engine state automaton to stop looping (enter the menu).
+            return false; // Tell the race engine state automaton to stop looping (enter the menu).
         }
         else
         {
@@ -301,7 +305,7 @@ bool LegacyMenu::onRaceEventStarting(bool careerNonHumanGroup)
 
     GfLogInfo("Not starting Next Event menu, as only one track to race on.\n");
 
-    return true;  // Tell the race engine state automaton to go on looping.
+    return true; // Tell the race engine state automaton to go on looping.
 }
 
 void LegacyMenu::onRaceInitializing()
@@ -310,9 +314,10 @@ void LegacyMenu::onRaceInitializing()
     // that is at race session and timed practice or qualifying sessions,
     // and for the first car in non-timed practice or qualifying sessions.
     tRmInfo* pReInfo = _piRaceEngine->inData();
-    if ((pReInfo->s->_raceType == RM_TYPE_QUALIF || pReInfo->s->_raceType == RM_TYPE_PRACTICE) && pReInfo->s->_totTime < 0.0f)
+    if ((pReInfo->s->_raceType == RM_TYPE_QUALIF || pReInfo->s->_raceType == RM_TYPE_PRACTICE)
+        && pReInfo->s->_totTime < 0.0f)
     {
-        if ((int)GfParmGetNum(pReInfo->results, RE_SECT_CURRENT, RE_ATTR_CUR_DRIVER, 0, 1) == 1)
+        if ((int) GfParmGetNum(pReInfo->results, RE_SECT_CURRENT, RE_ATTR_CUR_DRIVER, 0, 1) == 1)
             activateLoadingScreen();
         else
             shutdownLoadingScreen();
@@ -335,8 +340,7 @@ bool LegacyMenu::onRaceStarting()
     tRmInfo* pReInfo = _piRaceEngine->inData();
     const bool bNeedStartMenu =
         strcmp(GfParmGetStr(pReInfo->params, pReInfo->_reRaceName,
-                            RM_ATTR_SPLASH_MENU, RM_VAL_NO),
-               RM_VAL_YES) == 0;
+                            RM_ATTR_SPLASH_MENU, RM_VAL_NO), RM_VAL_YES) == 0;
     if (bNeedStartMenu)
     {
         shutdownLoadingScreen();
@@ -361,7 +365,9 @@ void LegacyMenu::onRaceLoadingDrivers()
 
     // If first driver (of a practice or qualifying) or race session,
     // activate race loading screen.
-    if (!(_piRaceEngine->inData()->s->_raceType == RM_TYPE_QUALIF || _piRaceEngine->inData()->s->_raceType == RM_TYPE_PRACTICE) || (int)GfParmGetNum(_piRaceEngine->inData()->results, RE_SECT_CURRENT, RE_ATTR_CUR_DRIVER, NULL, 1) == 1)
+    if (!(_piRaceEngine->inData()->s->_raceType == RM_TYPE_QUALIF
+          || _piRaceEngine->inData()->s->_raceType == RM_TYPE_PRACTICE)
+        || (int) GfParmGetNum(_piRaceEngine->inData()->results, RE_SECT_CURRENT, RE_ATTR_CUR_DRIVER, NULL, 1) == 1)
     {
         activateLoadingScreen();
     }
@@ -379,7 +385,7 @@ void LegacyMenu::onRaceDriversLoaded()
         if (initializeGraphics() && initializeSound())
         {
             char buf[128];
-            snprintf(buf, sizeof(buf), "Loading graphics for %s track ...",
+            snprintf(buf, sizeof (buf), "Loading graphics for %s track ...",
                      _piRaceEngine->inData()->track->name);
             addLoadingMessage(buf);
 
@@ -405,8 +411,7 @@ void LegacyMenu::onRaceSimulationReady()
     }
 }
 
-bool LegacyMenu::onRaceStartingPaused()
-{
+bool LegacyMenu::onRaceStartingPaused(){
     GfLogDebug("LegacyMenu::onRaceStartingPaused()\n");
 
     bool preracePauseEnabled = false;
@@ -417,10 +422,9 @@ bool LegacyMenu::onRaceStartingPaused()
 
     // does the config allow Prerace pause?
     const char* preracepause = GfParmGetStr(hparmRaceEng, RM_SECT_RACE_ENGINE, RM_ATTR_STARTPAUSED, RM_VAL_OFF);
-    preracePauseEnabled = strcmp(preracepause, RM_VAL_OFF) ? true : false;
+    preracePauseEnabled = strcmp(preracepause,RM_VAL_OFF) ? true : false;
 
-    if (preracePauseEnabled)
-    {
+    if (preracePauseEnabled){
         ::RmAddPreRacePauseItems();
     }
 
@@ -445,19 +449,19 @@ void LegacyMenu::onRaceResuming()
 
 void LegacyMenu::onLapCompleted(int nLapIndex)
 {
+
     if (nLapIndex <= 0)
         return;
 
     GfLogInfo("Lap #%d completed.\n", nLapIndex);
 }
 
-void LegacyMenu::onRaceInterrupted()
-{
+void LegacyMenu::onRaceInterrupted() {
     ::RmStopRaceMenu();
 }
 
-bool LegacyMenu::onRaceCooldownStarting()
-{
+bool LegacyMenu::onRaceCooldownStarting(){
+
     bool cooldownEnabled = false;
     char buf[256];
     snprintf(buf, sizeof(buf), "%s%s", GfLocalDir(), RACE_ENG_CFG);
@@ -466,10 +470,9 @@ bool LegacyMenu::onRaceCooldownStarting()
 
     // Does the config allow cooldown driving?
     const char* cooldown = GfParmGetStr(hparmRaceEng, RM_SECT_RACE_ENGINE, RM_ATTR_COOLDOWN, RM_VAL_OFF);
-    cooldownEnabled = strcmp(cooldown, RM_VAL_OFF) ? true : false;
+    cooldownEnabled = strcmp(cooldown,RM_VAL_OFF) ? true : false;
 
-    if (cooldownEnabled)
-    {
+    if (cooldownEnabled){
         ::RmAddCooldownItems();
     }
 
@@ -501,7 +504,9 @@ bool LegacyMenu::onRaceFinished(bool bEndOfSession)
     // Display the results of the session for all the competitors
     // only if this is the end of a session (for all competitors),
     // and if specified by the race mode or if the display mode is "normal".
-    if (bEndOfSession && (!strcmp(GfParmGetStr(pReInfo->params, pReInfo->_reRaceName, RM_ATTR_DISPRES, RM_VAL_YES), RM_VAL_YES) || pReInfo->_displayMode == RM_DISP_MODE_NORMAL))
+    if (bEndOfSession
+        && (!strcmp(GfParmGetStr(pReInfo->params, pReInfo->_reRaceName, RM_ATTR_DISPRES, RM_VAL_YES), RM_VAL_YES)
+            || pReInfo->_displayMode == RM_DISP_MODE_NORMAL))
     {
         // Create the "Race Engine update state" hook if not already done.
         if (!_hscrReUpdateStateHook)
@@ -537,6 +542,9 @@ void LegacyMenu::showStandings()
 
     // This is now the "game" screen.
     _hscrGame = _hscrReUpdateStateHook;
+
+    // Display the standings menu (will activate the game screen on exit).
+    ::RmShowStandings(_hscrGame, _piRaceEngine->inData(), 0);
 }
 
 bool LegacyMenu::onRaceEventFinished(bool bMultiEvent, bool careerNonHumanGroup)
@@ -544,8 +552,7 @@ bool LegacyMenu::onRaceEventFinished(bool bMultiEvent, bool careerNonHumanGroup)
     // Only display the standings if both:
     // * there are multiple races for this championship
     // * the results are relevant for the user (do not display in Career mode in non-human groups)
-    if (bMultiEvent && !careerNonHumanGroup)
-    {
+    if (bMultiEvent && !careerNonHumanGroup) {
         // Start the standings menu.
         showStandings();
 
@@ -553,8 +560,7 @@ bool LegacyMenu::onRaceEventFinished(bool bMultiEvent, bool careerNonHumanGroup)
         return false;
     }
 
-    GfLogInfo(
-        "Not starting Standings menu, as non-multi-event race mode"
+    GfLogInfo("Not starting Standings menu, as non-multi-event race mode"
         " or no human in this Career group\n");
 
     // Tell the race engine state automaton to go on looping.
@@ -616,7 +622,7 @@ bool LegacyMenu::initializeGraphics()
 
     // Check that it implements IGraphicsEngine.
     if (pmodGrEngine)
-        _piGraphicsEngine = pmodGrEngine->getInterface<IGraphicsEngine>();
+        _piGraphicsEngine = pmodGrEngine->getInterface<IGraphicsEngine > ();
     if (pmodGrEngine && !_piGraphicsEngine)
     {
         GfModule::unload(pmodGrEngine);
@@ -625,7 +631,7 @@ bool LegacyMenu::initializeGraphics()
 
     _bfGraphicsState = 0;
 
-    return _piGraphicsEngine != 0;
+    return _piGraphicsEngine  != 0;
 }
 
 bool LegacyMenu::initializeSound()
@@ -641,7 +647,7 @@ bool LegacyMenu::initializeSound()
 
     // Check that it implements IGraphicsEngine.
     if (pmodGrEngineS)
-        _piSoundEngine = pmodGrEngineS->getInterface<ISoundEngine>();
+        _piSoundEngine = pmodGrEngineS->getInterface<ISoundEngine > ();
     if (pmodGrEngineS && !_piSoundEngine)
     {
         GfModule::unload(pmodGrEngineS);
@@ -667,6 +673,8 @@ bool LegacyMenu::loadCarsGraphics(struct Situation* pSituation)
         return false;
 
     _bfGraphicsState |= eCarsLoaded;
+
+
 
     return _piGraphicsEngine ? _piGraphicsEngine->loadCars(pSituation) : false;
 }
@@ -757,7 +765,7 @@ void LegacyMenu::shutdownGraphics(bool bUnloadModule)
     if (bUnloadModule)
     {
         // Unload the graphics module.
-        GfModule* pmodGrEngine = dynamic_cast<GfModule*>(_piGraphicsEngine);
+        GfModule* pmodGrEngine = dynamic_cast<GfModule*> (_piGraphicsEngine);
 #ifndef UNLOAD_SSGGRAPH
         if (pmodGrEngine->getSharedLibName().find("ssggraph") == std::string::npos)
 #endif
