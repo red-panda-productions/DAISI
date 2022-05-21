@@ -8,7 +8,7 @@ SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu
         ${MS}/SaveMenu.cpp ${MS}/ConfirmationMenu.cpp)
 SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.h ${MS}/DataSelectionMenu.h
                         ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h
-                        ${MS}/EndExperimentMenu.h ${MS}/DataCompressionMenu.h${MS}/SaveMenu.h ${MS}/ConfirmationMenu.h)
+                        ${MS}/EndExperimentMenu.h ${MS}/DataCompressionMenu.h ${MS}/SaveMenu.h ${MS}/ConfirmationMenu.h)
 
 IF(MSVC)
     # errno.cpp should only be included with MSVC
