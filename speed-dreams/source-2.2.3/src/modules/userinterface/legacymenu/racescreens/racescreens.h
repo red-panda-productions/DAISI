@@ -105,8 +105,8 @@ extern void RmGameScreen();
 
 // SIMULATED DRIVING ASSISTANT: Remove show results, instead show end of experiment screen and save/confirmation screens
 extern void RmShowEndExperiment(RaceEndType p_raceEndType);
-extern void *ConfirmationMenuInit(void *p_prevMenu, RaceEndType p_raceEndType);
-extern void *SaveMenuInit(RaceEndType p_raceEndType);
+extern void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType);
+extern void* SaveMenuInit(RaceEndType p_raceEndType);
 
 extern void* RmBackToRaceHookInit();
 extern void RmStopRaceMenu();

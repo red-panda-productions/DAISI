@@ -33,7 +33,7 @@ Added:
     modules/userinterface/legacymenu/racescreens/
             SaveMenu.cpp
             EndExperimentMenu.cpp
-            Conformation.cpp
+            ConformationMenu.cpp
   data/
     data/
         config/
@@ -205,12 +205,10 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
-                  added    endexperimentscreen.cpp
                   added    SaveMenu.cpp
                   added    Confirmation.cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
-                  added    EndExperimentMenu.cpp and .h
                   added    DataCompressionMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()
