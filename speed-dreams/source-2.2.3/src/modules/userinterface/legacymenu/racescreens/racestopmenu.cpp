@@ -24,7 +24,6 @@
 
 #include "legacymenu.h"
 #include "exitmenu.h"
-#include "SaveMenu.h"
 #include "ConfigEnums.h"
 #include "racescreens.h"
 
@@ -45,12 +44,11 @@ static int curPlayerIdx = 0;
 // Abort race hook ******************************************************
 static void *pvAbortRaceHookHandle = 0;
 
+// SIMULATED DRIVING ASSISTANT: Go to the show end of experiment screen instead of start screen
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
-    if (pvAbortRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvAbortRaceHookHandle, RACE_ABORT));
-    
+    RmShowEndExperiment(RACE_ABORT);
 }
 
 static void *
@@ -111,12 +109,13 @@ RmBackToRaceHookInit()
 // Restart race hook ***************************************************
 static void *pvRestartRaceHookHandle = 0;
 
+// SIMULATED DRIVING ASSISTANT: go to the save menu screen
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
     //if you restart the game it asks you if you want to save the experiment data
     if (pvRestartRaceHookHandle)
-        GfuiScreenActivate(SaveMenuInit(pvRestartRaceHookHandle, RACE_RESTART));
+        SaveMenuInit(RACE_RESTART);
 }
 
 static void *
