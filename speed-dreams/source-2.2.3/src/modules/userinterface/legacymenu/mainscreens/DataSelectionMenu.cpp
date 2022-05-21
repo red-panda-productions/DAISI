@@ -3,6 +3,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DataSelectionMenu.h"
+#include "DataCompressionMenu.h"
 #include "ResearcherMenu.h"
 
 #define PRM_ENV_DATA   "CheckboxEnvironmentData"
@@ -10,6 +11,8 @@
 #define PRM_HUMAN_DATA "CheckboxUserData"
 #define PRM_INTRV_DATA "CheckboxInterventionData"
 #define PRM_META_DATA  "CheckboxMetaData"
+
+#define PRM_COMP "CompButton"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
@@ -131,6 +134,9 @@ static void SaveSettings(void* /* dummy */)
 
     SaveSettingsToDisk();
 
+    // Make sure data compression screen is also saving its settings
+    ConfigureDataCompressionSettings();
+
     // Go to the main screen
     GfuiScreenActivate(s_nextHandle);
 }
@@ -154,6 +160,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
+    DataCompressionMenuInit(s_scrHandle);
+
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
@@ -168,11 +176,15 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
 
+    // Compression button control
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_COMP, s_scrHandle, DataCompressionMenuRun);
+
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Data Compression Screen", nullptr, DataCompressionMenuRun, nullptr);
 
     return s_scrHandle;
 }

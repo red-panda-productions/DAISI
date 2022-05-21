@@ -36,6 +36,15 @@ typedef unsigned int RaceEndType;
 #define RACE_ABORT    3
 #define RACE_FINISHED 4
 
+/// @brief The different types of data compression that can be done
+typedef unsigned int DataCompressionType;
+
+#define COMPRESSION_NONE    0
+#define COMPRESSION_MINIMUM 1
+#define COMPRESSION_MEDIUM  2
+#define COMPRESSION_MAXIMUM 3
+#define COMPRESSION_CUSTOM  4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
