@@ -62,26 +62,28 @@ bool booleans[] = {false, true};
 END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                Tests if the SDAConfig sets and gets the participant control settings correctly
-/// @param p_intervention Whether to enable participant intervention control
-/// @param p_gas          Whether to enable participant gas control
 /// @param p_steer        Whether to enable participant steer control
+/// @param p_gas          Whether to enable participant gas control
+/// @param p_brake        Whether to enable participant brake control
+/// @param p_intervention Whether to enable participant intervention control
 /// @param p_force        Whether to enable force feedback
-void PControlTest(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
+void PControlTest(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
+    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention, p_force};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
+    ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
+    ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
+    ASSERT_EQ(arr.ControlBrake, pControl.ControlBrake);
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
-    ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
-BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings1)
+BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL4(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL5(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                   Tests if the SDAConfig sets and gets the replay recorder status correctly
 /// @param p_recorderSetting The recorder setting
@@ -123,6 +125,20 @@ TEST(ConfigTests, UserIDTest)
         sprintf(buf, "%d", userID);
         config.SetUserId(buf);
         ASSERT_EQ(buf, config.GetUserId());
+    }
+}
+
+/// @brief Tests if the SDAConfig sets and gets the CompressionRate correctly
+TEST(ConfigTests, CompressionRateTest)
+{
+    SDAConfig config;
+    Random random;
+
+    for (int i = 0; i < 20; i++)
+    {
+        int compressionRate = random.NextInt();
+        config.SetCompressionRate(compressionRate);
+        ASSERT_EQ(compressionRate, config.GetCompressionRate());
     }
 }
 
@@ -198,3 +214,16 @@ TEST(ConfigTests, ReplayFolderTest)
     config.SetReplayFolder(randomPath);
     ASSERT_EQ(config.GetReplayFolder(), randomPath);
 }
+
+/// @brief        Tests if the saveToDatabse bool gets correctly changed in the config file
+/// @param p_save boolean that returns decides if the data should or should not be saved.
+void SaveRaceToDatabaseTestConf(bool p_save)
+{
+    SDAConfig config;
+
+    config.SetSaveToDatabaseCheck(p_save);
+    ASSERT_EQ(p_save, config.GetSaveToDatabaseCheck());
+}
+
+TEST_CASE(ConfigTests, SaveDataToDatabase, SaveRaceToDatabaseTestConf, (true))
+TEST_CASE(ConfigTests, DontSaveDataToDatabase, SaveRaceToDatabaseTestConf, (false))

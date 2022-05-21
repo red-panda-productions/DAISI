@@ -4,6 +4,9 @@
 #include <csignal>
 #include <gtest/gtest.h>
 #include "PairWiseTestGenerator.h"
+#include "IndicatorData.h"
+#include "ConfigEnums.h"
+
 /// A big header file that contains functions that can be used in unit tests
 
 // Log additional info during tests with GTEST_COUT << "your message" << std::endl;
@@ -53,6 +56,19 @@ inline void GenerateRandomCharArray(char* p_dataBuffer, int p_stringLength)
         p_dataBuffer[i] = static_cast<char>(65 + rand() % 60);
     }
     p_dataBuffer[p_stringLength] = '\0';
+}
+
+/// @brief                    Checks whether the vector of active indicators contains the indicator for the given action.
+/// @param p_activeIndicators The vector of active indicators
+/// @param p_action           The action to find the indicator of
+/// @return                   True if the indicator corresponding to the given action was found, false otherwise.
+inline bool ActiveIndicatorsContains(std::vector<tIndicatorData> p_activeIndicators, InterventionAction p_action)
+{
+    for (const tIndicatorData& indicator : p_activeIndicators)
+    {
+        if (indicator.Action == p_action) return true;
+    }
+    return false;
 }
 
 /// @brief compares two values. If their difference is lower than the tolerance, return true.

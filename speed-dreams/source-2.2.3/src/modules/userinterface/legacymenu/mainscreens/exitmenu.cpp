@@ -20,18 +20,19 @@
 #include <tgfclient.h>
 
 #include "legacymenu.h"
+#include "ConfigEnums.h"
 
 #include "exitmenu.h"
 #include "mainmenu.h"
+#include "ConfigEnums.h"
 
+static void* MenuHandle = nullptr;
 
-static void *MenuHandle = NULL;
-
-static void 
-onAcceptExit(void * /* dummy */)
+static void
+onAcceptExit(void* /* dummy */)
 {
-	LmRaceEngine().abortRace(); // Do cleanup to get back correct setup files
-	LegacyMenu::self().quit();
+    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
+    LegacyMenu::self().quit();
 }
 
 /*
@@ -48,27 +49,29 @@ onAcceptExit(void * /* dummy */)
  *	The menu handle
  *
  * Remarks
- *	
+ *
  */
 
-void* ExitMenuInit(void *prevMenu)
+void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_raceEndType)
 {
-    if (MenuHandle) {
-		GfuiScreenRelease(MenuHandle);
+    if (MenuHandle)
+    {
+        GfuiScreenRelease(MenuHandle);
     }
 
     MenuHandle = GfuiScreenCreate();
 
-    void *param = GfuiMenuLoad("exitmenu.xml");
-
+    void* param = GfuiMenuLoad("exitmenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", NULL, onAcceptExit);
-    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+
+    // SIMULATED DRIVING ASSISTANCE: Looks where the exit game gets called and change the button functionality based on it.
+    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
-    
+
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", prevMenu, GfuiScreenActivate, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", p_prevMenu, GfuiScreenActivate, NULL);
 
     return MenuHandle;
 }

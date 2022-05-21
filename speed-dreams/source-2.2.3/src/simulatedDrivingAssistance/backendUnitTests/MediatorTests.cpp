@@ -109,6 +109,42 @@ TEST(MediatorTests, ReadFromFile)
     DeleteSingletonsFolder();
 }
 
+/// @brief Tests if de mediator gets the threshold settings correctly
+void ThresholdTestMediator(float p_accel, float p_brake, float p_steer)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    SDAConfigMediator* mediator = SDAConfigMediator::GetInstance();
+
+    tDecisionThresholds thresholdsIn{p_accel, p_brake, p_steer};
+    mediator->SetThresholdSettings(thresholdsIn);
+    tDecisionThresholds thresholdsOut = mediator->GetThresholdSettings();
+
+    ASSERT_EQ(thresholdsIn.Accel, thresholdsOut.Accel);
+    ASSERT_EQ(thresholdsIn.Brake, thresholdsOut.Brake);
+    ASSERT_EQ(thresholdsIn.Steer, thresholdsOut.Steer);
+}
+BEGIN_TEST_COMBINATORIAL(MediatorTests, ThresholdTest)
+float floatVals[] = {-1, 0, 0.5, 1, 2};
+END_TEST_COMBINATORIAL3(ThresholdTestMediator, floatVals, 5, floatVals, 5, floatVals, 5)
+
+/// @brief                    Tests if the Mediator sets and gets the interventionType correctly from SDAConfig
+/// @param p_interventionType The interventionType to test for
+void InterventionTypeTestMediator(InterventionType p_interventionType)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
+    const InterventionType it = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Type;
+    ASSERT_EQ(p_interventionType, it);
+}
+
+TEST_CASE(MediatorTests, InterventionTypeTestNoSignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_NO_SIGNALS))
+TEST_CASE(MediatorTests, InterventionTypeTestOnlySignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
+TEST_CASE(MediatorTests, InterventionTypeTestSharedControl, InterventionTypeTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
+TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+
 /// @brief              Tests if the mediator sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer
 /// @param p_accelerate Whether the black box can give gas
@@ -156,23 +192,24 @@ END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, boolean
 /// @param p_gas          Control gas option
 /// @param p_steer        Control steering option
 /// @param p_force        Force feedback option
-void PControlTestMediator(bool p_intervention, bool p_gas, bool p_steer, bool p_force)
+void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {p_intervention, p_gas, p_steer, p_force};
+    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention, p_force};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
+    ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
+    ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
+    ASSERT_EQ(arr.ControlBrake, pControl.ControlBrake);
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ControlSteering, pControl.ControlSteering);
-    ASSERT_EQ(arr.ControlGas, pControl.ControlGas);
     ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
-BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings1)
+BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL5(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the Mediator sets and gets the MaxTime correctly
 TEST(MediatorTests, MaxTimeTest)
@@ -202,6 +239,22 @@ TEST(MediatorTests, UserIDTest)
         SDAConfigMediator::GetInstance()->SetUserId(buf);
         const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
         ASSERT_EQ(buf, config.GetUserId());
+    }
+}
+
+/// @brief Tests if the Mediator sets and gets the compression rate correctly
+TEST(MediatorTests, CompressionRateTest)
+{
+    Random random;
+    char buf[32];
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        SDAConfigMediator::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+        int compressionRate = random.NextInt();
+        SDAConfigMediator::GetInstance()->SetCompressionRate(compressionRate);
+        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
+        ASSERT_EQ(compressionRate, config.GetCompressionRate());
     }
 }
 
@@ -376,5 +429,20 @@ TEST(MediatorTests, TimeOutTest)
         float currentTime = static_cast<float>(currentTick) * static_cast<float>(RCM_MAX_DT_ROBOTS);
         bool isTimedOut = maxTimeSeconds < currentTime;
         ASSERT_EQ(SDAConfigMediator::GetInstance()->TimeOut(), isTimedOut);
+    }
+}
+
+/// @brief tests if you can change the bool value to save to a database to true or to false
+TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool controlBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetSaveRaceToDatabase(controlBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.GetSaveToDatabaseCheck(), controlBool);
     }
 }

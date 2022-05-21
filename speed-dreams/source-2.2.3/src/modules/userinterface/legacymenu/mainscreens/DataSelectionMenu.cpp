@@ -3,6 +3,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DataSelectionMenu.h"
+#include "DataCompressionMenu.h"
 #include "ResearcherMenu.h"
 #include <racescreens.h>
 #include <racemanagers.h>
@@ -14,6 +15,8 @@
 #define PRM_INTRV_DATA "CheckboxInterventionData"
 #define PRM_META_DATA  "CheckboxMetaData"
 #define RACE_MANAGER_NAME "Quick Race"
+
+#define PRM_COMP "CompButton"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
@@ -84,8 +87,8 @@ static void LoadConfigSettings(void* p_param)
 /// @brief Loads the default settings from the controls into the internal variables.
 static void LoadDefaultSettings()
 {
-    m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
+    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
+    m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
     m_dataToStore.HumanData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
     m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
     m_dataToStore.MetaData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
@@ -103,6 +106,7 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
@@ -125,6 +129,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_META_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
 
     GfParmWriteFile(nullptr, readParam, "DataSelectionMenu");
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Configures the SDAConfig with the options selected on this menu
@@ -134,6 +139,9 @@ static void SaveSettings(void* /* dummy */)
     SMediator::GetInstance()->SetDataCollectionSettings(m_dataToStore);
 
     SaveSettingsToDisk();
+
+    // Make sure data compression screen is also saving its settings
+    ConfigureDataCompressionSettings();
 
     // Go to the main screen
         // And run it if there's such a race manager.
@@ -180,6 +188,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
+    DataCompressionMenuInit(s_scrHandle);
+
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
@@ -194,11 +204,15 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
 
+    // Compression button control
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_COMP, s_scrHandle, DataCompressionMenuRun);
+
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Data Compression Screen", nullptr, DataCompressionMenuRun, nullptr);
 
     return s_scrHandle;
 }

@@ -9,7 +9,7 @@
         <section name="CheckboxEnvironmentData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Environment data"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Save the settings from the chosen environment"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="275"/>
             <attnum name="image width" val="20"/>
@@ -22,7 +22,8 @@
         <section name="CheckboxCarData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Car data"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip"
+                    val="Save the position, rotation, speed, acceleration, and gear of the car for each time step"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="250"/>
             <attnum name="image width" val="20"/>
@@ -35,7 +36,8 @@
         <section name="CheckboxUserData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Human user data"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip"
+                    val="Save the steer, brake, acceleration, and clutch action from the user for each time step"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="225"/>
             <attnum name="image width" val="20"/>
@@ -48,7 +50,8 @@
         <section name="CheckboxInterventionData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Intervention data"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip"
+                    val="Save the steer, brake, acceleration, and clutch action from the decision maker for each time step"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="200"/>
             <attnum name="image width" val="20"/>
@@ -61,7 +64,7 @@
         <section name="CheckboxMetaData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Internal meta data"/>
-            <attstr name="tip" val="Enable/Disable setting"/>
+            <attstr name="tip" val="Save the settings from the chosen decision maker"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="175"/>
             <attnum name="image width" val="20"/>
@@ -71,15 +74,38 @@
             <attstr name="checked" val="yes"/>
         </section>
 
+        <!-- Button for going to the developer screen -->
+        <section name="CompButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Advanced Settings"/>
+            <attstr name="tip" val="Access the the data compression settings"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="250"/>
+            <attnum name="y" val="82"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
         <section name="BackButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Back"/>
             <attstr name="tip" val="Go back to previous screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="278"/>
-            <attnum name="y" val="82"/>
-            <attnum name="width" val="120"/>
+            <attnum name="x" val="40"/>
+            <attnum name="y" val="41"/>
+            <attnum name="width" val="130"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -99,8 +125,8 @@
             <attstr name="text" val="Apply"/>
             <attstr name="tip" val="Accept and save changes"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="435"/>
-            <attnum name="y" val="82"/>
+            <attnum name="x" val="550"/>
+            <attnum name="y" val="41"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -121,7 +147,7 @@
 
         <section name="1">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/splash-aiconf.jpg"/> <!-- TODO change background -->
+            <attstr name="image" val="data/img/Main-menu-2.png"/> <!-- TODO change background -->
         </section>
 
         <section name="2">
