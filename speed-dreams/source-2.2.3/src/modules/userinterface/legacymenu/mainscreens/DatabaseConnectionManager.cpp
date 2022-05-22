@@ -114,7 +114,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
 
     // password is not saved and should thus show an empty field
-    s_dbSettings.Password[0] = '\0'; 
+    s_dbSettings.Password[0] = '\0';
 
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
