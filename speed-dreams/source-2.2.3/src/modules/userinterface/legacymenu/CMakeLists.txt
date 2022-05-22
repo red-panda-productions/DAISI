@@ -1,12 +1,29 @@
 INCLUDE(../../../../cmake/macros.cmake)
 
 SET(MS mainscreens)
-# SIMULATED DRIVING ASSISTANCE CHANGE: added InterventionMenu.h and .cpp and  DataSelectionMenu.h and .cpp and DataCompressionMenu.h and .cpp
-SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu.cpp ${MS}/DataSelectionMenu.cpp
-                        ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp ${MS}/DeveloperMenu.cpp
+# SIMULATED DRIVING ASSISTANCE CHANGE: added InterventionMenu.h and .cpp, DataSelectionMenu.h and .cpp and DatabaseSettingsMenu.h and .cpp
+SET(MAINSCREENS_SOURCES ${MS}/splash.cpp
+                        ${MS}/mainmenu.cpp
+                        ${MS}/ResearcherMenu.cpp
+                        ${MS}/DataSelectionMenu.cpp
+                        ${MS}/optionsmenu.cpp
+                        ${MS}/creditsmenu.cpp
+                        ${MS}/exitmenu.cpp
+                        ${MS}/DeveloperMenu.cpp
+                        ${MS}/DatabaseSettingsMenu.cpp
+                        ${MS}/DatabaseConnectionManager.cpp
                         ${MS}/DataCompressionMenu.cpp)
-SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.h ${MS}/DataSelectionMenu.h
-                        ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h
+
+SET(MAINSCREENS_HEADERS ${MS}/splash.h
+                        ${MS}/mainmenu.h
+                        ${MS}/ResearcherMenu.h
+                        ${MS}/DataSelectionMenu.h
+                        ${MS}/optionsmenu.h
+                        ${MS}/creditsmenu.h
+                        ${MS}/exitmenu.h
+                        ${MS}/DeveloperMenu.h
+                        ${MS}/DatabaseSettingsMenu.h
+                        ${MS}/DatabaseConnectionManager.h
                         ${MS}/DataCompressionMenu.h)
 
 IF(MSVC)

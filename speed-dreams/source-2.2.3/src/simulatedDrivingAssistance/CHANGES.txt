@@ -22,18 +22,24 @@ Added:
             GuiRadioButton.cpp
             GuiRadioButtonList.cpp
     modules/userinterface/legacymenu/mainscreens/
-            ResearcherMenu.h
-            ResearcherMenu.cpp
-            DataSelectionMenu.h
-            DataSelectionMenu.cpp
-            DeveloperMenu.h
-            DeveloperMenu.cpp
-            DataCompressionMenu.h
-            DataCompressionMenu.cpp
+        ResearcherMenu.h
+        ResearcherMenu.cpp
+        DataSelectionMenu.h
+        DataSelectionMenu.cpp
+        DatabaseSettingsMenu.h
+        DatabaseSettingsMenu.cpp
+        DatabaseConnectionManager.h
+        DatabaseConnectionManager.h
+        DeveloperMenu.h
+        DeveloperMenu.cpp
+        DataCompressionMenu.h
+        DataCompressionMenu.cpp
+        ResearcherMenu.h
+        ResearcherMenu.cpp
     modules/userinterface/legacymenu/racescreens/
-            SaveMenu.cpp
-            EndExperimentMenu.cpp
-            ConformationMenu.cpp
+        SaveMenu.cpp
+        EndExperimentMenu.cpp
+        ConformationMenu.cpp
   data/
     data/
         config/
@@ -111,7 +117,7 @@ Changed:
                 changed GfuiMenuControlGetBoolean(): made public and renamed to fit the api function naming scheme.
             guimenu.h
                 added   GFMNU_TYPE_RADIO_BUTTON_LIST
-                added   GFMNU_ATTR_SELECTED, GFMNU_ATTR_DISTANCE, GFMNU_ATTR_MINIMUM_OF_ONE, GFMNU_ATTR_OPTIONS
+                added   GFMNU_ATTR_SELECTED, GFMNU_ATTR_DISTANCE, GFMNU_ATTR_MINIMUM_OF_ONE, GFMNU_ATTR_OPTIONS, GFMNU_ATTR_CA_CERT, GFMNU_ATTR_PUBLIC_CERT, GFMNU_ATTR_PRIVATE_CERT
             guiobject.cpp
                 changed GfuiDraw()
                 changed GfuiReleaseObject()
