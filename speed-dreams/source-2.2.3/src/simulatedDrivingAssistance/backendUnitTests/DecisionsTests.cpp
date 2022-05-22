@@ -134,17 +134,17 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     brakeDecision.BrakeAmount = GetParam();
     brakeDecision.RunIndicateCommands();
 
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the break amount is above the STANDARD_THRESHOLD_BRAKE, INTERVENTION_ACTION_BRAKE indicator should be active
     if (brakeDecision.BrakeAmount >= STANDARD_THRESHOLD_BRAKE)
     {
-        ASSERT_EQ(activeIndicators.size(), 1);
-        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_BRAKE);
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_BRAKE));
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, 
+    ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_BRAKE, 0, STANDARD_THRESHOLD_BRAKE, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, SteerRunIndicateTests)
@@ -159,23 +159,22 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     steerDecision.RunIndicateCommands();
 
     // TODO: Update to have multiple indicators when indicator code is updated
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the steer amount is above the STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_LEFT indicator should be active
     if (steerDecision.SteerAmount >= STANDARD_THRESHOLD_STEER)
     {
-        ASSERT_EQ(activeIndicators.size(), 1);
-        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_LEFT);
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_LEFT));
     }
     // if the steer amount is below the -STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_RIGHT indicator should be active
     else if (steerDecision.SteerAmount <= -STANDARD_THRESHOLD_STEER)
     {
-        ASSERT_EQ(activeIndicators.size(), 1);
-        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_TURN_RIGHT);
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_RIGHT));
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -2, -1, 0, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, 
+    ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_STEER, 0, STANDARD_THRESHOLD_STEER, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, AccelRunIndicateTests)
@@ -189,14 +188,14 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     accelDecision.AccelAmount = GetParam();
     accelDecision.RunIndicateCommands();
 
-    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the accelerate amount is above the STANDARD_THRESHOLD_ACCEL, INTERVENTION_ACTION_ACCELERATE indicator should be active
     if (accelDecision.AccelAmount >= STANDARD_THRESHOLD_ACCEL)
     {
-        ASSERT_EQ(activeIndicators.size(), 1);
-        ASSERT_EQ(activeIndicators[0].Action, INTERVENTION_ACTION_ACCELERATE);
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, ::testing::Values(INT_MIN, -99, -1, 0, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, 
+    ::testing::Values(INT_MIN, -99, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, 2, 99, INT_MAX));

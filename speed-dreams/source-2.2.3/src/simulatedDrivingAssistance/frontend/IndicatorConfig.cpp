@@ -10,6 +10,7 @@
 #include "../rppUtils/RppUtils.hpp"
 
 #include "IndicatorConfig.h"
+#include "Mediator.h"
 
 /// @brief        Loads the indicator data of every intervention action from config file in the given path
 /// @param p_path The path to the XML file containing the indicator data to load
@@ -17,20 +18,27 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
 {
     void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
 
+    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
+
     // Load the indicator data for every intervention action
     char path[PATH_BUF_SIZE];
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INTERVENTIONS, s_actionEnumString[i]);
+        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INDICATORS, s_interventionActionString[i]);
         m_indicatorData[i] = {
-            (InterventionAction)i,
+            static_cast<InterventionAction>(i),
             LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path)),
+            LoadTexture(xmlHandle, std::string(path), interventionType),
             LoadText(xmlHandle, std::string(path))};
     }
+
+    // Initially the active indicators are the neutral indicators.
+    m_activeIndicators = {
+        m_indicatorData[INTERVENTION_ACTION_STEER_NEUTRAL],
+        m_indicatorData[INTERVENTION_ACTION_SPEED_NEUTRAL]};
 }
 
-/// @brief  Returns a vector of ALL indicator data
+/// @brief  Returns a vector of the indicator data
 /// @return The vector of indicator data
 std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 {
@@ -41,21 +49,17 @@ std::vector<tIndicatorData> IndicatorConfig::GetIndicatorData()
 ///                           if and only if the interventions are turned on (not on NO_SIGNALS).
 /// @param p_interventionType The intervention type setting
 /// @return                   The vector of indicator data
-std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators(InterventionType p_interventionType)
+std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
 {
-    // Guard when no signals are to be sent, always return an empty vector.
-    if (p_interventionType == INTERVENTION_TYPE_NO_SIGNALS) return {};
-
     return m_activeIndicators;
 }
 
-/// @brief          Activates the given intervention indicator
-/// @param p_action The intervention to activate the indicators for
+/// @brief          Activates the given intervention action by replacing 
+///                 the indicator of matching type with the newly activated indicator.          
+/// @param p_action The intervention for which to show the the indicator
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
-    // TODO: add to the vector instead of overwriting it, this also requires
-    //       a way to remove the indicator after some time has passed.
-    m_activeIndicators = {m_indicatorData[p_action]};
+    m_activeIndicators[s_actionToActionType[p_action]] = m_indicatorData[p_action];
 }
 
 /// @brief          Loads the sound indicator data from the indicator config.xml
@@ -105,17 +109,18 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     return {xPos, yPos};
 }
 
-/// @brief          Loads the texture indicator data from the indicator config.xml
-/// @param p_handle The p_handle to the config.xml file
-/// @param p_path   The p_path to the current intervention action to load
-/// @return         The pointer to struct containing the texture data
-tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path)
+/// @brief                    Loads the texture indicator data from the indicator config.xml
+/// @param p_handle           The p_handle to the config.xml file
+/// @param p_path             The p_path to the current intervention action to load
+/// @param p_interventionType The intervention type to load the texture for.
+/// @return                   The pointer to struct containing the texture data
+tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType)
 {
-    p_path += PRM_SECT_TEXTURE;
+    p_path += PRM_SECT_TEXTURES;
     if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextureData* data = new TextureData;
-    data->Path = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_SRC, "");
+    data->Path = GfParmGetStr(p_handle, p_path.c_str(), s_interventionTypeString[p_interventionType], "");
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
     return data;
 }
