@@ -20,7 +20,7 @@ the Free Software Foundation; either version 2 of the License, or
 <params name="test" type="param" mode="mw">
   <section name="Surfaces">&default-surfaces;</section>
   <section name="Header">
-    <attstr name="name" val="4 lanes 80" />
+    <attstr name="name" val="Highway 4 Lanes [80 km/h]" />
     <attstr name="category" val="simple-highway" />
     <attnum name="version" val="4" />
     <attstr name="author" val="Red Panda Productions" />

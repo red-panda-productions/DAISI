@@ -36,7 +36,7 @@
 <!-- Track category -->
 	<section name="trackcatleftarrow">
 		<attstr name="type" val="image button"/>
-		<attnum name="x" val="265"/>
+		<attnum name="x" val="250"/>
 		<attnum name="y" val="318"/>
 		<attnum name="width" val="24"/>
 		<attnum name="height" val="24"/>
@@ -47,7 +47,7 @@
 	</section>
 	<section name="trackcatrightarrow">
 		<attstr name="type" val="image button"/>
-		<attnum name="x" val="525"/>
+		<attnum name="x" val="540"/>
 		<attnum name="y" val="318"/>
 		<attnum name="width" val="24"/>
 		<attnum name="height" val="24"/>
@@ -58,7 +58,7 @@
 	</section>
 	<section name="trackcatlabel">
 		<attstr name="type" val="label"/>
-		<attnum name="max len" val="25"/>
+		<attnum name="max len" val="35"/>
 		<attstr name="tip" val="Select a track category"/>
   		<attnum name="x" val="295"/>
 		<attnum name="y" val="322"/>
@@ -71,7 +71,7 @@
 <!-- Track -->
 	<section name="trackleftarrow">
 		<attstr name="type" val="image button"/>
-		<attnum name="x" val="265"/>
+		<attnum name="x" val="250"/>
 		<attnum name="y" val="288"/>
 		<attnum name="width" val="24"/>
 		<attnum name="height" val="24"/>
@@ -82,7 +82,7 @@
 	</section>
 	<section name="trackrightarrow">
 		<attstr name="type" val="image button"/>
-		<attnum name="x" val="525"/>
+		<attnum name="x" val="540"/>
 		<attnum name="y" val="288"/>
 		<attnum name="width" val="24"/>
 		<attnum name="height" val="24"/>
@@ -93,7 +93,7 @@
 	</section>
 	<section name="tracklabel">
 		<attstr name="type" val="label"/>
-		<attnum name="max len" val="25"/>
+		<attnum name="max len" val="35"/>
 		<attstr name="tip" val="Select a track"/>
   		<attnum name="x" val="295"/>
 		<attnum name="y" val="292"/>
