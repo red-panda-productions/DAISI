@@ -63,6 +63,9 @@ Added:
 
 Changed:
   src/
+    drivers/simplix/src/
+        unitdriver.cpp
+            Changed the oFuelCons value to 0
     libs/
         robottools/
             humandriver.h
@@ -79,6 +82,8 @@ Changed:
                 added   SetRecorder()
                 added   m_prevIntervention member
                 added   NO_KEYBOARD define: clarify magic number
+                changed the MaxFuelPerMeter value to 0
+                changed the fuel_cons_factor to value 0
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
@@ -156,6 +161,13 @@ Changed:
         sound.h
             added intervention sound volume xml parameter 
     modules/
+        simu/
+            simuv2.1/
+                engine.cpp
+                    Changed the car->engine.fuelcons to value 0
+            simuv4/
+                 engine.cpp
+                    Changed the car->engine.fuelcons to value 0
         racing/standardgame
             raceinit.cpp
                 changed reLoadSingleCar() to fix isHuman flag
@@ -421,6 +433,9 @@ Changed:
         removed practice.xml
         removed singleevent-challange.xml
         removed singleeven-endurance.xml
+      cars/models/primo/
+        primo.xml
+           removed the fuel cons factor
       data/
         credits.xml
             added Simulated driving assistance developers
@@ -458,3 +473,15 @@ Changed:
   cmake/
     checks.cmake
         changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
+
+
+Deleted:
+   src/
+      modules/
+         simu/
+            simuv2.1/
+               simu.cpp
+                   Removed 'RemoveCar' function
+            simu4/
+               simu.cpp
+                  Removed 'RemoveCar' function
