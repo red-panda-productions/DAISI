@@ -43,7 +43,10 @@ void SaveDBSettingsToDisk()
 
     // Save max time to xml file
     GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, s_dbSettings.Username);
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, s_dbSettings.Password);
+
+    // Do not save the password
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+
     GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, s_dbSettings.Address);
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, s_portString);
     GfParmSetStr(readParam, PRM_SCHEMA, GFMNU_ATTR_TEXT, s_dbSettings.Schema);
@@ -94,7 +97,7 @@ void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
 void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
 {
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Username));
-    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Password));
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, "");
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Address));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Port));
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Schema));
@@ -109,7 +112,10 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr));
+
+    // password is not saved and should thus show an empty field
+    s_dbSettings.Password[0] = '\0'; 
+
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     ConvertPortString();
