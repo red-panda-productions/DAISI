@@ -33,6 +33,7 @@
 
 <section name="dynamic controls">
 
+    <!-- SIMULATED DRIVING ASSISTANCE: changed size and position of track category -->
 <!-- Track category -->
 	<section name="trackcatleftarrow">
 		<attstr name="type" val="image button"/>
@@ -67,7 +68,7 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="medium"/>
 	</section>
-
+    <!-- SIMULATED DRIVING ASSISTANCE: changed size and position of track -->
 <!-- Track -->
 	<section name="trackleftarrow">
 		<attstr name="type" val="image button"/>

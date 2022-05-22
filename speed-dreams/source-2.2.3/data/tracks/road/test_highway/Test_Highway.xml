@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-file                : Test_Highway.xml
+file                : test_highway.xml
 auto generated      : by Track Editor
 version             : v 0.6.0 24/4/2005
 copyright           : (C) 2005 by Charalampos Alexopoulos
@@ -20,14 +20,14 @@ the Free Software Foundation; either version 2 of the License, or
 <params name="test" type="param" mode="mw">
   <section name="Surfaces">&default-surfaces;</section>
   <section name="Header">
-    <attstr name="name" val="Test_Highway" />
+    <attstr name="name" val="test_highway" />
     <attstr name="category" val="road" />
     <attnum name="version" val="4" />
     <attstr name="author" val="RedPandaProductions" />
     <attstr name="description" val="Test highway environment" />
   </section>
   <section name="Graphic">
-    <attstr name="3d description" val="Test_Highway.acc" />
+    <attstr name="3d description" val="test_highway.acc" />
     <section name="Terrain Generation">
       <attnum name="track step" unit="m" val="20" />
       <attnum name="border margin" unit="m" val="50" />

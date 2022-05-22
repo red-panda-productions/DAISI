@@ -58,9 +58,20 @@ Added:
             SaveMenu.xml
             ConformationMenu.xml
             EndExperimentMenu.xml
+        tracks/
+            curved highway.xml
+            curved-road.xml
+            simple-highway.xml
+            simple-road.xml
+            test-tracks.xml
+
     drivers/
         assistedhuman/
             *
+    tracks/
+        added curved-highway
+        added simple-highway
+        added simple-road
 
 Changed:
   src/
@@ -415,6 +426,11 @@ Changed:
       data/
         credits.xml
             added Simulated driving assistance developers
+        track/
+            removed dirt.xml
+            removed gprix.xml
+            removed karting.xml
+            removed speedway.xml
         menu/
             mainmenu.xml
                 added a back button
@@ -440,6 +456,9 @@ Changed:
                 removed controls and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
+            trackselectmenu.xml
+                changed position size of category and track buttons
+
         
   cmake/
     checks.cmake
