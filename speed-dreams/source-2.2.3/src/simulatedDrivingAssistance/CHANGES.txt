@@ -32,14 +32,14 @@ Added:
         DatabaseConnectionManager.h
         DeveloperMenu.h
         DeveloperMenu.cpp
-        SaveMenu.h
-        SaveMenu.cpp
-        Conformation.h
-        Conformation.cpp
-        EndExperimentMenu.h
-        EndExperimentMenu.cpp
+        DataCompressionMenu.h
+        DataCompressionMenu.cpp
         ResearcherMenu.h
         ResearcherMenu.cpp
+    modules/userinterface/legacymenu/racescreens/
+        SaveMenu.cpp
+        EndExperimentMenu.cpp
+        ConformationMenu.cpp
   data/
     data/
         config/
@@ -58,6 +58,7 @@ Added:
         menu/
             ResearcherMenu.xml
             DataSelectionMenu.xml
+            DataCompressionMenu.xml
             DeveloperMenu.xml
             SaveMenu.xml
             ConformationMenu.xml
@@ -68,6 +69,9 @@ Added:
 
 Changed:
   src/
+    drivers/simplix/src/
+        unitdriver.cpp
+            Changed the oFuelCons value to 0
     libs/
         robottools/
             humandriver.h
@@ -78,10 +82,14 @@ Changed:
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
-                changed common_drive(): added check for input of intervention toggle on/off
+                changed common_drive(): 
+                    added check for input of intervention toggle on/off
+                    added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
                 added   m_prevIntervention member
                 added   NO_KEYBOARD define: clarify magic number
+                changed the MaxFuelPerMeter value to 0
+                changed the fuel_cons_factor to value 0
             CMakeLists.txt
                 changed frontend added to ADD_SDLIB_INCLUDEDIR
                 changed backend added to ADD_SDLIB_INCLUDEDIR
@@ -159,6 +167,13 @@ Changed:
         sound.h
             added intervention sound volume xml parameter 
     modules/
+        simu/
+            simuv2.1/
+                engine.cpp
+                    Changed the car->engine.fuelcons to value 0
+            simuv4/
+                 engine.cpp
+                    Changed the car->engine.fuelcons to value 0
         racing/standardgame
             raceinit.cpp
                 changed reLoadSingleCar() to fix isHuman flag
@@ -208,11 +223,11 @@ Changed:
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
-                  added    SaveMenu.h and .cpp
-                  added    Confirmation.h and .cpp
+                  added    SaveMenu.cpp
+                  added    ConfirmationMenu.cpp
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
-                  added    EndExperimentMenu.cpp and .h
+                  added    DataCompressionMenu.cpp and .h
                 legacymenu.h
                     ActivateResearcherMenu()
                 legacymenu.cpp
@@ -221,82 +236,90 @@ Changed:
                     added    ActivateResearcherMenu()
                     changed  backLoad()
                     changed  activate()
-                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
-            mainscreens/
-                mainmenu.cpp
-                    included "DataSelectionMenu.h"
-                    removed  <playerconfig.h>
-                    added    GoBack()
-                    changed  MainMenuInit()
-                    changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
-                    changed  MainMenuInit()
-                    included "ConfigEnums.h"
-                    changed  onExitMenuActive() method
-                exitmenu.cpp
-                    included "ConfigEnums.h"
-                    included "EndExperimentMenu.h"
-                    changed  functionality of ExitMenuInit method
-                exitmenu.h
-                    included "ConfigEnums.h"
-                optionsmenu.cpp
-                    removed graphics, advanced graphics, opengl, simulation, ai opponents menu
-                exitmenu.h
-                    changed  ExitMenuInit(): more parameters
-                exitmenu.cpp
-                    changed  ExitMenuInit()
-            racescreens/
-                raceresultsmenus.cpp
-                    included "EndExperimentMenu.h"
-                    included several 'Quit' buttons
-                racestopmenu.cpp
-                    RmStopRaceMenu()
-                    changed  AssistedHuman is a human
-                    changed  rmAbortRaceHookHandle()
-                    changed  rmRestartRaceHooKHandle()
-                    changed  rmQuitHookActive()
-                    removed rmProgressiveTimeModifier.start() call
-                    removed controls menu
-                    changed parameters of GfuiScreenActive() function
-                racerunningmenus.cpp
-                    removed RmProgressiveTimeModifier implementation and calls
-                racemanmenu.cpp
-                    included <controlconfig.h> and "mainmenu.h"
-                    removed <playerconfig.h>, <csnetwork.h> and <network.h>
-                    removed networking and go back to main menu
-                    changed rmOnRaceDataChanged()
-                    changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
-                    added   BackToMainMenu()
-                    changed rmRaceManMenu()
-                racescreens.h
-                    removed networking
-                raceselectmenu.cpp
-                    changed rmOnActivate()
-                    changed rmOnRaceSelectShutdown()
-                    changed rmOnSelectRaceMan()
-                    changed RmRaceSelectInit()
-                removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
-            confscreens/
-                soundconfig.cpp
-                    added ChangeInterventionVolume()
-                    added logic to create new controls for intervention volume and store their data
-                    changed readSoundCfg()
-                controlconfig.cpp
-                    added cmd info for intervention toggle on/off to the Cmd[] member variable.
-                    included <deque>
-                    added static void *PlayerHdle = NULL; from removed playerconfig.cpp
-                    added SkillLevelString from removed playerconfig.cpp
-                    added NbSkillLevels from removed playerconfig.cpp
-                    added NoPlayer from removed playerconfig.cpp
-                    added HumanDriverModuleName from removed playerconfig.cpp
-                    added DefaultCarName from removed playerconfig.cpp
-                    added tInfo from removed playerconfig.cpp
-                    added tPlayerInfo from removed playerconfig.cpp
-                    added tPlayerInfoList from removed playerconfig.cpp
-                    added currPlayer from removed playerconfig.cpp
-                    added Yn[] from removed playerconfig.cpp
-                    added GenPlayerList() from removed playerconfig.cpp
-                    removed parameters in init
-                removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
+                    changed onRaceFinished();
+                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
+                mainscreens/
+                    mainmenu.cpp
+                        included "DataSelectionMenu.h"
+                        removed  <playerconfig.h>
+                        added    GoBack()
+                        changed  MainMenuInit()
+                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
+                        changed  MainMenuInit()
+                        included "ConfigEnums.h"
+                        changed  onExitMenuActive() method
+                    exitmenu.cpp
+                        included "ConfigEnums.h"
+                        included "EndExperimentMenu.h"
+                        changed  functionality of ExitMenuInit method
+                        changed  ExitMenuInit()
+                    exitmenu.h
+                        included "ConfigEnums.h"
+                        changed  ExitMenuInit(): more parameters
+                    optionsmenu.cpp
+                        removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                racescreens/
+                    raceresultsmenus.cpp
+                        included "EndExperimentMenu.h"
+                        included several 'Quit' buttons
+                    racestopmenu.cpp
+                        RmStopRaceMenu()
+                        changed AssistedHuman is a human
+                        changed rmAbortRaceHookHandle()
+                        changed rmRestartRaceHooKHandle()
+                        changed rmQuitHookActive()
+                        removed rmProgressiveTimeModifier.start() call
+                        removed controls menu, force feedback menu and quit button
+                        changed parameters of GfuiScreenActive() function
+                    racerunningmenus.cpp
+                        removed RmProgressiveTimeModifier implementation and calls
+                        changed rmAddKeys()
+                    racemanmenu.cpp
+                        included <controlconfig.h> and "mainmenu.h"
+                        removed <playerconfig.h>, <csnetwork.h> and <network.h>
+                        removed networking and go back to main menu
+                        changed rmOnRaceDataChanged()
+                        changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
+                        added   BackToMainMenu()
+                        changed rmRaceManMenu()
+                    racescreens.h
+                        removed networking
+                        included "ConfigEnums.h"
+                        added RmShowEndExperiment()
+                        added ConfirmationMenuInit()
+                        added SaveMenuInit()
+                        removed RmShowResults()
+                    raceselectmenu.cpp
+                        changed rmOnActivate()
+                        changed rmOnRaceSelectShutdown()
+                        changed rmOnSelectRaceMan()
+                        changed RmRaceSelectInit()
+                    removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                confscreens/
+                    soundconfig.cpp
+                        added ChangeInterventionVolume()
+                        added logic to create new controls for intervention volume and store their data
+                        changed readSoundCfg()
+                    controlconfig.cpp
+                        added cmd info for intervention toggle on/off to the Cmd[] member variable.
+                        added cmd disp info for intervention toggle on/off to the CmdDispInfo[] member.
+                        included <deque>
+                        included (conditionally) <forcefeedbackconfig.h>
+                        added static void *PlayerHdle = NULL; from removed playerconfig.cpp
+                        added SkillLevelString from removed playerconfig.cpp
+                        added NbSkillLevels from removed playerconfig.cpp
+                        added NoPlayer from removed playerconfig.cpp
+                        added HumanDriverModuleName from removed playerconfig.cpp
+                        added DefaultCarName from removed playerconfig.cpp
+                        added tInfo from removed playerconfig.cpp
+                        added tPlayerInfo from removed playerconfig.cpp
+                        added tPlayerInfoList from removed playerconfig.cpp
+                        added currPlayer from removed playerconfig.cpp
+                        added Yn[] from removed playerconfig.cpp
+                        added GenPlayerList() from removed playerconfig.cpp
+                        removed parameters in init
+                        added button for accessing the force feedback settings
+                    removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
             textonly/
                 CMakeLists.txt
                     added backend
@@ -313,7 +336,7 @@ Changed:
 
                     added   m_textures array
 
-                    added   DispIndicators()
+                    added   DispActiveIndicators()
                     added   DispIndicatorIcon();
                     added   DispIndicatorText();
                     added   LoadIndicatorTextures()
@@ -416,6 +439,9 @@ Changed:
         removed practice.xml
         removed singleevent-challange.xml
         removed singleeven-endurance.xml
+      cars/models/primo/
+        primo.xml
+           removed the fuel cons factor
       data/
         credits.xml
             added Simulated driving assistance developers
@@ -441,10 +467,27 @@ Changed:
             soundconfig.xml
                 removed sound system option
             stopracemenu.xml
-                removed controls and force feedback buttons
+                changed button tips and text
+                removed controls, quit and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
-        
+            forcefeedbackconfigmenu.xml
+                changed background image
+            controlconfigmenu.xml
+                added button for force feedback control
+
   cmake/
     checks.cmake
         changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
+
+
+Deleted:
+   src/
+      modules/
+         simu/
+            simuv2.1/
+               simu.cpp
+                   Removed 'RemoveCar' function
+            simu4/
+               simu.cpp
+                  Removed 'RemoveCar' function

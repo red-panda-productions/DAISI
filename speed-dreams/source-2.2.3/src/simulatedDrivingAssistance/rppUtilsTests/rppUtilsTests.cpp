@@ -44,7 +44,7 @@ TEST(RppUtilsTests, SaveAsBitsTest)
 void ClampTest(float p_f, float p_min, float p_max)
 {
     float f = p_f;
-    ClampFloat(f, p_min, p_max);
+    Clamp(f, p_min, p_max);
 
     if (p_min > p_max)
         return;

@@ -119,18 +119,23 @@ void ShowInterventionTest(InterventionAction p_action)
 {
     IndicatorConfig::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
+    GfInit(GF_LOGGING_DISABLE);
+    GfSetDataDir(SD_DATADIR_SRC);
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
 
     CarController carController;
 
-    auto activeBefore = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
-
     carController.ShowIntervention(p_action);
 
-    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
+    auto activeAfter = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
-    ASSERT_TRUE(activeAfter.size() - activeBefore.size() > 0);
+    ASSERT_TRUE(ActiveIndicatorsContains(activeAfter, p_action));
 }
 
-TEST_CASE(CarControllerTests, ShowInterventionTestSteer, ShowInterventionTest, (INTERVENTION_ACTION_TURN_LEFT))
-TEST_CASE(CarControllerTests, ShowInterventionTestSteer2, ShowInterventionTest, (INTERVENTION_ACTION_TURN_RIGHT))
-TEST_CASE(CarControllerTests, ShowInterventionTestBrake, ShowInterventionTest, (INTERVENTION_ACTION_BRAKE))
+TEST_CASE(CarControllerTests, ShowInterventionTestSteer, ShowInterventionTest, (INTERVENTION_ACTION_STEER_LEFT))
+TEST_CASE(CarControllerTests, ShowInterventionTestSteer2, ShowInterventionTest, (INTERVENTION_ACTION_STEER_RIGHT))
+TEST_CASE(CarControllerTests, ShowInterventionTestBrake, ShowInterventionTest, (INTERVENTION_ACTION_SPEED_BRAKE))

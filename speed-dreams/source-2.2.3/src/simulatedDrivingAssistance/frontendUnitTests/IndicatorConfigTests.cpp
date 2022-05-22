@@ -145,19 +145,19 @@ protected:
         for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             data[i] = {
-                (InterventionAction)i,
+                static_cast<InterventionAction>(i),
                 CreateRandomSoundData(p_gen),
                 CreateRandomTextureData(p_gen),
                 CreateRandomTextData(p_gen)};
         }
-
         return data;
     }
 
-    /// @brief        Writes the given indicator data object to a xml file.
-    /// @param p_data The indicator data
-    /// @return       The filepath of the xml file that it has been written to.
-    const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data)
+    /// @brief                    Writes the given indicator data object to a xml file.
+    /// @param p_data             The indicator data
+    /// @param p_interventionType The intervention type to load the indicators of.
+    /// @return                   The filepath of the xml file that it has been written to.
+    const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data, InterventionType p_interventionType)
     {
         // Open or create the xml file to write to, clean the previous parameters.
         char* path = new char[PATH_BUF_SIZE];
@@ -174,7 +174,7 @@ protected:
 
             if (data.Sound)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_SOUND);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_SOUND);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Sound->Path);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_LOOPING, GfuiMenuBoolToStr(data.Sound->Looping));
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_LOOP_INTERVAL, nullptr, data.Sound->LoopInterval);
@@ -182,15 +182,17 @@ protected:
 
             if (data.Texture)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXTURE);
-                GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Texture->Path);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
+
+                // Only need to write to this specific type, because that is the only one that is loaded in again.
+                GfParmSetStr(fileHandle, xmlSection, s_interventionTypeString[p_interventionType], data.Texture->Path);
             }
 
             if (data.Text)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INTERVENTIONS, s_actionEnumString[i], PRM_SECT_TEXT);
+                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXT);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Text->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Text->ScrPos.Y);
@@ -209,7 +211,7 @@ protected:
 
     /// @brief             Asserts whether the loaded sound is equal to the generated random sound.
     /// @param p_loadedSnd The sound loaded into the indicator config
-    /// @param p_rndSnd    The randomly generated sound
+    /// @param p_rndSnd    The randomly generated sound, the path will get appended to the sound data directory.
     void AssertSound(tSoundData* p_loadedSnd, tSoundData* p_rndSnd)
     {
         // If the generated sound is null, only check whether the loaded sound is also null
@@ -262,13 +264,38 @@ protected:
 
     /// @brief                    Asserts whether the loaded indicator is equal to the generated indicator
     /// @param p_loadedIndicator  The indicator loaded into the indicator config
-    /// @param p_rndIndicator     The randomly generated indicator
+    /// @param p_rndIndicator     The randomly generated indicator, beware that the AssertSound will append the sound path again.
     void AssertIndicator(tIndicatorData p_loadedIndicator, tIndicatorData p_rndIndicator)
     {
         ASSERT_EQ(p_loadedIndicator.Action, p_rndIndicator.Action);
         AssertSound(p_loadedIndicator.Sound, p_rndIndicator.Sound);
         AssertTexture(p_loadedIndicator.Texture, p_rndIndicator.Texture);
         AssertText(p_loadedIndicator.Text, p_rndIndicator.Text);
+    }
+
+    /// @brief           Asserts whether the right active indicator data was returned.
+    /// @param p_active  The active indicators
+    /// @param p_rndData The random indicator data that was used to in the IndicatorConfig
+    /// @param p_action  The action to check whether it is present.
+    void AssertActivatedIndicator(std::vector<tIndicatorData> p_active, std::vector<tIndicatorData> p_rndData, InterventionAction p_action)
+    {
+        // Loop over all the activated indiactors:
+        // If the active indicator is a neutral indicator, it should match the corresponding one.
+        // If the active indicator is something else, it should match the indicator data of the activated action.
+        for (int j = 0; j < p_active.size(); j++)
+        {
+            switch (p_active[j].Action)
+            {
+                case INTERVENTION_ACTION_STEER_NEUTRAL:
+                    AssertIndicator(p_active[j], p_rndData[INTERVENTION_ACTION_STEER_NEUTRAL]);
+                    break;
+                case INTERVENTION_ACTION_SPEED_NEUTRAL:
+                    AssertIndicator(p_active[j], p_rndData[INTERVENTION_ACTION_SPEED_NEUTRAL]);
+                    break;
+                default:
+                    AssertIndicator(p_active[j], p_rndData[p_action]);
+            }
+        }
     }
 };
 
@@ -281,15 +308,15 @@ TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
     {
         // Create random valid indicator data with a chance to generate no sound/texture/text data
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(CAN_GENERATE_NULL);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Load the created xml file into the indicator config and
         // test whether every value matches the original generated value.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
         std::vector<tIndicatorData> loadedData = IndicatorConfig::GetInstance()->GetIndicatorData();
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
+        for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION; action++)
         {
-            AssertIndicator(loadedData[i], rndData[i]);
+            AssertIndicator(loadedData[action], rndData[action]);
         }
     }
 }
@@ -301,7 +328,7 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidScreenPosition)
     {
         // Create random indicator data with invalid screen positions and write it to xml
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_SCR_POS);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::out_of_range);
     }
@@ -314,32 +341,32 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidLoopInterval)
     {
         // Create random indicator data with invalid loop intervals and write it to xml
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_LOOP_INTERVAL);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::runtime_error);
     }
 }
 
-/// @brief Tests whether the IndicatorConfig can activate an indicator and retrieve the correct values.
-TEST_F(IndicatorConfigLoadingTests, ActivateIndicator)
+/// @brief Tests whether the IndicatorConfig can activate multiple indicators of different types.
+TEST_F(IndicatorConfigLoadingTests, ActivateMultipleIndicators)
 {
     for (int i = 0; i < NUM_OF_TESTS; i++)
     {
         // Create random valid indicator data
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(VALID);
-        const char* filepath = WriteIndicatorDataToXml(rndData);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
         IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
-        for (InterventionAction i = 0; i < NUM_INTERVENTION_ACTION; i++)
-        {
-            IndicatorConfig::GetInstance()->ActivateIndicator(i);
-            std::vector<tIndicatorData> active = IndicatorConfig::GetInstance()->GetActiveIndicators(INTERVENTION_TYPE_ONLY_SIGNALS);
 
-            // Currently there is only 1 indicator active at the time, so we can just retrieve it with [0].
-            // TODO: update whenever the IndicatorConfig can have multiple indicators active at a time.
-            AssertIndicator(active[0], rndData[i]);
-        }
+        // Must be of different type: speed / steer.
+        IndicatorConfig::GetInstance()->ActivateIndicator(INTERVENTION_ACTION_STEER_LEFT);
+        IndicatorConfig::GetInstance()->ActivateIndicator(INTERVENTION_ACTION_SPEED_ACCEL);
+
+        auto active = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+        AssertIndicator(active[INTERVENTION_ACTION_TYPE_STEER], rndData[INTERVENTION_ACTION_STEER_LEFT]);
+        AssertIndicator(active[INTERVENTION_ACTION_TYPE_SPEED], rndData[INTERVENTION_ACTION_SPEED_ACCEL]);
     }
 }
 
