@@ -68,9 +68,6 @@ RmLoadingScreenStart(const char *title, const char *bgimg)
 
     GfuiMenuCreateStaticControls(HScreen, hmenu);
 
-    // Create variable title label.
-    int titleId = GfuiMenuCreateLabelControl(HScreen, hmenu, "titlelabel");
-    GfuiLabelSetText(HScreen, titleId, title);
 
 	// Get layout / coloring properties.
     NTextLines = (int)GfuiMenuGetNumProperty(hmenu, "nLines", 20);

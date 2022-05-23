@@ -54,15 +54,6 @@
 
 	<section name="dynamic controls">
 
-	<section name="titlelabel">
-		<attstr name="type" val="label"/>	  	  	  	  	  
-		<attnum name="max len" val="60"/>
-		<attnum name="x" val="150"/>
-		<attnum name="y" val="415"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="h align" val="left"/>
-		<attstr name="font" val="medium"/>
-	</section>
 
 	</section>
 
