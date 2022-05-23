@@ -95,14 +95,17 @@ TextOnlyUI::TextOnlyUI(const std::string& strShLibName, void* hShLibHandle)
 /// @brief              Load the replay configuration from a file into the mediator.
 /// @param p_selRaceMan The pointer that should point to the replay race manager.
 /// @return             true if the replay configuration was loaded successfully
-bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
+bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
+{
     std::string replayFolder;
-    if(!GfApp().hasOption("replay", replayFolder)) {
+    if (!GfApp().hasOption("replay", replayFolder))
+    {
         GfLogError("Either 'startrace' or 'replay' should be defined when 'textonly' is defined.\n");
         return false;
     }
 
-    if(!Recorder::ValidateAndUpdateRecording(replayFolder)) {
+    if (!Recorder::ValidateAndUpdateRecording(replayFolder))
+    {
         GfLogError("Failed to validate and/or update recording %s\n", replayFolder.c_str());
         return false;
     }

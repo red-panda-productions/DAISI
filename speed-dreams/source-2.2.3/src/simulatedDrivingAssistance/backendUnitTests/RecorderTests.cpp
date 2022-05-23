@@ -354,8 +354,8 @@ TEST(RecorderTests, WriteRunSettingsTests)
     thresholds.Brake = random.NextFloat();
     thresholds.Steer = random.NextFloat();
 
-    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, 
-        participantControl, maxTime, allowedActions, thresholds);
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType,
+                              participantControl, maxTime, allowedActions, thresholds);
 
     filesystem::path settingsPath = GetTestingDirectory();
     settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);

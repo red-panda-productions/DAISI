@@ -85,9 +85,9 @@ Recorder::~Recorder()
 /// @param p_maxTime              The maximum time for the trial
 /// @param p_allowedActions       The allowed black box actions settings
 /// @param p_thresholds           The thresholds that are used to make decisions
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, 
-    const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, 
-    const int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds)
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators,
+                                const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
+                                const int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
