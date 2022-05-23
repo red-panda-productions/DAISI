@@ -624,6 +624,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, maxTime, allowedActions);
     }
     const int idx = index - 1;
+
     // Have to read engine curve
     char midx[64];
     struct tEdesc
