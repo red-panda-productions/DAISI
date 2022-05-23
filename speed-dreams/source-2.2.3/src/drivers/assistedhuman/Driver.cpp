@@ -7,13 +7,16 @@
 /// @param p_index The driver's index (starting from 1)
 /// @param p_name The driver's name
 Driver::Driver(int p_index, const char* p_name)
-    : m_index(p_index), m_humanDriver(p_name), m_recorder(nullptr)
+    : m_index(p_index), m_humanDriver(p_name), m_recorder(nullptr), m_DrivingAssistant(p_name)
 {
     m_humanDriver.count_drivers();
+    m_DrivingAssistant.count_drivers();
     m_humanDriver.init_context(p_index);
+    m_DrivingAssistant.init_context(p_index);
     // Pretend like the module is just initializing
     auto* tempArr = new tModInfo[1];
     m_humanDriver.initialize(tempArr, nullptr);
+    m_DrivingAssistant.initialize(tempArr, nullptr);
     delete[] tempArr;
 }
 
@@ -56,15 +59,7 @@ void Driver::NewRace(tCarElt* p_car, tSituation* p_situation)
 /// @param p_situation The current race situation
 void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
 {
-    // Do not let the human control the car when the AI is in control
-    if (SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
-    {
-        m_humanDriver.drive_at(m_index, p_car, p_situation);
-    }
-    if(SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
-    {
-        p_car->_gear + 1;
-    }
+    m_humanDriver.drive_at(m_index, p_car, p_situation);
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);
 

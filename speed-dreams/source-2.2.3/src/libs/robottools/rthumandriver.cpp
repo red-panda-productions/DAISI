@@ -1076,7 +1076,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle steering cmd input if the participant is allowed to.
-    if (SMediator::GetInstance()->GetPControlSettings().ControlSteer)
+    if (SMediator::GetInstance()->GetPControlSettings().ControlSteer && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_LEFTSTEER].type)
         {
@@ -1443,7 +1443,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle brake cmd input if the participant is allowed to.
-    if (SMediator::GetInstance()->GetPControlSettings().ControlBrake)
+    if (SMediator::GetInstance()->GetPControlSettings().ControlBrake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_BRAKE].type)
         {
@@ -1552,7 +1552,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle throttle cmd input if the participant is allowed to.
-    if (SMediator::GetInstance()->GetPControlSettings().ControlAccel)
+    if (SMediator::GetInstance()->GetPControlSettings().ControlAccel && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_THROTTLE].type)
         {
@@ -1897,7 +1897,7 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
 
     tControlCmd *cmd = HCtx[idx]->cmdControl;
 
-    common_drive(index, car, s);
+    //common_drive(index, car, s);
 
     //Can it be left out? car->_gearCmd = car->_gear;
     /* manual shift sequential */
@@ -2054,6 +2054,12 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
     common_brake(idx, car, s);
 
 }
+
+void HumanDriver::IncreaseGear(tCarElt* p_car)
+{
+    p_car->_gear = 1;
+}
+
 
 /*
  * Changes from original: none
