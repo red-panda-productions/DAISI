@@ -475,6 +475,11 @@ Changed:
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
+            trackselectmenu.xml
+                changed position of category button
+                changed position of track button
+                added category label
+                added track label
 
   cmake/
     checks.cmake

@@ -33,6 +33,7 @@
 
 <section name="dynamic controls">
 
+    <!-- SIMULATED DRIVING ASSISTANCE: lowered category and track buttons-->
 <!-- Track category -->
 	<section name="trackcatleftarrow">
 		<attstr name="type" val="image button"/>
@@ -261,7 +262,8 @@
 		<attnum name="y" val="148"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
-        <section name="7">
+    <!-- SIMULATED DRIVING ASSISTANCE: added category and track label-->
+    <section name="7">
 		<attstr name="type" val="label"/>
 		<attstr name="text" val="Category:"/>
 		<attstr name="font" val="small_t"/>
@@ -269,7 +271,7 @@
 		<attnum name="y" val="365"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
-        <section name="8">
+    <section name="8">
 		<attstr name="type" val="label"/>
 		<attstr name="text" val="Environment:"/>
 		<attstr name="font" val="small_t"/>
