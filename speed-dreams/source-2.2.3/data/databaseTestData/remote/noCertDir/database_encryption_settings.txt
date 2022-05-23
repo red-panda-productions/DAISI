@@ -1,3 +1,0 @@
-CA.pem
-public.pem
-private.key

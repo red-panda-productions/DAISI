@@ -1,6 +1,0 @@
-127.0.0.1
-geenIntPort
-SDATest
-PASSWORD
-sda_test
-false

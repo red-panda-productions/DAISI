@@ -20,20 +20,19 @@
 #include <tgfclient.h>
 
 #include "legacymenu.h"
+#include "ConfigEnums.h"
 
 #include "exitmenu.h"
 #include "mainmenu.h"
 #include "ConfigEnums.h"
-#include "EndExperimentMenu.h"
 
+static void* MenuHandle = nullptr;
 
-static void *MenuHandle = NULL;
-
-static void 
-onAcceptExit(void * /* dummy */)
+static void
+onAcceptExit(void* /* dummy */)
 {
-	LmRaceEngine().abortRace(); // Do cleanup to get back correct setup files
-	LegacyMenu::self().quit();
+    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
+    LegacyMenu::self().quit();
 }
 
 /*
@@ -50,36 +49,29 @@ onAcceptExit(void * /* dummy */)
  *	The menu handle
  *
  * Remarks
- *	
+ *
  */
 
-// SIMULATED DRIVING ASSISTANCE: added functionality to load the End Experiment menu screen
-void* ExitMenuInit(void* prevMenu, bool p_raceExit)
+void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_raceEndType)
 {
-    if (MenuHandle) {
-		GfuiScreenRelease(MenuHandle);
+    if (MenuHandle)
+    {
+        GfuiScreenRelease(MenuHandle);
     }
 
     MenuHandle = GfuiScreenCreate();
 
-    void *param = GfuiMenuLoad("exitmenu.xml");
+    void* param = GfuiMenuLoad("exitmenu.xml");
     GfuiMenuCreateStaticControls(MenuHandle, param);
 
     // SIMULATED DRIVING ASSISTANCE: Looks where the exit game gets called and change the button functionality based on it.
-    if (p_raceExit)
-    {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", EndExperimentInit(), GfuiScreenActivate);
-    }
-    else
-    {
-        GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
-    }
-    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
 
     GfParmReleaseHandle(param);
-    
+
     GfuiMenuDefaultKeysAdd(MenuHandle);
-    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", prevMenu, GfuiScreenActivate, NULL);
+    GfuiAddKey(MenuHandle, GFUIK_ESCAPE, "No, back to the game", p_prevMenu, GfuiScreenActivate, NULL);
 
     return MenuHandle;
 }

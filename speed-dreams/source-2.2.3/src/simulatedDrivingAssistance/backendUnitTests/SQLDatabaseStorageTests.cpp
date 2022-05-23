@@ -6,13 +6,31 @@
 #include "gmock/gmock-matchers.h"
 #include <portability.h>
 #include <config.h>
+#include "Mediator.h"
+
+#define MAKE_TEST_SETTINGS                                                         \
+    tDatabaseSettings testSettings;                                                \
+    strcpy_s(testSettings.Username, SETTINGS_NAME_LENGTH, "SDATest");              \
+    strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, "PASSWORD");             \
+    testSettings.Port = 3306;                                                      \
+    strcpy_s(testSettings.Address, SETTINGS_NAME_LENGTH, "127.0.0.1");             \
+    strcpy_s(testSettings.Schema, "sda_test");                                     \
+    testSettings.UseSSL = true;                                                    \
+    strcpy_s(testSettings.CACertFilePath, SETTINGS_NAME_LENGTH, "CA.txt");         \
+    strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
+    strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt");
+
 #define TEST_DATA_DIRECTORY "\\databaseTestData\\"
+
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
 /// @param p_password password of database to connect to
 void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::string& p_password)
 {
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase("127.0.0.1", 3306, "SDATest", p_password, "sda_test", "false"));
+    MAKE_TEST_SETTINGS;
+
+    testSettings.UseSSL = false;
+    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase(testSettings));
 }
 
 /// @brief Inserts test data in opened database
@@ -77,53 +95,18 @@ void CatchDatabaseError(const std::string& p_password, const char* p_inputFile)
     TestCatchIncorrectTestData(sqlDatabaseStorage, p_inputFile);
 }
 
-/// @brief  Tries to find the database settings file
-///         but wont find it, since there is no directory
-TEST(SQLDatabaseStorageTests, TestDatabaseRunNoDir)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY), std::exception)
-    {
-        ASSERT_STREQ("Could not find database settings file", e.what());
-    }
-}
-
-/// @brief  Tries to find the database settings file
-///         but wont find it, since there is a directory
-///         but no settings file in that directory
-TEST(SQLDatabaseStorageTests, TestDatabaseRunDirNoFile)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the settings file doesn't exist.
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "noSettingsFile"), std::exception)
-    {
-        ASSERT_STREQ("Could not find database settings file", e.what());
-    }
-}
-
-/// @brief  Tries to convert the port to integer
-///         but it is a string in the settingsfile of the stringPort dir.
-TEST(SQLDatabaseStorageTests, TestDatabaseRunStringPort)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when the port is not an integer
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "stringPort"), std::exception)
-    {
-        ASSERT_STREQ("Port in database settings config file could not be converted to an int", e.what());
-    }
-}
-
-/// @brief  Connects to the database, if the settings in correctSettings
+/// @brief  Connects to the database, if the settings in test_data/correctSettings
 ///         has the correct password, otherwise it has the same
 ///         coverage path as TestDatabaseRunIncorrect
 TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
+    ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
+    MAKE_TEST_SETTINGS;
+
+    testSettings.UseSSL = false;
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
@@ -135,6 +118,13 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 ///         incorrect password
 TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    MAKE_TEST_SETTINGS;
+    sprintf(testSettings.Password, "WRONGPASSWORD");
+    testSettings.UseSSL = false;
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
@@ -145,33 +135,17 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
 }
 
-/// @brief test for crash when there is no certificates folder
-TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoCertDir)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote\\noCertDir"), std::exception)
-    {
-        ASSERT_STREQ("Could not find certificate folder", e.what());
-    }
-}
-
-/// @brief tests for crash when there is no "database_encryption_settings.txt"file
-TEST(SQLDatabaseStorageTests, TestRemoteDatabaseNoEncFile)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_THROW_WHAT(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote\\noEncryption"), std::exception)
-    {
-        ASSERT_STREQ("Could not find database encryption settings file", e.what());
-    }
-}
-
 /// @brief  Tests whether it will throw no exception when there is an encryption file
 ///         a settings file and a certificates folder with fake certificates, named in the
 ///         encryption file
 TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    MAKE_TEST_SETTINGS;
+
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote\\correctRemote"));
@@ -179,14 +153,14 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 
 #define YOUR_PASSWORD "PASSWORD"
 
- TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"));
- TEST_CASE(SQLDatabaseStorageTests, TimeDatabase, DatabaseTimeTest, (YOUR_PASSWORD, "test_file.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NoUserInput, DatabaseTimeTest, (YOUR_PASSWORD, "test_noUserInput.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NoGameState, DatabaseTimeTest, (YOUR_PASSWORD, "test_noGameState.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NoDecisions, DatabaseTest, (YOUR_PASSWORD, "test_noDecisions.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NoGameStateYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noGameStateYesData.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NoUserInputYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noUserInputYesData.txt"))
- TEST_CASE(SQLDatabaseStorageTests, CatchLightsQuery, CatchDatabaseError, (YOUR_PASSWORD, "test_wrongLightsValue.txt"))
- TEST_CASE(SQLDatabaseStorageTests, CatchPrematureEOF, CatchDatabaseError, (YOUR_PASSWORD, "test_prematureEOF.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NonExistingInterventionMode, CatchDatabaseError, (YOUR_PASSWORD, "test_nonExistingInterventionMode.txt"))
- TEST_CASE(SQLDatabaseStorageTests, NonExistingInputFile, CatchDatabaseError, (YOUR_PASSWORD, "nonExistingTestFile"))
+TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"));
+TEST_CASE(SQLDatabaseStorageTests, TimeDatabase, DatabaseTimeTest, (YOUR_PASSWORD, "test_file.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoUserInput, DatabaseTimeTest, (YOUR_PASSWORD, "test_noUserInput.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoGameState, DatabaseTimeTest, (YOUR_PASSWORD, "test_noGameState.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoDecisions, DatabaseTest, (YOUR_PASSWORD, "test_noDecisions.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoGameStateYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noGameStateYesData.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoUserInputYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noUserInputYesData.txt"))
+TEST_CASE(SQLDatabaseStorageTests, CatchLightsQuery, CatchDatabaseError, (YOUR_PASSWORD, "test_wrongLightsValue.txt"))
+TEST_CASE(SQLDatabaseStorageTests, CatchPrematureEOF, CatchDatabaseError, (YOUR_PASSWORD, "test_prematureEOF.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NonExistingInterventionMode, CatchDatabaseError, (YOUR_PASSWORD, "test_nonExistingInterventionMode.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NonExistingInputFile, CatchDatabaseError, (YOUR_PASSWORD, "nonExistingTestFile"))
