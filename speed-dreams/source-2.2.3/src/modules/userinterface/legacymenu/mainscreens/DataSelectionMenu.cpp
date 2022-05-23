@@ -181,6 +181,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
+    DataCompressionMenuInit(s_scrHandle);
+
     s_dbSettingsMenu = DatabaseSettingsMenuInit(s_scrHandle);
 
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
