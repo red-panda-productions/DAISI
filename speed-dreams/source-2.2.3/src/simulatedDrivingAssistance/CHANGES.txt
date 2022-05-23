@@ -63,9 +63,20 @@ Added:
             SaveMenu.xml
             ConformationMenu.xml
             EndExperimentMenu.xml
+        tracks/
+            curved highway.xml
+            curved-road.xml
+            simple-highway.xml
+            simple-road.xml
+            test-tracks.xml
+
     drivers/
         assistedhuman/
             *
+    tracks/
+        added curved-highway
+        added simple-highway
+        added simple-road
 
 Changed:
   src/
@@ -243,42 +254,42 @@ Changed:
                     changed  backLoad()
                     changed  activate()
                     changed onRaceFinished();
-                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs      
-            mainscreens/
-                mainmenu.cpp
-                    included "DataSelectionMenu.h"
-                    removed  <playerconfig.h>
-                    added    GoBack()
-                    changed  MainMenuInit()
-                    changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
-                    changed  MainMenuInit()
-                    included "ConfigEnums.h"
-                    changed  onExitMenuActive() method
-                exitmenu.cpp
-                    included "ConfigEnums.h"
-                    included "EndExperimentMenu.h"
-                    changed  functionality of ExitMenuInit method
+                    removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
+                mainscreens/
+                    mainmenu.cpp
+                        included "DataSelectionMenu.h"
+                        removed  <playerconfig.h>
+                        added    GoBack()
+                        changed  MainMenuInit()
+                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
+                        changed  MainMenuInit()
+                        included "ConfigEnums.h"
+                        changed  onExitMenuActive() method
+                    exitmenu.cpp
+                        included "ConfigEnums.h"
+                        included "EndExperimentMenu.h"
+                        changed  functionality of ExitMenuInit method
                         changed  ExitMenuInit()
-                exitmenu.h
-                    included "ConfigEnums.h"
+                    exitmenu.h
+                        included "ConfigEnums.h"
                         changed  ExitMenuInit(): more parameters
-                optionsmenu.cpp
-                    removed graphics, advanced graphics, opengl, simulation, ai opponents menu
-            racescreens/
-                raceresultsmenus.cpp
-                    included "EndExperimentMenu.h"
-                    included several 'Quit' buttons
-                racestopmenu.cpp
-                    RmStopRaceMenu()
-                    changed AssistedHuman is a human
-                    changed rmAbortRaceHookHandle()
-                    changed rmRestartRaceHooKHandle()
-                    changed rmQuitHookActive()
-                    removed rmProgressiveTimeModifier.start() call
-                    removed controls menu, force feedback menu and quit button
-                    changed parameters of GfuiScreenActive() function
-                racerunningmenus.cpp
-                    removed RmProgressiveTimeModifier implementation and calls
+                    optionsmenu.cpp
+                        removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                racescreens/
+                    raceresultsmenus.cpp
+                        included "EndExperimentMenu.h"
+                        included several 'Quit' buttons
+                    racestopmenu.cpp
+                        RmStopRaceMenu()
+                        changed AssistedHuman is a human
+                        changed rmAbortRaceHookHandle()
+                        changed rmRestartRaceHooKHandle()
+                        changed rmQuitHookActive()
+                        removed rmProgressiveTimeModifier.start() call
+                        removed controls menu, force feedback menu and quit button
+                        changed parameters of GfuiScreenActive() function
+                    racerunningmenus.cpp
+                        removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
                 racemanmenu.cpp
                     included <controlconfig.h> and "mainmenu.h"
@@ -329,8 +340,8 @@ Changed:
                     added Yn[] from removed playerconfig.cpp
                     added GenPlayerList() from removed playerconfig.cpp
                     removed parameters in init
-                        added button for accessing the force feedback settings
-                removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
+                    added button for accessing the force feedback settings
+                    removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
             textonly/
                 CMakeLists.txt
                     added backend
@@ -456,6 +467,11 @@ Changed:
       data/
         credits.xml
             added Simulated driving assistance developers
+        track/
+            removed dirt.xml
+            removed gprix.xml
+            removed karting.xml
+            removed speedway.xml
         menu/
             mainmenu.xml
                 added a back button
@@ -482,13 +498,19 @@ Changed:
                 removed controls, quit and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
+            trackselectmenu.xml
+                changed position size of category and track buttons
             forcefeedbackconfigmenu.xml
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
             trackselectmenu.xml
+                changed position of category button
+                changed position of track button
                 changed text on Next and Back buttons
                 changed all instances of the word track to environment
+                added category label
+                added track label
 
   cmake/
     checks.cmake
