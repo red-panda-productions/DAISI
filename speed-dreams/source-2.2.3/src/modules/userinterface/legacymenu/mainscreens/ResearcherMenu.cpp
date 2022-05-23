@@ -136,6 +136,16 @@ GfTrack* GetTrackAsGfTrack()
     return m_environment;
 }
 
+/// @brief If no track loader has been initialized yet for the environment menu, initialize it
+void InitializeTrackLoader() {
+    if (!GfTracks::self()->getTrackLoader())
+    {
+        GfModule* trackLoaderModule = GfModule::load("modules/track", TRACK_LOADER_MODULE_NAME);
+        ITrackLoader* trackLoader = trackLoaderModule->getInterface<ITrackLoader>();
+        GfTracks::self()->setTrackLoader(trackLoader);
+    }
+}
+
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the checkbox
 static void SelectAllowedSteer(tCheckBoxInfo* p_info)
@@ -552,13 +562,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
         GetTrackAsGfTrack,
         s_scrHandle,
         s_scrHandle};
-    // If no track loader has been initialised yet for the environment menu, initialise it
-    if (!GfTracks::self()->getTrackLoader())
-    {
-        GfModule* trackLoaderModule = GfModule::load("modules/track", TRACK_LOADER_MODULE_NAME);
-        ITrackLoader* trackLoader = trackLoaderModule->getInterface<ITrackLoader>();
-        GfTracks::self()->setTrackLoader(trackLoader);
-    }
+
+    // Ensure the track loader is initialized
+    InitializeTrackLoader();
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
@@ -605,6 +611,10 @@ void* ResearcherMenuInit(void* p_nextMenu)
 int ResearcherMenuRun()
 {
     GfuiScreenActivate(s_scrHandle);
+
+    // Ensure the track loader is initialized again.
+    // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
+    InitializeTrackLoader();
 
     return 0;
 }
