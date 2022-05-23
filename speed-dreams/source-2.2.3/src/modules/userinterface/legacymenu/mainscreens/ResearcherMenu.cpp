@@ -137,7 +137,8 @@ GfTrack* GetTrackAsGfTrack()
 }
 
 /// @brief If no track loader has been initialized yet for the environment menu, initialize it
-void InitializeTrackLoader() {
+void InitializeTrackLoader()
+{
     if (!GfTracks::self()->getTrackLoader())
     {
         GfModule* trackLoaderModule = GfModule::load("modules/track", TRACK_LOADER_MODULE_NAME);
