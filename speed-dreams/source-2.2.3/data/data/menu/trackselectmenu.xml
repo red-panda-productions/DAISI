@@ -264,21 +264,21 @@
 	</section>
     <!-- SIMULATED DRIVING ASSISTANCE: added category and track label-->
     <section name="7">
-		<attstr name="type" val="label"/>
-		<attstr name="text" val="Category:"/>
-		<attstr name="font" val="small_t"/>
-		<attnum name="x" val="275"/>
-		<attnum name="y" val="365"/>
-		<attstr name="color" val="0xFFFFFF"/>
-	</section>
+        <attstr name="type" val="label"/>
+        <attstr name="text" val="Category:"/>
+        <attstr name="font" val="small_t"/>
+        <attnum name="x" val="275"/>
+        <attnum name="y" val="365"/>
+        <attstr name="color" val="0xFFFFFF"/>
+    </section>
     <section name="8">
-		<attstr name="type" val="label"/>
-		<attstr name="text" val="Environment:"/>
-		<attstr name="font" val="small_t"/>
-		<attnum name="x" val="275"/>
-		<attnum name="y" val="305"/>
-		<attstr name="color" val="0xFFFFFF"/>
-	</section>
+        <attstr name="type" val="label"/>
+        <attstr name="text" val="Environment:"/>
+        <attstr name="font" val="small_t"/>
+        <attnum name="x" val="275"/>
+        <attnum name="y" val="305"/>
+        <attstr name="color" val="0xFFFFFF"/>
+    </section>
 
   </section>
 
