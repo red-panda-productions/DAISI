@@ -148,6 +148,7 @@ RmConfigRunState(bool bStart)
 		} else {
 			ts.prevScreen = rmConfigBackHookInit();
 		}
+                // SIMULATED DRIVING ASSISTANCE change: set SetTrack and GetTrack instead of race
                 ts.SetTrack = [](GfTrack* p_track){LmRaceEngine().race()->getManager()->setEventTrack(0, p_track);};
                 ts.GetTrack = []{return LmRaceEngine().race()->getTrack();};
                 ts.piTrackLoader = GfTracks::self()->getTrackLoader();

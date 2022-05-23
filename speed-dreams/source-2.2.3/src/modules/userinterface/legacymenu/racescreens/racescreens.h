@@ -37,6 +37,7 @@ class GfRace;
 
 typedef struct RmTrackSelect
 {
+    // SIMULATED DRIVING ASSISTANCE change: replace race with SetTrack and GetTrack function
     /// @brief Pointer to function used to set the selected track
     void (*SetTrack)(GfTrack *);
     /// @brief Pointer to function used to get the selected track
