@@ -675,7 +675,8 @@
 		<attstr name="pushed color" val="0xFFCC00"/>
 		</section>
 
-	
+	<!-- SIMULATED DRIVING ASSISTANCE: removed dashboard item controls -->
+
 <!-- Row under -->
 	<section name="Steer Sensitivity">
 		<attstr name="type" val="label"/>

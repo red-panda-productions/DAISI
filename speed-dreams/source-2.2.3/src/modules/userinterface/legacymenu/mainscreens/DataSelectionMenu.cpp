@@ -148,7 +148,6 @@ static void SaveSettingsToDisk()
 /// @brief Starts the raceEngine according to legacymenu.cpp::startRace
 static void StartRaceEngine()
 {
-
     // get the racemanager and run it if there's such a race manager.
     GfRaceManager* RaceManager = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
     if (RaceManager)
@@ -209,7 +208,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     if (s_scrHandle) return s_scrHandle;
 
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
-        nullptr, (tfuiCallback) nullptr, 1);
+                                   nullptr, (tfuiCallback) nullptr, 1);
 
     DataCompressionMenuInit(s_scrHandle);
 

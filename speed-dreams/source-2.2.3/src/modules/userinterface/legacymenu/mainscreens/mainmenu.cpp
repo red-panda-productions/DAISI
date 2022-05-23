@@ -32,8 +32,9 @@
 
 static void *MenuHandle = 0;
 
+// SIMULATED DRIVING ASSITANCE: changed from race initialization to researcher menu initialization
 static void
-onRaceSelectMenuActivate(void * /* dummy */)
+onResearcherSelectMenuActivate(void * /* dummy */)
 {
     GfuiScreenActivate(ResearcherMenuInit(MenuHandle));
 }
@@ -106,7 +107,7 @@ MainMenuInit(bool SupportsHumanDrivers)
 
     //Add buttons and create based on xml
     // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onResearcherSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);

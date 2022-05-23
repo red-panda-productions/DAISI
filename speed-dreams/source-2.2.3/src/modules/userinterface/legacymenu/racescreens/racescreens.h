@@ -122,6 +122,8 @@ extern void RmShowStandings(void* prevHdle, tRmInfo *info, int start = 0);
 extern void* RmFileSelect(void* vs);
 
 // From racemanmenus.
+// SIMULATED DRIVING ASSISTANCE: removed rmraceselectinit(), removed rmracemanmenu()
+
 extern void RmNextEventMenu();
 extern void RmConfigureRace(void*  /* dummy */);
 extern void RmSetRacemanMenuHandle(void*  handle);

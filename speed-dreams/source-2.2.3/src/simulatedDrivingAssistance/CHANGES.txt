@@ -242,12 +242,11 @@ Changed:
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
                         removed  <playerconfig.h>
-                        added    GoBack()
                         changed  MainMenuInit()
-                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
                         changed  MainMenuInit()
                         included "ConfigEnums.h"
                         changed  onExitMenuActive() method
+                        renamed  raceselectmenuinit to researcherselectmenuinit
                     exitmenu.cpp
                         included "ConfigEnums.h"
                         included "EndExperimentMenu.h"
@@ -258,6 +257,7 @@ Changed:
                         changed  ExitMenuInit(): more parameters
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                        added controls
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
@@ -447,7 +447,6 @@ Changed:
             added Simulated driving assistance developers
         menu/
             mainmenu.xml
-                added a back button
                 renamed race button
                 removed weekend
                 removed player
@@ -459,6 +458,7 @@ Changed:
                 removed controls menu
             optionsmenu.xml
                 removed unused menus
+                added config menu
             creditsmenu.xml
                 added new section
             removed playerconfig.xml

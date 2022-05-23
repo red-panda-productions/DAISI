@@ -25,6 +25,7 @@
 
 	<section name="dynamic controls">
    
+    <!-- SIMULATED DRIVING ASSISTANCE: added configure button-->
     <section name="configure">
         <attstr name="type" val="text button"/>
         <attstr name="show box" val="no"/>
