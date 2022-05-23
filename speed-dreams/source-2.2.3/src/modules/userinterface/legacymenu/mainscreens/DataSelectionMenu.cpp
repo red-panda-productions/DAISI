@@ -6,7 +6,6 @@
 #include "DataCompressionMenu.h"
 #include "ResearcherMenu.h"
 #include <DatabaseSettingsMenu.h>
-#include "mainmenu.h"
 
 #include "DatabaseConnectionManager.h"
 
@@ -153,7 +152,7 @@ static void SaveSettings(void* /* dummy */)
     ConfigureDataCompressionSettings();
 
     // Go to the main screen
-    GfuiScreenActivate(MainMenuInit(s_scrHandle));
+    GfuiScreenActivate(s_nextHandle);
 }
 
 /// @brief Returns to the researcher menu screen
@@ -167,7 +166,7 @@ static void GoBack(void* /* dummy */)
 static void
 DatabaseSettingsMenuActivate(void* /* dummy */)
 {
-    GfuiScreenActivate(DatabaseSettingsMenuInit(s_scrHandle));
+    GfuiScreenActivate(s_dbSettingsMenu);
 }
 
 /// @brief Activates the advancedsettings screen
