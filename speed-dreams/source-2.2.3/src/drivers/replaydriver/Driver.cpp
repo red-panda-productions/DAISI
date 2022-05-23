@@ -6,6 +6,26 @@
 
 #include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
 
+// When NDEBUG is not defined assert is a no-op, for the integration tests it needs to throw an exception.
+#ifdef NDEBUG
+
+#undef assert
+
+// Disable naming inspection since this needs to be "assert" lowercase, while our naming standard would require it to be ASSERT
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCInconsistentNamingInspection"
+
+// Throw an exception when the expression is false
+#define assert(expression)                                                        \
+    if (!(expression))                                                            \
+    {                                                                             \
+        GfLogError("Assertion failed: " #expression " was false!\n");             \
+        throw std::runtime_error("Assertion failed: " #expression " was false!"); \
+    }
+#pragma clang diagnostic pop
+
+#endif
+
 namespace filesystem = std::experimental::filesystem;
 
 /// @brief Initialize the driver with the given track
