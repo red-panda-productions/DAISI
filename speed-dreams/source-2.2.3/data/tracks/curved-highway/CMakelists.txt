@@ -1,0 +1,4 @@
+INCLUDE(../../../cmake/macros.cmake)
+
+SD_ADD_SUBDIRECTORY(curved-highway)
+SD_ADD_SUBDIRECTORY(curved-highway-small)
