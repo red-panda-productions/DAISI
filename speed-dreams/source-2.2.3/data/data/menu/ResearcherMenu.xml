@@ -53,10 +53,10 @@
             <attstr name="text" val="Developer Screen"/>
             <attstr name="tip" val="Access the Developer Screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="530"/>
-            <attnum name="y" val="455"/>
+            <attnum name="x" val="40"/>
+            <attnum name="y" val="40"/>
             <attnum name="width" val="120"/>
-            <attstr name="font" val="small"/>
+            <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
             <attstr name="pushed color" val="0xFFFFFF"/>
