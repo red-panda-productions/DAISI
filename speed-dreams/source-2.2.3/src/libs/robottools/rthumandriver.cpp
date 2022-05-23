@@ -1075,6 +1075,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle steering cmd input if the participant is allowed to.
+    // Do not let the human control the car when the AI is in full control
     if (SMediator::GetInstance()->GetPControlSettings().ControlSteer && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_LEFTSTEER].type)
@@ -1442,6 +1443,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle brake cmd input if the participant is allowed to.
+    // Do not let the human control the car when the AI is in full control
     if (SMediator::GetInstance()->GetPControlSettings().ControlBrake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_BRAKE].type)
@@ -1551,6 +1553,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle throttle cmd input if the participant is allowed to.
+    // Do not let the human control the car when the AI is in full control
     if (SMediator::GetInstance()->GetPControlSettings().ControlAccel && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_THROTTLE].type)
