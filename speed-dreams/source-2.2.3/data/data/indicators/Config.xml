@@ -7,7 +7,7 @@
         <section name ="steer neutral">
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
-                <attnum name ="ypos" val="0.03"/>
+                <attnum name ="ypos" val="0.04"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning_Off.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl_Off.png"/>
@@ -24,7 +24,7 @@
         <section name ="steer left">
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
-                <attnum name ="ypos" val="0.03"/>
+                <attnum name ="ypos" val="0.04"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
@@ -46,7 +46,7 @@
         <section name ="steer right">
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
-                <attnum name ="ypos" val="0.03"/>
+                <attnum name ="ypos" val="0.04"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
@@ -70,7 +70,7 @@
         <section name="speed neutral">
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
-                <attnum name ="ypos" val="0.03"/>
+                <attnum name ="ypos" val="0.04"/>
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning_Off.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl_Off.png"/>
@@ -87,7 +87,7 @@
         <section name ="accelerate">
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
-                <attnum name ="ypos" val="0.03"/>
+                <attnum name ="ypos" val="0.04"/>
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
@@ -109,7 +109,7 @@
         <section name ="brake">
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
-                <attnum name ="ypos" val="0.03"/>
+                <attnum name ="ypos" val="0.04"/>
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl.png"/>

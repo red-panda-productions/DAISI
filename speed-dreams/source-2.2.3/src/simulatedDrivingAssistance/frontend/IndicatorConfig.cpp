@@ -33,9 +33,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
     }
 
     // Initially the active indicators are the neutral indicators.
-    m_activeIndicators = {
-        m_indicatorData[INTERVENTION_ACTION_STEER_NEUTRAL],
-        m_indicatorData[INTERVENTION_ACTION_SPEED_NEUTRAL]};
+    ResetActiveIndicatorsToNeutral();
 }
 
 /// @brief  Returns a vector of the indicator data
@@ -60,6 +58,14 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
     m_activeIndicators[s_actionToActionType[p_action]] = m_indicatorData[p_action];
+}
+
+/// @brief Resets the active indicators back to neutral.
+void IndicatorConfig::ResetActiveIndicatorsToNeutral()
+{
+    m_activeIndicators = {
+        m_indicatorData[INTERVENTION_ACTION_STEER_NEUTRAL],
+        m_indicatorData[INTERVENTION_ACTION_SPEED_NEUTRAL]};
 }
 
 /// @brief          Loads the sound indicator data from the indicator config.xml

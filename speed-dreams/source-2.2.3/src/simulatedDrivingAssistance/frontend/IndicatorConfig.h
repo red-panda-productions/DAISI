@@ -44,6 +44,8 @@ public:
 
     void ActivateIndicator(InterventionAction p_action);
 
+    void ResetActiveIndicatorsToNeutral();
+
     std::vector<tIndicatorData> GetIndicatorData();
 
     std::vector<tIndicatorData> GetActiveIndicators();
