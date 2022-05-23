@@ -17,18 +17,25 @@ public:
     void RaceStop();
     bool TimeOut();
 
+    void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
+    tDatabaseSettings GetDatabaseSettings();
+    bool CheckConnection(DatabaseSettings p_dbSettings);
     void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
     void SetPControlSettings(tParticipantControl p_pControl);
     void SetReplayRecorderSetting(bool p_replayRecorderOn);
     void SetBlackBoxSyncOption(bool p_sync);
+
+    void SetThresholdSettings(tDecisionThresholds p_thresholds);
     void SetMaxTime(int p_maxTime);
 
     void SetUserId(char* p_userId);
 
-    void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void SetCompressionRate(int p_compressionRate);
 
+    void SetDataCollectionSettings(tDataToStore p_dataSetting);
+    void SetSaveRaceToDatabase(bool p_saveToDatabase);
     void SetBlackBoxFilePath(const char* p_filePath);
     void SetEnvironmentFilePath(const char* p_filePath);
     const char* GetEnvironmentFilePath();
@@ -40,6 +47,7 @@ public:
     tIndicator GetIndicatorSettings();
     InterventionType GetInterventionType();
     tParticipantControl GetPControlSettings();
+    tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
     int GetMaxTime();
@@ -86,7 +94,6 @@ public:
     {
         return m_inRace;
     }
-
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour
@@ -103,8 +110,12 @@ private:
     DecisionMaker m_decisionMaker;
 
     unsigned long m_tickCount = 0;
+    tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;
+
+    tDecisionThresholds m_thresholds;
+
     bool m_inRace = false;  // Whether the game is currently in a race
 };
 

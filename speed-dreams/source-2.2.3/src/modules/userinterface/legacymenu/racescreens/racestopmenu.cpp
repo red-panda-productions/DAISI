@@ -24,15 +24,14 @@
 
 #include "legacymenu.h"
 #include "exitmenu.h"
+#include "ConfigEnums.h"
 #include "racescreens.h"
 
 #include <graphic.h>
 #include <playerpref.h>
 #include <robot.h>
 
-#if SDL_FORCEFEEDBACK
-#include <forcefeedbackconfig.h>
-#endif
+// SIMULATED DRIVING ASSISTANCE CHANGE: Removed include for force feedback config
 
 
 extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
@@ -43,13 +42,14 @@ static void *hscreen = 0;
 static int curPlayerIdx = 0;
 
 // Abort race hook ******************************************************
+static void *pvAbortRaceHookHandle = 0;
+
+// SIMULATED DRIVING ASSISTANT: Go to the show end of experiment screen instead of start screen
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
-    LmRaceEngine().abortRace();
+    RmShowEndExperiment(RACE_ABORT);
 }
-
-static void *pvAbortRaceHookHandle = 0;
 
 static void *
 rmAbortRaceHookInit()
@@ -67,7 +67,7 @@ rmSkipSessionHookActivate(void * /* dummy */)
     LmRaceEngine().skipRaceSession();
 }
 
-static void	*pvSkipSessionHookHandle = 0;
+static void *pvSkipSessionHookHandle = 0;
 
 static void *
 rmSkipSessionHookInit()
@@ -95,7 +95,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
 }
 
-static void	*pvBackToRaceHookHandle = 0;
+static void *pvBackToRaceHookHandle = 0;
 
 void *
 RmBackToRaceHookInit()
@@ -107,13 +107,16 @@ RmBackToRaceHookInit()
 }
 
 // Restart race hook ***************************************************
+static void *pvRestartRaceHookHandle = 0;
+
+// SIMULATED DRIVING ASSISTANT: go to the save menu screen
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {
-    LmRaceEngine().restartRace();
+    //if you restart the game it asks you if you want to save the experiment data
+    if (pvRestartRaceHookHandle)
+        SaveMenuInit(RACE_RESTART);
 }
-
-static void	*pvRestartRaceHookHandle = 0;
 
 static void *
 rmRestartRaceHookInit()
@@ -124,58 +127,20 @@ rmRestartRaceHookInit()
     return pvRestartRaceHookHandle;
 }
 
-//SIMULATED DRIVING ASSISTANCE: removed controls settings
-#if SDL_FORCEFEEDBACK
-// ForceFeedbackConfig hook ********************************************
-static void
-rmForceFeedbackConfigHookActivate(void * /* dummy */)
-{
-    void *prHandle;
-    char buf[100];
-
-    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
-    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-
-    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, curPlayerIdx);
-
-
-    std::string carName = "";
-
-    //Find human cars
-    tRmInfo* pCurrReInfo = LmRaceEngine().inData();
-    for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
-        if(pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
-            carName.append(pCurrReInfo->s->cars[i]->_carName);
-        }
-    }
-
-
-    GfuiScreenActivate(ForceFeedbackMenuInit(hscreen, prHandle, curPlayerIdx, carName));
-}
-
-static void	*pvForceFeedbackConfigHookHandle = 0;
-
-static void *
-rmForceFeedbackConfigHookInit()
-{
-    if (!pvForceFeedbackConfigHookHandle)
-        pvForceFeedbackConfigHookHandle = GfuiHookCreate(0, rmForceFeedbackConfigHookActivate);
-
-    return pvForceFeedbackConfigHookHandle;
-}
-#endif
+//SIMULATED DRIVING ASSISTANCE: removed controls settings, removed force feedback settings
 
 // Quit race hook ******************************************************
-static void	*rmStopScrHandle = 0;
+static void *rmStopScrHandle = 0;
 
 static void
 rmQuitHookActivate(void * /* dummy */)
 {
+    //quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, RACE_EXIT));
 }
 
-static void	*pvQuitHookHandle = 0;
+static void *pvQuitHookHandle = 0;
 
 static void *
 rmQuitHookInit()
@@ -351,8 +316,8 @@ RmStopRaceMenu()
         screen[i++] = rmRestartRaceHookInit();
     }
 
-    buttonRole[i] = "abort";
-    screen[i++] = rmAbortRaceHookInit();
+    // SIMULATED DRIVING ASSISTANCE CHANGE: Removed abort button
+
 #if 1
     // get current driver
     j = (int)GfParmGetNum(grHandle, GR_SCT_DISPMODE, GR_ATT_CUR_SCREEN, NULL, 0.0);
@@ -373,17 +338,14 @@ RmStopRaceMenu()
             curPlayerIdx = j+1;
 
 
-#if SDL_FORCEFEEDBACK
-            buttonRole[i] = "forcefeedback";
-            screen[i++] = rmForceFeedbackConfigHookInit();
-            break;
-#endif
+            // SIMULATED DRIVING ASSISTANCE CHANGE: Removed force feedback button
         }
     }
 #endif
 
-    buttonRole[i] = "quit";
-    screen[i++] = rmQuitHookInit();
+    // SIMULATED DRIVING ASSISTANCE CHANGE: changed quit button to be abort
+    buttonRole[i] = "abort";
+    screen[i++] = rmAbortRaceHookInit();
 
     // SIMULATED DRIVING ASSISTANCE: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],

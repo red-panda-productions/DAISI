@@ -3,22 +3,33 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "DataSelectionMenu.h"
+#include "DataCompressionMenu.h"
 #include "ResearcherMenu.h"
+#include <DatabaseSettingsMenu.h>
 
-#define PRM_ENV_DATA   "CheckboxEnvironmentData"
-#define PRM_CAR_DATA   "CheckboxCarData"
-#define PRM_HUMAN_DATA "CheckboxUserData"
-#define PRM_INTRV_DATA "CheckboxInterventionData"
-#define PRM_META_DATA  "CheckboxMetaData"
+#include "DatabaseConnectionManager.h"
+
+#define PRM_ENV_DATA        "CheckboxEnvironmentData"
+#define PRM_CAR_DATA        "CheckboxCarData"
+#define PRM_HUMAN_DATA      "CheckboxUserData"
+#define PRM_INTRV_DATA      "CheckboxInterventionData"
+#define PRM_META_DATA       "CheckboxMetaData"
+#define PRM_DATABASE_STATUS "DatabaseStatusLabel"
+
+#define PRM_COMP "CompButton"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 static void* s_nextHandle = nullptr;
+static void* s_dbSettingsMenu = nullptr;
 
 // Data to store
 tDataToStore m_dataToStore;
 
 int m_dataToStoreControl[5];
+int m_dbStatus;
+
+bool m_isConnecting = false;
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
@@ -90,6 +101,10 @@ static void LoadDefaultSettings()
 /// @brief Loads the user menu settings from the local config file
 static void OnActivate(void* /* dummy */)
 {
+    tDbControlSettings control;
+    LoadDBSettings(s_dbSettingsMenu, control);
+    CheckConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
+
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
     std::string strPath("config/DataSelectionMenu.xml");
     char buf[512];
@@ -99,6 +114,7 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
@@ -121,6 +137,7 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_META_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
 
     GfParmWriteFile(nullptr, readParam, "DataSelectionMenu");
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Configures the SDAConfig with the options selected on this menu
@@ -131,6 +148,9 @@ static void SaveSettings(void* /* dummy */)
 
     SaveSettingsToDisk();
 
+    // Make sure data compression screen is also saving its settings
+    ConfigureDataCompressionSettings();
+
     // Go to the main screen
     GfuiScreenActivate(s_nextHandle);
 }
@@ -140,6 +160,13 @@ static void GoBack(void* /* dummy */)
 {
     // Go back to the main screen
     GfuiScreenActivate(ResearcherMenuInit(s_scrHandle));
+}
+
+/// @brief Activates the databaseSettingsMenu screen
+static void
+DatabaseSettingsMenuActivate(void* /* dummy */)
+{
+    GfuiScreenActivate(s_dbSettingsMenu);
 }
 
 /// @brief            Initializes the data selection menu
@@ -154,12 +181,15 @@ void* DataSelectionMenuInit(void* p_nextMenu)
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
 
+    s_dbSettingsMenu = DatabaseSettingsMenuInit(s_scrHandle);
+
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // ApplyButton and Back-button controls
+    // ApplyButton, Back-button and Database-button controls
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "DatabaseButton", nullptr, DatabaseSettingsMenuActivate);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
     m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, nullptr, ChangeEnvironmentStorage);
@@ -167,12 +197,17 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
     m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
+    m_dbStatus = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DATABASE_STATUS);
+
+    // Compression button control
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_COMP, s_scrHandle, DataCompressionMenuRun);
 
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Data Compression Screen", nullptr, DataCompressionMenuRun, nullptr);
 
     return s_scrHandle;
 }

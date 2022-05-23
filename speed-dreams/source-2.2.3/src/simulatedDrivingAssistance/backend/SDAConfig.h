@@ -26,10 +26,12 @@ private:
     char* m_userId = nullptr;
     InterventionFactory m_interventionFactory;
     char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
+    bool m_saveRaceToDatabase = false;
     char m_environmentPath[ENVIRONMENT_PATH_SIZE];
     bool m_asyncConnection = true;
     filesystem::path m_currentReplayFolder;
     bool m_replayRecorderOn = false;
+    int m_compressionRate = 1;
 
 public:
     /* TODO: Return IDataStorage */ void GetDataStorage();
@@ -53,10 +55,15 @@ public:
     void SetMaxTime(int p_maxTime);
     int GetMaxTime() const;
 
+    void SetCompressionRate(int p_compressionRate);
+    int GetCompressionRate() const;
+
     void SetUserId(char* p_userId);
     char* GetUserId() const;
     void SetBlackBoxFilePath(const char* p_filePath);
     const char* GetBlackBoxFilePath() const;
+    void SetSaveToDatabaseCheck(bool p_saveToDatabase);
+    bool GetSaveToDatabaseCheck() const;
 
     void SetEnvironmentFilePath(const char* p_filePath);
     const char* GetEnvironmentFilePath() const;

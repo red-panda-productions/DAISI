@@ -5,6 +5,7 @@
 #include "DecisionMaker.h"
 #include "../rppUtils/RppUtils.hpp"
 
+
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
     template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                               \
     template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                     \
@@ -27,6 +28,16 @@
 #define CONVERT_TO_BRAKE_DECISION   DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
 #define CONVERT_TO_GEAR_DECISION    DECISION_LAMBDA(p_decisionTuple.SetGear(std::stoi(p_string)))
 #define CONVERT_TO_ACCEL_DECISION   DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
+
+/// @brief		   Checks if the action was reported successfully from IPCLib
+/// @param  p_stmt The action that needs to be checked
+/// @param  p_msg  The message that is pushed to the standard error output when the action has failed
+#define IPC_OK(p_stmt, p_msg)              \
+    if ((p_stmt) != IPCLIB_SUCCEED)        \
+    {                                      \
+        std::cerr << (p_msg) << std::endl; \
+        throw std::exception(p_msg);       \
+    }
 
 template <class BlackBoxData, class PointerManager>
 SocketBlackBox<BlackBoxData, PointerManager>::SocketBlackBox(PCWSTR p_ip, int p_port)
@@ -62,9 +73,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
         std::cout << "a";
     }
     std::cout << "sync" << std::endl;
+
     m_server.AwaitClientConnection();
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
+    m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     msgpack::unpacked msg;
@@ -83,8 +96,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::sbuffer sbuffer;
     std::string data[1] = {std::to_string(p_amountOfTests)};
     msgpack::pack(sbuffer, data);
+    m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
-
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
 
@@ -93,6 +106,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     {
         sbuffer.clear();
         SerializeBlackBoxData(sbuffer, &p_tests[i]);
+        m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
@@ -103,8 +117,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     if (m_asyncConnection)
     {
         SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
-        m_server.SendData(sbuffer.data(), sbuffer.size());
         m_server.ReceiveDataAsync();
+        m_server.SendData(sbuffer.data(), sbuffer.size());
     }
 }
 
@@ -118,6 +132,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     {
         m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     }
+    m_server.ReceiveDataAsync();
     m_server.SendData("STOP", 4);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
@@ -180,14 +195,16 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
 {
     if (!m_asyncConnection)
     {
+        m_server.ReceiveDataAsync();
         msgpack::sbuffer sbuffer;
 
         delete m_currentData;
         m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
         SerializeBlackBoxData(sbuffer, m_currentData);
-        m_server.SendData(sbuffer.data(), sbuffer.size());
 
-        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+        IPC_OK(m_server.SendData(sbuffer.data(), sbuffer.size()), "Failed to send data");
+
+        IPC_OK(m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE), "Failed to receive data");
 
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
         return true;
@@ -201,8 +218,9 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
     delete m_currentData;
     m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
     SerializeBlackBoxData(sbuffer, m_currentData);
-    m_server.SendData(sbuffer.data(), sbuffer.size());
+
     m_server.ReceiveDataAsync();
+    m_server.SendData(sbuffer.data(), sbuffer.size());
 
     DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, p_decisions);
 
