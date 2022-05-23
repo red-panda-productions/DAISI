@@ -471,7 +471,8 @@ static void LoadConfigSettings(void* p_param)
     SynchronizeControls();
 }
 
-/// @brief Loads the user menu settings from the local config file
+/// @brief Called whenever the menu is (re)opened. Loads the user menu settings from the local config file,
+///  and handles other logic that has to be performed whenever the screen is opened.
 static void OnActivate(void* /* dummy */)
 {
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
@@ -486,6 +487,12 @@ static void OnActivate(void* /* dummy */)
         return;
     }
     LoadDefaultSettings();
+
+    // Ensure the track loader is initialized again.
+    // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
+    InitializeTrackLoader();
+
+    SynchronizeControls();
 }
 
 /// @brief Selects a black box
@@ -607,15 +614,11 @@ void* ResearcherMenuInit(void* p_nextMenu)
     return s_scrHandle;
 }
 
-/// @brief  Activates the researcher menu screen
+/// @brief  Activates the researcher menu screen (for the first time)
 /// @return 0 if successful, otherwise -1
 int ResearcherMenuRun()
 {
     GfuiScreenActivate(s_scrHandle);
-
-    // Ensure the track loader is initialized again.
-    // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
-    InitializeTrackLoader();
 
     return 0;
 }
