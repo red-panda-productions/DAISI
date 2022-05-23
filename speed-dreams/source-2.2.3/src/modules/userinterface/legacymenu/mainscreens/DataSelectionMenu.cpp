@@ -169,12 +169,6 @@ DatabaseSettingsMenuActivate(void* /* dummy */)
     GfuiScreenActivate(s_dbSettingsMenu);
 }
 
-static void
-AdvancedSettingsMenuActivate(void* /* dummy */)
-{
-    GfuiScreenActivate(DataCompressionMenuInit(s_scrHandle));
-}
-
 /// @brief            Initializes the data selection menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The dataSelectionMenu scrHandle
@@ -186,6 +180,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
     s_nextHandle = p_nextMenu;
+
+    DataCompressionMenuInit(s_scrHandle);
 
     s_dbSettingsMenu = DatabaseSettingsMenuInit(s_scrHandle);
 
@@ -206,7 +202,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dbStatus = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DATABASE_STATUS);
 
     // Compression button control
-    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_COMP, s_scrHandle, AdvancedSettingsMenuActivate);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_COMP, s_scrHandle, DataCompressionMenuRun);
 
     GfParmReleaseHandle(param);
 

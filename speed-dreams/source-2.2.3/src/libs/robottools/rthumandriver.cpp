@@ -59,6 +59,7 @@
 #include <playerpref.h>
 #include <car.h>
 #include "Mediator.h"
+#include "IndicatorConfig.h"
 
 
 #include "humandriver.h"
@@ -1785,6 +1786,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1)))
     {
         InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+        IndicatorConfig::GetInstance()->ResetActiveIndicatorsToNeutral();
         SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
         m_prevIntervention = currentType;
     }
