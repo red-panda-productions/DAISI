@@ -21,7 +21,6 @@
 #define PRM_INDCTR_TEXT     "CheckboxIndicatorTextual"
 
 #define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
-#define PRM_ENVIRONMENT      "EnvironmentRadioButtonList"
 
 #define PRM_CTRL_STEER       "CheckboxPControlSteer"
 #define PRM_CTRL_ACCEL       "CheckboxPControlAccel"
@@ -29,18 +28,18 @@
 #define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 
-#define PRM_MAX_TIME     "MaxTimeEdit"
-#define PRM_USER_ID      "UserIdEdit"
-#define PRM_BLACKBOX     "ChooseBlackBoxButton"
+#define PRM_MAX_TIME "MaxTimeEdit"
+#define PRM_USER_ID  "UserIdEdit"
 
-#define PRM_ERROR_LABEL          "ErrorLabel"
+#define PRM_BLACKBOX    "ChooseBlackBoxButton"
+#define PRM_ERROR_LABEL "ErrorLabel"
+#define PRM_ENVIRONMENT "ChooseEnvironmentButton"
 
-#define PRM_ENVIRONMENT          "ChooseEnvironmentButton"
 #define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
 #define PRM_ENVIRONMENT_NAME     "EnvironmentName"
 
-#define PRM_DEV          "DevButton"
-#define GFMNU_ATTR_PATH  "path"
+#define PRM_DEV         "DevButton"
+#define GFMNU_ATTR_PATH "path"
 
 // Names for the config file
 #define RESEARCH_FILEPATH    "config/ResearcherMenu.xml"
