@@ -21,6 +21,8 @@
 
 #define PRM_COMP "CompButton"
 
+#define RACE_MANAGER_NAME "quickrace"
+
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 static void* s_nextHandle = nullptr;
