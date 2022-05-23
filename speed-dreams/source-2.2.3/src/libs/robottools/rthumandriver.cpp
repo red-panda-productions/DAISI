@@ -623,7 +623,7 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, maxTime, allowedActions);
     }
     const int idx = index - 1;
-
+    
     // Have to read engine curve
     char midx[64];
     struct tEdesc
@@ -1897,7 +1897,7 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
 
     tControlCmd *cmd = HCtx[idx]->cmdControl;
 
-    //common_drive(index, car, s);
+    common_drive(index, car, s);
 
     //Can it be left out? car->_gearCmd = car->_gear;
     /* manual shift sequential */
@@ -2053,11 +2053,6 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
 
     common_brake(idx, car, s);
 
-}
-
-void HumanDriver::IncreaseGear(tCarElt* p_car)
-{
-    p_car->_gear = 1;
 }
 
 
