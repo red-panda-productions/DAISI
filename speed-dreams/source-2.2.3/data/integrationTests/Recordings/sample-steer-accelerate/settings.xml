@@ -26,10 +26,11 @@
     <attstr name="control_intervention_toggle" val="false"/>
     <attstr name="control_steering" val="true"/>
     <attstr name="force_feedback" val="true"/>
+    <attstr name="control_brake" val="true"/>
   </section>
 
   <section name="version">
-    <attnum name="version" val="3.000000"/>
+    <attnum name="version" val="4.000000"/>
   </section>
 
   <section name="max_time">
