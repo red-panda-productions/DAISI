@@ -2,7 +2,6 @@
 #include <random>
 #include <forcefeedback.h>
 #include "guimenu.h"
-#include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
@@ -13,21 +12,26 @@
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
 #define PRM_ALLOWED_ACCELERATE "CheckboxAllowedAccelerate"
 #define PRM_ALLOWED_BRAKE      "CheckboxAllowedBrake"
-#define PRM_INDCTR_AUDITORY    "CheckboxIndicatorAuditory"
-#define PRM_INDCTR_VISUAL      "CheckboxIndicatorVisual"
-#define PRM_INDCTR_TEXT        "CheckboxIndicatorTextual"
-#define PRM_INTERVENTIONTYPE   "InterventionTypeRadioButtonList"
-#define PRM_ENVIRONMENT        "EnvironmentRadioButtonList"
-#define PRM_CTRL_INTRV_TGGLE   "CheckboxPControlInterventionToggle"
-#define PRM_CTRL_GAS           "CheckboxPControlGas"
-#define PRM_CTRL_STEERING      "CheckboxPControlSteering"
-#define PRM_FORCE_FEEDBACK     "CheckboxForceFeedback"
-#define PRM_MAX_TIME           "MaxTimeEdit"
-#define PRM_USER_ID            "UserIdEdit"
-#define PRM_BLACKBOX           "ChooseBlackBoxButton"
-#define PRM_NO_BLACK_BOX       "NoBlackBoxError"
-#define PRM_DEV                "DevButton"
-#define GFMNU_ATTR_PATH        "path"
+
+#define PRM_INDCTR_AUDITORY "CheckboxIndicatorAuditory"
+#define PRM_INDCTR_VISUAL   "CheckboxIndicatorVisual"
+#define PRM_INDCTR_TEXT     "CheckboxIndicatorTextual"
+
+#define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
+#define PRM_ENVIRONMENT      "EnvironmentRadioButtonList"
+
+#define PRM_CTRL_STEER       "CheckboxPControlSteer"
+#define PRM_CTRL_ACCEL       "CheckboxPControlAccel"
+#define PRM_CTRL_BRAKE       "CheckboxPControlBrake"
+#define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
+#define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
+
+#define PRM_MAX_TIME     "MaxTimeEdit"
+#define PRM_USER_ID      "UserIdEdit"
+#define PRM_BLACKBOX     "ChooseBlackBoxButton"
+#define PRM_NO_BLACK_BOX "NoBlackBoxError"
+#define PRM_DEV          "DevButton"
+#define GFMNU_ATTR_PATH  "path"
 
 // Names for the config file
 #define RESEARCH_FILEPATH    "config/ResearcherMenu.xml"
@@ -35,7 +39,7 @@
 
 // Constant numbers
 #define INDICATOR_AMOUNT       3
-#define PCONTROL_AMOUNT        4
+#define PCONTROL_AMOUNT        5
 #define ALLOWED_ACTIONS_AMOUNT 3
 #define MAX_TIME               1440
 
@@ -56,7 +60,6 @@ static void* s_nextHandle = nullptr;
 int m_indicatorsControl[INDICATOR_AMOUNT];
 int m_pControlControl[PCONTROL_AMOUNT];
 int m_allowedActionsControl[ALLOWED_ACTIONS_AMOUNT];
-int m_taskControl;
 int m_interventionTypeControl;
 
 // Allowed black box actions
@@ -86,7 +89,7 @@ char m_userId[32];
 int m_userIdControl;
 
 // Black Box
-int m_blackBoxButton;
+int m_blackBoxButtonControl;
 int m_noBlackBoxLabel;
 bool m_blackBoxChosen = false;
 char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
@@ -151,25 +154,32 @@ static void SelectEnvironment(tRadioButtonInfo* p_info)
     // m_track = _something_
 }
 
+/// @brief        Enables/disables the possibility for participants to control steering
+/// @param p_info Information on the checkbox
+static void SelectControlSteer(tCheckBoxInfo* p_info)
+{
+    m_pControl.ControlSteer = p_info->bChecked;
+}
+
+/// @brief        Enables/disables the possibility for participants to control gas
+/// @param p_info Information on the checkbox
+static void SelectControlAccel(tCheckBoxInfo* p_info)
+{
+    m_pControl.ControlAccel = p_info->bChecked;
+}
+
+/// @brief        Enables/disables the possibility for participants to control the brake
+/// @param p_info Information on the checkbox
+static void SelectControlBrake(tCheckBoxInfo* p_info)
+{
+    m_pControl.ControlBrake = p_info->bChecked;
+}
+
 /// @brief        Enables/disables the possibility for participants to enable/disable interventions
 /// @param p_info Information on the checkbox
 static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
 {
     m_pControl.ControlInterventionToggle = p_info->bChecked;
-}
-
-/// @brief        Enables/disables the possibility for participants to control gas
-/// @param p_info Information on the checkbox
-static void SelectControlGas(tCheckBoxInfo* p_info)
-{
-    m_pControl.ControlGas = p_info->bChecked;
-}
-
-/// @brief        Enables/disables the possibility for participants to control steering
-/// @param p_info Information on the checkbox
-static void SelectControlSteering(tCheckBoxInfo* p_info)
-{
-    m_pControl.ControlSteering = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the possibility for participants to control steering
@@ -230,10 +240,10 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, val);
 
     // Save participant control settings to xml file
+    GfParmSetStr(readParam, PRM_CTRL_STEER, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteer));
+    GfParmSetStr(readParam, PRM_CTRL_ACCEL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlAccel));
+    GfParmSetStr(readParam, PRM_CTRL_BRAKE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlBrake));
     GfParmSetStr(readParam, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
-    GfParmSetStr(readParam, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlGas));
-    GfParmSetStr(readParam, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteering));
-
     GfParmSetStr(readParam, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
 
     // Save max time to xml file
@@ -246,6 +256,7 @@ static void SaveSettingsToDisk()
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -299,10 +310,11 @@ static void SynchronizeControls()
 
     GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, (int)m_interventionType);
 
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlInterventionToggle);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlGas);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlSteering);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ForceFeedback);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlSteer);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlAccel);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlBrake);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ControlInterventionToggle);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[4], m_pControl.ForceFeedback);
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -312,7 +324,7 @@ static void SynchronizeControls()
     {
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
         GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
     }
 }
@@ -331,10 +343,11 @@ static void LoadDefaultSettings()
 
     m_interventionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_interventionTypeControl);
 
-    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
-    m_pControl.ControlGas = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
-    m_pControl.ControlSteering = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
-    m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
+    m_pControl.ControlSteer = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
+    m_pControl.ControlAccel = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
+    m_pControl.ControlBrake = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
+    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
+    m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[4]);
 
     m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
 }
@@ -355,10 +368,10 @@ static void LoadConfigSettings(void* p_param)
 
     m_interventionType = std::stoi(GfParmGetStr(p_param, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, nullptr));
 
+    m_pControl.ControlSteer = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEER, GFMNU_ATTR_CHECKED, false);
+    m_pControl.ControlAccel = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_ACCEL, GFMNU_ATTR_CHECKED, false);
+    m_pControl.ControlBrake = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_BRAKE, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlInterventionToggle = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, false);
-    m_pControl.ControlGas = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, false);
-    m_pControl.ControlSteering = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, false);
-
     m_pControl.ForceFeedback = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, false);
 
     // Set the max time setting from the xml file
@@ -386,6 +399,7 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
@@ -421,7 +435,7 @@ static void SelectBlackBox(void* /* dummy */)
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
     GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_ONLY_HINT);  // Reset error label
 
     // Only after validation copy into the actual variable
@@ -456,7 +470,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_allowedActionsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_BRAKE, nullptr, SelectAllowedBrake);
 
     // Choose black box control
-    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
+    m_blackBoxButtonControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
     m_noBlackBoxLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_NO_BLACK_BOX);
 
     // Indicator checkboxes controls
@@ -474,12 +488,11 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, s_scrHandle, DeveloperMenuRun);
 
     // Participant-Control checkboxes controls
-    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
-    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS, nullptr, SelectControlGas);
-    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING, nullptr, SelectControlSteering);
-
-    // Other options checkbox controls
-    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
+    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEER, nullptr, SelectControlSteer);
+    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_ACCEL, nullptr, SelectControlAccel);
+    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_BRAKE, nullptr, SelectControlBrake);
+    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
+    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
