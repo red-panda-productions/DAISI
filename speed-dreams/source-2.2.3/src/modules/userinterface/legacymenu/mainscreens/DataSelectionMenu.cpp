@@ -169,8 +169,8 @@ DatabaseSettingsMenuActivate(void* /* dummy */)
     GfuiScreenActivate(s_dbSettingsMenu);
 }
 
-static void
-AdvancedSettingsMenuActivate(void* /* dummy */)
+/// @brief Activates the advancedsettings screen
+static void AdvancedSettingsMenuActivate(void* /* dummy */)
 {
     GfuiScreenActivate(DataCompressionMenuInit(s_scrHandle));
 }
