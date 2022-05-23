@@ -5,7 +5,7 @@ void BrakeDecision::RunIndicateCommands()
 {
     if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake) return;
 
-    SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_BRAKE);
+    SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_SPEED_BRAKE);
 }
 
 /// @brief Runs the intervene commands
