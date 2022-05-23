@@ -61,6 +61,10 @@ void Driver::Drive(tCarElt* p_car, tSituation* p_situation)
     {
         m_humanDriver.drive_at(m_index, p_car, p_situation);
     }
+    if(SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
+    {
+        p_car->_gear + 1;
+    }
 
     SMediator::GetInstance()->DriveTick(p_car, p_situation);
 
