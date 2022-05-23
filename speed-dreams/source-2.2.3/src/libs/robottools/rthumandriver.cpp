@@ -619,8 +619,10 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         tParticipantControl participantControlSettings = mediator->GetPControlSettings();
         int maxTime = mediator->GetMaxTime();
         tAllowedActions allowedActions = mediator->GetAllowedActions();
+        tDecisionThresholds thresholds = mediator->GetThresholdSettings();
 
-        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, maxTime, allowedActions);
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, 
+            participantControlSettings, maxTime, allowedActions, thresholds);
     }
     const int idx = index - 1;
 

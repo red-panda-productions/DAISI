@@ -82,9 +82,12 @@ Recorder::~Recorder()
 /// @param p_indicators           The indicator settings
 /// @param p_interventionType     The intervention type settings
 /// @param p_participantControl   The participant control settings
-/// @param p_maxTime             The maximum time for the trial
+/// @param p_maxTime              The maximum time for the trial
 /// @param p_allowedActions       The allowed black box actions settings
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const int p_maxTime, const tAllowedActions& p_allowedActions)
+/// @param p_thresholds           The thresholds that are used to make decisions
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, 
+    const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, 
+    const int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
@@ -92,6 +95,8 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
                     p_carElt->info.name);
 
     void* settingsFileHandle = GfParmReadFile(path(m_recordingDir).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_CREAT, true);
+
+    GfParmSetNum(settingsFileHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
 
     GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, BoolToString(p_indicators.Audio));
     GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, BoolToString(p_indicators.Icon));
@@ -114,7 +119,9 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, BoolToString(p_allowedActions.Accelerate));
     GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(p_allowedActions.Brake));
 
-    GfParmSetNum(settingsFileHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
+    GfParmSetNum(settingsFileHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, p_thresholds.Accel);
+    GfParmSetNum(settingsFileHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, p_thresholds.Brake);
+    GfParmSetNum(settingsFileHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, p_thresholds.Steer);
 
     GfParmWriteFile(nullptr, settingsFileHandle, "Run Settings");
 }
@@ -307,6 +314,16 @@ void UpdateV3RecorderToV4(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
 }
 
+/// @brief Update a v3 recording to a v4 recording. This means:
+///  - Adding an additional partipant control options to the settings.
+/// @param p_settingsHandle Handle to the run settings file
+void UpdateV4RecorderToV5(void* p_settingsHandle)
+{
+    GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, STANDARD_THRESHOLD_ACCEL);
+    GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, STANDARD_THRESHOLD_BRAKE);
+    GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, STANDARD_THRESHOLD_STEER);
+}
+
 /// @brief                          Upgrades the recording from given version to the next version.
 /// @param p_currVersion            The current version of the recording to upgrade.
 /// @param p_settingsHandle         Handle to the run settings file
@@ -334,6 +351,9 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
             return true;
         case 3:
             UpdateV3RecorderToV4(p_settingsHandle);
+            return true;
+        case 4:
+            UpdateV4RecorderToV5(p_settingsHandle);
             return true;
         default:
             GfLogError("There is no more possible upgrade from the current version");
