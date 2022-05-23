@@ -28,13 +28,14 @@ inline float stringToFloat(const std::string& p_s)
     }
 }
 
-/// @brief       Clamps a float
-/// @param p_f   The float
+/// @brief       Clamps a number
+/// @param p_f   The current value
 /// @param p_min The minimum value
 /// @param p_max The maximum value
-inline void ClampFloat(float& p_f, float p_min, float p_max)
+template <typename TNumber>
+inline void Clamp(TNumber& p_f, TNumber p_min, TNumber p_max)
 {
-    float val = p_f;
+    TNumber val = p_f;
     if (val > p_max)
     {
         p_f = p_max;
