@@ -13,6 +13,9 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 #include "../rppUtils/RppUtils.hpp"
+#include "GeneratorUtils.h"
+
+namespace filesystem = std::experimental::filesystem;
 
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
@@ -28,6 +31,9 @@
 
 // @brief The amount of ticks in a day for 0.006 ms per tick (standard)
 #define DAY_TICKS 14400000
+
+// @brief Fake path for a test
+#define FAKE_PATH "Totally/a/path"
 
 template <>
 MockMediator* MockMediator::m_instance = nullptr;
@@ -223,6 +229,22 @@ TEST(MediatorTests, MaxTimeTest)
         SDAConfigMediator::GetInstance()->SetMaxTime(maxTime);
         ASSERT_EQ(maxTime, SDAConfigMediator::GetInstance()->GetMaxTime());
     }
+}
+
+/// @brief Tests if the Mediator can check the connection when settings are correct
+TEST(MediatorTests, CheckCorrectConnectionTest)
+{
+    tDatabaseSettings testSettings{"SDATest", "PASSWORD", "127.0.0.1", 3306, "sda_test", false};
+    bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
+    ASSERT_TRUE(connectable);
+}
+
+/// @brief Tests if the Mediator can check the connection when settings are incorrect
+TEST(MediatorTests, CheckIncorrectConnectionTest)
+{
+    tDatabaseSettings testSettings{"SDATest", "WRONGPASSWORD", "127.0.0.1", 3306, "sda_test", false};
+    bool connectable = SDAConfigMediator::GetInstance()->CheckConnection(testSettings);
+    ASSERT_FALSE(connectable);
 }
 
 /// @brief Tests if the Mediator sets and gets the UserID correctly

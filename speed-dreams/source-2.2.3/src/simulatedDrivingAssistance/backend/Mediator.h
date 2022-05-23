@@ -17,6 +17,9 @@ public:
     void RaceStop();
     bool TimeOut();
 
+    void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
+    tDatabaseSettings GetDatabaseSettings();
+    bool CheckConnection(DatabaseSettings p_dbSettings);
     void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
@@ -105,6 +108,7 @@ private:
     DecisionMaker m_decisionMaker;
 
     unsigned long m_tickCount = 0;
+    tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;
 

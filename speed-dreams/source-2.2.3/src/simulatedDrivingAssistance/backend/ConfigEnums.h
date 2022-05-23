@@ -16,6 +16,22 @@ typedef struct Indicator
     bool Text;
 } tIndicator;
 
+#define SETTINGS_NAME_LENGTH 256
+
+/// @brief The settings for the database in which the data is saved
+typedef struct DatabaseSettings
+{
+    char Username[SETTINGS_NAME_LENGTH];
+    char Password[SETTINGS_NAME_LENGTH];
+    char Address[SETTINGS_NAME_LENGTH];
+    int Port;
+    char Schema[SETTINGS_NAME_LENGTH];
+    bool UseSSL;
+    char CACertFilePath[SETTINGS_NAME_LENGTH];
+    char PublicCertFilePath[SETTINGS_NAME_LENGTH];
+    char PrivateCertFilePath[SETTINGS_NAME_LENGTH];
+} tDatabaseSettings;
+
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 
