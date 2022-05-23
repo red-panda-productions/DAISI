@@ -728,8 +728,8 @@ RePreRacePause(void)
         if ((ReSessionHasHuman()) && (true == ReUI().onRaceStartingPaused()))
         {
             mode = RM_ASYNC | RM_NEXT_STEP;
-            //ReStop();
-            ReSituation::self().setRaceMessage("Hit <Enter> to Start",-1/*always*/, /*big=*/true);
+            /// SIMULATED DRIVING ASSISTANCE: changed the message so that it communicates that the experiment is about to start
+            ReSituation::self().setRaceMessage("Hit <Enter> to Start Experiment",-1/*always*/, /*big=*/true);
             ReStop();
         }
     }
