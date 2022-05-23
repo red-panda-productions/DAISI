@@ -274,14 +274,6 @@ Changed:
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
-                    racemanmenu.cpp
-                        included <controlconfig.h> and "mainmenu.h"
-                        removed <playerconfig.h>, <csnetwork.h> and <network.h>
-                        removed networking and go back to main menu
-                        changed rmOnRaceDataChanged()
-                        changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
-                        added   BackToMainMenu()
-                        changed rmRaceManMenu()
                     racescreens.h
                         removed networking
                         included "ConfigEnums.h"
@@ -289,12 +281,18 @@ Changed:
                         added ConfirmationMenuInit()
                         added SaveMenuInit()
                         removed RmShowResults()
+                        removed RmRaceSelectInit()
+                        removed RmRaceManMenu()
                     raceselectmenu.cpp
                         changed rmOnActivate()
                         changed rmOnRaceSelectShutdown()
                         changed rmOnSelectRaceMan()
                         changed RmRaceSelectInit()
+                    racenexteventmenu.cpp
+                        changed RmNextEventMenu()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                    removed carssetupmenu.cpp, carssetupmenu.h, driverselect.cpp, fileselect.cpp, garagemenu.cpp, garagemenu.h
+                    removed raceconfigstate.cpp, racemanmenu.cpp, raceparammenu.cpp, raceselectmenu.h
                 confscreens/
                     soundconfig.cpp
                         added ChangeInterventionVolume()

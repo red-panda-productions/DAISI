@@ -111,6 +111,7 @@ RmNextEventMenu(void)
 
 	// Create Start and Abandon buttons.
 	GfuiMenuCreateButtonControl(rmScrHandle, menuXMLDescHdle, "StartButton", NULL, rmStateManage);
+    // SIMULATED DRIVING ASSISTANCE: replaced rmRaceSelectMenuHandle to rmScrHandle
 	GfuiMenuCreateButtonControl(rmScrHandle, menuXMLDescHdle, "AbandonButton", rmScrHandle, GfuiScreenActivate);
 
 	// Close menu XML descriptor.
