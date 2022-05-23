@@ -306,8 +306,8 @@ static void SaveSettingsToDisk()
     // Speed Dreams identifies tracks by their category and their name, so save these two
     if (m_environmentChosen)
     {
-        GfParmSetStr(readParam, PRM_ENVIRONMENT_CATEGORY, GFMNU_ATTR_PATH, m_environment->getCategoryId().c_str());
-        GfParmSetStr(readParam, PRM_ENVIRONMENT_NAME, GFMNU_ATTR_PATH, m_environment->getId().c_str());
+        GfParmSetStr(readParam, PRM_ENVIRONMENT, PRM_ENVIRONMENT_CATEGORY, m_environment->getCategoryId().c_str());
+        GfParmSetStr(readParam, PRM_ENVIRONMENT, PRM_ENVIRONMENT_NAME, m_environment->getId().c_str());
     }
 
     // Write all the above queued changed to xml file
@@ -451,13 +451,13 @@ static void LoadConfigSettings(void* p_param)
     }
 
     // Only load from file if no environment has been chosen yet and a category has been saved to file
-    const char* environmentCategory = GfParmGetStr(p_param, PRM_ENVIRONMENT_CATEGORY, GFMNU_ATTR_PATH, nullptr);
+    const char* environmentCategory = GfParmGetStr(p_param, PRM_ENVIRONMENT, PRM_ENVIRONMENT_CATEGORY, nullptr);
     if (environmentCategory && !m_environmentChosen)
     {
         // Default environment name can be the empty string:
         //  if no environment name is saved, we can still get the first track in the saved category.
         //  This will help users find similar environments to the one they used before.
-        const char* environmentName = GfParmGetStr(p_param, PRM_ENVIRONMENT_NAME, GFMNU_ATTR_PATH, "");
+        const char* environmentName = GfParmGetStr(p_param, PRM_ENVIRONMENT, PRM_ENVIRONMENT_NAME, "");
         GfTrack* trackFound = GfTracks::self()->getFirstUsableTrack(environmentCategory, environmentName);
         SetTrackFromGfTrack(trackFound);
 

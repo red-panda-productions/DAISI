@@ -81,7 +81,7 @@
             <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="220"/>
+            <attnum name="y" val="250"/>
             <attnum name="width" val="145"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -122,7 +122,7 @@
             <attstr name="tip" val="Open a menu to select the driving environment"/>
 	        <attstr name="h align" val="left"/>
 	        <attnum name="x" val="20"/>
-	        <attnum name="y" val="250"/>
+	        <attnum name="y" val="220"/>
             <attnum name="width" val="145"/>
 	        <attstr name="font" val="medium"/>
 	        <attstr name="color" val="0xFFFFFF"/>
@@ -209,7 +209,6 @@
             <attnum name="minimum of one" val="1"/>
         </section>
 
-        
         <!-- Checkboxes for selecting what a participant can control -->
 
         <section name="CheckboxPControlSteer">
@@ -224,7 +223,7 @@
             <attstr name="font" val="small_t"/>
             <attstr name="checked" val="yes"/>
         </section>
-        
+
         <section name="CheckboxPControlAccel">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Accelerate"/>
@@ -360,7 +359,7 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
-        <section name="6">
+        <section name="5">
             <attstr name="type" val="label"/>
             <attnum name="x" val="500"/>
             <attnum name="y" val="400"/>
@@ -369,7 +368,7 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
-        <section name="7">
+        <section name="6">
             <attstr name="type" val="label"/>
             <attnum name="x" val="500"/>
             <attnum name="y" val="220"/>
@@ -378,7 +377,7 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
-        <section name="8">
+        <section name="7">
             <attstr name="type" val="label"/>
             <attnum name="x" val="80"/>
             <attnum name="y" val="180"/>
@@ -388,7 +387,7 @@
             <attstr name="font" val="medium_t"/>
         </section>
 
-        <section name="9">
+        <section name="8">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="150"/>
