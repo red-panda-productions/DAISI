@@ -536,9 +536,10 @@ TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 /// @brief       Generates all the tests for the recording upgrades
 /// @param Range The versions to upgrade the recordings to, is a range from [1..RECORDER_VERSION]
 INSTANTIATE_TEST_SUITE_P(
-    RecorderUpgradeVersionTests,
+    RecorderUpgradeVersionTests, 
     RecorderUpgradeVersionTestFixture,
-    ::testing::Range(1, CURRENT_RECORDER_VERSION + 1));
+    ::testing::Range(1, CURRENT_RECORDER_VERSION + 1), 
+    testing::PrintToStringParamName());
 
 /// @brief Attempts to upgrade to a non-existent recording version, which should fail.
 TEST(RecorderTests, UpgradeToUnkownVersion)
