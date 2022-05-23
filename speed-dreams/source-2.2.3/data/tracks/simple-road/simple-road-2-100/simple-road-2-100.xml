@@ -20,11 +20,11 @@ the Free Software Foundation; either version 2 of the License, or
 <params name="test" type="param" mode="mw">
   <section name="Surfaces">&default-surfaces;</section>
   <section name="Header">
-    <attstr name="name" val="road 2 Lanes [100 km/h]" />
+    <attstr name="name" val="Road 2 Lanes [100 km/h]" />
     <attstr name="category" val="simple-road" />
     <attnum name="version" val="4" />
     <attstr name="author" val="Red Panda Productions" />
-    <attstr name="description" val="A simple road with 2 lanes. It resambels a N-road. The speed limit here is 100 km/h." />
+    <attstr name="description" val="A simple road with 2 lanes. It resembles a N-road. The speed limit here is 100 km/h." />
   </section>
   <section name="Graphic">
     <attstr name="3d description" val="simple-road-2-100.acc" />
