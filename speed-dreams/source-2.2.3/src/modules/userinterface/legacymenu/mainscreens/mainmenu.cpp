@@ -20,7 +20,7 @@
 #include <tgfclient.h>
 
 
-#include <controlconfig.h>
+
 
 #include "ConfigEnums.h"
 #include "mainmenu.h"
@@ -31,18 +31,6 @@
 #include "ResearcherMenu.h"
 
 static void *MenuHandle = 0;
-
-// SIMULATED DRIVING ASSISTANCE: renamed from onPlayerConfigMenuActivate
-static void
-onControlMenuActivate(void * /* dummy */)
-{
-    /* Here, we need to call OptionOptionInit each time the firing button
-       is pressed, and not only once at the Main menu initialization,
-       because the previous menu has to be saved (ESC, Back) and because it can be this menu,
-       as well as the Raceman menu */
-       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
-    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
-}
 
 static void
 onRaceSelectMenuActivate(void * /* dummy */)
@@ -120,8 +108,6 @@ MainMenuInit(bool SupportsHumanDrivers)
     // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
-	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
