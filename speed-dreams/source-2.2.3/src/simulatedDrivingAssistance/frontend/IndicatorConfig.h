@@ -8,14 +8,14 @@
 #define PATH_BUF_SIZE 256
 
 // Location of the config.xml file with respect to the root data directory.
-#define CONFIG_XML_DIR_FORMAT "%sdata/indicators/config.xml"
+#define CONFIG_XML_DIR_FORMAT "%sdata/indicators/Config.xml"
 #define SOUNDS_DIR_FORMAT     "%sdata/indicators/sound/%s"
 
 // Parameters of sections and attributes used to search in the XML file.
-#define PRM_SECT_INTERVENTIONS "Interventions"
-#define PRM_SECT_TEXTURE       "texture"
-#define PRM_SECT_SOUND         "sound"
-#define PRM_SECT_TEXT          "text"
+#define PRM_SECT_INDICATORS "indicators"
+#define PRM_SECT_TEXTURES   "textures"
+#define PRM_SECT_SOUND      "sound"
+#define PRM_SECT_TEXT       "text"
 
 #define PRM_ATTR_XPOS          "xpos"
 #define PRM_ATTR_YPOS          "ypos"
@@ -28,8 +28,13 @@
 
 #define VAL_YES "yes"
 #define VAL_NO  "no"
-static const char* s_actionEnumString[NUM_INTERVENTION_ACTION] = {
-    "none", "steer left", "steer right", "brake", "accelerate"};
+
+static const char* s_interventionActionString[NUM_INTERVENTION_ACTION] = {
+    "steer neutral", "steer left", "steer right",
+    "speed neutral", "accelerate", "brake"};
+
+static const char* s_interventionTypeString[NUM_INTERVENTION_TYPES] = {
+    "no-help", "signals-only", "shared-control", "complete-takeover"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig
@@ -39,9 +44,11 @@ public:
 
     void ActivateIndicator(InterventionAction p_action);
 
+    void ResetActiveIndicatorsToNeutral();
+
     std::vector<tIndicatorData> GetIndicatorData();
 
-    std::vector<tIndicatorData> GetActiveIndicators(InterventionType p_interventionType);
+    std::vector<tIndicatorData> GetActiveIndicators();
 
     static IndicatorConfig* GetInstance();
 
@@ -63,13 +70,15 @@ private:
     IndicatorConfig() = default;
     static IndicatorConfig* m_instance;
 
+    // A vector containing indicator data of every single intervention action, including the neutral actions.
     std::vector<tIndicatorData> m_indicatorData = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION);
 
-    std::vector<tIndicatorData> m_activeIndicators = {};
+    // A vector containing the active indicator per intervention action type, indexed by an IndicatorActionType.
+    std::vector<tIndicatorData> m_activeIndicators = std::vector<tIndicatorData>(NUM_INTERVENTION_ACTION_TYPES);
 
     // Loading helpers
     tSoundData* LoadSound(void* p_handle, std::string p_path);
     tScreenPosition LoadScreenPos(void* p_handle, const char* p_path);
-    tTextureData* LoadTexture(void* p_handle, std::string p_path);
+    tTextureData* LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType);
     tTextData* LoadText(void* p_handle, std::string p_path);
 };

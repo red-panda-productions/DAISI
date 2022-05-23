@@ -389,8 +389,8 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 {
     car_ = currCar;  
 
-    // SIMULATED DRIVING ASSISTANCE: displays the current intervention indicators 
-    DispIndicators();
+    // SIMULATED DRIVING ASSISTANCE: displays all currently active indicators
+    DispActiveIndicators();
 
     grDispCounterBoard2();
 
@@ -403,23 +403,20 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
-void cGrBoard::DispIndicators() 
+void cGrBoard::DispActiveIndicators()
 {
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
-    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
-    for (const tIndicatorData &indicator : IndicatorConfig::GetInstance()->GetActiveIndicators(interventionType))
+    for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators())
     {
-        if (settings.Icon)
-            DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
+        if (settings.Icon) DispIndicatorIcon(indicator.Texture, m_textures[indicator.Action]);
 
-        if (settings.Text)
-            DispIndicatorText(indicator.Text);
+        if (settings.Text) DispIndicatorText(indicator.Text);
     }
 }
 
 // SIMULATED DRIVING ASSISTANCE
-/// @brief           Displays the icon indicator (if the texture was loaded correctly) 
-/// @param p_data    Pointer to struct containing data about the texture, like its position   
+/// @brief           Displays the icon indicator (if the texture was loaded correctly)
+/// @param p_data    Pointer to struct containing data about the texture, like its position
 /// @param p_texture Pointer to the object containing the actual loaded OpenGL texture
 void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture)
 {
@@ -444,7 +441,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
         0);
     glBindTexture(GL_TEXTURE_2D, p_texture->getTextureHandle());
 
-    // Draw the texture as a Triangle Strip. 
+    // Draw the texture as a Triangle Strip.
     // glTexCoord2f defines point of the texture that you take (0-1).
     // glVertex2f then defines where to place this on the screen (relative to the current matrix)
     glBegin(GL_TRIANGLE_STRIP);
@@ -465,7 +462,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
 /// @param p_data Pointer to struct containing data about the text, like its position  
 void cGrBoard::DispIndicatorText(tTextData* p_data)
 {
-    // Guard if no text data is defined forthis indicator
+    // Guard if no text data is defined for this indicator
     if (!p_data) return;
 
     GfuiDrawString(
@@ -476,8 +473,8 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
 
 // SIMULATED DRIVING ASSISTANCE
 /// @brief Loads the textures for the indicators from their filepaths.
-///        MUST BE CALLED AFTER THE TEXTURE DIRECTORY HAS BEEN ADDED TO grFilePath
-///        which happens in grInitBoardCar.
+///        Must ONLY be called after the texture directory has been added to
+///        grFilePath in grInitBoardCar, otherwise textures won't load.
 void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();

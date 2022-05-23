@@ -15,7 +15,7 @@
 
 <!--
 
-	Main / welcome menu
+    Main / welcome menu
 
 -->
 
@@ -23,10 +23,10 @@
 
 <params name="mainmenu">
 
-	<section name="dynamic controls">
+    <section name="dynamic controls">
     <!-- SIMULATED DRIVING ASSISTANCE: Changed section and button name from race to start -->
     <section name="start">
-		<attstr name="type" val="text button"/>
+	    <attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Start"/>
 		<attstr name="tip" val="Setup and start a race, championship or career"/>
@@ -51,7 +51,7 @@
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Controls"/>
-		<attstr name="tip" val="configure controls"/>
+		<attstr name="tip" val="Configure controls"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="50"/>
 		<attnum name="y" val="275"/>
@@ -153,37 +153,37 @@
 		<attnum name="image width" val="320"/>
 		<attnum name="image height" val="70"/>
 		<attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-                <attstr name="enabled image" val="data/img/bg-button-big.png"/>
-		<attstr name="pushed image" val="data/img/bg-button-big-focused.png"/>
-	</section>
+		<attstr name="enabled image" val="data/img/bg-button-big.png"/>
+        <attstr name="pushed image" val="data/img/bg-button-big-focused.png"/>
+    </section>
 
-	</section>
+    </section>
 
-	<section name="static controls">
+    <section name="static controls">
 
-	<section name="1">
-		<attstr name="type" val="static image"/>
-		<attnum name="x" val="-10"/>
-		<attnum name="y" val="305"/>
-		<attnum name="width" val="195"/>
-		<attnum name="height" val="130"/>
-		<attstr name="image" val="data/img/sd-logo-big.png"/>
-	</section>
+    <section name="1">
+        <attstr name="type" val="static image"/>
+        <attnum name="x" val="-10"/>
+        <attnum name="y" val="305"/>
+        <attnum name="width" val="195"/>
+        <attnum name="height" val="130"/>
+        <attstr name="image" val="data/img/sd-logo-big.png"/>
+    </section>
 
-	<section name="2">
-		<attstr name="type" val="background image"/>
-		<attstr name="image" val="data/img/Main-menu.png"/>
-	</section>
+    <section name="2">
+        <attstr name="type" val="background image"/>
+        <attstr name="image" val="data/img/Main-menu.png"/>
+    </section>
 
-	<section name="3">
-		<attstr name="type" val="static image"/>
-		<attnum name="x" val="-30"/>
-		<attnum name="y" val="400"/>
-		<attnum name="width" val="1050"/>
-		<attnum name="height" val="35"/>
-		<attstr name="image" val="data/img/head-welcome.png"/>
-	</section>
+    <section name="3">
+        <attstr name="type" val="static image"/>
+        <attnum name="x" val="-30"/>
+        <attnum name="y" val="400"/>
+        <attnum name="width" val="1050"/>
+        <attnum name="height" val="35"/>
+        <attstr name="image" val="data/img/head-welcome.png"/>
+    </section>
 
-	</section>
+    </section>
 
 </params>

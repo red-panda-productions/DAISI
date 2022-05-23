@@ -496,6 +496,7 @@ void LegacyMenu::onRaceFinishing()
     }
 }
 
+// SIMULATED DRIVING ASSISTANCE: Made the screen go to the end of experiment screen
 bool LegacyMenu::onRaceFinished(bool bEndOfSession)
 {
     tRmInfo* pReInfo = _piRaceEngine->inData();
@@ -511,11 +512,8 @@ bool LegacyMenu::onRaceFinished(bool bEndOfSession)
         if (!_hscrReUpdateStateHook)
             _hscrReUpdateStateHook = ::RmInitReUpdateStateHook();
 
-        // This is now the "game" screen.
-        _hscrGame = _hscrReUpdateStateHook;
-
         // Display the results menu (will activate the game screen on exit).
-        ::RmShowResults(_hscrGame, _piRaceEngine->inData());
+        ::RmShowEndExperiment(RACE_FINISHED);
 
         // Tell the race engine state automaton to stop looping (enter the menu).
         return false;
@@ -536,6 +534,7 @@ void LegacyMenu::onRaceEventFinishing()
     }
 }
 
+// SIMULATED DRIVING ASSISTANT: remove showing standings
 void LegacyMenu::showStandings()
 {
     // Create the "Race Engine update state" hook if not already done.
@@ -544,9 +543,6 @@ void LegacyMenu::showStandings()
 
     // This is now the "game" screen.
     _hscrGame = _hscrReUpdateStateHook;
-
-    // Display the standings menu (will activate the game screen on exit).
-    ::RmShowStandings(_hscrGame, _piRaceEngine->inData(), 0);
 }
 
 bool LegacyMenu::onRaceEventFinished(bool bMultiEvent, bool careerNonHumanGroup)

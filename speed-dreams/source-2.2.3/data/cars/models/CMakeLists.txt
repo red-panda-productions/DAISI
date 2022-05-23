@@ -87,7 +87,7 @@ SD_ADD_SUBDIRECTORY(mp1-midland-ps05)
 SD_ADD_SUBDIRECTORY(mp1-midland-rb1)
 SD_ADD_SUBDIRECTORY(mp1-murasama-007)
 SD_ADD_SUBDIRECTORY(mp1-kuala-c24)
-
+SD_ADD_SUBDIRECTORY(primo)
 
 # Work-in-progress car sets.
 IF(NOT OPTION_OFFICIAL_ONLY)

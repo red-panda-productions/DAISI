@@ -22,6 +22,7 @@
 #include <racescreens.h>
 #include <controlconfig.h>
 
+#include "ConfigEnums.h"
 #include "mainmenu.h"
 #include "exitmenu.h"
 #include "optionsmenu.h"
@@ -78,7 +79,8 @@ onCreditsMenuActivate(void * /* dummy */)
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
-    GfuiScreenActivate(ExitMenuInit(MenuHandle, false));
+    // just exit the game, don't ask if you want to save (replay) data
+    GfuiScreenActivate(ExitMenuInit(MenuHandle, false, NORMAL_EXIT));
 }
 
 static void
