@@ -405,9 +405,6 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 ///        Depending on the indicator settings that are currently active.
 void cGrBoard::DispActiveIndicators()
 {
-    // Guard when the current intervention type on NO_SIGNALS, don't display any indicators.
-    if (SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_NO_SIGNALS) return;
-
     tIndicator settings = SMediator::GetInstance()->GetIndicatorSettings();
     for (const tIndicatorData& indicator : IndicatorConfig::GetInstance()->GetActiveIndicators())
     {
