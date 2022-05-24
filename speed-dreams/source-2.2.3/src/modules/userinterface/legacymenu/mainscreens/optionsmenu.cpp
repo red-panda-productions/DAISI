@@ -59,7 +59,7 @@ onSoundMenuActivate(void * /* dummy */)
 }
 
 // SIMULATED DRIVING ASSISTANCE: added control menu
-static void onControlMenuActivate(void* /* dummy */)
+static void OnControlMenuActivate(void* /* dummy */)
 {
     /* Here, we need to call OptionOptionInit each time the firing button
        is pressed, and not only once at the Main menu initialization,
@@ -84,7 +84,7 @@ OptionsMenuInit(void *prevMenu)
     GfuiMenuCreateStaticControls(MenuHandle, param);
 
     // SIMULATED DRIVING ASSISTANCE: added configure button
-    GfuiMenuCreateButtonControl(MenuHandle, param, "configure", NULL, onControlMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "configure", NULL, OnControlMenuActivate);
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
 #ifdef MonitorMenu
     GfuiMenuCreateButtonControl(MenuHandle, param, "display", NULL, onMonitorMenuActivate);
