@@ -63,9 +63,20 @@ Added:
             SaveMenu.xml
             ConformationMenu.xml
             EndExperimentMenu.xml
+        tracks/
+            curved highway.xml
+            curved-road.xml
+            simple-highway.xml
+            simple-road.xml
+            test-tracks.xml
+
     drivers/
         assistedhuman/
             *
+    tracks/
+        added curved-highway
+        added simple-highway
+        added simple-road
 
 Changed:
   src/
@@ -82,7 +93,7 @@ Changed:
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
-                changed common_drive(): 
+                changed common_drive():
                     added check for input of intervention toggle on/off
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
@@ -181,6 +192,8 @@ Changed:
                 changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+            racetrack.cpp
+                changed ReTrackInit() to load track from Mediator
 
         sound/snddefault/
             CMakeLists.txt
@@ -220,6 +233,10 @@ Changed:
                 added Clamp() helper function
         userinterface/
             legacymenu/
+                racescreens/
+                    raceconfigstate.cpp
+                        included "racemanagers.h"
+                        changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -276,18 +293,15 @@ Changed:
                         changed rmAddKeys()
                     racescreens.h
                         removed networking
+                        included "race.h"
                         included "ConfigEnums.h"
+                        changed RmTrackSelect: replaced GfRace pointer with function pointers to set and get
                         added RmShowEndExperiment()
                         added ConfirmationMenuInit()
                         added SaveMenuInit()
                         removed RmShowResults()
                         removed RmRaceSelectInit()
                         removed RmRaceManMenu()
-                    raceselectmenu.cpp
-                        changed rmOnActivate()
-                        changed rmOnRaceSelectShutdown()
-                        changed rmOnSelectRaceMan()
-                        changed RmRaceSelectInit()
                     racenexteventmenu.cpp
                         changed RmNextEventMenu()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
@@ -317,6 +331,9 @@ Changed:
                         added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
                         added button for accessing the force feedback settings
+                trackselect.cpp
+                    changed rmtsSelect(): replaced usage of race manager with SetTrack function
+                    changed RmTrackSelect(): replaced usage of race manager with GetTrack function
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
             textonly/
                 CMakeLists.txt
@@ -443,6 +460,11 @@ Changed:
       data/
         credits.xml
             added Simulated driving assistance developers
+        track/
+            removed dirt.xml
+            removed gprix.xml
+            removed karting.xml
+            removed speedway.xml
         menu/
             mainmenu.xml
                 renamed race button
@@ -469,10 +491,19 @@ Changed:
                 removed controls, quit and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
+            trackselectmenu.xml
+                changed position size of category and track buttons
             forcefeedbackconfigmenu.xml
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
+            trackselectmenu.xml
+                changed position of category button
+                changed position of track button
+                changed text on Next and Back buttons
+                changed all instances of the word track to environment
+                added category label
+                added track label
 
   cmake/
     checks.cmake
