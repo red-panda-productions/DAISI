@@ -31,6 +31,8 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
+    template void Mediator<type>::SetEnvironmentFilePath(const char* p_filePath);                                                                       \
+    template const char* Mediator<type>::GetEnvironmentFilePath();                                                                                      \
     template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
     template void Mediator<type>::SetThresholdSettings(tDecisionThresholds p_thresholds);                                                               \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
@@ -131,6 +133,22 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
 {
     m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
+}
+
+/// @brief            Sets the filepath for the environment descriptor xml
+/// @param p_filePath A const char* representing the filepath of the environment descriptor xml
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetEnvironmentFilePath(const char* p_filePath)
+{
+    m_decisionMaker.Config.SetEnvironmentFilePath(p_filePath);
+}
+
+/// @brief Gets the filepath for the environment descriptor xml
+/// @return A const char* representing the filepath of the environment descriptor xml
+template <typename DecisionMaker>
+const char* Mediator<DecisionMaker>::GetEnvironmentFilePath()
+{
+    return m_decisionMaker.Config.GetEnvironmentFilePath();
 }
 
 /// @brief        Sets the sync option of the black box
