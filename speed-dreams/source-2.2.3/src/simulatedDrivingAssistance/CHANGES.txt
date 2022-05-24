@@ -52,6 +52,12 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            bg-button-three.png
+            bg-button-three_focused.png
+            bg-button-three_pushed.png
+            bg-button-two.png
+            bg-button-two_focused.png
+            bg-button-two_pushed.png
             head.png
         indicators/
             *
@@ -63,9 +69,20 @@ Added:
             SaveMenu.xml
             ConformationMenu.xml
             EndExperimentMenu.xml
+        tracks/
+            curved highway.xml
+            curved-road.xml
+            simple-highway.xml
+            simple-road.xml
+            test-tracks.xml
+
     drivers/
         assistedhuman/
             *
+    tracks/
+        added curved-highway
+        added simple-highway
+        added simple-road
 
 Changed:
   src/
@@ -82,7 +99,7 @@ Changed:
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
-                changed common_drive(): 
+                changed common_drive():
                     added check for input of intervention toggle on/off
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
@@ -181,6 +198,8 @@ Changed:
                 changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+            racetrack.cpp
+                changed ReTrackInit() to load track from Mediator
 
         sound/snddefault/
             CMakeLists.txt
@@ -220,6 +239,10 @@ Changed:
                 added Clamp() helper function
         userinterface/
             legacymenu/
+                racescreens/
+                    raceconfigstate.cpp
+                        included "racemanagers.h"
+                        changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -445,6 +468,11 @@ Changed:
       data/
         credits.xml
             added Simulated driving assistance developers
+        track/
+            removed dirt.xml
+            removed gprix.xml
+            removed karting.xml
+            removed speedway.xml
         menu/
             mainmenu.xml
                 added a back button
@@ -471,10 +499,21 @@ Changed:
                 removed controls, quit and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
+            trackselectmenu.xml
+                changed position size of category and track buttons
             forcefeedbackconfigmenu.xml
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
+            trackselectmenu.xml
+                changed position of category button
+                changed position of track button
+                changed text on Next and Back buttons
+                changed all instances of the word track to environment
+                added category label
+                added track label
+            loadingscreen.xml
+                removed titlelabel
 
   cmake/
     checks.cmake

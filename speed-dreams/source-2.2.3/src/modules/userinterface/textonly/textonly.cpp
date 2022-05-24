@@ -36,6 +36,7 @@
 #include "Recorder.h"
 #include "Mediator.h"
 #include "../../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "tracks.h"
 
 namespace filesystem = std::experimental::filesystem;
 
@@ -121,12 +122,13 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
     auto replaySettingsHandle = GfParmReadFile(path.c_str(), 0, true);
     const char* trackCategory = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
     const char* trackName = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    // Recreate the path of the environment descriptor file, which is always at "tracks/[category]/[name]/[name].xml"
+    std::stringstream trackFilename("tracks/");
+    trackFilename << trackCategory << "/" << trackName << "/" << trackName << ".xml";
+    SMediator::GetInstance()->SetEnvironmentFilePath(trackFilename.str().c_str());
+
 
     p_selRaceMan = GfRaceManagers::self()->getRaceManager("replay");
-    auto handle = p_selRaceMan->getDescriptorHandle();
-
-    GfParmSetStr(handle, "Tracks/1", KEY_CATEGORY, trackCategory);
-    GfParmSetStr(handle, "Tracks/1", KEY_NAME, trackName);
 
     mediator->SetBlackBoxFilePath("");
 
