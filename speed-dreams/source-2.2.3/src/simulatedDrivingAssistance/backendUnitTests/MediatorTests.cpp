@@ -298,6 +298,28 @@ TEST(MediatorTests, BlackBoxFilePathTest)
     }
 }
 
+/// @brief Tests if the Mediator sets and gets the EnvironmentFilePath correctly
+TEST(MediatorTests, EnvironmentFilePathTest)
+{
+    Random random;
+    char path[256];
+    for (int j = 0; j < TEST_AMOUNT; j++)
+    {
+        SDAConfigMediator::ClearInstance();
+        ASSERT_TRUE(SetupSingletonsFolder());
+        int length = random.NextInt(256);
+        GenerateRandomCharArray(path, length);
+        SDAConfigMediator::GetInstance()->SetEnvironmentFilePath(path);
+        // Check whether the path returned by the mediator is correct
+        const char* mediatorPath = SDAConfigMediator::GetInstance()->GetEnvironmentFilePath();
+        TestStringEqual(path, mediatorPath, length);
+        // Check whether the path is also set in the config
+        const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
+        const char* configPath = config.GetEnvironmentFilePath();
+        TestStringEqual(path, configPath, length);
+    }
+}
+
 /// @brief                Tests if the Mediator sets and gets the DataCollectionSetting correctly
 /// @param p_env          The environment data setting
 /// @param p_car          The car data setting

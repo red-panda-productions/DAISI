@@ -38,6 +38,9 @@
 #include "raceinit.h"
 #include "racetrack.h"
 
+#include "Mediator.h"
+
+
 #ifdef WEBSERVER
 #include <iomanip>
 #include <fstream>
@@ -75,22 +78,10 @@ ReTrackInit(void)
 {
     char buf[1024];
 
-    const char  *trackName;
-    const char  *catName;
-
-    const int curTrkIdx =
-        (int)GfParmGetNum(ReInfo->results, RE_SECT_CURRENT, RE_ATTR_CUR_TRACK, NULL, 1);
-    snprintf(buf, sizeof(buf), "%s/%d", RM_SECT_TRACKS, curTrkIdx);
-    trackName = GfParmGetStr(ReInfo->params, buf, RM_ATTR_NAME, 0);
-    if (!trackName)
-        return -1;
-
-    catName = GfParmGetStr(ReInfo->params, buf, RM_ATTR_CATEGORY, 0);
-    if (!catName)
-        return -1;
-
-    snprintf(buf, sizeof(buf), "tracks/%s/%s/%s.%s", catName, trackName, trackName, TRKEXT);
-    ReInfo->track = ReTrackLoader().load(buf);
+    // SIMULATED DRIVING ASSISTANCE change: Get the path for the track from the mediator
+    SMediator* mediator = SMediator::GetInstance();
+    const char* trackPath = mediator->GetEnvironmentFilePath();
+    ReInfo->track = ReTrackLoader().load(trackPath);
 
     snprintf(buf, sizeof(buf), "Loading %s track", ReInfo->track->name);
     ReUI().addLoadingMessage(buf);

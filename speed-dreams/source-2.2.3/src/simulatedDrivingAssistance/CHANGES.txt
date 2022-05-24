@@ -99,7 +99,7 @@ Changed:
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
-                changed common_drive(): 
+                changed common_drive():
                     added check for input of intervention toggle on/off
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
@@ -198,6 +198,8 @@ Changed:
                 changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+            racetrack.cpp
+                changed ReTrackInit() to load track from Mediator
 
         sound/snddefault/
             CMakeLists.txt
@@ -237,6 +239,10 @@ Changed:
                 added Clamp() helper function
         userinterface/
             legacymenu/
+                racescreens/
+                    raceconfigstate.cpp
+                        included "racemanagers.h"
+                        changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -312,8 +318,6 @@ Changed:
                         changed rmOnSelectRaceMan()
                         changed RmRaceSelectInit()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
-                    raceloadingscreen.cpp
-                        changed RmLoadingScreenStart()
                 confscreens/
                     soundconfig.cpp
                         added ChangeInterventionVolume()
@@ -501,6 +505,13 @@ Changed:
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
+            trackselectmenu.xml
+                changed position of category button
+                changed position of track button
+                changed text on Next and Back buttons
+                changed all instances of the word track to environment
+                added category label
+                added track label
             loadingscreen.xml
                 removed titlelabel
 

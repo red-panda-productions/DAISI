@@ -157,6 +157,21 @@ const char* SDAConfig::GetBlackBoxFilePath() const
     return m_blackBoxFilePath;
 }
 
+/// @brief            Sets the filepath for the environment descriptor xml
+/// @param p_filePath A const char* representing the filepath of the environment descriptor xml
+void SDAConfig::SetEnvironmentFilePath(const char* p_filePath)
+{
+    // Sanity check that p_filePath is not too big is done before it is sent to this setter
+    strcpy_s(m_environmentPath, ENVIRONMENT_PATH_SIZE, p_filePath);
+}
+
+/// @brief  Gets the filepath for the environment descriptor xml
+/// @return A const char* representing the file path for the environment descriptor xml
+const char* SDAConfig::GetEnvironmentFilePath() const
+{
+    return m_environmentPath;
+}
+
 /// @brief Set m_asyncConnection to p_asyncConnection
 /// @param p_asyncConnection value to set m_asyncConnection to
 void SDAConfig::SetBlackBoxSyncOption(bool p_asyncConnection)
