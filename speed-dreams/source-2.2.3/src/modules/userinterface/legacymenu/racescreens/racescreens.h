@@ -26,6 +26,8 @@
 #define __RACESCREENS_H__
 
 #include <raceman.h>
+#include <race.h>
+#include "ConfigEnums.h"
 
 #include <itrackloader.h>
 
@@ -35,7 +37,12 @@ class GfRace;
 
 typedef struct RmTrackSelect
 {
-	GfRace      *pRace; /* The race to update */
+    // SIMULATED DRIVING ASSISTANCE change: replace race with SetTrack and GetTrack function
+    /// @brief Pointer to function used to set the selected track
+    void (*SetTrack)(GfTrack *);
+    /// @brief Pointer to function used to get the selected track
+    /// @return Pointer to selected track
+    GfTrack *(*GetTrack)();
     void        *prevScreen;	/* Race manager screen to go back */
     void        *nextScreen;	/* Race manager screen to go after select */
     ITrackLoader	*piTrackLoader;	/* Track loader */
@@ -102,7 +109,10 @@ extern void RmOptimizationScreenShutdown();
 
 extern void RmGameScreen();
 
-extern void RmShowResults(void * /* prevHdle */, tRmInfo * /* info */);
+// SIMULATED DRIVING ASSISTANT: Remove show results, instead show end of experiment screen and save/confirmation screens
+extern void RmShowEndExperiment(RaceEndType p_raceEndType);
+extern void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType);
+extern void* SaveMenuInit(RaceEndType p_raceEndType);
 
 extern void* RmBackToRaceHookInit();
 extern void RmStopRaceMenu();
