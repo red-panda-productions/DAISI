@@ -113,7 +113,7 @@
             <attstr name="tip" val="Access the the data compression settings"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="82"/>
+            <attnum name="y" val="140"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>

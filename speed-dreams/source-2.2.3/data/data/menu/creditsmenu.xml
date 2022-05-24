@@ -286,8 +286,8 @@
 		<attstr name="text" val="Back"/>
 		<attstr name="tip" val="Return to previous menu"/>
 		<attstr name="h align" val="left"/>
-		<attnum name="x" val="280"/>
-		<attnum name="y" val="44"/>
+		<attnum name="x" val="40"/>
+		<attnum name="y" val="40"/>
 		<attnum name="width" val="120"/>
 		<attstr name="font" val="medium"/>
 		<attstr name="color" val="0xFFFFFF"/>
