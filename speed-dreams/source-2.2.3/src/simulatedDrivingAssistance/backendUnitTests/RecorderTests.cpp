@@ -464,14 +464,14 @@ void AssertV2ToV3Changes(void* p_upgradedRunSettingsHandle)
     ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE));
 }
 
-/// @brief                             Tests that the changes from V3 to V4 are present
+/// @brief                             Tests that the changes from V3 to V4 are present: added additional participant control
 /// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
 void AssertV3ToV4Changes(void* p_upgradedRunSettingsHandle)
 {
     ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE));
 }
 
-/// @brief                             Tests that the changes from V3 to V4 are present
+/// @brief                             Tests that the changes from V4 to V5 are present: added decision thresholds
 /// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
 void AssertV4ToV5Changes(void* p_upgradedRunSettingsHandle)
 {
@@ -536,9 +536,9 @@ TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 /// @brief       Generates all the tests for the recording upgrades
 /// @param Range The versions to upgrade the recordings to, is a range from [1..RECORDER_VERSION]
 INSTANTIATE_TEST_SUITE_P(
-    RecorderUpgradeVersionTests, 
+    RecorderUpgradeVersionTests,
     RecorderUpgradeVersionTestFixture,
-    ::testing::Range(1, CURRENT_RECORDER_VERSION + 1), 
+    ::testing::Range(1, CURRENT_RECORDER_VERSION + 1),
     testing::PrintToStringParamName());
 
 /// @brief Attempts to upgrade to a non-existent recording version, which should fail.
