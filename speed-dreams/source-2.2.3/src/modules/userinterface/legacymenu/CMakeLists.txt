@@ -52,6 +52,7 @@ SET(RACESCREENS_SOURCES ${RS}/raceloadingmenu.cpp ${RS}/racerunningmenus.cpp
                         ${RS}/raceoptimizationmenu.cpp
                         ${RS}/racestopmenu.cpp ${RS}/racestartmenu.cpp
                         ${RS}/racepitmenu.cpp
+                        ${RS}/trackselect.cpp
                         ${RS}/racenexteventmenu.cpp
                         ${RS}/EndExperimentMenu.cpp
                         ${RS}/SaveMenu.cpp ${RS}/ConfirmationMenu.cpp)
