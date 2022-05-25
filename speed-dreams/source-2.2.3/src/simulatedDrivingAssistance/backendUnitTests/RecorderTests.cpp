@@ -349,7 +349,13 @@ TEST(RecorderTests, WriteRunSettingsTests)
     allowedActions.Accelerate = random.NextBool();
     allowedActions.Brake = random.NextBool();
 
-    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType, participantControl, maxTime, allowedActions);
+    tDecisionThresholds thresholds;
+    thresholds.Accel = random.NextFloat();
+    thresholds.Brake = random.NextFloat();
+    thresholds.Steer = random.NextFloat();
+
+    recorder.WriteRunSettings(&carElt, &track, indicators, interventionType,
+                              participantControl, maxTime, allowedActions, thresholds);
 
     filesystem::path settingsPath = GetTestingDirectory();
     settingsPath.append("test_recorder_settings").append(RUN_SETTINGS_FILE_NAME);
@@ -357,6 +363,8 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_TRUE(filesystem::exists(settingsPath));
 
     void* handle = GfParmReadFile(settingsPath.string().c_str(), 0, true);
+
+    ASSERT_EQ(static_cast<int>(GfParmGetNum(handle, PATH_VERSION, KEY_VERSION, nullptr, NAN)), CURRENT_RECORDER_VERSION);
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, nullptr), BoolToString(indicators.Audio));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_INDICATORS, KEY_INDICATOR_TEXT, nullptr), BoolToString(indicators.Text));
@@ -369,7 +377,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteer));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
 
-    ASSERT_EQ(GfParmGetNum(handle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, 0), (tdble)maxTime);
+    ASSERT_EQ(GfParmGetNum(handle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, 0), static_cast<tdble>(maxTime));
 
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, nullptr), BoolToString(allowedActions.Steer));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, nullptr), BoolToString(allowedActions.Accelerate));
@@ -380,7 +388,9 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);
 
-    ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_VERSION, KEY_VERSION, nullptr, NAN)), CURRENT_RECORDER_VERSION);
+    ASSERT_EQ(GfParmGetNum(handle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, 0.0f), thresholds.Accel);
+    ASSERT_EQ(GfParmGetNum(handle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, 0.0f), thresholds.Brake);
+    ASSERT_EQ(GfParmGetNum(handle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, 0.0f), thresholds.Steer);
 
     // Check the contents of the file
     std::ifstream originalFile(path);
@@ -454,11 +464,20 @@ void AssertV2ToV3Changes(void* p_upgradedRunSettingsHandle)
     ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE));
 }
 
-/// @brief                             Tests that the changes from V3 to V4 are present
+/// @brief                             Tests that the changes from V3 to V4 are present: added additional participant control
 /// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
 void AssertV3ToV4Changes(void* p_upgradedRunSettingsHandle)
 {
     ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE));
+}
+
+/// @brief                             Tests that the changes from V4 to V5 are present: added decision thresholds
+/// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
+void AssertV4ToV5Changes(void* p_upgradedRunSettingsHandle)
+{
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL));
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE));
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER));
 }
 
 /// @brief                             Asserts whether the last changes to reach the target version are actually in the file now.
@@ -480,6 +499,9 @@ void AssertTargetVersionChanges(void* p_upgradedRunSettingsHandle, filesystem::p
             break;
         case 4:
             AssertV3ToV4Changes(p_upgradedRunSettingsHandle);
+            break;
+        case 5:
+            AssertV4ToV5Changes(p_upgradedRunSettingsHandle);
             break;
         default:
             throw std::exception("Unknown target version, cannot assert");
@@ -516,7 +538,8 @@ TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 INSTANTIATE_TEST_SUITE_P(
     RecorderUpgradeVersionTests,
     RecorderUpgradeVersionTestFixture,
-    ::testing::Range(1, CURRENT_RECORDER_VERSION + 1));
+    ::testing::Range(1, CURRENT_RECORDER_VERSION + 1),
+    testing::PrintToStringParamName());
 
 /// @brief Attempts to upgrade to a non-existent recording version, which should fail.
 TEST(RecorderTests, UpgradeToUnkownVersion)

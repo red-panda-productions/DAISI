@@ -30,7 +30,7 @@
   </section>
 
   <section name="version">
-    <attnum name="version" val="4.000000"/>
+    <attnum name="version" val="5.000000"/>
   </section>
 
   <section name="max_time">
@@ -41,6 +41,12 @@
     <attstr name="steer" val="true"/>
     <attstr name="accelerate" val="true"/>
     <attstr name="brake" val="true"/>
+  </section>
+
+  <section name="thresholds">
+    <attnum name="treshold_accel" val="0.900000"/>
+    <attnum name="treshold_brake" val="0.900000"/>
+    <attnum name="treshold_steer" val="0.040000"/>
   </section>
 
 </params>
