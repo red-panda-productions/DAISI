@@ -128,7 +128,8 @@ extern void RmShowStandings(void* prevHdle, tRmInfo *info, int start = 0);
 extern void* RmFileSelect(void* vs);
 
 // From racemanmenus.
-extern void RmRacemanMenu();
+// SIMULATED DRIVING ASSISTANCE: removed rmraceselectinit(), removed rmracemanmenu()
+
 extern void RmNextEventMenu();
 extern void RmConfigureRace(void*  /* dummy */);
 extern void RmSetRacemanMenuHandle(void*  handle);
@@ -137,8 +138,6 @@ extern void* RmGetRacemanMenuHandle();
 
 extern void RmConfigRunState(bool bStart = false);
 
-// From raceselectmenu.
-extern void* RmRaceSelectInit(void* precMenu);
 
 // From racerunningmenus.
 extern void* RmScreenInit();
@@ -161,10 +160,7 @@ extern void RmResEraseScreen();
 extern void RmAddPreRacePauseItems();
 extern void RmAddCooldownItems();
 
-// SIMULATED DRIVING ASSISTANCE: removed networking
-
-// The Race Select menu.
-extern void *RmRaceSelectMenuHandle;
+// SIMULATED DRIVING ASSISTANCE: removed networking and RmRaceSelectMenuHandle
 
 // Progressive simulation time modifier, for more user-friendly resuming
 // a race from the Stop Race menu (progressively accelerates time from a low factor).

@@ -52,6 +52,12 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            bg-button-three.png
+            bg-button-three_focused.png
+            bg-button-three_pushed.png
+            bg-button-two.png
+            bg-button-two_focused.png
+            bg-button-two_pushed.png
             head.png
         indicators/
             *
@@ -259,12 +265,11 @@ Changed:
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
                         removed  <playerconfig.h>
-                        added    GoBack()
                         changed  MainMenuInit()
-                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
                         changed  MainMenuInit()
                         included "ConfigEnums.h"
                         changed  onExitMenuActive() method
+                        renamed  raceselectmenuinit to researcherselectmenuinit
                     exitmenu.cpp
                         included "ConfigEnums.h"
                         included "EndExperimentMenu.h"
@@ -275,6 +280,7 @@ Changed:
                         changed  ExitMenuInit(): more parameters
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                        added controls
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
@@ -291,56 +297,49 @@ Changed:
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
-                racemanmenu.cpp
-                    included <controlconfig.h> and "mainmenu.h"
-                    removed <playerconfig.h>, <csnetwork.h> and <network.h>
-                    removed networking and go back to main menu
-                    changed rmOnRaceDataChanged()
-                    changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
-                    added   BackToMainMenu()
-                    changed rmRaceManMenu()
-                racescreens.h
-                    removed networking
-                    included "race.h"
-                    included "ConfigEnums.h"
-                    changed RmTrackSelect: replaced GfRace pointer with function pointers to set and get track
-                    added RmShowEndExperiment()
-                    added ConfirmationMenuInit()
-                    added SaveMenuInit()
-                    removed RmShowResults()
-                raceselectmenu.cpp
-                    changed rmOnActivate()
-                    changed rmOnRaceSelectShutdown()
-                    changed rmOnSelectRaceMan()
-                    changed RmRaceSelectInit()
+                    racescreens.h
+                        removed networking
+                        included "race.h"
+                        included "ConfigEnums.h"
+                        changed RmTrackSelect: replaced GfRace pointer with function pointers to set and get
+                        added RmShowEndExperiment()
+                        added ConfirmationMenuInit()
+                        added SaveMenuInit()
+                        removed RmShowResults()
+                        removed RmRaceSelectInit()
+                        removed RmRaceManMenu()
+                    racenexteventmenu.cpp
+                        changed RmNextEventMenu()
+                    removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                    removed carssetupmenu.cpp, carssetupmenu.h, driverselect.cpp, fileselect.cpp, garagemenu.cpp, garagemenu.h
+                    removed raceconfigstate.cpp, racemanmenu.cpp, raceparammenu.cpp, raceselectmenu.h
+                confscreens/
+                    soundconfig.cpp
+                        added ChangeInterventionVolume()
+                        added logic to create new controls for intervention volume and store their data
+                        changed readSoundCfg()
+                    controlconfig.cpp
+                        added cmd info for intervention toggle on/off to the Cmd[] member variable.
+                        added cmd disp info for intervention toggle on/off to the CmdDispInfo[] member.
+                        included <deque>
+                        included (conditionally) <forcefeedbackconfig.h>
+                        added static void *PlayerHdle = NULL; from removed playerconfig.cpp
+                        added SkillLevelString from removed playerconfig.cpp
+                        added NbSkillLevels from removed playerconfig.cpp
+                        added NoPlayer from removed playerconfig.cpp
+                        added HumanDriverModuleName from removed playerconfig.cpp
+                        added DefaultCarName from removed playerconfig.cpp
+                        added tInfo from removed playerconfig.cpp
+                        added tPlayerInfo from removed playerconfig.cpp
+                        added tPlayerInfoList from removed playerconfig.cpp
+                        added currPlayer from removed playerconfig.cpp
+                        added Yn[] from removed playerconfig.cpp
+                        added GenPlayerList() from removed playerconfig.cpp
+                        removed parameters in init
+                        added button for accessing the force feedback settings
                 trackselect.cpp
                     changed rmtsSelect(): replaced usage of race manager with SetTrack function
                     changed RmTrackSelect(): replaced usage of race manager with GetTrack function
-                removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
-            confscreens/
-                soundconfig.cpp
-                    added ChangeInterventionVolume()
-                    added logic to create new controls for intervention volume and store their data
-                    changed readSoundCfg()
-                controlconfig.cpp
-                    added cmd disp info for intervention toggle on/off to the CmdDispInfo[] member.
-                    added cmd info for intervention toggle on/off to the Cmd[] member variable.
-                    included <deque>
-                    included (conditionally) <forcefeedbackconfig.h>
-                    added static void *PlayerHdle = NULL; from removed playerconfig.cpp
-                    added SkillLevelString from removed playerconfig.cpp
-                    added NbSkillLevels from removed playerconfig.cpp
-                    added NoPlayer from removed playerconfig.cpp
-                    added HumanDriverModuleName from removed playerconfig.cpp
-                    added DefaultCarName from removed playerconfig.cpp
-                    added tInfo from removed playerconfig.cpp
-                    added tPlayerInfo from removed playerconfig.cpp
-                    added tPlayerInfoList from removed playerconfig.cpp
-                    added currPlayer from removed playerconfig.cpp
-                    added Yn[] from removed playerconfig.cpp
-                    added GenPlayerList() from removed playerconfig.cpp
-                    removed parameters in init
-                    added button for accessing the force feedback settings
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
             textonly/
                 CMakeLists.txt
@@ -474,7 +473,6 @@ Changed:
             removed speedway.xml
         menu/
             mainmenu.xml
-                added a back button
                 renamed race button
                 removed weekend
                 removed player
@@ -486,6 +484,7 @@ Changed:
                 removed controls menu
             optionsmenu.xml
                 removed unused menus
+                added config menu
             creditsmenu.xml
                 added new section
             removed playerconfig.xml
@@ -511,6 +510,8 @@ Changed:
                 changed all instances of the word track to environment
                 added category label
                 added track label
+            loadingscreen.xml
+                removed titlelabel
 
   cmake/
     checks.cmake

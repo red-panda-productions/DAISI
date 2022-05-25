@@ -10,6 +10,7 @@
 #include "racescreens.h"
 #include "tracks.h"
 #include <experimental/filesystem>
+#include "mainmenu.h"
 
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
@@ -112,6 +113,9 @@ tRmTrackSelect m_trackMenuSettings;
 
 // Apply Button
 int m_applyButton;
+
+// Back button;
+int m_backButton;
 
 /// @brief Save the given GfTrack as the used environment
 /// @param p_gfTrack Pointer to the GfTrack to use
@@ -357,6 +361,11 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
+static void BackToMain(void* /* dummy */)
+{
+    GfuiScreenActivate(MainMenuInit(s_scrHandle));
+}
+
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
@@ -596,6 +605,8 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
+    // Back button
+    m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
