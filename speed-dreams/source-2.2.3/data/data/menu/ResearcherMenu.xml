@@ -73,7 +73,7 @@
         <!-- Choose black box button-->
         <section name="ChooseBlackBoxButton">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <!-- Below value is "Choose Black Box: " followed by 260 (max filepath size) spaces, 
             as giving a new value to a button's text is only as long as the original length,
             although even with the small font, a name that long would go off-screen -->
@@ -114,7 +114,7 @@
         <!-- Choose environment button-->
         <section name="ChooseEnvironmentButton">
 	        <attstr name="type" val="text button"/>
-	        <attstr name="show box" val="yes"/>
+	        <attstr name="show box" val="no"/>
             <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces,
 			as giving a new value to a button's text is only as long as the original length,
 			although even with the small font, a name that long would go off-screen -->
@@ -142,7 +142,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Audio"/>
             <attstr name="tip" val="Enable/Disable auditory indication of interventions"/>
-            <attnum name="x" val="180"/>
+            <attnum name="x" val="420"/>
             <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -155,7 +155,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Icon"/>
             <attstr name="tip" val="Enable/Disable icon indication of interventions"/>
-            <attnum name="x" val="180"/>
+            <attnum name="x" val="420"/>
             <attnum name="y" val="365"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -168,7 +168,7 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Text"/>
             <attstr name="tip" val="Enable/Disable text indication of interventions"/>
-            <attnum name="x" val="180"/>
+            <attnum name="x" val="420"/>
             <attnum name="y" val="335"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -198,7 +198,7 @@
                     <attstr name="tip" val="Set it so that the AI has complete control over the car"/>
                 </section>
             </section>
-            <attnum name="x" val="500"/>
+            <attnum name="x" val="280"/>
             <attnum name="y" val="396"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
@@ -215,8 +215,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Steer"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to control steering"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="250"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -228,8 +228,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Accelerate"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to control throttle"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="220"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="365"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -241,8 +241,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Brake"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to control the brake"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="190"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="335"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -254,8 +254,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Interventions on/off"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to enable/disable AI intervention"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="160"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="305"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -269,7 +269,7 @@
             <attstr name="text" val="Force Feedback"/>
             <attstr name="tip" val="Enable/Disable force feedback"/>
             <attnum name="x" val="500"/>
-            <attnum name="y" val="100"/>
+            <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -282,7 +282,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="16"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="260"/>
+            <attnum name="y" val="240"/>
             <attnum name="width" val="50"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -294,7 +294,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="70"/>
-            <attnum name="y" val="230"/>
+            <attnum name="y" val="210"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium"/>
@@ -366,7 +366,7 @@
 
         <section name="3">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="180"/>
+            <attnum name="x" val="420"/>
             <attnum name="y" val="425"/>
             <attstr name="text" val="Indicator"/>
             <attstr name="h align" val="left"/>
@@ -375,8 +375,8 @@
 
         <section name="4">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="280"/>
+            <attnum name="x" val="280"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Intervention Type"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -384,7 +384,7 @@
 
         <section name="5">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="500"/>
+            <attnum name="x" val="140"/>
             <attnum name="y" val="425"/>
             <attstr name="text" val="Participant Control"/>
             <attstr name="h align" val="left"/>
@@ -394,7 +394,7 @@
         <section name="6">
             <attstr name="type" val="label"/>
             <attnum name="x" val="500"/>
-            <attnum name="y" val="130"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Other options"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -403,7 +403,7 @@
         <section name="7">
             <attstr name="type" val="label"/>
             <attnum name="x" val="80"/>
-            <attnum name="y" val="260"/>
+            <attnum name="y" val="240"/>
             <attstr name="text" val="Max Time"/>
             <attstr name="tip" val="Set the maximum simulation time"/>
             <attstr name="h align" val="left"/>
@@ -413,7 +413,7 @@
         <section name="8">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="230"/>
+            <attnum name="y" val="210"/>
             <attstr name="text" val="User ID"/>
             <attstr name="tip" val="Give the user an ID"/>
             <attstr name="h align" val="left"/>
