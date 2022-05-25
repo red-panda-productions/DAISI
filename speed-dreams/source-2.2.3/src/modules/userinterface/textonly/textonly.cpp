@@ -117,16 +117,15 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
 
     filesystem::path recordingSettingsPath = replayFolder;
     recordingSettingsPath.append(RUN_SETTINGS_FILE_NAME);
-
     std::string path = recordingSettingsPath.string();
     auto replaySettingsHandle = GfParmReadFile(path.c_str(), 0, true);
+
+    // Recreate the path of the environment descriptor file, which is always at "tracks/[category]/[name]/[name].xml"
     const char* trackCategory = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
     const char* trackName = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
-    // Recreate the path of the environment descriptor file, which is always at "tracks/[category]/[name]/[name].xml"
     std::stringstream trackFilename("tracks/");
     trackFilename << trackCategory << "/" << trackName << "/" << trackName << ".xml";
-    SMediator::GetInstance()->SetEnvironmentFilePath(trackFilename.str().c_str());
-
+    mediator->SetEnvironmentFilePath(trackFilename.str().c_str());
 
     p_selRaceMan = GfRaceManagers::self()->getRaceManager("replay");
 

@@ -314,8 +314,8 @@ void UpdateV3RecorderToV4(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
 }
 
-/// @brief Update a v3 recording to a v4 recording. This means:
-///  - Adding an additional partipant control options to the settings.
+/// @brief Update a v4 recording to a v5 recording. This means:
+///  - Adding the intervention thresholds to the settings.
 /// @param p_settingsHandle Handle to the run settings file
 void UpdateV4RecorderToV5(void* p_settingsHandle)
 {
