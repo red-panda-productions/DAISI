@@ -97,11 +97,11 @@ bool LegacyMenu::backLoad()
 
 	// Pre-load the main and race select menus
     // (to be able to get back to them, even when directly starting a given race).
-    if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
-        return false;
+
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
-    ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
+    if (!ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers))))
+        return false;
 
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
@@ -117,13 +117,6 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE : added researcher menu
-/// @brief activates the ResearcherMenu
-/// @return true if successful
-bool LegacyMenu::ActivateResearcherMenu()
-{
-    return ResearcherMenuRun() == 0;
-}
 
 bool LegacyMenu::startRace()
 {
@@ -181,9 +174,7 @@ bool LegacyMenu::activate()
 	// and finally open the main menu.
 	if (strRaceToStart.empty())
 	{
-        // If not specified, simply open the splash screen, load the menus in the background
-        // SIMULATED DRIVING ASSISTANCE CHANGE: and finally open the intervention menu.
-        fnOnSplashClosed = LegacyMenu::ActivateResearcherMenu;
+        fnOnSplashClosed = LegacyMenu::activateMainMenu;
     }
 
 	// Otherwise, run the selected race.
@@ -277,7 +268,6 @@ void LegacyMenu::shutdownOptimizationScreen()
 void LegacyMenu::onRaceConfiguring()
 {
     ::RmOptimizationScreenShutdown();
-    ::RmRacemanMenu();
 }
 
 void LegacyMenu::onRaceEventInitializing()

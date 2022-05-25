@@ -52,6 +52,12 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            bg-button-three.png
+            bg-button-three_focused.png
+            bg-button-three_pushed.png
+            bg-button-two.png
+            bg-button-two_focused.png
+            bg-button-two_pushed.png
             head.png
         indicators/
             *
@@ -63,9 +69,20 @@ Added:
             SaveMenu.xml
             ConformationMenu.xml
             EndExperimentMenu.xml
+        tracks/
+            curved highway.xml
+            curved-road.xml
+            simple-highway.xml
+            simple-road.xml
+            test-tracks.xml
+
     drivers/
         assistedhuman/
             *
+    tracks/
+        added curved-highway
+        added simple-highway
+        added simple-road
 
 Changed:
   src/
@@ -82,7 +99,7 @@ Changed:
                 changed new_race()
                 changed drive_at()
                 changed shutdown()
-                changed common_drive(): 
+                changed common_drive():
                     added check for input of intervention toggle on/off
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
@@ -181,6 +198,8 @@ Changed:
                 changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+            racetrack.cpp
+                changed ReTrackInit() to load track from Mediator
 
         sound/snddefault/
             CMakeLists.txt
@@ -220,6 +239,10 @@ Changed:
                 added Clamp() helper function
         userinterface/
             legacymenu/
+                racescreens/
+                    raceconfigstate.cpp
+                        included "racemanagers.h"
+                        changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -242,12 +265,11 @@ Changed:
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
                         removed  <playerconfig.h>
-                        added    GoBack()
                         changed  MainMenuInit()
-                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
                         changed  MainMenuInit()
                         included "ConfigEnums.h"
                         changed  onExitMenuActive() method
+                        renamed  raceselectmenuinit to researcherselectmenuinit
                     exitmenu.cpp
                         included "ConfigEnums.h"
                         included "EndExperimentMenu.h"
@@ -258,6 +280,7 @@ Changed:
                         changed  ExitMenuInit(): more parameters
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                        added controls
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
@@ -274,27 +297,22 @@ Changed:
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
-                    racemanmenu.cpp
-                        included <controlconfig.h> and "mainmenu.h"
-                        removed <playerconfig.h>, <csnetwork.h> and <network.h>
-                        removed networking and go back to main menu
-                        changed rmOnRaceDataChanged()
-                        changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
-                        added   BackToMainMenu()
-                        changed rmRaceManMenu()
                     racescreens.h
                         removed networking
+                        included "race.h"
                         included "ConfigEnums.h"
+                        changed RmTrackSelect: replaced GfRace pointer with function pointers to set and get
                         added RmShowEndExperiment()
                         added ConfirmationMenuInit()
                         added SaveMenuInit()
                         removed RmShowResults()
-                    raceselectmenu.cpp
-                        changed rmOnActivate()
-                        changed rmOnRaceSelectShutdown()
-                        changed rmOnSelectRaceMan()
-                        changed RmRaceSelectInit()
+                        removed RmRaceSelectInit()
+                        removed RmRaceManMenu()
+                    racenexteventmenu.cpp
+                        changed RmNextEventMenu()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                    removed carssetupmenu.cpp, carssetupmenu.h, driverselect.cpp, fileselect.cpp, garagemenu.cpp, garagemenu.h
+                    removed raceconfigstate.cpp, racemanmenu.cpp, raceparammenu.cpp, raceselectmenu.h
                 confscreens/
                     soundconfig.cpp
                         added ChangeInterventionVolume()
@@ -319,6 +337,9 @@ Changed:
                         added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
                         added button for accessing the force feedback settings
+                trackselect.cpp
+                    changed rmtsSelect(): replaced usage of race manager with SetTrack function
+                    changed RmTrackSelect(): replaced usage of race manager with GetTrack function
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
             textonly/
                 CMakeLists.txt
@@ -445,9 +466,13 @@ Changed:
       data/
         credits.xml
             added Simulated driving assistance developers
+        track/
+            removed dirt.xml
+            removed gprix.xml
+            removed karting.xml
+            removed speedway.xml
         menu/
             mainmenu.xml
-                added a back button
                 renamed race button
                 removed weekend
                 removed player
@@ -459,6 +484,7 @@ Changed:
                 removed controls menu
             optionsmenu.xml
                 removed unused menus
+                added config menu
             creditsmenu.xml
                 added new section
             removed playerconfig.xml
@@ -471,10 +497,21 @@ Changed:
                 removed controls, quit and force feedback buttons
             racemanmenu.xml
                 changed player button to control button
+            trackselectmenu.xml
+                changed position size of category and track buttons
             forcefeedbackconfigmenu.xml
                 changed background image
             controlconfigmenu.xml
                 added button for force feedback control
+            trackselectmenu.xml
+                changed position of category button
+                changed position of track button
+                changed text on Next and Back buttons
+                changed all instances of the word track to environment
+                added category label
+                added track label
+            loadingscreen.xml
+                removed titlelabel
 
   cmake/
     checks.cmake

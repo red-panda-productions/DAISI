@@ -111,7 +111,8 @@ RmNextEventMenu(void)
 
 	// Create Start and Abandon buttons.
 	GfuiMenuCreateButtonControl(rmScrHandle, menuXMLDescHdle, "StartButton", NULL, rmStateManage);
-	GfuiMenuCreateButtonControl(rmScrHandle, menuXMLDescHdle, "AbandonButton", RmRaceSelectMenuHandle, GfuiScreenActivate);
+    // SIMULATED DRIVING ASSISTANCE: replaced rmRaceSelectMenuHandle to rmScrHandle
+    GfuiMenuCreateButtonControl(rmScrHandle, menuXMLDescHdle, "AbandonButton", rmScrHandle, GfuiScreenActivate);
 
 	// Close menu XML descriptor.
 	GfParmReleaseHandle(menuXMLDescHdle);
@@ -119,7 +120,7 @@ RmNextEventMenu(void)
 	// Register keyboard shortcuts.
 	GfuiMenuDefaultKeysAdd(rmScrHandle);
 	GfuiAddKey(rmScrHandle, GFUIK_RETURN, "Start Event", NULL, rmStateManage, NULL);
-	GfuiAddKey(rmScrHandle, GFUIK_ESCAPE, "Abandon", RmRaceSelectMenuHandle, GfuiScreenActivate, NULL);
+	GfuiAddKey(rmScrHandle, GFUIK_ESCAPE, "Abandon", rmScrHandle, GfuiScreenActivate, NULL);
 
 	// Activate screen.
 	GfuiScreenActivate(rmScrHandle);

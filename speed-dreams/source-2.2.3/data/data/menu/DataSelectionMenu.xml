@@ -150,11 +150,11 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
-        <section name="ApplyButton">
+        <section name="StartButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
-            <attstr name="text" val="Apply"/>
-            <attstr name="tip" val="Accept and save changes"/>
+            <attstr name="text" val="Start"/>
+            <attstr name="tip" val="Save changes and start experiment"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="550"/>
             <attnum name="y" val="41"/>
