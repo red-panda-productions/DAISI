@@ -53,7 +53,7 @@
             <attstr name="text" val="Developer Screen"/>
             <attstr name="tip" val="Access the Developer Screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="40"/>
+            <attnum name="x" val="270"/>
             <attnum name="y" val="40"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
