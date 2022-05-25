@@ -53,7 +53,7 @@
             <attstr name="text" val="Developer Screen"/>
             <attstr name="tip" val="Access the Developer Screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="270"/>
+            <attnum name="x" val="253"/>
             <attnum name="y" val="40"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
@@ -99,8 +99,8 @@
         <!-- Although this is a label, this is not a static control as we want to change it -->
         <section name="ErrorLabel">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="205"/>
+            <attnum name="x" val="10"/>
+            <attnum name="y" val="100"/>
             <!-- Label for showing error messages to the user. Needs to be 39 characters long.
 			Default value contains this many spaces so maxlength is set correctly -->
             <attstr name="text" val="                                       "/>
