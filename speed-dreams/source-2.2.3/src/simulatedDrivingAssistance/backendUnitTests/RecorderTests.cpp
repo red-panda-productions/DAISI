@@ -326,7 +326,9 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     // Write the car data
     tTrack track{};
-    track.name = "track_name";
+    char internalNameBuf[16];
+    strcpy(internalNameBuf, "track_name");
+    track.internalname = internalNameBuf;
     track.category = "track_category";
     tIndicator indicators;
     indicators.Audio = random.NextBool();
@@ -383,7 +385,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, nullptr), BoolToString(allowedActions.Accelerate));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, nullptr), BoolToString(allowedActions.Brake));
 
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_NAME, nullptr), track.name);
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_INTERNAL_NAME, nullptr), track.internalname);
     ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_CATEGORY, nullptr), track.category);
 
     ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);

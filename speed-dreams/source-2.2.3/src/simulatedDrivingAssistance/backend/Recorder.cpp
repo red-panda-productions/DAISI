@@ -105,7 +105,7 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetNum(settingsFileHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, static_cast<float>(p_interventionType));
 
     GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_CATEGORY, p_track->category);
-    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_NAME, p_track->name);
+    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_INTERNAL_NAME, p_track->internalname);
 
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteer));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlAccel));
@@ -324,6 +324,58 @@ void UpdateV4RecorderToV5(void* p_settingsHandle)
     GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, STANDARD_THRESHOLD_STEER);
 }
 
+/// @brief Update a v5 recording to a v6 recording. This means:
+///  - Finding the track with the correct category and name and setting the right internal name.
+/// @param p_settingsHandle Handle to the settings file
+/// @return true if succesfully updated, false if no track was found
+bool UpdateV5RecorderToV6(void* p_settingsHandle)
+{
+    const char* category = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    const char* name = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+
+    if (category == nullptr || name == nullptr)
+    {
+        GfLogWarning("Failed to read category or name.\n");
+        return false;
+    }
+
+    filesystem::path categoryPath = filesystem::path("tracks").append(category);
+
+    for (auto const& entry : filesystem::directory_iterator{categoryPath})
+    {
+        // Ignore non directories, for example the CMakeLists.txt
+        if (!is_directory(entry.path())) continue;
+
+        // Build the file path, note that the filesystem api is not used here since it needs to use "/" and on windows the filesystem api uses "\"
+        std::stringstream xmlLocationStream;
+        xmlLocationStream << entry.path() << "/" << entry.path().filename() << ".xml";
+        std::string xmlLocation = xmlLocationStream.str();
+
+        void* trackHandle = GfParmReadFile(xmlLocation.c_str(), 0, false);
+
+        // If no trackhandle could be found this track is invalid, so skip it
+        if (trackHandle == nullptr) continue;
+
+        const char* trackName = GfParmGetStr(trackHandle, TRK_SECT_HDR, TRK_ATT_NAME, nullptr);
+
+        // If the trackname is invalid, or does not match the track we are looking for skip it
+        if (trackName == nullptr) continue;
+        if (strcmp(name, trackName) != 0) continue;
+
+        // The track with the right category and name has been found, so set the internal name and remove the name
+        GfParmSetStr(p_settingsHandle, PATH_TRACK, KEY_INTERNAL_NAME, entry.path().filename().string().c_str());
+        GfParmRemove(p_settingsHandle, PATH_TRACK, KEY_NAME);
+
+        GfParmReleaseHandle(trackHandle);
+
+        return true;
+    }
+
+    GfLogWarning("Failed to find matching track.\n");
+
+    return false;
+}
+
 /// @brief                          Upgrades the recording from given version to the next version.
 /// @param p_currVersion            The current version of the recording to upgrade.
 /// @param p_settingsHandle         Handle to the run settings file
@@ -337,12 +389,7 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
     switch (p_currVersion)
     {
         case 0:
-            if (!UpdateV0RecorderToV1(p_settingsHandle, p_userRecordingFile, p_decisionsRecordingFile, p_simulationFile))
-            {
-                GfParmReleaseHandle(p_settingsHandle);
-                return false;
-            }
-            return true;
+            return UpdateV0RecorderToV1(p_settingsHandle, p_userRecordingFile, p_decisionsRecordingFile, p_simulationFile);
         case 1:
             UpdateV1RecorderToV2(p_settingsHandle);
             return true;
@@ -355,6 +402,8 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
         case 4:
             UpdateV4RecorderToV5(p_settingsHandle);
             return true;
+        case 5:
+            return UpdateV5RecorderToV6(p_settingsHandle);
         default:
             GfLogError("There is no more possible upgrade from the current version");
             return false;

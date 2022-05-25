@@ -31,11 +31,12 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_INDICATOR_ICON  "icon"
 #define KEY_INDICATOR_TEXT  "text"
 
-#define KEY_SELECTED "selected"
-#define KEY_FILENAME "filename"
-#define KEY_CATEGORY "category"
-#define KEY_NAME     "name"
-#define KEY_VERSION  "version"
+#define KEY_SELECTED      "selected"
+#define KEY_FILENAME      "filename"
+#define KEY_CATEGORY      "category"
+#define KEY_NAME          "name"
+#define KEY_INTERNAL_NAME "internal_name"
+#define KEY_VERSION       "version"
 
 #define KEY_PARTICIPANT_CONTROL_CONTROL_STEERING            "control_steering"
 #define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
@@ -60,7 +61,7 @@ namespace filesystem = std::experimental::filesystem;
 #define DECISION_RECORD_PARAM_AMOUNT 4
 
 // Current version of the recorder, should be incremented every time a new version comes out.
-#define CURRENT_RECORDER_VERSION 5
+#define CURRENT_RECORDER_VERSION 6
 
 /// @brief A class that can record the input of a player for integration tests
 class Recorder
