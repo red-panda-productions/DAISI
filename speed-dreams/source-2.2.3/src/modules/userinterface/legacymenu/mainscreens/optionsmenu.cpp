@@ -22,6 +22,7 @@
 #include <displayconfig.h>
 #include <monitorconfig.h>
 #include <soundconfig.h>
+#include <controlconfig.h>
 
 #include "optionsmenu.h"
 
@@ -57,6 +58,17 @@ onSoundMenuActivate(void * /* dummy */)
     GfuiScreenActivate(SoundMenuInit(MenuHandle));
 }
 
+// SIMULATED DRIVING ASSISTANCE: added control menu
+static void OnControlMenuActivate(void* /* dummy */)
+{
+    /* Here, we need to call OptionOptionInit each time the firing button
+       is pressed, and not only once at the Main menu initialization,
+       because the previous menu has to be saved (ESC, Back) and because it can be this menu,
+       as well as the Raceman menu */
+       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
+    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
+}
+
 //SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
 
 void *
@@ -70,7 +82,9 @@ OptionsMenuInit(void *prevMenu)
     void *param = GfuiMenuLoad("optionsmenu.xml");
 
     GfuiMenuCreateStaticControls(MenuHandle, param);
-    
+
+    // SIMULATED DRIVING ASSISTANCE: added configure button
+    GfuiMenuCreateButtonControl(MenuHandle, param, "configure", NULL, OnControlMenuActivate);
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
 #ifdef MonitorMenu
     GfuiMenuCreateButtonControl(MenuHandle, param, "display", NULL, onMonitorMenuActivate);

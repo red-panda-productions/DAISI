@@ -265,12 +265,11 @@ Changed:
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
                         removed  <playerconfig.h>
-                        added    GoBack()
                         changed  MainMenuInit()
-                        changed  onplayerconfigMenuActivate(): renamed it to onControlMenuActivate()
                         changed  MainMenuInit()
                         included "ConfigEnums.h"
                         changed  onExitMenuActive() method
+                        renamed  raceselectmenuinit to researcherselectmenuinit
                     exitmenu.cpp
                         included "ConfigEnums.h"
                         included "EndExperimentMenu.h"
@@ -281,6 +280,7 @@ Changed:
                         changed  ExitMenuInit(): more parameters
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+                        added controls
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
@@ -297,27 +297,22 @@ Changed:
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
-                    racemanmenu.cpp
-                        included <controlconfig.h> and "mainmenu.h"
-                        removed <playerconfig.h>, <csnetwork.h> and <network.h>
-                        removed networking and go back to main menu
-                        changed rmOnRaceDataChanged()
-                        changed rmOnPlayerConfig(): renamed it to rmOnControlConfig()
-                        added   BackToMainMenu()
-                        changed rmRaceManMenu()
                     racescreens.h
                         removed networking
+                        included "race.h"
                         included "ConfigEnums.h"
+                        changed RmTrackSelect: replaced GfRace pointer with function pointers to set and get
                         added RmShowEndExperiment()
                         added ConfirmationMenuInit()
                         added SaveMenuInit()
                         removed RmShowResults()
-                    raceselectmenu.cpp
-                        changed rmOnActivate()
-                        changed rmOnRaceSelectShutdown()
-                        changed rmOnSelectRaceMan()
-                        changed RmRaceSelectInit()
+                        removed RmRaceSelectInit()
+                        removed RmRaceManMenu()
+                    racenexteventmenu.cpp
+                        changed RmNextEventMenu()
                     removed csnetclientsettings.cpp, csnetserversettings.cpp, csnetworkingmenu.cpp, networking.cpp, csnetwork.h
+                    removed carssetupmenu.cpp, carssetupmenu.h, driverselect.cpp, fileselect.cpp, garagemenu.cpp, garagemenu.h
+                    removed raceconfigstate.cpp, racemanmenu.cpp, raceparammenu.cpp, raceselectmenu.h
                 confscreens/
                     soundconfig.cpp
                         added ChangeInterventionVolume()
@@ -342,6 +337,9 @@ Changed:
                         added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
                         added button for accessing the force feedback settings
+                trackselect.cpp
+                    changed rmtsSelect(): replaced usage of race manager with SetTrack function
+                    changed RmTrackSelect(): replaced usage of race manager with GetTrack function
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
             textonly/
                 CMakeLists.txt
@@ -475,7 +473,6 @@ Changed:
             removed speedway.xml
         menu/
             mainmenu.xml
-                added a back button
                 renamed race button
                 removed weekend
                 removed player
@@ -487,6 +484,7 @@ Changed:
                 removed controls menu
             optionsmenu.xml
                 removed unused menus
+                added config menu
             creditsmenu.xml
                 added new section
             removed playerconfig.xml

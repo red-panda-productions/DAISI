@@ -19,8 +19,8 @@
 
 #include <tgfclient.h>
 
-#include <racescreens.h>
-#include <controlconfig.h>
+
+
 
 #include "ConfigEnums.h"
 #include "mainmenu.h"
@@ -28,26 +28,15 @@
 #include "optionsmenu.h"
 #include "creditsmenu.h"
 #include "DataSelectionMenu.h"
-#include "ConfigEnums.h"
+#include "ResearcherMenu.h"
 
 static void *MenuHandle = 0;
 
-// SIMULATED DRIVING ASSISTANCE: renamed from onPlayerConfigMenuActivate
+// SIMULATED DRIVING ASSITANCE: changed from race initialization to researcher menu initialization
 static void
-onControlMenuActivate(void * /* dummy */)
+onResearcherSelectMenuActivate(void * /* dummy */)
 {
-    /* Here, we need to call OptionOptionInit each time the firing button
-       is pressed, and not only once at the Main menu initialization,
-       because the previous menu has to be saved (ESC, Back) and because it can be this menu,
-       as well as the Raceman menu */
-       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
-    GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
-}
-
-static void
-onRaceSelectMenuActivate(void * /* dummy */)
-{
-    GfuiScreenActivate(RmRaceSelectInit(MenuHandle));
+    GfuiScreenActivate(ResearcherMenuInit(MenuHandle));
 }
 
 //static void
@@ -62,12 +51,7 @@ onOptionsMenuActivate(void * /* dummy */)
     GfuiScreenActivate(OptionsMenuInit(MenuHandle));
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added GoBack function
-/// @brief Activates the dataSelectionMenu screen
-static void GoBack(void* /* dummy */)
-{
-    GfuiScreenActivate(DataSelectionMenuInit(MenuHandle));
-}
+
 
 static void
 onCreditsMenuActivate(void * /* dummy */)
@@ -123,15 +107,11 @@ MainMenuInit(bool SupportsHumanDrivers)
 
     //Add buttons and create based on xml
     // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onRaceSelectMenuActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onResearcherSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
-	if (SupportsHumanDrivers)
-		GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "configure", NULL, onControlMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "credits", NULL, onCreditsMenuActivate);
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: added back button
-    GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "back", nullptr, GoBack);
 
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "quit", NULL, onExitMenuActivate);
 
