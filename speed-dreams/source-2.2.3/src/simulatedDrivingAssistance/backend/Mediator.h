@@ -17,6 +17,9 @@ public:
     void RaceStop();
     bool TimeOut();
 
+    void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
+    tDatabaseSettings GetDatabaseSettings();
+    bool CheckConnection(DatabaseSettings p_dbSettings);
     void SetAllowedActions(tAllowedActions p_allowedActions);
     void SetIndicatorSettings(tIndicator p_indicators);
     void SetInterventionType(InterventionType p_type);
@@ -34,6 +37,8 @@ public:
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void SetSaveRaceToDatabase(bool p_saveToDatabase);
     void SetBlackBoxFilePath(const char* p_filePath);
+    void SetEnvironmentFilePath(const char* p_filePath);
+    const char* GetEnvironmentFilePath();
 
     void SetReplayFolder(const filesystem::path& p_replayFolder);
     const filesystem::path& GetReplayFolder() const;
@@ -105,6 +110,7 @@ private:
     DecisionMaker m_decisionMaker;
 
     unsigned long m_tickCount = 0;
+    tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;
 

@@ -5,7 +5,7 @@
 #include <SDL2/SDL_main.h>
 #include "../rppUtils/RppUtils.hpp"
 #include "IndicatorConfig.h"
-
+#include "SQLDatabaseStorage.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -31,6 +31,8 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
+    template void Mediator<type>::SetEnvironmentFilePath(const char* p_filePath);                                                                       \
+    template const char* Mediator<type>::GetEnvironmentFilePath();                                                                                      \
     template void Mediator<type>::SetBlackBoxSyncOption(bool p_sync);                                                                                   \
     template void Mediator<type>::SetThresholdSettings(tDecisionThresholds p_thresholds);                                                               \
     template void Mediator<type>::DriveTick(tCarElt* p_car, tSituation* p_situation);                                                                   \
@@ -39,6 +41,9 @@ namespace filesystem = std::experimental::filesystem;
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::SetSaveRaceToDatabase(bool p_saveToDatabase);                                                                         \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template void Mediator<type>::SetDatabaseSettings(tDatabaseSettings p_dbSettings);                                                                  \
+    template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
+    template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
     template bool Mediator<type>::TimeOut();                                                                                                            \
     template Mediator<type>* Mediator<type>::GetInstance();
 
@@ -128,6 +133,22 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetBlackBoxFilePath(const char* p_filePath)
 {
     m_decisionMaker.Config.SetBlackBoxFilePath(p_filePath);
+}
+
+/// @brief            Sets the filepath for the environment descriptor xml
+/// @param p_filePath A const char* representing the filepath of the environment descriptor xml
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetEnvironmentFilePath(const char* p_filePath)
+{
+    m_decisionMaker.Config.SetEnvironmentFilePath(p_filePath);
+}
+
+/// @brief Gets the filepath for the environment descriptor xml
+/// @return A const char* representing the filepath of the environment descriptor xml
+template <typename DecisionMaker>
+const char* Mediator<DecisionMaker>::GetEnvironmentFilePath()
+{
+    return m_decisionMaker.Config.GetEnvironmentFilePath();
 }
 
 /// @brief        Sets the sync option of the black box
@@ -267,6 +288,32 @@ void Mediator<DecisionMaker>::RaceStop()
     bool saveToDatabase = m_decisionMaker.Config.GetSaveToDatabaseCheck();
     m_decisionMaker.RaceStop(saveToDatabase);
     m_inRace = false;
+}
+
+/// @brief            Sets the database connection settings for the database server
+/// @param p_dbSettings The settings made in the DatabaseSettingsMenu
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetDatabaseSettings(tDatabaseSettings p_dbSettings)
+{
+    m_dbSettings = p_dbSettings;
+}
+
+/// @brief  Gets the database connection settings
+/// @return The database connection settings
+template <typename DecisionMaker>
+tDatabaseSettings Mediator<DecisionMaker>::GetDatabaseSettings()
+{
+    return m_dbSettings;
+}
+
+/// @brief  Gets the database connection settings
+/// @return The database connection settings
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::CheckConnection(DatabaseSettings p_dbSettings)
+{
+    SQLDatabaseStorage test;
+    bool connectable = test.OpenDatabase(p_dbSettings);
+    return connectable;
 }
 
 /// @brief                  Tells the decionmaker that the experiment data should be saved or not.

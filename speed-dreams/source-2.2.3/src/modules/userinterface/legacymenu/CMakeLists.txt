@@ -1,12 +1,29 @@
 INCLUDE(../../../../cmake/macros.cmake)
 
 SET(MS mainscreens)
-# SIMULATED DRIVING ASSISTANCE CHANGE: added InterventionMenu.h and .cpp and  DataSelectionMenu.h and .cpp and DataCompressionMenu.h and .cpp
-SET(MAINSCREENS_SOURCES ${MS}/splash.cpp ${MS}/mainmenu.cpp ${MS}/ResearcherMenu.cpp ${MS}/DataSelectionMenu.cpp
-                        ${MS}/optionsmenu.cpp ${MS}/creditsmenu.cpp ${MS}/exitmenu.cpp ${MS}/DeveloperMenu.cpp
+# SIMULATED DRIVING ASSISTANCE CHANGE: added InterventionMenu.h and .cpp, DataSelectionMenu.h and .cpp and DatabaseSettingsMenu.h and .cpp
+SET(MAINSCREENS_SOURCES ${MS}/splash.cpp
+                        ${MS}/mainmenu.cpp
+                        ${MS}/ResearcherMenu.cpp
+                        ${MS}/DataSelectionMenu.cpp
+                        ${MS}/optionsmenu.cpp
+                        ${MS}/creditsmenu.cpp
+                        ${MS}/exitmenu.cpp
+                        ${MS}/DeveloperMenu.cpp
+                        ${MS}/DatabaseSettingsMenu.cpp
+                        ${MS}/DatabaseConnectionManager.cpp
                         ${MS}/DataCompressionMenu.cpp)
-SET(MAINSCREENS_HEADERS ${MS}/splash.h ${MS}/mainmenu.h ${MS}/ResearcherMenu.h ${MS}/DataSelectionMenu.h
-                        ${MS}/optionsmenu.h ${MS}/creditsmenu.h ${MS}/exitmenu.h ${MS}/DeveloperMenu.h
+
+SET(MAINSCREENS_HEADERS ${MS}/splash.h
+                        ${MS}/mainmenu.h
+                        ${MS}/ResearcherMenu.h
+                        ${MS}/DataSelectionMenu.h
+                        ${MS}/optionsmenu.h
+                        ${MS}/creditsmenu.h
+                        ${MS}/exitmenu.h
+                        ${MS}/DeveloperMenu.h
+                        ${MS}/DatabaseSettingsMenu.h
+                        ${MS}/DatabaseConnectionManager.h
                         ${MS}/DataCompressionMenu.h)
 
 IF(MSVC)
@@ -31,20 +48,17 @@ IF(OPTION_SDL_FORCEFEEDBACK)
 ENDIF(OPTION_SDL_FORCEFEEDBACK)
 
 SET(RS racescreens)
-SET(RACESCREENS_SOURCES ${RS}/raceselectmenu.cpp
-                        #${RS}/raceweekendmenu.cpp
-                        ${RS}/racemanmenu.cpp ${RS}/fileselect.cpp
-                        ${RS}/raceconfigstate.cpp
-                        ${RS}/trackselect.cpp ${RS}/driverselect.cpp ${RS}/garagemenu.cpp
-                        ${RS}/raceparamsmenu.cpp ${RS}/carsetupmenu.cpp
-                        ${RS}/raceloadingmenu.cpp ${RS}/racerunningmenus.cpp
+SET(RACESCREENS_SOURCES ${RS}/raceloadingmenu.cpp ${RS}/racerunningmenus.cpp
                         ${RS}/raceoptimizationmenu.cpp
-                        ${RS}/racestopmenu.cpp ${RS}/racestartmenu.cpp ${RS}/racepitmenu.cpp
-                        ${RS}/racenexteventmenu.cpp ${RS}/EndExperimentMenu.cpp
+                        ${RS}/racestopmenu.cpp ${RS}/racestartmenu.cpp
+                        ${RS}/racepitmenu.cpp
+                        ${RS}/trackselect.cpp
+                        ${RS}/racenexteventmenu.cpp
+                        ${RS}/EndExperimentMenu.cpp
                         ${RS}/SaveMenu.cpp ${RS}/ConfirmationMenu.cpp)
 
 
-SET(RACESCREENS_HEADERS ${RS}/racescreens.h ${RS}/garagemenu.h ${RS}/carsetupmenu.h) #${RS}/raceweekendscreens.h)
+SET(RACESCREENS_HEADERS ${RS}/racescreens.h)
 
 
 SET(LEGACYMENU_SOURCES ${MAINSCREENS_SOURCES}

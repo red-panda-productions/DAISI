@@ -59,6 +59,7 @@
 #include <playerpref.h>
 #include <car.h>
 #include "Mediator.h"
+#include "IndicatorConfig.h"
 
 
 #include "humandriver.h"
@@ -147,7 +148,8 @@ typedef struct HumanContext
 } tHumanContext;
 
 static const int FuelReserve = 3;
-static const tdble MaxFuelPerMeter = 0.0008;	// [kg/m] fuel consumption.
+// SIMULATED DRIVING ASSISTANCE: changed the MaxFuelPerMeter value
+static const tdble MaxFuelPerMeter = 0;	// [kg/m] fuel consumption.
 
 static void updateKeys(void);
 static void SetFuelAtRaceStart(tTrack *track, void *carHandle,
@@ -618,8 +620,10 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         tParticipantControl participantControlSettings = mediator->GetPControlSettings();
         int maxTime = mediator->GetMaxTime();
         tAllowedActions allowedActions = mediator->GetAllowedActions();
+        tDecisionThresholds thresholds = mediator->GetThresholdSettings();
 
-        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, maxTime, allowedActions);
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, 
+            participantControlSettings, maxTime, allowedActions, thresholds);
     }
     const int idx = index - 1;
 
@@ -1075,7 +1079,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle steering cmd input if the participant is allowed to.
-    if (SMediator::GetInstance()->GetPControlSettings().ControlSteer)
+    // Do not let the human control the car when the AI is in full control
+    if (SMediator::GetInstance()->GetPControlSettings().ControlSteer && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_LEFTSTEER].type)
         {
@@ -1442,7 +1447,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle brake cmd input if the participant is allowed to.
-    if (SMediator::GetInstance()->GetPControlSettings().ControlBrake)
+    // Do not let the human control the car when the AI is in full control
+    if (SMediator::GetInstance()->GetPControlSettings().ControlBrake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_BRAKE].type)
         {
@@ -1551,7 +1557,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle throttle cmd input if the participant is allowed to.
-    if (SMediator::GetInstance()->GetPControlSettings().ControlAccel)
+    // Do not let the human control the car when the AI is in full control
+    if (SMediator::GetInstance()->GetPControlSettings().ControlAccel && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
     {
         switch (cmd[CMD_THROTTLE].type)
         {
@@ -1782,6 +1789,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1)))
     {
         InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+        IndicatorConfig::GetInstance()->ResetActiveIndicatorsToNeutral();
         SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
         m_prevIntervention = currentType;
     }
@@ -2311,8 +2319,9 @@ static void SetFuelAtRaceStart(tTrack* track, void *carHandle, void **carParmHan
         fuel_requested = initial_fuel;
     } else {
         // We must load and calculate parameters.
+        // SIMULATED DRIVING ASSISTANCE: changed the fuel_const_factor value
         const tdble fuel_cons_factor =
-            GfParmGetNum(*carParmHandle, SECT_ENGINE, PRM_FUELCONS, NULL, 1.0f);
+            0;
         tdble fuel_per_lap = track->length * MaxFuelPerMeter * fuel_cons_factor;
         tdble fuel_for_race = fuel_per_lap * (s->_totLaps + 1.0f);// + FuelReserve;
         // aimed at timed sessions:
