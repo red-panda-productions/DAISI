@@ -308,7 +308,30 @@
             <attstr name="tip" val="Accept and save changes"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="550"/>
-            <attnum name="y" val="40"/>
+            <attnum name="y" val="41"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Back button -->
+        <section name="BackButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Back"/>
+            <attstr name="tip" val="Go back to main menu"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="40"/>
+            <attnum name="y" val="41"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>

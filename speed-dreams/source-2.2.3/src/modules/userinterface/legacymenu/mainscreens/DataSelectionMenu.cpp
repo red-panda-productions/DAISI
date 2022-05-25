@@ -6,6 +6,9 @@
 #include "DataCompressionMenu.h"
 #include "ResearcherMenu.h"
 #include <DatabaseSettingsMenu.h>
+#include <racescreens.h>
+#include <racemanagers.h>
+#include <string>
 
 #include "DatabaseConnectionManager.h"
 
@@ -17,6 +20,8 @@
 #define PRM_DATABASE_STATUS "DatabaseStatusLabel"
 
 #define PRM_COMP "CompButton"
+
+#define RACE_MANAGER_NAME "quickrace"
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
@@ -140,8 +145,34 @@ static void SaveSettingsToDisk()
     GfParmReleaseHandle(readParam);
 }
 
-/// @brief Configures the SDAConfig with the options selected on this menu
-static void SaveSettings(void* /* dummy */)
+/// @brief Starts the raceEngine according to legacymenu.cpp::startRace
+static void StartRaceEngine()
+{
+    // get the racemanager and run it if there's such a race manager.
+    GfRaceManager* RaceManager = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
+    if (RaceManager)
+    {
+        // Initialize the race engine.
+        LmRaceEngine().reset();
+
+        // Give the selected race manager to the race engine.
+        LmRaceEngine().selectRaceman(RaceManager);
+
+        // Configure the new race (but don't enter the config. menu tree).
+        LmRaceEngine().configureRace(/* bInteractive */ false);
+
+        // Start the race engine state automaton
+        LmRaceEngine().startNewRace();
+    }
+    else
+    {
+        GfLogError("No such race type '%s'\n", RACE_MANAGER_NAME);
+        GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
+    }
+}
+/// @brief  Configures the SDAConfig with the options selected on this menu
+///         and starts the race
+static void StartExperiment(void* /* dummy */)
 {
     // Add the functionality of the function here
     SMediator::GetInstance()->SetDataCollectionSettings(m_dataToStore);
@@ -151,8 +182,7 @@ static void SaveSettings(void* /* dummy */)
     // Make sure data compression screen is also saving its settings
     ConfigureDataCompressionSettings();
 
-    // Go to the main screen
-    GfuiScreenActivate(s_nextHandle);
+    StartRaceEngine();
 }
 
 /// @brief Returns to the researcher menu screen
@@ -179,7 +209,6 @@ void* DataSelectionMenuInit(void* p_nextMenu)
 
     s_scrHandle = GfuiScreenCreate((float*)nullptr, nullptr, OnActivate,
                                    nullptr, (tfuiCallback) nullptr, 1);
-    s_nextHandle = p_nextMenu;
 
     DataCompressionMenuInit(s_scrHandle);
 
@@ -188,8 +217,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // ApplyButton, Back-button and Database-button controls
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    // ApplyButton and Back-button controls
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "StartButton", s_scrHandle, StartExperiment);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "DatabaseButton", nullptr, DatabaseSettingsMenuActivate);
 
