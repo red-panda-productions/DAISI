@@ -22,8 +22,14 @@ public:
 
         VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);
     }
-    void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override
+    bool StoreData(const std::experimental::filesystem::path& p_inputFilePath) override
     {
+        InputFilePath = p_inputFilePath;
+
+        const auto path = new std::experimental::filesystem::path(p_inputFilePath);
+
+        return VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);
+
     }
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,

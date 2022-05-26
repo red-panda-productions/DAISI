@@ -52,14 +52,14 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 
 /// @brief Creates a database and stores data from input file into the correct database structure
 /// @param p_inputFilePath path and name of input file
-void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_inputFilePath)
+bool SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_inputFilePath)
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
     if (inputFile.fail())
     {
         std::cerr << "[MYSQL] internal dberror: Could not open input file" << std::endl;
-        return;
+        return false;
     }
 
     try
@@ -75,6 +75,8 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
     }
 
     inputFile.close();
+
+    return true;
 }
 
 /// @brief  gets the keys for secure database connection in the data/certificates folder
