@@ -1,11 +1,12 @@
 #pragma once
-
 #include <fstream>
 #include "BlackBoxData.h"
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
 #include "../rppUtils/Random.hpp"
+
+#include <experimental/filesystem>
 
 /// @brief the max size of the array in which data is stored
 #define COMPRESSION_LIMIT 50

@@ -70,7 +70,9 @@ ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
-SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+IF(WIN32)
+    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+ENDIF(WIN32)
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)

@@ -1,11 +1,11 @@
 #pragma once
+#define MAX_PATH_SIZE 260
 
+#ifdef WIN32
 // includes that are necessary for windows
 #include <shobjidl.h>  // For Windows COM interface
 #include <locale>
 #include <codecvt>
-
-#define MAX_PATH_SIZE 260
 
 /// @brief              Releases a file dialog, deletes the filterSpec array and uninitializes the COM interface
 /// @param p_fileDialog The dialog to release
@@ -175,3 +175,20 @@ inline void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
     p_shellItem->Release();
     Release(p_fileDialog);
 }
+#elifdef __linux__
+
+/// @brief            Opens a file dialog for the user to select a file, limiting the files shown to the provided parameters
+/// @param p_buf      A buffer to write the filename to
+/// @param p_err      A buffer to write an error to (if applicable)
+/// @param p_folder   Whether to select files (true) or folders (false)
+/// @param p_names    The names of the types of file to select
+/// @param p_exts     The extension filters of the types of file to select
+///	@param p_extCount The amount of extensions/names provided
+/// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
+inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
+{
+    FILE *f = popen("nautilus --file-selection","r");
+    fgets(p_buf, MAX_PATH_SIZE, f);
+}
+
+#endif

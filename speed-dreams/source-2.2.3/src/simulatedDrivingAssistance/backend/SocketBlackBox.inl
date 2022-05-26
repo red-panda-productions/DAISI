@@ -36,11 +36,11 @@
     if ((p_stmt) != IPCLIB_SUCCEED)        \
     {                                      \
         std::cerr << (p_msg) << std::endl; \
-        throw std::exception(p_msg);       \
+        THROW_RPP_EXCEPTION(p_msg);       \
     }
 
 template <class BlackBoxData, class PointerManager>
-SocketBlackBox<BlackBoxData, PointerManager>::SocketBlackBox(PCWSTR p_ip, int p_port)
+SocketBlackBox<BlackBoxData, PointerManager>::SocketBlackBox(IPC_IP_TYPE p_ip, int p_port)
     : m_server(p_ip, p_port)
 {
 }
@@ -76,7 +76,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
 
     m_server.AwaitClientConnection();
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
-    if (std::string(m_buffer) != "AI ACTIVE") throw std::exception("Black Box send wrong message: AI ACTIVE expected");
+    if (std::string(m_buffer) != "AI ACTIVE") THROW_RPP_EXCEPTION("Black Box send wrong message: AI ACTIVE expected");
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
@@ -85,7 +85,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     std::vector<std::string> orderVec;
     msg->convert(orderVec);
     int i = 0;
-    if (orderVec[i] != "ACTIONORDER") throw std::exception("Black box send wrong message: ACTIONORDER expected");
+    if (orderVec[i] != "ACTIONORDER") THROW_RPP_EXCEPTION("Black box send wrong message: ACTIONORDER expected");
     i++;
     while (i < orderVec.size())
     {
@@ -99,7 +99,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
-    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Black box send wrong message: OK expected");
+    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') THROW_RPP_EXCEPTION("Black box send wrong message: OK expected");
 
     DecisionTuple decisionTuple;
     for (int i = 0; i < p_amountOfTests; i++)
@@ -135,7 +135,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     m_server.ReceiveDataAsync();
     m_server.SendData("STOP", 4);
     m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
-    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') throw std::exception("Client sent wrong reply");
+    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') THROW_RPP_EXCEPTION("Client sent wrong reply");
     m_server.CloseServer();
     VariablesToReceive.clear();
     m_variableDecisionMap.clear();
@@ -174,9 +174,9 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
     std::vector<std::string> resultVec;
     obj.convert(resultVec);
 
-    if (VariablesToReceive.empty()) throw std::exception("No variables to receive");
+    if (VariablesToReceive.empty()) THROW_RPP_EXCEPTION("No variables to receive");
     if (VariablesToReceive.size() != resultVec.size())
-        throw std::exception("Number of variables received does not match number of expected variables to receive");
+        THROW_RPP_EXCEPTION("Number of variables received does not match number of expected variables to receive");
     for (int i = 0; i < VariablesToReceive.size(); i++)
     {
         m_variableDecisionMap.at(VariablesToReceive[i])(resultVec.at(i), p_decisionTuple);

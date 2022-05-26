@@ -45,7 +45,9 @@ ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend backend)
 
 ADD_PLIB_LIBRARY(frontendUnitTests)
 
-SD_INSTALL_CUSTOM_3RDPARTY(frontendUnitTests)
+IF(WIN32)
+    SD_INSTALL_CUSTOM_3RDPARTY(frontendUnitTests)
+ENDIF(WIN32)
 
 include(GoogleTest)
 gtest_discover_tests(frontendUnitTests DISCOVERY_TIMEOUT 600)

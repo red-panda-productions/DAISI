@@ -193,7 +193,7 @@ void Recorder::WriteRecording(const float* p_input,
 {
     if (p_useCompression && p_prevInput == nullptr)
     {
-        throw std::exception("Compression is enabled but no previous input is given");
+        THROW_RPP_EXCEPTION("Compression is enabled but no previous input is given");
     }
 
     // doesn't write if the input is the same as the previous time

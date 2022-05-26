@@ -3,15 +3,34 @@
 #include <fstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
-#include <windows.h>
 #include <tgf.h>
-
 #include "Random.hpp"
+#include <experimental/filesystem>
+
+#ifdef WIN32
+#include <windows.h>
+#define OS_SEPARATOR "\\"
+#define OS_SEPARATOR_CHAR '\\'
+#define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
+#elifdef __linux__
+#include <sys/stat.h>
+#include <unistd.h>
+#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest,p_src,p_len)
+#define strcat_s(p_dest, p_len, p_src) strncat(p_dest,p_src,p_len)
+#define OS_SEPARATOR "/"
+#define OS_SEPARATOR_CHAR '/'
+#define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#define PROCESS_INFORMATION pid_t
+#define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
+#endif
+
+
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
 #define ROOT_FOLDER "source-2.2.3"
+#define PATH_SIZE 256
 
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
@@ -67,45 +86,8 @@ inline float CharArrToFloat(const char* p_c)
     return val;
 }
 
-/// @brief                    Finds a file in a directory
-/// @param  p_knownPathToFile The known path to the file
-/// @param  p_fileToFind      The filename
-/// @return                   Whether it was found or not
-inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string& p_fileToFind)
-{
-    char cwd[256];
 
-    getcwd(cwd, 256);
 
-    while (cwd[0] != '\0')
-    {
-        char directoryPath[256];
-
-        strcpy_s(directoryPath, cwd);
-        strcat_s(directoryPath, "\\");
-        strcat_s(directoryPath, p_knownPathToFile.c_str());
-
-        char filePath[256];
-        strcpy_s(filePath, directoryPath);
-        strcat_s(filePath, "\\");
-        strcat_s(filePath, p_fileToFind.c_str());
-
-        std::cout << "current path: " << filePath << std::endl;
-
-        struct stat info = {};
-        if (stat(filePath, &info) == 0)
-        {
-            p_knownPathToFile = directoryPath;
-            return true;
-        }
-
-        size_t i = strlen(cwd);
-        while (cwd[i] != '\\' && i != 0) i--;
-        cwd[i] = '\0';
-    }
-
-    return false;
-}
 
 /// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
 /// @returns The filepath to the singletons folder
@@ -128,6 +110,47 @@ inline int DeleteSingletonsFolder()
         return errorCode.value();
     }
     return 0;
+}
+
+/// @brief                    Finds a file in a directory
+/// @param  p_knownPathToFile The known path to the file
+/// @param  p_fileToFind      The filename
+/// @return                   Whether it was found or not
+inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string& p_fileToFind)
+{
+    char cwd[PATH_SIZE];
+
+    getcwd(cwd, PATH_SIZE);
+
+    while (cwd[0] != '\0')
+    {
+        char directoryPath[PATH_SIZE];
+
+        strcpy_s(directoryPath, PATH_SIZE, cwd);
+
+        strcat_s(directoryPath, PATH_SIZE, OS_SEPARATOR);
+        strcat_s(directoryPath, PATH_SIZE, p_knownPathToFile.c_str());
+
+        char filePath[PATH_SIZE];
+        strcpy_s(filePath, PATH_SIZE, directoryPath);
+        strcat_s(filePath, PATH_SIZE, OS_SEPARATOR);
+        strcat_s(filePath, PATH_SIZE, p_fileToFind.c_str());
+
+        std::cout << "current path: " << filePath << std::endl;
+
+        struct stat info = {};
+        if (stat(filePath, &info) == 0)
+        {
+            p_knownPathToFile = directoryPath;
+            return true;
+        }
+
+        size_t i = strlen(cwd);
+        while (cwd[i] != OS_SEPARATOR_CHAR && i != 0) i--;
+        cwd[i] = '\0';
+    }
+
+    return false;
 }
 
 /// @brief  Makes sure there is an empty singletons folder to be used by Singleton classes.
@@ -159,6 +182,8 @@ inline bool SetupSingletonsFolder()
 
     return true;
 }
+
+#ifdef WIN32
 
 /// @brief Start running a separate executable with no command-line arguments
 ///        Should either be an absolute path or relative to the current directory.
@@ -225,15 +250,6 @@ inline void ExecuteCLI(const char* p_command, bool p_showCommand)
     WinExec(p_command, p_showCommand);
 }
 
-/// @brief          Returns true with certain chance
-/// @param p_rnd    The random generator reference to use
-/// @param p_chance The chance to succeed [0-100]
-/// @return         Boolean indicating succes or not.
-inline bool SucceedWithChance(Random& p_rnd, int p_chance)
-{
-    return p_rnd.NextInt(0, 100) < p_chance;
-}
-
 /// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
 /// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
@@ -260,6 +276,120 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
     }
 
     return true;
+}
+#elifdef __linux__
+
+
+/******************************************************************************
+*   CreateProcess
+*
+*   Copyright (C) 2010 Andrew Smith
+*
+*   This program is free software: you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation, version 2 of the License only, not
+*   any earlier or later version.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+pid_t CreateProcess(const char* p_command, const char* p_parametersIn, const char* p_workingDirectory = nullptr)
+{
+    const int maxNumArgs = 1024;
+    const char* args[maxNumArgs];
+    char* parameters = nullptr;
+
+    memset(args, 0, (sizeof(char*) * maxNumArgs));
+    args[0] = p_command;
+
+    if(p_parametersIn != nullptr)
+    {
+        parameters = strdup(p_parametersIn);
+        int strLen = strlen(parameters);
+
+        int numParameters = 1;
+        bool expectNextParam = true;
+        int i;
+        for(i = 0; i < strLen; i++)
+        {
+            if(parameters[i] == ' ' || parameters[i] == '\t' ||
+               parameters[i] == '\n')
+            {
+                expectNextParam = true;
+                parameters[i] = '\0';
+            }
+            else if(expectNextParam)
+            {
+                args[numParameters] = &(parameters[i]);
+                numParameters++;
+                expectNextParam = false;
+            }
+        }
+    }
+
+    pid_t pid = fork();
+    if(pid == 0)
+    {
+        if(p_workingDirectory != nullptr)
+        {
+            chdir(p_workingDirectory);
+        }
+        execvp(p_command, (char**)args);
+        _exit(1);
+    }
+
+    if(parameters != nullptr)
+        free(parameters);
+
+    return pid;
+}
+
+
+/// @brief Start running a separate executable with no command-line arguments
+///        Should either be an absolute path or relative to the current directory.
+///        Path must include file extension; no default extension is assumed.
+///        Path is assumed to refer to an existing executable file
+/// @param p_executablePath The path to the executable.
+/// @param p_args           The arguments for the executable
+inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
+{
+    CreateProcess(p_executablePath.c_str(), p_args);
+}
+
+/// @brief                       Starts a process from which you can also get the process handle
+/// @param  p_executablePath     The path to the executable
+/// @param  p_args               The arguments for the executable
+/// @param  p_processInformation The information about the process, this contains the handles
+inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
+{
+    p_processInformation = CreateProcess(p_executablePath.c_str(), p_args, p_workingDirectory.c_str());
+}
+
+/// @brief                Execute a command in the CLI
+/// @param  p_command     The command
+/// @param  p_showCommand Whether to show the output of the command
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    system(p_command);
+}
+
+/// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
+/// @param p_sdaFolder Reference to the variable to store the path in.
+/// This variable will contain the path to the SDA folder after running this function.
+/// @return true if the folder was successfully found
+inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
+{
+    return false;
+}
+#endif
+
+/// @brief          Returns true with certain chance
+/// @param p_rnd    The random generator reference to use
+/// @param p_chance The chance to succeed [0-100]
+/// @return         Boolean indicating succes or not.
+inline bool SucceedWithChance(Random& p_rnd, int p_chance)
+{
+    return p_rnd.NextInt(0, 100) < p_chance;
 }
 
 #define BOOL_TRUE_STRING  "true"

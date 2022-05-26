@@ -45,7 +45,9 @@ ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient)
 
 ADD_PLIB_LIBRARY(rppUtilsTests)
 
-SD_INSTALL_CUSTOM_3RDPARTY(rppUtilsTests)
+IF(WIN32)
+    SD_INSTALL_CUSTOM_3RDPARTY(rppUtilsTests)
+ENDIF(WIN32)
 
 include(GoogleTest)
 gtest_discover_tests(rppUtilsTests DISCOVERY_TIMEOUT 600)
