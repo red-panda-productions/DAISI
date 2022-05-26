@@ -36,6 +36,7 @@
 #include "Recorder.h"
 #include "Mediator.h"
 #include "../../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "tracks.h"
 
 namespace filesystem = std::experimental::filesystem;
 
@@ -92,69 +93,82 @@ TextOnlyUI::TextOnlyUI(const std::string& strShLibName, void* hShLibHandle)
 }
 
 // SIMULATED DRIVING ASSISTANCE: Add LoadReplayConfiguration()
-/// @brief Load the replay configuration, for example set the track.
+/// @brief              Load the replay configuration from a file into the mediator.
 /// @param p_selRaceMan The pointer that should point to the replay race manager.
-/// @return true if the replay configuration was loaded successfully
-bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan) {
+/// @return             true if the replay configuration was loaded successfully
+bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
+{
     std::string replayFolder;
-    if(!GfApp().hasOption("replay", replayFolder)) {
+    if (!GfApp().hasOption("replay", replayFolder))
+    {
         GfLogError("Either 'startrace' or 'replay' should be defined when 'textonly' is defined.\n");
         return false;
     }
 
-    if(!Recorder::ValidateAndUpdateRecording(replayFolder)) {
+    if (!Recorder::ValidateAndUpdateRecording(replayFolder))
+    {
         GfLogError("Failed to validate and/or update recording %s\n", replayFolder.c_str());
         return false;
     }
 
-    SMediator::GetInstance()->SetReplayFolder(replayFolder);
+    SMediator* mediator = SMediator::GetInstance();
+
+    mediator->SetReplayFolder(replayFolder);
 
     filesystem::path recordingSettingsPath = replayFolder;
     recordingSettingsPath.append(RUN_SETTINGS_FILE_NAME);
-
     std::string path = recordingSettingsPath.string();
     auto replaySettingsHandle = GfParmReadFile(path.c_str(), 0, true);
+
+    // Recreate the path of the environment descriptor file, which is always at "tracks/[category]/[name]/[name].xml"
     const char* trackCategory = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
     const char* trackName = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+    std::stringstream trackFilename("tracks/");
+    trackFilename << trackCategory << "/" << trackName << "/" << trackName << ".xml";
+    mediator->SetEnvironmentFilePath(trackFilename.str().c_str());
 
     p_selRaceMan = GfRaceManagers::self()->getRaceManager("replay");
-    auto handle = p_selRaceMan->getDescriptorHandle();
 
-    GfParmSetStr(handle, "Tracks/1", KEY_CATEGORY, trackCategory);
-    GfParmSetStr(handle, "Tracks/1", KEY_NAME, trackName);
-
-    SMediator::GetInstance()->SetBlackBoxFilePath("");
+    mediator->SetBlackBoxFilePath("");
 
     tDataToStore dataToStore{};
     dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = dataToStore.MetaData = false;
-    SMediator::GetInstance()->SetDataCollectionSettings(dataToStore);
+    mediator->SetDataCollectionSettings(dataToStore);
 
     tIndicator indicators{};
     indicators.Audio = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, "false"));
     indicators.Icon = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, "false"));
     indicators.Text = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_TEXT, "false"));
-    SMediator::GetInstance()->SetIndicatorSettings(indicators);
+    mediator->SetIndicatorSettings(indicators);
 
     InterventionType interventionType = static_cast<InterventionType>(GfParmGetNum(replaySettingsHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, INTERVENTION_TYPE_NO_SIGNALS));
-    SMediator::GetInstance()->SetInterventionType(interventionType);
+    mediator->SetInterventionType(interventionType);
 
     int maxTime = static_cast<int>(GfParmGetNum(replaySettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, -1));
-    SMediator::GetInstance()->SetMaxTime(maxTime);
+    mediator->SetMaxTime(maxTime);
 
     tParticipantControl participantControl{};
-    participantControl.ControlGas = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
+    participantControl.ControlSteer = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, "false"));
+    participantControl.ControlAccel = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
+    participantControl.ControlBrake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, "false"));
     participantControl.ControlInterventionToggle = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, "false"));
-    participantControl.ControlSteering = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, "false"));
     participantControl.ForceFeedback = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, "false"));
-    SMediator::GetInstance()->SetPControlSettings(participantControl);
+    mediator->SetPControlSettings(participantControl);
 
     tAllowedActions allowedActions{};
     allowedActions.Steer = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, "false"));
     allowedActions.Accelerate = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, "false"));
     allowedActions.Brake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, "false"));
-    SMediator::GetInstance()->SetAllowedActions(allowedActions);
+    mediator->SetAllowedActions(allowedActions);
 
-    SMediator::GetInstance()->SetBlackBoxSyncOption(false);
+    tDecisionThresholds decisionThresholds{};
+    decisionThresholds.Accel = GfParmGetNum(replaySettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, STANDARD_THRESHOLD_ACCEL);
+    decisionThresholds.Brake = GfParmGetNum(replaySettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, STANDARD_THRESHOLD_BRAKE);
+    decisionThresholds.Steer = GfParmGetNum(replaySettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, STANDARD_THRESHOLD_STEER);
+    mediator->SetThresholdSettings(decisionThresholds);
+
+    // SyncOption false = synchronous, SyncOption true = asynchronous.
+    mediator->SetBlackBoxSyncOption(false);
 
     GfParmReleaseHandle(replaySettingsHandle);
 

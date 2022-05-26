@@ -82,9 +82,12 @@ Recorder::~Recorder()
 /// @param p_indicators           The indicator settings
 /// @param p_interventionType     The intervention type settings
 /// @param p_participantControl   The participant control settings
-/// @param p_maxTime             The maximum time for the trial
+/// @param p_maxTime              The maximum time for the trial
 /// @param p_allowedActions       The allowed black box actions settings
-void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, const int p_maxTime, const tAllowedActions& p_allowedActions)
+/// @param p_thresholds           The thresholds that are used to make decisions
+void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators,
+                                const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
+                                const int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds)
 {
     using std::experimental::filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
@@ -92,6 +95,8 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
                     p_carElt->info.name);
 
     void* settingsFileHandle = GfParmReadFile(path(m_recordingDir).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_CREAT, true);
+
+    GfParmSetNum(settingsFileHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
 
     GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, BoolToString(p_indicators.Audio));
     GfParmSetStr(settingsFileHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, BoolToString(p_indicators.Icon));
@@ -102,9 +107,10 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_CATEGORY, p_track->category);
     GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_NAME, p_track->name);
 
-    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlGas));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteer));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlAccel));
+    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(p_participantControl.ControlBrake));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
-    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteering));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
 
     GfParmSetNum(settingsFileHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, (tdble)p_maxTime);
@@ -113,7 +119,9 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, BoolToString(p_allowedActions.Accelerate));
     GfParmSetStr(settingsFileHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(p_allowedActions.Brake));
 
-    GfParmSetNum(settingsFileHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
+    GfParmSetNum(settingsFileHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, p_thresholds.Accel);
+    GfParmSetNum(settingsFileHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, p_thresholds.Brake);
+    GfParmSetNum(settingsFileHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, p_thresholds.Steer);
 
     GfParmWriteFile(nullptr, settingsFileHandle, "Run Settings");
 }
@@ -236,7 +244,11 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 {
     const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
 
-    if (trackFileName == nullptr) return false;
+    if (trackFileName == nullptr)
+    {
+        GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
+        return false;
+    }
 
     void* trackHandle = GfParmReadFile(trackFileName, 0, true);
 
@@ -247,6 +259,8 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 
     if (category == nullptr || name == nullptr)
     {
+        GfLogWarning("Failed to read category or name.\n");
+
         free((void*)category);
         free((void*)name);
         return false;
@@ -292,16 +306,73 @@ void UpdateV2RecorderToV3(void* p_settingsHandle)
     GfParmSetStr(p_settingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, BoolToString(true));
 }
 
-/// @brief Validate a recording, and update it if it is an older version
+/// @brief Update a v3 recording to a v4 recording. This means:
+///  - Adding an additional partipant control options to the settings.
+/// @param p_settingsHandle Handle to the run settings file
+void UpdateV3RecorderToV4(void* p_settingsHandle)
+{
+    GfParmSetStr(p_settingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(true));
+}
+
+/// @brief Update a v4 recording to a v5 recording. This means:
+///  - Adding the intervention thresholds to the settings.
+/// @param p_settingsHandle Handle to the run settings file
+void UpdateV4RecorderToV5(void* p_settingsHandle)
+{
+    GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, STANDARD_THRESHOLD_ACCEL);
+    GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, STANDARD_THRESHOLD_BRAKE);
+    GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, STANDARD_THRESHOLD_STEER);
+}
+
+/// @brief                          Upgrades the recording from given version to the next version.
+/// @param p_currVersion            The current version of the recording to upgrade.
+/// @param p_settingsHandle         Handle to the run settings file
+/// @param p_userRecordingFile      Path to the user recordings file
+/// @param p_decisionsRecordingFile Path to the decision recordings file
+/// @param p_simulationFile         Path to the simulation file
+/// @return                         true if the upgrade succeeds, false if it fails.
+bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::path& p_userRecordingFile,
+                      filesystem::path& p_decisionsRecordingFile, filesystem::path& p_simulationFile)
+{
+    switch (p_currVersion)
+    {
+        case 0:
+            if (!UpdateV0RecorderToV1(p_settingsHandle, p_userRecordingFile, p_decisionsRecordingFile, p_simulationFile))
+            {
+                GfParmReleaseHandle(p_settingsHandle);
+                return false;
+            }
+            return true;
+        case 1:
+            UpdateV1RecorderToV2(p_settingsHandle);
+            return true;
+        case 2:
+            UpdateV2RecorderToV3(p_settingsHandle);
+            return true;
+        case 3:
+            UpdateV3RecorderToV4(p_settingsHandle);
+            return true;
+        case 4:
+            UpdateV4RecorderToV5(p_settingsHandle);
+            return true;
+        default:
+            GfLogError("There is no more possible upgrade from the current version");
+            return false;
+    }
+}
+
+/// @brief                   Validate a recording, and update it if it is an older version
 /// @param p_recordingFolder Folder of the recording to validate and update
-/// @return true if the recording contains all files and could be updated
-bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder)
+/// @param p_targetVersion   The targeted version to upgrade to, by default RECORDER_CURRENT_VERSION
+/// @return                  True if the recording contains all files and could be updated
+bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder, int p_targetVersion)
 {
     // Make sure the settings file exists
     const filesystem::path settingsFile = filesystem::path(p_recordingFolder).append(RUN_SETTINGS_FILE_NAME);
 
     if (!exists(settingsFile))
     {
+        GfLogWarning("Settings file %s doesn't exist\n", settingsFile.string().c_str());
         return false;
     }
 
@@ -310,6 +381,7 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     // If it cannot be parsed the recording is invalid
     if (settingsHandle == nullptr)
     {
+        GfLogWarning("Settings file could not be read.\n");
         return false;
     }
 
@@ -332,36 +404,22 @@ bool Recorder::ValidateAndUpdateRecording(const filesystem::path& p_recordingFol
     // Make sure all recordings exists
     if (!exists(carSettingsFile) || !exists(settingsFile) || !exists(decisionsRecordingFile) || !exists(userRecordingFile) || !exists(simulationFile))
     {
+        GfLogWarning("Missing one of the recording files.\n");
         return false;
     }
 
-    // Update version 0 to version 1 recording
-    if (version == 0)
+    // Upgrade the version to the target version.
+    for (/* version is already initialised */; version < p_targetVersion; version++)
     {
-        if (!UpdateV0RecorderToV1(settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile))
-        {
-            GfParmReleaseHandle(settingsHandle);
-            return false;
-        }
-        version++;
+        if (UpgradeRecording(version, settingsHandle, userRecordingFile, decisionsRecordingFile, simulationFile)) continue;
+
+        // If upgrading fails, release handle and exit function.
+        GfParmReleaseHandle(settingsHandle);
+        return false;
     }
 
-    // Update version 1 to version 2 recording
-    if (version == 1)
-    {
-        UpdateV1RecorderToV2(settingsHandle);
-        version++;
-    }
-
-    // Update version 2 to version 3 recording
-    if (version == 2)
-    {
-        UpdateV2RecorderToV3(settingsHandle);
-        version++;
-    }
-
-    // Set the recording to the latest version and save it
-    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, CURRENT_RECORDER_VERSION);
+    // Set the recording to the target version and save it
+    GfParmSetNum(settingsHandle, PATH_VERSION, KEY_VERSION, nullptr, static_cast<tdble>(p_targetVersion));
 
     GfParmWriteFile(settingsFile.string().c_str(), settingsHandle, "Run Settings");
     GfParmReleaseHandle(settingsHandle);

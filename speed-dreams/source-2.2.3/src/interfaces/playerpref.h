@@ -152,7 +152,7 @@
 #define HM_ATT_DASHB_DEC_MAX    "dashboard decrease max"
 
 // SIMULATED DRIVING ASSISTANCE
-#define HM_ATT_INTERV_TGGLE "intervention toggle"
+#define HM_ATT_INTERV_TGGLE "intervention-toggle"
 
 #define	HM_SECT_PREF	"Preferences"
 

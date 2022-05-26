@@ -97,11 +97,11 @@ bool LegacyMenu::backLoad()
 
 	// Pre-load the main and race select menus
     // (to be able to get back to them, even when directly starting a given race).
-    if (!RmRaceSelectInit(MainMenuInit(SupportsHumanDrivers)))
-        return false;
+
 
     // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
-    ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers)));
+    if (!ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers))))
+        return false;
 
     // Pre-load race managers, drivers, tracks, cars stuff.
     if (!GfRaceManagers::self())
@@ -117,13 +117,6 @@ bool LegacyMenu::activateMainMenu()
     return MainMenuRun() == 0;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE : added researcher menu
-/// @brief activates the ResearcherMenu
-/// @return true if successful
-bool LegacyMenu::ActivateResearcherMenu()
-{
-    return ResearcherMenuRun() == 0;
-}
 
 bool LegacyMenu::startRace()
 {
@@ -181,9 +174,7 @@ bool LegacyMenu::activate()
 	// and finally open the main menu.
 	if (strRaceToStart.empty())
 	{
-        // If not specified, simply open the splash screen, load the menus in the background
-        // SIMULATED DRIVING ASSISTANCE CHANGE: and finally open the intervention menu.
-        fnOnSplashClosed = LegacyMenu::ActivateResearcherMenu;
+        fnOnSplashClosed = LegacyMenu::activateMainMenu;
     }
 
 	// Otherwise, run the selected race.
@@ -277,7 +268,6 @@ void LegacyMenu::shutdownOptimizationScreen()
 void LegacyMenu::onRaceConfiguring()
 {
     ::RmOptimizationScreenShutdown();
-    ::RmRacemanMenu();
 }
 
 void LegacyMenu::onRaceEventInitializing()
@@ -496,6 +486,7 @@ void LegacyMenu::onRaceFinishing()
     }
 }
 
+// SIMULATED DRIVING ASSISTANCE: Made the screen go to the end of experiment screen
 bool LegacyMenu::onRaceFinished(bool bEndOfSession)
 {
     tRmInfo* pReInfo = _piRaceEngine->inData();
@@ -511,11 +502,8 @@ bool LegacyMenu::onRaceFinished(bool bEndOfSession)
         if (!_hscrReUpdateStateHook)
             _hscrReUpdateStateHook = ::RmInitReUpdateStateHook();
 
-        // This is now the "game" screen.
-        _hscrGame = _hscrReUpdateStateHook;
-
         // Display the results menu (will activate the game screen on exit).
-        ::RmShowResults(_hscrGame, _piRaceEngine->inData());
+        ::RmShowEndExperiment(RACE_FINISHED);
 
         // Tell the race engine state automaton to stop looping (enter the menu).
         return false;
@@ -536,6 +524,7 @@ void LegacyMenu::onRaceEventFinishing()
     }
 }
 
+// SIMULATED DRIVING ASSISTANT: remove showing standings
 void LegacyMenu::showStandings()
 {
     // Create the "Race Engine update state" hook if not already done.
@@ -544,9 +533,6 @@ void LegacyMenu::showStandings()
 
     // This is now the "game" screen.
     _hscrGame = _hscrReUpdateStateHook;
-
-    // Display the standings menu (will activate the game screen on exit).
-    ::RmShowStandings(_hscrGame, _piRaceEngine->inData(), 0);
 }
 
 bool LegacyMenu::onRaceEventFinished(bool bMultiEvent, bool careerNonHumanGroup)

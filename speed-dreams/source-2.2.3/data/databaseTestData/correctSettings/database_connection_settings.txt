@@ -1,6 +1,0 @@
-127.0.0.1
-3306
-SDATest
-PASSWORD
-sda_test
-false

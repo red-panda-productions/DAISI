@@ -16,6 +16,22 @@ typedef struct Indicator
     bool Text;
 } tIndicator;
 
+#define SETTINGS_NAME_LENGTH 256
+
+/// @brief The settings for the database in which the data is saved
+typedef struct DatabaseSettings
+{
+    char Username[SETTINGS_NAME_LENGTH];
+    char Password[SETTINGS_NAME_LENGTH];
+    char Address[SETTINGS_NAME_LENGTH];
+    int Port;
+    char Schema[SETTINGS_NAME_LENGTH];
+    bool UseSSL;
+    char CACertFilePath[SETTINGS_NAME_LENGTH];
+    char PublicCertFilePath[SETTINGS_NAME_LENGTH];
+    char PrivateCertFilePath[SETTINGS_NAME_LENGTH];
+} tDatabaseSettings;
+
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 
@@ -27,23 +43,62 @@ typedef unsigned int InterventionType;
 
 #define NUM_INTERVENTION_TYPES 4
 
+/// @brief the different ways a race can end
+typedef unsigned int RaceEndType;
+
+#define NORMAL_EXIT   0
+#define RACE_RESTART  1
+#define RACE_EXIT     2
+#define RACE_ABORT    3
+#define RACE_FINISHED 4
+
+/// @brief The different types of data compression that can be done
+typedef unsigned int DataCompressionType;
+
+#define COMPRESSION_NONE    0
+#define COMPRESSION_MINIMUM 1
+#define COMPRESSION_MEDIUM  2
+#define COMPRESSION_MAXIMUM 3
+#define COMPRESSION_CUSTOM  4
+
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
-#define INTERVENTION_ACTION_NONE       0
-#define INTERVENTION_ACTION_TURN_LEFT  1
-#define INTERVENTION_ACTION_TURN_RIGHT 2
-#define INTERVENTION_ACTION_BRAKE      3
-#define INTERVENTION_ACTION_ACCELERATE 4
+#define INTERVENTION_ACTION_STEER_NEUTRAL 0
+#define INTERVENTION_ACTION_STEER_LEFT    1
+#define INTERVENTION_ACTION_STEER_RIGHT   2
 
-#define NUM_INTERVENTION_ACTION 5
+#define INTERVENTION_ACTION_SPEED_NEUTRAL 3
+#define INTERVENTION_ACTION_SPEED_ACCEL   4
+#define INTERVENTION_ACTION_SPEED_BRAKE   5
+
+#define NUM_INTERVENTION_ACTION 6
+
+/// @brief The different types of intervention actions: steer, speed control
+///        Used to index the active indicators in the IndicatorConfig.
+typedef unsigned int InterventionActionType;
+
+#define INTERVENTION_ACTION_TYPE_STEER 0
+#define INTERVENTION_ACTION_TYPE_SPEED 1
+
+#define NUM_INTERVENTION_ACTION_TYPES 2
+
+// Map all intervention actions to their corresponding sub-type
+static constexpr InterventionActionType s_actionToActionType[NUM_INTERVENTION_ACTION] = {
+    INTERVENTION_ACTION_TYPE_STEER,
+    INTERVENTION_ACTION_TYPE_STEER,
+    INTERVENTION_ACTION_TYPE_STEER,
+    INTERVENTION_ACTION_TYPE_SPEED,
+    INTERVENTION_ACTION_TYPE_SPEED,
+    INTERVENTION_ACTION_TYPE_SPEED};
 
 /// @brief The different types of control the participant has
 typedef struct ParticipantControl
 {
+    bool ControlSteer;
+    bool ControlAccel;
+    bool ControlBrake;
     bool ControlInterventionToggle;
-    bool ControlGas;
-    bool ControlSteering;
 
     bool ForceFeedback;
 } tParticipantControl;
@@ -74,3 +129,15 @@ typedef struct DataToStore
     bool InterventionData;
     bool MetaData;
 } tDataToStore;
+
+/// @brief The threshold amounts for decisions. floats are values between 0 and 1.
+typedef struct DecisionThresholds
+{
+    float Accel;
+    float Brake;
+    float Steer;
+} tDecisionThresholds;
+
+#define STANDARD_THRESHOLD_ACCEL 0.9f
+#define STANDARD_THRESHOLD_BRAKE 0.9f
+#define STANDARD_THRESHOLD_STEER 0.04f

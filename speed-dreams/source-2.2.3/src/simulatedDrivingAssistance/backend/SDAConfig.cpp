@@ -100,6 +100,20 @@ char* SDAConfig::GetUserId() const
     return m_userId;
 }
 
+/// @brief           Sets the compression rate to p_compressionRate
+/// @param p_compressionRate The compression rate
+void SDAConfig::SetCompressionRate(int p_compressionRate)
+{
+    m_compressionRate = p_compressionRate;
+}
+
+/// @brief  Gets the compressionRate
+/// @return The compression rate
+int SDAConfig::GetCompressionRate() const
+{
+    return m_compressionRate;
+}
+
 /// @brief               Sets the settings for what data should be collected from the simulation
 /// @param p_dataSetting A struct consisting of booleans for selecting the data to be collected in real-time
 void SDAConfig::SetDataCollectionSettings(tDataToStore p_dataSetting)
@@ -112,6 +126,20 @@ void SDAConfig::SetDataCollectionSettings(tDataToStore p_dataSetting)
 tDataToStore SDAConfig::GetDataCollectionSetting() const
 {
     return m_dataCollectionSetting;
+}
+
+/// @brief                  Sets the boolean that determines if a experiment file will be sent to the database or not.
+/// @param p_saveToDatabase A boolean given by a button press of the user that says if they want to save the data.
+void SDAConfig::SetSaveToDatabaseCheck(bool p_saveToDatabase)
+{
+    m_saveRaceToDatabase = p_saveToDatabase;
+}
+
+/// @brief  Gets the boolean value that determines if the experimental file will be sent to the database.
+/// @return A boolean value that returns true if it should be sent to the database and false if it should not.
+bool SDAConfig::GetSaveToDatabaseCheck() const
+{
+    return m_saveRaceToDatabase;
 }
 
 /// @brief            Sets the filepath for the black box executable
@@ -127,6 +155,21 @@ void SDAConfig::SetBlackBoxFilePath(const char* p_filePath)
 const char* SDAConfig::GetBlackBoxFilePath() const
 {
     return m_blackBoxFilePath;
+}
+
+/// @brief            Sets the filepath for the environment descriptor xml
+/// @param p_filePath A const char* representing the filepath of the environment descriptor xml
+void SDAConfig::SetEnvironmentFilePath(const char* p_filePath)
+{
+    // Sanity check that p_filePath is not too big is done before it is sent to this setter
+    strcpy_s(m_environmentPath, ENVIRONMENT_PATH_SIZE, p_filePath);
+}
+
+/// @brief  Gets the filepath for the environment descriptor xml
+/// @return A const char* representing the file path for the environment descriptor xml
+const char* SDAConfig::GetEnvironmentFilePath() const
+{
+    return m_environmentPath;
 }
 
 /// @brief Set m_asyncConnection to p_asyncConnection

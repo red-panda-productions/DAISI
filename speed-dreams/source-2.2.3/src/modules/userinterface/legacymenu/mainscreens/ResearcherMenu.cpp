@@ -2,32 +2,45 @@
 #include <random>
 #include <forcefeedback.h>
 #include "guimenu.h"
-#include "legacymenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
 #include "../rppUtils/FileDialog.hpp"
+#include "../rppUtils/RppUtils.hpp"
+#include "racescreens.h"
+#include "tracks.h"
 #include <experimental/filesystem>
+#include "mainmenu.h"
 
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
 #define PRM_ALLOWED_ACCELERATE "CheckboxAllowedAccelerate"
 #define PRM_ALLOWED_BRAKE      "CheckboxAllowedBrake"
-#define PRM_INDCTR_AUDITORY    "CheckboxIndicatorAuditory"
-#define PRM_INDCTR_VISUAL      "CheckboxIndicatorVisual"
-#define PRM_INDCTR_TEXT        "CheckboxIndicatorTextual"
-#define PRM_INTERVENTIONTYPE   "InterventionTypeRadioButtonList"
-#define PRM_ENVIRONMENT        "EnvironmentRadioButtonList"
-#define PRM_CTRL_INTRV_TGGLE   "CheckboxPControlInterventionToggle"
-#define PRM_CTRL_GAS           "CheckboxPControlGas"
-#define PRM_CTRL_STEERING      "CheckboxPControlSteering"
-#define PRM_FORCE_FEEDBACK     "CheckboxForceFeedback"
-#define PRM_MAX_TIME           "MaxTimeEdit"
-#define PRM_USER_ID            "UserIdEdit"
-#define PRM_BLACKBOX           "ChooseBlackBoxButton"
-#define PRM_NO_BLACK_BOX       "NoBlackBoxError"
-#define PRM_DEV                "DevButton"
-#define GFMNU_ATTR_PATH        "path"
+
+#define PRM_INDCTR_AUDITORY "CheckboxIndicatorAuditory"
+#define PRM_INDCTR_VISUAL   "CheckboxIndicatorVisual"
+#define PRM_INDCTR_TEXT     "CheckboxIndicatorTextual"
+
+#define PRM_INTERVENTIONTYPE "InterventionTypeRadioButtonList"
+
+#define PRM_CTRL_STEER       "CheckboxPControlSteer"
+#define PRM_CTRL_ACCEL       "CheckboxPControlAccel"
+#define PRM_CTRL_BRAKE       "CheckboxPControlBrake"
+#define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
+#define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
+
+#define PRM_MAX_TIME "MaxTimeEdit"
+#define PRM_USER_ID  "UserIdEdit"
+
+#define PRM_BLACKBOX    "ChooseBlackBoxButton"
+#define PRM_ERROR_LABEL "ErrorLabel"
+#define PRM_ENVIRONMENT "ChooseEnvironmentButton"
+
+#define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
+#define PRM_ENVIRONMENT_NAME     "EnvironmentName"
+
+#define PRM_DEV         "DevButton"
+#define GFMNU_ATTR_PATH "path"
 
 // Names for the config file
 #define RESEARCH_FILEPATH    "config/ResearcherMenu.xml"
@@ -35,18 +48,23 @@
 
 // Constant numbers
 #define INDICATOR_AMOUNT       3
-#define PCONTROL_AMOUNT        4
+#define PCONTROL_AMOUNT        5
 #define ALLOWED_ACTIONS_AMOUNT 3
 #define MAX_TIME               1440
 
 // Messages for file selection
-#define MSG_BLACK_BOX_NORMAL_TEXT "Choose Black Box: "
-#define MSG_BLACK_BOX_NOT_EXE     "You did not select a valid Black Box"
-#define MSG_NO_BLACK_BOX          "You need to select a valid Black Box"
-#define MSG_ONLY_HINT             ""
+#define MSG_BLACK_BOX_NORMAL_TEXT    "Choose Black Box: "
+#define MSG_ENVIRONMENT_PREFIX       "Choose Environment: "
+#define MSG_ENVIRONMENT_NOT_SELECTED "None selected"
+#define MSG_ERROR_BLACK_BOX_NOT_EXE  "You did not select a valid Black Box"
+#define MSG_ERROR_NO_BLACK_BOX       "You need to select a valid Black Box"
+#define MSG_ERROR_NO_ENVIRONMENT     "You need to select a valid Environment"
+#define MSG_ONLY_HINT                ""
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
+
+#define TRACK_LOADER_MODULE_NAME "trackv1"
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -56,7 +74,6 @@ static void* s_nextHandle = nullptr;
 int m_indicatorsControl[INDICATOR_AMOUNT];
 int m_pControlControl[PCONTROL_AMOUNT];
 int m_allowedActionsControl[ALLOWED_ACTIONS_AMOUNT];
-int m_taskControl;
 int m_interventionTypeControl;
 
 // Allowed black box actions
@@ -67,9 +84,6 @@ tIndicator m_indicators;
 
 // InterventionType
 InterventionType m_interventionType;
-
-// Environment
-Track m_track;
 
 // Participant control
 tParticipantControl m_pControl;
@@ -86,13 +100,56 @@ char m_userId[32];
 int m_userIdControl;
 
 // Black Box
-int m_blackBoxButton;
-int m_noBlackBoxLabel;
+int m_blackBoxButtonControl;
+int m_errorLabel;
 bool m_blackBoxChosen = false;
 char m_blackBoxFilePath[BLACKBOX_PATH_SIZE];
 
+// Environment
+int m_environmentButton;
+bool m_environmentChosen = false;
+GfTrack* m_environment = nullptr;
+tRmTrackSelect m_trackMenuSettings;
+
 // Apply Button
 int m_applyButton;
+
+// Back button;
+int m_backButton;
+
+/// @brief Save the given GfTrack as the used environment
+/// @param p_gfTrack Pointer to the GfTrack to use
+void SetTrackFromGfTrack(GfTrack* p_gfTrack)
+{
+    m_environment = p_gfTrack;
+    m_environmentChosen = true;
+}
+
+/// @brief Get the current selected track as pointer to a GfTrack,
+///  or get the first usable track if no track has been selected
+/// @return Pointer to the selected track, or the first usable track if no track is selected (never nullptr)
+GfTrack* GetTrackAsGfTrack()
+{
+    // Return first usable track if none set
+    // While we could use m_environmentChosen here, by not checking it we can jump to
+    //  a track found when loading the config even though it was not an exact match.
+    if (!m_environment)
+    {
+        return GfTracks::self()->getFirstUsableTrack();
+    }
+    return m_environment;
+}
+
+/// @brief If no track loader has been initialized yet for the environment menu, initialize it
+void InitializeTrackLoader()
+{
+    if (!GfTracks::self()->getTrackLoader())
+    {
+        GfModule* trackLoaderModule = GfModule::load("modules/track", TRACK_LOADER_MODULE_NAME);
+        ITrackLoader* trackLoader = trackLoaderModule->getInterface<ITrackLoader>();
+        GfTracks::self()->setTrackLoader(trackLoader);
+    }
+}
 
 /// @brief        Sets the task to the selected one
 /// @param p_info Information on the checkbox
@@ -143,12 +200,31 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
     m_interventionType = (InterventionType)p_info->Selected;
 }
 
-/// @brief        Sets the environment to the selected one
-/// @param p_info Information on the radio button pressed
-static void SelectEnvironment(tRadioButtonInfo* p_info)
+/// @brief Opens the menu to select an environment
+static void SelectEnvironment(void* /* dummy */)
 {
-    // TODO: set environment
-    // m_track = _something_
+    RmTrackSelect(&m_trackMenuSettings);
+}
+
+/// @brief        Enables/disables the possibility for participants to control steering
+/// @param p_info Information on the checkbox
+static void SelectControlSteer(tCheckBoxInfo* p_info)
+{
+    m_pControl.ControlSteer = p_info->bChecked;
+}
+
+/// @brief        Enables/disables the possibility for participants to control gas
+/// @param p_info Information on the checkbox
+static void SelectControlAccel(tCheckBoxInfo* p_info)
+{
+    m_pControl.ControlAccel = p_info->bChecked;
+}
+
+/// @brief        Enables/disables the possibility for participants to control the brake
+/// @param p_info Information on the checkbox
+static void SelectControlBrake(tCheckBoxInfo* p_info)
+{
+    m_pControl.ControlBrake = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the possibility for participants to enable/disable interventions
@@ -156,20 +232,6 @@ static void SelectEnvironment(tRadioButtonInfo* p_info)
 static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
 {
     m_pControl.ControlInterventionToggle = p_info->bChecked;
-}
-
-/// @brief        Enables/disables the possibility for participants to control gas
-/// @param p_info Information on the checkbox
-static void SelectControlGas(tCheckBoxInfo* p_info)
-{
-    m_pControl.ControlGas = p_info->bChecked;
-}
-
-/// @brief        Enables/disables the possibility for participants to control steering
-/// @param p_info Information on the checkbox
-static void SelectControlSteering(tCheckBoxInfo* p_info)
-{
-    m_pControl.ControlSteering = p_info->bChecked;
 }
 
 /// @brief        Enables/disables the possibility for participants to control steering
@@ -230,10 +292,10 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, val);
 
     // Save participant control settings to xml file
+    GfParmSetStr(readParam, PRM_CTRL_STEER, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteer));
+    GfParmSetStr(readParam, PRM_CTRL_ACCEL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlAccel));
+    GfParmSetStr(readParam, PRM_CTRL_BRAKE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlBrake));
     GfParmSetStr(readParam, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
-    GfParmSetStr(readParam, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlGas));
-    GfParmSetStr(readParam, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlSteering));
-
     GfParmSetStr(readParam, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
 
     // Save max time to xml file
@@ -244,8 +306,17 @@ static void SaveSettingsToDisk()
     // Save black box filepath to xml file
     GfParmSetStr(readParam, PRM_BLACKBOX, GFMNU_ATTR_PATH, m_blackBoxFilePath);
 
+    // Save environment filepath to xml file if a track has been selected
+    // Speed Dreams identifies tracks by their category and their name, so save these two
+    if (m_environmentChosen)
+    {
+        GfParmSetStr(readParam, PRM_ENVIRONMENT, PRM_ENVIRONMENT_CATEGORY, m_environment->getCategoryId().c_str());
+        GfParmSetStr(readParam, PRM_ENVIRONMENT, PRM_ENVIRONMENT_NAME, m_environment->getId().c_str());
+    }
+
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, RESEARCH_SCREEN_NAME);
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Saves the settings into the frontend settings and the backend config
@@ -253,7 +324,12 @@ static void SaveSettings(void* /* dummy */)
 {
     if (!m_blackBoxChosen)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_NO_BLACK_BOX);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_NO_BLACK_BOX);
+        return;
+    }
+    if (!m_environmentChosen)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_NO_ENVIRONMENT);
         return;
     }
     // Save settings to the SDAConfig
@@ -264,6 +340,7 @@ static void SaveSettings(void* /* dummy */)
     mediator->SetMaxTime(m_maxTime);
     mediator->SetPControlSettings(m_pControl);
     mediator->SetBlackBoxFilePath(m_blackBoxFilePath);
+    mediator->SetEnvironmentFilePath(m_environment->getDescriptorFile().c_str());
 
     // Save the encrypted userId in the SDAConfig
     size_t encryptedUserId = std::hash<std::string>{}(m_userId);
@@ -272,8 +349,6 @@ static void SaveSettings(void* /* dummy */)
 
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
-
-    // TODO: Set Environment (Track)
 
     // Enable/Disable force feedback in the force feedback manager
     forceFeedback.effectsConfig["globalEffect"]["enabled"] = m_pControl.ForceFeedback;
@@ -284,6 +359,11 @@ static void SaveSettings(void* /* dummy */)
 
     // Go to the next screen
     GfuiScreenActivate(s_nextHandle);
+}
+
+static void BackToMain(void* /* dummy */)
+{
+    GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
 
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
@@ -299,10 +379,11 @@ static void SynchronizeControls()
 
     GfuiRadioButtonListSetSelected(s_scrHandle, m_interventionTypeControl, (int)m_interventionType);
 
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlInterventionToggle);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlGas);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlSteering);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ForceFeedback);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[0], m_pControl.ControlSteer);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlAccel);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlBrake);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ControlInterventionToggle);
+    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[4], m_pControl.ForceFeedback);
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -312,8 +393,15 @@ static void SynchronizeControls()
     {
         std::experimental::filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
-        GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, "");  // Reset error label
+        GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
+    }
+
+    std::string environmentButtonText = std::string(MSG_ENVIRONMENT_PREFIX).append(m_environmentChosen ? m_environment->getName() : MSG_ENVIRONMENT_NOT_SELECTED);
+    GfuiButtonSetText(s_scrHandle, m_environmentButton, environmentButtonText.c_str());
+
+    if (m_blackBoxChosen && m_environmentChosen)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, "");  // Reset error label
     }
 }
 
@@ -331,10 +419,11 @@ static void LoadDefaultSettings()
 
     m_interventionType = GfuiRadioButtonListGetSelected(s_scrHandle, m_interventionTypeControl);
 
-    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
-    m_pControl.ControlGas = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
-    m_pControl.ControlSteering = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
-    m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
+    m_pControl.ControlSteer = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[0]);
+    m_pControl.ControlAccel = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
+    m_pControl.ControlBrake = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
+    m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
+    m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[4]);
 
     m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
 }
@@ -347,7 +436,6 @@ static void LoadConfigSettings(void* p_param)
     m_allowedActions.Steer = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_STEER, GFMNU_ATTR_CHECKED, true);
     m_allowedActions.Accelerate = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_ACCELERATE, GFMNU_ATTR_CHECKED, true);
     m_allowedActions.Brake = GfuiMenuControlGetBoolean(p_param, PRM_ALLOWED_BRAKE, GFMNU_ATTR_CHECKED, true);
-    ;
 
     m_indicators.Audio = GfuiMenuControlGetBoolean(p_param, PRM_INDCTR_AUDITORY, GFMNU_ATTR_CHECKED, false);
     m_indicators.Icon = GfuiMenuControlGetBoolean(p_param, PRM_INDCTR_VISUAL, GFMNU_ATTR_CHECKED, false);
@@ -355,10 +443,10 @@ static void LoadConfigSettings(void* p_param)
 
     m_interventionType = std::stoi(GfParmGetStr(p_param, PRM_INTERVENTIONTYPE, GFMNU_ATTR_SELECTED, nullptr));
 
+    m_pControl.ControlSteer = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEER, GFMNU_ATTR_CHECKED, false);
+    m_pControl.ControlAccel = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_ACCEL, GFMNU_ATTR_CHECKED, false);
+    m_pControl.ControlBrake = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_BRAKE, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlInterventionToggle = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, false);
-    m_pControl.ControlGas = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_GAS, GFMNU_ATTR_CHECKED, false);
-    m_pControl.ControlSteering = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_STEERING, GFMNU_ATTR_CHECKED, false);
-
     m_pControl.ForceFeedback = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, false);
 
     // Set the max time setting from the xml file
@@ -371,11 +459,29 @@ static void LoadConfigSettings(void* p_param)
         m_blackBoxChosen = true;
     }
 
+    // Only load from file if no environment has been chosen yet and a category has been saved to file
+    const char* environmentCategory = GfParmGetStr(p_param, PRM_ENVIRONMENT, PRM_ENVIRONMENT_CATEGORY, nullptr);
+    if (environmentCategory && !m_environmentChosen)
+    {
+        // Default environment name can be the empty string:
+        //  if no environment name is saved, we can still get the first track in the saved category.
+        //  This will help users find similar environments to the one they used before.
+        const char* environmentName = GfParmGetStr(p_param, PRM_ENVIRONMENT, PRM_ENVIRONMENT_NAME, "");
+        GfTrack* trackFound = GfTracks::self()->getFirstUsableTrack(environmentCategory, environmentName);
+        SetTrackFromGfTrack(trackFound);
+
+        // An environment has only been chosen if the name and category match the one originally saved.
+        // If not, SD has chosen a different usable track. While this will help users find a track when they open the menu,
+        //  accepting this automatically may cause unexpected issues like lauching the wrong simulation.
+        m_environmentChosen = (environmentName == trackFound->getId()) && (environmentCategory == trackFound->getCategoryId());
+    }
+
     // Match the menu buttons with the initialized values / checking checkboxes and radiobuttons
     SynchronizeControls();
 }
 
-/// @brief Loads the user menu settings from the local config file
+/// @brief Called whenever the menu is (re)opened. Loads the user menu settings from the local config file,
+///  and handles other logic that has to be performed whenever the screen is opened.
 static void OnActivate(void* /* dummy */)
 {
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
@@ -386,9 +492,16 @@ static void OnActivate(void* /* dummy */)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
+
+    // Ensure the track loader is initialized again.
+    // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
+    InitializeTrackLoader();
+
+    SynchronizeControls();
 }
 
 /// @brief Selects a black box
@@ -409,20 +522,20 @@ static void SelectBlackBox(void* /* dummy */)
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
-        GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_BLACK_BOX_NOT_EXE);
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
-    GfuiButtonSetText(s_scrHandle, m_blackBoxButton, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_noBlackBoxLabel, MSG_ONLY_HINT);  // Reset error label
+    GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
+    GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);  // Reset error label
 
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
@@ -456,8 +569,19 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_allowedActionsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_BRAKE, nullptr, SelectAllowedBrake);
 
     // Choose black box control
-    m_blackBoxButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
-    m_noBlackBoxLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_NO_BLACK_BOX);
+    m_blackBoxButtonControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
+    m_errorLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_ERROR_LABEL);
+
+    // Choose environment control
+    m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, s_scrHandle, SelectEnvironment);
+    m_trackMenuSettings = {
+        SetTrackFromGfTrack,
+        GetTrackAsGfTrack,
+        s_scrHandle,
+        s_scrHandle};
+
+    // Ensure the track loader is initialized
+    InitializeTrackLoader();
 
     // Indicator checkboxes controls
     m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
@@ -467,24 +591,22 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // InterventionTypes radio button controls
     m_interventionTypeControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_INTERVENTIONTYPE, nullptr, SelectInterventionType);
 
-    // Environment checkboxes controls
-    GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_ENVIRONMENT, nullptr, SelectEnvironment);
-
     // Dev button control
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, s_scrHandle, DeveloperMenuRun);
 
     // Participant-Control checkboxes controls
-    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
-    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_GAS, nullptr, SelectControlGas);
-    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEERING, nullptr, SelectControlSteering);
-
-    // Other options checkbox controls
-    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
+    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEER, nullptr, SelectControlSteer);
+    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_ACCEL, nullptr, SelectControlAccel);
+    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_BRAKE, nullptr, SelectControlBrake);
+    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
+    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
+    // Back button
+    m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
@@ -503,7 +625,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     return s_scrHandle;
 }
 
-/// @brief  Activates the researcher menu screen
+/// @brief  Activates the researcher menu screen (for the first time)
 /// @return 0 if successful, otherwise -1
 int ResearcherMenuRun()
 {

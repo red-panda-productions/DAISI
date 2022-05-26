@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <fstream>
 #include "mysql/jdbc.h"
+#include "ConfigEnums.h"
 
 /// @brief A class that can store data to a SQL database
 class SQLDatabaseStorage : IDataStorage
@@ -29,7 +30,7 @@ private:
     void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap& p_connectionProperties);
+    void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

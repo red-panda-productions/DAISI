@@ -14,6 +14,7 @@ private:
     bool m_asyncConnection = false;
     char m_blackBoxFilePath[256] = "";
     bool m_replayRecorderOn = false;
+    bool m_saveToDatabase = false;
 
 public:
     InterventionExecutor* SetInterventionType(InterventionType p_intervention)
@@ -25,6 +26,11 @@ public:
     InterventionType GetInterventionType() const
     {
         return m_interventionType;
+    }
+
+    int GetCompressionRate()
+    {
+        return 1;
     }
 
     void SetDataCollectionSettings(DataToStore p_dataToStore)
@@ -57,6 +63,16 @@ public:
 
     int GetMaxTime() const
     {
+    }
+
+    void SetSaveToDatabaseCheck(bool p_saveToDatabase)
+    {
+        m_saveToDatabase = p_saveToDatabase;
+    }
+
+    bool GetSaveToDatabaseCheck() const
+    {
+        return m_saveToDatabase;
     }
 
     void SetUserId(char* p_userID)

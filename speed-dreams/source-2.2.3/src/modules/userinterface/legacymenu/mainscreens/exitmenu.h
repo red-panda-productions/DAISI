@@ -16,15 +16,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
 
 #ifndef _EXITMENU_H_
 #define _EXITMENU_H_
 #include "ConfigEnums.h"
 
-extern void* ExitMenuInit(void* prevMenu, bool p_raceExit);
+extern void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_raceEndType);
 
-#endif /* _EXITMENU_H_ */ 
-
-
-
+#endif /* _EXITMENU_H_ */

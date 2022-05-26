@@ -25,6 +25,7 @@ namespace filesystem = std::experimental::filesystem;
 #define PATH_VERSION             "version"
 #define PATH_MAX_TIME            "max_time"
 #define PATH_ALLOWED_ACTION      "allowed_actions"
+#define PATH_DECISION_THRESHOLDS "thresholds"
 
 #define KEY_INDICATOR_AUDIO "audio"
 #define KEY_INDICATOR_ICON  "icon"
@@ -36,9 +37,10 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_NAME     "name"
 #define KEY_VERSION  "version"
 
-#define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
-#define KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE "control_intervention_toggle"
 #define KEY_PARTICIPANT_CONTROL_CONTROL_STEERING            "control_steering"
+#define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
+#define KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE               "control_brake"
+#define KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE "control_intervention_toggle"
 #define KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK              "force_feedback"
 #define KEY_PARTICIPANT_CONTROL_RECORD_SESSION              "record_session"
 #define KEY_PARTICIPANT_CONTROL_BB_RECORD_SESSION           "bb_record_session"
@@ -49,10 +51,16 @@ namespace filesystem = std::experimental::filesystem;
 #define KEY_ALLOWED_ACTION_ACCELERATE "accelerate"
 #define KEY_ALLOWED_ACTION_BRAKE      "brake"
 
-#define CURRENT_RECORDER_VERSION 3
-#define DEFAULT_MAX_TIME         10
+#define KEY_THRESHOLD_ACCEL "treshold_accel"
+#define KEY_THRESHOLD_BRAKE "treshold_brake"
+#define KEY_THRESHOLD_STEER "treshold_steer"
+
+#define DEFAULT_MAX_TIME 10
 
 #define DECISION_RECORD_PARAM_AMOUNT 4
+
+// Current version of the recorder, should be incremented every time a new version comes out.
+#define CURRENT_RECORDER_VERSION 5
 
 /// @brief A class that can record the input of a player for integration tests
 class Recorder
@@ -60,7 +68,9 @@ class Recorder
 public:
     Recorder(const std::string& p_dirName, const std::string& p_fileName, int p_userParamAmount, int p_simulationDataParamAmount);
     ~Recorder();
-    void WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators, const InterventionType& p_interventionType, const tParticipantControl& p_participantControl, int p_maxTime, const tAllowedActions& p_allowedActions);
+    void WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, const tIndicator& p_indicators,
+                          const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
+                          int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
     void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);
@@ -68,7 +78,7 @@ public:
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
-    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder);
+    static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder, int p_targetVersion = CURRENT_RECORDER_VERSION);
 
 private:
     static bool CheckSameInput(const float* p_input, const float* p_prevInput, int p_paramAmount);

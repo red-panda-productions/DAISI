@@ -1,4 +1,5 @@
 #include "SQLDatabaseStorage.h"
+#include "mediator.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
 #include "ConfigEnums.h"
@@ -82,55 +83,24 @@ bool SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 /// @brief  gets the keys for secure database connection in the data/certificates folder
 ///         and adds them to the connection properties
 ///         name of the keys are set in the database_encryption_settings.txt file
-/// @param p_dirPath                directory path to the "database_encryption_settings.txt" file
-///                                 needs "\\" in front of it
 /// @param p_connectionProperties   SQL connection properties to which the keys are added.
-void SQLDatabaseStorage::PutKeys(const std::string& p_dirPath, sql::ConnectOptionsMap& p_connectionProperties)
+/// @param p_dbSettings             The database settings used to retrieve the certificate names.
+void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
 {
-    std::string encryptionPath("data" + p_dirPath);
-    std::string encryptionFile("database_encryption_settings.txt");
-
-    if (!FindFileDirectory(encryptionPath, encryptionFile))
-        throw std::exception("Could not find database encryption settings file");
-
-    std::ifstream ifstream(encryptionPath + '\\' + encryptionFile);
-
-    std::string caName;
-    std::string pubName;
-    std::string privName;
-    READ_INPUT(ifstream, caName)
-    READ_INPUT(ifstream, pubName)
-    READ_INPUT(ifstream, privName)
-
-    std::string certificatesPath("data" + p_dirPath + "\\certificates");
-
-    if (!FindFileDirectory(certificatesPath, caName))
-        throw std::exception("Could not find certificate folder");
-
-    p_connectionProperties["sslCA"] = certificatesPath + "\\" + caName;
-    p_connectionProperties["sslCert"] = certificatesPath + "\\" + pubName;
-    p_connectionProperties["sslKey"] = certificatesPath + "\\" + privName;
+    p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
+    p_connectionProperties["sslCert"] = p_dbSettings.PublicCertFilePath;
+    p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;
 }
 
 /// @brief                  Connect to the specified database.
 ///                         Initialise the database with the proper tables if they don't exist yet.
-/// @param p_hostName       Hostname of the database to connect to. Should be a TCP-IP address.
-/// @param p_port           Port the database is located on on the host.
-/// @param p_username       Username to connect with to the database.
-/// @param p_password       Password to connect with to the database.
-/// @param p_schemaName     Name of the database schema to use.
-/// @param p_useEncryption  if encryption is used, "true" if used, otherwise it's not used.
+/// @param p_dbSettings     Struct containing all settings for a database connection
 /// @param p_dirPath        optional: path relative to the datafolder in which the
 ///                         "database_encryption_settings.txt" file is located
 ///                         needs "\\" in front
 /// @return                 returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(
-    const std::string& p_hostName,
-    int p_port,
-    const std::string& p_username,
-    const std::string& p_password,
-    const std::string& p_schemaName,
-    std::string p_useEncryption,
+    DatabaseSettings p_dbSettings,
     const std::string& p_dirPath)
 {
     // Initialise SQL driver
@@ -138,18 +108,18 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     // Set connection options, and connect to the database
     sql::ConnectOptionsMap connection_properties;
-    connection_properties["hostName"] = "tcp://" + p_hostName;
-    connection_properties["userName"] = p_username;
-    connection_properties["password"] = p_password;
-    connection_properties["port"] = p_port;
+    std::string address = p_dbSettings.Address;
+    connection_properties["hostName"] = "tcp://" + address;
+    connection_properties["userName"] = p_dbSettings.Username;
+    connection_properties["password"] = p_dbSettings.Password;
+    connection_properties["port"] = p_dbSettings.Port;
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
     connection_properties["sslEnforce"] = true;
 
-    transform(p_useEncryption.begin(), p_useEncryption.end(), p_useEncryption.begin(), ::tolower);
-    if (p_useEncryption == "true")
+    if (p_dbSettings.UseSSL)
     {
-        PutKeys(p_dirPath, connection_properties);
+        PutKeys(connection_properties, p_dbSettings);
     }
 
     try
@@ -164,12 +134,13 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
-    EXECUTE("CREATE DATABASE IF NOT EXISTS " + p_schemaName)
+    std::string schema = p_dbSettings.Schema;
+    EXECUTE("CREATE DATABASE IF NOT EXISTS " + schema)
     m_statement->close();
     delete m_statement;
 
     // Set the correct database schema
-    m_connection->setSchema(p_schemaName);
+    m_connection->setSchema(p_dbSettings.Schema);
 
     // Create a (reusable) statement
     m_statement = m_connection->createStatement();
@@ -431,7 +402,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
         "intervention_mode = " +
         values)
 
-    int settingsId;
+    int settingsId = -1;
     GET_INT_FROM_RESULTS(settingsId);
 
     values = "'" + trialDate + ' ' + trialTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
@@ -441,7 +412,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     EXECUTE(INSERT_INTO("Trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()");
 
-    int trialId;
+    int trialId = -1;
     SELECT_LAST_ID(trialId);
 
     return trialId;
@@ -655,41 +626,9 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             if left out path will be data folder
 void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
-    std::string configPath("data" + p_dirPath);
-    std::string configFile("database_connection_settings.txt");
+    DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
-    if (!FindFileDirectory(configPath, configFile))
-        throw std::exception("Could not find database settings file");
-
-    std::ifstream ifstream(configPath + '\\' + configFile);
-
-    std::string ip;
-    std::string portString;
-    std::string username;
-    std::string password;
-    std::string schema;
-    std::string useSSL;
-
-    READ_INPUT(ifstream, ip)
-    READ_INPUT(ifstream, portString)
-    READ_INPUT(ifstream, username)
-    READ_INPUT(ifstream, password)
-    READ_INPUT(ifstream, schema)
-    READ_INPUT(ifstream, useSSL)
-
-    ifstream.close();
-
-    int port;
-    try
-    {
-        port = std::stoi(portString);
-    }
-    catch (std::exception& e)
-    {
-        throw std::exception("Port in database settings config file could not be converted to an int");
-    }
-
-    if (OpenDatabase(ip, port, username, password, schema, useSSL, p_dirPath))
+    if (OpenDatabase(dbsettings, p_dirPath))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_inputFilePath);

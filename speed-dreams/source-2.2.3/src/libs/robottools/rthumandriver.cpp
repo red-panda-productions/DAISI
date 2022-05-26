@@ -59,6 +59,7 @@
 #include <playerpref.h>
 #include <car.h>
 #include "Mediator.h"
+#include "IndicatorConfig.h"
 
 
 #include "humandriver.h"
@@ -147,7 +148,8 @@ typedef struct HumanContext
 } tHumanContext;
 
 static const int FuelReserve = 3;
-static const tdble MaxFuelPerMeter = 0.0008;	// [kg/m] fuel consumption.
+// SIMULATED DRIVING ASSISTANCE: changed the MaxFuelPerMeter value
+static const tdble MaxFuelPerMeter = 0;	// [kg/m] fuel consumption.
 
 static void updateKeys(void);
 static void SetFuelAtRaceStart(tTrack *track, void *carHandle,
@@ -618,8 +620,10 @@ void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
         tParticipantControl participantControlSettings = mediator->GetPControlSettings();
         int maxTime = mediator->GetMaxTime();
         tAllowedActions allowedActions = mediator->GetAllowedActions();
+        tDecisionThresholds thresholds = mediator->GetThresholdSettings();
 
-        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, participantControlSettings, maxTime, allowedActions);
+        m_recorder->WriteRunSettings(car, curTrack, indicatorSettings, interventionType, 
+            participantControlSettings, maxTime, allowedActions, thresholds);
     }
     const int idx = index - 1;
 
@@ -1074,183 +1078,224 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         }
     }
 
-    switch (cmd[CMD_LEFTSTEER].type) {
-    case GFCTRL_TYPE_JOY_AXIS:
-        ax0 = joyInfo->ax[cmd[CMD_LEFTSTEER].val];
-        // limit and normalise
-        if (ax0 > cmd[CMD_LEFTSTEER].max) {
-            ax0 = cmd[CMD_LEFTSTEER].max;
-        } else if (ax0 < cmd[CMD_LEFTSTEER].min) {
-            ax0 = cmd[CMD_LEFTSTEER].min;
-        }
-        ax0 = (ax0 - cmd[CMD_LEFTSTEER].min) / (cmd[CMD_LEFTSTEER].max - cmd[CMD_LEFTSTEER].min);
+    // SIMULATED DRIVING ASSISTANCE: added if condition: only handle steering cmd input if the participant is allowed to.
+    // Do not let the human control the car when the AI is in full control
+    if (SMediator::GetInstance()->GetPControlSettings().ControlSteer && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
+    {
+        switch (cmd[CMD_LEFTSTEER].type)
+        {
+            case GFCTRL_TYPE_JOY_AXIS:
+                ax0 = joyInfo->ax[cmd[CMD_LEFTSTEER].val];
+                // limit and normalise
+                if (ax0 > cmd[CMD_LEFTSTEER].max)
+                {
+                    ax0 = cmd[CMD_LEFTSTEER].max;
+                }
+                else if (ax0 < cmd[CMD_LEFTSTEER].min)
+                {
+                    ax0 = cmd[CMD_LEFTSTEER].min;
+                }
+                ax0 = (ax0 - cmd[CMD_LEFTSTEER].min) / (cmd[CMD_LEFTSTEER].max - cmd[CMD_LEFTSTEER].min);
 
-        // pow used to indicate the polarity of 'more turn'
-        if (cmd[CMD_LEFTSTEER].pow > 0)
-            ax0 = ax0 - cmd[CMD_LEFTSTEER].deadZone;
-        else
-            ax0 = 1 - ax0 - cmd[CMD_LEFTSTEER].deadZone;
+                // pow used to indicate the polarity of 'more turn'
+                if (cmd[CMD_LEFTSTEER].pow > 0)
+                    ax0 = ax0 - cmd[CMD_LEFTSTEER].deadZone;
+                else
+                    ax0 = 1 - ax0 - cmd[CMD_LEFTSTEER].deadZone;
 
-        if (ax0 < 0) ax0 = 0;
+                if (ax0 < 0) ax0 = 0;
 
-        if (1 - cmd[CMD_LEFTSTEER].deadZone != 0)
-            ax0 = ax0 / (1 - cmd[CMD_LEFTSTEER].deadZone);
-        else
-            ax0 = 0;
+                if (1 - cmd[CMD_LEFTSTEER].deadZone != 0)
+                    ax0 = ax0 / (1 - cmd[CMD_LEFTSTEER].deadZone);
+                else
+                    ax0 = 0;
 
-        leftSteer = fabs(cmd[CMD_LEFTSTEER].pow) * pow(ax0, 1.0f / cmd[CMD_LEFTSTEER].sens) / (1.0 + cmd[CMD_LEFTSTEER].spdSens * car->_speed_xy / 100.0);
-        break;
-    case GFCTRL_TYPE_MOUSE_AXIS:
-        ax0 = mouseInfo->ax[cmd[CMD_LEFTSTEER].val] - cmd[CMD_LEFTSTEER].deadZone;
-        if (ax0 > cmd[CMD_LEFTSTEER].max) {
-            ax0 = cmd[CMD_LEFTSTEER].max;
-        } else if (ax0 < cmd[CMD_LEFTSTEER].min) {
-            ax0 = cmd[CMD_LEFTSTEER].min;
-        }
-        ax0 = ax0 * cmd[CMD_LEFTSTEER].pow;
-        leftSteer = pow(fabs(ax0), 1.0f / cmd[CMD_LEFTSTEER].sens) / (1.0f + cmd[CMD_LEFTSTEER].spdSens * car->_speed_xy / 1000.0);
-        break;
-    case GFCTRL_TYPE_KEYBOARD:
-    case GFCTRL_TYPE_JOY_BUT:
-    case GFCTRL_TYPE_MOUSE_BUT:
-        if (cmd[CMD_LEFTSTEER].type == GFCTRL_TYPE_KEYBOARD) {
-            ax0 = keyInfo[lookUpKeyMap(cmd[CMD_LEFTSTEER].val)].state;
-        } else if (cmd[CMD_LEFTSTEER].type == GFCTRL_TYPE_MOUSE_BUT) {
-            ax0 = mouseInfo->button[cmd[CMD_LEFTSTEER].val];
-        } else {
-            ax0 = joyInfo->levelup[cmd[CMD_LEFTSTEER].val];
-        }
+                leftSteer = fabs(cmd[CMD_LEFTSTEER].pow) * pow(ax0, 1.0f / cmd[CMD_LEFTSTEER].sens) / (1.0 + cmd[CMD_LEFTSTEER].spdSens * car->_speed_xy / 100.0);
+                break;
+            case GFCTRL_TYPE_MOUSE_AXIS:
+                ax0 = mouseInfo->ax[cmd[CMD_LEFTSTEER].val] - cmd[CMD_LEFTSTEER].deadZone;
+                if (ax0 > cmd[CMD_LEFTSTEER].max)
+                {
+                    ax0 = cmd[CMD_LEFTSTEER].max;
+                }
+                else if (ax0 < cmd[CMD_LEFTSTEER].min)
+                {
+                    ax0 = cmd[CMD_LEFTSTEER].min;
+                }
+                ax0 = ax0 * cmd[CMD_LEFTSTEER].pow;
+                leftSteer = pow(fabs(ax0), 1.0f / cmd[CMD_LEFTSTEER].sens) / (1.0f + cmd[CMD_LEFTSTEER].spdSens * car->_speed_xy / 1000.0);
+                break;
+            case GFCTRL_TYPE_KEYBOARD:
+            case GFCTRL_TYPE_JOY_BUT:
+            case GFCTRL_TYPE_MOUSE_BUT:
+                if (cmd[CMD_LEFTSTEER].type == GFCTRL_TYPE_KEYBOARD)
+                {
+                    ax0 = keyInfo[lookUpKeyMap(cmd[CMD_LEFTSTEER].val)].state;
+                }
+                else if (cmd[CMD_LEFTSTEER].type == GFCTRL_TYPE_MOUSE_BUT)
+                {
+                    ax0 = mouseInfo->button[cmd[CMD_LEFTSTEER].val];
+                }
+                else
+                {
+                    ax0 = joyInfo->levelup[cmd[CMD_LEFTSTEER].val];
+                }
 #if (BINCTRL_STEERING == JEPZ)
-        if (ax0 == 0) {
-            leftSteer = HCtx[idx]->prevLeftSteer - s->deltaTime * 5.0;
-        } else {
-            ax0 = 2 * ax0 - 1;
-            sensFrac = 10.0 * cmd[CMD_LEFTSTEER].sens;
-            speedFrac = fabs(car->_speed_x * cmd[CMD_LEFTSTEER].spdSens);
-            if (speedFrac < 1.0) speedFrac = 1.0;
-            leftSteer = HCtx[idx]->prevLeftSteer + s->deltaTime * ax0 * sensFrac / speedFrac;
-        }
-        if (leftSteer > 1.0) leftSteer = 1.0;
-        if (leftSteer < 0.0) leftSteer = 0.0;
+                if (ax0 == 0)
+                {
+                    leftSteer = HCtx[idx]->prevLeftSteer - s->deltaTime * 5.0;
+                }
+                else
+                {
+                    ax0 = 2 * ax0 - 1;
+                    sensFrac = 10.0 * cmd[CMD_LEFTSTEER].sens;
+                    speedFrac = fabs(car->_speed_x * cmd[CMD_LEFTSTEER].spdSens);
+                    if (speedFrac < 1.0) speedFrac = 1.0;
+                    leftSteer = HCtx[idx]->prevLeftSteer + s->deltaTime * ax0 * sensFrac / speedFrac;
+                }
+                if (leftSteer > 1.0) leftSteer = 1.0;
+                if (leftSteer < 0.0) leftSteer = 0.0;
 #elif (BINCTRL_STEERING == JPM)
-        // ax should be 0 or 1 here (to be checked) => -1 (zero steer) or +1 (full steer left).
-        ax0 = 2 * ax0 - 1;
-        sensFrac = 1.0 + (3.5 - 1.5 * ax0) * cmd[CMD_LEFTSTEER].sens;
-        speedFrac = 1.0 + car->_speed_x * car->_speed_x * cmd[CMD_LEFTSTEER].spdSens / 300.0;
-        leftSteer = HCtx[idx]->prevLeftSteer + s->deltaTime * ax0 * sensFrac / speedFrac;
-        //GfOut("Left : ax=%4.1f, ws=%4.2f, ss=%4.2f, prev=%5.2f, new=%5.2f (spd=%6.2f)\n",
-        //	  ax0, sensFrac, speedFrac, HCtx[idx]->prevLeftSteer, leftSteer, car->_speed_x);
-        if (leftSteer > 1.0)
-            leftSteer = 1.0;
-        else if (leftSteer < 0.0)
-            leftSteer = 0.0;
+                // ax should be 0 or 1 here (to be checked) => -1 (zero steer) or +1 (full steer left).
+                ax0 = 2 * ax0 - 1;
+                sensFrac = 1.0 + (3.5 - 1.5 * ax0) * cmd[CMD_LEFTSTEER].sens;
+                speedFrac = 1.0 + car->_speed_x * car->_speed_x * cmd[CMD_LEFTSTEER].spdSens / 300.0;
+                leftSteer = HCtx[idx]->prevLeftSteer + s->deltaTime * ax0 * sensFrac / speedFrac;
+                // GfOut("Left : ax=%4.1f, ws=%4.2f, ss=%4.2f, prev=%5.2f, new=%5.2f (spd=%6.2f)\n",
+                //	  ax0, sensFrac, speedFrac, HCtx[idx]->prevLeftSteer, leftSteer, car->_speed_x);
+                if (leftSteer > 1.0)
+                    leftSteer = 1.0;
+                else if (leftSteer < 0.0)
+                    leftSteer = 0.0;
 #else
-        if (ax0 == 0) {
-            leftSteer = 0;
-        } else {
-            ax0 = 2 * ax0 - 1;
-            leftSteer = HCtx[idx]->prevLeftSteer + ax0 * s->deltaTime / cmd[CMD_LEFTSTEER].sens / (1.0 + cmd[CMD_LEFTSTEER].spdSens * car->_speed_x / 1000.0);
-            if (leftSteer > 1.0) leftSteer = 1.0;
-            if (leftSteer < 0.0) leftSteer = 0.0;
-        }
+                if (ax0 == 0)
+                {
+                    leftSteer = 0;
+                }
+                else
+                {
+                    ax0 = 2 * ax0 - 1;
+                    leftSteer = HCtx[idx]->prevLeftSteer + ax0 * s->deltaTime / cmd[CMD_LEFTSTEER].sens / (1.0 + cmd[CMD_LEFTSTEER].spdSens * car->_speed_x / 1000.0);
+                    if (leftSteer > 1.0) leftSteer = 1.0;
+                    if (leftSteer < 0.0) leftSteer = 0.0;
+                }
 #endif
 
-        HCtx[idx]->prevLeftSteer = leftSteer;
-        break;
-    default:
-        leftSteer = 0;
-        break;
-    }
-
-    switch (cmd[CMD_RIGHTSTEER].type) {
-    case GFCTRL_TYPE_JOY_AXIS:
-        ax0 = joyInfo->ax[cmd[CMD_RIGHTSTEER].val];
-
-        // limit and normalise
-        if (ax0 > cmd[CMD_RIGHTSTEER].max) {
-            ax0 = cmd[CMD_RIGHTSTEER].max;
-        } else if (ax0 < cmd[CMD_RIGHTSTEER].min) {
-            ax0 = cmd[CMD_RIGHTSTEER].min;
+                HCtx[idx]->prevLeftSteer = leftSteer;
+                break;
+            default:
+                leftSteer = 0;
+                break;
         }
-        ax0 = (ax0 - cmd[CMD_RIGHTSTEER].min) / (cmd[CMD_RIGHTSTEER].max - cmd[CMD_RIGHTSTEER].min);
 
-        // pow used to indicate the polarity of 'more turn'
-        if (cmd[CMD_RIGHTSTEER].pow > 0)
-            ax0 = ax0 - cmd[CMD_RIGHTSTEER].deadZone;
-        else
-            ax0 = 1 - ax0 - cmd[CMD_RIGHTSTEER].deadZone;
+        switch (cmd[CMD_RIGHTSTEER].type)
+        {
+            case GFCTRL_TYPE_JOY_AXIS:
+                ax0 = joyInfo->ax[cmd[CMD_RIGHTSTEER].val];
 
-        if (ax0 < 0) ax0 = 0;
+                // limit and normalise
+                if (ax0 > cmd[CMD_RIGHTSTEER].max)
+                {
+                    ax0 = cmd[CMD_RIGHTSTEER].max;
+                }
+                else if (ax0 < cmd[CMD_RIGHTSTEER].min)
+                {
+                    ax0 = cmd[CMD_RIGHTSTEER].min;
+                }
+                ax0 = (ax0 - cmd[CMD_RIGHTSTEER].min) / (cmd[CMD_RIGHTSTEER].max - cmd[CMD_RIGHTSTEER].min);
 
-        if (1 - cmd[CMD_RIGHTSTEER].deadZone != 0)
-            ax0 = ax0 / (1 - cmd[CMD_RIGHTSTEER].deadZone);
-        else
-            ax0 = 0;
+                // pow used to indicate the polarity of 'more turn'
+                if (cmd[CMD_RIGHTSTEER].pow > 0)
+                    ax0 = ax0 - cmd[CMD_RIGHTSTEER].deadZone;
+                else
+                    ax0 = 1 - ax0 - cmd[CMD_RIGHTSTEER].deadZone;
 
-        rightSteer = -1 * fabs(cmd[CMD_RIGHTSTEER].pow) * pow(ax0, 1.0f / cmd[CMD_RIGHTSTEER].sens) / (1.0 + cmd[CMD_RIGHTSTEER].spdSens * car->_speed_xy / 100.0);
-        break;
-    case GFCTRL_TYPE_MOUSE_AXIS:
-        ax0 = mouseInfo->ax[cmd[CMD_RIGHTSTEER].val] - cmd[CMD_RIGHTSTEER].deadZone;
-        if (ax0 > cmd[CMD_RIGHTSTEER].max) {
-            ax0 = cmd[CMD_RIGHTSTEER].max;
-        } else if (ax0 < cmd[CMD_RIGHTSTEER].min) {
-            ax0 = cmd[CMD_RIGHTSTEER].min;
-        }
-        ax0 = ax0 * cmd[CMD_RIGHTSTEER].pow;
-        rightSteer = - pow(fabs(ax0), 1.0f / cmd[CMD_RIGHTSTEER].sens) / (1.0f + cmd[CMD_RIGHTSTEER].spdSens * car->_speed_xy / 1000.0);
-        break;
-    case GFCTRL_TYPE_KEYBOARD:
-    case GFCTRL_TYPE_JOY_BUT:
-    case GFCTRL_TYPE_MOUSE_BUT:
-        if (cmd[CMD_RIGHTSTEER].type == GFCTRL_TYPE_KEYBOARD) {
-            ax0 = keyInfo[lookUpKeyMap(cmd[CMD_RIGHTSTEER].val)].state;
-        } else if (cmd[CMD_RIGHTSTEER].type == GFCTRL_TYPE_MOUSE_BUT) {
-            ax0 = mouseInfo->button[cmd[CMD_RIGHTSTEER].val];
-        } else {
-            ax0 = joyInfo->levelup[cmd[CMD_RIGHTSTEER].val];
-        }
+                if (ax0 < 0) ax0 = 0;
+
+                if (1 - cmd[CMD_RIGHTSTEER].deadZone != 0)
+                    ax0 = ax0 / (1 - cmd[CMD_RIGHTSTEER].deadZone);
+                else
+                    ax0 = 0;
+
+                rightSteer = -1 * fabs(cmd[CMD_RIGHTSTEER].pow) * pow(ax0, 1.0f / cmd[CMD_RIGHTSTEER].sens) / (1.0 + cmd[CMD_RIGHTSTEER].spdSens * car->_speed_xy / 100.0);
+                break;
+            case GFCTRL_TYPE_MOUSE_AXIS:
+                ax0 = mouseInfo->ax[cmd[CMD_RIGHTSTEER].val] - cmd[CMD_RIGHTSTEER].deadZone;
+                if (ax0 > cmd[CMD_RIGHTSTEER].max)
+                {
+                    ax0 = cmd[CMD_RIGHTSTEER].max;
+                }
+                else if (ax0 < cmd[CMD_RIGHTSTEER].min)
+                {
+                    ax0 = cmd[CMD_RIGHTSTEER].min;
+                }
+                ax0 = ax0 * cmd[CMD_RIGHTSTEER].pow;
+                rightSteer = -pow(fabs(ax0), 1.0f / cmd[CMD_RIGHTSTEER].sens) / (1.0f + cmd[CMD_RIGHTSTEER].spdSens * car->_speed_xy / 1000.0);
+                break;
+            case GFCTRL_TYPE_KEYBOARD:
+            case GFCTRL_TYPE_JOY_BUT:
+            case GFCTRL_TYPE_MOUSE_BUT:
+                if (cmd[CMD_RIGHTSTEER].type == GFCTRL_TYPE_KEYBOARD)
+                {
+                    ax0 = keyInfo[lookUpKeyMap(cmd[CMD_RIGHTSTEER].val)].state;
+                }
+                else if (cmd[CMD_RIGHTSTEER].type == GFCTRL_TYPE_MOUSE_BUT)
+                {
+                    ax0 = mouseInfo->button[cmd[CMD_RIGHTSTEER].val];
+                }
+                else
+                {
+                    ax0 = joyInfo->levelup[cmd[CMD_RIGHTSTEER].val];
+                }
 #if (BINCTRL_STEERING == JEPZ)
-        if (ax0 == 0) {
-            rightSteer = HCtx[idx]->prevRightSteer + s->deltaTime * 5.0;
-        } else {
-            ax0 = 2 * ax0 - 1;
-            sensFrac = 10.0 * cmd[CMD_RIGHTSTEER].sens;
-            speedFrac = fabs(car->_speed_x * cmd[CMD_RIGHTSTEER].spdSens);
-            if (speedFrac < 1.0) speedFrac = 1.0;
-            rightSteer = HCtx[idx]->prevRightSteer - s->deltaTime * ax0 * sensFrac / speedFrac;
-        }
-        if (rightSteer > 0.0) rightSteer = 0.0;
-        if (rightSteer < -1.0) rightSteer = -1.0;
+                if (ax0 == 0)
+                {
+                    rightSteer = HCtx[idx]->prevRightSteer + s->deltaTime * 5.0;
+                }
+                else
+                {
+                    ax0 = 2 * ax0 - 1;
+                    sensFrac = 10.0 * cmd[CMD_RIGHTSTEER].sens;
+                    speedFrac = fabs(car->_speed_x * cmd[CMD_RIGHTSTEER].spdSens);
+                    if (speedFrac < 1.0) speedFrac = 1.0;
+                    rightSteer = HCtx[idx]->prevRightSteer - s->deltaTime * ax0 * sensFrac / speedFrac;
+                }
+                if (rightSteer > 0.0) rightSteer = 0.0;
+                if (rightSteer < -1.0) rightSteer = -1.0;
 #elif (BINCTRL_STEERING == JPM)
-        // ax should be 0 or 1 here (to be checked) => -1 (zero steer) or +1 (full steer left).
-        ax0 = 2 * ax0 - 1;
-        sensFrac = 1.0 + (3.5 - 1.5 * ax0) * cmd[CMD_RIGHTSTEER].sens;
-        speedFrac = 1.0 + car->_speed_x * car->_speed_x * cmd[CMD_RIGHTSTEER].spdSens / 300.0;
-        rightSteer = HCtx[idx]->prevRightSteer - s->deltaTime * ax0 * sensFrac / speedFrac;
-        //GfOut("Right: ax=%4.1f, ws=%4.2f, ss=%4.2f, prev=%5.2f, new=%5.2f (spd=%6.2f)\n",
-        //	  ax0, sensFrac, speedFrac, HCtx[idx]->prevRightSteer, rightSteer, car->_speed_x);
-        if (rightSteer < -1.0)
-            rightSteer = -1.0;
-        else if (rightSteer > 0.0)
-            rightSteer = 0.0;
+                // ax should be 0 or 1 here (to be checked) => -1 (zero steer) or +1 (full steer left).
+                ax0 = 2 * ax0 - 1;
+                sensFrac = 1.0 + (3.5 - 1.5 * ax0) * cmd[CMD_RIGHTSTEER].sens;
+                speedFrac = 1.0 + car->_speed_x * car->_speed_x * cmd[CMD_RIGHTSTEER].spdSens / 300.0;
+                rightSteer = HCtx[idx]->prevRightSteer - s->deltaTime * ax0 * sensFrac / speedFrac;
+                // GfOut("Right: ax=%4.1f, ws=%4.2f, ss=%4.2f, prev=%5.2f, new=%5.2f (spd=%6.2f)\n",
+                //	  ax0, sensFrac, speedFrac, HCtx[idx]->prevRightSteer, rightSteer, car->_speed_x);
+                if (rightSteer < -1.0)
+                    rightSteer = -1.0;
+                else if (rightSteer > 0.0)
+                    rightSteer = 0.0;
 #else
-        if (ax0 == 0) {
-            rightSteer = 0;
-        } else {
-            ax0 = 2 * ax0 - 1;
-            rightSteer = HCtx[idx]->prevRightSteer - ax0 * s->deltaTime / cmd[CMD_RIGHTSTEER].sens / (1.0 + cmd[CMD_RIGHTSTEER].spdSens * car->_speed_x / 1000.0);
-            if (rightSteer > 0.0) rightSteer = 0.0;
-            if (rightSteer < -1.0) rightSteer = -1.0;
-        }
+                if (ax0 == 0)
+                {
+                    rightSteer = 0;
+                }
+                else
+                {
+                    ax0 = 2 * ax0 - 1;
+                    rightSteer = HCtx[idx]->prevRightSteer - ax0 * s->deltaTime / cmd[CMD_RIGHTSTEER].sens / (1.0 + cmd[CMD_RIGHTSTEER].spdSens * car->_speed_x / 1000.0);
+                    if (rightSteer > 0.0) rightSteer = 0.0;
+                    if (rightSteer < -1.0) rightSteer = -1.0;
+                }
 #endif
-        HCtx[idx]->prevRightSteer = rightSteer;
-        break;
-    default:
-        rightSteer = 0;
-        break;
-    }
+                HCtx[idx]->prevRightSteer = rightSteer;
+                break;
+            default:
+                rightSteer = 0;
+                break;
+        }
 
-    car->_steerCmd = leftSteer + rightSteer;
+        car->_steerCmd = leftSteer + rightSteer;
+    }
 
 #if SDL_FORCEFEEDBACK
 
@@ -1401,79 +1446,97 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         }
     }
 
+    // SIMULATED DRIVING ASSISTANCE: added if condition: only handle brake cmd input if the participant is allowed to.
+    // Do not let the human control the car when the AI is in full control
+    if (SMediator::GetInstance()->GetPControlSettings().ControlBrake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
+    {
+        switch (cmd[CMD_BRAKE].type)
+        {
+            case GFCTRL_TYPE_JOY_AXIS:
+                brake = joyInfo->ax[cmd[CMD_BRAKE].val];
+                if (brake > cmd[CMD_BRAKE].max)
+                {
+                    brake = cmd[CMD_BRAKE].max;
+                }
+                else if (brake < cmd[CMD_BRAKE].min)
+                {
+                    brake = cmd[CMD_BRAKE].min;
+                }
+                car->_brakeCmd = fabs(cmd[CMD_BRAKE].pow *
+                                      pow(fabs((brake - cmd[CMD_BRAKE].minVal) /
+                                               (cmd[CMD_BRAKE].max - cmd[CMD_BRAKE].min)),
+                                          1.0f / cmd[CMD_BRAKE].sens));
+                break;
+            case GFCTRL_TYPE_MOUSE_AXIS:
+                ax0 = mouseInfo->ax[cmd[CMD_BRAKE].val] - cmd[CMD_BRAKE].deadZone;
+                if (ax0 > cmd[CMD_BRAKE].max)
+                {
+                    ax0 = cmd[CMD_BRAKE].max;
+                }
+                else if (ax0 < cmd[CMD_BRAKE].min)
+                {
+                    ax0 = cmd[CMD_BRAKE].min;
+                }
+                ax0 = ax0 * cmd[CMD_BRAKE].pow;
+                car->_brakeCmd = pow(fabs(ax0), 1.0f / cmd[CMD_BRAKE].sens) / (1.0 + cmd[CMD_BRAKE].spdSens * car->_speed_x / 1000.0);
+                break;
+            case GFCTRL_TYPE_JOY_BUT:
+                car->_brakeCmd = joyInfo->levelup[cmd[CMD_BRAKE].val];
+                break;
+            case GFCTRL_TYPE_MOUSE_BUT:
+                car->_brakeCmd = mouseInfo->button[cmd[CMD_BRAKE].val];
+                break;
+            case GFCTRL_TYPE_KEYBOARD:
+                car->_brakeCmd = keyInfo[lookUpKeyMap(cmd[CMD_BRAKE].val)].state;
+                break;
+            default:
+                car->_brakeCmd = 0;
+                break;
+        }
 
-    switch (cmd[CMD_BRAKE].type) {
-    case GFCTRL_TYPE_JOY_AXIS:
-        brake = joyInfo->ax[cmd[CMD_BRAKE].val];
-        if (brake > cmd[CMD_BRAKE].max) {
-            brake = cmd[CMD_BRAKE].max;
-        } else if (brake < cmd[CMD_BRAKE].min) {
-            brake = cmd[CMD_BRAKE].min;
+        switch (cmd[CMD_CLUTCH].type)
+        {
+            case GFCTRL_TYPE_JOY_AXIS:
+                clutch = joyInfo->ax[cmd[CMD_CLUTCH].val];
+                if (clutch > cmd[CMD_CLUTCH].max)
+                {
+                    clutch = cmd[CMD_CLUTCH].max;
+                }
+                else if (clutch < cmd[CMD_CLUTCH].min)
+                {
+                    clutch = cmd[CMD_CLUTCH].min;
+                }
+                car->_clutchCmd = fabs(cmd[CMD_CLUTCH].pow *
+                                       pow(fabs((clutch - cmd[CMD_CLUTCH].minVal) /
+                                                (cmd[CMD_CLUTCH].max - cmd[CMD_CLUTCH].min)),
+                                           1.0f / cmd[CMD_CLUTCH].sens));
+                break;
+            case GFCTRL_TYPE_MOUSE_AXIS:
+                ax0 = mouseInfo->ax[cmd[CMD_CLUTCH].val] - cmd[CMD_CLUTCH].deadZone;
+                if (ax0 > cmd[CMD_CLUTCH].max)
+                {
+                    ax0 = cmd[CMD_CLUTCH].max;
+                }
+                else if (ax0 < cmd[CMD_CLUTCH].min)
+                {
+                    ax0 = cmd[CMD_CLUTCH].min;
+                }
+                ax0 = ax0 * cmd[CMD_CLUTCH].pow;
+                car->_clutchCmd = pow(fabs(ax0), 1.0f / cmd[CMD_CLUTCH].sens) / (1.0 + cmd[CMD_CLUTCH].spdSens * car->_speed_x / 1000.0);
+                break;
+            case GFCTRL_TYPE_JOY_BUT:
+                car->_clutchCmd = joyInfo->levelup[cmd[CMD_CLUTCH].val];
+                break;
+            case GFCTRL_TYPE_MOUSE_BUT:
+                car->_clutchCmd = mouseInfo->button[cmd[CMD_CLUTCH].val];
+                break;
+            case GFCTRL_TYPE_KEYBOARD:
+                car->_clutchCmd = keyInfo[lookUpKeyMap(cmd[CMD_CLUTCH].val)].state;
+                break;
+            default:
+                car->_clutchCmd = 0;
+                break;
         }
-        car->_brakeCmd = fabs(cmd[CMD_BRAKE].pow *
-                pow(fabs((brake - cmd[CMD_BRAKE].minVal) /
-                        (cmd[CMD_BRAKE].max - cmd[CMD_BRAKE].min)),
-                    1.0f / cmd[CMD_BRAKE].sens));
-        break;
-    case GFCTRL_TYPE_MOUSE_AXIS:
-        ax0 = mouseInfo->ax[cmd[CMD_BRAKE].val] - cmd[CMD_BRAKE].deadZone;
-        if (ax0 > cmd[CMD_BRAKE].max) {
-            ax0 = cmd[CMD_BRAKE].max;
-        } else if (ax0 < cmd[CMD_BRAKE].min) {
-            ax0 = cmd[CMD_BRAKE].min;
-        }
-        ax0 = ax0 * cmd[CMD_BRAKE].pow;
-        car->_brakeCmd =  pow(fabs(ax0), 1.0f / cmd[CMD_BRAKE].sens) / (1.0 + cmd[CMD_BRAKE].spdSens * car->_speed_x / 1000.0);
-        break;
-    case GFCTRL_TYPE_JOY_BUT:
-        car->_brakeCmd = joyInfo->levelup[cmd[CMD_BRAKE].val];
-        break;
-    case GFCTRL_TYPE_MOUSE_BUT:
-        car->_brakeCmd = mouseInfo->button[cmd[CMD_BRAKE].val];
-        break;
-    case GFCTRL_TYPE_KEYBOARD:
-        car->_brakeCmd = keyInfo[lookUpKeyMap(cmd[CMD_BRAKE].val)].state;
-        break;
-    default:
-        car->_brakeCmd = 0;
-        break;
-    }
-
-    switch (cmd[CMD_CLUTCH].type) {
-    case GFCTRL_TYPE_JOY_AXIS:
-        clutch = joyInfo->ax[cmd[CMD_CLUTCH].val];
-        if (clutch > cmd[CMD_CLUTCH].max) {
-            clutch = cmd[CMD_CLUTCH].max;
-        } else if (clutch < cmd[CMD_CLUTCH].min) {
-            clutch = cmd[CMD_CLUTCH].min;
-        }
-        car->_clutchCmd = fabs(cmd[CMD_CLUTCH].pow *
-                pow(fabs((clutch - cmd[CMD_CLUTCH].minVal) /
-                        (cmd[CMD_CLUTCH].max - cmd[CMD_CLUTCH].min)),
-                    1.0f / cmd[CMD_CLUTCH].sens));
-        break;
-    case GFCTRL_TYPE_MOUSE_AXIS:
-        ax0 = mouseInfo->ax[cmd[CMD_CLUTCH].val] - cmd[CMD_CLUTCH].deadZone;
-        if (ax0 > cmd[CMD_CLUTCH].max) {
-            ax0 = cmd[CMD_CLUTCH].max;
-        } else if (ax0 < cmd[CMD_CLUTCH].min) {
-            ax0 = cmd[CMD_CLUTCH].min;
-        }
-        ax0 = ax0 * cmd[CMD_CLUTCH].pow;
-        car->_clutchCmd =  pow(fabs(ax0), 1.0f / cmd[CMD_CLUTCH].sens) / (1.0 + cmd[CMD_CLUTCH].spdSens * car->_speed_x / 1000.0);
-        break;
-    case GFCTRL_TYPE_JOY_BUT:
-        car->_clutchCmd = joyInfo->levelup[cmd[CMD_CLUTCH].val];
-        break;
-    case GFCTRL_TYPE_MOUSE_BUT:
-        car->_clutchCmd = mouseInfo->button[cmd[CMD_CLUTCH].val];
-        break;
-    case GFCTRL_TYPE_KEYBOARD:
-        car->_clutchCmd = keyInfo[lookUpKeyMap(cmd[CMD_CLUTCH].val)].state;
-        break;
-    default:
-        car->_clutchCmd = 0;
-        break;
     }
 
     // if player's used the clutch manually then we dispense with autoClutch
@@ -1493,45 +1556,58 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         car->_ebrakeCmd = 0;
     }
 
-    switch (cmd[CMD_THROTTLE].type) {
-    case GFCTRL_TYPE_JOY_AXIS:
-        throttle = joyInfo->ax[cmd[CMD_THROTTLE].val];
-        if (throttle > cmd[CMD_THROTTLE].max) {
-            throttle = cmd[CMD_THROTTLE].max;
-        } else if (throttle < cmd[CMD_THROTTLE].min) {
-            throttle = cmd[CMD_THROTTLE].min;
+    // SIMULATED DRIVING ASSISTANCE: added if condition: only handle throttle cmd input if the participant is allowed to.
+    // Do not let the human control the car when the AI is in full control
+    if (SMediator::GetInstance()->GetPControlSettings().ControlAccel && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_COMPLETE_TAKEOVER)
+    {
+        switch (cmd[CMD_THROTTLE].type)
+        {
+            case GFCTRL_TYPE_JOY_AXIS:
+                throttle = joyInfo->ax[cmd[CMD_THROTTLE].val];
+                if (throttle > cmd[CMD_THROTTLE].max)
+                {
+                    throttle = cmd[CMD_THROTTLE].max;
+                }
+                else if (throttle < cmd[CMD_THROTTLE].min)
+                {
+                    throttle = cmd[CMD_THROTTLE].min;
+                }
+                car->_accelCmd = fabs(cmd[CMD_THROTTLE].pow *
+                                      pow(fabs((throttle - cmd[CMD_THROTTLE].minVal) /
+                                               (cmd[CMD_THROTTLE].max - cmd[CMD_THROTTLE].min)),
+                                          1.0f / cmd[CMD_THROTTLE].sens));
+                break;
+            case GFCTRL_TYPE_MOUSE_AXIS:
+                ax0 = mouseInfo->ax[cmd[CMD_THROTTLE].val] - cmd[CMD_THROTTLE].deadZone;
+                if (ax0 > cmd[CMD_THROTTLE].max)
+                {
+                    ax0 = cmd[CMD_THROTTLE].max;
+                }
+                else if (ax0 < cmd[CMD_THROTTLE].min)
+                {
+                    ax0 = cmd[CMD_THROTTLE].min;
+                }
+                ax0 = ax0 * cmd[CMD_THROTTLE].pow;
+                car->_accelCmd = pow(fabs(ax0), 1.0f / cmd[CMD_THROTTLE].sens) / (1.0 + cmd[CMD_THROTTLE].spdSens * car->_speed_x / 1000.0);
+                if (isnan(car->_accelCmd))
+                {
+                    car->_accelCmd = 0;
+                }
+                /* printf("  axO:%f  accelCmd:%f\n", ax0, car->_accelCmd); */
+                break;
+            case GFCTRL_TYPE_JOY_BUT:
+                car->_accelCmd = joyInfo->levelup[cmd[CMD_THROTTLE].val];
+                break;
+            case GFCTRL_TYPE_MOUSE_BUT:
+                car->_accelCmd = mouseInfo->button[cmd[CMD_THROTTLE].val];
+                break;
+            case GFCTRL_TYPE_KEYBOARD:
+                car->_accelCmd = keyInfo[lookUpKeyMap(cmd[CMD_THROTTLE].val)].state;
+                break;
+            default:
+                car->_accelCmd = 0;
+                break;
         }
-        car->_accelCmd = fabs(cmd[CMD_THROTTLE].pow *
-                pow(fabs((throttle - cmd[CMD_THROTTLE].minVal) /
-                        (cmd[CMD_THROTTLE].max - cmd[CMD_THROTTLE].min)),
-                    1.0f / cmd[CMD_THROTTLE].sens));
-        break;
-    case GFCTRL_TYPE_MOUSE_AXIS:
-        ax0 = mouseInfo->ax[cmd[CMD_THROTTLE].val] - cmd[CMD_THROTTLE].deadZone;
-        if (ax0 > cmd[CMD_THROTTLE].max) {
-            ax0 = cmd[CMD_THROTTLE].max;
-        } else if (ax0 < cmd[CMD_THROTTLE].min) {
-            ax0 = cmd[CMD_THROTTLE].min;
-        }
-        ax0 = ax0 * cmd[CMD_THROTTLE].pow;
-        car->_accelCmd =  pow(fabs(ax0), 1.0f / cmd[CMD_THROTTLE].sens) / (1.0 + cmd[CMD_THROTTLE].spdSens * car->_speed_x / 1000.0);
-        if (isnan (car->_accelCmd)) {
-            car->_accelCmd = 0;
-        }
-        /* printf("  axO:%f  accelCmd:%f\n", ax0, car->_accelCmd); */
-        break;
-    case GFCTRL_TYPE_JOY_BUT:
-        car->_accelCmd = joyInfo->levelup[cmd[CMD_THROTTLE].val];
-        break;
-    case GFCTRL_TYPE_MOUSE_BUT:
-        car->_accelCmd = mouseInfo->button[cmd[CMD_THROTTLE].val];
-        break;
-    case GFCTRL_TYPE_KEYBOARD:
-        car->_accelCmd = keyInfo[lookUpKeyMap(cmd[CMD_THROTTLE].val)].state;
-        break;
-    default:
-        car->_accelCmd = 0;
-        break;
     }
 
     // thanks Christos for the following: gradual accel/brake changes for on/off controls.
@@ -1707,11 +1783,13 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     // SIMULATED DRIVING ASSISTANCE: toggle intervention on/off
     tControlCmd input = cmd[CMD_INTERV_TGGLE];
-    if ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
+    if (SMediator::GetInstance()->GetPControlSettings().ControlInterventionToggle && 
+        ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
         || (input.type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[input.val]) 
-        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1))
+        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1)))
     {
         InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
+        IndicatorConfig::GetInstance()->ResetActiveIndicatorsToNeutral();
         SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
         m_prevIntervention = currentType;
     }
@@ -2241,8 +2319,9 @@ static void SetFuelAtRaceStart(tTrack* track, void *carHandle, void **carParmHan
         fuel_requested = initial_fuel;
     } else {
         // We must load and calculate parameters.
+        // SIMULATED DRIVING ASSISTANCE: changed the fuel_const_factor value
         const tdble fuel_cons_factor =
-            GfParmGetNum(*carParmHandle, SECT_ENGINE, PRM_FUELCONS, NULL, 1.0f);
+            0;
         tdble fuel_per_lap = track->length * MaxFuelPerMeter * fuel_cons_factor;
         tdble fuel_for_race = fuel_per_lap * (s->_totLaps + 1.0f);// + FuelReserve;
         // aimed at timed sessions:
