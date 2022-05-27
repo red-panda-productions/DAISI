@@ -285,16 +285,6 @@ float FileDataStorage::GetAverage(float& p_total) const
     return average;
 }
 
-/// @brief Add the new value to the array in the correct compression step
-/// @param p_values Array with values from the current compression step
-/// @param p_value The new value of this time step for the variable
-/// @param p_compressionStep The current compression step
-template <typename TNumber>
-void FileDataStorage::AddToArray(TNumber p_values[], TNumber p_value, int p_compressionStep) const
-{
-    p_values[p_compressionStep] = p_value;
-}
-
 /// @brief Get the median of the current compression step using Randomized QuickSelect
 /// @param p_values Array with values from the current compression step
 /// @return The median of the past time steps for a variable

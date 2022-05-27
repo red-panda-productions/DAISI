@@ -189,7 +189,7 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
 inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
 {
-    FILE *f = popen("nautilus --file-selection","r");
+    FILE *f = popen("zenity --file-selection --title=\"Choose a Black Box\"","r");
     fgets(p_buf, MAX_PATH_SIZE, f);
     return true;
 }

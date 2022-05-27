@@ -47,6 +47,17 @@ private:
     int Partition(float* p_values, int p_start, int p_end);
 
 public:
+
+    /// @brief Add the new value to the array in the correct compression step
+    /// @param p_values Array with values from the current compression step
+    /// @param p_value The new value of this time step for the variable
+    /// @param p_compressionStep The current compression step
+    template <typename TNumber>
+    void AddToArray(TNumber* p_values, TNumber p_value, int p_compressionStep) const
+    {
+        p_values[p_compressionStep] = p_value;
+    }
+
     std::experimental::filesystem::path Initialize(
         tDataToStore p_saveSettings,
         const std::string& p_fileName,
@@ -67,9 +78,6 @@ public:
     void AddForAveraging(float& p_total, float p_value);
 
     float GetAverage(float& p_total) const;
-
-    template <typename TNumber>
-    void AddToArray(TNumber* p_values, TNumber p_value, int p_compressionStep) const;
 
     template <typename TNumber>
     void WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade);

@@ -372,7 +372,15 @@ inline void ExecuteCLI(const char* p_command, bool p_showCommand)
 
 inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 {
-    return false;
+    p_sdaFolder = std::experimental::filesystem::temp_directory_path();
+    p_sdaFolder.append("sda");
+    std::string sdaFolderString = p_sdaFolder.string();
+
+    if (!GfDirExists(sdaFolderString.c_str()))
+    {
+        GfDirCreate(sdaFolderString.c_str());
+    }
+    return true;
 }
 #endif
 

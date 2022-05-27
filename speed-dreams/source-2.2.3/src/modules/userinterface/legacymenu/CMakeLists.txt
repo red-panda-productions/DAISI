@@ -112,4 +112,8 @@ SD_ADD_LIBRARY(legacymenu MODULE ${LEGACYMENU_SOURCES} ${LEGACYMENU_HEADERS})
 # SIMULATED DRIVING ASSISTANCE CHANGE: added backend
 ADD_SDLIB_LIBRARY(legacymenu portability tgf tgfclient tgfdata backend ${NETWORKING_LIB})
 
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(legacymenu stdc++fs)
+ENDIF(UNIX)
+
 SD_INSTALL_FILES(LIB modules/userinterface TARGETS legacymenu)
