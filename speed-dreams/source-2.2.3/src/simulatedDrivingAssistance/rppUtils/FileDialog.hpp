@@ -191,6 +191,11 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** 
 {
     FILE *f = popen("zenity --file-selection --title=\"Choose a Black Box\"","r");
     fgets(p_buf, MAX_PATH_SIZE, f);
+
+    int len = strlen(p_buf);
+
+    if(p_buf[len-1] == '\n') p_buf[len-1] = '\0';
+
     return true;
 }
 

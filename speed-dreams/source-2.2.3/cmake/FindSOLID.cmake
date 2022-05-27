@@ -11,6 +11,8 @@
 #
 # Created by Jean-Philippe Meuret (based on Mart Kelder's FindPLIB.cmake).
 
+MESSAGE(STATUS "BANANEN")
+
 # No use to do all of this twice.
 IF(SOLID_FOUND)
   RETURN()

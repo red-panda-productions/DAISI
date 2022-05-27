@@ -350,6 +350,7 @@ inline pid_t CreateProcess(const char* p_command, const char* p_parametersIn, co
 /// @param p_args           The arguments for the executable
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
+    //TODO start process in same terminal
     CreateProcess(p_executablePath.c_str(), p_args);
 }
 

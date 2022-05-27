@@ -525,12 +525,15 @@ static void SelectBlackBox(void* /* dummy */)
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
+
+#ifdef WIN32
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
+#endif
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
