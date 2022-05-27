@@ -35,7 +35,7 @@ public:
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void RaceStop(bool p_saveToDatabase);
 
-    InterventionExecutor* InterventionExecutor = nullptr;
+    InterventionExecutor* InterventionExec = nullptr;
     SocketBlackBox BlackBox;
 
     FileDataStorage* GetFileDataStorage();

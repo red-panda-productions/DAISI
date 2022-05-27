@@ -42,7 +42,7 @@
 inline std::string GetTestingDirectory()
 {
     std::experimental::filesystem::path sdaFolder;
-    if (!GetSdaFolder(sdaFolder)) throw std::exception("SDA folder not found");
+    if (!GetSdaFolder(sdaFolder)) THROW_RPP_EXCEPTION("SDA folder not found");
     return sdaFolder.append(TEST_DIRECTORY).string();
 }
 
@@ -313,7 +313,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml");  // @NOCOVERAGE, should always be available
+        THROW_RPP_EXCEPTION("Could not load test_car.xml");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
@@ -414,7 +414,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
                                                                                             \
         if (!GetSdaFolder(varName))                                                         \
         {                                                                                   \
-            throw std::exception("Failed to get SDA folder");                               \
+            THROW_RPP_EXCEPTION("Failed to get SDA folder");                                \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
         std::experimental::filesystem::create_directories(varName);                         \
@@ -504,7 +504,7 @@ void AssertTargetVersionChanges(void* p_upgradedRunSettingsHandle, filesystem::p
             AssertV4ToV5Changes(p_upgradedRunSettingsHandle);
             break;
         default:
-            throw std::exception("Unknown target version, cannot assert");
+            THROW_RPP_EXCEPTION("Unknown target version, cannot assert");
     }
 }
 
@@ -516,7 +516,9 @@ class RecorderUpgradeVersionTestFixture : public ::testing::TestWithParam<int>
 /// @brief Tests whether the base-recording is successfully upgrade to the target version.
 TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 {
-    int targetVersion = GetParam();
+    Random random;
+    int targetVersion = random.NextInt();
+    //int targetVersion = GetParam();
 
     // Start upgrading from the base v0 recording.
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);

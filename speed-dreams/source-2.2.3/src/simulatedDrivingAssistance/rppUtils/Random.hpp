@@ -2,6 +2,10 @@
 #include <cstdint>
 #include <random>
 
+#ifndef WIN32
+#include <limits.h>
+#endif
+
 #define BYTE   uint8_t
 #define USHORT uint16_t
 

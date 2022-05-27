@@ -312,7 +312,7 @@ TEST_F(IndicatorConfigLoadingTests, LoadIndicatorDataFromXML)
 
         // Load the created xml file into the indicator config and
         // test whether every value matches the original generated value.
-        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
+        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath,SMediator::GetInstance()->GetInterventionType());
         std::vector<tIndicatorData> loadedData = IndicatorConfig::GetInstance()->GetIndicatorData();
         for (InterventionAction action = 0; action < NUM_INTERVENTION_ACTION; action++)
         {
@@ -330,7 +330,7 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidScreenPosition)
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_SCR_POS);
         const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
-        ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::out_of_range);
+        ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath,SMediator::GetInstance()->GetInterventionType()), std::out_of_range);
     }
 }
 
@@ -343,7 +343,7 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidLoopInterval)
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_LOOP_INTERVAL);
         const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
-        ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath), std::runtime_error);
+        ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath,SMediator::GetInstance()->GetInterventionType()), std::runtime_error);
     }
 }
 
@@ -357,7 +357,7 @@ TEST_F(IndicatorConfigLoadingTests, ActivateMultipleIndicators)
         const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         // Activate every action and check whether the corresponding action is also returned by GetActiveIndicators.
-        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath);
+        IndicatorConfig::GetInstance()->LoadIndicatorData(filepath,SMediator::GetInstance()->GetInterventionType());
 
         // Must be of different type: speed / steer.
         IndicatorConfig::GetInstance()->ActivateIndicator(INTERVENTION_ACTION_STEER_LEFT);

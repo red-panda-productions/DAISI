@@ -22,7 +22,7 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path,INTERVENTION_TYPE_SHARED_CONTROL);
 
     SDAConfig config;
 

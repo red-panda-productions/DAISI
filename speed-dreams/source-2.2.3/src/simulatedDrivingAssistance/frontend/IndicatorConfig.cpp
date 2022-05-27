@@ -9,16 +9,17 @@
 
 #include "../rppUtils/RppUtils.hpp"
 
+#ifdef __linux__
+#include <sys/stat.h>
+#endif
+
 #include "IndicatorConfig.h"
-#include "Mediator.h"
 
 /// @brief        Loads the indicator data of every intervention action from config file in the given path
 /// @param p_path The path to the XML file containing the indicator data to load
-void IndicatorConfig::LoadIndicatorData(const char* p_path)
+void IndicatorConfig::LoadIndicatorData(const char* p_path, InterventionType p_interventionType)
 {
     void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
-
-    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
 
     // Load the indicator data for every intervention action
     char path[PATH_BUF_SIZE];
@@ -28,7 +29,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
         m_indicatorData[i] = {
             static_cast<InterventionAction>(i),
             LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path), interventionType),
+            LoadTexture(xmlHandle, std::string(path), p_interventionType),
             LoadText(xmlHandle, std::string(path))};
     }
 

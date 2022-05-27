@@ -14,7 +14,7 @@
     strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, "PASSWORD");             \
     testSettings.Port = 3306;                                                      \
     strcpy_s(testSettings.Address, SETTINGS_NAME_LENGTH, "127.0.0.1");             \
-    strcpy_s(testSettings.Schema, "sda_test");                                     \
+    strcpy_s(testSettings.Schema, SETTINGS_NAME_LENGTH, "sda_test");               \
     testSettings.UseSSL = true;                                                    \
     strcpy_s(testSettings.CACertFilePath, SETTINGS_NAME_LENGTH, "CA.txt");         \
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \

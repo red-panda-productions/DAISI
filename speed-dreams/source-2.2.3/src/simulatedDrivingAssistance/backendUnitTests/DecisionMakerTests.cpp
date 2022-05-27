@@ -103,7 +103,7 @@ void DecisionTest(bool p_isDecision)
     ASSERT_EQ(recorder->CurrentDecisions.GetAccel(), storage->SavedDecisions->GetAccel());
     ASSERT_EQ(recorder->CurrentDecisions.GetGear(), storage->SavedDecisions->GetGear());
     ASSERT_EQ(recorder->CurrentTimestamp, 0);
-    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mock == nullptr);
     ASSERT_EQ(mock->DecisionCount, DECISIONS_COUNT);
     ASSERT_FALSE(mock->Decisions == nullptr);
@@ -120,7 +120,7 @@ void ChangeSettingsTest(InterventionType p_intervention)
     decisionMaker.ChangeSettings(p_intervention);
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
-    InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+    InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mockCheck == nullptr);
 }
 

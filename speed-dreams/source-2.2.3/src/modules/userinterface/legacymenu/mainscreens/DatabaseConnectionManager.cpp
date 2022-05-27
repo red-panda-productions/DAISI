@@ -4,6 +4,7 @@
 #include "tgfclient.h"
 #include "tgf.h"
 #include "../rppUtils/FileDialog.hpp"
+#include "../rppUtils/RppUtils.hpp"
 #include <experimental/filesystem>
 #include <string>
 #include "guimenu.h"
@@ -263,7 +264,7 @@ void SetPort(void* p_scrHandle, int p_portControl)
 /// @param p_schemaControl the corresponding ui element control integers
 void SetSchema(void* p_scrHandle, int p_schemaControl)
 {
-    strcpy_s(s_dbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
+    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
     GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_dbSettings.Schema);
 }
 

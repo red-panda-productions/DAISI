@@ -59,16 +59,22 @@ SET(_MOCK_HEADERS
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 
 target_link_libraries(
-  backendUnitTests #moet het zelfde zijn
+  backendUnitTests
   gtest_main
   gmock_main
 )
+
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(backendUnitTests stdc++fs)
+ENDIF(UNIX)
 
 ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend frontend unitTestUtilities)
 
 ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
+
+ADD_MYSQL_PACKAGE(backendUnitTests)
 
 IF(WIN32)
     SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)

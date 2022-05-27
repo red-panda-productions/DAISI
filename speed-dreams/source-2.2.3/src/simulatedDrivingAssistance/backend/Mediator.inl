@@ -246,7 +246,7 @@ int Mediator<DecisionMaker>::GetMaxTime()
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
-    CarController.SetCar(p_car);
+    CarControl.SetCar(p_car);
     m_decisionMaker.Decide(p_car, p_situation, m_tickCount);
     m_tickCount++;
 }
@@ -271,7 +271,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, GetInterventionType());
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed

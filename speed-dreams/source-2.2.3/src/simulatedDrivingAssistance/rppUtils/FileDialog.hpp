@@ -1,5 +1,7 @@
 #pragma once
 #define MAX_PATH_SIZE 260
+#include <cstdio>
+#include "FileDialog.hpp"
 
 #ifdef WIN32
 // includes that are necessary for windows
@@ -10,7 +12,7 @@
 /// @brief              Releases a file dialog, deletes the filterSpec array and uninitializes the COM interface
 /// @param p_fileDialog The dialog to release
 /// @param p_filterSpec The filterSpec array to delete
-inline void Release(IFileDialog* p_fileDialog, COMDLG_FILTERSPEC* p_filterSpec)
+void Release(IFileDialog* p_fileDialog, COMDLG_FILTERSPEC* p_filterSpec)
 {
     delete[] p_filterSpec;
     p_fileDialog->Release();
@@ -21,7 +23,7 @@ inline void Release(IFileDialog* p_fileDialog, COMDLG_FILTERSPEC* p_filterSpec)
 /// @param p_shellItem  The shell item to release
 /// @param p_fileDialog The dialog to release
 /// @param p_filterSpec The filterSpec array to delete
-inline void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_FILTERSPEC* p_filterSpec)
+void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_FILTERSPEC* p_filterSpec)
 {
     p_shellItem->Release();
     Release(p_fileDialog, p_filterSpec);
@@ -35,7 +37,7 @@ inline void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_F
 /// @param p_exts     The extension filters of the types of file to select
 ///	@param p_extCount The amount of extensions/names provided
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
-inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
+bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
 {
     // Opens a file dialog on Windows
     // Functions returning an HRESULT are from shobjidl.h can all fail. In each such if block where it has failed, we provide the docs associated with that function
@@ -161,7 +163,7 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** 
 
 /// @brief              Releases a file dialog and uninitializes the COM interface
 /// @param p_fileDialog The dialog to release
-inline void Release(IFileDialog* p_fileDialog)
+void Release(IFileDialog* p_fileDialog)
 {
     p_fileDialog->Release();
     CoUninitialize();
@@ -170,13 +172,13 @@ inline void Release(IFileDialog* p_fileDialog)
 /// @brief              Releases a shell item and calls Release with the remaining parameter
 /// @param p_shellItem  The shell item to release
 /// @param p_fileDialog The dialog to release
-inline void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
+void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 {
     p_shellItem->Release();
     Release(p_fileDialog);
 }
-#elifdef __linux__
-
+#else
+#define Release(...)
 /// @brief            Opens a file dialog for the user to select a file, limiting the files shown to the provided parameters
 /// @param p_buf      A buffer to write the filename to
 /// @param p_err      A buffer to write an error to (if applicable)
@@ -189,6 +191,7 @@ inline bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** 
 {
     FILE *f = popen("nautilus --file-selection","r");
     fgets(p_buf, MAX_PATH_SIZE, f);
+    return true;
 }
 
 #endif

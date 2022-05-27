@@ -64,6 +64,7 @@ TARGET_INCLUDE_DIRECTORIES(integrationTests PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 TARGET_LINK_LIBRARIES(
 	integrationTests
+	rppUtils
 	gtest_main
 	gmock_main
 )

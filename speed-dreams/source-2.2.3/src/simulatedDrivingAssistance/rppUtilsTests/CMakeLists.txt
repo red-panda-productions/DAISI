@@ -41,6 +41,10 @@ target_link_libraries(
         gmock_main
 )
 
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(rppUtilsTests stdc++fs)
+ENDIF(UNIX)
+
 ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient)
 
 ADD_PLIB_LIBRARY(rppUtilsTests)

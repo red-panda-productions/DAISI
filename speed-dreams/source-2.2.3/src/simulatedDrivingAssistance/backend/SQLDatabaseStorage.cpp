@@ -1,5 +1,5 @@
 #include "SQLDatabaseStorage.h"
-#include "mediator.h"
+#include "Mediator.h"
 #include <string>
 #include "../rppUtils/RppUtils.hpp"
 #include "ConfigEnums.h"
@@ -10,7 +10,7 @@
     if (p_inputFile.eof())                                       \
     {                                                            \
         p_inputFile.close();                                     \
-        throw std::exception("Reached end of file prematurely"); \
+        THROW_RPP_EXCEPTION("Reached end of file prematurely");  \
     }                                                            \
     p_inputFile >> p_string;
 
@@ -391,7 +391,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
             values = "'Force'";
             break;
         default:
-            throw std::exception("Invalid intervention type index read from buffer file");
+            THROW_RPP_EXCEPTION("Invalid intervention type index read from buffer file");
     }
 
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))

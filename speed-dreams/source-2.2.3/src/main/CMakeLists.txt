@@ -37,6 +37,9 @@ SD_ADD_EXECUTABLE(${_TARGET_NAME} ${_SOURCES})
 
 ADD_SDLIB_LIBRARY(${_TARGET_NAME} portability tgf tgfclient tgfdata backend)
 
+IF(UNIX)
+	TARGET_LINK_LIBRARIES(${_TARGET_NAME} stdc++fs)
+ENDIF(UNIX)
 # Needed when using the "MinGW Makefiles" CMake generator (but not with the "MSYS Makefiles" one !)
 IF(MINGW)
 	TARGET_LINK_LIBRARIES(${_TARGET_NAME} ${MINGW32_LIBRARY})

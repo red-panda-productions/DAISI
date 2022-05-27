@@ -27,7 +27,7 @@ public:
         TrialStartTime = p_trialStartTime;
         BlackboxTime = p_blackboxTime;
         EnvironmentVersion = p_environmentVersion;
-        InterventionType = p_interventionType;
+        Intervention = p_interventionType;
         std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
         filePath.append(p_fileName);
         return {filePath};
@@ -36,7 +36,7 @@ public:
     time_t TrialStartTime;
     time_t BlackboxTime;
     int EnvironmentVersion;
-    InterventionType InterventionType;
+    InterventionType Intervention;
     DecisionTuple* SavedDecisions;
 
     void Shutdown()

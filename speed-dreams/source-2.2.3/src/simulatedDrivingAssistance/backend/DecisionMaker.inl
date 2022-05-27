@@ -110,7 +110,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     int decisionCount = 0;
     IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
-    InterventionExecutor->RunDecision(decisions, decisionCount);
+    InterventionExec->RunDecision(decisions, decisionCount);
 
     return decisionMade;
 }
@@ -120,8 +120,8 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
-    delete InterventionExecutor;
-    InterventionExecutor = Config.SetInterventionType(p_dataSetting);
+    delete InterventionExec;
+    InterventionExec = Config.SetInterventionType(p_dataSetting);
 }
 
 /// @brief         Changes the settings of what data should be collected

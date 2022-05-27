@@ -1,4 +1,5 @@
 #include "SDAConfig.h"
+#include "../rppUtils/RppUtils.hpp"
 
 /// @brief                  Sets the allowed actions that the black box can take
 /// @param p_allowedActions The allowed actions

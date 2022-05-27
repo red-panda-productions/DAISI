@@ -36,10 +36,14 @@ SET(_MOCK_HEADERS )
 SD_ADD_EXECUTABLE(frontendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 
 target_link_libraries(
-  frontendUnitTests #moet het zelfde zijn
+  frontendUnitTests
   gtest_main
   gmock_main
 )
+
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(frontendUnitTests stdc++ stdc++fs)
+ENDIF(UNIX)
 
 ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend backend)
 

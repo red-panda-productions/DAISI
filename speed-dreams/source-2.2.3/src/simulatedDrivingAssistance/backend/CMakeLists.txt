@@ -55,10 +55,11 @@ SET(_HEADERS
 	BlackBoxData.h
 	AccelDecision.h
 	IPCPointerManager.h
+	MySQLHeaders.h
 )
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability frontend)
+ADD_SDLIB_INCLUDEDIR(tgf math portability frontend rppUtils)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)

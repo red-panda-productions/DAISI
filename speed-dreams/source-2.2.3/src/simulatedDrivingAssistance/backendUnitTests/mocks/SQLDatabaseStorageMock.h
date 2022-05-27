@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <fstream>
-#include "mysql/jdbc.h"
+#include "MySQLHeaders.h"
 #include "VariableStore.h"
 
 /// @brief A class that can store data to a SQL database

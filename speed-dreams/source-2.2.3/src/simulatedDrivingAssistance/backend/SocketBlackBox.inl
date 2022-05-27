@@ -7,7 +7,7 @@
 
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
-    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(PCWSTR p_ip, int p_port);                                                                               \
+    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(IPC_IP_TYPE p_ip, int p_port);                                                                          \
     template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                     \
     template void SocketBlackBox<p_type1, p_type2>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests); \
     template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                       \

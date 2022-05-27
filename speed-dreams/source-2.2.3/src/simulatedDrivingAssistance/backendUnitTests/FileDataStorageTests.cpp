@@ -4,6 +4,7 @@
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
+#include <algorithm>
 
 /// @brief The file directory to use for writing test files to, relative to the OS's Temp folder.
 /// This directory should be allowed to be deleted by tests.
