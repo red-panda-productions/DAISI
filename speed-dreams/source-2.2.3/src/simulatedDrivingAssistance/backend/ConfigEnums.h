@@ -40,8 +40,9 @@ typedef unsigned int InterventionType;
 #define INTERVENTION_TYPE_ONLY_SIGNALS      1
 #define INTERVENTION_TYPE_SHARED_CONTROL    2
 #define INTERVENTION_TYPE_COMPLETE_TAKEOVER 3
+#define INTERVENTION_TYPE_AUTONOMOUS_AI     4
 
-#define NUM_INTERVENTION_TYPES 4
+#define NUM_INTERVENTION_TYPES 5
 
 /// @brief the different ways a race can end
 typedef unsigned int RaceEndType;

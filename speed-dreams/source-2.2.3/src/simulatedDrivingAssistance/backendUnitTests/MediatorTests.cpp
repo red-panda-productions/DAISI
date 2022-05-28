@@ -82,6 +82,7 @@ TEST_CASE(MediatorTests, InterventionTestNoSignals, InterventionTestMediator, (I
 TEST_CASE(MediatorTests, InterventionTestOnlySignals, InterventionTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTestSharedControl, InterventionTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+TEST_CASE(MediatorTests, InterventionTestAutonomousAI, InterventionTestMediator, (INTERVENTION_TYPE_AUTONOMOUS_AI))
 
 /// @brief                      Tests if the Mediator sets and gets the black box sync option correctly
 /// @param p_blackBoxSyncOption The sync option that needs to be set
@@ -150,6 +151,7 @@ TEST_CASE(MediatorTests, InterventionTypeTestNoSignals, InterventionTypeTestMedi
 TEST_CASE(MediatorTests, InterventionTypeTestOnlySignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTypeTestSharedControl, InterventionTypeTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+TEST_CASE(MediatorTests, InterventionTypeTestAutonomousAI, InterventionTypeTestMediator, (INTERVENTION_TYPE_AUTONOMOUS_AI))
 
 /// @brief              Tests if the mediator sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer

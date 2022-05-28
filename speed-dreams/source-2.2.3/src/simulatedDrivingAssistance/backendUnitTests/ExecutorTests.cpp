@@ -47,4 +47,5 @@ void InterventionExecutorTest(unsigned int p_interventionType)
 TEST_CASE(ExecutorTest, NoIntervention, InterventionExecutorTest, (INTERVENTION_TYPE_NO_SIGNALS));          // tests no signals
 TEST_CASE(ExecutorTest, OnlySingnals, InterventionExecutorTest, (INTERVENTION_TYPE_ONLY_SIGNALS));          // tests only signals
 TEST_CASE(ExecutorTest, WhenNeeded, InterventionExecutorTest, (INTERVENTION_TYPE_SHARED_CONTROL));          // test only when needed
-TEST_CASE(ExecutorTest, AlwaysIntervene, InterventionExecutorTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER));  // tests always
+TEST_CASE(ExecutorTest, AlwaysIntervene, InterventionExecutorTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER));  // test control when needed
+TEST_CASE(ExecutorTest, AutonomousAI, InterventionExecutorTest, (INTERVENTION_TYPE_AUTONOMOUS_AI));         // tests always

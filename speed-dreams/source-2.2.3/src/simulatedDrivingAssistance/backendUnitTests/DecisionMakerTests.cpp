@@ -55,7 +55,8 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    if(!p_emptyPath) {
+    if (!p_emptyPath)
+    {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
     ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
@@ -128,6 +129,7 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestNoIntervention, ChangeSettingsTe
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestAlwaysIntervene, ChangeSettingsTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestIndication, ChangeSettingsTest, (INTERVENTION_TYPE_ONLY_SIGNALS));
 TEST_CASE(DecisionMakerTests, ChangeSettingsTestPerformWhenNeeded, ChangeSettingsTest, (INTERVENTION_TYPE_SHARED_CONTROL));
+TEST_CASE(DecisionMakerTests, ChangeSettingsTestAutonomousAI, ChangeSettingsTest, (INTERVENTION_TYPE_AUTONOMOUS_AI));
 
 /// @brief				 Tests if the data collection settings can be set correctly
 /// @param  p_dataToStore data settings that will be set.
