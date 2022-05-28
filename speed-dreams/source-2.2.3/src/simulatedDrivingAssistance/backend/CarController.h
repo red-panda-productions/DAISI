@@ -28,9 +28,9 @@ public:
 
     int GetLightCmd() const;
 
-    bool IsSteerDecision();
-    bool IsBrakeDecision();
-    bool IsAccelDecision();
+    bool IsSteerDecision() const;
+    bool IsBrakeDecision() const;
+    bool IsAccelDecision() const;
 
     void SetSteerDecision(bool p_steerDecision);
     void SetBrakeDecision(bool p_brakeDecision);
@@ -48,5 +48,5 @@ private:
     bool m_isBrakeDecision = false;
     bool m_isAccelDecision = false;
 
-    tDecisionThresholds m_thresholds;
+    tDecisionThresholds m_thresholds = nullptr;
 };

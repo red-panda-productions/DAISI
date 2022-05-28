@@ -106,21 +106,21 @@ int CarController::GetLightCmd() const
 
 /// @brief  Gets whether there is a steer decision for the car
 /// @return Whether there is a steer decision for the car
-bool CarController::IsSteerDecision()
+bool CarController::IsSteerDecision() const
 {
     return m_isSteerDecision;
 }
 
 /// @brief  Gets whether there is a brake decision for the car
 /// @return Whether there is a brake decision for the car
-bool CarController::IsBrakeDecision()
+bool CarController::IsBrakeDecision() const
 {
     return m_isBrakeDecision;
 }
 
 /// @brief  Gets whether there is an accel decision for the car
 /// @return Whether there is an accel decision for the car
-bool CarController::IsAccelDecision()
+bool CarController::IsAccelDecision() const
 {
     return m_isAccelDecision;
 }
