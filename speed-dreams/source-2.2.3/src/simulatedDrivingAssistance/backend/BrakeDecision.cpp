@@ -3,7 +3,7 @@
 
 void BrakeDecision::RunIndicateCommands()
 {
-    if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake) return;
+    if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI) return;
 
     SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_SPEED_BRAKE);
 }

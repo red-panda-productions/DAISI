@@ -50,6 +50,9 @@ public:
     tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
+    bool IsSteerDecision();
+    bool IsBrakeDecision();
+    bool IsAccelDecision();
     int GetMaxTime();
 
     static Mediator* GetInstance();

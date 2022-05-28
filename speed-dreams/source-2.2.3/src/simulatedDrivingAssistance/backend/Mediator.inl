@@ -45,6 +45,9 @@ namespace filesystem = std::experimental::filesystem;
     template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
     template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
     template bool Mediator<type>::TimeOut();                                                                                                            \
+    template bool Mediator<type>::IsSteerDecision();                                                                                                    \
+    template bool Mediator<type>::IsBrakeDecision();                                                                                                    \
+    template bool Mediator<type>::IsAccelDecision();                                                                                                    \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the allowed actions in SDAConfig to p_allowedActions
@@ -165,6 +168,7 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetThresholdSettings(tDecisionThresholds p_thresholds)
 {
     m_thresholds = p_thresholds;
+    CarController.SetThresholds(p_thresholds);
 }
 
 /// @brief  Gets the allowed black box actions setting
@@ -238,6 +242,30 @@ template <typename DecisionMaker>
 int Mediator<DecisionMaker>::GetMaxTime()
 {
     return m_decisionMaker.Config.GetMaxTime();
+}
+
+/// @brief  Gets whether there has been done a steer decision
+/// @return The steer decision
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::IsSteerDecision()
+{
+    return CarController.IsSteerDecision();
+}
+
+/// @brief  Gets whether there has been done a brake decision
+/// @return The brake decision
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::IsBrakeDecision()
+{
+    return CarController.IsBrakeDecision();
+}
+
+/// @brief  Gets whether there has been done an accel decision
+/// @return The accel decision
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::IsAccelDecision()
+{
+    return CarController.IsAccelDecision();
 }
 
 /// @brief              Does one drive tick in the framework

@@ -6,11 +6,13 @@
 class CarController
 {
 public:
-    void SetSteerCmd(float p_steer) const;
+    void SetSteerCmd(float p_steer);
 
-    void SetAccelCmd(float p_accel) const;
+    void SetAccelCmd(float p_accel);
 
-    void SetBrakeCmd(float p_brake) const;
+    void SetBrakeCmd(float p_brake);
+
+    void SetThresholds(tDecisionThresholds p_thresholds);
 
     void SetClutchCmd(float p_clutch) const;
 
@@ -26,6 +28,10 @@ public:
 
     int GetLightCmd() const;
 
+    bool IsSteerDecision();
+    bool IsBrakeDecision();
+    bool IsAccelDecision();
+
     void ShowIntervention(InterventionAction p_element) const;
 
     void SetCar(tCarElt* p_car);
@@ -34,4 +40,9 @@ public:
 
 private:
     tCarElt* m_car = nullptr;
+    bool m_isSteerDecision = false;
+    bool m_isBrakeDecision = false;
+    bool m_isAccelDecision = false;
+
+    tDecisionThresholds m_thresholds;
 };

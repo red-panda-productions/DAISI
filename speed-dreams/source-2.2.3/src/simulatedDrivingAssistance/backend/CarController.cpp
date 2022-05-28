@@ -1,26 +1,37 @@
 #include <algorithm>
+#include <iostream>
 #include "CarController.h"
 #include "IndicatorConfig.h"
 
 /// @brief			Edits the steer command of the game
 /// @param  p_steer The amount that needs to be edited
-void CarController::SetSteerCmd(float p_steer) const
+void CarController::SetSteerCmd(float p_steer)
 {
     m_car->ctrl.steer += p_steer;
+    m_isSteerDecision = abs(p_steer) > m_thresholds.Steer;
 }
 
 /// @brief			Edits the acceleration command of the game
 /// @param  p_accel The amount that needs to be edited
-void CarController::SetAccelCmd(float p_accel) const
+void CarController::SetAccelCmd(float p_accel)
 {
     m_car->ctrl.accelCmd += p_accel;
+    m_isAccelDecision = p_accel > m_thresholds.Accel;
 }
 
 /// @brief			Edits the brake command of the game
 /// @param  p_brake The amount that needs to be edited
-void CarController::SetBrakeCmd(float p_brake) const
+void CarController::SetBrakeCmd(float p_brake)
 {
     m_car->ctrl.brakeCmd = std::max(p_brake, m_car->ctrl.brakeCmd);
+    m_isBrakeDecision = p_brake > m_thresholds.Brake;
+}
+
+/// @brief			Sets the thresholds of the game
+/// @param  p_steer The amount that needs to be edited
+void CarController::SetThresholds(tDecisionThresholds p_thresholds)
+{
+    m_thresholds = p_thresholds;
 }
 
 /// @brief			 Edits the clutch command of the game
@@ -91,4 +102,25 @@ float CarController::GetClutchCmd() const
 int CarController::GetLightCmd() const
 {
     return m_car->ctrl.lightCmd;
+}
+
+/// @brief  Gets whether there is a steer decision for the car
+/// @return Whether there is a steer decision for the car
+bool CarController::IsSteerDecision()
+{
+    return m_isSteerDecision;
+}
+
+/// @brief  Gets whether there is a brake decision for the car
+/// @return Whether there is a brake decision for the car
+bool CarController::IsBrakeDecision()
+{
+    return m_isBrakeDecision;
+}
+
+/// @brief  Gets whether there is an accel decision for the car
+/// @return Whether there is an accel decision for the car
+bool CarController::IsAccelDecision()
+{
+    return m_isAccelDecision;
 }
