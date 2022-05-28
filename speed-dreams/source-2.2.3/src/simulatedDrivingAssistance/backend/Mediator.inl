@@ -48,6 +48,9 @@ namespace filesystem = std::experimental::filesystem;
     template bool Mediator<type>::IsSteerDecision();                                                                                                    \
     template bool Mediator<type>::IsBrakeDecision();                                                                                                    \
     template bool Mediator<type>::IsAccelDecision();                                                                                                    \
+    template void Mediator<type>::SetSteerDecision(bool p_steerDecision);                                                                               \
+    template void Mediator<type>::SetBrakeDecision(bool p_brakeDecision);                                                                               \
+    template void Mediator<type>::SetAccelDecision(bool p_accelDecision);                                                                               \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the allowed actions in SDAConfig to p_allowedActions
@@ -266,6 +269,30 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::IsAccelDecision()
 {
     return CarController.IsAccelDecision();
+}
+
+/// @brief  Sets the steer decision
+/// @param p_steerDecision The steer decision
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetSteerDecision(bool p_steerDecision)
+{
+    return CarController.SetSteerDecision(p_steerDecision);
+}
+
+/// @brief  Sets the brake decision
+/// @param p_brakeDecision The brake decision
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetBrakeDecision(bool p_brakeDecision)
+{
+    return CarController.SetBrakeDecision(p_brakeDecision);
+}
+
+/// @brief  Sets the accel decision
+/// @param p_accelDecision The accel decision
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetAccelDecision(bool p_accelDecision)
+{
+    return CarController.SetAccelDecision(p_accelDecision);
 }
 
 /// @brief              Does one drive tick in the framework

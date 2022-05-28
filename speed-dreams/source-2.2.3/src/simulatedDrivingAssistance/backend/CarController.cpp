@@ -124,3 +124,24 @@ bool CarController::IsAccelDecision()
 {
     return m_isAccelDecision;
 }
+
+/// @brief Sets whether there is a steer decision for the car
+/// @param p_steerDecision Whether there is a steer decision for the car
+void CarController::SetSteerDecision(bool p_steerDecision)
+{
+    m_isSteerDecision = p_steerDecision;
+}
+
+/// @brief Sets whether there is a brake decision for the car
+/// @param p_brakeDecision Whether there is a brake decision for the car
+void CarController::SetBrakeDecision(bool p_brakeDecision)
+{
+    m_isBrakeDecision = p_brakeDecision;
+}
+
+/// @brief Sets whether there is an accel decision for the car
+/// @param p_accelDecision Whether there is an accel decision for the car
+void CarController::SetAccelDecision(bool p_accelDecision)
+{
+    m_isAccelDecision = p_accelDecision;
+}

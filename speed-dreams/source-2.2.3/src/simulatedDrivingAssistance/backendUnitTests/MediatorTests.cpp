@@ -492,3 +492,48 @@ TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
         ASSERT_EQ(SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.GetSaveToDatabaseCheck(), controlBool);
     }
 }
+
+/// @brief tests if the steer decision is correctly set
+TEST(MediatorTests, SetSteerDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool steerBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->IsSteerDecision(), steerBool);
+    }
+}
+
+/// @brief tests if the brake decision is correctly set
+TEST(MediatorTests, SetBrakeDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool brakeBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->IsBrakeDecision(), brakeBool);
+    }
+}
+
+/// @brief tests if the accel decision is correctly set
+TEST(MediatorTests, SetAccelDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool accelBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->IsAccelDecision(), accelBool);
+    }
+}

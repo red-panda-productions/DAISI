@@ -32,6 +32,10 @@ public:
     bool IsBrakeDecision();
     bool IsAccelDecision();
 
+    void SetSteerDecision(bool p_steerDecision);
+    void SetBrakeDecision(bool p_brakeDecision);
+    void SetAccelDecision(bool p_accelDecision);
+
     void ShowIntervention(InterventionAction p_element) const;
 
     void SetCar(tCarElt* p_car);

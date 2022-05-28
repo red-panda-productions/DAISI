@@ -53,6 +53,9 @@ public:
     bool IsSteerDecision();
     bool IsBrakeDecision();
     bool IsAccelDecision();
+    void SetSteerDecision(bool p_steerDecision);
+    void SetBrakeDecision(bool p_brakeDecision);
+    void SetAccelDecision(bool p_accelDecision);
     int GetMaxTime();
 
     static Mediator* GetInstance();

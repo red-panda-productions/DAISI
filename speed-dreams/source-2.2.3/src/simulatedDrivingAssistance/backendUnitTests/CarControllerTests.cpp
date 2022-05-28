@@ -139,3 +139,51 @@ void ShowInterventionTest(InterventionAction p_action)
 TEST_CASE(CarControllerTests, ShowInterventionTestSteer, ShowInterventionTest, (INTERVENTION_ACTION_STEER_LEFT))
 TEST_CASE(CarControllerTests, ShowInterventionTestSteer2, ShowInterventionTest, (INTERVENTION_ACTION_STEER_RIGHT))
 TEST_CASE(CarControllerTests, ShowInterventionTestBrake, ShowInterventionTest, (INTERVENTION_ACTION_SPEED_BRAKE))
+
+/// @brief tests if the steer decision is correctly set
+TEST(CarControllerTests, SetSteerDecisionTest)
+{
+    IndicatorConfig::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+    CarController carController;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool steerBool = random.NextBool();
+        carController.SetSteerDecision(steerBool);
+        ASSERT_EQ(carController.IsSteerDecision(), steerBool);
+    }
+}
+
+/// @brief tests if the brake decision is correctly set
+TEST(CarControllerTests, SetBrakeDecisionTest)
+{
+    IndicatorConfig::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+    CarController carController;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool brakeBool = random.NextBool();
+        carController.SetBrakeDecision(brakeBool);
+        ASSERT_EQ(carController.IsBrakeDecision(), brakeBool);
+    }
+}
+
+/// @brief tests if the accel decision is correctly set
+TEST(CarControllerTests, SetAccelDecisionTest)
+{
+    IndicatorConfig::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+    CarController carController;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool accelBool = random.NextBool();
+        carController.SetAccelDecision(accelBool);
+        ASSERT_EQ(carController.IsAccelDecision(), accelBool);
+    }
+}
