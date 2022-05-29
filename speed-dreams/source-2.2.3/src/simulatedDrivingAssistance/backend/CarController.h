@@ -6,6 +6,14 @@
 class CarController
 {
 public:
+    CarController()
+    {
+        m_thresholds = new DecisionThresholds();
+        m_thresholds->Steer = 0;
+        m_thresholds->Brake = 0;
+        m_thresholds->Accel = 0;
+    }
+
     void SetSteerCmd(float p_steer);
 
     void SetAccelCmd(float p_accel);
