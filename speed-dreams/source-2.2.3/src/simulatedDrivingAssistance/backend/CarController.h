@@ -12,7 +12,7 @@ public:
 
     void SetBrakeCmd(float p_brake);
 
-    void SetThresholds(tDecisionThresholds p_thresholds);
+    void SetThresholds(tDecisionThresholds* p_thresholds);
 
     void SetClutchCmd(float p_clutch) const;
 
@@ -48,5 +48,5 @@ private:
     bool m_isBrakeDecision = false;
     bool m_isAccelDecision = false;
 
-    tDecisionThresholds m_thresholds = nullptr;
+    tDecisionThresholds* m_thresholds = nullptr;
 };
