@@ -513,7 +513,8 @@ int WebServer::updateAsyncStatus()
                             msgTag.append(to_string(dispatchedMsgs));
                             GfLogInfo("WebServer: Adding messagge to be displayed to the NotificationQueque:\n%s\n", msgTag.c_str());
 
-                            notifications.msglist.push_back(GfParmGetStr(xmlReply, "content/reply/messages", msgTag.c_str(), "null"));
+                            /// SIMULATED DRIVING ASSISTANCE: removed notifications of 'content/reply/messages' 
+                            /// so that it is also prevented that a popup background is displayed very shortly on the screen
                            }
                     }
                 }
@@ -542,10 +543,12 @@ int WebServer::updateAsyncStatus()
                     }
                     else
                     {
+                        /// SIMULATED DRIVING ASSISTANCE: removed popup that the WebServer Login has failed
                         GfLogInfo("WebServer: Login Failed: Wrong username or password.\n");
-                        notifications.msglist.push_back("WebServer: Login Failed: Wrong username or password.");
 
-                        return 1;
+                        /// SIMULATED DRIVING ASSISTANCE: made the notification messenger idle by returning 0
+                        /// instead of 1
+                        return 0;
                     }
 
                     GfLogInfo("WebServer: Assigned session id is: %s\n", this->sessionId);
@@ -683,7 +686,7 @@ int WebServer::sendGenericRequest (std::string data, std::string& serverReply)
         // Check for errors
         if(res != CURLE_OK)
         {
-            notifications.msglist.push_back("Failed to connect to the WebServer!");
+            /// SIMULATED DRIVING ASSISTANCE: removed popup that system failed to connect to WebServer
             GfLogInfo("WebServer: Unable to perform SYNC request some error occured: %s\n", data.c_str());
             fprintf(stderr, "curl_easy_perform() failed: %s\n",	curl_easy_strerror(res));
         }
