@@ -29,9 +29,33 @@ jobs:
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'integrationtest')
     
     runs-on: windows-latest
-    
+    env:
+      BUILD_TYPE: Release
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_ROOT: ${{github.workspace}}/boost/boost
+      BOOST_VERSION: 1.79.0
+
     steps:
     - uses: actions/checkout@v2
+
+    - name: Cache boost
+      uses: actions/cache@v2
+      id: cache-boost
+      with:
+        # Set the default path as the path to cache
+        path: ${{env.BOOST_ROOT}}
+        # Use the version as the key to only cache the correct version
+        key: boost-${{env.BOOST_VERSION}}
+
+    - name: Install boost
+      if: steps.cache-boost.outputs.cache-hit != 'true'
+      uses: MarkusJx/install-boost@v2.3.0
+      id: install-boost
+      with:
+        boost_version: ${{env.BOOST_VERSION}}
+        toolset: msvc
+        platform_version: 2022
+        boost_install_dir: ${{env.BOOST_PATH}}
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
