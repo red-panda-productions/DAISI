@@ -24,10 +24,15 @@
     template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
-#define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
-#define BUFFER_FILE_PATH   "race_data_buffer.txt"
-#define MAX_ULONG          4294967295
+#define TEMP_DECISIONMAKER    DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
+#define BUFFER_FILE_PATH      "race_data_buffer.txt"
+#define MAX_ULONG             4294967295
 
+#ifdef WIN32
+#define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(p_file))
+#else
+#define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())
+#endif
 /// @brief                     Initializes the decision maker
 /// @param  p_initialTickCount The initial tickCount
 /// @param  p_initialCar       The initial car
@@ -71,7 +76,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::string fileName = blackBoxPath.filename().string();
     std::string path = blackBoxPath.stem().string();
-    std::time_t lastwrite = std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath));
+    std::time_t lastwrite = GET_FILE_DATE(blackBoxPath);
     char* trackFileName = p_track->filename;
     const char* trackname = p_track->name;
     int trackversion = p_track->version;

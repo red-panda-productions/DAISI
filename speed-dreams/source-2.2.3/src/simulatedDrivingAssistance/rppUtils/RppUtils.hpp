@@ -25,8 +25,7 @@
 #define OS_SEPARATOR "/"
 #define OS_SEPARATOR_CHAR '/'
 #define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-#define PROCESS_INFORMATION pid_t
-#define PROCESS_INFORMATION pid_t
+#define PROCESS_INFORMATION FILE*
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
 #define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest,p_src,p_len)
 #define strcat_s(p_dest, p_len, p_src) strncat(p_dest,p_src,p_len)
@@ -277,71 +276,6 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
 }
 #else
 
-/******************************************************************************
-*   CreateProcess
-*
-*   Copyright (C) 2010 Andrew Smith
-*
-*   This program is free software: you can redistribute it and/or modify
-*   it under the terms of the GNU General Public License as published by
-*   the Free Software Foundation, version 2 of the License only, not
-*   any earlier or later version.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-inline pid_t CreateProcess(const char* p_command, const char* p_parametersIn, const char* p_workingDirectory = nullptr)
-{
-    const int maxNumArgs = 1024;
-    const char* args[maxNumArgs];
-    char* parameters = nullptr;
-
-    memset(args, 0, (sizeof(char*) * maxNumArgs));
-    args[0] = p_command;
-
-    if(p_parametersIn != nullptr)
-    {
-        parameters = strdup(p_parametersIn);
-        int strLen = strlen(parameters);
-
-        int numParameters = 1;
-        bool expectNextParam = true;
-        int i;
-        for(i = 0; i < strLen; i++)
-        {
-            if(parameters[i] == ' ' || parameters[i] == '\t' ||
-               parameters[i] == '\n')
-            {
-                expectNextParam = true;
-                parameters[i] = '\0';
-            }
-            else if(expectNextParam)
-            {
-                args[numParameters] = &(parameters[i]);
-                numParameters++;
-                expectNextParam = false;
-            }
-        }
-    }
-
-    pid_t pid = fork();
-    if(pid == 0)
-    {
-        if(p_workingDirectory != nullptr)
-        {
-            chdir(p_workingDirectory);
-        }
-        execvp(p_command, (char**)args);
-        _exit(1);
-    }
-
-    if(parameters != nullptr)
-        free(parameters);
-
-    return pid;
-}
-
-
 /// @brief Start running a separate executable with no command-line arguments
 ///        Should either be an absolute path or relative to the current directory.
 ///        Path must include file extension; no default extension is assumed.
@@ -350,8 +284,8 @@ inline pid_t CreateProcess(const char* p_command, const char* p_parametersIn, co
 /// @param p_args           The arguments for the executable
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
-    //TODO start process in same terminal
-    CreateProcess(p_executablePath.c_str(), p_args);
+    std::string fullCommand = "gnome-terminal -- " + p_executablePath + " " + std::string(p_args);
+    popen(fullCommand.c_str(),"r");
 }
 
 /// @brief                       Starts a process from which you can also get the process handle
@@ -360,7 +294,8 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
 /// @param  p_processInformation The information about the process, this contains the handles
 inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
 {
-    p_processInformation = CreateProcess(p_executablePath.c_str(), p_args, p_workingDirectory.c_str());
+    std::string fullCommand = "gnome-terminal -- cd " + p_workingDirectory + "\n" + p_executablePath + " " + std::string(p_args);
+    p_processInformation = popen(fullCommand.c_str(), "r");
 }
 
 /// @brief                Execute a command in the CLI
