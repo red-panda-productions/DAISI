@@ -29,8 +29,9 @@
 #define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 
-#define PRM_MAX_TIME "MaxTimeEdit"
-#define PRM_USER_ID  "UserIdEdit"
+#define PRM_MAX_TIME     "MaxTimeEdit"
+#define PRM_USER_ID      "UserIdEdit"
+#define PRM_UID_GENERATE "UserIdGenerateButton"
 
 #define PRM_BLACKBOX    "ChooseBlackBoxButton"
 #define PRM_ERROR_LABEL "ErrorLabel"
@@ -542,6 +543,11 @@ static void SelectBlackBox(void* /* dummy */)
     m_blackBoxChosen = true;
 }
 
+static void GenerateUid(void* /* dummy */)
+{
+
+}
+
 /// @brief            Initializes the researcher menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The researcherMenu scrHandle
@@ -604,6 +610,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
+
+    // Generate UID button
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
     // Back button
     m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
