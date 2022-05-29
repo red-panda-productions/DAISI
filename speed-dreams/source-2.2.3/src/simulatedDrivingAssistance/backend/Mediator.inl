@@ -171,7 +171,7 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetThresholdSettings(tDecisionThresholds p_thresholds)
 {
     m_thresholds = p_thresholds;
-    CarController.SetThresholds(p_thresholds);
+    CarController.SetThresholds(&p_thresholds);
 }
 
 /// @brief  Gets the allowed black box actions setting
