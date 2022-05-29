@@ -11,7 +11,7 @@
 class FileDataStorageMock
 {
 public:
-    std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,
+    filesystem::path Initialize(tDataToStore p_saveSettings,
                                                    const std::string& p_fileName,
                                                    const std::string& p_userId,
                                                    const std::time_t& p_trialStartTime,
@@ -28,7 +28,7 @@ public:
         BlackboxTime = p_blackboxTime;
         EnvironmentVersion = p_environmentVersion;
         Intervention = p_interventionType;
-        std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
+        filesystem::path filePath = filesystem::temp_directory_path();
         filePath.append(p_fileName);
         return {filePath};
     }

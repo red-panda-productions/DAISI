@@ -333,7 +333,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     // Check if Mediator file exists
     struct stat info = {};
 
-    std::experimental::filesystem::path path = SingletonsFilePath();
+    filesystem::path path = SingletonsFilePath();
     path.append("Mediator");
     std::string pathstring = path.string();
     const char* filepath = pathstring.c_str();

@@ -37,8 +37,6 @@
 #include "RppUtils.hpp"
 #include "tracks.h"
 
-namespace filesystem = std::experimental::filesystem;
-
 // The TextOnlyUI singleton.
 TextOnlyUI* TextOnlyUI::_pSelf = 0;
 

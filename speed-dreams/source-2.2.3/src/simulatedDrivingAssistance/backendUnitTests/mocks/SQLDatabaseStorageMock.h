@@ -14,15 +14,15 @@ public:
     {
         InputFilePath = "";
     }
-    void Run(const std::experimental::filesystem::path& p_inputFilePath)
+    void Run(const filesystem::path& p_inputFilePath)
     {
         InputFilePath = p_inputFilePath;
 
-        const auto path = new std::experimental::filesystem::path(p_inputFilePath);
+        const auto path = new filesystem::path(p_inputFilePath);
 
         VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);
     }
-    void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override
+    void StoreData(const filesystem::path& p_inputFilePath) override
     {
     }
     bool OpenDatabase(const std::string& p_hostName,
@@ -32,7 +32,7 @@ public:
                       const std::string& p_schemaName){};
 
     void CloseDatabase() {}
-    std::experimental::filesystem::path InputFilePath;
+    filesystem::path InputFilePath;
 
 private:
     void CreateTables(){};

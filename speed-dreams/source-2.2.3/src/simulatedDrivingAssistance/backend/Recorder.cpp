@@ -8,7 +8,7 @@
 /// @param p_recordingsFolder The folder to place the file in
 /// @param p_decisionsRecordingFile  The stream to open the file on
 /// @param p_fileName The filename of the file to open
-void CreateRecordingFile(const std::experimental::filesystem::path& p_recordingsFolder, std::ofstream& p_decisionsRecordingFile, const char* p_fileName)
+void CreateRecordingFile(const filesystem::path& p_recordingsFolder, std::ofstream& p_decisionsRecordingFile, const char* p_fileName)
 {
     // Open the files with truncate on, such that if the file was already in use any existing content will be discarded
     filesystem::path filePath = filesystem::path(p_recordingsFolder).append(p_fileName);
@@ -31,7 +31,7 @@ Recorder::Recorder(const std::string& p_dirName,
                    int p_simulationDataParamAmount)
     : m_userParamAmount(p_userParamAmount), m_simulationDataParamAmount(p_simulationDataParamAmount)
 {
-    std::experimental::filesystem::path sdaFolder;
+    filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
     auto recordingsFolder = sdaFolder.append(p_dirName);
     std::string recordingsFolderString = recordingsFolder.string();
@@ -46,7 +46,7 @@ Recorder::Recorder(const std::string& p_dirName,
     std::stringstream buffer;
     buffer << std::put_time(&tm, p_fileNamePattern.c_str());
     recordingsFolder.append(buffer.str());
-    m_recordingDir = std::experimental::filesystem::path(recordingsFolder);
+    m_recordingDir = filesystem::path(recordingsFolder);
     create_directories(m_recordingDir);
 
     CreateRecordingFile(m_recordingDir, m_userInputRecordingFile, USER_INPUT_RECORDING_FILE_NAME);
@@ -89,7 +89,7 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
                                 const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
                                 const int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds)
 {
-    using std::experimental::filesystem::path;
+    using filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                     p_carElt->_carHandle,
                     p_carElt->info.name);

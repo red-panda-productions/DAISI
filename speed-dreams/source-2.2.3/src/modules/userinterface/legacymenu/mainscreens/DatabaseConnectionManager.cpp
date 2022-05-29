@@ -312,7 +312,7 @@ void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, cons
     }
 
     // Validate input w.r.t. black boxes
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {
