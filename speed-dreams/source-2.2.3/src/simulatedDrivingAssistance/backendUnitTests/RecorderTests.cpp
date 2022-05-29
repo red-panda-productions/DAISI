@@ -516,10 +516,7 @@ class RecorderUpgradeVersionTestFixture : public ::testing::TestWithParam<int>
 /// @brief Tests whether the base-recording is successfully upgrade to the target version.
 TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 {
-    Random random;
-    int targetVersion = random.NextInt();
-    //int targetVersion = GetParam();
-
+    int targetVersion = GetParam();
     // Start upgrading from the base v0 recording.
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade, targetVersion));
