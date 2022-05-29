@@ -117,8 +117,9 @@ ReStateManage(void)
 					if (mode & RM_NEXT_STEP) {
 						ReInfo->_reState = RE_STATE_RACE_END;
 					}
-					else {
-						ReInfo->_reState = RE_STATE_RACE_COOLDOWN;
+					else { //     if (RM_DISP_MODE_NORMAL == ReInfo->_displayMode)
+						// SIMULATED DRIVING ASSISTANCE: changed RE_STATE_RACE_COOLDOWN to RE_STATE_RACE_END
+                        ReInfo->_reState = RE_STATE_RACE_END;
 						GfLogInfo("%s now in COOLDOWN state\n", ReInfo->_reName);
 					}
 				} else if (mode & RM_END_RACE) {
@@ -132,7 +133,8 @@ ReStateManage(void)
 					// Player is on victory lap or joy riding
 					// TODO rethink this transition
 					// this state will transition to RE_STATE_RACE_END when ReStopCooldown() is called by UI
-					mode = ReUpdate();
+				    // SIMULATED DRIVING ASSISTANCE: changed mode from ReUpdate() to RE_STATE_RACE_END
+                    mode = RE_STATE_RACE_END;
 				}
 				break;
 
