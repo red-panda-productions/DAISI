@@ -538,6 +538,20 @@ float GfTrack::getEstimatedTime() const
     return _fEstimatedTime;
 }
 
+/// SIMULATED DRIVING ASSISTANCE: added getSpeedLimit function
+float GfTrack::getSpeedLimit() const 
+{
+    const std::string& description = getDescription();
+
+	// If there is an 8 in the string, the speed limit is 80 km/h
+	// otherwise the speed limit is 100 km/h
+	char c = '8';
+    if (description.find(c) == c)
+        return 80;
+    else
+        return 100;
+}
+
 bool GfTrack::isUsable() const
 {
 	// Must load to know if really usable.
@@ -592,8 +606,10 @@ void GfTrack::setWidth(float fWidth)
 }
 
 /// SIMULATED DRIVING ASSISTANCE: added the setEstimatedTime function
-void GfTrack::setEstimatedTime(float fEstimatedTime)
+void GfTrack::setEstimatedTime()
 {
+    /// Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
+    float fEstimatedTime = 60 * (getLength() / (getSpeedLimit() * 1000)); 
     _fEstimatedTime = fEstimatedTime;
 }
 

@@ -53,6 +53,7 @@ public:
 	float getLength() const;
     float getEstimatedTime() const;
 	float getWidth() const;
+    float getSpeedLimit() const;
 	int getMaxNumOfPitSlots() const;
 
 	bool isUsable() const;
@@ -68,7 +69,7 @@ public:
 	void setPreviewFile(const std::string& strPreviewFile);
 	void setLength(float fLength);
 	void setWidth(float fWidth);
-    void setEstimatedTime(float fEstimatedTime);
+    void setEstimatedTime();
 	void setMaxNumOfPitSlots(int nPitSlots);
 
 protected:
