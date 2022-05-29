@@ -335,17 +335,3 @@ static inline std::ostream& operator<<(std::ostream& p_out, Bits<TYPE&> const p_
     // static_cast is for compatible pointer conversion
     return p_out.write(reinterpret_cast<const char*>(&(p_b.T)), sizeof(TYPE));
 }
-
-/// @brief Pads a string on its left side
-/// @param p_str           The string to pad
-/// @param p_c             The character to pad the string with
-/// @param p_desiredLength The length to pad the string to
-inline std::string LeftPad(const std::string& p_str, char p_c, int p_desiredLength)
-{
-    if (p_str.length() >= (unsigned long long)p_desiredLength)
-    {
-        return p_str;
-    }
-    std::string pad(p_desiredLength - p_str.length(), p_c);
-    return pad.append(p_str);
-}
