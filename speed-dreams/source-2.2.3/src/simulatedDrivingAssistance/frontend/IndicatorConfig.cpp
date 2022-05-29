@@ -52,8 +52,8 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
     return m_activeIndicators;
 }
 
-/// @brief          Activates the given intervention action by replacing 
-///                 the indicator of matching type with the newly activated indicator.          
+/// @brief          Activates the given intervention action by replacing
+///                 the indicator of matching type with the newly activated indicator.
 /// @param p_action The intervention for which to show the the indicator
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
@@ -122,7 +122,7 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 /// @return                   The pointer to struct containing the texture data
 tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType)
 {
-    if(p_interventionType == INTERVENTION_TYPE_AUTONOMOUS_AI) p_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
+    if (p_interventionType == INTERVENTION_TYPE_AUTONOMOUS_AI) p_interventionType = INTERVENTION_TYPE_COMPLETE_TAKEOVER;
     p_path += PRM_SECT_TEXTURES;
     if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
