@@ -13,7 +13,7 @@ ELSE(OPTION_CLIENT_SERVER)
 ENDIF(OPTION_CLIENT_SERVER)
 
 
-ADD_SDLIB_INCLUDEDIR(portability tgfclient ${NETWORKING_INC})
+ADD_SDLIB_INCLUDEDIR(portability tgfclient ${NETWORKING_INC} rppUtils)
 IF(OPTION_SDL2)
 	ADD_SDL2_INCLUDEDIR()
 ELSE(OPTION_SDL2)
@@ -24,6 +24,6 @@ ROBOT_MODULE(NAME ${ROBOT_NAME} VERSION ${VERSION} SOVERSION 0.0.0
              INTERFACE ${ROBOT_INTERFACE}
              SOURCES ${ROBOT_SOURCES})
 
-ADD_SDLIB_LIBRARY(${ROBOT_NAME} portability tgfclient ${NETWORKING_LIB} rppUtils)
+ADD_SDLIB_LIBRARY(${ROBOT_NAME} portability tgfclient ${NETWORKING_LIB})
 
 # For data associated to the robot module, see data/drivers/networkhuman/CMakeLists.txt

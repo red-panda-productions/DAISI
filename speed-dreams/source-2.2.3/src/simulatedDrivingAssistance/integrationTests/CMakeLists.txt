@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 OPTION(OPTION_INTEGRATION_LOGS ON)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -64,7 +64,6 @@ TARGET_INCLUDE_DIRECTORIES(integrationTests PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 TARGET_LINK_LIBRARIES(
 	integrationTests
-	rppUtils
 	gtest_main
 	gmock_main
 )
