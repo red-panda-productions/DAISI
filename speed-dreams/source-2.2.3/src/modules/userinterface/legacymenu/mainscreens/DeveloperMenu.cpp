@@ -43,6 +43,9 @@ int m_accelThresholdControl;
 int m_brakeThresholdControl;
 int m_steerThresholdControl;
 
+// Control for the default values
+int m_defaultButton;
+
 // Synchronization type
 SyncType m_sync;
 
@@ -232,6 +235,14 @@ static void ChooseReplayFile(void* /* dummy */)
     m_replayFileChosen = true;
 }
 
+
+static void WriteThresholdValue(float & p_threshold, int p_thresholdControl)
+{
+    char buf[32];
+    sprintf(buf, "%g", p_threshold);
+    GfuiEditboxSetString(s_scrHandle, p_thresholdControl, buf);
+}
+
 /// @brief                    Read the edit box value and clamp it
 /// @param p_threshold        The value to change
 /// @param p_thresholdControl The edit box to read from and write to
@@ -242,9 +253,7 @@ static void SetThreshold(float& p_threshold, int p_thresholdControl)
     Clamp(p_threshold, 0.0f, 1.0f);
 
     // Write the clamped value to the text box.
-    char buf[32];
-    sprintf(buf, "%g", p_threshold);
-    GfuiEditboxSetString(s_scrHandle, p_thresholdControl, buf);
+    WriteThresholdValue(p_threshold, p_thresholdControl);
 }
 
 /// @brief Handle input in the accel threshold textbox
@@ -263,6 +272,31 @@ static void SetBrakeThreshold(void*)
 static void SetSteerThreshold(void*)
 {
     SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
+}
+
+static void SetDefaultValues(void*)
+{
+    switch(SMediator::GetInstance()->GetInterventionType())
+    {
+        case INTERVENTION_TYPE_ONLY_SIGNALS:
+            break;
+        case INTERVENTION_TYPE_SHARED_CONTROL:
+        {
+            m_decisionThresholds.Accel = 0.9f;
+            m_decisionThresholds.Brake = 0.9f;
+            m_decisionThresholds.Steer = 0.04;
+            break;
+        }
+        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
+            break;
+        default:
+        {
+            break;
+        }
+    }
+    WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
+    WriteThresholdValue(m_decisionThresholds.Brake, m_brakeThresholdControl);
+    WriteThresholdValue(m_decisionThresholds.Steer, m_steerThresholdControl);
 }
 
 /// @brief            Initializes the developer menu
@@ -286,6 +320,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     m_syncButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
+    m_defaultButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultValues);
 
     // Edit boxes
     m_accelThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "AccelThresholdEdit", nullptr, nullptr, SetAccelThreshold);
