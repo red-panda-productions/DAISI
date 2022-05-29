@@ -167,6 +167,7 @@ Changed:
                 added   GfuiFontClass: expose to API
             webserver.cpp
                 changed NotificationManager::updateWebserverStatusUi
+                removed all unnecessary popups (in functions sendGenericRequest and updateAsyncStatus)
     main/
         main.cpp
             added singletonfolder setup
