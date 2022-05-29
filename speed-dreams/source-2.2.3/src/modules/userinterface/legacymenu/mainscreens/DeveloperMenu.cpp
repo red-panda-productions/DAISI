@@ -279,7 +279,12 @@ static void SetDefaultValues(void*)
     switch(SMediator::GetInstance()->GetInterventionType())
     {
         case INTERVENTION_TYPE_ONLY_SIGNALS:
+        {
+            m_decisionThresholds.Accel = 0.9f;
+            m_decisionThresholds.Brake = 0.9f;
+            m_decisionThresholds.Steer = 0.04;
             break;
+        }
         case INTERVENTION_TYPE_SHARED_CONTROL:
         {
             m_decisionThresholds.Accel = 0.9f;
@@ -288,11 +293,14 @@ static void SetDefaultValues(void*)
             break;
         }
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
-            break;
-        default:
         {
+            m_decisionThresholds.Accel = 0.9f;
+            m_decisionThresholds.Brake = 0.9f;
+            m_decisionThresholds.Steer = 0.04;
             break;
         }
+        default:
+            break;
     }
     WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Brake, m_brakeThresholdControl);
