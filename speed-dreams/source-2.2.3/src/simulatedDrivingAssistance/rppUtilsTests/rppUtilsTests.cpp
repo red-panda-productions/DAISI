@@ -3,8 +3,6 @@
 #include <gtest/gtest.h>
 
 #define SAVE_AS_BITS_TEST_FILE "saveAsBits.txt"
-// Amount for multiple tests
-#define TEST_AMOUNT 20
 
 TEST(RppUtilsTests, SaveAsBitsTest)
 {
