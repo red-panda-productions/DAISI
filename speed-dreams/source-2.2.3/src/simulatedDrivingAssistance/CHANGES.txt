@@ -52,6 +52,12 @@ Added:
             radio-unchecked-focused.png
             checked-focused.png
             unchecked-focused.png
+            bg-button-three.png
+            bg-button-three_focused.png
+            bg-button-three_pushed.png
+            bg-button-two.png
+            bg-button-two_focused.png
+            bg-button-two_pushed.png
             head.png
         indicators/
             *
@@ -504,6 +510,8 @@ Changed:
                 changed all instances of the word track to environment
                 added category label
                 added track label
+            loadingscreen.xml
+                removed titlelabel
 
   cmake/
     checks.cmake

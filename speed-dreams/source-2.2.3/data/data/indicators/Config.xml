@@ -38,7 +38,7 @@
                 <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="warning_left_driftingright.wav"/>
+                <attstr name ="source" val="warning_left_driftingright_tts.wav"/>
                 <attstr name="looping" val="yes"/>
                 <attnum name="loop-interval" val="3"/>
             </section>
@@ -60,7 +60,7 @@
                 <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="warning_right_driftingleft.wav"/>
+                <attstr name ="source" val="warning_right_driftingleft_tts.wav"/>
                 <attstr name="looping" val="yes"/>
                 <attnum name="loop-interval" val="3"/>
             </section>
@@ -102,6 +102,7 @@
             </section>
             <section name="sound">
                 <!--TODO: create accelerate warning sound-->
+                <attstr name ="source" val="warning_accelerate_accelerate_tts.wav"/>
                 <attstr name="looping" val="yes"/>
                 <attnum name="loop-interval" val="3"/>
             </section>
@@ -123,7 +124,7 @@
                 <attnum name ="font-size" val="300"/>
             </section>
             <section name="sound">
-                <attstr name ="source" val="warning_brake_brake.wav"/>
+                <attstr name ="source" val="warning_brake_brake_tts.wav"/>
                 <attstr name="looping" val="yes"/>
                 <attnum name="loop-interval" val="3"/>
             </section>
