@@ -270,7 +270,14 @@ static void SetUserId(void*)
 {
     strcpy(m_userId, GfuiEditboxGetString(s_scrHandle, m_userIdControl));
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
-    m_userIdChosen = strcmp(m_userId, "") != 0;
+
+    // Reset error label if we hadn't chosen a user id yet and if the newly assigned value is a valid user id
+    bool validUserId = strcmp(m_userId, "") != 0;
+    if (!m_userIdChosen && validUserId)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);
+    }
+    m_userIdChosen = validUserId;
 }
 
 /// @brief Saves the settings into the ResearcherMenu.xml file
