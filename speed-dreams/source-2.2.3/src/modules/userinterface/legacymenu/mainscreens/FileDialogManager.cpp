@@ -172,6 +172,8 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 }
 
 #else
+#include <cstdio>
+#include <cstring>
 
 /// @brief            Opens a file dialog for the user to select a file, limiting the files shown to the provided parameters
 /// @param p_buf      A buffer to write the filename to
@@ -181,7 +183,7 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 /// @param p_exts     The extension filters of the types of file to select
 ///	@param p_extCount The amount of extensions/names provided
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
-bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0)
+bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount)
 {
     FILE* f = popen("zenity --file-selection --title=\"Choose a Black Box\"", "r");
     fgets(p_buf, MAX_PATH_SIZE, f);
