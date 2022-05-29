@@ -51,9 +51,9 @@ public:
 	const std::string& getOutlineFile() const;
 	const std::string& getPreviewFile() const;
 	float getLength() const;
-    float getEstimatedTime() const;
+    double getEstimatedTime() const;
 	float getWidth() const;
-    float getSpeedLimit() const;
+    double getSpeedLimit() const;
 	int getMaxNumOfPitSlots() const;
 
 	bool isUsable() const;
