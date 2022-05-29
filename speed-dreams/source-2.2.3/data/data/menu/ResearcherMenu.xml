@@ -104,7 +104,7 @@
             <!-- Label for showing error messages to the user. Needs to be 39 characters long.
             Default value contains this many spaces so maxlength is set correctly -->
             <attstr name="text" val="                                       "/>
-            <attstr name="tip" val="You must choose an environment and a file that could be a correct black box: *.exe"/>
+            <attstr name="tip" val="You must choose a user id, an environment, and a file that could be a correct black box: *.exe"/>
             <attnum name="width" val="210"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
