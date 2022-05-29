@@ -1,8 +1,7 @@
 #include <ostream>
 #include "FileDataStorage.h"
 #include <map>
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include <iostream>
 
 // Write a string to the stream, as the string in text format (without conversion)
@@ -37,7 +36,7 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
 /// @param p_environmentVersion Version of the current environment
 /// @param p_interventionType Intervention type for the current race
 /// @return returns the path of the buffer file
-std::experimental::filesystem::path FileDataStorage::Initialize(
+filesystem::path FileDataStorage::Initialize(
     tDataToStore p_saveSettings,
     const std::string& p_fileName,
     const std::string& p_userId,
@@ -51,7 +50,7 @@ std::experimental::filesystem::path FileDataStorage::Initialize(
     InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
-    std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
+    filesystem::path filePath = filesystem::temp_directory_path();
     filePath.append(p_fileName.c_str());
     create_directories(filePath.parent_path());
 

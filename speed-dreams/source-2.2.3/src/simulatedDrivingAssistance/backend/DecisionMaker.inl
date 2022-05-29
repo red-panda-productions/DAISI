@@ -21,7 +21,7 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
-    template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
+    template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
@@ -29,7 +29,7 @@
 #define MAX_ULONG          4294967295
 
 #ifdef WIN32
-#define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(p_file))
+#define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(filesystem::last_write_time(p_file))
 #else
 #define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())
 #endif
@@ -70,7 +70,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
         return;
     }
 
-    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
+    filesystem::path blackBoxPath = filesystem::path(p_blackBoxExecutablePath);
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -164,7 +164,7 @@ FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-std::experimental::filesystem::path* TEMP_DECISIONMAKER::GetBufferFilePath()
+filesystem::path* TEMP_DECISIONMAKER::GetBufferFilePath()
 {
     return &m_bufferFilePath;
 }

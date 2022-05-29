@@ -6,10 +6,7 @@
 #include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
-namespace filesystem = std::experimental::filesystem;
+#include "FileSystem.hpp"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \

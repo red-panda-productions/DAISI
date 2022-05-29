@@ -6,8 +6,7 @@
 #include "guimenu.h"
 #include "FileDialogManager.h"
 #include "RppUtils.hpp"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 
 // Parameters used in the xml files
 #define PRM_SYNC               "SynchronizationButtonList"
@@ -94,7 +93,7 @@ static void SynchronizeControls()
 
     if (m_replayFileChosen)
     {
-        std::experimental::filesystem::path path = m_replayFilePath;
+        filesystem::path path = m_replayFilePath;
         std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_chooseReplayFileButton, buttonText.c_str());
     }
@@ -224,7 +223,7 @@ static void ChooseReplayFile(void* /* dummy */)
     }
 
     // Visual feedback of choice
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     std::string buttonText = MSG_CHOOSE_REPLAY_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_chooseReplayFileButton, buttonText.c_str());
 

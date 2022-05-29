@@ -3,10 +3,7 @@
 #include <portability.h>
 #include <stdexcept>
 #include <tgf.h>
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
+#include "FileSystem.hpp"
 #include "RppUtils.hpp"
 
 #ifdef __linux__
@@ -167,7 +164,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
     // Check if IndicatorConfig file exists
     struct stat info = {};
 
-    std::experimental::filesystem::path path = SingletonsFilePath();
+    filesystem::path path = SingletonsFilePath();
     path.append("IndicatorConfig");
     std::string pathstring = path.string();
     const char* filepath = pathstring.c_str();

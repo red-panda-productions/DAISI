@@ -2,9 +2,9 @@
 #include "TestUtils.h"
 #include "Recorder.h"
 #include "RppUtils.hpp"
+#include "FileSystem.hpp"
 #include <tgf.h>
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY "test_test_data"
@@ -41,7 +41,7 @@
 /// @return Path to the testing directory (without trailing backslash)
 inline std::string GetTestingDirectory()
 {
-    std::experimental::filesystem::path sdaFolder;
+    filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) THROW_RPP_EXCEPTION("SDA folder not found");
     return sdaFolder.append(TEST_DIRECTORY).string();
 }
@@ -51,18 +51,18 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
 {
     std::string folder = GetTestingDirectory();
     // Delete the existing test directory to ensure directories are properly created
-    if (std::experimental::filesystem::exists(folder))
+    if (filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
+        filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
     }
 
     // Create a recorder without storing any parameters
     Recorder recorder(TEST_DIRECTORY, "constructor_creates_file", 0, 0);
 
     // Ensure file is created with the proper name
-    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
-    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
-    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
 
     // Ensure the file is empty
     ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME)
@@ -417,12 +417,12 @@ TEST(RecorderTests, WriteRunSettingsTests)
             THROW_RPP_EXCEPTION("Failed to get SDA folder");                                \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
-        std::experimental::filesystem::create_directories(varName);                         \
+        filesystem::create_directories(varName);                         \
                                                                                             \
         /* Delete the existing test directory to ensure directories are properly created */ \
-        if (std::experimental::filesystem::exists(varName))                                 \
+        if (filesystem::exists(varName))                                 \
         {                                                                                   \
-            std::experimental::filesystem::remove_all(varName);                             \
+            filesystem::remove_all(varName);                             \
         }                                                                                   \
                                                                                             \
         filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \

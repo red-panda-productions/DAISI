@@ -9,8 +9,7 @@
 #include "RppUtils.hpp"
 #include "racescreens.h"
 #include "tracks.h"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include "mainmenu.h"
 
 // Parameters used in the xml files
@@ -392,7 +391,7 @@ static void SynchronizeControls()
 
     if (m_blackBoxChosen)
     {
-        std::experimental::filesystem::path path = m_blackBoxFilePath;
+        filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
     }
@@ -519,7 +518,7 @@ static void SelectBlackBox(void* /* dummy */)
     }
 
     // Validate input w.r.t. black boxes
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {

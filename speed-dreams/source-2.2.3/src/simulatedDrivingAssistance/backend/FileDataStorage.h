@@ -5,8 +5,7 @@
 #include "DecisionTuple.h"
 #include <ctime>
 #include "Random.hpp"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 
 /// @brief the max size of the array in which data is stored
 #define COMPRESSION_LIMIT 50
@@ -57,7 +56,7 @@ public:
         p_values[p_compressionStep] = p_value;
     }
 
-    std::experimental::filesystem::path Initialize(
+    filesystem::path Initialize(
         tDataToStore p_saveSettings,
         const std::string& p_fileName,
         const std::string& p_userId,

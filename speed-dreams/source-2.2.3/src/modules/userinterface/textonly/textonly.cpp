@@ -31,8 +31,7 @@
 #include "textonly.h"
 
 // SIMULATED DRIVING ASSISTANCE: Include filesystem, recorder for defines, Mediator and RPPUtils
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include "Recorder.h"
 #include "Mediator.h"
 #include "RppUtils.hpp"

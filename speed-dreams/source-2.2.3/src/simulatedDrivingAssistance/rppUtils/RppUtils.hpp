@@ -5,8 +5,7 @@
 #include <iostream>
 #include <tgf.h>
 #include "Random.hpp"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 
 #define ROOT_FOLDER "source-2.2.3"
 #define PATH_SIZE 256
@@ -86,9 +85,9 @@ inline float CharArrToFloat(const char* p_c)
 
 /// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
 /// @returns The filepath to the singletons folder
-inline std::experimental::filesystem::path SingletonsFilePath()
+inline filesystem::path SingletonsFilePath()
 {
-    return {std::experimental::filesystem::temp_directory_path().append("Singletons")};
+    return {filesystem::temp_directory_path().append("Singletons")};
 }
 
 /// @brief   Deletes the contents of the singletons folder
@@ -97,7 +96,7 @@ inline int DeleteSingletonsFolder()
 {
     std::error_code errorCode;
 
-    std::experimental::filesystem::path path = SingletonsFilePath();
+    filesystem::path path = SingletonsFilePath();
     remove_all(path, errorCode);
     if (errorCode.value() != 0)
     {
@@ -249,7 +248,7 @@ inline void ExecuteCLI(const char* p_command, bool p_showCommand)
 /// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
 /// @return true if the folder was successfully found
-inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
+inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 {
     // create directory if it doesn't exist
     char* pValue;
@@ -262,7 +261,7 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
         return false;
     }
 
-    p_sdaFolder = std::experimental::filesystem::path(std::string(pValue, len)).append("sda");
+    p_sdaFolder = filesystem::path(std::string(pValue, len)).append("sda");
     std::string sdaFolderString = p_sdaFolder.string();
 
     if (!GfDirExists(sdaFolderString.c_str()))
@@ -304,9 +303,9 @@ inline void ExecuteCLI(const char* p_command, bool p_showCommand)
     system(p_command);
 }
 
-inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
+inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 {
-    p_sdaFolder = std::experimental::filesystem::temp_directory_path();
+    p_sdaFolder = filesystem::temp_directory_path();
     p_sdaFolder.append("sda");
     std::string sdaFolderString = p_sdaFolder.string();
 
