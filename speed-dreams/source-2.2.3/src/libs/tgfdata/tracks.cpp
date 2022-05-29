@@ -532,7 +532,7 @@ int GfTrack::getMaxNumOfPitSlots() const
 /// SIMULATED DRIVING ASSISTANCE: added the getEstimatedTime function
 /// @brief  Gets the estimated time it takes to complete one round of a track
 /// @return The estimated time it takes to complete one round of a track
-double GfTrack::getEstimatedTime() const 
+double GfTrack::GetEstimatedTime() const 
 {
    // Lazy load scheme : read files only when really needed, and only once.
     if (_fEstimatedTime < 0)
@@ -543,7 +543,7 @@ double GfTrack::getEstimatedTime() const
 /// SIMULATED DRIVING ASSISTANCE: added getSpeedLimit function
 /// @brief  Gets the speed limit of the track
 /// @return The speed limit of the track which is either 80 km/h or 100 km/h
-double GfTrack::getSpeedLimit() const 
+double GfTrack::GetSpeedLimit() const 
 {
     const std::string& description = getDescription();
 
@@ -610,10 +610,11 @@ void GfTrack::setWidth(float fWidth)
 }
 
 /// SIMULATED DRIVING ASSISTANCE: added the setEstimatedTime function
-void GfTrack::setEstimatedTime()
+/// @brief Calculates and sets the estimated time it takes to complete a track
+void GfTrack::SetEstimatedTime()
 {
     /// Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
-    double fEstimatedTime = 60 * (getLength() / (getSpeedLimit() * 1000)); 
+    double fEstimatedTime = 60 * (getLength() / (GetSpeedLimit() * 1000)); 
     _fEstimatedTime = fEstimatedTime;
 }
 

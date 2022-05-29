@@ -145,8 +145,8 @@ rmtsUpdateTrackInfo(void)
 	/// SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
 	// 9) Estimated time to complete a track in km.
     ossData.str("");
-    PCurTrack->setEstimatedTime();
-    ossData << PCurTrack->getEstimatedTime() << " minutes";
+    PCurTrack->SetEstimatedTime();
+    ossData << PCurTrack->GetEstimatedTime() << " minutes";
     GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
 }
 
