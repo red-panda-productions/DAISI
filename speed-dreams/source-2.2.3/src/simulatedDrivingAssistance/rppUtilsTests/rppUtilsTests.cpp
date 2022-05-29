@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 
 #define SAVE_AS_BITS_TEST_FILE "saveAsBits.txt"
+// Amount for multiple tests
+#define TEST_AMOUNT 20
 
 TEST(RppUtilsTests, SaveAsBitsTest)
 {
@@ -80,4 +82,52 @@ TEST(RppUtilsTests, FloatToAndFromCharArrTest)
     ASSERT_EQ(123, CharArrToFloat(str1.c_str()));
     std::string str2{"text123"};
     ASSERT_EQ(0, CharArrToFloat(str2.c_str()));
+}
+
+TEST(RppUtilsTests, LeftPadSomethingTest)
+{
+    Random random;
+    // Pad something
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        char buf[256];
+        int length = random.NextInt(1, 256);
+        GenerateRandomCharArray(buf, length);
+        std::string str(buf);
+        char c = random.NextByte();
+        int desiredLength = random.NextInt(length, 512);
+        std::string padded = LeftPad(str, c, desiredLength);
+        int lengthOfPad = desiredLength - (int)str.length();
+        // Is padded
+        for (int j = 0; j < lengthOfPad; j++)
+        {
+            ASSERT_EQ(c, padded[j]);
+        }
+        // End string not modified
+        for (int j = 0; j < (int)str.length(); j++)
+        {
+            ASSERT_EQ(str[j], padded[j + lengthOfPad]);
+        }
+    }
+}
+
+TEST(RppUtilsTests, LeftPadNothingTest)
+{
+    Random random;
+    // Pad nothing
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        char buf[256];
+        int length = random.NextInt(1, 256);
+        GenerateRandomCharArray(buf, length);
+        std::string str(buf);
+        char c = random.NextByte();
+        int desiredLength = random.NextInt(0, length);
+        std::string padded = LeftPad(str, c, desiredLength);
+        // String not modified
+        for (int j = 0; j < (int)str.length(); j++)
+        {
+            ASSERT_EQ(str[j], padded[j]);
+        }
+    }
 }

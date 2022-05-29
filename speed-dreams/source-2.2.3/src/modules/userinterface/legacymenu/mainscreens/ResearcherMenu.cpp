@@ -563,8 +563,9 @@ static void GenerateUid(void* /* dummy */)
     // Create random userId
     std::random_device rd;
     static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<int> distribution(1, 9999);
+    std::uniform_int_distribution<int> distribution(0, 9999);
     std::string userId = std::to_string(distribution(generator));
+    userId = LeftPad(userId, '0', 4);
     // Assign it
     strcpy_s(m_userId, 32, userId.c_str());
     // Display it
