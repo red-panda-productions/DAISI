@@ -7,7 +7,7 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 #ifdef __linux__
 #include <sys/stat.h>

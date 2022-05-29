@@ -4,7 +4,7 @@
 #include <tgf.h>
 #include <Recorder.h>
 
-#include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 // When NDEBUG is not defined assert is a no-op, for the integration tests it needs to throw an exception.
 #ifdef NDEBUG

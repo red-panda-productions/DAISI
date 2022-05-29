@@ -3,7 +3,7 @@
 #include "tgf.h"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "mocks/DecisionMock.h"
 #include "IndicatorConfig.h"
 

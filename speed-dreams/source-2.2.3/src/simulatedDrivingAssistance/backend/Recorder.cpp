@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <tgf.h>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 /// @brief Create a file to record the data to. Truncate if the file already exists.
 /// @param p_recordingsFolder The folder to place the file in

@@ -12,7 +12,7 @@
 #include "mocks/FileDataStorageMock.h"
 #include "mocks/SQLDatabaseStorageMock.h"
 #include "portability.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "VariableStore.h"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>

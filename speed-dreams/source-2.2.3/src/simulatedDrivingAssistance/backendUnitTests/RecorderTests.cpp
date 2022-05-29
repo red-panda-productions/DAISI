@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "Recorder.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include <tgf.h>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>

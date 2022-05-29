@@ -3,8 +3,7 @@
 #include <string>
 
 #include "DecisionMaker.h"
-#include "../rppUtils/RppUtils.hpp"
-
+#include "RppUtils.hpp"
 
 #define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
     template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(IPC_IP_TYPE p_ip, int p_port);                                                                          \
@@ -36,7 +35,7 @@
     if ((p_stmt) != IPCLIB_SUCCEED)        \
     {                                      \
         std::cerr << (p_msg) << std::endl; \
-        THROW_RPP_EXCEPTION(p_msg);       \
+        THROW_RPP_EXCEPTION(p_msg);        \
     }
 
 template <class BlackBoxData, class PointerManager>

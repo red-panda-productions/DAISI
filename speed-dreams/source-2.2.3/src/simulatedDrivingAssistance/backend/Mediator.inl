@@ -3,7 +3,7 @@
 #include <fstream>
 #include <portability.h>
 #include <SDL2/SDL_main.h>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1

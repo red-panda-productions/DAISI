@@ -35,7 +35,7 @@
 #include <experimental/filesystem>
 #include "Recorder.h"
 #include "Mediator.h"
-#include "../../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "tracks.h"
 
 namespace filesystem = std::experimental::filesystem;

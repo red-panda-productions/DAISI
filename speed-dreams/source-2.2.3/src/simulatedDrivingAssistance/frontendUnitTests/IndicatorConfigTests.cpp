@@ -2,8 +2,8 @@
 #include <tgfclient.h>
 #include <portability.h>
 
-#include "../rppUtils/RppUtils.hpp"
-#include "../rppUtils/Random.hpp"
+#include "RppUtils.hpp"
+#include "Random.hpp"
 #include "TestUtils.h"
 #include "IndicatorConfig.h"
 #include "Mediator.h"

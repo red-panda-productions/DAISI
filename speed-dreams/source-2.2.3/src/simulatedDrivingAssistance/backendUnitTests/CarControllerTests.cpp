@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "CarController.h"
-#include "../rppUtils/Random.hpp"
-#include "../rppUtils/RppUtils.hpp"
+#include "Random.hpp"
+#include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "Mediator.h"
 #include "TestUtils.h"

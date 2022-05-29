@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "BlackBoxData.h"
 #include "robot.h"
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #include "ComparerUtils.h"
 #include "GeneratorUtils.h"
 

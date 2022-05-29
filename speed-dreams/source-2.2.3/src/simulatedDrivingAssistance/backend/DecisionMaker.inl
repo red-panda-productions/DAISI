@@ -3,7 +3,7 @@
 #include "DecisionTuple.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2, type3, type4, type5)                                                                 \
@@ -24,9 +24,9 @@
     template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
-#define TEMP_DECISIONMAKER    DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
-#define BUFFER_FILE_PATH      "race_data_buffer.txt"
-#define MAX_ULONG             4294967295
+#define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
+#define BUFFER_FILE_PATH   "race_data_buffer.txt"
+#define MAX_ULONG          4294967295
 
 #ifdef WIN32
 #define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(p_file))

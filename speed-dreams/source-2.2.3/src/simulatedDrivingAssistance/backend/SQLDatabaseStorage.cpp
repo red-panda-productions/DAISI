@@ -1,17 +1,17 @@
 #include "SQLDatabaseStorage.h"
 #include "Mediator.h"
 #include <string>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "ConfigEnums.h"
 #include <config.h>
 
 /// @brief reads input from input file, unless EOF has been reached
-#define READ_INPUT(p_inputFile, p_string)                        \
-    if (p_inputFile.eof())                                       \
-    {                                                            \
-        p_inputFile.close();                                     \
-        THROW_RPP_EXCEPTION("Reached end of file prematurely");  \
-    }                                                            \
+#define READ_INPUT(p_inputFile, p_string)                       \
+    if (p_inputFile.eof())                                      \
+    {                                                           \
+        p_inputFile.close();                                    \
+        THROW_RPP_EXCEPTION("Reached end of file prematurely"); \
+    }                                                           \
     p_inputFile >> p_string;
 
 /// @brief executes sql statement

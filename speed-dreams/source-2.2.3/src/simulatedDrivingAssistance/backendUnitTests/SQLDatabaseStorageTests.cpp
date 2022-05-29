@@ -2,7 +2,7 @@
 #include <fstream>
 #include "TestUtils.h"
 #include "SQLDatabaseStorage.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "gmock/gmock-matchers.h"
 #include <portability.h>
 #include <config.h>

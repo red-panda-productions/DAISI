@@ -78,7 +78,7 @@ ADD_INTERFACE_INCLUDEDIR()
 
 
 # SIMULATED DRIVING ASSISTANCE CHANGE: added backend
-ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC})
+ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC} rppUtils)
 
 ADD_PLIB_INCLUDEDIR()
 

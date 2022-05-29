@@ -4,7 +4,7 @@
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
@@ -47,7 +47,6 @@ private:
     int Partition(float* p_values, int p_start, int p_end);
 
 public:
-
     /// @brief Add the new value to the array in the correct compression step
     /// @param p_values Array with values from the current compression step
     /// @param p_value The new value of this time step for the variable

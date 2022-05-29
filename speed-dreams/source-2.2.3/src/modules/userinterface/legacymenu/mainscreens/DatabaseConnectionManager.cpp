@@ -4,7 +4,7 @@
 #include "tgfclient.h"
 #include "tgf.h"
 #include "FileDialogManager.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>

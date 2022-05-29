@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "IntegrationTestConfig.h"
 #include "Recorder.h"
 #include <fstream>

@@ -5,7 +5,7 @@ SET(_SOURCES IndicatorConfig.cpp)
 SET(_HEADERS IndicatorConfig.h IndicatorData.h)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient)
+ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient rppUtils)
 
 SD_ADD_LIBRARY(frontend STATIC ${_SOURCES} ${_HEADERS})
 SET_TARGET_PROPERTIES(frontend PROPERTIES LINKER_LANGUAGE CXX)

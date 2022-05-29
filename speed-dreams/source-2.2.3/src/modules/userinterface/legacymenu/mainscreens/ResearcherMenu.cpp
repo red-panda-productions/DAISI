@@ -6,7 +6,7 @@
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
 #include "FileDialogManager.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "racescreens.h"
 #include "tracks.h"
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1

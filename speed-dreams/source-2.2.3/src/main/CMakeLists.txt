@@ -10,7 +10,7 @@ IF(MSVC)
 ENDIF(MSVC)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient tgfdata math portability backend)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient tgfdata math portability backend rppUtils)
 
 IF(OPTION_SDL2)
 	ADD_SDL2_INCLUDEDIR()

@@ -32,9 +32,9 @@ ENDIF(OPTION_CLIENT_SERVER)
 ADD_INTERFACE_INCLUDEDIR()
 
 IF(OPTION_WEBSERVER)
-	ADD_SDLIB_INCLUDEDIR(math portability robottools tgf tgfdata ${NETWORKING_INC} tgfclient)
+	ADD_SDLIB_INCLUDEDIR(math portability robottools tgf tgfdata ${NETWORKING_INC} tgfclient rppUtils)
 ELSE(OPTION_WEBSERVER)
-	ADD_SDLIB_INCLUDEDIR(math portability robottools tgf tgfdata ${NETWORKING_INC})
+	ADD_SDLIB_INCLUDEDIR(math portability robottools tgf tgfdata ${NETWORKING_INC} rppUtils)
 ENDIF(OPTION_WEBSERVER)
 
 ADD_PLIB_INCLUDEDIR()
