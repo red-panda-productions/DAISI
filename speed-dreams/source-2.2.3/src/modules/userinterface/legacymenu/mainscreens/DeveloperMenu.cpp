@@ -235,8 +235,10 @@ static void ChooseReplayFile(void* /* dummy */)
     m_replayFileChosen = true;
 }
 
-
-static void WriteThresholdValue(float & p_threshold, int p_thresholdControl)
+/// @brief                    write the thresholdvalue in the textbox
+/// @param p_threshold    The value to write in the textbox
+/// @param p_thresholdControl The edit box to write to
+static void WriteThresholdValue(float& p_threshold, int p_thresholdControl)
 {
     char buf[32];
     sprintf(buf, "%g", p_threshold);
@@ -274,29 +276,33 @@ static void SetSteerThreshold(void*)
     SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
 }
 
+/// @breif set the default values of threshold boxes based on the InterventionType.
 static void SetDefaultValues(void*)
 {
-    switch(SMediator::GetInstance()->GetInterventionType())
+    switch (SMediator::GetInstance()->GetInterventionType())
     {
         case INTERVENTION_TYPE_ONLY_SIGNALS:
         {
+            // set default threshold values for only signals
             m_decisionThresholds.Accel = 0.9f;
             m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.04;
+            m_decisionThresholds.Steer = 0.04f;
             break;
         }
         case INTERVENTION_TYPE_SHARED_CONTROL:
         {
+            // set default threshold values for shared control
             m_decisionThresholds.Accel = 0.9f;
             m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.04;
+            m_decisionThresholds.Steer = 0.04f;
             break;
         }
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
         {
+            // set default threshold values for complete takeover
             m_decisionThresholds.Accel = 0.9f;
             m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.04;
+            m_decisionThresholds.Steer = 0.04f;
             break;
         }
         default:
