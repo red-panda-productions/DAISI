@@ -3,8 +3,10 @@
 #include "Mediator.h"
 #include "tgfclient.h"
 #include "tgf.h"
-#include "../rppUtils/FileDialog.hpp"
+#include "FileDialogManager.h"
 #include "../rppUtils/RppUtils.hpp"
+
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 #include <string>
 #include "guimenu.h"

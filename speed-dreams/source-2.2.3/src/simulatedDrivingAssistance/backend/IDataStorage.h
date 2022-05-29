@@ -3,7 +3,6 @@
 #include <string>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-
 #include <experimental/filesystem>
 
 /// @brief An interface for classes that can store data

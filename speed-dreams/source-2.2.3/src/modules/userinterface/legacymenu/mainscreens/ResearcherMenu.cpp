@@ -5,10 +5,11 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
-#include "../rppUtils/FileDialog.hpp"
+#include "FileDialogManager.h"
 #include "../rppUtils/RppUtils.hpp"
 #include "racescreens.h"
 #include "tracks.h"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 #include "mainmenu.h"
 

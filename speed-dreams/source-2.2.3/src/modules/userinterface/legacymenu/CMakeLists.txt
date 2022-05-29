@@ -9,6 +9,7 @@ SET(MAINSCREENS_SOURCES ${MS}/splash.cpp
                         ${MS}/optionsmenu.cpp
                         ${MS}/creditsmenu.cpp
                         ${MS}/exitmenu.cpp
+                        ${MS}/FileDialogManager.cpp
                         ${MS}/DeveloperMenu.cpp
                         ${MS}/DatabaseSettingsMenu.cpp
                         ${MS}/DatabaseConnectionManager.cpp
@@ -21,6 +22,7 @@ SET(MAINSCREENS_HEADERS ${MS}/splash.h
                         ${MS}/optionsmenu.h
                         ${MS}/creditsmenu.h
                         ${MS}/exitmenu.h
+                        ${MS}/FileDialogManager.h
                         ${MS}/DeveloperMenu.h
                         ${MS}/DatabaseSettingsMenu.h
                         ${MS}/DatabaseConnectionManager.h

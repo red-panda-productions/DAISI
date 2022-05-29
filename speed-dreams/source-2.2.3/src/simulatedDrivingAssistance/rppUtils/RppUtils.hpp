@@ -5,8 +5,6 @@
 #include <iostream>
 #include <tgf.h>
 #include "Random.hpp"
-#include <experimental/filesystem>
-
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
