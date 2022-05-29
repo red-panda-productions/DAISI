@@ -24,10 +24,34 @@ jobs:
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: windows-latest
-    
+    env:
+      BUILD_TYPE: Release
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_ROOT: ${{github.workspace}}/boost/boost
+      BOOST_VERSION: 1.79.0
+
     steps:
     - uses: actions/checkout@v2
+   
+    - name: Cache boost
+      uses: actions/cache@v2
+      id: cache-boost
+      with:
+        # Set the default path as the path to cache
+        path: ${{env.BOOST_ROOT}}
+        # Use the version as the key to only cache the correct version
+        key: boost-${{env.BOOST_VERSION}}
 
+    - name: Install boost
+      if: steps.cache-boost.outputs.cache-hit != 'true'
+      uses: MarkusJx/install-boost@v2.3.0
+      id: install-boost
+      with:
+        boost_version: ${{env.BOOST_VERSION}}
+        toolset: msvc
+        platform_version: 2022
+        boost_install_dir: ${{env.BOOST_PATH}}
+ 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -46,7 +70,7 @@ jobs:
 
     - name: Configure CMake
       shell: bash
-      run: cmake -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
+      run: cmake -DBoost_INCLUDE_DIR=${{env.BOOST_ROOT}}/include -DBoost_LIBRARY_DIRS=${{env.BOOST_ROOT}}/lib -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
     - name: Build
       working-directory: ${{runner.workspace}}/build

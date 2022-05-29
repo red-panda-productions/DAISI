@@ -135,7 +135,7 @@ bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string fileName = converter.to_bytes(filePath);
     // Over max file length
-    if (fileName.size() >= MAX_PATH_SIZE - 1) // std::string isn't null terminated, while Windows paths/char* are
+    if (fileName.size() >= MAX_PATH_SIZE - 1)  // std::string isn't null terminated, while Windows paths/char* are
     {
         // Sanity check: This should be dead code: either your system is so old it does not support paths > 260 chars,
         // or it has a system where paths of those lengths get aliased to an 8.3 file name that is <= 260 chars
