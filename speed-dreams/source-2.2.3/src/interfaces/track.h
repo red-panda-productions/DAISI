@@ -43,6 +43,8 @@
 #define TRK_ATT_NAME                "name"
 #define TRK_ATT_VERSION             "version"
 #define TRK_ATT_AUTHOR              "author"
+/// SIMULATED DRIVING ASSISTANCE: added the time definition parameter
+#define TRK_ATT_TIME                "time"
 #define TRK_ATT_DESCR               "description"
 #define TRK_ATT_CAT                 "category"
 #define TRK_ATT_SUBCAT              "subcategory"
@@ -367,6 +369,8 @@ typedef struct trackSeg
 #define TR_PITBUILDING	4       /**< Pit building wall (barrier only) */
 
     tdble length;               /**< Length in meters of the middle of the track */
+    /// SIMULATED DRIVING ASSISTANCE: added tdble time
+    tdble time;                 /**< Estimated time in seconds */
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
     tdble endWidth;             /**< Width of the end of the segment */
@@ -670,6 +674,8 @@ typedef struct Track
     int           nseg;         /**< Number of segments */
     int           version;      /**< Version of the track type */
     tdble         length;       /**< main track length */
+    /// SIMULATED DRIVING ASSISTANCE: added the time property
+    tdble         time;         /**< main track time (estimated) */ 
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */

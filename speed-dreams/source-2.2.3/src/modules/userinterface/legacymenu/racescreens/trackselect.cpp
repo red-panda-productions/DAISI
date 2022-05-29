@@ -58,6 +58,8 @@ static int OutlineImageId;
 static int AuthorsLabelId;
 static int LengthLabelId;
 static int WidthLabelId;
+/// SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
+static int EstimatedTimeLabelId;
 static int DescLine1LabelId;
 static int DescLine2LabelId;
 static int MaxPitsLabelId;
@@ -139,6 +141,12 @@ rmtsUpdateTrackInfo(void)
 
 	// 7) Preview image (background).
 	GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
+
+	/// SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
+	// 9) Estimated time to complete a track
+    ossData.str("");
+    ossData << PCurTrack->getEstimatedTime() << " m";
+    GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
 }
 
 static void

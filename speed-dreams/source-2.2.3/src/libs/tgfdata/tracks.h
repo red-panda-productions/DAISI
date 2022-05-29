@@ -51,6 +51,7 @@ public:
 	const std::string& getOutlineFile() const;
 	const std::string& getPreviewFile() const;
 	float getLength() const;
+    float getEstimatedTime() const;
 	float getWidth() const;
 	int getMaxNumOfPitSlots() const;
 
@@ -67,6 +68,7 @@ public:
 	void setPreviewFile(const std::string& strPreviewFile);
 	void setLength(float fLength);
 	void setWidth(float fWidth);
+    void setEstimatedTime(float fEstimatedTime);
 	void setMaxNumOfPitSlots(int nPitSlots);
 
 protected:
@@ -86,6 +88,7 @@ protected:
  	mutable std::string _strDesc;    // Description.
 	mutable float _fLength;          // Length (m).
 	mutable float _fWidth;           // Width (m).
+    mutable float _fEstimatedTime;   // Time (m).
 	mutable int _nMaxPitSlots;       // Max. number of pit slots (m).
 
 	mutable bool _bUsable;           // False if anything wrong.
