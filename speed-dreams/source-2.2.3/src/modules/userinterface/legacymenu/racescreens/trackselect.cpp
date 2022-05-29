@@ -143,9 +143,9 @@ rmtsUpdateTrackInfo(void)
 	GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
 
 	/// SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
-	// 9) Estimated time to complete a track
+	// 9) Estimated time to complete a track in km.
     ossData.str("");
-    ossData << PCurTrack->getEstimatedTime() << " m";
+    ossData << PCurTrack->getEstimatedTime() << " km";
     GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
 }
 
@@ -317,6 +317,8 @@ RmTrackSelect(void *vs)
 	DescLine1LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description1label");
 	DescLine2LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description2label");
 	LengthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "lengthlabel");
+	/// SIMULATED DRIVING ASSISTNACE: added label control for estimated time label
+	EstimatedTimeLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "estimatedtimelabel");
 	WidthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "widthlabel");
 	MaxPitsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "pitslabel");
 	AuthorsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "authorslabel");
