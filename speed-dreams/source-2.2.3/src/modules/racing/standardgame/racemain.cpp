@@ -1296,11 +1296,12 @@ ReRaceCooldown()
     if (RM_DISP_MODE_NORMAL == ReInfo->_displayMode)
     {
         // check if there is a human player AND if cooldown is enabled through the UI
-        if ((ReSessionHasHuman()) && (true == ReUI().onRaceCooldownStarting()))
+        /// SIMULATED DRIVING ASSISTANCE: removed check on whether cooldown is enabled through UI or not
+        if (ReSessionHasHuman())
         {
-            ReSituation::self().setRaceMessage("Hit <Enter> for Results", -1, /*big=*/true);
-            // enable cooldown
-            mode = RM_ASYNC;
+            // SIMULATED DRIVING ASSISTANCE: removed message to hit enter for results
+            // and removed enabling of the actual cooldown
+            mode = RE_STATE_RACE_END;
         }
     }
     return mode;
