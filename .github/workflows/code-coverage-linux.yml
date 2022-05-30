@@ -91,15 +91,15 @@ jobs:
 
       - name: Run code coverage UnitUtilities
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: .\UnitUtilitiesCoverage.bat
+        run: .\UnitUtilitiesCoverage.sh
 
       - name: Run code coverage Frontend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: .\FrontendCoverage.bat
+        run: .\FrontendCoverage.sh
 
       - name: Run code coverage Backend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: .\BackendCoverage.bat
+        run: .\BackendCoverage.sh
         
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
