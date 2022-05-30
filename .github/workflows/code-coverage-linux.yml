@@ -91,20 +91,25 @@ jobs:
 
       - name: Run code coverage UnitUtilities
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: ./UnitUtilitiesCoverage.sh
+        run: |
+          ./UnitUtilitiesCoverage.sh
+          cat UnitUtilitiesCoverage.json
 
       - name: Run code coverage Frontend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: ./FrontendCoverage.sh
+        run: |
+          ./FrontendCoverage.sh
+          cat FrontendCoverage.json
 
       - name: Run code coverage Backend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: ./BackendCoverage.sh
+        run: |
+          ./BackendCoverage.sh
+          cat BackendCoverage.json
         
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
         run: |
-          ls
           gcovr --add-tracefile "*Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
           sed -i 's/branches-covered=\"[0-9]*\"/branches-covered=\"0\"/g' CombinedCoverage.xml
           sed -i 's/branches-valid=\"[0-9]*\"/branches-valid=\"0\"/g' CombinedCoverage.xml
