@@ -77,6 +77,4 @@ ADD_SQLITE3_LIBRARY(backend)
 
 ADD_MYSQL_PACKAGE(backend)
 
-ADD_BOOST_PACKAGE(backend)
-
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)
