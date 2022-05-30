@@ -76,4 +76,8 @@ ADD_MYSQL_PACKAGE(backend)
 
 ADD_BOOST_PACKAGE(backend)
 
+IF(UNIX)
+	TARGET_LINK_LIBRARIES(backend rt)
+ENDIF(UNIX)
+
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)
