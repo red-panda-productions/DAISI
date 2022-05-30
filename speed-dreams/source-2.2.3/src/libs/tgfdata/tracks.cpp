@@ -535,9 +535,9 @@ int GfTrack::getMaxNumOfPitSlots() const
 double GfTrack::GetEstimatedTime() const 
 {
    // Lazy load scheme : read files only when really needed, and only once.
-    if (_fEstimatedTime < 0)
+    if (EstimatedTime < 0)
         load();
-    return _fEstimatedTime;
+    return EstimatedTime;
 }
 
 // SIMULATED DRIVING ASSISTANCE: added GetSpeedLimit function
@@ -615,7 +615,7 @@ void GfTrack::SetEstimatedTime()
 {
     /// Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
     double fEstimatedTime = 60 * (getLength() / (GetSpeedLimit() * 1000)); 
-    _fEstimatedTime = fEstimatedTime;
+    EstimatedTime = fEstimatedTime;
 }
 
 void GfTrack::setMaxNumOfPitSlots(int nPitSlots)
@@ -659,7 +659,7 @@ bool GfTrack::load() const
 	_strAuthors = pTrack->authors;
 	_fLength = pTrack->length;
     /// SIMULATED DRIVING ASSISTANCE: added _fEstimatedTime 
-    EstimatedTime = pTrack->time;
+    EstimatedTime = pTrack->Time;
 	_fWidth = pTrack->width;
 	_nMaxPitSlots = pTrack->pits.nMaxPits;
 

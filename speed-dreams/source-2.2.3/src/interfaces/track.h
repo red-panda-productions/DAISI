@@ -370,7 +370,7 @@ typedef struct trackSeg
 
     tdble length;               /**< Length in meters of the middle of the track */
     /// SIMULATED DRIVING ASSISTANCE: added tdble time
-    tdble time;                 /**< Estimated time in seconds */
+    tdble Time;               /**< Estimated time in seconds */
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
     tdble endWidth;             /**< Width of the end of the segment */
@@ -675,7 +675,7 @@ typedef struct Track
     int           version;      /**< Version of the track type */
     tdble         length;       /**< main track length */
     /// SIMULATED DRIVING ASSISTANCE: added the time property
-    tdble         time;         /**< main track time (estimated) */ 
+    tdble         Time;         /**< main track time (estimated) */ 
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */
