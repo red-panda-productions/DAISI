@@ -104,6 +104,7 @@ jobs:
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
         run: |
+          ls
           gcovr --add-tracefile "*Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
           sed -i 's/branches-covered=\"[0-9]*\"/branches-covered=\"0\"/g' CombinedCoverage.xml
           sed -i 's/branches-valid=\"[0-9]*\"/branches-valid=\"0\"/g' CombinedCoverage.xml
