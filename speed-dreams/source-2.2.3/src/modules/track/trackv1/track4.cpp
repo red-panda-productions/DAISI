@@ -1233,7 +1233,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
 
     radius = arc = length = alf = xr = yr = newxr = newyr = xl = yl = 0;
     // SIMULATED DRIVING ASSISTANCE: added speedLimit
-    float   speedLimit = -std::numeric_limits<float>::infinity();
+    float speedLimit;
     zel = zer = etgtl = etgtr = newxl = newyl = 0;
     type = 0;
 
@@ -1826,7 +1826,6 @@ void ReadTrack4(tTrack *theTrack, void *TrackHandle,
 
     curSeg = theTrack->seg;
     for(i=0; i<theTrack->nseg; i++)  {         /* read the segment data: */
-
     if ((curSeg->lgfromstart + curSeg->length) > (theTrack->length - 50.0)) {
         curSeg->raceInfo |= TR_LAST;
     } else if (curSeg->lgfromstart < 50.0) {
