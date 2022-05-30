@@ -22,7 +22,7 @@ public:
 
         VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);
     }
-    void StoreData(const filesystem::path& p_inputFilePath) override
+    void StoreData(const filesystem::path& p_inputFilePath) override //@NOCOVERAGE, This function is needed for building but is never called
     {
     }
     bool OpenDatabase(const std::string& p_hostName,

@@ -8,8 +8,7 @@ SET(_SOURCES
 	DecisionTuple.cpp
 	FileDataStorage.cpp
 	InterventionExecutorAlwaysIntervene.cpp
-	InterventionExecutorAskFor.cpp
-	InterventionExecutorIndication.cpp
+		InterventionExecutorIndication.cpp
 	InterventionExecutorNoIntervention.cpp
 	InterventionExecutorPerformWhenNeeded.cpp
 	InterventionFactory.cpp
@@ -41,8 +40,7 @@ SET(_HEADERS
 	IDecision.h
 	InterventionExecutor.h
 	InterventionExecutorAlwaysIntervene.h
-	InterventionExecutorAskFor.h
-	InterventionExecutorIndication.h
+        InterventionExecutorIndication.h
 	InterventionExecutorNoIntervention.h
 	InterventionExecutorPerformWhenNeeded.h
 	InterventionFactory.h
