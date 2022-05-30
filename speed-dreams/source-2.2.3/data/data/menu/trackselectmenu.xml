@@ -156,14 +156,14 @@
 		<attstr name="font" val="small_t"/>
 	</section>
 	<!-- SIMULATED DRIVING ASSISTANCE: added estimated time label-->
-	<section name="estimatedtimelabel">
-		<attstr name="type" val="label"/>
-		<attnum name="max len" val="10"/>
-		<attnum name="x" val="340"/>
-		<attnum name="y" val="100"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="font" val="small_t"/>
-	</section>
+    <section name="estimatedtimelabel">
+        <attstr name="type" val="label"/>
+        <attnum name="max len" val="10"/>
+        <attnum name="x" val="340"/>
+        <attnum name="y" val="100"/>
+        <attstr name="color" val="0xFFFFFF"/>
+        <attstr name="font" val="small_t"/>
+    </section>
 
 <!-- Track outline image display -->
 	<section name="outlineimage">
@@ -288,14 +288,14 @@
         <attnum name="y" val="305"/>
         <attstr name="color" val="0xFFFFFF"/>
     </section>
-	<section name="9">
-		<attstr name="type" val="label"/>
-		<attstr name="text" val="Time:"/>
-		<attstr name="font" val="small_t"/>
-		<attnum name="x" val="270"/>
-		<attnum name="y" val="98"/>
-		<attstr name="color" val="0xFFFFFF"/>
-	</section>
+    <section name="9">
+        <attstr name="type" val="label"/>
+        <attstr name="text" val="Time:"/>
+        <attstr name="font" val="small_t"/>
+        <attnum name="x" val="270"/>
+        <attnum name="y" val="98"/>
+        <attstr name="color" val="0xFFFFFF"/>
+    </section>
 
   </section>
 
