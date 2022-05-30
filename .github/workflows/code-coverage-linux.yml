@@ -103,7 +103,14 @@ jobs:
         
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: gcovr --add-tracefile "*Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
+        run: |
+          gcovr --add-tracefile "*Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
+          sed -i 's/branches-covered=\"[0-9]*\"/branches-covered=\"0\"/g' CombinedCoverage.xml
+          sed -i 's/branches-valid=\"[0-9]*\"/branches-valid=\"0\"/g' CombinedCoverage.xml
+          sed -i 's/branch-rate=\"[0-9|.]*\"/branch-rate=\"0\"/g' CombinedCoverage.xml
+          sed -i 's/branch=\"true\"//g' CombinedCoverage.xml
+          sed -i 's/branch=\"false\"//g' CombinedCoverage.xml
+          cat CombinedCoverage.xml
 
       - name: Create code coverage report
         uses: 5monkeys/cobertura-action@master
