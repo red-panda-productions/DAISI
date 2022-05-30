@@ -43,6 +43,6 @@ public:
     }
 
     bool IsDecision = false;
-    BlackBoxData* InitialDriveSituation;
+    BlackBoxData* InitialDriveSituation = nullptr;
     DecisionTuple Decisions;
 };
