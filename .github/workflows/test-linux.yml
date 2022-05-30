@@ -48,8 +48,9 @@ jobs:
         sudo apt-get install libjpeg-dev
         sudo apt-get install libpng-dev
         sudo apt-get install libcurl4-openssl-dev
+        sudo apt-get install libmysqlcppconn-dev
         sudo apt-get install ninja-build
-   
+
     - name: Cache boost
       uses: actions/cache@v2
       id: cache-boost
