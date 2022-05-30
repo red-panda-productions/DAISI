@@ -570,9 +570,7 @@ static void GenerateUid(void* /* dummy */)
     // Create random userId
     Random random;
     int uid = random.NextInt(10000);
-    // Format + assign it
     sprintf(m_userId, "%04d", uid);
-    // Display it
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 
     // Reset the error label if we hadn't chosen a user id yet
