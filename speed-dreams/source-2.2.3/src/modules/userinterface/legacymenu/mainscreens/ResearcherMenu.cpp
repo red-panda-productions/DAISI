@@ -568,11 +568,10 @@ static void SelectBlackBox(void* /* dummy */)
 static void GenerateUid(void* /* dummy */)
 {
     // Create random userId
-    std::random_device rd;
-    std::default_random_engine generator(rd());
-    std::uniform_int_distribution<int> distribution(0, 9999);
-    // Assign it
-    sprintf(m_userId, "%04d", distribution(generator));
+    Random random;
+    int uid = random.NextInt(10000);
+    // Format + assign it
+    sprintf(m_userId, "%04d", uid);
     // Display it
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
 
