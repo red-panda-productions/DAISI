@@ -58,7 +58,7 @@ static int OutlineImageId;
 static int AuthorsLabelId;
 static int LengthLabelId;
 static int WidthLabelId;
-/// SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
+// SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
 static int EstimatedTimeLabelId;
 static int DescLine1LabelId;
 static int DescLine2LabelId;
