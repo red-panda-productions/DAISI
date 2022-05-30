@@ -540,7 +540,7 @@ double GfTrack::GetEstimatedTime() const
     return _fEstimatedTime;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: added getSpeedLimit function
+// SIMULATED DRIVING ASSISTANCE: added GetSpeedLimit function
 /// @brief  Gets the speed limit of the track
 /// @return The speed limit of the track which is either 80 km/h or 100 km/h
 double GfTrack::GetSpeedLimit() const 
