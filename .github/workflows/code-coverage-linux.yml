@@ -91,15 +91,15 @@ jobs:
 
       - name: Run code coverage UnitUtilities
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: .\UnitUtilitiesCoverage.sh
+        run: ./UnitUtilitiesCoverage.sh
 
       - name: Run code coverage Frontend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: .\FrontendCoverage.sh
+        run: ./FrontendCoverage.sh
 
       - name: Run code coverage Backend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: .\BackendCoverage.sh
+        run: ./BackendCoverage.sh
         
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
@@ -108,7 +108,7 @@ jobs:
       - name: Create code coverage report
         uses: 5monkeys/cobertura-action@master
         with:
-          path: ${{github.workspace}}\speed-dreams\source-2.2.3\CombinedCoverage.xml
+          path: ${{github.workspace}}/speed-dreams/source-2.2.3/CombinedCoverage.xml
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 100
           fail_below_threshold: true
