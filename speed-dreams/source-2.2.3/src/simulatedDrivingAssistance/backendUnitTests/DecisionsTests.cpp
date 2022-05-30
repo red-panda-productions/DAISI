@@ -75,7 +75,7 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
     allowedActions.Steer = std::get<2>(GetParam());
 
     Random random;
-    BrakeDecision brakeDecision;
+    BrakeDecision brakeDecision = {};
 
     float controlBrakeAmount = random.NextFloat(STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_BRAKE + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
@@ -87,7 +87,7 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
     ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarControl.GetBrakeCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
-    AccelDecision accelDecision;
+    AccelDecision accelDecision = {};
     float controlAccelAmount = random.NextFloat(STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_ACCEL + 10);
     accelDecision.AccelAmount = controlAccelAmount;
     // Determine what the accel amount should be after running
@@ -98,7 +98,7 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
     ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarControl.GetAccelCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
-    SteerDecision steerDecision;
+    SteerDecision steerDecision = {};
     float controlSteerAmount = random.NextFloat(STANDARD_THRESHOLD_STEER, STANDARD_THRESHOLD_STEER + 10);
     steerDecision.SteerAmount = controlSteerAmount;
     // Determine what the steer amount should be after running
