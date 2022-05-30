@@ -117,7 +117,7 @@ ReStateManage(void)
 					if (mode & RM_NEXT_STEP) {
 						ReInfo->_reState = RE_STATE_RACE_END;
 					}
-					else { //     if (RM_DISP_MODE_NORMAL == ReInfo->_displayMode)
+					else {
 						// SIMULATED DRIVING ASSISTANCE: changed RE_STATE_RACE_COOLDOWN to RE_STATE_RACE_END
                         ReInfo->_reState = RE_STATE_RACE_END;
 						GfLogInfo("%s now in COOLDOWN state\n", ReInfo->_reName);
