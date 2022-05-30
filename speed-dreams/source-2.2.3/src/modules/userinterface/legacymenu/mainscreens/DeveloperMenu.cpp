@@ -284,25 +284,25 @@ static void SetDefaultValues(void*)
         case INTERVENTION_TYPE_ONLY_SIGNALS:
         {
             // set default threshold values for only signals
-            m_decisionThresholds.Accel = 0.9f;
+            m_decisionThresholds.Accel = 1;
             m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.04f;
+            m_decisionThresholds.Steer = 0.09f;
             break;
         }
         case INTERVENTION_TYPE_SHARED_CONTROL:
         {
             // set default threshold values for shared control
-            m_decisionThresholds.Accel = 0.9f;
-            m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.04f;
+            m_decisionThresholds.Accel = 0.5f;
+            m_decisionThresholds.Brake = 0.5f;
+            m_decisionThresholds.Steer = 0.1f;
             break;
         }
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
         {
             // set default threshold values for complete takeover
-            m_decisionThresholds.Accel = 0.9f;
-            m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.04f;
+            m_decisionThresholds.Accel = 0;
+            m_decisionThresholds.Brake = 0;
+            m_decisionThresholds.Steer = 0.05f;
             break;
         }
         default:
