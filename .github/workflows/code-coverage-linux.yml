@@ -103,7 +103,7 @@ jobs:
         
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-        run: gcovr --add-tracefile ".Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
+        run: gcovr --add-tracefile "*Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
 
       - name: Create code coverage report
         uses: 5monkeys/cobertura-action@master
