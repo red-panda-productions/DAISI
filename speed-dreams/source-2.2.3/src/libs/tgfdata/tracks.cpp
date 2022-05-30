@@ -529,7 +529,7 @@ int GfTrack::getMaxNumOfPitSlots() const
 	return _nMaxPitSlots;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: added the getEstimatedTime function
+// SIMULATED DRIVING ASSISTANCE: added the GetEstimatedTime function
 /// @brief  Gets the estimated time it takes to complete one round of a track
 /// @return The estimated time it takes to complete one round of a track
 double GfTrack::GetEstimatedTime() const 
