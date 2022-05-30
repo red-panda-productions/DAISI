@@ -89,7 +89,7 @@ protected:
  	mutable std::string _strDesc;    // Description.
 	mutable float _fLength;          // Length (m).
 	mutable float _fWidth;           // Width (m).
-    mutable float _fEstimatedTime;   // Time (m).
+    mutable float EstimatedTime;   // Time (m).
 	mutable int _nMaxPitSlots;       // Max. number of pit slots (m).
 
 	mutable bool _bUsable;           // False if anything wrong.
