@@ -36,6 +36,8 @@ Added:
         DataCompressionMenu.cpp
         ResearcherMenu.h
         ResearcherMenu.cpp
+        FileDialogManager.h
+        FileDialogManager.cpp
     modules/userinterface/legacymenu/racescreens/
         SaveMenu.cpp
         EndExperimentMenu.cpp
@@ -112,6 +114,7 @@ Changed:
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
+                added rppUtils and Filesystem for Linux
         tgf/
             params.cpp
                 Modified xmlGetOuputLine to write floats with full precision.
@@ -175,6 +178,8 @@ Changed:
             added HasValidRaceStartArguments()
 
             changed check to call custom HasValidRaceStartArguments method
+        CMakeLists.txt
+            added rppUtils and Filesystem for Linux
     interfaces/
         playerpref.h
             added   HM_ADRV_FILE define
@@ -204,11 +209,17 @@ Changed:
                 removed enabling of cooldown and changed it to enabling of race ending
             racetrack.cpp
                 changed ReTrackInit() to load track from Mediator
+            CMakeLists.txt
+                added rppUtils and Filesystem for Linux
+        racing/genparoptv1
+            CMakeLists.txt
+                added rppUtils and Filesystem for Linux
 
         sound/snddefault/
             CMakeLists.txt
                 added frontend
                 added backend
+                added rppUtils and Filesystem for Linux
             grsound.cpp
                 added intervention sound initialization
                 added intervention sound volume setting
@@ -255,6 +266,7 @@ Changed:
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    DataCompressionMenu.cpp and .h
+                  added    rppUtils and Filesystem for Linux
                 legacymenu.h
                     ActivateResearcherMenu()
                 legacymenu.cpp
@@ -348,13 +360,16 @@ Changed:
             textonly/
                 CMakeLists.txt
                     added backend
+                    added rppUtils and Filesystem for Linux
                 textonly.cpp
                     added includes
                     added LoadReplayConfiguration
                     changed TextOnlyUI::activate()
         graphic/
             ssggraph/
-                CMakeLists.txt added connection to frontend module
+                CMakeLists.txt
+                    added connection to frontend module
+                    added rppUtils and Filesystem for Linux
                 grboard.cpp
                     included "Mediator.h"
                     included "IndicatorConfig.h"
@@ -454,7 +469,9 @@ Changed:
 
                 grscreen.h
                     removed selectTrackMap()
-
+    tools/trackgen
+        CMakeLists.txt
+            added rppUtils and Filesystem for Linux
 
   data/
       config/raceman
