@@ -1232,6 +1232,8 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
     int		ind = 0;
 
     radius = arc = length = alf = xr = yr = newxr = newyr = xl = yl = 0;
+    // SIMULATED DRIVING ASSISTANCE: added speedLimit
+    float   speedLimit = -std::numeric_limits<float>::infinity();
     zel = zer = etgtl = etgtr = newxl = newyl = 0;
     type = 0;
 
@@ -1320,6 +1322,10 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
         envIndex = (int) GfParmGetCurNum(TrackHandle, path, TRK_ATT_ENVIND, (char*)NULL, (float) (envIndex+1)) - 1;
         // TODO: is the (int) intended?
         DoVfactor = (float) ((int) GfParmGetCurNum(TrackHandle, path, TRK_ATT_DOVFACTOR, (char*)NULL, 1.0)) ;
+
+        //SIMULATED DRIVING ASSISTANCE: added speed limit
+        // if no speed limit is defined it will be infinity
+        speedLimit = GfParmGetCurNum(TrackHandle, path, TRK_ATT_SPEEDLIMIT, (char*)NULL, std::numeric_limits<float>::infinity());
 
         /* get segment type and lenght */
         if (strcmp(segtype, TRK_VAL_STR) == 0) {
@@ -1507,6 +1513,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     /* straight */
                     curSeg->type = TR_STR;
                     curSeg->length = curLength;
+                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = sin(alf);								// Precalculate these
                     curSeg->cos = cos(alf);
 
@@ -1558,6 +1565,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     curSeg->radiusl = radius - wi2;
                     curSeg->arc = curArc;
                     curSeg->length = curLength;
+                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = 0.0;	//Not used for curves
                     curSeg->cos = 0.0;
 
@@ -1626,6 +1634,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     curSeg->radiusl = radius + wi2;
                     curSeg->arc = curArc;
                     curSeg->length = curLength;
+                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = 0.0;	//Not used for curves
                     curSeg->cos = 0.0;
 
@@ -1817,6 +1826,7 @@ void ReadTrack4(tTrack *theTrack, void *TrackHandle,
 
     curSeg = theTrack->seg;
     for(i=0; i<theTrack->nseg; i++)  {         /* read the segment data: */
+
     if ((curSeg->lgfromstart + curSeg->length) > (theTrack->length - 50.0)) {
         curSeg->raceInfo |= TR_LAST;
     } else if (curSeg->lgfromstart < 50.0) {

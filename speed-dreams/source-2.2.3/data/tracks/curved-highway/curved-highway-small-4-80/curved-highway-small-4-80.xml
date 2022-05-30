@@ -119,6 +119,7 @@ the Free Software Foundation; either version 2 of the License, or
       <section name="1">
         <attstr name="type" val="str" />
         <attnum name="lg" unit="m" val="172.0" />
+        <attnum name="speedLimit" val ="80" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
         <attstr name="surface" val="asphalt2-lines" />
@@ -2523,6 +2524,7 @@ the Free Software Foundation; either version 2 of the License, or
       <section name="straight 21">
         <attstr name="type" val="str" />
         <attnum name="lg" unit="m" val="19.0" />
+        <attnum name="speedLimit" val ="80" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
         <attstr name="surface" val="asphalt2-lines" />
