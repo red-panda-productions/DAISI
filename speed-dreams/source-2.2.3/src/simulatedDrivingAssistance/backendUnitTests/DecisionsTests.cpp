@@ -128,7 +128,7 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     BrakeDecision brakeDecision;
     brakeDecision.BrakeAmount = GetParam();
@@ -143,8 +143,8 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, 
-    ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_BRAKE, 0, STANDARD_THRESHOLD_BRAKE, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest,
+                         ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_BRAKE, 0, STANDARD_THRESHOLD_BRAKE, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, SteerRunIndicateTests)
@@ -152,7 +152,7 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     SteerDecision steerDecision;
     steerDecision.SteerAmount = GetParam();
@@ -173,8 +173,8 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, 
-    ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_STEER, 0, STANDARD_THRESHOLD_STEER, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest,
+                         ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_STEER, 0, STANDARD_THRESHOLD_STEER, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, AccelRunIndicateTests)
@@ -182,7 +182,7 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     AccelDecision accelDecision;
     accelDecision.AccelAmount = GetParam();
@@ -197,5 +197,5 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, 
-    ::testing::Values(INT_MIN, -99, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest,
+                         ::testing::Values(INT_MIN, -99, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, 2, 99, INT_MAX));

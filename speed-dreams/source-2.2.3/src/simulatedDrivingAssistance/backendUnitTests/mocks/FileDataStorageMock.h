@@ -12,16 +12,16 @@ class FileDataStorageMock
 {
 public:
     filesystem::path Initialize(tDataToStore p_saveSettings,
-                                                   const std::string& p_fileName,
-                                                   const std::string& p_userId,
-                                                   const std::time_t& p_trialStartTime,
-                                                   const std::string& p_blackboxFilename,
-                                                   const std::string& p_blackboxName,
-                                                   const std::time_t& p_blackboxTime,
-                                                   const std::string& p_environmentFilename,
-                                                   const std::string& p_environmentName,
-                                                   int p_environmentVersion,
-                                                   InterventionType p_interventionType)
+                                const std::string& p_fileName,
+                                const std::string& p_userId,
+                                const std::time_t& p_trialStartTime,
+                                const std::string& p_blackboxFilename,
+                                const std::string& p_blackboxName,
+                                const std::time_t& p_blackboxTime,
+                                const std::string& p_environmentFilename,
+                                const std::string& p_environmentName,
+                                int p_environmentVersion,
+                                InterventionType p_interventionType)
     {
         SaveSettings = p_saveSettings;
         TrialStartTime = p_trialStartTime;

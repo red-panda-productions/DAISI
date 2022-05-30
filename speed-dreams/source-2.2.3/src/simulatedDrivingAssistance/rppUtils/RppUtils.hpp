@@ -8,26 +8,25 @@
 #include "FileSystem.hpp"
 
 #define ROOT_FOLDER "source-2.2.3"
-#define PATH_SIZE 256
+#define PATH_SIZE   256
 
 #ifdef WIN32
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
 #include <windows.h>
-#define OS_SEPARATOR "\\"
+#define OS_SEPARATOR      "\\"
 #define OS_SEPARATOR_CHAR '\\'
 #else
 #include <unistd.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#define OS_SEPARATOR "/"
-#define OS_SEPARATOR_CHAR '/'
-#define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-#define PROCESS_INFORMATION FILE*
-#define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
-#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest,p_src,p_len)
-#define strcat_s(p_dest, p_len, p_src) strncat(p_dest,p_src,p_len)
+#define OS_SEPARATOR                   "/"
+#define OS_SEPARATOR_CHAR              '/'
+#define _mkdir(p_dir)                  mkdir(p_dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#define PROCESS_INFORMATION            FILE*
+#define THROW_RPP_EXCEPTION(p_msg)     throw std::exception()
+#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest, p_src, p_len)
+#define strcat_s(p_dest, p_len, p_src) strncat(p_dest, p_src, p_len)
 #endif
-
 
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
@@ -62,9 +61,10 @@ inline void Clamp(TNumber& p_f, TNumber p_min, TNumber p_max)
     }
 }
 
-/// @brief     Converts a float to a const char*
-/// @param p_f The float
-/// @return    The const char*
+/// @brief       Converts a float to a const char*
+/// @param p_f   The float
+/// @param p_buf A buffer to use for conversion
+/// @return      The const char*
 inline char* FloatToCharArr(float p_f, char* p_buf)
 {
     sprintf(p_buf, "%g", p_f);
@@ -282,7 +282,7 @@ inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
     std::string fullCommand = "gnome-terminal -- " + p_executablePath + " " + std::string(p_args);
-    popen(fullCommand.c_str(),"r");
+    popen(fullCommand.c_str(), "r");
 }
 
 /// @brief                       Starts a process from which you can also get the process handle
@@ -321,7 +321,7 @@ inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 /// @param p_rnd    The random generator reference to use
 /// @param p_chance The chance to succeed [0-100]
 /// @return         Boolean indicating succes or not.
-inline bool SucceedWithChance(Random &p_rnd, int p_chance)
+inline bool SucceedWithChance(Random& p_rnd, int p_chance)
 {
     return p_rnd.NextInt(0, 100) < p_chance;
 }
@@ -332,7 +332,7 @@ inline bool SucceedWithChance(Random &p_rnd, int p_chance)
 /// @brief Convert a boolean to a string
 /// @param p_boolean The boolean to convert to a string
 /// @return The string representing the boolean value
-inline const char *BoolToString(const bool p_boolean)
+inline const char* BoolToString(const bool p_boolean)
 {
     return p_boolean ? BOOL_TRUE_STRING : BOOL_FALSE_STRING;
 }
@@ -340,11 +340,10 @@ inline const char *BoolToString(const bool p_boolean)
 /// @brief Convert a string to a boolean
 /// @param p_string The string to convert to a boolean
 /// @return The boolean representing the string value
-inline bool StringToBool(const char *p_string)
+inline bool StringToBool(const char* p_string)
 {
     return strcmp(p_string, BOOL_TRUE_STRING) == 0;
 }
-
 
 /// @brief Assert the contents of the binary file in filePath match the binary stream contents
 #define ASSERT_BINARY_FILE_CONTENTS(filePath, contents)                      \
