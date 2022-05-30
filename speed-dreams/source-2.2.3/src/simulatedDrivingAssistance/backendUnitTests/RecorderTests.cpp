@@ -202,7 +202,7 @@ TEST(RecorderTests, WriteOnlyTime)
 
     std::stringstream expectedDecisions;
 
-    expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
+    expectedDecisions << bits((unsigned long)(0)) << bits((unsigned long)(3)) << bits((unsigned long)(435)) << bits((unsigned long)(95875));
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
 
