@@ -44,9 +44,9 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     }
     else
     {
-        findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
-        ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
-        findfilepath.append("\\blackbox.exe");
+        findfilepath = "speed-dreams" OS_SEPARATOR ROOT_FOLDER OS_SEPARATOR "data" OS_SEPARATOR "blackbox";
+        ASSERT_TRUE(FindFileDirectory(findfilepath, "Blackbox.exe"));
+        findfilepath.append(OS_SEPARATOR "Blackbox.exe");
     }
 
     p_decisionMaker.Initialize(0, &car, &situation, &track, findfilepath, recorder);
@@ -55,11 +55,13 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    if(!p_emptyPath) {
+    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
+    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
+
+    if(!p_emptyPath)
+    {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
-    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
-    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
 }
 
 /// @brief Runs the initialize test function

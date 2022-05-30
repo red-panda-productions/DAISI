@@ -12,10 +12,8 @@
 /// @param p_nextSegments      Segment pointer to store the copied segments in
 /// @param p_nextSegmentsCount Amount of segments to copy
 BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
-    : Car({}), Situation({}), TickCount(p_tickCount)
+    : Car(*p_car), Situation(*p_situation), TickCount(p_tickCount)
 {
-    if (!p_car) throw std::invalid_argument("p_car cannot be null");
-    if (!p_situation) throw std::invalid_argument("p_situation cannot be null");
     if (p_nextSegmentsCount < 0) throw std::invalid_argument("amount of segments cannot be less than 0");
 
     // Any pointers are marked with 'Pointer' so we can check if we even want them:
@@ -96,8 +94,7 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     // Copy p_car.next
     Car.next = nullptr;  // TODO (maybe) // Pointer
 
-    // Copy p_situation
-    Situation = *p_situation;
+    // Copy p_situation.cars
     Situation.cars = nullptr;  // TODO (maybe) // Pointer
 }
 

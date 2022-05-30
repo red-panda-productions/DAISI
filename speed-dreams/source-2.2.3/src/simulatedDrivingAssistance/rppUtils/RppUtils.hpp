@@ -13,14 +13,10 @@
 #ifdef WIN32
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
 #include <windows.h>
-#define OS_SEPARATOR "\\"
-#define OS_SEPARATOR_CHAR '\\'
 #else
 #include <unistd.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#define OS_SEPARATOR "/"
-#define OS_SEPARATOR_CHAR '/'
 #define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
 #define PROCESS_INFORMATION FILE*
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
