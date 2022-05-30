@@ -31,7 +31,7 @@ jobs:
           # Set the default path as the path to cache
           path: ${{env.BOOST_ROOT}}
           # Use the version as the key to only cache the correct version
-          key: boost-${{env.BOOST_VERSION}}-${{RUNNER_OS}}
+          key: boost-${{env.BOOST_VERSION}}-${{runner.os}}
 
       - name: Install boost
         if: steps.cache-boost.outputs.cache-hit != 'true'
