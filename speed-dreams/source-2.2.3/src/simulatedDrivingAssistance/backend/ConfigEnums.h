@@ -127,7 +127,6 @@ typedef struct DataToStore
     bool CarData;
     bool HumanData;
     bool InterventionData;
-    bool MetaData;
 } tDataToStore;
 
 /// @brief The threshold amounts for decisions. floats are values between 0 and 1.

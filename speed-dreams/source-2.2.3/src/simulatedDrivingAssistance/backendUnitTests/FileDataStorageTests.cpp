@@ -162,7 +162,7 @@ void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
     // Initialise class, read+write no values
-    DataToStore params = {false, false, false, false, false};
+    DataToStore params = {false, false, false, false};
 
     GET_DUMMY_TIMES;
     std::stringstream expected;
@@ -213,8 +213,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
         p_storeEnvironment,
         p_storeCar,
         p_storeControls,
-        p_storeDecisions,
-        p_storeMeta};
+        p_storeDecisions};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
 
@@ -291,8 +290,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
         false,
         false,
         false,
-        p_storeDecisions,
-        false};
+        p_storeDecisions};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
 
@@ -368,7 +366,6 @@ TEST(FileDataStorageTests, DecisionsAfterData)
 {
     Random random;
     tDataToStore params = {
-        true,
         true,
         true,
         true,
@@ -450,7 +447,7 @@ float HelperGetMedian(float* p_values, int p_compressionRate)
 void TestDataStorageSaveCompressionRates(int p_compressionRate)
 {
     Random random;
-    tDataToStore params = {true, true, true, false, true};
+    tDataToStore params = {true, true, true, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(p_compressionRate);
 

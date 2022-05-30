@@ -139,7 +139,6 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().EnvironmentData == p_dataToStore.EnvironmentData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().HumanData == p_dataToStore.HumanData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().InterventionData == p_dataToStore.InterventionData);
-    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().MetaData == p_dataToStore.MetaData);
 }
 
 /// @brief				 Performs the data collection test with the given parameters
@@ -150,8 +149,7 @@ void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_huma
         p_environmentData,
         p_carData,
         p_humanData,
-        p_interventionData,
-        p_metaData};
+        p_interventionData};
     SetDataCollectionSettingsTest(dataSettings);
 }
 

@@ -132,7 +132,7 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
     mediator->SetBlackBoxFilePath("");
 
     tDataToStore dataToStore{};
-    dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = dataToStore.MetaData = false;
+    dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = false;
     mediator->SetDataCollectionSettings(dataToStore);
 
     tIndicator indicators{};
