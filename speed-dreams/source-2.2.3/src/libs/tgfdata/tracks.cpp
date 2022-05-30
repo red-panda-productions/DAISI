@@ -609,7 +609,7 @@ void GfTrack::setWidth(float fWidth)
 	_fWidth = fWidth;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: added the setEstimatedTime function
+// SIMULATED DRIVING ASSISTANCE: added the SetEstimatedTime function
 /// @brief Calculates and sets the estimated time it takes to complete a track
 void GfTrack::SetEstimatedTime()
 {
