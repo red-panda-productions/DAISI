@@ -546,10 +546,10 @@ double GfTrack::GetEstimatedTime() const
 double GfTrack::GetSpeedLimit() const 
 {
     const std::string& description = getDescription();
-
-	// If there is an 8 in the string, the speed limit is 80 km/h
-	// otherwise the speed limit is 100 km/h
-	char c = '8';
+    
+    // If there is an 8 in the string, the speed limit is 80 km/h
+    // otherwise the speed limit is 100 km/h
+    char c = '8';
     if (description.find(c) == c)
         return 80;
     else
