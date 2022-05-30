@@ -23,6 +23,15 @@
 
 #define MSG_CHOOSE_REPLAY_NORMAL_TEXT "Choose Replay File: "
 
+#define SET_DEFAULT_THRESHOLDS(accel, brake, steer) \
+    m_decisionThresholds.Accel = accel;             \
+    m_decisionThresholds.Brake = brake;             \
+    m_decisionThresholds.Steer = steer
+
+#define SET_DEFAULT_THRESHOLD_ONLY_SIGNALS      SET_DEFAULT_THRESHOLDS(1, 0.9f, 0.09f);
+#define SET_DEFAULT_THRESHOLD_SHARED_CONTROL    SET_DEFAULT_THRESHOLDS(0.5f, 0.5f, 0.1f);
+#define SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER SET_DEFAULT_THRESHOLDS(0, 0, 0.05f);
+
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 
@@ -276,33 +285,27 @@ static void SetSteerThreshold(void*)
     SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
 }
 
-/// @breif set the default values of threshold boxes based on the InterventionType.
-static void SetDefaultValues(void*)
+/// @brief set the default values of threshold boxes based on the InterventionType.
+static void SetDefaultThresholdValues(void*)
 {
     switch (SMediator::GetInstance()->GetInterventionType())
     {
         case INTERVENTION_TYPE_ONLY_SIGNALS:
         {
             // set default threshold values for only signals
-            m_decisionThresholds.Accel = 1;
-            m_decisionThresholds.Brake = 0.9f;
-            m_decisionThresholds.Steer = 0.09f;
+            SET_DEFAULT_THRESHOLD_ONLY_SIGNALS
             break;
         }
         case INTERVENTION_TYPE_SHARED_CONTROL:
         {
             // set default threshold values for shared control
-            m_decisionThresholds.Accel = 0.5f;
-            m_decisionThresholds.Brake = 0.5f;
-            m_decisionThresholds.Steer = 0.1f;
+            SET_DEFAULT_THRESHOLD_SHARED_CONTROL
             break;
         }
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
         {
             // set default threshold values for complete takeover
-            m_decisionThresholds.Accel = 0;
-            m_decisionThresholds.Brake = 0;
-            m_decisionThresholds.Steer = 0.05f;
+            SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER
             break;
         }
         default:
@@ -334,7 +337,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     m_syncButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
-    m_defaultButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultValues);
+    m_defaultButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultThresholdValues);
 
     // Edit boxes
     m_accelThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "AccelThresholdEdit", nullptr, nullptr, SetAccelThreshold);
