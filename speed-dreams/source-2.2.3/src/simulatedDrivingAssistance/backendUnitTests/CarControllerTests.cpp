@@ -125,7 +125,7 @@ void ShowInterventionTest(InterventionAction p_action)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     CarController carController;
 

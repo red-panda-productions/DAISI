@@ -21,7 +21,7 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
-    template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
+    template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                                           \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
@@ -33,6 +33,7 @@
 #else
 #define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())
 #endif
+
 /// @brief                     Initializes the decision maker
 /// @param  p_initialTickCount The initial tickCount
 /// @param  p_initialCar       The initial car
