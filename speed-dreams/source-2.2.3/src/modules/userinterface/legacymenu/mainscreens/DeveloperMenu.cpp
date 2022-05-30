@@ -244,8 +244,8 @@ static void ChooseReplayFile(void* /* dummy */)
     m_replayFileChosen = true;
 }
 
-/// @brief                    write the thresholdvalue in the textbox
-/// @param p_threshold    The value to write in the textbox
+/// @brief                    Write the thresholdvalue in the textbox
+/// @param p_threshold        The value to write in the textbox
 /// @param p_thresholdControl The edit box to write to
 static void WriteThresholdValue(float& p_threshold, int p_thresholdControl)
 {
@@ -285,7 +285,7 @@ static void SetSteerThreshold(void*)
     SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
 }
 
-/// @brief set the default values of threshold boxes based on the InterventionType.
+/// @brief Set the default values of threshold boxes based on the InterventionType.
 static void SetDefaultThresholdValues(void*)
 {
     switch (SMediator::GetInstance()->GetInterventionType())
