@@ -211,6 +211,7 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
 /// @param  p_executablePath     The path to the executable
 /// @param  p_args               The arguments for the executable
 /// @param  p_processInformation The information about the process, this contains the handles
+/// @param  p_workingDirectory   The current working directory
 inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
 {
     std::string fullArgs = p_executablePath + " " + p_args;
@@ -289,6 +290,7 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
 /// @param  p_executablePath     The path to the executable
 /// @param  p_args               The arguments for the executable
 /// @param  p_processInformation The information about the process, this contains the handles
+/// @param  p_workingDirectory   The current working directory
 inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
 {
     std::string fullCommand = "gnome-terminal -- cd " + p_workingDirectory + "\n" + p_executablePath + " " + std::string(p_args);
@@ -303,6 +305,8 @@ inline void ExecuteCLI(const char* p_command, bool p_showCommand)
     system(p_command);
 }
 
+/// @brief             Returns the path to the appdata sda folder
+/// @param p_sdaFolder The variable to store the result in
 inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 {
     p_sdaFolder = filesystem::temp_directory_path();
