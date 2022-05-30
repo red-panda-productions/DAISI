@@ -115,6 +115,23 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     return {xPos, yPos};
 }
 
+/// @brief          Loads the screen position data from the indicator config.xml
+/// @param p_handle The p_handle to the config.xml file
+/// @param p_path   The C-string pointer to the section containing x- and y-pos attributes
+/// @return         A struct containing the dimensions data
+tScreenDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
+{
+    float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0);
+    float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0);
+
+    // Check whether x- and y-pos are valid percentages in range [0,1]
+    if (width < 0.0f || height < 0.0f || width > 100 || height > 100)
+    {
+        throw std::out_of_range("Width and height should be in the range [0,100]");
+    }
+    return {width, height};
+}
+
 /// @brief                    Loads the texture indicator data from the indicator config.xml
 /// @param p_handle           The p_handle to the config.xml file
 /// @param p_path             The p_path to the current intervention action to load
@@ -128,6 +145,7 @@ tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, I
     tTextureData* data = new TextureData;
     data->Path = GfParmGetStr(p_handle, p_path.c_str(), s_interventionTypeString[p_interventionType], "");
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
+    data->Dimensions = LoadDimensions(p_handle, p_path.c_str());
     return data;
 }
 

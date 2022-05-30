@@ -424,8 +424,8 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
     if (!p_data || !p_texture) return;
 
     // Dimensions of the icon on the screen (will be put in XML settings file later)
-    float iconWidth = 100;
-    float iconHeight = 100;
+    float iconWidth = p_data->Dimensions.Width;
+    float iconHeight = p_data->Dimensions.Height;
 
     // Duplicate the current matrix and enable opengl settings.
     glPushMatrix();

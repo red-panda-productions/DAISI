@@ -205,8 +205,7 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 /// @param p_storeCar Whether to save car data
 /// @param p_storeControls Whether to save player control data
 /// @param p_storeDecisions Whether to save intervention data
-/// @param p_storeMeta Whether to save metadata
-void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions, bool p_storeMeta)
+void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions)
 {
     Random random;
     tDataToStore params = {
@@ -280,7 +279,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
 TEST(FileDataStorageTests, TestDataStorageSingle)
 {
     bool booleans[2]{true, false};
-    PairWiseTest(TestDataStorageSave, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
+    PairWiseTest(TestDataStorageSave, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
 }
 
 void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)

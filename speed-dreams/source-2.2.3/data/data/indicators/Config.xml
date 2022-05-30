@@ -8,6 +8,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.04"/>
+				<attnum name ="width" val="80"/>
+				<attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning_Off.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl_Off.png"/>
@@ -15,7 +17,7 @@
             </section>            
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
-                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="xpos"      val="0.745"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
                 <attnum name ="font-size" val="300"/>
@@ -25,6 +27,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.04"/>
+                <attnum name ="width" val="80"/>
+                <attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
@@ -32,7 +36,7 @@
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
-                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="xpos"      val="0.745"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
                 <attnum name ="font-size" val="300"/>
@@ -47,6 +51,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.04"/>
+                <attnum name ="width" val="80"/>
+                <attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
@@ -54,7 +60,7 @@
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
-                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="xpos"      val="0.745"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
                 <attnum name ="font-size" val="300"/>
@@ -71,6 +77,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.04"/>
+				<attnum name ="width" val="80"/>
+                <attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning_Off.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl_Off.png"/>
@@ -78,7 +86,7 @@
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
-                <attnum name ="xpos"      val="0.86"/>
+                <attnum name ="xpos"      val="0.855"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
                 <attnum name ="font-size" val="300"/>
@@ -88,6 +96,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.04"/>
+                <attnum name ="width" val="80"/>
+                <attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
@@ -95,7 +105,7 @@
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
-                <attnum name ="xpos"      val="0.86"/>
+                <attnum name ="xpos"      val="0.855"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
                 <attnum name ="font-size" val="300"/>
@@ -111,6 +121,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.85"/>
                 <attnum name ="ypos" val="0.04"/>
+                <attnum name ="width" val="80"/>
+                <attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
@@ -118,7 +130,7 @@
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
-                <attnum name ="xpos"      val="0.86"/>
+                <attnum name ="xpos"      val="0.855"/>
                 <attnum name ="ypos"      val="0"/>
                 <attstr name ="font"      val="jura-normal.glf"/>
                 <attnum name ="font-size" val="300"/>

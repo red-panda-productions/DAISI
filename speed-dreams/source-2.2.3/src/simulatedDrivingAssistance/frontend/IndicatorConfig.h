@@ -19,6 +19,8 @@
 
 #define PRM_ATTR_XPOS          "xpos"
 #define PRM_ATTR_YPOS          "ypos"
+#define PRM_ATTR_WIDTH         "width"
+#define PRM_ATTR_HEIGHT        "height"
 #define PRM_ATTR_SRC           "source"
 #define PRM_ATTR_CONTENT       "content"
 #define PRM_ATTR_FONT          "font"
@@ -79,6 +81,7 @@ private:
     // Loading helpers
     tSoundData* LoadSound(void* p_handle, std::string p_path);
     tScreenPosition LoadScreenPos(void* p_handle, const char* p_path);
+    tScreenDimensions LoadDimensions(void* p_handle, const char* p_path);
     tTextureData* LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType);
     tTextData* LoadText(void* p_handle, std::string p_path);
 };
