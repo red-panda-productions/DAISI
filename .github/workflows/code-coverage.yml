@@ -20,58 +20,81 @@ jobs:
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: windows-latest
-    
+    env:
+      BUILD_TYPE: Release
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_ROOT: ${{github.workspace}}/boost/boost
+      BOOST_VERSION: 1.79.0
+
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Install OpenCppCoverage
-      uses: KungFuDonkey/Install-OpenCppCoverage@v1
+      - name: Cache boost
+        uses: actions/cache@v2
+        id: cache-boost
+        with:
+          # Set the default path as the path to cache
+          path: ${{env.BOOST_ROOT}}
+          # Use the version as the key to only cache the correct version
+          key: boost-${{env.BOOST_VERSION}}
 
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        max-size: "2GB"
+      - name: Install boost
+        if: steps.cache-boost.outputs.cache-hit != 'true'
+        uses: MarkusJx/install-boost@v2.3.0
+        id: install-boost
+        with:
+          boost_version: ${{env.BOOST_VERSION}}
+          toolset: msvc
+          platform_version: 2022
+          boost_install_dir: ${{env.BOOST_PATH}}
 
-    - name: Install MySQL
-      uses: Fettpet/setup-mysql@v1
-      with:
-        mysql-version: 8.0
-        username: SDATest
-        password: PASSWORD
+      - name: Install OpenCppCoverage
+        uses: KungFuDonkey/Install-OpenCppCoverage@v1
 
-    - uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x86
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: "2GB"
 
-    - name: Configure CMake
-      shell: bash
-      run: cmake -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DOPTION_GITHUB_ACTIONS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_CXX_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -DCMAKE_C_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_C_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
+      - name: Install MySQL
+        uses: Fettpet/setup-mysql@v1
+        with:
+          mysql-version: 8.0
+          username: SDATest
+          password: PASSWORD
 
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: cmake --build . --config Debug
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
 
-    - name: Run code coverage UnitUtilities
-      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-      run: .\UnitUtilitiesCoverage.bat
+      - name: Configure CMake
+        shell: bash
+        run: cmake -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DOPTION_GITHUB_ACTIONS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_CXX_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -DCMAKE_C_FLAGS_DEBUG=' /MDd /Z7 /Ob0 /Od /RTC1' -DCMAKE_C_FLAGS_RELWITHDEBINFO=' /MD /Z7 /O2 /Ob1 /DNDEBUG' -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
-    - name: Run code coverage Frontend
-      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-      run: .\FrontendCoverage.bat
-    
-    - name: Run code coverage Backend
-      working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
-      run: .\BackendCoverage.bat
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Debug
 
-    - name: Create code coverage report
-      uses: 5monkeys/cobertura-action@master
-      with:
-        path: ${{github.workspace}}\speed-dreams\source-2.2.3\BackendCoverage.xml
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        minimum_coverage: 100
-        fail_below_threshold: true
-        show_missing: true
-        link_missing_lines: true
-        report_name: 'code coverage report'
-      
+      - name: Run code coverage UnitUtilities
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: .\UnitUtilitiesCoverage.bat
+
+      - name: Run code coverage Frontend
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: .\FrontendCoverage.bat
+
+      - name: Run code coverage Backend
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: .\BackendCoverage.bat
+
+      - name: Create code coverage report
+        uses: 5monkeys/cobertura-action@master
+        with:
+          path: ${{github.workspace}}\speed-dreams\source-2.2.3\BackendCoverage.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 100
+          fail_below_threshold: true
+          show_missing: true
+          link_missing_lines: true
+          report_name: 'code coverage report'

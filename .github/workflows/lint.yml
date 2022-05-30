@@ -15,8 +15,34 @@ env:
 jobs:
   report-linting-errors:
     runs-on: windows-latest
+    env:
+      BUILD_TYPE: Release
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_ROOT: ${{github.workspace}}/boost/boost
+      BOOST_VERSION: 1.79.0
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Cache boost
+        uses: actions/cache@v2
+        id: cache-boost
+        with:
+          # Set the default path as the path to cache
+          path: ${{env.BOOST_ROOT}}
+          # Use the version as the key to only cache the correct version
+          key: boost-${{env.BOOST_VERSION}}
+
+      - name: Install boost
+        if: steps.cache-boost.outputs.cache-hit != 'true'
+        uses: MarkusJx/install-boost@v2.3.0
+        id: install-boost
+        with:
+          boost_version: ${{env.BOOST_VERSION}}
+          toolset: msvc
+          platform_version: 2022
+          boost_install_dir: ${{env.BOOST_PATH}}
+
       - uses: actions/setup-python@v3
 
       - name: Install linter package
@@ -26,7 +52,7 @@ jobs:
         with:
           arch: x86
 
-      - name: Generate compilation database  
+      - name: Generate compilation database
         run: cmake -DOPTION_INTEGRATION_TESTS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
       - name: run linter as package
@@ -43,4 +69,3 @@ jobs:
         run: |
           echo "Some files failed the linting checks!"
 
-      

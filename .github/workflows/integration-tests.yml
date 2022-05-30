@@ -3,7 +3,7 @@ name: CI Pipeline Integration Tests
 on:
   # Run everyday at 3 am
   schedule:
-  - cron: "0 3 * * *"
+    - cron: "0 3 * * *"
 
   # Allow manually triggering from the actions tab
   workflow_dispatch:
@@ -29,43 +29,66 @@ jobs:
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'integrationtest')
     
     runs-on: windows-latest
-    
+    env:
+      BUILD_TYPE: Release
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_ROOT: ${{github.workspace}}/boost/boost
+      BOOST_VERSION: 1.79.0
+
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        max-size: "2GB"
+      - name: Cache boost
+        uses: actions/cache@v2
+        id: cache-boost
+        with:
+          # Set the default path as the path to cache
+          path: ${{env.BOOST_ROOT}}
+          # Use the version as the key to only cache the correct version
+          key: boost-${{env.BOOST_VERSION}}
 
-    - name: Install MySQL
-      uses: Fettpet/setup-mysql@v1
-      with:
-        mysql-version: 8.0
-        username: SDATest
-        password: PASSWORD
+      - name: Install boost
+        if: steps.cache-boost.outputs.cache-hit != 'true'
+        uses: MarkusJx/install-boost@v2.3.0
+        id: install-boost
+        with:
+          boost_version: ${{env.BOOST_VERSION}}
+          toolset: msvc
+          platform_version: 2022
+          boost_install_dir: ${{env.BOOST_PATH}}
 
-    - uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x86
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: "2GB"
 
-    - name: Configure CMake
-      shell: bash
-      run: cmake -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DOPTION_INTEGRATION_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
+      - name: Install MySQL
+        uses: Fettpet/setup-mysql@v1
+        with:
+          mysql-version: 8.0
+          username: SDATest
+          password: PASSWORD
 
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: cmake --build . --config Release
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
 
-    - name: Test
-      working-directory: ${{runner.workspace}}/build
-      run: ctest -V
+      - name: Configure CMake
+        shell: bash
+        run: cmake -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DOPTION_INTEGRATION_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{runner.workspace}}/build' -G Ninja
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: test_results_xml
-        path: ${{runner.workspace}}/build/IPCTests/test-results/**/*.xml
-      
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config Release
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        run: ctest -V
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results_xml
+          path: ${{runner.workspace}}/build/IPCTests/test-results/**/*.xml
