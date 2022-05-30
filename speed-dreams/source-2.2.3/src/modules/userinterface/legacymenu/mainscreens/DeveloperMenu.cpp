@@ -28,9 +28,9 @@
     m_decisionThresholds.Brake = brake;             \
     m_decisionThresholds.Steer = steer
 
-#define SET_DEFAULT_THRESHOLD_ONLY_SIGNALS      SET_DEFAULT_THRESHOLDS(1, 0.9f, 0.09f);
-#define SET_DEFAULT_THRESHOLD_SHARED_CONTROL    SET_DEFAULT_THRESHOLDS(0.5f, 0.5f, 0.1f);
-#define SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER SET_DEFAULT_THRESHOLDS(0, 0, 0.05f);
+#define SET_DEFAULT_THRESHOLD_ONLY_SIGNALS      SET_DEFAULT_THRESHOLDS(1, 0.9f, 0.09f)
+#define SET_DEFAULT_THRESHOLD_SHARED_CONTROL    SET_DEFAULT_THRESHOLDS(0.5f, 0.5f, 0.1f)
+#define SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER SET_DEFAULT_THRESHOLDS(0, 0, 0.05f)
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
@@ -293,19 +293,19 @@ static void SetDefaultThresholdValues(void*)
         case INTERVENTION_TYPE_ONLY_SIGNALS:
         {
             // set default threshold values for only signals
-            SET_DEFAULT_THRESHOLD_ONLY_SIGNALS
+            SET_DEFAULT_THRESHOLD_ONLY_SIGNALS;
             break;
         }
         case INTERVENTION_TYPE_SHARED_CONTROL:
         {
             // set default threshold values for shared control
-            SET_DEFAULT_THRESHOLD_SHARED_CONTROL
+            SET_DEFAULT_THRESHOLD_SHARED_CONTROL;
             break;
         }
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
         {
             // set default threshold values for complete takeover
-            SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER
+            SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER;
             break;
         }
         default:
