@@ -198,6 +198,10 @@ Changed:
                 changed ReCleanup() to also shut down updaters
             racesituation.cpp
                 change deltaTime to be constant value
+            racestate.cpp
+                changed several RE_STATE_RACE_COOLDOWN modes to RE_STATE_RACE_END modes
+            racemain.cpp
+                removed enabling of cooldown and changed it to enabling of race ending
             racetrack.cpp
                 changed ReTrackInit() to load track from Mediator
 
