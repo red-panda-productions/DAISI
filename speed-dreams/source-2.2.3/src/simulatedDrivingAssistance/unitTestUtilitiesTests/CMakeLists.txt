@@ -1,7 +1,7 @@
 project(unitTestUtilitiesTests)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -51,13 +51,13 @@ include(GoogleTest)
 gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)
 
 SET(BAT_NAME "UnitUtilitiesCoverage")
-SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/unitTestUtilitiesTests.exe")
+SET(EXE_NAME "unitTestUtilitiesTests")
 SET(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities")
-SET(EXCLUDED_SOURCES "")
+SET(EXCLUDED_SOURCES "VariableStore.cpp")
 SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
 
 IF(OPTION_GITHUB_ACTIONS)
-    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "UnitTestCoverage.cov" "")
+    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_NAME}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "")
 ELSE(OPTION_GITHUB_ACTIONS)
-    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
+    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_NAME}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
 ENDIF(OPTION_GITHUB_ACTIONS)

@@ -12,7 +12,7 @@
 #include "mocks/FileDataStorageMock.h"
 #include "mocks/SQLDatabaseStorageMock.h"
 #include "portability.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "VariableStore.h"
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>
@@ -44,9 +44,9 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     }
     else
     {
-        findfilepath = "speed-dreams\\" ROOT_FOLDER "\\data\\blackbox";
-        ASSERT_TRUE(FindFileDirectory(findfilepath, "blackbox.exe"));
-        findfilepath.append("\\blackbox.exe");
+        findfilepath = "speed-dreams" OS_SEPARATOR ROOT_FOLDER OS_SEPARATOR "data" OS_SEPARATOR "blackbox";
+        ASSERT_TRUE(FindFileDirectory(findfilepath, "Blackbox.exe"));
+        findfilepath.append(OS_SEPARATOR "Blackbox.exe");
     }
 
     p_decisionMaker.Initialize(0, &car, &situation, &track, findfilepath, recorder);
@@ -55,12 +55,12 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    if (!p_emptyPath)
+    if(!p_emptyPath)
     {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
-    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
     ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
+    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
 }
 
 /// @brief Runs the initialize test function
@@ -104,7 +104,7 @@ void DecisionTest(bool p_isDecision)
     ASSERT_EQ(recorder->CurrentDecisions.GetAccel(), storage->SavedDecisions->GetAccel());
     ASSERT_EQ(recorder->CurrentDecisions.GetGear(), storage->SavedDecisions->GetGear());
     ASSERT_EQ(recorder->CurrentTimestamp, 0);
-    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+    InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mock == nullptr);
     ASSERT_EQ(mock->DecisionCount, DECISIONS_COUNT);
     ASSERT_FALSE(mock->Decisions == nullptr);
@@ -121,7 +121,7 @@ void ChangeSettingsTest(InterventionType p_intervention)
     decisionMaker.ChangeSettings(p_intervention);
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
-    InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExecutor);
+    InterventionExecutorMock* mockCheck = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mockCheck == nullptr);
 }
 
@@ -170,7 +170,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop(true));
     ASSERT_NO_THROW(decisionMaker.RaceStop(false));
-    std::experimental::filesystem::path path = *static_cast<std::experimental::filesystem::path*>(VariableStore::GetInstance().Variables[0]);
+    filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
     ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
 }
 

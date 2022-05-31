@@ -24,8 +24,8 @@ public:
         Situation = p_initialSituation;
         Track = p_track;
         BlackboxExecutablePath = p_blackBoxExecutablePath;
-        Recorder = p_recorder;
-        BlackBoxData = p_testSituations;
+        Record = p_recorder;
+        Data = p_testSituations;
         TestAmount = p_testAmount;
     }
 
@@ -64,9 +64,9 @@ public:
     unsigned long TickCount;
     std::string BlackboxExecutablePath;
 
-    Recorder* Recorder;
+    Recorder* Record;
 
-    BlackBoxData* BlackBoxData = nullptr;
+    BlackBoxData* Data = nullptr;
 
     int TestAmount = 0;
 

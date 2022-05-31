@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "CarController.h"
-#include "../rppUtils/Random.hpp"
-#include "../rppUtils/RppUtils.hpp"
+#include "Random.hpp"
+#include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "Mediator.h"
 #include "TestUtils.h"
@@ -125,7 +125,7 @@ void ShowInterventionTest(InterventionAction p_action)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     CarController carController;
 

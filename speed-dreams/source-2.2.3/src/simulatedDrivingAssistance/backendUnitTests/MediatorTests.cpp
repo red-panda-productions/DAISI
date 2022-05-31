@@ -10,12 +10,9 @@
 #include "mocks/RecorderMock.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-#include "../rppUtils/RppUtils.hpp"
+#include "FileSystem.hpp"
+#include "RppUtils.hpp"
 #include "GeneratorUtils.h"
-
-namespace filesystem = std::experimental::filesystem;
 
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>

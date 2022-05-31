@@ -3,7 +3,7 @@
 #include "tgf.h"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "mocks/DecisionMock.h"
 #include "IndicatorConfig.h"
 
@@ -11,7 +11,7 @@
 /// @param p_interventionType  parameter that determines the mode.
 void InterventionExecutorTest(unsigned int p_interventionType)
 {
-    DecisionMock dmock;  // mock of a decision
+    DecisionMock dmock = {};  // mock of a decision
     Random random;
     int decisionCount = random.NextInt(1, 10);  // choses a random value of amount of decisions the decisionMaker gets sent
 
@@ -22,7 +22,7 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, INTERVENTION_TYPE_SHARED_CONTROL);
 
     SDAConfig config;
 

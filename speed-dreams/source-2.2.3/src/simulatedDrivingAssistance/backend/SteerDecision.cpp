@@ -6,12 +6,12 @@ void SteerDecision::RunIndicateCommands()
     float threshold = SMediator::GetInstance()->GetThresholdSettings().Steer;
     if (SteerAmount <= -threshold || SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
     {
-        SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_STEER_RIGHT);
+        SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_RIGHT);
         return;
     }
     if (SteerAmount >= threshold)
     {
-        SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_STEER_LEFT);
+        SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_LEFT);
     }
 };
 
@@ -26,5 +26,5 @@ void SteerDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
         return;
     }
 
-    SMediator::GetInstance()->CarController.SetSteerCmd(SteerAmount);
+    SMediator::GetInstance()->CarControl.SetSteerCmd(SteerAmount);
 };
