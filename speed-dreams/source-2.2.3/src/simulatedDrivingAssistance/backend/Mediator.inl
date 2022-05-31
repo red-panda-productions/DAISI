@@ -353,7 +353,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     std::ifstream file(filepath);
     getline(file, pointerName);
     file.close();
-    int pointerValue = stoi(pointerName, nullptr, 16);
+    long pointerValue = std::stol(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
 }

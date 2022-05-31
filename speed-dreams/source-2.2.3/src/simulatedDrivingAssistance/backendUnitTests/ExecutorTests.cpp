@@ -11,7 +11,7 @@
 /// @param p_interventionType  parameter that determines the mode.
 void InterventionExecutorTest(unsigned int p_interventionType)
 {
-    DecisionMock dmock;  // mock of a decision
+    DecisionMock dmock = {};  // mock of a decision
     Random random;
     int decisionCount = random.NextInt(1, 10);  // choses a random value of amount of decisions the decisionMaker gets sent
 

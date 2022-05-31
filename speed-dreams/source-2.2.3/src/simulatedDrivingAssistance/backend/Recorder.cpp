@@ -243,7 +243,6 @@ bool Recorder::CheckSameInput(const float* p_input, const float* p_prevInput, in
 bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecordingFile, filesystem::path& p_decisionsRecordingFile, filesystem::path& p_simulationFile)
 {
     const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
-
     if (trackFileName == nullptr)
     {
         GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
@@ -251,6 +250,11 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
     }
 
     void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+    if (trackHandle == nullptr)
+    {
+        GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
+        return false;
+    }
 
     const char* category = strdup(GfParmGetStr(trackHandle, "Header", "category", nullptr));
     const char* name = strdup(GfParmGetStr(trackHandle, "Header", "name", nullptr));

@@ -13,19 +13,20 @@
 #ifdef WIN32
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
 #include <windows.h>
+<<<<<<< HEAD
 #define OS_SEPARATOR      "\\"
 #define OS_SEPARATOR_CHAR '\\'
+=======
+>>>>>>> V22F-742-Linux-Actions
 #else
 #include <unistd.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#define OS_SEPARATOR                   "/"
-#define OS_SEPARATOR_CHAR              '/'
-#define _mkdir(p_dir)                  mkdir(p_dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-#define PROCESS_INFORMATION            FILE*
-#define THROW_RPP_EXCEPTION(p_msg)     throw std::exception()
-#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest, p_src, p_len)
-#define strcat_s(p_dest, p_len, p_src) strncat(p_dest, p_src, p_len)
+#define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#define PROCESS_INFORMATION FILE*
+#define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
+#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest,p_src,p_len)
+#define strcat_s(p_dest, p_len, p_src) strncat(p_dest,p_src,p_len)
 #endif
 
 /// @brief      Converts a string to float, and NAN if not possible

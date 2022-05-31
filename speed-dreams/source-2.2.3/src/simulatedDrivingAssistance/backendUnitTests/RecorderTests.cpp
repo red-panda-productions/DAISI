@@ -15,13 +15,13 @@
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
 #define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
-    ASSERT_BINARY_FILE_CONTENTS(folder + ("\\" recordingName "\\" filename), contents)
+    ASSERT_BINARY_FILE_CONTENTS(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename), contents)
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
 #define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
     {                                                                                               \
-        std::cout << "Reading file from " << (folder + (recordingName "\\" filename)) << std::endl; \
-        std::ifstream file(folder + ("\\" recordingName "\\" filename));                            \
+        std::cout << "Reading file from " << (folder + (recordingName OS_SEPARATOR filename)) << std::endl; \
+        std::ifstream file(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename));                            \
         ASSERT_TRUE(file.is_open());                                                                \
         std::stringstream buffer;                                                                   \
         buffer << file.rdbuf();                                                                     \
@@ -60,14 +60,14 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
     Recorder recorder(TEST_DIRECTORY, "constructor_creates_file", 0, 0);
 
     // Ensure file is created with the proper name
-    ASSERT_TRUE(filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
-    ASSERT_TRUE(filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
-    ASSERT_TRUE(filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR USER_INPUT_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR DECISIONS_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR SIMULATION_DATA_RECORDING_FILE_NAME));
 
     // Ensure the file is empty
-    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME)
-    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME)
-    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR USER_INPUT_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR DECISIONS_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR SIMULATION_DATA_RECORDING_FILE_NAME)
 }
 
 /// @brief Test the recorder with a single parameter, for different compression options and scenarios
@@ -202,7 +202,7 @@ TEST(RecorderTests, WriteOnlyTime)
 
     std::stringstream expectedDecisions;
 
-    expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
+    expectedDecisions << bits((unsigned long)(0)) << bits((unsigned long)(3)) << bits((unsigned long)(435)) << bits((unsigned long)(95875));
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
 

@@ -8,8 +8,7 @@ SET(_SOURCES
 	DecisionTuple.cpp
 	FileDataStorage.cpp
 	InterventionExecutorAlwaysIntervene.cpp
-	InterventionExecutorAskFor.cpp
-	InterventionExecutorIndication.cpp
+		InterventionExecutorIndication.cpp
 	InterventionExecutorNoIntervention.cpp
 	InterventionExecutorPerformWhenNeeded.cpp
 	InterventionFactory.cpp
@@ -41,8 +40,7 @@ SET(_HEADERS
 	IDecision.h
 	InterventionExecutor.h
 	InterventionExecutorAlwaysIntervene.h
-	InterventionExecutorAskFor.h
-	InterventionExecutorIndication.h
+        InterventionExecutorIndication.h
 	InterventionExecutorNoIntervention.h
 	InterventionExecutorPerformWhenNeeded.h
 	InterventionFactory.h
@@ -75,5 +73,9 @@ ADD_IPCLIB_PACKAGE(backend)
 ADD_MYSQL_PACKAGE(backend)
 
 ADD_BOOST_PACKAGE(backend)
+
+IF(UNIX)
+	TARGET_LINK_LIBRARIES(backend rt)
+ENDIF(UNIX)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)

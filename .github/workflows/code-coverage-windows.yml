@@ -97,4 +97,4 @@ jobs:
           fail_below_threshold: true
           show_missing: true
           link_missing_lines: true
-          report_name: 'code coverage report'
+          report_name: 'code coverage report Windows'
