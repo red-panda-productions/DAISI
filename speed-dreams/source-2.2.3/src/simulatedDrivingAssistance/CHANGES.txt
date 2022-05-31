@@ -59,6 +59,8 @@ Added:
             bg-button-two_focused.png
             bg-button-two_pushed.png
             head.png
+            Textbox_EndStart_screen.png
+            Menu_Background_EndStart_screen.png
         indicators/
             *
         menu/
