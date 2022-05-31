@@ -12,7 +12,7 @@
             <attstr name="text" val="Steer"/>
             <attstr name="tip" val="Enable/Disable the black box being allowed to steer"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="370"/>
+            <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -25,7 +25,7 @@
             <attstr name="text" val="Accelerate"/>
             <attstr name="tip" val="Enable/Disable the black box being allowed to accelerate"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="340"/>
+            <attnum name="y" val="365"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -38,7 +38,7 @@
             <attstr name="text" val="Brake"/>
             <attstr name="tip" val="Enable/Disable the black box being allowed to brake"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="310"/>
+            <attnum name="y" val="335"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -53,10 +53,10 @@
             <attstr name="text" val="Developer Screen"/>
             <attstr name="tip" val="Access the Developer Screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="530"/>
-            <attnum name="y" val="455"/>
+            <attnum name="x" val="253"/>
+            <attnum name="y" val="40"/>
             <attnum name="width" val="120"/>
-            <attstr name="font" val="small"/>
+            <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
             <attstr name="pushed color" val="0xFFFFFF"/>
@@ -73,7 +73,7 @@
         <!-- Choose black box button-->
         <section name="ChooseBlackBoxButton">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <!-- Below value is "Choose Black Box: " followed by 260 (max filepath size) spaces, 
             as giving a new value to a button's text is only as long as the original length,
             although even with the small font, a name that long would go off-screen -->
@@ -81,7 +81,7 @@
             <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="250"/>
+            <attnum name="y" val="150"/>
             <attnum name="width" val="145"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -99,12 +99,12 @@
         <!-- Although this is a label, this is not a static control as we want to change it -->
         <section name="ErrorLabel">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="205"/>
+            <attnum name="x" val="10"/>
+            <attnum name="y" val="100"/>
             <!-- Label for showing error messages to the user. Needs to be 39 characters long.
-			Default value contains this many spaces so maxlength is set correctly -->
+            Default value contains this many spaces so maxlength is set correctly -->
             <attstr name="text" val="                                       "/>
-            <attstr name="tip" val="You must choose an environment and a file that could be a correct black box: *.exe"/>
+            <attstr name="tip" val="You must choose a user id, an environment, and a file that could be a correct black box: *.exe"/>
             <attnum name="width" val="210"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -113,21 +113,21 @@
 
         <!-- Choose environment button-->
         <section name="ChooseEnvironmentButton">
-	        <attstr name="type" val="text button"/>
-	        <attstr name="show box" val="yes"/>
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
             <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces,
-			as giving a new value to a button's text is only as long as the original length,
-			although even with the small font, a name that long would go off-screen -->
-	        <attstr name="text" val="Choose Environment:                                                                                                                                                                                                                                                                     "/>
+            as giving a new value to a button's text is only as long as the original length,
+            although even with the small font, a name that long would go off-screen -->
+            <attstr name="text" val="Choose Environment:                                                                                                                                                                                                                                                                     "/>
             <attstr name="tip" val="Open a menu to select the driving environment"/>
-	        <attstr name="h align" val="left"/>
-	        <attnum name="x" val="20"/>
-	        <attnum name="y" val="220"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="120"/>
             <attnum name="width" val="145"/>
-	        <attstr name="font" val="medium"/>
-	        <attstr name="color" val="0xFFFFFF"/>
-	        <attstr name="focused color" val="0xFFFFFF"/>
-	        <attstr name="pushed color" val="0xFFFFFF"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
             <attnum name="image x" val="-10"/>
             <attnum name="image y" val="4"/>
             <attnum name="image width" val="60"/>
@@ -142,8 +142,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Audio"/>
             <attstr name="tip" val="Enable/Disable auditory indication of interventions"/>
-            <attnum name="x" val="180"/>
-            <attnum name="y" val="370"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -155,8 +155,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Icon"/>
             <attstr name="tip" val="Enable/Disable icon indication of interventions"/>
-            <attnum name="x" val="180"/>
-            <attnum name="y" val="340"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="365"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -168,8 +168,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Text"/>
             <attstr name="tip" val="Enable/Disable text indication of interventions"/>
-            <attnum name="x" val="180"/>
-            <attnum name="y" val="310"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="335"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -198,8 +198,8 @@
                     <attstr name="tip" val="Set it so that the AI has complete control over the car"/>
                 </section>
             </section>
-            <attnum name="x" val="310"/>
-            <attnum name="y" val="370"/>
+            <attnum name="x" val="280"/>
+            <attnum name="y" val="396"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -215,8 +215,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Steer"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to control steering"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="370"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -228,8 +228,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Accelerate"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to control throttle"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="340"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="365"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -241,8 +241,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Brake"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to control the brake"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="310"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="335"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -254,8 +254,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Interventions on/off"/>
             <attstr name="tip" val="Enable/Disable the possibility for the user to enable/disable AI intervention"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="280"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="305"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -269,7 +269,7 @@
             <attstr name="text" val="Force Feedback"/>
             <attstr name="tip" val="Enable/Disable force feedback"/>
             <attnum name="x" val="500"/>
-            <attnum name="y" val="190"/>
+            <attnum name="y" val="395"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -282,7 +282,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="16"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="180"/>
+            <attnum name="y" val="240"/>
             <attnum name="width" val="50"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -294,10 +294,33 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="70"/>
-            <attnum name="y" val="150"/>
+            <attnum name="y" val="210"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium"/>
+        </section>
+
+        <!-- Button for generating a userId -->
+        <section name="UserIdGenerateButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attnum name="x" val="230"/>
+            <attnum name="y" val="207"/>
+            <attnum name="width" val="75"/>
+            <attstr name="text" val="Generate"/>
+            <attstr name="tip" val ="Generate a random, four-digit user id"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
         <!-- Apply button -->
@@ -358,7 +381,7 @@
         <section name="2">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="400"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Black Box Control"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -366,8 +389,8 @@
 
         <section name="3">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="180"/>
-            <attnum name="y" val="400"/>
+            <attnum name="x" val="420"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Indicator"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -375,8 +398,8 @@
 
         <section name="4">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="310"/>
-            <attnum name="y" val="400"/>
+            <attnum name="x" val="280"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Intervention Type"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -384,8 +407,8 @@
 
         <section name="5">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="500"/>
-            <attnum name="y" val="400"/>
+            <attnum name="x" val="140"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Participant Control"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -394,7 +417,7 @@
         <section name="6">
             <attstr name="type" val="label"/>
             <attnum name="x" val="500"/>
-            <attnum name="y" val="220"/>
+            <attnum name="y" val="425"/>
             <attstr name="text" val="Other options"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium_t"/>
@@ -403,7 +426,7 @@
         <section name="7">
             <attstr name="type" val="label"/>
             <attnum name="x" val="80"/>
-            <attnum name="y" val="180"/>
+            <attnum name="y" val="240"/>
             <attstr name="text" val="Max Time"/>
             <attstr name="tip" val="Set the maximum simulation time"/>
             <attstr name="h align" val="left"/>
@@ -413,7 +436,7 @@
         <section name="8">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="150"/>
+            <attnum name="y" val="210"/>
             <attstr name="text" val="User ID"/>
             <attstr name="tip" val="Give the user an ID"/>
             <attstr name="h align" val="left"/>
