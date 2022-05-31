@@ -522,7 +522,7 @@ TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade, targetVersion));
 
     // Check whether the updated recording settings were correctly created.
-    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
     ASSERT_NE(upgradedRunSettingsHandle, nullptr);
 
     // Now on the targeted version
@@ -547,6 +547,34 @@ TEST(RecorderTests, UpgradeToUnkownVersion)
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, unknownVersion));
     ASSERT_THROW(AssertTargetVersionChanges(nullptr, toUpgrade, unknownVersion), std::exception);
+}
+
+/// @brief Attempts to upgrade to a recording that misses the category in the track xml
+TEST(RecorderTests, UpgradeV0WithMissingCategory)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
+    
+    // Remove category attribute from track xml file
+    void* settingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
+    const char* trackFileName = GfParmGetStr(settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
+    void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+    GfParmRemove(trackHandle, "Header", "category");
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, 1));
+}
+
+/// @brief Attempts to upgrade to a recording that misses the track name in the track xml
+TEST(RecorderTests, UpgradeV0WithMissingName)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
+
+    // Remove track attribute from track xml file
+    void* settingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
+    const char* trackFileName = GfParmGetStr(settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
+    void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+    GfParmRemove(trackHandle, "Header", "name");
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, 1));
 }
 
 TEST(RecorderTests, InvalidXMLSettingsFileValidate)
