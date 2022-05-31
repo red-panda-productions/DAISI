@@ -65,8 +65,10 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 
     try
     {
+        //m_connection->setAutoCommit(false);
         int trial_id = InsertInitialData(inputFile);
         InsertSimulationData(inputFile, trial_id);
+        //m_connection->commit();
     }
     catch (std::exception& e)
     {
