@@ -595,16 +595,16 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
 }
 
 /// @brief Close the connection to the database and clean up.
+///        sql::Statement and sql::Connection objects must be freed explicitly using delete
+///        Might be called in the catch of an error already, so guard when the variables are already deleted.
 void SQLDatabaseStorage::CloseDatabase()
 {
-    // Guard if database was already closed.
-    if (!m_statement && !m_connection) return;
-
+    if (!m_statement) return;
     m_statement->close();
-    m_connection->close();
-
-    // sql::Statement and sql::Connection objects must be freed explicitly using delete
     delete m_statement;
+
+    if (!m_connection) return;
+    m_connection->close();
     delete m_connection;
 }
 
