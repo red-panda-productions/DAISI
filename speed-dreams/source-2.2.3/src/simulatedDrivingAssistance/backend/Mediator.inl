@@ -280,7 +280,7 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::CanUseSteer()
 {
     bool canControlSteer = GetPControlSettings().ControlSteer && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    
+
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Steer)
     {
         canControlSteer &= !IsSteerDecision();
