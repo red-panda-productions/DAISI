@@ -130,7 +130,7 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
 
-    BrakeDecision brakeDecision;
+    BrakeDecision brakeDecision = {};
     brakeDecision.BrakeAmount = GetParam();
     brakeDecision.RunIndicateCommands();
 
@@ -154,7 +154,7 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
 
-    SteerDecision steerDecision;
+    SteerDecision steerDecision = {};
     steerDecision.SteerAmount = GetParam();
     steerDecision.RunIndicateCommands();
 
@@ -184,7 +184,7 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path,SMediator::GetInstance()->GetInterventionType());
 
-    AccelDecision accelDecision;
+    AccelDecision accelDecision = {};
     accelDecision.AccelAmount = GetParam();
     accelDecision.RunIndicateCommands();
 
