@@ -13,12 +13,7 @@ public:
     SQLDatabaseStorage();
     void Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath = "");
     bool StoreData(const std::experimental::filesystem::path& p_inputFilePath) override;
-    bool OpenDatabase(const std::string& p_hostName,
-                      int p_port,
-                      const std::string& p_username,
-                      const std::string& p_password,
-                      const std::string& p_schemaName,
-                      std::string p_useEncryption,
+    bool OpenDatabase(DatabaseSettings p_dbSettings,
                       const std::string& p_dirPath = "");
 
     void CloseDatabase();
