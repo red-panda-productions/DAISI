@@ -81,7 +81,7 @@ private:
     // Loading helpers
     tSoundData* LoadSound(void* p_handle, std::string p_path);
     tScreenPosition LoadScreenPos(void* p_handle, const char* p_path);
-    tScreenDimensions LoadDimensions(void* p_handle, const char* p_path);
+    tTextureDimensions LoadDimensions(void* p_handle, const char* p_path);
     tTextureData* LoadTexture(void* p_handle, std::string p_path, InterventionType p_interventionType);
     tTextData* LoadText(void* p_handle, std::string p_path);
 };

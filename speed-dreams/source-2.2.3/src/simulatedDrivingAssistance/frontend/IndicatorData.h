@@ -9,11 +9,11 @@ typedef struct ScreenPosition
     float X, Y;
 } tScreenPosition;
 
-/// @brief Represents a position on screen as percentages of the full screen.
-typedef struct tScreenDimensions
+/// @brief Represents a percentage with which the texture will be scaled.
+typedef struct tTextureDimensions
 {
     float Width, Height;
-}tScreenDimensions;
+}tTextureDimensions;
 
 /// @brief Stores data related to playing a sound in-game.
 ///        The actual sounds are loaded from their path in the respective module.
@@ -33,7 +33,7 @@ typedef struct TextureData
 {
     const char* Path;
     tScreenPosition ScrPos;
-    tScreenDimensions Dimensions;
+    tTextureDimensions Dimensions;
 } tTextureData;
 
 /// @brief Stores data related to drawing text on the Hud.

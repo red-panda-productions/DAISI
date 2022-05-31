@@ -119,7 +119,7 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 /// @param p_handle The p_handle to the config.xml file
 /// @param p_path   The C-string pointer to the section containing x- and y-pos attributes
 /// @return         A struct containing the dimensions data
-tScreenDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
+tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
 {
     float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0);
     float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0);
