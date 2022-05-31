@@ -93,19 +93,16 @@ jobs:
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
         run: |
           ./UnitUtilitiesCoverage.sh
-          cat UnitUtilitiesCoverage.json
 
       - name: Run code coverage Frontend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
         run: |
           ./FrontendCoverage.sh
-          cat FrontendCoverage.json
 
       - name: Run code coverage Backend
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
         run: |
           ./BackendCoverage.sh
-          cat BackendCoverage.json
         
       - name: Combine Coverage
         working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
