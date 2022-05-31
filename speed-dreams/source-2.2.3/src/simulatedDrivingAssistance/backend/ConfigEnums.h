@@ -99,7 +99,6 @@ typedef struct ParticipantControl
     bool ControlAccel;
     bool ControlBrake;
     bool ControlInterventionToggle;
-
     bool ForceFeedback;
 } tParticipantControl;
 

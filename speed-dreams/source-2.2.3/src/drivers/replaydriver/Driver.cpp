@@ -5,25 +5,13 @@
 
 #include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
 
-// When NDEBUG is not defined assert is a no-op, for the integration tests it needs to throw an exception.
-#ifdef NDEBUG
-
-#undef assert
-
-// Disable naming inspection since this needs to be "assert" lowercase, while our naming standard would require it to be ASSERT
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCInconsistentNamingInspection"
-
 // Throw an exception when the expression is false
-#define assert(expression)                                                        \
+#define ASSERT_THROW(expression)                                                  \
     if (!(expression))                                                            \
     {                                                                             \
         GfLogError("Assertion failed: " #expression " was false!\n");             \
         throw std::runtime_error("Assertion failed: " #expression " was false!"); \
     }
-#pragma clang diagnostic pop
-
-#endif
 
 namespace filesystem = std::experimental::filesystem;
 
@@ -42,7 +30,7 @@ Driver::Driver()
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     const filesystem::path& replayFolder = SMediator::GetInstance()->GetReplayFolder();
-    assert(Recorder::ValidateAndUpdateRecording(replayFolder));
+    ASSERT_THROW(Recorder::ValidateAndUpdateRecording(replayFolder));
     const filesystem::path carSettingsFile = filesystem::path(replayFolder).append(CAR_SETTINGS_FILE_NAME);
     const filesystem::path userRecordingFile = filesystem::path(replayFolder).append(USER_INPUT_RECORDING_FILE_NAME);
     const filesystem::path simulationFile = filesystem::path(replayFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME);
@@ -101,24 +89,24 @@ void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
     p_simulationDataFile >> bits(acc.y);
     p_simulationDataFile >> bits(acc.z);
 
-    assert(p_car->pub.DynGCg.pos.x == posG.x);
-    assert(p_car->pub.DynGCg.pos.y == posG.y);
-    assert(p_car->pub.DynGCg.pos.z == posG.z);
-    assert(p_car->pub.DynGCg.vel.x == velG.x);
-    assert(p_car->pub.DynGCg.vel.y == velG.y);
-    assert(p_car->pub.DynGCg.vel.z == velG.z);
-    assert(p_car->pub.DynGCg.acc.x == accG.x);
-    assert(p_car->pub.DynGCg.acc.y == accG.y);
-    assert(p_car->pub.DynGCg.acc.z == accG.z);
-    assert(p_car->pub.DynGC.pos.x == pos.x);
-    assert(p_car->pub.DynGC.pos.y == pos.y);
-    assert(p_car->pub.DynGC.pos.z == pos.z);
-    assert(p_car->pub.DynGC.vel.x == vel.x);
-    assert(p_car->pub.DynGC.vel.y == vel.y);
-    assert(p_car->pub.DynGC.vel.z == vel.z);
-    assert(p_car->pub.DynGC.acc.x == acc.x);
-    assert(p_car->pub.DynGC.acc.y == acc.y);
-    assert(p_car->pub.DynGC.acc.z == acc.z);
+    ASSERT_THROW(p_car->pub.DynGCg.pos.x == posG.x);
+    ASSERT_THROW(p_car->pub.DynGCg.pos.y == posG.y);
+    ASSERT_THROW(p_car->pub.DynGCg.pos.z == posG.z);
+    ASSERT_THROW(p_car->pub.DynGCg.vel.x == velG.x);
+    ASSERT_THROW(p_car->pub.DynGCg.vel.y == velG.y);
+    ASSERT_THROW(p_car->pub.DynGCg.vel.z == velG.z);
+    ASSERT_THROW(p_car->pub.DynGCg.acc.x == accG.x);
+    ASSERT_THROW(p_car->pub.DynGCg.acc.y == accG.y);
+    ASSERT_THROW(p_car->pub.DynGCg.acc.z == accG.z);
+    ASSERT_THROW(p_car->pub.DynGC.pos.x == pos.x);
+    ASSERT_THROW(p_car->pub.DynGC.pos.y == pos.y);
+    ASSERT_THROW(p_car->pub.DynGC.pos.z == pos.z);
+    ASSERT_THROW(p_car->pub.DynGC.vel.x == vel.x);
+    ASSERT_THROW(p_car->pub.DynGC.vel.y == vel.y);
+    ASSERT_THROW(p_car->pub.DynGC.vel.z == vel.z);
+    ASSERT_THROW(p_car->pub.DynGC.acc.x == acc.x);
+    ASSERT_THROW(p_car->pub.DynGC.acc.y == acc.y);
+    ASSERT_THROW(p_car->pub.DynGC.acc.z == acc.z);
 }
 
 /// @brief Update the car's controls based on recording at that currentTime.

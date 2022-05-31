@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE params SYSTEM "params.dtd">
+
+
+<params name="Run Settings">
+  <section name="version">
+    <attnum name="version" val="6.000000"/>
+  </section>
+
+  <section name="indicators">
+    <attstr name="audio" val="true"/>
+    <attstr name="icon" val="true"/>
+    <attstr name="text" val="true"/>
+  </section>
+
+  <section name="intervention_type">
+    <attnum name="selected" val="2.000000"/>
+  </section>
+
+  <section name="environment">
+    <section name="track">
+      <attstr name="category" val="curved-highway"/>
+      <attstr name="internal_name" val="curved-highway-small-4-80"/>
+    </section>
+
+  </section>
+
+  <section name="participant_control">
+    <attstr name="control_steering" val="true"/>
+    <attstr name="control_gas" val="true"/>
+    <attstr name="control_brake" val="true"/>
+    <attstr name="control_intervention_toggle" val="true"/>
+    <attstr name="force_feedback" val="true"/>
+  </section>
+
+  <section name="max_time">
+    <attnum name="max_time" val="1.000000"/>
+  </section>
+
+  <section name="allowed_actions">
+    <attstr name="steer" val="true"/>
+    <attstr name="accelerate" val="true"/>
+    <attstr name="brake" val="true"/>
+  </section>
+
+  <section name="thresholds">
+    <attnum name="treshold_accel" val="0.900000"/>
+    <attnum name="treshold_brake" val="0.900000"/>
+    <attnum name="treshold_steer" val="0.040000"/>
+  </section>
+
+</params>
