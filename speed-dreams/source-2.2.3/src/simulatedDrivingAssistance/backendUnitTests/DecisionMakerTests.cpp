@@ -55,13 +55,12 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
-    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
-
     if(!p_emptyPath)
     {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
+    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
+    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
 }
 
 /// @brief Runs the initialize test function
