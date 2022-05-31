@@ -13,11 +13,6 @@
 #ifdef WIN32
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
 #include <windows.h>
-<<<<<<< HEAD
-#define OS_SEPARATOR      "\\"
-#define OS_SEPARATOR_CHAR '\\'
-=======
->>>>>>> V22F-742-Linux-Actions
 #else
 #include <unistd.h>
 #include <sys/stat.h>
