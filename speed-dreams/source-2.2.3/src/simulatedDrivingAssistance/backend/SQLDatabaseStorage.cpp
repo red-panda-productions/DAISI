@@ -73,6 +73,7 @@ bool SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
         CloseDatabase();
         inputFile.close();
         std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
+        return false;
     }
 
     inputFile.close();
@@ -631,7 +632,8 @@ void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     if (OpenDatabase(dbsettings, p_dirPath))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
-        StoreData(p_inputFilePath);
+        bool success = StoreData(p_inputFilePath);
+        if (!success) {}
         CloseDatabase();
         std::cout << "Finished writing to database" << std::endl;
     }
