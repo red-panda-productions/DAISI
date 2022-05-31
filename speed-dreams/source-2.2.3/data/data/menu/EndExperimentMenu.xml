@@ -46,7 +46,7 @@
             <attnum name="y" val="395"/>
             <attnum name="width" val="450"/>
             <attnum name="height" val="50"/>
-            <attstr name="image" val="data/img/Textbox_EndStart_screen.png"/>
+            <attstr name="image" val="data/img/Textbox-EndExperiment.png"/>
         </section>
 
         <section name="3">
@@ -61,7 +61,7 @@
         
         <section name="4">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/Menu_Background_EndStart_screen.png"/>
+            <attstr name="image" val="data/img/EndExperiment-bg.png"/>
         </section>
 
     </section>
