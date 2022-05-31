@@ -301,7 +301,7 @@
         </section>
 
         <!-- Apply button -->
-        <section name="ApplyButton">
+        <section name="NextButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Next"/>

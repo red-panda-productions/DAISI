@@ -41,7 +41,8 @@
 #include "legacymenu.h"
 #include "racescreens.h"
 
-#define FORCE_EXPERIMENT_SETTINGS
+#define FORCE_EXPERIMENT_SETUP
+
 static void	*rmScreenHandle = 0;
 static int	rmPauseId;
 static int	rmMsgId;
@@ -455,7 +456,9 @@ static void
 rmAddKeys()
 {
     GfuiAddKey(rmScreenHandle, GFUIK_ESCAPE, "Stop current race", (void*)RE_STATE_RACE_STOP, rmApplyState, NULL);
-#ifndef FORCE_EXPERIMENT_SETTINGS
+
+	// SIMULATED DRIVING ASSISTANCE: Removed these functionalities when FORCE_EXPERIMENT_SETUP is defined.
+#ifndef FORCE_EXPERIMENT_SETUP
     GfuiAddKey(rmScreenHandle, GFUIK_F1,  "Help", NULL, rmOpenHelpScreen, NULL);
 
     GfuiAddKey(rmScreenHandle, '-', "Slow down time",    (void*)-1, rmTimeMod, NULL);

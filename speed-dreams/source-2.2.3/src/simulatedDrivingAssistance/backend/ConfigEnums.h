@@ -129,6 +129,8 @@ typedef struct DataToStore
     bool InterventionData;
 } tDataToStore;
 
+#define NUM_DATATOSTORE_ELEMENTS 4
+
 /// @brief The threshold amounts for decisions. floats are values between 0 and 1.
 typedef struct DecisionThresholds
 {

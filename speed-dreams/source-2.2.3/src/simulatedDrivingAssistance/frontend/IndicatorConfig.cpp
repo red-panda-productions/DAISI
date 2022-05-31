@@ -52,8 +52,8 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
     return m_activeIndicators;
 }
 
-/// @brief          Activates the given intervention action by replacing 
-///                 the indicator of matching type with the newly activated indicator.          
+/// @brief          Activates the given intervention action by replacing
+///                 the indicator of matching type with the newly activated indicator.
 /// @param p_action The intervention for which to show the the indicator
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
@@ -124,10 +124,10 @@ tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p
     float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0);
     float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0);
 
-    // Check whether x- and y-pos are valid percentages in range [0,1]
-    if (width < 0.0f || height < 0.0f || width > 100 || height > 100)
+    // Check whether width and height are not negative floats
+    if (width < 0.0f || height < 0.0f)
     {
-        throw std::out_of_range("Width and height should be in the range [0,100]");
+        throw std::out_of_range("Width and height should not be negative");
     }
     return {width, height};
 }

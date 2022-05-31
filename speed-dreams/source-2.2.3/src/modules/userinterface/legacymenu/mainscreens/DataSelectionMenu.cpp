@@ -30,7 +30,7 @@ static void* s_dbSettingsMenu = nullptr;
 // Data to store
 tDataToStore m_dataToStore;
 
-int m_dataToStoreControl[5];
+int m_dataToStoreControl[NUM_DATATOSTORE_ELEMENTS];
 int m_dbStatus;
 
 bool m_isConnecting = false;

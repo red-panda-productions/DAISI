@@ -142,7 +142,10 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
 }
 
 /// @brief				 Performs the data collection test with the given parameters
-/// @param  p_environmentData, p_carData, p_humanData , p_interventionData are the individual data settings
+/// @param  p_environmentData whether the environment data will be saved
+/// @param  p_carData whether the car data will be saved
+/// @param  p_humanData whether the human data will be saved
+/// @param  p_interventionData whether the intervention data will be saved
 void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData)
 {
     DataToStore dataSettings = {

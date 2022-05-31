@@ -13,7 +13,7 @@ typedef struct ScreenPosition
 typedef struct tTextureDimensions
 {
     float Width, Height;
-}tTextureDimensions;
+} tTextureDimensions;
 
 /// @brief Stores data related to playing a sound in-game.
 ///        The actual sounds are loaded from their path in the respective module.

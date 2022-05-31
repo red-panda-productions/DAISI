@@ -42,7 +42,7 @@
 #include "grtracklight.h"
 #include "grbackground.h"
 
-#define FORCE_EXPERIMENT_VIEW
+#define FORCE_EXPERIMENT_SETUP
 
 int grMaxTextureUnits = 0;
 
@@ -518,7 +518,8 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
         grScreens[i]->initBoard();
     }
 
-#ifndef FORCE_EXPERIMENT_VIEW
+    // SIMULATED DRIVING ASSISTANCE: Removed these functionalities when FORCE_EXPERIMENT_SETUP is defined.
+#ifndef FORCE_EXPERIMENT_SETUP
     GfuiAddKey(screen, GFUIK_END,      "Zoom Minimum", (void*)GR_ZOOM_MIN,	grSetZoom, NULL);
     GfuiAddKey(screen, GFUIK_HOME,     "Zoom Maximum", (void*)GR_ZOOM_MAX,	grSetZoom, NULL);
     GfuiAddKey(screen, '*',            "Zoom Default", (void*)GR_ZOOM_DFLT,	grSetZoom, NULL);
