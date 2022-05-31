@@ -256,12 +256,12 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
         return false;
     }
 
-    const char* category = strdup(GfParmGetStr(trackHandle, "Header", "category", nullptr));
-    const char* name = strdup(GfParmGetStr(trackHandle, "Header", "name", nullptr));
+    const char* category = strdup(GfParmGetStr(trackHandle, "Header", "category", ""));
+    const char* name = strdup(GfParmGetStr(trackHandle, "Header", "name", ""));
 
     GfParmReleaseHandle(trackHandle);
 
-    if (category == nullptr || name == nullptr)
+    if (strcmp(category,"") == 0 || strcmp(name,"") == 0)
     {
         GfLogWarning("Failed to read category or name.\n");
 
