@@ -171,7 +171,7 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetThresholdSettings(tDecisionThresholds p_thresholds)
 {
     m_thresholds = p_thresholds;
-    CarController.SetThresholds(&p_thresholds);
+    CarControl.SetThresholds(&p_thresholds);
 }
 
 /// @brief  Gets the allowed black box actions setting
@@ -252,7 +252,7 @@ int Mediator<DecisionMaker>::GetMaxTime()
 template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::IsSteerDecision()
 {
-    return CarController.IsSteerDecision();
+    return CarControl.IsSteerDecision();
 }
 
 /// @brief  Gets whether there has been done a brake decision
@@ -260,7 +260,7 @@ bool Mediator<DecisionMaker>::IsSteerDecision()
 template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::IsBrakeDecision()
 {
-    return CarController.IsBrakeDecision();
+    return CarControl.IsBrakeDecision();
 }
 
 /// @brief  Gets whether there has been done an accel decision
@@ -268,7 +268,7 @@ bool Mediator<DecisionMaker>::IsBrakeDecision()
 template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::IsAccelDecision()
 {
-    return CarController.IsAccelDecision();
+    return CarControl.IsAccelDecision();
 }
 
 /// @brief  Gets whether the user can steer
@@ -320,7 +320,7 @@ bool Mediator<DecisionMaker>::CanUseAccel()
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetSteerDecision(bool p_steerDecision)
 {
-    return CarController.SetSteerDecision(p_steerDecision);
+    return CarControl.SetSteerDecision(p_steerDecision);
 }
 
 /// @brief  Sets the brake decision
@@ -328,7 +328,7 @@ void Mediator<DecisionMaker>::SetSteerDecision(bool p_steerDecision)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetBrakeDecision(bool p_brakeDecision)
 {
-    return CarController.SetBrakeDecision(p_brakeDecision);
+    return CarControl.SetBrakeDecision(p_brakeDecision);
 }
 
 /// @brief  Sets the accel decision
@@ -336,7 +336,7 @@ void Mediator<DecisionMaker>::SetBrakeDecision(bool p_brakeDecision)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetAccelDecision(bool p_accelDecision)
 {
-    return CarController.SetAccelDecision(p_accelDecision);
+    return CarControl.SetAccelDecision(p_accelDecision);
 }
 
 /// @brief              Does one drive tick in the framework
