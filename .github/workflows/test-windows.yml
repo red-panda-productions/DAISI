@@ -25,7 +25,6 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: windows-latest
     env:
-      BUILD_TYPE: Release
       BOOST_PATH: ${{github.workspace}}
       BOOST_ROOT: ${{github.workspace}}/boost/boost
       BOOST_VERSION: 1.79.0
@@ -55,7 +54,7 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ccache-${{runner.os}}
+          key: ccache-${{runner.os}}-${{env.BUILD_TYPE}}
           max-size: "2GB"
 
       - name: Install MySQL
