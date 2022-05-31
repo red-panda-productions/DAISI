@@ -261,7 +261,7 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
 
     GfParmReleaseHandle(trackHandle);
 
-    if (strcmp(category,"") == 0 || strcmp(name,"") == 0)
+    if (strcmp(category, "") == 0 || strcmp(name, "") == 0)
     {
         GfLogWarning("Failed to read category or name.\n");
 
