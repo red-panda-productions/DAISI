@@ -144,6 +144,7 @@ TEST(UtilsTests, PairWiseCoverageTest)
     }
 }
 
+/// @brief test functions for pairwise testing
 void PairWise2(bool p_1, bool p_2) {SUCCEED() << p_1 << " " << p_2;}
 void PairWise3(bool p_1, bool p_2, bool p_3) {SUCCEED() << p_1 << " " << p_2 << " " << p_3;}
 void PairWise4(bool p_1, bool p_2, bool p_3, bool p_4) {SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4;}
@@ -154,6 +155,7 @@ void PairWise8(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6, bool 
 
 bool bools[2] {true, false};
 
+///@brief tests PairwiseTest function for all configurations
 TEST(UtilsTests, PairWiseTest2)
 {
     PairWiseTest(PairWise2,bools,2,bools,2);
