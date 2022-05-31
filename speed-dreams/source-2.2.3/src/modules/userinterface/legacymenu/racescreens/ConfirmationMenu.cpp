@@ -51,7 +51,7 @@ static void OnAcceptFinished(void* p_prevMenu)
 void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
 {
     s_menuHandle = GfuiScreenCreate();
-    void* param = GfuiMenuLoad("confirmationmenu.xml");
+    void* param = GfuiMenuLoad("ConfirmationMenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
 
     switch (p_raceEndType)

@@ -5,7 +5,7 @@ void AccelDecision::RunIndicateCommands()
 {
     if (AccelAmount < SMediator::GetInstance()->GetThresholdSettings().Accel) return;
 
-    SMediator::GetInstance()->CarController.ShowIntervention(INTERVENTION_ACTION_SPEED_ACCEL);
+    SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_SPEED_ACCEL);
 }
 
 /// @brief Runs the intervene commands
@@ -13,5 +13,5 @@ void AccelDecision::RunIndicateCommands()
 void AccelDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
     if (!p_allowedActions.Accelerate) return;
-    SMediator::GetInstance()->CarController.SetAccelCmd(AccelAmount);
+    SMediator::GetInstance()->CarControl.SetAccelCmd(AccelAmount);
 }

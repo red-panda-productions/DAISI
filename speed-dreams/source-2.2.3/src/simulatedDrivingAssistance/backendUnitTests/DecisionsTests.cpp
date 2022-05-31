@@ -26,7 +26,7 @@
         carController.SetAccelCmd(0);                                                     \
         carController.SetSteerCmd(0);                                                     \
                                                                                           \
-        SMediator::GetInstance()->CarController = carController;                          \
+        SMediator::GetInstance()->CarControl = carController;                             \
                                                                                           \
         /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/ \
         SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);    \
@@ -75,44 +75,44 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
     allowedActions.Steer = std::get<2>(GetParam());
 
     Random random;
-    BrakeDecision brakeDecision;
+    BrakeDecision brakeDecision = {};
 
     float controlBrakeAmount = random.NextFloat(STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_BRAKE + 10);
     brakeDecision.BrakeAmount = controlBrakeAmount;
     // Determine what the brake amount should be after running
-    float targetBrakeAmount = allowedActions.Brake ? controlBrakeAmount : SMediator::GetInstance()->CarController.GetBrakeCmd();
+    float targetBrakeAmount = allowedActions.Brake ? controlBrakeAmount : SMediator::GetInstance()->CarControl.GetBrakeCmd();
 
     std::cout << "Testing brake...";
     brakeDecision.RunInterveneCommands(allowedActions);
-    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarControl.GetBrakeCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
-    AccelDecision accelDecision;
+    AccelDecision accelDecision = {};
     float controlAccelAmount = random.NextFloat(STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_ACCEL + 10);
     accelDecision.AccelAmount = controlAccelAmount;
     // Determine what the accel amount should be after running
-    float targetAccelAmount = allowedActions.Accelerate ? controlAccelAmount : SMediator::GetInstance()->CarController.GetAccelCmd();
+    float targetAccelAmount = allowedActions.Accelerate ? controlAccelAmount : SMediator::GetInstance()->CarControl.GetAccelCmd();
 
     std::cout << "Testing accel...";
     accelDecision.RunInterveneCommands(allowedActions);
-    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarControl.GetAccelCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
-    SteerDecision steerDecision;
+    SteerDecision steerDecision = {};
     float controlSteerAmount = random.NextFloat(STANDARD_THRESHOLD_STEER, STANDARD_THRESHOLD_STEER + 10);
     steerDecision.SteerAmount = controlSteerAmount;
     // Determine what the steer amount should be after running
-    float targetSteerAmount = allowedActions.Steer ? controlSteerAmount : SMediator::GetInstance()->CarController.GetSteerCmd();
+    float targetSteerAmount = allowedActions.Steer ? controlSteerAmount : SMediator::GetInstance()->CarControl.GetSteerCmd();
 
     std::cout << "Testing steer...";
     steerDecision.RunInterveneCommands(allowedActions);
-    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarControl.GetSteerCmd(), 0.001f);
     std::cout << " check" << std::endl;
 
     std::cout << "Checking if no value was changed that should not have been changed...";
-    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarController.GetBrakeCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarController.GetAccelCmd(), 0.001f);
-    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarController.GetSteerCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetBrakeAmount, SMediator::GetInstance()->CarControl.GetBrakeCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetAccelAmount, SMediator::GetInstance()->CarControl.GetAccelCmd(), 0.001f);
+    ASSERT_ALMOST_EQ(targetSteerAmount, SMediator::GetInstance()->CarControl.GetSteerCmd(), 0.001f);
     std::cout << " check" << std::endl;
 }
 
@@ -128,9 +128,9 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
-    BrakeDecision brakeDecision;
+    BrakeDecision brakeDecision = {};
     brakeDecision.BrakeAmount = GetParam();
     brakeDecision.RunIndicateCommands();
 
@@ -143,8 +143,8 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest, 
-    ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_BRAKE, 0, STANDARD_THRESHOLD_BRAKE, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(BrakeRunIndicateTest, DecisionTest,
+                         ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_BRAKE, 0, STANDARD_THRESHOLD_BRAKE, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the steer decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, SteerRunIndicateTests)
@@ -152,9 +152,9 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
-    SteerDecision steerDecision;
+    SteerDecision steerDecision = {};
     steerDecision.SteerAmount = GetParam();
     steerDecision.RunIndicateCommands();
 
@@ -173,8 +173,8 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest, 
-    ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_STEER, 0, STANDARD_THRESHOLD_STEER, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest,
+                         ::testing::Values(INT_MIN, -99, -2, -1, -STANDARD_THRESHOLD_STEER, 0, STANDARD_THRESHOLD_STEER, 1, 2, 99, INT_MAX));
 
 /// @brief Checks if the accel decision RunIndicateCommand works correctly
 TEST_P(DecisionTest, AccelRunIndicateTests)
@@ -182,9 +182,9 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
-    AccelDecision accelDecision;
+    AccelDecision accelDecision = {};
     accelDecision.AccelAmount = GetParam();
     accelDecision.RunIndicateCommands();
 
@@ -197,5 +197,5 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     }
     // TODO: else
 }
-INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest, 
-    ::testing::Values(INT_MIN, -99, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, 2, 99, INT_MAX));
+INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest,
+                         ::testing::Values(INT_MIN, -99, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, 2, 99, INT_MAX));

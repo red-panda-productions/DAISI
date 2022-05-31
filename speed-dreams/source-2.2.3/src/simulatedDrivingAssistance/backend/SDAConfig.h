@@ -3,11 +3,7 @@
 #include "InterventionExecutor.h"
 #include "InterventionFactory.h"
 #include <string>
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
-namespace filesystem = std::experimental::filesystem;
+#include "FileSystem.hpp"
 
 #define BLACKBOX_PATH_SIZE    260  // Windows MAX_PATH
 #define ENVIRONMENT_PATH_SIZE 260  // Windows MAX_PATH
