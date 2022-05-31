@@ -145,48 +145,69 @@ TEST(UtilsTests, PairWiseCoverageTest)
 }
 
 /// @brief test functions for pairwise testing
-void PairWise2(bool p_1, bool p_2) {SUCCEED() << p_1 << " " << p_2;}
-void PairWise3(bool p_1, bool p_2, bool p_3) {SUCCEED() << p_1 << " " << p_2 << " " << p_3;}
-void PairWise4(bool p_1, bool p_2, bool p_3, bool p_4) {SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4;}
-void PairWise5(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5) {SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5;}
-void PairWise6(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6) {SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5 << " " << p_6;}
-void PairWise7(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6, bool p_7) {SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5 << " " << p_6 << " " << p_7;}
-void PairWise8(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6, bool p_7, bool p_8) {SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5 << " " << p_6 << " " << p_7 << " " << p_8;}
+void PairWise2(bool p_1, bool p_2)
+{
+    SUCCEED() << p_1 << " " << p_2;
+}
+void PairWise3(bool p_1, bool p_2, bool p_3)
+{
+    SUCCEED() << p_1 << " " << p_2 << " " << p_3;
+}
+void PairWise4(bool p_1, bool p_2, bool p_3, bool p_4)
+{
+    SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4;
+}
+void PairWise5(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5)
+{
+    SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5;
+}
+void PairWise6(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6)
+{
+    SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5 << " " << p_6;
+}
+void PairWise7(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6, bool p_7)
+{
+    SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5 << " " << p_6 << " " << p_7;
+}
+void PairWise8(bool p_1, bool p_2, bool p_3, bool p_4, bool p_5, bool p_6, bool p_7, bool p_8)
+{
+    SUCCEED() << p_1 << " " << p_2 << " " << p_3 << " " << p_4 << " " << p_5 << " " << p_6 << " " << p_7 << " " << p_8;
+}
 
-bool bools[2] {true, false};
+bool bools[2]{true, false};
 
 ///@brief tests Pairwise Test function for all configurations
 TEST(UtilsTests, PairWiseTest2)
 {
-    PairWiseTest(PairWise2,bools,2,bools,2);
+    PairWiseTest(PairWise2, bools, 2, bools, 2);
 }
 
 TEST(UtilsTests, PairWiseTest3)
 {
-    PairWiseTest(PairWise3,bools,2,bools,2,bools,2);
+    PairWiseTest(PairWise3, bools, 2, bools, 2, bools, 2);
 }
 
 TEST(UtilsTests, PairWiseTest4)
 {
-    PairWiseTest(PairWise4,bools,2,bools,2,bools,2,bools,2);
+    PairWiseTest(PairWise4, bools, 2, bools, 2, bools, 2, bools, 2);
 }
 
 TEST(UtilsTests, PairWiseTest5)
 {
-    PairWiseTest(PairWise5,bools,2,bools,2,bools,2,bools,2,bools,2);
+    PairWiseTest(PairWise5, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2);
 }
 
 TEST(UtilsTests, PairWiseTest6)
 {
-    PairWiseTest(PairWise6,bools,2,bools,2,bools,2,bools,2,bools,2,bools,2);
+    PairWiseTest(PairWise6, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2);
 }
 
 TEST(UtilsTests, PairWiseTest7)
 {
-    PairWiseTest(PairWise7, bools,2,bools,2,bools,2,bools,2,bools,2,bools,2,bools,2);
+    PairWiseTest(PairWise7, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2);
 }
 
 TEST(UtilsTests, PairWiseTest8)
 {
-    PairWiseTest(PairWise8, bools,2, bools,2,bools,2,bools,2,bools,2,bools,2,bools,2,bools,2);
+    PairWiseTest(PairWise8, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2, bools, 2);
 }
