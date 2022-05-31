@@ -599,13 +599,17 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
 ///        Might be called in the catch of an error already, so guard when the variables are already deleted.
 void SQLDatabaseStorage::CloseDatabase()
 {
-    if (!m_statement) return;
-    m_statement->close();
-    delete m_statement;
+    if (m_statement)
+    {
+        m_statement->close();
+        delete m_statement;
+    }
 
-    if (!m_connection) return;
-    m_connection->close();
-    delete m_connection;
+    if (m_connection)
+    {
+        m_connection->close();
+        delete m_connection;
+    }
 }
 
 /// @brief  Runs the database connection by finding the "database_connection_settings.txt" file
