@@ -41,18 +41,27 @@
         </section>
 
         <section name="2">
+            <attstr name="type" val="static image"/>
+            <attnum name="x" val="110"/>
+            <attnum name="y" val="395"/>
+            <attnum name="width" val="450"/>
+            <attnum name="height" val="50"/>
+            <attstr name="image" val="data/img/Textbox-EndExperiment.png"/>
+        </section>
+
+        <section name="3">
             <attstr name="type" val="label"/>
-            <attnum name="x" val="275"/>
+            <attnum name="x" val="130"/>
             <attnum name="y" val="410"/>
             <attstr name="text" val="This is the end of the experiment"/>
             <attnum name="width" val="450"/>
             <attnum name="height" val="20"/>
-            <attstr name="font" val="mid"/>
+            <attstr name="font" val="big"/>
         </section>
         
-        <section name="3">
+        <section name="4">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/main-menu-2.png"/>
+            <attstr name="image" val="data/img/EndExperiment-bg.png"/>
         </section>
 
     </section>
