@@ -8,7 +8,7 @@
 void CarController::SetSteerCmd(float p_steer)
 {
     m_car->ctrl.steer += p_steer;
-    m_isSteerDecision = abs(p_steer) > m_thresholds->Steer;
+    m_isSteerDecision = true;
 }
 
 /// @brief			Edits the acceleration command of the game
@@ -16,7 +16,7 @@ void CarController::SetSteerCmd(float p_steer)
 void CarController::SetAccelCmd(float p_accel)
 {
     m_car->ctrl.accelCmd += p_accel;
-    m_isAccelDecision = p_accel > m_thresholds->Accel;
+    m_isAccelDecision = true;
 }
 
 /// @brief			Edits the brake command of the game
@@ -24,7 +24,7 @@ void CarController::SetAccelCmd(float p_accel)
 void CarController::SetBrakeCmd(float p_brake)
 {
     m_car->ctrl.brakeCmd = std::max(p_brake, m_car->ctrl.brakeCmd);
-    m_isBrakeDecision = p_brake > m_thresholds->Brake;
+    m_isBrakeDecision = true;
 }
 
 /// @brief			Sets the thresholds of the game

@@ -1080,14 +1080,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle steering cmd input if the participant is allowed to.
     // Do not let the human control the car when the AI is in full control
-    bool canControlSteer = SMediator::GetInstance()->GetPControlSettings().ControlSteer &&
-                           SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if(SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && SMediator::GetInstance()->GetAllowedActions().Steer)
-    {
-        canControlSteer &= SMediator::GetInstance()->IsSteerDecision();
-    }
-
-    if (canControlSteer)
+    if (SMediator::GetInstance()->CanUseSteer())
     {
         switch (cmd[CMD_LEFTSTEER].type)
         {
@@ -1455,15 +1448,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle brake cmd input if the participant is allowed to.
     // Do not let the human control the car when the AI is in full control
-    bool canControlBrake = SMediator::GetInstance()->GetPControlSettings().ControlBrake &&
-                           SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
-
-    if(SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && SMediator::GetInstance()->GetAllowedActions().Brake)
-    {
-        canControlBrake &= SMediator::GetInstance()->IsBrakeDecision();
-    }
-
-    if (canControlBrake)
+    if (SMediator::GetInstance()->CanUseBrake())
     {
         switch (cmd[CMD_BRAKE].type)
         {
@@ -1573,15 +1558,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
 
     // SIMULATED DRIVING ASSISTANCE: added if condition: only handle throttle cmd input if the participant is allowed to.
     // Do not let the human control the car when the AI is in full control
-    bool canControlAccel = SMediator::GetInstance()->GetPControlSettings().ControlAccel &&
-                           SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
-
-    if(SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && SMediator::GetInstance()->GetAllowedActions().Accelerate)
-    {
-        canControlAccel &= SMediator::GetInstance()->IsAccelDecision();
-    }
-
-    if (canControlAccel)
+    if (SMediator::GetInstance()->CanUseAccel())
     {
         switch (cmd[CMD_THROTTLE].type)
         {

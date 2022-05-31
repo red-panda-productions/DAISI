@@ -34,7 +34,7 @@ static const char* s_interventionActionString[NUM_INTERVENTION_ACTION] = {
     "speed neutral", "accelerate", "brake"};
 
 static const char* s_interventionTypeString[NUM_INTERVENTION_TYPES] = {
-    "no-help", "signals-only", "shared-control", "complete-takeover"};
+    "no-help", "signals-only", "shared-control", "complete-takeover", "autonomous-ai"};
 
 /// @brief Contains the configuration of indicators for interventions
 class IndicatorConfig

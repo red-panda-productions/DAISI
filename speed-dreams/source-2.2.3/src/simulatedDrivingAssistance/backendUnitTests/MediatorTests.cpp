@@ -537,3 +537,51 @@ TEST(MediatorTests, SetAccelDecisionTest)
         ASSERT_EQ(SDAConfigMediator::GetInstance()->IsAccelDecision(), accelBool);
     }
 }
+
+/// @brief tests if the accel decision is correctly set
+TEST(MediatorTests, CanUseTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < TEST_AMOUNT; i++)
+    {
+        tParticipantControl pControl;
+        pControl.ControlSteer = random.NextBool();
+        pControl.ControlBrake = random.NextBool();
+        pControl.ControlAccel = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetPControlSettings(pControl);
+
+        tAllowedActions dControl;
+        dControl.Steer = random.NextBool();
+        dControl.Brake = random.NextBool();
+        dControl.Accelerate = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
+
+        InterventionType interventionType = random.NextInt(0, 5);
+        SDAConfigMediator::GetInstance()->SetInterventionType(interventionType);
+
+        bool steerBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
+
+        bool brakeBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
+
+        bool accelBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
+
+        bool canUseSteerBool = pControl.ControlSteer && interventionType != 4;
+        if (interventionType == 3 && dControl.Steer) canUseSteerBool &= !steerBool;
+
+        bool canUseBrakeBool = pControl.ControlBrake && interventionType != 4;
+        if (interventionType == 3 && dControl.Brake) canUseBrakeBool &= !brakeBool;
+
+        bool canUseAccelBool = pControl.ControlAccel && interventionType != 4;
+        if (interventionType == 3 && dControl.Accelerate) canUseAccelBool &= !accelBool;
+
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseAccel(), canUseAccelBool);
+    }
+}

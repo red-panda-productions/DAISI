@@ -20,7 +20,10 @@ void SteerDecision::RunIndicateCommands()
 void SteerDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
     float threshold = SMediator::GetInstance()->GetThresholdSettings().Steer;
-    if (SteerAmount > -threshold && SteerAmount < threshold) return;
-    if (!p_allowedActions.Steer) return;
+    if ((SteerAmount > -threshold && SteerAmount < threshold) || !p_allowedActions.Steer)
+    {
+        SMediator::GetInstance()->SetSteerDecision(false);
+        return;
+    }
     SMediator::GetInstance()->CarController.SetSteerCmd(SteerAmount);
 };

@@ -48,6 +48,9 @@ namespace filesystem = std::experimental::filesystem;
     template bool Mediator<type>::IsSteerDecision();                                                                                                    \
     template bool Mediator<type>::IsBrakeDecision();                                                                                                    \
     template bool Mediator<type>::IsAccelDecision();                                                                                                    \
+    template bool Mediator<type>::CanUseSteer();                                                                                                        \
+    template bool Mediator<type>::CanUseBrake();                                                                                                        \
+    template bool Mediator<type>::CanUseAccel();                                                                                                        \
     template void Mediator<type>::SetSteerDecision(bool p_steerDecision);                                                                               \
     template void Mediator<type>::SetBrakeDecision(bool p_brakeDecision);                                                                               \
     template void Mediator<type>::SetAccelDecision(bool p_accelDecision);                                                                               \
@@ -269,6 +272,49 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::IsAccelDecision()
 {
     return CarController.IsAccelDecision();
+}
+
+/// @brief  Gets whether the user can steer
+/// @return whether the user can steer
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::CanUseSteer()
+{
+    bool canControlSteer = GetPControlSettings().ControlSteer && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Steer)
+    {
+        canControlSteer &= !IsSteerDecision();
+    }
+    return canControlSteer;
+}
+
+/// @brief  Gets whether the user can brake
+/// @return whether the user can brake
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::CanUseBrake()
+{
+    bool canControlBrake = GetPControlSettings().ControlBrake && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
+
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Brake)
+    {
+        canControlBrake &= !IsBrakeDecision();
+    }
+
+    return canControlBrake;
+}
+
+/// @brief  Gets whether the user can accelerate
+/// @return whether the user can accelerate
+template <typename DecisionMaker>
+bool Mediator<DecisionMaker>::CanUseAccel()
+{
+    bool canControlAccel = GetPControlSettings().ControlAccel && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
+
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Accelerate)
+    {
+        canControlAccel &= !IsAccelDecision();
+    }
+
+    return canControlAccel;
 }
 
 /// @brief  Sets the steer decision
