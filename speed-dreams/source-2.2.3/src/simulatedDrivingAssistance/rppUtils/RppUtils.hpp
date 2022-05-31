@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
+#include <sstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
 #include <windows.h>
@@ -9,9 +10,12 @@
 #include "Random.hpp"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "experimental/filesystem"
+
+namespace filesystem = std::experimental::filesystem;
 
 #define ROOT_FOLDER "source-2.2.3"
+#define BB_ARG      "--bbfile "
 
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
@@ -109,9 +113,9 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
 
 /// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
 /// @returns The filepath to the singletons folder
-inline std::experimental::filesystem::path SingletonsFilePath()
+inline filesystem::path SingletonsFilePath()
 {
-    return {std::experimental::filesystem::temp_directory_path().append("Singletons")};
+    return {filesystem::temp_directory_path().append("Singletons")};
 }
 
 /// @brief   Deletes the contents of the singletons folder
@@ -120,7 +124,7 @@ inline int DeleteSingletonsFolder()
 {
     std::error_code errorCode;
 
-    std::experimental::filesystem::path path = SingletonsFilePath();
+    filesystem::path path = SingletonsFilePath();
     remove_all(path, errorCode);
     if (errorCode.value() != 0)
     {
@@ -238,7 +242,7 @@ inline bool SucceedWithChance(Random& p_rnd, int p_chance)
 /// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
 /// @return true if the folder was successfully found
-inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
+inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 {
     // create directory if it doesn't exist
     char* pValue;
@@ -251,7 +255,7 @@ inline bool GetSdaFolder(std::experimental::filesystem::path& p_sdaFolder)
         return false;
     }
 
-    p_sdaFolder = std::experimental::filesystem::path(std::string(pValue, len)).append("sda");
+    p_sdaFolder = filesystem::path(std::string(pValue, len)).append("sda");
     std::string sdaFolderString = p_sdaFolder.string();
 
     if (!GfDirExists(sdaFolderString.c_str()))
@@ -279,6 +283,18 @@ inline const char* BoolToString(const bool p_boolean)
 inline bool StringToBool(const char* p_string)
 {
     return strcmp(p_string, BOOL_TRUE_STRING) == 0;
+}
+
+/// @brief           Generates arguments for the black box executable
+/// @param  p_bbfile The path to the black box recording file
+/// @return          The arguments
+inline std::string GenerateBBArguments(const filesystem::path& p_bbfile)
+{
+    std::stringstream args;
+
+    args << BB_ARG << "\"" << p_bbfile << "\"";
+
+    return {args.str()};
 }
 
 /// @brief Assert the contents of the binary file in filePath match the binary stream contents

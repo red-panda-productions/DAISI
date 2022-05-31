@@ -9,7 +9,7 @@
 class Driver
 {
 public:
-    Driver(int p_index, const char* p_name);
+    Driver();
     void InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation);
     void NewRace(tCarElt* p_car, tSituation* p_situation);
     void Drive(tCarElt* p_car, tSituation* p_situation);
@@ -21,8 +21,6 @@ public:
     void Terminate();
 
 private:
-    // The driver's index
-    int m_index;
     std::ifstream m_replayFile;
     std::ifstream m_recordedSimulationData;
     double m_inputTime;

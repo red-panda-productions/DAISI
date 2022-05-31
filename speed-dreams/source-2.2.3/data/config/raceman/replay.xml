@@ -28,7 +28,7 @@
 
   <section name="Replay">
     <attstr name="time of day" val="afternoon"/>
-    <attstr name="display mode" val="results only"/>
+    <attstr name="display mode" val="normal"/>
     <section name="Starting Grid">
       <attnum name="rows" val="2.000000"/>
       <attnum name="distance to start" val="25.000000"/>
