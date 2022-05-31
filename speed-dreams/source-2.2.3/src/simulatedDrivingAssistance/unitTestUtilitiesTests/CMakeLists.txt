@@ -53,7 +53,7 @@ gtest_discover_tests(unitTestUtilitiesTests DISCOVERY_TIMEOUT 600)
 SET(BAT_NAME "UnitUtilitiesCoverage")
 SET(EXE_NAME "unitTestUtilitiesTests")
 SET(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/unitTestUtilities")
-SET(EXCLUDED_SOURCES "")
+SET(EXCLUDED_SOURCES "VariableStore.cpp")
 SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
 
 IF(OPTION_GITHUB_ACTIONS)
