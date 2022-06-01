@@ -108,7 +108,7 @@ static void OnActivate(void* /* dummy */)
 {
     //tDbControlSettings control;
     //LoadDBSettings(s_dbSettingsMenu, control);
-    CheckConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
+    CheckSavedConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
 }
 
 /// @brief Saves the settings into the local DataSelectionMenu.xml file

@@ -67,7 +67,6 @@ void SaveDBSettingsToDisk()
 void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, s_dbSettings.Username);
-    GfuiEditboxSetString(p_scrHandle, p_control.Password, s_dbSettings.Password);
     GfuiEditboxSetString(p_scrHandle, p_control.Address, s_dbSettings.Address);
     GfuiEditboxSetString(p_scrHandle, p_control.Port, s_portString);
     GfuiEditboxSetString(p_scrHandle, p_control.Schema, s_dbSettings.Schema);
@@ -115,9 +114,6 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-
-    // password is not saved and should thus show an empty field
-    s_dbSettings.Password[0] = '\0';
 
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
@@ -204,7 +200,18 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
 /// @brief                    Checks if a connection can be established between speed dreams and the database
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
+void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
+{
+    if (*p_isConnecting) return;
+    *p_isConnecting = true;
+    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_dbSettings, p_isConnecting);
+    t.detach();
+}
+
+/// @brief                    Checks if a connection can be established between speed dreams and the database
+/// @param  p_scrHandle       The screen handle for writing on the screen
+/// @param  p_dbStatusControl The status control handle to write letters to the screen
+void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
 {
     if (*p_isConnecting) return;
     *p_isConnecting = true;
@@ -224,12 +231,10 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
 /// @brief Handle input in the Password textbox
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
-void SetPassword(void* p_scrHandle, int p_passwordControl)
+void SetPassword(void* p_scrHandle, int p_passwordControl, char* password)
 {
-    strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
-
     char replacement[SETTINGS_NAME_LENGTH];
-    auto length = strlen(s_tempDbSettings.Password);
+    auto length = strlen(password);
     for (int i = 0; i < length; i++)
     {
         replacement[i] = '*';
@@ -237,6 +242,17 @@ void SetPassword(void* p_scrHandle, int p_passwordControl)
     replacement[length] = '\0';
 
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, replacement);
+}
+
+void FillInPassword(void* p_scrHandle, int p_passwordControl)
+{
+    SetPassword(p_scrHandle, p_passwordControl, s_dbSettings.Password);
+}
+
+void ChangePassword(void* p_scrHandle, int p_passwordControl)
+{
+    strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
+    SetPassword(p_scrHandle, p_passwordControl, s_tempDbSettings.Password);
 }
 
 /// @brief Handle input in the Address textbox

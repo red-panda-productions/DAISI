@@ -72,7 +72,8 @@ static void OnActivate(void* /* dummy */)
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
-    SetPassword(s_scrHandle, m_passwordControl);
+    FillInPassword(s_scrHandle, m_passwordControl);
+    CheckSavedConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
     SynchronizeControls(s_scrHandle, control);
 }
 
@@ -84,7 +85,7 @@ static void GoBack(void* /* dummy */)
 
 static void CheckConnectionCallback(void* /* dummy */)
 {
-    CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
+    CheckCurrentConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
 }
 
 static void SetUsernameCallback(void*)
@@ -94,7 +95,7 @@ static void SetUsernameCallback(void*)
 
 static void SetPasswordCallback(void*)
 {
-    SetPassword(s_scrHandle, m_passwordControl);
+    ChangePassword(s_scrHandle, m_passwordControl);
 }
 
 static void SetAddressCallback(void*)
@@ -159,7 +160,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     // Set s_dbSettings on start so that the menu doesn't have to be activated manually
     OnActivate(s_scrHandle);
 
-    CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
+    CheckSavedConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
 
     tDbControlSettings control;
     control.Username = m_usernameControl;
