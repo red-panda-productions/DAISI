@@ -346,10 +346,12 @@ bool UpdateV5RecorderToV6(void* p_settingsHandle)
 
     filesystem::path categoryPath = filesystem::path("tracks").append(category);
 
+    if(!filesystem::exists(categoryPath) || !filesystem::is_directory(categoryPath)) return false;
+
     for (auto const& entry : filesystem::directory_iterator{categoryPath})
     {
         // Ignore non directories, for example the CMakeLists.txt
-        if (!is_directory(entry.path())) continue;
+        if (!filesystem::exists(entry.path()) || !is_directory(entry.path())) continue;
 
         // Build the file path, note that the filesystem api is not used here since it needs to use "/" and on windows the filesystem api uses "\"
         std::stringstream xmlLocationStream;
