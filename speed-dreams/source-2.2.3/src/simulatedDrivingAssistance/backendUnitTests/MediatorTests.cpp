@@ -542,7 +542,7 @@ TEST(MediatorTests, CanUseTest)
     ASSERT_TRUE(SetupSingletonsFolder());
     Random random;
 
-    for (int i = 0; i < TEST_AMOUNT; i++)
+    for (int i = 0; i < 2 * TEST_AMOUNT; i++)
     {
         tParticipantControl pControl;
         pControl.ControlSteer = random.NextBool();
