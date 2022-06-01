@@ -61,7 +61,7 @@ void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_is
 
 void SetUsername(void* p_scrHandle, int p_usernameControl);
 
-void SetPassword(void* p_scrHandle, int p_passwordControl, char* password);
+void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password);
 
 void FillInPassword(void* p_scrHandle, int p_passwordControl);
 

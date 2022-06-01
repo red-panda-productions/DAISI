@@ -147,9 +147,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 /// @param p_control the corresponding ui element control integers
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
 {
-    //if (m_loadedSettings) return;
-    //m_loadedSettings = true;
-    // Retrieves the saved user xml file, if it doesn't exist the default values will be loaded
+    //  Retrieves the saved user xml file, if it doesn't exist the default values will be loaded
     std::string strPath("config/DatabaseSettingsMenu.xml");
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
@@ -197,7 +195,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     *p_isConnecting = false;
 }
 
-/// @brief                    Checks if a connection can be established between speed dreams and the database
+/// @brief                    Checks if a connection can be established between speed dreams and the database with saved settings
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
@@ -208,7 +206,7 @@ void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isCo
     t.detach();
 }
 
-/// @brief                    Checks if a connection can be established between speed dreams and the database
+/// @brief                    Checks if a connection can be established between speed dreams and the database with current settings
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
 void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
@@ -231,7 +229,7 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
 /// @brief Handle input in the Password textbox
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
-void SetPassword(void* p_scrHandle, int p_passwordControl, char* password)
+void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
 {
     char replacement[SETTINGS_NAME_LENGTH];
     auto length = strlen(password);

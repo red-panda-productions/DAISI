@@ -106,8 +106,6 @@ static void LoadDefaultSettings()
 /// @brief Loads the user menu settings from the local config file
 static void OnActivate(void* /* dummy */)
 {
-    //tDbControlSettings control;
-    //LoadDBSettings(s_dbSettingsMenu, control);
     CheckSavedConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
 }
 
