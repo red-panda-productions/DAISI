@@ -204,6 +204,9 @@ Changed:
                 removed enabling of cooldown and changed it to enabling of race ending
             racetrack.cpp
                 changed ReTrackInit() to load track from Mediator
+	track/trackv1/
+		track4.cpp changed CreateSegRing() added speed limit
+		track.h changed tTrackSeg added speed limit
 
         sound/snddefault/
             CMakeLists.txt
