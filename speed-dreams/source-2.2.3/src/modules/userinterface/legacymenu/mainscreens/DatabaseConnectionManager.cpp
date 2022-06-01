@@ -16,7 +16,6 @@
 #define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
-static bool m_loadedSettings = false;
 static tDatabaseSettings s_tempDbSettings;
 static tDatabaseSettings s_dbSettings;
 static char s_portString[SETTINGS_NAME_LENGTH];
@@ -282,7 +281,7 @@ void SetPort(void* p_scrHandle, int p_portControl)
 /// @param p_schemaControl the corresponding ui element control integers
 void SetSchema(void* p_scrHandle, int p_schemaControl)
 {
-    strcpy_s(s_tempDbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
+    strcpy_s(s_tempDbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
     GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_tempDbSettings.Schema);
 }
 
