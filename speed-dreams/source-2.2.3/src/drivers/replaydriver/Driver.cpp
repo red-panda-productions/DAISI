@@ -4,7 +4,7 @@
 #include <tgf.h>
 #include <Recorder.h>
 
-#include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 // When NDEBUG is not defined assert is a no-op, for the integration tests it needs to throw an exception.
 #ifdef NDEBUG
@@ -25,8 +25,6 @@
 #pragma clang diagnostic pop
 
 #endif
-
-namespace filesystem = std::experimental::filesystem;
 
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.

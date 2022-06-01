@@ -38,7 +38,7 @@ IF(NOT APPLE AND NOT HAIKU)
 ENDIF(NOT APPLE AND NOT HAIKU)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend)
+ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend rppUtils)
 
 ADD_PLIB_INCLUDEDIR()
 

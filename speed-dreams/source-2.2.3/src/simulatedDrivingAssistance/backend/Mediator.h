@@ -101,7 +101,7 @@ public:
     /// @brief Removes assigment for singleton behaviour
     void operator=(Mediator const&) = delete;
 
-    CarController CarController;
+    CarController CarControl;
 
 private:
     Mediator() = default;
@@ -121,6 +121,3 @@ private:
 
 /// @brief The standard type of the mediator
 #define SMediator Mediator<SDecisionMaker>
-
-template <>
-SMediator* SMediator::m_instance = nullptr;

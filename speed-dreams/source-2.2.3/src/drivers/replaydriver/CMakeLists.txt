@@ -4,7 +4,7 @@ SET(ROBOT_NAME "replaydriver")
 SET(ROBOT_INTERFACE WELCOME)
 SET(ROBOT_SOURCES ${ROBOT_NAME}.cpp Driver.cpp Driver.h)
 
-ADD_SDLIB_INCLUDEDIR(robottools tgfclient backend)
+ADD_SDLIB_INCLUDEDIR(robottools tgfclient backend rppUtils)
 
 ROBOT_MODULE(NAME ${ROBOT_NAME} VERSION 1.0.0 SOVERSION 1.0.0
              INTERFACE ${ROBOT_INTERFACE}

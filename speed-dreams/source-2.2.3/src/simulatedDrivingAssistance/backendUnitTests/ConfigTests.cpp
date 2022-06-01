@@ -2,7 +2,7 @@
 #include "TestUtils.h"
 #include "SDAConfig.h"
 #include "ConfigEnums.h"
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #define INTERVENTION_TYPE_AMOUNT 5
 
 /// @brief                    Tests if the SDAConfig sets and gets the interventionType correctly

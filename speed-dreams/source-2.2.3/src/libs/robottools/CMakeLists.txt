@@ -4,7 +4,7 @@ INCLUDE(../../../cmake/macros.cmake)
 
 ADD_INTERFACE_INCLUDEDIR()
 # SIMULATED DRIVING ASSISTANCE: added backend and frontend
-ADD_SDLIB_INCLUDEDIR(portability tgf math tgfclient backend frontend)
+ADD_SDLIB_INCLUDEDIR(portability tgf math tgfclient backend frontend rppUtils)
 
 IF(OPTION_SDL2)
 	ADD_SDL2_INCLUDEDIR()

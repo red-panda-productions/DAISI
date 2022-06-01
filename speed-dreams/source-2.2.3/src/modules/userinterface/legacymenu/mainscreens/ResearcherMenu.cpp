@@ -5,11 +5,11 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
-#include "../rppUtils/FileDialog.hpp"
-#include "../rppUtils/RppUtils.hpp"
+#include "FileDialogManager.h"
+#include "RppUtils.hpp"
 #include "racescreens.h"
 #include "tracks.h"
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include "mainmenu.h"
 
 // Parameters used in the xml files
@@ -410,7 +410,7 @@ static void SynchronizeControls()
 
     if (m_blackBoxChosen)
     {
-        std::experimental::filesystem::path path = m_blackBoxFilePath;
+        filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
     }
@@ -524,19 +524,22 @@ static void SelectBlackBox(void* /* dummy */)
     }
 
     // Validate input w.r.t. black boxes
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
+
+#ifdef WIN32
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
+#endif
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
