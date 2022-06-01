@@ -145,29 +145,6 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
     return false;
 }
 
-/// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
-/// @returns The filepath to the singletons folder
-inline filesystem::path SingletonsFilePath()
-{
-    return {filesystem::temp_directory_path().append("Singletons")};
-}
-
-/// @brief   Deletes the contents of the singletons folder
-/// @returns An int encoding whether the action succeeded
-inline int DeleteSingletonsFolder()
-{
-    std::error_code errorCode;
-
-    filesystem::path path = SingletonsFilePath();
-    remove_all(path, errorCode);
-    if (errorCode.value() != 0)
-    {
-        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
-        return errorCode.value();
-    }
-    return 0;
-}
-
 /// @brief  Makes sure there is an empty singletons folder to be used by Singleton classes.
 ///         Needs to be called once at the start of a method with any GetInstance() calls.
 /// @return Boolean indicating whether the setup succeeded or not
