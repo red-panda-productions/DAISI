@@ -233,7 +233,7 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
 void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
 {
     char replacement[SETTINGS_NAME_LENGTH];
-    auto length = strlen(password);
+    auto length = strlen(p_password);
     for (int i = 0; i < length; i++)
     {
         replacement[i] = '*';
@@ -330,7 +330,7 @@ void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, cons
     }
 
     // Validate input w.r.t. black boxes
-    filesystem::path path = buf;
+    std::experimental::filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {
