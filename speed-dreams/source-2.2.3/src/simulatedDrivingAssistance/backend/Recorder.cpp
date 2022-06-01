@@ -355,7 +355,7 @@ bool UpdateV5RecorderToV6(void* p_settingsHandle)
 
         // Build the file path, note that the filesystem api is not used here since it needs to use "/" and on windows the filesystem api uses "\"
         std::stringstream xmlLocationStream;
-        xmlLocationStream << entry.path() << "/" << entry.path().filename() << ".xml";
+        xmlLocationStream << entry.path().string() << "/" << entry.path().filename().string() << ".xml";
         std::string xmlLocation = xmlLocationStream.str();
 
         void* trackHandle = GfParmReadFile(xmlLocation.c_str(), 0, false);
