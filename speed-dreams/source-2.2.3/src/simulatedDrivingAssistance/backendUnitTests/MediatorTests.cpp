@@ -501,7 +501,7 @@ TEST(MediatorTests, SetSteerDecisionTest)
     {
         bool steerBool = random.NextBool();
         SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->IsSteerDecision(), steerBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeSteerDecision(), steerBool);
     }
 }
 
@@ -516,7 +516,7 @@ TEST(MediatorTests, SetBrakeDecisionTest)
     {
         bool brakeBool = random.NextBool();
         SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->IsBrakeDecision(), brakeBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeBrakeDecision(), brakeBool);
     }
 }
 
@@ -531,11 +531,11 @@ TEST(MediatorTests, SetAccelDecisionTest)
     {
         bool accelBool = random.NextBool();
         SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->IsAccelDecision(), accelBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeAccelDecision(), accelBool);
     }
 }
 
-/// @brief tests if the accel decision is correctly set
+/// @brief tests if the user can use the controls at the correct moment
 TEST(MediatorTests, CanUseTest)
 {
     SDAConfigMediator::ClearInstance();

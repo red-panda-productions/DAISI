@@ -42,9 +42,9 @@
     template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
     template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
     template bool Mediator<type>::TimeOut();                                                                                                            \
-    template bool Mediator<type>::IsSteerDecision();                                                                                                    \
-    template bool Mediator<type>::IsBrakeDecision();                                                                                                    \
-    template bool Mediator<type>::IsAccelDecision();                                                                                                    \
+    template bool Mediator<type>::HasMadeSteerDecision();                                                                                               \
+    template bool Mediator<type>::HasMadeBrakeDecision();                                                                                               \
+    template bool Mediator<type>::HasMadeAccelDecision();                                                                                               \
     template bool Mediator<type>::CanUseSteer();                                                                                                        \
     template bool Mediator<type>::CanUseBrake();                                                                                                        \
     template bool Mediator<type>::CanUseAccel();                                                                                                        \
@@ -250,25 +250,25 @@ int Mediator<DecisionMaker>::GetMaxTime()
 /// @brief  Gets whether there has been done a steer decision
 /// @return The steer decision
 template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::IsSteerDecision()
+bool Mediator<DecisionMaker>::HasMadeSteerDecision()
 {
-    return CarControl.IsSteerDecision();
+    return CarControl.HasMadeSteerDecision();
 }
 
 /// @brief  Gets whether there has been done a brake decision
 /// @return The brake decision
 template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::IsBrakeDecision()
+bool Mediator<DecisionMaker>::HasMadeBrakeDecision()
 {
-    return CarControl.IsBrakeDecision();
+    return CarControl.HasMadeBrakeDecision();
 }
 
 /// @brief  Gets whether there has been done an accel decision
 /// @return The accel decision
 template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::IsAccelDecision()
+bool Mediator<DecisionMaker>::HasMadeAccelDecision()
 {
-    return CarControl.IsAccelDecision();
+    return CarControl.HasMadeAccelDecision();
 }
 
 /// @brief  Gets whether the user can steer
@@ -280,7 +280,7 @@ bool Mediator<DecisionMaker>::CanUseSteer()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Steer)
     {
-        canControlSteer &= !IsSteerDecision();
+        canControlSteer &= !HasMadeSteerDecision();
     }
     return canControlSteer;
 }
@@ -294,7 +294,7 @@ bool Mediator<DecisionMaker>::CanUseBrake()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Brake)
     {
-        canControlBrake &= !IsBrakeDecision();
+        canControlBrake &= !HasMadeBrakeDecision();
     }
 
     return canControlBrake;
@@ -309,7 +309,7 @@ bool Mediator<DecisionMaker>::CanUseAccel()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Accelerate)
     {
-        canControlAccel &= !IsAccelDecision();
+        canControlAccel &= !HasMadeAccelDecision();
     }
 
     return canControlAccel;

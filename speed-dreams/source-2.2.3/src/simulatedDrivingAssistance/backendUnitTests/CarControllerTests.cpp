@@ -152,7 +152,7 @@ TEST(CarControllerTests, SetSteerDecisionTest)
     {
         bool steerBool = random.NextBool();
         carController.SetSteerDecision(steerBool);
-        ASSERT_EQ(carController.IsSteerDecision(), steerBool);
+        ASSERT_EQ(carController.HasMadeSteerDecision(), steerBool);
     }
 }
 
@@ -168,7 +168,7 @@ TEST(CarControllerTests, SetBrakeDecisionTest)
     {
         bool brakeBool = random.NextBool();
         carController.SetBrakeDecision(brakeBool);
-        ASSERT_EQ(carController.IsBrakeDecision(), brakeBool);
+        ASSERT_EQ(carController.HasMadeBrakeDecision(), brakeBool);
     }
 }
 
@@ -184,6 +184,6 @@ TEST(CarControllerTests, SetAccelDecisionTest)
     {
         bool accelBool = random.NextBool();
         carController.SetAccelDecision(accelBool);
-        ASSERT_EQ(carController.IsAccelDecision(), accelBool);
+        ASSERT_EQ(carController.HasMadeAccelDecision(), accelBool);
     }
 }

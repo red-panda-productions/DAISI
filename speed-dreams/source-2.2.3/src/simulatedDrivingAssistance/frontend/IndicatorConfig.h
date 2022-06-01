@@ -30,7 +30,7 @@
 #define VAL_NO  "no"
 
 static const char* s_interventionActionString[NUM_INTERVENTION_ACTION] = {
-    "steer neutral", "steer left", "steer right",
+    "steer neutral", "steer left", "steer right", "steer straight",
     "speed neutral", "accelerate", "brake"};
 
 static const char* s_interventionTypeString[NUM_INTERVENTION_TYPES] = {

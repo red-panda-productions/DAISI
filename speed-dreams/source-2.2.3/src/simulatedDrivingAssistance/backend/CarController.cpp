@@ -8,7 +8,7 @@
 void CarController::SetSteerCmd(float p_steer)
 {
     m_car->ctrl.steer += p_steer;
-    m_isSteerDecision = true;
+    m_hasMadeSteerDecision = true;
 }
 
 /// @brief			Edits the acceleration command of the game
@@ -16,7 +16,7 @@ void CarController::SetSteerCmd(float p_steer)
 void CarController::SetAccelCmd(float p_accel)
 {
     m_car->ctrl.accelCmd += p_accel;
-    m_isAccelDecision = true;
+    m_hasMadeAccelDecision = true;
 }
 
 /// @brief			Edits the brake command of the game
@@ -24,7 +24,7 @@ void CarController::SetAccelCmd(float p_accel)
 void CarController::SetBrakeCmd(float p_brake)
 {
     m_car->ctrl.brakeCmd = std::max(p_brake, m_car->ctrl.brakeCmd);
-    m_isBrakeDecision = true;
+    m_hasMadeBrakeDecision = true;
 }
 
 /// @brief			Sets the thresholds of the game
@@ -106,42 +106,42 @@ int CarController::GetLightCmd() const
 
 /// @brief  Gets whether there is a steer decision for the car
 /// @return Whether there is a steer decision for the car
-bool CarController::IsSteerDecision() const
+bool CarController::HasMadeSteerDecision() const
 {
-    return m_isSteerDecision;
+    return m_hasMadeSteerDecision;
 }
 
 /// @brief  Gets whether there is a brake decision for the car
 /// @return Whether there is a brake decision for the car
-bool CarController::IsBrakeDecision() const
+bool CarController::HasMadeBrakeDecision() const
 {
-    return m_isBrakeDecision;
+    return m_hasMadeBrakeDecision;
 }
 
 /// @brief  Gets whether there is an accel decision for the car
 /// @return Whether there is an accel decision for the car
-bool CarController::IsAccelDecision() const
+bool CarController::HasMadeAccelDecision() const
 {
-    return m_isAccelDecision;
+    return m_hasMadeAccelDecision;
 }
 
 /// @brief Sets whether there is a steer decision for the car
 /// @param p_steerDecision Whether there is a steer decision for the car
 void CarController::SetSteerDecision(bool p_steerDecision)
 {
-    m_isSteerDecision = p_steerDecision;
+    m_hasMadeSteerDecision = p_steerDecision;
 }
 
 /// @brief Sets whether there is a brake decision for the car
 /// @param p_brakeDecision Whether there is a brake decision for the car
 void CarController::SetBrakeDecision(bool p_brakeDecision)
 {
-    m_isBrakeDecision = p_brakeDecision;
+    m_hasMadeBrakeDecision = p_brakeDecision;
 }
 
 /// @brief Sets whether there is an accel decision for the car
 /// @param p_accelDecision Whether there is an accel decision for the car
 void CarController::SetAccelDecision(bool p_accelDecision)
 {
-    m_isAccelDecision = p_accelDecision;
+    m_hasMadeAccelDecision = p_accelDecision;
 }
