@@ -1,7 +1,6 @@
 #include "InterventionFactory.h"
 #include "InterventionExecutorNoIntervention.h"
 #include "InterventionExecutorAlwaysIntervene.h"
-#include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include <iostream>

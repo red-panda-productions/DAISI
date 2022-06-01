@@ -4,18 +4,27 @@
 #include <sstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
-#include <windows.h>
 #include <tgf.h>
-
 #include "Random.hpp"
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include "experimental/filesystem"
-
-namespace filesystem = std::experimental::filesystem;
+#include "FileSystem.hpp"
 
 #define ROOT_FOLDER "source-2.2.3"
+#define PATH_SIZE   256
 #define BB_ARG      "--bbfile "
+
+#ifdef WIN32
+#define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#define PROCESS_INFORMATION FILE*
+#define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
+#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest,p_src,p_len)
+#define strcat_s(p_dest, p_len, p_src) strncat(p_dest,p_src,p_len)
+#endif
 
 /// @brief      Converts a string to float, and NAN if not possible
 /// @param  p_s The string
@@ -50,10 +59,11 @@ inline void Clamp(TNumber& p_f, TNumber p_min, TNumber p_max)
     }
 }
 
-/// @brief     Converts a float to a const char*
-/// @param p_f The float
-/// @return    The const char*
-inline char* FloatToCharArr(float p_f, char p_buf[])
+/// @brief       Converts a float to a const char*
+/// @param p_f   The float
+/// @param p_buf A buffer to use for conversion
+/// @return      The const char*
+inline char* FloatToCharArr(float p_f, char* p_buf)
 {
     sprintf(p_buf, "%g", p_f);
     return p_buf;
@@ -71,28 +81,52 @@ inline float CharArrToFloat(const char* p_c)
     return val;
 }
 
+/// @brief   Finds the filepath to the singletons folder, which is in a temporary directory
+/// @returns The filepath to the singletons folder
+inline filesystem::path SingletonsFilePath()
+{
+    return {filesystem::temp_directory_path().append("Singletons")};
+}
+
+/// @brief   Deletes the contents of the singletons folder
+/// @returns An int encoding whether the action succeeded
+inline int DeleteSingletonsFolder()
+{
+    std::error_code errorCode;
+
+    filesystem::path path = SingletonsFilePath();
+    remove_all(path, errorCode);
+    if (errorCode.value() != 0)
+    {
+        std::cerr << "Something went wrong when removing the Singleton folder: " << errorCode.value();
+        return errorCode.value();
+    }
+    return 0;
+}
+
 /// @brief                    Finds a file in a directory
 /// @param  p_knownPathToFile The known path to the file
 /// @param  p_fileToFind      The filename
 /// @return                   Whether it was found or not
 inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string& p_fileToFind)
 {
-    char cwd[256];
+    char cwd[PATH_SIZE];
 
-    getcwd(cwd, 256);
+    getcwd(cwd, PATH_SIZE);
 
     while (cwd[0] != '\0')
     {
-        char directoryPath[256];
+        char directoryPath[PATH_SIZE];
 
-        strcpy_s(directoryPath, cwd);
-        strcat_s(directoryPath, "\\");
-        strcat_s(directoryPath, p_knownPathToFile.c_str());
+        strcpy_s(directoryPath, PATH_SIZE, cwd);
 
-        char filePath[256];
-        strcpy_s(filePath, directoryPath);
-        strcat_s(filePath, "\\");
-        strcat_s(filePath, p_fileToFind.c_str());
+        strcat_s(directoryPath, PATH_SIZE, OS_SEPARATOR);
+        strcat_s(directoryPath, PATH_SIZE, p_knownPathToFile.c_str());
+
+        char filePath[PATH_SIZE];
+        strcpy_s(filePath, PATH_SIZE, directoryPath);
+        strcat_s(filePath, PATH_SIZE, OS_SEPARATOR);
+        strcat_s(filePath, PATH_SIZE, p_fileToFind.c_str());
 
         std::cout << "current path: " << filePath << std::endl;
 
@@ -104,7 +138,7 @@ inline bool FindFileDirectory(std::string& p_knownPathToFile, const std::string&
         }
 
         size_t i = strlen(cwd);
-        while (cwd[i] != '\\' && i != 0) i--;
+        while (cwd[i] != OS_SEPARATOR_CHAR && i != 0) i--;
         cwd[i] = '\0';
     }
 
@@ -164,6 +198,8 @@ inline bool SetupSingletonsFolder()
     return true;
 }
 
+#ifdef WIN32
+
 /// @brief Start running a separate executable with no command-line arguments
 ///        Should either be an absolute path or relative to the current directory.
 ///        Path must include file extension; no default extension is assumed.
@@ -196,6 +232,7 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
 /// @param  p_executablePath     The path to the executable
 /// @param  p_args               The arguments for the executable
 /// @param  p_processInformation The information about the process, this contains the handles
+/// @param  p_workingDirectory   The current working directory
 inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
 {
     std::string fullArgs = p_executablePath + " " + p_args;
@@ -229,15 +266,6 @@ inline void ExecuteCLI(const char* p_command, bool p_showCommand)
     WinExec(p_command, p_showCommand);
 }
 
-/// @brief          Returns true with certain chance
-/// @param p_rnd    The random generator reference to use
-/// @param p_chance The chance to succeed [0-100]
-/// @return         Boolean indicating succes or not.
-inline bool SucceedWithChance(Random& p_rnd, int p_chance)
-{
-    return p_rnd.NextInt(0, 100) < p_chance;
-}
-
 /// @brief Get the path to the SDA appdata folder. Create the folder if it does not yet exist.
 /// @param p_sdaFolder Reference to the variable to store the path in.
 /// This variable will contain the path to the SDA folder after running this function.
@@ -264,6 +292,63 @@ inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
     }
 
     return true;
+}
+#else
+
+/// @brief Start running a separate executable with no command-line arguments
+///        Should either be an absolute path or relative to the current directory.
+///        Path must include file extension; no default extension is assumed.
+///        Path is assumed to refer to an existing executable file
+/// @param p_executablePath The path to the executable.
+/// @param p_args           The arguments for the executable
+inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
+{
+    std::string fullCommand = "gnome-terminal -- " + p_executablePath + " " + std::string(p_args);
+    popen(fullCommand.c_str(), "r");
+}
+
+/// @brief                       Starts a process from which you can also get the process handle
+/// @param  p_executablePath     The path to the executable
+/// @param  p_args               The arguments for the executable
+/// @param  p_processInformation The information about the process, this contains the handles
+/// @param  p_workingDirectory   The current working directory
+inline void StartProcess(const std::string& p_executablePath, const char* p_args, PROCESS_INFORMATION& p_processInformation, const std::string& p_workingDirectory)
+{
+    std::string fullCommand = "gnome-terminal -- cd " + p_workingDirectory + "\n" + p_executablePath + " " + std::string(p_args);
+    p_processInformation = popen(fullCommand.c_str(), "r");
+}
+
+/// @brief                Execute a command in the CLI
+/// @param  p_command     The command
+/// @param  p_showCommand Whether to show the output of the command
+inline void ExecuteCLI(const char* p_command, bool p_showCommand)
+{
+    system(p_command);
+}
+
+/// @brief             Returns the path to the appdata sda folder
+/// @param p_sdaFolder The variable to store the result in
+inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
+{
+    p_sdaFolder = filesystem::temp_directory_path();
+    p_sdaFolder.append("sda");
+    std::string sdaFolderString = p_sdaFolder.string();
+
+    if (!GfDirExists(sdaFolderString.c_str()))
+    {
+        GfDirCreate(sdaFolderString.c_str());
+    }
+    return true;
+}
+#endif
+
+/// @brief          Returns true with certain chance
+/// @param p_rnd    The random generator reference to use
+/// @param p_chance The chance to succeed [0-100]
+/// @return         Boolean indicating succes or not.
+inline bool SucceedWithChance(Random& p_rnd, int p_chance)
+{
+    return p_rnd.NextInt(0, 100) < p_chance;
 }
 
 #define BOOL_TRUE_STRING  "true"

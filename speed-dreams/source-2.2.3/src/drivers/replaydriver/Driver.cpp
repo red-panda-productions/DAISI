@@ -3,7 +3,7 @@
 #include <tgf.h>
 #include <Recorder.h>
 
-#include "../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 // Throw an exception when the expression is false
 #define ASSERT_THROW(expression)                                                  \
@@ -12,8 +12,6 @@
         GfLogError("Assertion failed: " #expression " was false!\n");             \
         throw std::runtime_error("Assertion failed: " #expression " was false!"); \
     }
-
-namespace filesystem = std::experimental::filesystem;
 
 /// @brief Initialize the replay driver
 Driver::Driver()

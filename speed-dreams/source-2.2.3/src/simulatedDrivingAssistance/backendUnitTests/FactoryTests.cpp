@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "InterventionFactory.h"
-#include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include "InterventionExecutorNoIntervention.h"

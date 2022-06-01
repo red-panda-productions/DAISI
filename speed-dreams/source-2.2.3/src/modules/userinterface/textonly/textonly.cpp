@@ -31,14 +31,11 @@
 #include "textonly.h"
 
 // SIMULATED DRIVING ASSISTANCE: Include filesystem, recorder for defines, Mediator and RPPUtils
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include "Recorder.h"
 #include "Mediator.h"
-#include "../../../simulatedDrivingAssistance/rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "tracks.h"
-
-namespace filesystem = std::experimental::filesystem;
 
 // The TextOnlyUI singleton.
 TextOnlyUI* TextOnlyUI::_pSelf = 0;

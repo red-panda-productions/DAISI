@@ -2,14 +2,14 @@
 #include <iomanip>
 #include <sstream>
 #include <tgf.h>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "Mediator.h"
 
 /// @brief Create a file to record the data to. Truncate if the file already exists.
 /// @param p_recordingsFolder The folder to place the file in
 /// @param p_decisionsRecordingFile  The stream to open the file on
 /// @param p_fileName The filename of the file to open
-void CreateRecordingFile(const std::experimental::filesystem::path& p_recordingsFolder, std::ofstream& p_decisionsRecordingFile, const char* p_fileName)
+void CreateRecordingFile(const filesystem::path& p_recordingsFolder, std::ofstream& p_decisionsRecordingFile, const char* p_fileName)
 {
     // Open the files with truncate on, such that if the file was already in use any existing content will be discarded
     filesystem::path filePath = filesystem::path(p_recordingsFolder).append(p_fileName);
@@ -32,7 +32,7 @@ Recorder::Recorder(const std::string& p_dirName,
                    int p_simulationDataParamAmount)
     : m_userParamAmount(p_userParamAmount), m_simulationDataParamAmount(p_simulationDataParamAmount)
 {
-    std::experimental::filesystem::path sdaFolder;
+    filesystem::path sdaFolder;
     if (!GetSdaFolder(sdaFolder)) return;
     auto recordingsFolder = sdaFolder.append(p_dirName);
     std::string recordingsFolderString = recordingsFolder.string();
@@ -47,7 +47,7 @@ Recorder::Recorder(const std::string& p_dirName,
     std::stringstream buffer;
     buffer << std::put_time(&tm, p_fileNamePattern.c_str());
     recordingsFolder.append(buffer.str());
-    m_recordingDir = std::experimental::filesystem::path(recordingsFolder);
+    m_recordingDir = filesystem::path(recordingsFolder);
     create_directories(m_recordingDir);
 
     CreateRecordingFile(m_recordingDir, m_userInputRecordingFile, USER_INPUT_RECORDING_FILE_NAME);
@@ -90,7 +90,7 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
                                 const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
                                 const int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds)
 {
-    using std::experimental::filesystem::path;
+    using filesystem::path;
     GfParmWriteFile(path(m_recordingDir).append(CAR_SETTINGS_FILE_NAME).string().c_str(),
                     p_carElt->_carHandle,
                     p_carElt->info.name);
@@ -194,7 +194,7 @@ void Recorder::WriteRecording(const float* p_input,
 {
     if (p_useCompression && p_prevInput == nullptr)
     {
-        throw std::exception("Compression is enabled but no previous input is given");
+        THROW_RPP_EXCEPTION("Compression is enabled but no previous input is given");
     }
 
     // doesn't write if the input is the same as the previous time
@@ -244,7 +244,6 @@ bool Recorder::CheckSameInput(const float* p_input, const float* p_prevInput, in
 bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecordingFile, filesystem::path& p_decisionsRecordingFile, filesystem::path& p_simulationFile)
 {
     const char* trackFileName = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
-
     if (trackFileName == nullptr)
     {
         GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
@@ -252,13 +251,18 @@ bool UpdateV0RecorderToV1(void* p_settingsHandle, filesystem::path& p_userRecord
     }
 
     void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+    if (trackHandle == nullptr)
+    {
+        GfLogWarning("Failed to find track based on filename (%s).\n", trackFileName);
+        return false;
+    }
 
-    const char* category = strdup(GfParmGetStr(trackHandle, "Header", "category", nullptr));
-    const char* name = strdup(GfParmGetStr(trackHandle, "Header", "name", nullptr));
+    const char* category = strdup(GfParmGetStr(trackHandle, "Header", "category", ""));
+    const char* name = strdup(GfParmGetStr(trackHandle, "Header", "name", ""));
 
     GfParmReleaseHandle(trackHandle);
 
-    if (category == nullptr || name == nullptr)
+    if (strcmp(category, "") == 0 || strcmp(name, "") == 0)
     {
         GfLogWarning("Failed to read category or name.\n");
 

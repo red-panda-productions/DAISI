@@ -2,9 +2,7 @@
 #include <fstream>
 #include <car.h>
 #include "DecisionTuple.h"
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 
 #define USER_INPUT_RECORDING_FILE_NAME "recording.txt"
 #define DECISIONS_RECORDING_FILE_NAME  "decisions.txt"
@@ -31,7 +29,7 @@ private:
 
     std::ofstream m_userInputRecordingFile;
     std::ofstream m_decisionsRecordingFile;
-    std::experimental::filesystem::path m_recordingDir;
+    filesystem::path m_recordingDir;
     float* m_prevUserInput;
     int m_userParamAmount;
     int m_decisionParamAmount;
