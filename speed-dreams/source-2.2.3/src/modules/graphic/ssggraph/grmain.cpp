@@ -23,6 +23,9 @@
 #include <GL/glext.h>
 #endif
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Included ConfigEnums to force experiment setup
+#include <ConfigEnums.h>
+
 #include <plib/ssg.h>
 #include <glfeatures.h> // GfglFeatures
 #include <robot.h>	//ROB_SECT_ARBITRARY
@@ -41,8 +44,6 @@
 #include "grboard.h"
 #include "grtracklight.h"
 #include "grbackground.h"
-
-#define FORCE_EXPERIMENT_SETUP
 
 int grMaxTextureUnits = 0;
 

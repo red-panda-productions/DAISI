@@ -1,5 +1,7 @@
 #pragma once
 
+#define FORCE_EXPERIMENT_SETUP
+
 /// @brief The different actions that a black box can take
 typedef struct AllowedActions
 {

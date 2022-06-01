@@ -423,7 +423,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
     // Guard if texture data is null or the texture itself is null
     if (!p_data || !p_texture) return;
 
-    // Dimensions of the icon on the screen (will be put in XML settings file later)
+    // Dimensions of the icon on the screen
     float iconWidth = p_data->Dimensions.Width;
     float iconHeight = p_data->Dimensions.Height;
 

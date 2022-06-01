@@ -248,6 +248,7 @@ Changed:
                         included "racemanagers.h"
                         changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
                     racerunningmenus.cpp
+                        included <ConfigEnums.h>
                         removed the help menu and other unnecessary functionalities for experiments when FORCE_EXPERIMENT_SETUP is defined
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
@@ -447,6 +448,7 @@ Changed:
                     removed *arcade_color_;
 
                 grmain.cpp
+                    included <ConfigEnums.h>
                     changed initView(): removed keybinds for removed hud elements and removed camera manipulation options when FORCE_EXPERIMENT_SETUP is defined
                     changed shutdownCars(): removed unused shutdown board
                     removed grSelectTrackMap()

@@ -129,6 +129,7 @@ tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p
     {
         throw std::out_of_range("Width and height should not be negative");
     }
+
     return {width, height};
 }
 

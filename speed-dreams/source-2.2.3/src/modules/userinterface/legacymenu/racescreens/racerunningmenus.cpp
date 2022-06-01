@@ -23,7 +23,8 @@
     @version	$Id: racerunningmenus.cpp 6084 2015-08-21 00:07:15Z beaglejoe $
 */
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
+// SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing and included ConfigEnums to force experiment setup
+#include <ConfigEnums.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -40,8 +41,6 @@
 
 #include "legacymenu.h"
 #include "racescreens.h"
-
-#define FORCE_EXPERIMENT_SETUP
 
 static void	*rmScreenHandle = 0;
 static int	rmPauseId;
