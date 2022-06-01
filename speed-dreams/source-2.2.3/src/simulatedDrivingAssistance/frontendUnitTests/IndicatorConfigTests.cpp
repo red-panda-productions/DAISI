@@ -20,7 +20,7 @@ typedef unsigned int DataGeneration;
 #define CAN_GENERATE_NULL       (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
 #define INVALID_SCR_POS         (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL   (1 << 2)  // Generates invalid loop intervals
-#define INVALID_TEXT_DIMENSIONS (1 << 2)  // Generates invalid screen positions
+#define INVALID_TEXT_DIMENSIONS (1 << 3)  // Generates invalid screen positions
 
 /// @brief Test Fixture for testing the loading of indicatorconfig data
 ///        Handles the Setup for every test and logs the seed used to generate random data.
@@ -206,6 +206,9 @@ protected:
                 snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
+                GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_WIDTH, nullptr, data.Texture->Dimensions.Width);
+                GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_HEIGHT, nullptr, data.Texture->Dimensions.Height);
+
 
                 // Only need to write to this specific type, because that is the only one that is loaded in again.
                 GfParmSetStr(fileHandle, xmlSection, s_interventionTypeString[p_interventionType], data.Texture->Path);
