@@ -625,16 +625,16 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             and if applicable the "database_encryption_settings.txt".
 ///                             needs "\\" in front
 ///                             if left out path will be data folder
-void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
+bool SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
+    
+    bool open_success = OpenDatabase(dbsettings, p_dirPath);
+    if (!open_success) return false;
+    std::cout << "Writing local buffer file to database" << std::endl;
 
-    if (OpenDatabase(dbsettings, p_dirPath))
-    {
-        std::cout << "Writing local buffer file to database" << std::endl;
-        bool success = StoreData(p_inputFilePath);
-        if (!success) {}
-        CloseDatabase();
-        std::cout << "Finished writing to database" << std::endl;
-    }
+    bool store_success = StoreData(p_inputFilePath);
+    if (!store_success) return false;
+    CloseDatabase();
+    std::cout << "Finished writing to database" << std::endl;
 }
