@@ -3,22 +3,21 @@
 #include <portability.h>
 #include <stdexcept>
 #include <tgf.h>
+#include "FileSystem.hpp"
+#include "RppUtils.hpp"
 
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
-#include "../rppUtils/RppUtils.hpp"
+#ifdef __linux__
+#include <sys/stat.h>
+#endif
 
 #include "IndicatorConfig.h"
-#include "Mediator.h"
 
-/// @brief        Loads the indicator data of every intervention action from config file in the given path
-/// @param p_path The path to the XML file containing the indicator data to load
-void IndicatorConfig::LoadIndicatorData(const char* p_path)
+/// @brief                    Loads the indicator data of every intervention action from config file in the given path
+/// @param p_path             The path to the XML file containing the indicator data to load
+/// @param p_interventionType The current intervention type
+void IndicatorConfig::LoadIndicatorData(const char* p_path, InterventionType p_interventionType)
 {
     void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
-
-    InterventionType interventionType = SMediator::GetInstance()->GetInterventionType();
 
     // Load the indicator data for every intervention action
     char path[PATH_BUF_SIZE];
@@ -28,7 +27,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path)
         m_indicatorData[i] = {
             static_cast<InterventionAction>(i),
             LoadSound(xmlHandle, std::string(path)),
-            LoadTexture(xmlHandle, std::string(path), interventionType),
+            LoadTexture(xmlHandle, std::string(path), p_interventionType),
             LoadText(xmlHandle, std::string(path))};
     }
 
@@ -185,7 +184,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
     // Check if IndicatorConfig file exists
     struct stat info = {};
 
-    std::experimental::filesystem::path path = SingletonsFilePath();
+    filesystem::path path = SingletonsFilePath();
     path.append("IndicatorConfig");
     std::string pathstring = path.string();
     const char* filepath = pathstring.c_str();
@@ -205,7 +204,7 @@ IndicatorConfig* IndicatorConfig::GetInstance()
     std::ifstream file(filepath);
     getline(file, pointerName);
     file.close();
-    int pointerValue = stoi(pointerName, nullptr, 16);
+    long pointerValue = std::stol(pointerName, nullptr, 16);
     m_instance = (IndicatorConfig*)pointerValue;
     return m_instance;
 }

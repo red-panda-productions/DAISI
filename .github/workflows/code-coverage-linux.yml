@@ -1,0 +1,131 @@
+name: CI Pipeline Code Coverage Linux
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allow manually triggering from the actions tab
+  workflow_dispatch:
+
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  report-code-coverage:
+    # The CMake configure and build commands are platform agnostic anda should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+    env:
+      BOOST_PATH: ${{github.workspace}}
+      BOOST_ROOT: ${{github.workspace}}/boost/boost
+      BOOST_VERSION: 1.79.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Packages
+        run: |
+          wget https://github.com/red-panda-productions/ipc-lib/releases/download/v1.1.0/ipclib.deb
+          sudo apt install ./ipclib.deb
+          sudo apt-get install libplib-dev
+          sudo apt-get install libexpat1-dev
+          sudo apt-get install libopenscenegraph-dev
+          sudo apt-get install freeglut3-dev
+          sudo apt-get install libvorbis-dev
+          sudo apt-get install libsdl2-dev
+          sudo apt-get install libopenal-dev
+          sudo apt-get install libenet-dev
+          sudo apt-get install libjpeg-dev
+          sudo apt-get install libpng-dev
+          sudo apt-get install libcurl4-openssl-dev
+          sudo apt-get install libmysqlcppconn-dev
+          sudo apt-get install libmsgpack-dev
+          sudo apt-get install ninja-build
+          pip install gcovr
+          sudo apt update
+          sudo apt install gcc-11 g++-11
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
+
+      
+      - name: Cache boost
+        uses: actions/cache@v2
+        id: cache-boost
+        with:
+          # Set the default path as the path to cache
+          path: ${{env.BOOST_ROOT}}
+          # Use the version as the key to only cache the correct version
+          key: boost-${{env.BOOST_VERSION}}-${{runner.os}}
+
+      - name: Install boost
+        if: steps.cache-boost.outputs.cache-hit != 'true'
+        uses: MarkusJx/install-boost@v2.3.0
+        id: install-boost
+        with:
+          boost_version: ${{env.BOOST_VERSION}}
+          toolset: gcc
+          platform_version: 20.04
+          boost_install_dir: ${{env.BOOST_PATH}}
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-${{runner.os}}-${{env.BUILD_TYPE}}
+          max-size: "2GB"
+
+      - name: Install MySQL
+        uses: Fettpet/setup-mysql@v1
+        with:
+          mysql-version: 8.0
+          username: SDATest
+          password: PASSWORD
+
+      - name: Configure CMake
+        shell: bash
+        run: cmake -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST -DOPTION_GITHUB_ACTIONS=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DOPTION_PACKAGING=0 -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -S '${{github.workspace}}/speed-dreams/source-2.2.3' -B '${{github.workspace}}/speed-dreams/source-2.2.3/build' -G Ninja
+
+      - name: Build
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3/build
+        shell: bash
+        run: cmake --build . --config Debug
+
+      - name: Run code coverage UnitUtilities
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: |
+          ./UnitUtilitiesCoverage.sh
+
+      - name: Run code coverage Frontend
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: |
+          ./FrontendCoverage.sh
+
+      - name: Run code coverage Backend
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: |
+          ./BackendCoverage.sh
+        
+      - name: Combine Coverage
+        working-directory: ${{github.workspace}}/speed-dreams/source-2.2.3
+        run: |
+          gcovr --add-tracefile "*Coverage.json" --cobertura-pretty -o CombinedCoverage.xml
+          sed -i 's/branches-covered=\"[0-9]*\"/branches-covered=\"0\"/g' CombinedCoverage.xml
+          sed -i 's/branches-valid=\"[0-9]*\"/branches-valid=\"0\"/g' CombinedCoverage.xml
+          sed -i 's/branch-rate=\"[0-9|.]*\"/branch-rate=\"0\"/g' CombinedCoverage.xml
+          sed -i 's/branch=\"true\"//g' CombinedCoverage.xml
+          sed -i 's/branch=\"false\"//g' CombinedCoverage.xml
+          cat CombinedCoverage.xml
+
+      - name: Create code coverage report
+        uses: 5monkeys/cobertura-action@master
+        with:
+          path: ${{github.workspace}}/speed-dreams/source-2.2.3/CombinedCoverage.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 100
+          fail_below_threshold: true
+          show_missing: true
+          link_missing_lines: true
+          report_name: 'code coverage report Linux'

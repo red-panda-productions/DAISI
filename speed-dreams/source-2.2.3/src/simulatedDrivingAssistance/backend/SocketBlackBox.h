@@ -9,6 +9,7 @@
 #include "raceman.h"
 #include "BlackBoxData.h"
 #include "IPCPointerManager.h"
+#include "ipclib_portability.h"
 
 #define SBB_BUFFER_SIZE 512
 
@@ -19,7 +20,7 @@ template <class BlackBoxData, class PointerManager>
 class SocketBlackBox
 {
 public:
-    SocketBlackBox(PCWSTR p_ip = L"127.0.0.1", int p_port = 8888);
+    SocketBlackBox(IPC_IP_TYPE p_ip = LOCAL_HOST, int p_port = 8888);
 
     void Initialize();
 

@@ -1,9 +1,9 @@
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
+#include <algorithm>
 
 /// @brief The file directory to use for writing test files to, relative to the OS's Temp folder.
 /// This directory should be allowed to be deleted by tests.
@@ -170,7 +170,7 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
     // Write a file with dummy initialization data, save timestamp 0 as many times as needed, and shut down
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
-    std::experimental::filesystem::path actualPath = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    filesystem::path actualPath = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
 
     for (int i = 0; i < p_numberOfTicks; i++)
@@ -183,7 +183,7 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
     expected << "END";
 
     // Check if the file is truly written to the Windows temporary directory
-    std::experimental::filesystem::path path = std::experimental::filesystem::temp_directory_path();
+    filesystem::path path = filesystem::temp_directory_path();
     path.append(TEST_FILE_DIR);
     path.append(TEST_FILE_NAME);
     std::string expectedPath = path.string();
@@ -221,7 +221,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
 
     // Initialise buffer file
     GET_DUMMY_TIMES;
-    std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
     if (p_storeEnvironment)
     {
@@ -298,7 +298,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
 
     // Initialise buffer file
     GET_DUMMY_TIMES;
-    std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
 
     DecisionTuple decisions = GenerateDecisions(random, p_doSteer, p_doBrake, p_doAccel, p_doGear, p_doLights);
@@ -377,7 +377,7 @@ TEST(FileDataStorageTests, DecisionsAfterData)
 
     // Initialise buffer file
     GET_DUMMY_TIMES;
-    std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES
              << "GameState" << std::endl
              << "UserInput" << std::endl;
@@ -412,9 +412,9 @@ TEST(FileDataStorageTests, DecisionsAfterData)
 TEST(FileDataStorageTests, CreatesFileDirectoryIfNotExists)
 {
     // Delete the existing test directory to ensure directories are properly created
-    if (std::experimental::filesystem::exists(TEST_FILE_DIR))
+    if (filesystem::exists(TEST_FILE_DIR))
     {
-        std::experimental::filesystem::remove_all(TEST_FILE_DIR);  // @NOCOVERAGE, deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
+        filesystem::remove_all(TEST_FILE_DIR);  // @NOCOVERAGE, deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
     }
 
     TestNoStorageWithTimestamps();
@@ -456,7 +456,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
 
     // Initialise buffer file
     GET_DUMMY_TIMES;
-    std::experimental::filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
     expected << DUMMY_INITIALISATION_FILE_ENTRIES;
     expected << "GameState" << std::endl
              << "UserInput" << std::endl;

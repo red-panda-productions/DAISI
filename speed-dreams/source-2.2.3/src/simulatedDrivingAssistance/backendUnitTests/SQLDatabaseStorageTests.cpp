@@ -2,7 +2,7 @@
 #include <fstream>
 #include "TestUtils.h"
 #include "SQLDatabaseStorage.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "gmock/gmock-matchers.h"
 #include <portability.h>
 #include <config.h>
@@ -14,13 +14,13 @@
     strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, "PASSWORD");             \
     testSettings.Port = 3306;                                                      \
     strcpy_s(testSettings.Address, SETTINGS_NAME_LENGTH, "127.0.0.1");             \
-    strcpy_s(testSettings.Schema, "sda_test");                                     \
+    strcpy_s(testSettings.Schema, SETTINGS_NAME_LENGTH, "sda_test");               \
     testSettings.UseSSL = true;                                                    \
     strcpy_s(testSettings.CACertFilePath, SETTINGS_NAME_LENGTH, "CA.txt");         \
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
     strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt");
 
-#define TEST_DATA_DIRECTORY "\\databaseTestData\\"
+#define TEST_DATA_DIRECTORY OS_SEPARATOR "databaseTestData" OS_SEPARATOR
 
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
@@ -40,7 +40,7 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 {
     std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
 
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile));
+    ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile));
 }
 
 /// @brief Test if exception is thrown when input data is incorrect
@@ -51,7 +51,7 @@ void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const 
     std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
 
     testing::internal::CaptureStderr();
-    p_sqlDatabaseStorage.StoreData(path + "\\" + p_inputFile);
+    p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile);
     std::string output = testing::internal::GetCapturedStderr();
     ASSERT_THAT(output, testing::HasSubstr("[MYSQL] internal dberror: "));
 }
@@ -110,7 +110,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "\\correctSettings"));
+    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY OS_SEPARATOR "correctSettings"));
 }
 
 /// @brief  Tries to connect to the database but fails
@@ -148,7 +148,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote\\correctRemote"));
+    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote" OS_SEPARATOR "correctRemote"));
 }
 
 #define YOUR_PASSWORD "PASSWORD"

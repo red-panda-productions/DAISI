@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "BlackBoxData.h"
 #include "robot.h"
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #include "ComparerUtils.h"
 #include "GeneratorUtils.h"
 
@@ -18,14 +18,14 @@ protected:
     void SetUp() override
     {
         Random random;
-        TestSegments = GenerateSegments();
-        Car = GenerateCar(TestSegments);
+        TestSegs = GenerateSegments();
+        Car = GenerateCar(TestSegs);
         Situation = GenerateSituation();
         TickCount = random.NextInt();
-        Segments = new tTrackSeg[TestSegments.NextSegmentsCount];
+        Segments = new tTrackSeg[TestSegs.NextSegmentsCount];
     }
 
-    TestSegments TestSegments = {};
+    TestSegments TestSegs = {};
     tTrackSeg* Segments = nullptr;
     tCarElt Car = {};
     tSituation Situation = {};
@@ -35,7 +35,7 @@ protected:
     {
         DestroySituation(Situation);
         DestroyCar(Car);
-        DestroySegments(TestSegments);
+        DestroySegments(TestSegs);
         delete[] Segments;
     }
 };
@@ -46,7 +46,7 @@ protected:
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
     bool p_comparisonType = GetParam();
-    BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount);
+    BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount);
 
     // Compare tickCount
     if (p_comparisonType)
@@ -73,7 +73,7 @@ TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
     CompareSituations(Situation, data.Situation, p_comparisonType);
 
     // Compare car.pub.trkPos.seg vs segments
-    CompareSegments(Car.pub.trkPos.seg, Segments, TestSegments.NextSegmentsCount, p_comparisonType);
+    CompareSegments(Car.pub.trkPos.seg, Segments, TestSegs.NextSegmentsCount, p_comparisonType);
 }
 
 INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::Values(true, false));
@@ -81,14 +81,14 @@ INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::
 /// @brief Tests whether elements that are pointers have actually been copied into a new pointer
 TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 {
-    BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount);
+    BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount);
 
     EXPECT_NE(Car.pub.trkPos.seg, data.Car.pub.trkPos.seg);
     if (Car.pub.trkPos.seg && Segments)
     {
         tTrackSeg* segOrig = &Car.pub.trkPos.seg[0];
         tTrackSeg* segCopy = &Segments[0];
-        for (int i = 0; i < TestSegments.NextSegmentsCount; i++)
+        for (int i = 0; i < TestSegs.NextSegmentsCount; i++)
         {
             EXPECT_NE(segOrig, segCopy);
             segOrig = (*segOrig).next;
@@ -100,7 +100,7 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 /// @brief Tests whether BlackBoxData() indeed throws if it receives invalid input
 TEST_F(BlackBoxDataTestFixture, ExceptionsThrownTest)
 {
-    ASSERT_THROW(BlackBoxData(nullptr, &Situation, TickCount, Segments, TestSegments.NextSegmentsCount), std::invalid_argument);
-    ASSERT_THROW(BlackBoxData(&Car, nullptr, TickCount, Segments, TestSegments.NextSegmentsCount), std::invalid_argument);
-    ASSERT_THROW(BlackBoxData(&Car, &Situation, TickCount, Segments, -TestSegments.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(nullptr, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(&Car, nullptr, TickCount, Segments, TestSegs.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(&Car, &Situation, TickCount, Segments, -TestSegs.NextSegmentsCount), std::invalid_argument);
 }

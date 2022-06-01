@@ -8,7 +8,6 @@ SET(_SOURCES
 	DecisionTuple.cpp
 	FileDataStorage.cpp
 	InterventionExecutorAlwaysIntervene.cpp
-	InterventionExecutorAskFor.cpp
 	InterventionExecutorIndication.cpp
 	InterventionExecutorNoIntervention.cpp
 	InterventionExecutorPerformWhenNeeded.cpp
@@ -41,8 +40,7 @@ SET(_HEADERS
 	IDecision.h
 	InterventionExecutor.h
 	InterventionExecutorAlwaysIntervene.h
-	InterventionExecutorAskFor.h
-	InterventionExecutorIndication.h
+    InterventionExecutorIndication.h
 	InterventionExecutorNoIntervention.h
 	InterventionExecutorPerformWhenNeeded.h
 	InterventionFactory.h
@@ -55,12 +53,11 @@ SET(_HEADERS
 	BlackBoxData.h
 	AccelDecision.h
 	IPCPointerManager.h
+	MySQLHeaders.h
 )
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability frontend)
-
-ADD_SQLITE3_INCLUDEDIR()
+ADD_SDLIB_INCLUDEDIR(tgf math portability frontend rppUtils)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
@@ -73,10 +70,12 @@ ADD_MSGPACK_PACKAGE(backend)
 
 ADD_IPCLIB_PACKAGE(backend)
 
-ADD_SQLITE3_LIBRARY(backend)
-
 ADD_MYSQL_PACKAGE(backend)
 
 ADD_BOOST_PACKAGE(backend)
+
+IF(UNIX)
+	TARGET_LINK_LIBRARIES(backend rt)
+ENDIF(UNIX)
 
 SD_INSTALL_FILES(LIB simulatedDrivingAssistance/backend TARGETS backend)

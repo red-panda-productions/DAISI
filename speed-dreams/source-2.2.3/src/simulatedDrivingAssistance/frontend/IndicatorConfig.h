@@ -42,7 +42,7 @@ static const char* s_interventionTypeString[NUM_INTERVENTION_TYPES] = {
 class IndicatorConfig
 {
 public:
-    void LoadIndicatorData(const char* p_path);
+    void LoadIndicatorData(const char* p_path, InterventionType p_interventionType);
 
     void ActivateIndicator(InterventionAction p_action);
 
