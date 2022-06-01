@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 OPTION(OPTION_INTEGRATION_LOGS ON)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -12,7 +12,6 @@ ELSE(OPTION_SDL2)
 ENDIF(OPTION_SDL2)
 
 ADD_PLIB_INCLUDEDIR()
-
 
 ENABLE_TESTING()
 

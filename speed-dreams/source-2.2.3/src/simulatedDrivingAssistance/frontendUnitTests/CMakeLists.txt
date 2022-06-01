@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_PLIB_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient frontend)
+ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient frontend rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -36,16 +36,22 @@ SET(_MOCK_HEADERS )
 SD_ADD_EXECUTABLE(frontendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 
 target_link_libraries(
-  frontendUnitTests #moet het zelfde zijn
+  frontendUnitTests
   gtest_main
   gmock_main
 )
+
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(frontendUnitTests stdc++ stdc++fs)
+ENDIF(UNIX)
 
 ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient frontend backend)
 
 ADD_PLIB_LIBRARY(frontendUnitTests)
 
-SD_INSTALL_CUSTOM_3RDPARTY(frontendUnitTests)
+IF(WIN32)
+    SD_INSTALL_CUSTOM_3RDPARTY(frontendUnitTests)
+ENDIF(WIN32)
 
 include(GoogleTest)
 gtest_discover_tests(frontendUnitTests DISCOVERY_TIMEOUT 600)
@@ -54,13 +60,13 @@ gtest_discover_tests(frontendUnitTests DISCOVERY_TIMEOUT 600)
 SET(FRONTEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/frontend")
 
 SET(BAT_NAME "FrontendCoverage")
-SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/frontendUnitTests.exe")
+SET(EXE_NAME "frontendUnitTests")
 SET(SOURCE_DIR "${FRONTEND_SOURCE_DIR}")
 SET(EXCLUDED_SOURCES "")
 SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
 
 IF(OPTION_GITHUB_ACTIONS)
-    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "FrontendCoverage.cov" "UnitTestCoverage.cov")
+    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_NAME}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "binary" "UnitUtilitiesCoverage")
 ELSE(OPTION_GITHUB_ACTIONS)
-    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
+    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_NAME}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
 ENDIF(OPTION_GITHUB_ACTIONS)

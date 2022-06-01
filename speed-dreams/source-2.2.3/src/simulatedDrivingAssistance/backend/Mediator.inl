@@ -3,13 +3,10 @@
 #include <fstream>
 #include <portability.h>
 #include <SDL2/SDL_main.h>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
-namespace filesystem = std::experimental::filesystem;
+#include "FileSystem.hpp"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
@@ -246,7 +243,7 @@ int Mediator<DecisionMaker>::GetMaxTime()
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::DriveTick(tCarElt* p_car, tSituation* p_situation)
 {
-    CarController.SetCar(p_car);
+    CarControl.SetCar(p_car);
     m_decisionMaker.Decide(p_car, p_situation, m_tickCount);
     m_tickCount++;
 }
@@ -271,7 +268,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     // Load indicators from XML used for assisting the human with visual/audio indicators.
     char path[PATH_BUF_SIZE];
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
-    IndicatorConfig::GetInstance()->LoadIndicatorData(path);
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, GetInterventionType());
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed
@@ -336,7 +333,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     // Check if Mediator file exists
     struct stat info = {};
 
-    std::experimental::filesystem::path path = SingletonsFilePath();
+    filesystem::path path = SingletonsFilePath();
     path.append("Mediator");
     std::string pathstring = path.string();
     const char* filepath = pathstring.c_str();
@@ -356,7 +353,7 @@ Mediator<DecisionMaker>* Mediator<DecisionMaker>::GetInstance()
     std::ifstream file(filepath);
     getline(file, pointerName);
     file.close();
-    int pointerValue = stoi(pointerName, nullptr, 16);
+    long pointerValue = std::stol(pointerName, nullptr, 16);
     m_instance = (Mediator<DecisionMaker>*)pointerValue;
     return m_instance;
 }

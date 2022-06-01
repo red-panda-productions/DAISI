@@ -52,7 +52,7 @@ void* SaveMenuInit(RaceEndType p_raceEndType)
 {
     s_menuHandle = GfuiScreenCreate();
 
-    void* param = GfuiMenuLoad("savemenu.xml");
+    void* param = GfuiMenuLoad("SaveMenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
 
     // add button functionality
