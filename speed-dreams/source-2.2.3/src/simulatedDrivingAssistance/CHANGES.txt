@@ -172,6 +172,9 @@ Changed:
                 added   GfuiFontClass: expose to API
             webserver.cpp
                 changed NotificationManager::updateWebserverStatusUi
+        tgfdata/
+            tracks.cpp
+                changed getFirstUsableTrack to only return non testing tracks
     main/
         main.cpp
             added singletonfolder setup
