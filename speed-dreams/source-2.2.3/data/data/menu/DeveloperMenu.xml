@@ -51,8 +51,8 @@
             <!-- Below value is "Choose Replay File: " followed by 260 (max filepath size) spaces,
             as giving a new value to a button's text is only as long as the original length,
             although even with the small font, a name that long would go off-screen -->
-            <attstr name="text" val="Choose Replay File:                                                                                                                                                                                                                                                                     "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of a replay file"/>
+            <attstr name="text" val="Choose Replay Folder:                                                                                                                                                                                                                                                                     "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of a folder containing the replay data"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="220"/>

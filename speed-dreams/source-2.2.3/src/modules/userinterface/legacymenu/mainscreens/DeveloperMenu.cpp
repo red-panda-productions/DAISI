@@ -278,7 +278,7 @@ static void SetSteerThreshold(void*)
 /// @brief Starts the raceEngine according to legacymenu.cpp::startRace and sets replay values
 static void StartReplay(void*)
 {
-    if (!Recorder::ReadRecording(m_replayFilePath))
+    if (!Recorder::LoadRecording(m_replayFilePath))
     {
         GfLogError("Failed to read recording: {}\n", m_replayFilePath);
         GfuiScreenActivate(DeveloperMenuInit(s_scrHandle));

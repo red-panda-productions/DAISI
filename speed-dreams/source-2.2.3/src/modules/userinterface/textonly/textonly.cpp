@@ -102,7 +102,7 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
         return false;
     }
 
-    if (!Recorder::ReadRecording(replayFolder))
+    if (!Recorder::LoadRecording(replayFolder))
     {
         GfLogError("Failed to read recording: '%s'\n", replayFolder.c_str());
         return false;

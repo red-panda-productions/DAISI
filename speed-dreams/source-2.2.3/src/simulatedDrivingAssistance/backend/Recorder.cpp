@@ -418,7 +418,7 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
 /// @brief Read the settings from a recording file and set them correctly internally
 /// @param p_recordingFolder The path to the folder containing all recording data
 /// @return true if the recording was loaded correctly, false if it could not be loaded
-bool Recorder::ReadRecording(const filesystem::path& p_recordingFolder)
+bool Recorder::LoadRecording(const filesystem::path& p_recordingFolder)
 {
     if (!ValidateAndUpdateRecording(p_recordingFolder))
     {

@@ -653,14 +653,14 @@ TEST(RecorderTests, ReadInvalidRecording)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v5-missing-track-recording", toValidate);
 
-    ASSERT_FALSE(Recorder::ReadRecording(toValidate));
+    ASSERT_FALSE(Recorder::LoadRecording(toValidate));
 }
 
 TEST(RecorderTests, ReadValidRecording)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("latest-valid", toValidate);
 
-    ASSERT_TRUE(Recorder::ReadRecording(toValidate));
+    ASSERT_TRUE(Recorder::LoadRecording(toValidate));
 
     SMediator* mediator = SMediator::GetInstance();
 
