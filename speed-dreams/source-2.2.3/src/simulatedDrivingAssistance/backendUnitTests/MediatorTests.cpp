@@ -536,49 +536,52 @@ TEST(MediatorTests, SetAccelDecisionTest)
 }
 
 /// @brief tests if the user can use the controls at the correct moment
-TEST(MediatorTests, CanUseTest)
+void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel, bool p_dControlSteer, bool p_dControlBrake, bool p_dControlAccel, InterventionType p_interventionType)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
+
     Random random;
 
-    for (int i = 0; i < 2 * TEST_AMOUNT; i++)
-    {
-        tParticipantControl pControl;
-        pControl.ControlSteer = random.NextBool();
-        pControl.ControlBrake = random.NextBool();
-        pControl.ControlAccel = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetPControlSettings(pControl);
+    tParticipantControl pControl;
+    pControl.ControlSteer = p_pControlSteer;
+    pControl.ControlBrake = p_pControlBrake;
+    pControl.ControlAccel = p_pControlAccel;
+    SDAConfigMediator::GetInstance()->SetPControlSettings(pControl);
 
-        tAllowedActions dControl;
-        dControl.Steer = random.NextBool();
-        dControl.Brake = random.NextBool();
-        dControl.Accelerate = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
+    tAllowedActions dControl;
+    dControl.Steer = p_dControlSteer;
+    dControl.Brake = p_dControlBrake;
+    dControl.Accelerate = p_dControlAccel;
+    SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
 
-        InterventionType interventionType = random.NextInt(0, 5);
-        SDAConfigMediator::GetInstance()->SetInterventionType(interventionType);
+    bool steerBool = random.NextBool();
+    bool brakeBool = random.NextBool();
+    bool accelBool = random.NextBool();
 
-        bool steerBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
+    SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
+    SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
+    SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
+    SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
 
-        bool brakeBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
+    bool canUseSteerBool = pControl.ControlSteer && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Steer) canUseSteerBool &= !steerBool;
 
-        bool accelBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
+    bool canUseBrakeBool = pControl.ControlBrake && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool;
 
-        bool canUseSteerBool = pControl.ControlSteer && interventionType != 4;
-        if (interventionType == 3 && dControl.Steer) canUseSteerBool &= !steerBool;
+    bool canUseAccelBool = pControl.ControlAccel && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool;
 
-        bool canUseBrakeBool = pControl.ControlBrake && interventionType != 4;
-        if (interventionType == 3 && dControl.Brake) canUseBrakeBool &= !brakeBool;
+    ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
+    ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);
+    ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseAccel(), canUseAccelBool);
+}
 
-        bool canUseAccelBool = pControl.ControlAccel && interventionType != 4;
-        if (interventionType == 3 && dControl.Accelerate) canUseAccelBool &= !accelBool;
-
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseAccel(), canUseAccelBool);
-    }
+/// @brief Run the @link #TestDataStorageSave(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
+TEST(MediatorTests, CanUseTest)
+{
+    bool booleans[2]{true, false};
+    InterventionType interventions[5]{INTERVENTION_TYPE_NO_SIGNALS, INTERVENTION_TYPE_ONLY_SIGNALS, INTERVENTION_TYPE_SHARED_CONTROL, INTERVENTION_TYPE_COMPLETE_TAKEOVER, INTERVENTION_TYPE_AUTONOMOUS_AI};
+    PairWiseTest(TestCanUse, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, interventions, 5);
 }
