@@ -180,6 +180,7 @@ static void SaveSettings()
 static void OnActivate(void* /* dummy */)
 {
     LoadSettings();
+    SynchronizeControls();
 }
 
 /// @brief Switches back to the reseacher menu

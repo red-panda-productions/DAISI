@@ -72,11 +72,11 @@ static void OnActivate(void* /* dummy */)
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
-    SynchronizeControls(s_scrHandle, control);
     SetPassword(s_scrHandle, m_passwordControl);
+    SynchronizeControls(s_scrHandle, control);
 }
 
-/// @brief Returns to the main menu screen
+/// @brief Returns to the Data selection menu screen
 static void GoBack(void* /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
@@ -160,6 +160,22 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     OnActivate(s_scrHandle);
 
     CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
+
+    tDbControlSettings control;
+    control.Username = m_usernameControl;
+    control.Password = m_passwordControl;
+    control.Address = m_addressControl;
+    control.Port = m_portControl;
+    control.Schema = m_schemaControl;
+    control.UseSSL = m_useSSLControl;
+    control.CACertificateButton = m_caCertFileDialogControl;
+    control.CACertificateLabel = m_caCertDialogLabel;
+    control.PublicCertificateButton = m_publicCertFileDialogControl;
+    control.PublicCertificateLabel = m_publicCertDialogLabel;
+    control.PrivateCertificateButton = m_privateCertFileDialogControl;
+    control.PrivateCertificateLabel = m_publicCertDialogLabel;
+    LoadDBSettings(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control);
 
     return s_scrHandle;
 }

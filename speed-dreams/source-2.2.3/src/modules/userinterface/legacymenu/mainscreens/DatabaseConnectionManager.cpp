@@ -16,6 +16,7 @@
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
 static bool m_loadedSettings = false;
+static tDatabaseSettings s_tempDbSettings;
 static tDatabaseSettings s_dbSettings;
 static char s_portString[SETTINGS_NAME_LENGTH];
 
@@ -23,18 +24,19 @@ void ConvertPortString()
 {
     try
     {
-        s_dbSettings.Port = std::stoi(s_portString);
+        s_tempDbSettings.Port = std::stoi(s_portString);
     }
     catch (std::exception&)
     {
         std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
-        s_dbSettings.Port = 0;
+        s_tempDbSettings.Port = 0;
     }
 }
 
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
 void SaveDBSettingsToDisk()
 {
+    s_dbSettings = s_tempDbSettings;
     // Copies xml to documents folder and then opens file parameter
     std::string dstStr("config/DatabaseSettingsMenu.xml");
     char dst[512];
@@ -103,6 +105,7 @@ void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Schema));
     s_dbSettings.UseSSL = SETTINGS_NAME_LENGTH, GfuiCheckboxIsChecked(p_scrHandle, p_control.UseSSL);
     SaveDBSettingsToDisk();
+    s_tempDbSettings = s_dbSettings;
 }
 
 /// @brief        Loads the settings from the config file into the internal variables
@@ -140,6 +143,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
     {
         strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, filePath3);
     }
+    s_tempDbSettings = s_dbSettings;
 }
 
 /// @brief Loads the user menu settings from the local config file or the default values will be loaded
@@ -147,8 +151,8 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 /// @param p_control the corresponding ui element control integers
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
 {
-    if (m_loadedSettings) return;
-    m_loadedSettings = true;
+    //if (m_loadedSettings) return;
+    //m_loadedSettings = true;
     // Retrieves the saved user xml file, if it doesn't exist the default values will be loaded
     std::string strPath("config/DatabaseSettingsMenu.xml");
     char buf[512];
@@ -204,7 +208,7 @@ void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnect
 {
     if (*p_isConnecting) return;
     *p_isConnecting = true;
-    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_dbSettings, p_isConnecting);
+    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_tempDbSettings, p_isConnecting);
     t.detach();
 }
 
@@ -213,8 +217,8 @@ void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnect
 /// @param p_usernameControl the corresponding ui element control integers
 void SetUsername(void* p_scrHandle, int p_usernameControl)
 {
-    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_usernameControl));
-    GfuiEditboxSetString(p_scrHandle, p_usernameControl, s_dbSettings.Username);
+    strcpy_s(s_tempDbSettings.Username, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_usernameControl));
+    GfuiEditboxSetString(p_scrHandle, p_usernameControl, s_tempDbSettings.Username);
 }
 
 /// @brief Handle input in the Password textbox
@@ -222,10 +226,10 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
 /// @param p_passwordControl the corresponding ui element control integers
 void SetPassword(void* p_scrHandle, int p_passwordControl)
 {
-    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
+    strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
 
     char replacement[SETTINGS_NAME_LENGTH];
-    auto length = strlen(s_dbSettings.Password);
+    auto length = strlen(s_tempDbSettings.Password);
     for (int i = 0; i < length; i++)
     {
         replacement[i] = '*';
@@ -240,8 +244,8 @@ void SetPassword(void* p_scrHandle, int p_passwordControl)
 /// @param p_addressControl the corresponding ui element control integers
 void SetAddress(void* p_scrHandle, int p_addressControl)
 {
-    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_addressControl));
-    GfuiEditboxSetString(p_scrHandle, p_addressControl, s_dbSettings.Address);
+    strcpy_s(s_tempDbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_addressControl));
+    GfuiEditboxSetString(p_scrHandle, p_addressControl, s_tempDbSettings.Address);
 }
 
 /// @brief Handle input in the Port textbox
@@ -254,7 +258,7 @@ void SetPort(void* p_scrHandle, int p_portControl)
     ConvertPortString();
 
     char buf[32];
-    sprintf(buf, "%d", s_dbSettings.Port);
+    sprintf(buf, "%d", s_tempDbSettings.Port);
     GfuiEditboxSetString(p_scrHandle, p_portControl, buf);
 }
 
@@ -263,8 +267,8 @@ void SetPort(void* p_scrHandle, int p_portControl)
 /// @param p_schemaControl the corresponding ui element control integers
 void SetSchema(void* p_scrHandle, int p_schemaControl)
 {
-    strcpy_s(s_dbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
-    GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_dbSettings.Schema);
+    strcpy_s(s_tempDbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
+    GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_tempDbSettings.Schema);
 }
 
 /// @brief        Enables/disables the SSL option
@@ -275,19 +279,19 @@ void SetSchema(void* p_scrHandle, int p_schemaControl)
 /// @param p_privateControl the corresponding ui element control integers
 void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl)
 {
-    s_dbSettings.UseSSL = p_info->bChecked;
-    GfuiVisibilitySet(p_scrHandle, p_caControl, s_dbSettings.UseSSL);
-    GfuiVisibilitySet(p_scrHandle, p_publicControl, s_dbSettings.UseSSL);
-    GfuiVisibilitySet(p_scrHandle, p_privateControl, s_dbSettings.UseSSL);
+    s_tempDbSettings.UseSSL = p_info->bChecked;
+    GfuiVisibilitySet(p_scrHandle, p_caControl, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicControl, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateControl, s_tempDbSettings.UseSSL);
 }
 
 /// @brief Initializes the certificate filepaths.
 /// @param The param element for initializing a menu
 void InitCertificates(void* p_param)
 {
-    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
-    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
-    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
+    strcpy_s(s_tempDbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
+    strcpy_s(s_tempDbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
+    strcpy_s(s_tempDbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
 }
 
 /// @brief Select a certificate file and save the path
@@ -331,9 +335,9 @@ void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, cons
     GfuiLabelSetText(p_scrHandle, p_labelControl, MSG_ONLY_HINT);
 
     char* filepath = nullptr;
-    if (p_certificate == CA_CERTIFICATE) filepath = s_dbSettings.CACertFilePath;
-    if (p_certificate == PUBLIC_CERTIFIATE) filepath = s_dbSettings.PublicCertFilePath;
-    if (p_certificate == PRIVATE_CERTIFICATE) filepath = s_dbSettings.PrivateCertFilePath;
+    if (p_certificate == CA_CERTIFICATE) filepath = s_tempDbSettings.CACertFilePath;
+    if (p_certificate == PUBLIC_CERTIFIATE) filepath = s_tempDbSettings.PublicCertFilePath;
+    if (p_certificate == PRIVATE_CERTIFICATE) filepath = s_tempDbSettings.PrivateCertFilePath;
 
     // Only after validation copy into the actual variable
     strcpy_s(filepath, SETTINGS_NAME_LENGTH, buf);

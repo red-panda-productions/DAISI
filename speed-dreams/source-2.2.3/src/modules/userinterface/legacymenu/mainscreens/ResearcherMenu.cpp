@@ -205,12 +205,6 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
     m_interventionType = (InterventionType)p_info->Selected;
 }
 
-/// @brief Opens the menu to select an environment
-static void SelectEnvironment(void* /* dummy */)
-{
-    RmTrackSelect(&m_trackMenuSettings);
-}
-
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
 static void SelectControlSteer(tCheckBoxInfo* p_info)
@@ -379,6 +373,13 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
+/// @brief Opens the menu to select an environment
+static void SelectEnvironment(void* /* dummy */)
+{
+    RmTrackSelect(&m_trackMenuSettings);
+}
+
+/// @brief Returns to the main menu
 static void BackToMain(void* /* dummy */)
 {
     GfuiScreenActivate(MainMenuInit(s_scrHandle));
@@ -502,19 +503,6 @@ static void LoadConfigSettings(void* p_param)
 ///  and handles other logic that has to be performed whenever the screen is opened.
 static void OnActivate(void* /* dummy */)
 {
-    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
-    if (GfFileExists(buf))
-    {
-        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
-        // Initialize settings with the retrieved xml file
-        LoadConfigSettings(param);
-        GfParmReleaseHandle(param);
-        return;
-    }
-    LoadDefaultSettings();
-
     // Ensure the track loader is initialized again.
     // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
     InitializeTrackLoader();
@@ -657,6 +645,19 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Set default userId
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
+
+    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
+    char buf[512];
+    sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
+    if (GfFileExists(buf))
+    {
+        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+        // Initialize settings with the retrieved xml file
+        LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
+        return s_scrHandle;
+    }
+    LoadDefaultSettings();
 
     return s_scrHandle;
 }
