@@ -148,8 +148,8 @@ GfTracks::GfTracks()
 				strPreviewFileName = ossFileName.str();
 			}
 			if (!GfFileExists(strPreviewFileName.c_str()))
-				strPreviewFileName = "data/img/Main-menu-2.png";
-			
+				strPreviewFileName = "data/img/main-menu-2.png";
+
 			ossFileName.str("");
 			ossFileName << "tracks/" << pszCatId << '/' << pszTrackId << '/' << "outline.png";
 			std::string strOutlineFileName(ossFileName.str());

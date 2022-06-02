@@ -3,7 +3,7 @@
 #include "legacymenu.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "DataCompressionMenu.h"
 
 // Parameters used in the xml files

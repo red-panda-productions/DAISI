@@ -9,6 +9,7 @@ SET(MAINSCREENS_SOURCES ${MS}/splash.cpp
                         ${MS}/optionsmenu.cpp
                         ${MS}/creditsmenu.cpp
                         ${MS}/exitmenu.cpp
+                        ${MS}/FileDialogManager.cpp
                         ${MS}/DeveloperMenu.cpp
                         ${MS}/DatabaseSettingsMenu.cpp
                         ${MS}/DatabaseConnectionManager.cpp
@@ -21,6 +22,7 @@ SET(MAINSCREENS_HEADERS ${MS}/splash.h
                         ${MS}/optionsmenu.h
                         ${MS}/creditsmenu.h
                         ${MS}/exitmenu.h
+                        ${MS}/FileDialogManager.h
                         ${MS}/DeveloperMenu.h
                         ${MS}/DatabaseSettingsMenu.h
                         ${MS}/DatabaseConnectionManager.h
@@ -76,7 +78,7 @@ ADD_INTERFACE_INCLUDEDIR()
 
 
 # SIMULATED DRIVING ASSISTANCE CHANGE: added backend
-ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC})
+ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC} rppUtils)
 
 ADD_PLIB_INCLUDEDIR()
 
@@ -111,5 +113,9 @@ SD_ADD_LIBRARY(legacymenu MODULE ${LEGACYMENU_SOURCES} ${LEGACYMENU_HEADERS})
 
 # SIMULATED DRIVING ASSISTANCE CHANGE: added backend
 ADD_SDLIB_LIBRARY(legacymenu portability tgf tgfclient tgfdata backend ${NETWORKING_LIB})
+
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(legacymenu stdc++fs)
+ENDIF(UNIX)
 
 SD_INSTALL_FILES(LIB modules/userinterface TARGETS legacymenu)

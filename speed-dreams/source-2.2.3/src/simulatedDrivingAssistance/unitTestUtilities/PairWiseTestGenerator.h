@@ -1,5 +1,5 @@
 #pragma once
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #include <queue>
 // based on https://github.com/nunit/nunit/blob/b34eba3ac1aa6957157857bddd116256c634afab/src/NUnitFramework/framework/Internal/Builders/PairwiseStrategy.cs
 

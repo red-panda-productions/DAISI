@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 
 ADD_INTERFACE_INCLUDEDIR()
 ADD_PLIB_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient)
+ADD_SDLIB_INCLUDEDIR(tgf math portability tgfclient rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -41,11 +41,17 @@ target_link_libraries(
         gmock_main
 )
 
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(rppUtilsTests stdc++fs)
+ENDIF(UNIX)
+
 ADD_SDLIB_LIBRARY(frontendUnitTests tgf portability tgfclient)
 
 ADD_PLIB_LIBRARY(rppUtilsTests)
 
-SD_INSTALL_CUSTOM_3RDPARTY(rppUtilsTests)
+IF(WIN32)
+    SD_INSTALL_CUSTOM_3RDPARTY(rppUtilsTests)
+ENDIF(WIN32)
 
 include(GoogleTest)
 gtest_discover_tests(rppUtilsTests DISCOVERY_TIMEOUT 600)
