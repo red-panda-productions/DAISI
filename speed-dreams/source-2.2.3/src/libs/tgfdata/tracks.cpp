@@ -594,29 +594,12 @@ void GfTrack::setWidth(float fWidth)
     _fWidth = fWidth;
 }
 
-// SIMULATED DRIVING ASSISTANCE: added the StringToInteger() function
-// @brief Converts a string to an integer
-// Function taken from this source: https://www.geeksforgeeks.org/c-program-to-convert-string-to-integer/
-int GfTrack::StringToInteger(std::string str)
-{
-    int temp = 0;
-    for (int i = 0; i < str.length(); i++)
-    {
-        // Since ASCII value of character from '0'
-        // to '9' are contiguous. So if we subtract
-        // '0' from ASCII value of a digit, we get
-        // the integer value of the digit.
-        temp = temp * 10 + (str[i] - '0');
-    }
-    return temp;
-}
-
 // SIMULATED DRIVING ASSISTANCE: added the SetEstimatedTime function
 /// @brief Calculates and sets the estimated time it takes to complete a track
 void GfTrack::SetEstimatedTime()
 {
     /// Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
-    double fEstimatedTime = 60 * (getLength() / (StringToInteger(GetSpeedLimit()) * 1000));
+    double fEstimatedTime = 60 * (getLength() / (std::stoi(GetSpeedLimit()) * 1000));
     EstimatedTime = fEstimatedTime;
 }
 
