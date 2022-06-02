@@ -68,7 +68,7 @@ public:
                           const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
                           int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(const DecisionTuple* p_decisions, uint32_t p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);
 
     template <typename TIME>
