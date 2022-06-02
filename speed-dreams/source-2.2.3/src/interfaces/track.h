@@ -43,8 +43,6 @@
 #define TRK_ATT_NAME                "name"
 #define TRK_ATT_VERSION             "version"
 #define TRK_ATT_AUTHOR              "author"
-/// SIMULATED DRIVING ASSISTANCE: added the time definition parameter
-#define TRK_ATT_TIME                "time"
 #define TRK_ATT_DESCR               "description"
 #define TRK_ATT_CAT                 "category"
 #define TRK_ATT_SUBCAT              "subcategory"
