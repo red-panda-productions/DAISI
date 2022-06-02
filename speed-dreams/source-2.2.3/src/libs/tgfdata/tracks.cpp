@@ -549,18 +549,6 @@ const std::string& GfTrack::GetSpeedLimit() const
     if (SpeedLimit.empty())
         load();
     return SpeedLimit;
-
-	/*
-    const std::string& description = getDescription();
-    
-    // If there is an 8 in the string, the speed limit is 80 km/h
-    // otherwise the speed limit is 100 km/h
-    char c = '8';
-    if (description.find(c) == c)
-        return 80;
-    else
-        return 100;
-    */
 }
 
 bool GfTrack::isUsable() const
