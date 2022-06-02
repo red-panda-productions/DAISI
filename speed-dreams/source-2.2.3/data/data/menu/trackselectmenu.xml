@@ -257,14 +257,14 @@
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
     <!-- SIMULATED DRIVING ASSISTANCE: replaced number of pit stops with estimated time -->
-	  <section name="5">
-		  <attstr name="type" val="label"/>
-		  <attstr name="text" val="Time:"/>
-		  <attstr name="font" val="small_t"/>
-		  <attnum name="x" val="270"/>
-		  <attnum name="y" val="138"/>
-		  <attstr name="color" val="0xFFFFFF"/>
-	  </section>
+    <section name="5">
+        <attstr name="type" val="label"/>
+        <attstr name="text" val="Time:"/>
+        <attstr name="font" val="small_t"/>
+        <attnum name="x" val="270"/>
+        <attnum name="y" val="138"/>
+        <attstr name="color" val="0xFFFFFF"/>
+    </section>
 	<section name="6">
 		<attstr name="type" val="label"/>
 		<attstr name="text" val="Authors:"/>
