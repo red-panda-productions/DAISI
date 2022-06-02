@@ -51,8 +51,8 @@ std::vector<tIndicatorData> IndicatorConfig::GetActiveIndicators()
     return m_activeIndicators;
 }
 
-/// @brief          Activates the given intervention action by replacing 
-///                 the indicator of matching type with the newly activated indicator.          
+/// @brief          Activates the given intervention action by replacing
+///                 the indicator of matching type with the newly activated indicator.
 /// @param p_action The intervention for which to show the the indicator
 void IndicatorConfig::ActivateIndicator(InterventionAction p_action)
 {
