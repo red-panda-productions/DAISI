@@ -625,7 +625,7 @@ int GfTrack::StringToInteger(std::string str)
 /// @brief Calculates and sets the estimated time it takes to complete a track
 void GfTrack::SetEstimatedTime()
 {
-   EstimatedTime  = 60 * (getLength() / (GetSpeedLimit() * 1000)); 
+   EstimatedTime  = 60 * (getLength() / (StringToInteger(GetSpeedLimit()) * 1000)); 
 }
 
 void GfTrack::setMaxNumOfPitSlots(int nPitSlots)

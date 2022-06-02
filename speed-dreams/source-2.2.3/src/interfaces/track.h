@@ -676,7 +676,7 @@ typedef struct Track
     /// SIMULATED DRIVING ASSISTANCE: added the Time property
     tdble         Time;         /**< main track time (estimated) */  
     // SIMULATED DRIVING ASSISTANCE: added the SpeedLimit property
-    const char    *SpeedLimit;     /**< speed limit of the track */
+    const char*   SpeedLimit;     /**< speed limit of the track */
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */
