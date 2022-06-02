@@ -1232,8 +1232,6 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
     int		ind = 0;
 
     radius = arc = length = alf = xr = yr = newxr = newyr = xl = yl = 0;
-    // SIMULATED DRIVING ASSISTANCE: added speedLimit
-    float speedLimit;
     zel = zer = etgtl = etgtr = newxl = newyl = 0;
     type = 0;
 
