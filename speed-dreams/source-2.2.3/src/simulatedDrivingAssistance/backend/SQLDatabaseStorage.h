@@ -11,8 +11,8 @@ class SQLDatabaseStorage : IDataStorage
 {
 public:
     SQLDatabaseStorage();
-    bool Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath = "");
-    bool StoreData(const std::experimental::filesystem::path& p_inputFilePath) override;
+    bool Run(const filesystem::path& p_inputFilePath, const std::string& p_dirPath = "");
+    bool StoreData(const filesystem::path& p_inputFilePath) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings,
                       const std::string& p_dirPath = "");
 

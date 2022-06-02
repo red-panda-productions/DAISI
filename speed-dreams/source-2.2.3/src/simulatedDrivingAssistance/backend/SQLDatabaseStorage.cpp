@@ -53,7 +53,7 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 
 /// @brief Creates a database and stores data from input file into the correct database structure
 /// @param p_inputFilePath path and name of input file
-bool SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_inputFilePath)
+bool SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
@@ -629,7 +629,7 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                              needs "\\" in front
 ///                              if left out path will be data folder
 /// @returns Whether it has successfully written the local buffer file to the database
-bool SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
+bool SQLDatabaseStorage::Run(const filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 

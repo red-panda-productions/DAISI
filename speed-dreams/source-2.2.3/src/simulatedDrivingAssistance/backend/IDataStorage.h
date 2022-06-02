@@ -7,5 +7,5 @@
 class IDataStorage
 {
 public:
-    virtual bool StoreData(const std::experimental::filesystem::path& p_filePath) = 0;
+    virtual bool StoreData(const filesystem::path& p_filePath) = 0;
 };
