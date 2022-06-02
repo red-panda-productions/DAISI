@@ -289,17 +289,17 @@ static void SetDefaultThresholdValues(void*)
         throw std::invalid_argument("DeveloperMenu.xml does not exists");
 
     // load the path in the xml based on the interventiontype
-    std::string p_path = "DefaultThresholdValues/";
+    std::string m_path = "DefaultThresholdValues/";
     int m_interventionType = SMediator::GetInstance()->GetInterventionType();
 
     if (m_interventionType == INTERVENTION_TYPE_NO_SIGNALS)
         return;
-    p_path += s_interventionTypeString[m_interventionType];
+    m_path += s_interventionTypeString[m_interventionType];
 
     // set the values to their default determined by the xml file.
-    m_decisionThresholds.Accel = GfParmGetNum(m_xmlhandle, p_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
-    m_decisionThresholds.Brake = GfParmGetNum(m_xmlhandle, p_path.c_str(), GFMNU_ATT_BRAKE, nullptr, 0.9f);
-    m_decisionThresholds.Steer = GfParmGetNum(m_xmlhandle, p_path.c_str(), GFMNU_ATT_STEER, nullptr, 0.05f);
+    m_decisionThresholds.Accel = GfParmGetNum(m_xmlhandle, m_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
+    m_decisionThresholds.Brake = GfParmGetNum(m_xmlhandle, m_path.c_str(), GFMNU_ATT_BRAKE, nullptr, 0.9f);
+    m_decisionThresholds.Steer = GfParmGetNum(m_xmlhandle, m_path.c_str(), GFMNU_ATT_STEER, nullptr, 0.05f);
 
     // set the edit boxes to the correct value
     WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
