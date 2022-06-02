@@ -130,13 +130,13 @@ rmtsUpdateTrackInfo(void)
 	ossData << PCurTrack->getLength() << " m";
 	GfuiLabelSetText(ScrHandle, LengthLabelId, ossData.str().c_str());
 
-	// 5) Max number of pits slots.
-	ossData.str("");
-	if (PCurTrack->getMaxNumOfPitSlots())
-		ossData << PCurTrack->getMaxNumOfPitSlots();
-	else
-		ossData << "None";
-	GfuiLabelSetText(ScrHandle, MaxPitsLabelId, ossData.str().c_str());
+	// SIMULATED DRIVING ASSISTANCE: removed display of pit stops
+
+    // SIMULATED DRIVING ASSISTANCE: add the speed limit text to the track select menu
+    // 5) (Average) speed limit for the full track in km/h.
+    ossData.str("");
+    ossData << PCurTrack->GetSpeedLimit() << " km/h";
+    GfuiLabelSetText(ScrHandle, SpeedLimitLabelId, ossData.str().c_str());
 
 	// 6) Outline image.
 	GfuiStaticImageSet(ScrHandle, OutlineImageId, PCurTrack->getOutlineFile().c_str());
@@ -150,12 +150,6 @@ rmtsUpdateTrackInfo(void)
     PCurTrack->SetEstimatedTime();
     ossData << PCurTrack->GetEstimatedTime() << " minutes";
     GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
-
-    // SIMULATED DRIVING ASSISTANCE: add the speed limit text to the track select menu
-	// 9) (Average) speed limit for the full track in km/h.
-    ossData.str("");
-    ossData << PCurTrack->GetSpeedLimit() << " km/h";
-    GfuiLabelSetText(ScrHandle, SpeedLimitLabelId, ossData.str().c_str());
 }
 
 static void

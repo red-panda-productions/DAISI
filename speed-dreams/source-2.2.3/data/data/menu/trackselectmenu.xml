@@ -139,14 +139,15 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="small_t"/>
 	</section>
-		<section name="pitslabel">
-		<attstr name="type" val="label"/>
-		<attnum name="max len" val="10"/>
-		<attnum name="x" val="340"/>
-		<attnum name="y" val="140"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="font" val="small_t"/>
-	</section>
+	<!-- SIMULATED DRIVING ASSISTANCE: added estimated time label and removed pits label-->
+    <section name="estimatedtimelabel">
+        <attstr name="type" val="label"/>
+        <attnum name="max len" val="10"/>
+        <attnum name="x" val="340"/>
+        <attnum name="y" val="140"/>
+        <attstr name="color" val="0xFFFFFF"/>
+        <attstr name="font" val="small_t"/>
+     </section>
 		<section name="authorslabel">
 		<attstr name="type" val="label"/>
 		<attnum name="max len" val="40"/>
@@ -155,15 +156,6 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="small_t"/>
 	</section>
-	<!-- SIMULATED DRIVING ASSISTANCE: added estimated time label-->
-    <section name="estimatedtimelabel">
-        <attstr name="type" val="label"/>
-        <attnum name="max len" val="10"/>
-        <attnum name="x" val="340"/>
-        <attnum name="y" val="100"/>
-        <attstr name="color" val="0xFFFFFF"/>
-        <attstr name="font" val="small_t"/>
-    </section>
     <!-- SIMULATED DRIVING ASSISTANCE: added estimated time label-->
     <section name="speedlimitlabel">
         <attstr name="type" val="label"/>
@@ -264,14 +256,15 @@
 		<attnum name="y" val="158"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
-	<section name="5">
-		<attstr name="type" val="label"/>
-		<attstr name="text" val="Pits:"/>
-		<attstr name="font" val="small_t"/>
-		<attnum name="x" val="270"/>
-		<attnum name="y" val="138"/>
-		<attstr name="color" val="0xFFFFFF"/>
-	</section>
+    <!-- SIMULATED DRIVING ASSISTANCE: replaced number of pit stops with estimated time -->
+	  <section name="5">
+		  <attstr name="type" val="label"/>
+		  <attstr name="text" val="Time:"/>
+		  <attstr name="font" val="small_t"/>
+		  <attnum name="x" val="270"/>
+		  <attnum name="y" val="138"/>
+		  <attstr name="color" val="0xFFFFFF"/>
+	  </section>
 	<section name="6">
 		<attstr name="type" val="label"/>
 		<attstr name="text" val="Authors:"/>
@@ -280,7 +273,7 @@
 		<attnum name="y" val="118"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
-    <!-- SIMULATED DRIVING ASSISTANCE: added category, estimated time and track label-->
+    <!-- SIMULATED DRIVING ASSISTANCE: added category and track label-->
     <section name="7">
         <attstr name="type" val="label"/>
         <attstr name="text" val="Category:"/>
@@ -295,22 +288,6 @@
         <attstr name="font" val="small_t"/>
         <attnum name="x" val="270"/>
         <attnum name="y" val="305"/>
-        <attstr name="color" val="0xFFFFFF"/>
-    </section>
-    <section name="9">
-        <attstr name="type" val="label"/>
-        <attstr name="text" val="Time:"/>
-        <attstr name="font" val="small_t"/>
-        <attnum name="x" val="270"/>
-        <attnum name="y" val="98"/>
-        <attstr name="color" val="0xFFFFFF"/>
-    </section>
-    <section name="10">
-        <attstr name="type" val="label"/>
-        <attstr name="text" val="Speed Limit:"/>
-        <attstr name="font" val="small_t"/>
-        <attnum name="x" val="270"/>
-        <attnum name="y" val="78"/>
         <attstr name="color" val="0xFFFFFF"/>
     </section>
 
