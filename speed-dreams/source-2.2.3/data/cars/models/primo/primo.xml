@@ -132,7 +132,7 @@
 		
 		<attnum name="overall length" unit="m" val="5.46"/>
 		<attnum name="overall width" unit="m" val="1.852"/>
-		<attnum name="mass" unit="kg" val="1790.0"/>
+		<attnum name="mass" unit="kg" val="1350.0"/>
 		<attnum name="GC height" unit="m" val="0.30"/>
 		
 		<attnum name="front-rear weight repartition" val="0.43"/>
@@ -162,7 +162,7 @@
 	
 	<section name="Aerodynamics">
 		<attnum name="Cx" val="0.53"/>
-		<attnum name="front area" unit="m2" val="2.0"/>
+		<attnum name="front area" unit="m2" val="0.53"/>
 		<attnum name="front Clift" val="0.62"/>
 		<attnum name="rear Clift" val="0.64"/>
 	</section>
@@ -182,8 +182,8 @@
 		<attstr name="position" in="front,mid-front,mid-rear,rear," val="front"/>
 		<attnum name="inertia" unit="kg.m2" val="2.15"/>
 		<attnum name="revs maxi" unit="rpm" val="10000"/>
-		<attnum name="revs limiter" unit="rpm" val="4500"/>
-		<attnum name="tickover" unit="rpm" val="100"/>
+		<attnum name="revs limiter" unit="rpm" val="6200"/>
+		<attnum name="tickover" unit="rpm" val="2300"/>
 		<!-- SIMULATED DRIVING ASSISTANCE: fuel cons factor has been removed -->
 		<attstr name="turbo" in="true,false" val="false"/>
 		<attnum name="turbo rpm" unit="rpm" val="0"/>

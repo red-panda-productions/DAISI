@@ -234,12 +234,6 @@
         <attnum name="inertia" val="0.0107"/>
         <attnum name="efficiency" val="0.948"/>
       </section>
-
-      <section name="6">
-        <attnum name="ratio" min="0" max="5" val="0.75"/>
-        <attnum name="inertia" val="0.0150"/>
-        <attnum name="efficiency" val="0.940"/>
-      </section>
     </section>
   </section>
 
