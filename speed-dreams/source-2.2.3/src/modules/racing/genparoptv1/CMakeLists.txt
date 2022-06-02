@@ -18,7 +18,7 @@ SET(_OTHER_SOURCES )
 
 ADD_INTERFACE_INCLUDEDIR()
 
-ADD_SDLIB_INCLUDEDIR(math portability robottools tgf tgfclient tgfdata)
+ADD_SDLIB_INCLUDEDIR(math portability robottools tgf tgfclient tgfdata rppUtils)
 
 ADD_PLIB_INCLUDEDIR()
 

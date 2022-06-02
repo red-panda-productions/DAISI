@@ -3,7 +3,7 @@
 #include "DecisionTuple.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 /// @brief  Creates an implementation of a decision maker
 #define CREATE_DECISION_MAKER_IMPLEMENTATION(type1, type2, type3, type4, type5)                                                                 \
@@ -21,12 +21,18 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
-    template std::experimental::filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                        \
+    template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                                           \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
 #define BUFFER_FILE_PATH   "race_data_buffer.txt"
 #define MAX_ULONG          4294967295
+
+#ifdef WIN32
+#define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(filesystem::last_write_time(p_file))
+#else
+#define GET_FILE_DATE(p_file) std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())
+#endif
 
 /// @brief                     Initializes the decision maker
 /// @param  p_initialTickCount The initial tickCount
@@ -65,13 +71,13 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
         return;
     }
 
-    std::experimental::filesystem::path blackBoxPath = std::experimental::filesystem::path(p_blackBoxExecutablePath);
+    filesystem::path blackBoxPath = filesystem::path(p_blackBoxExecutablePath);
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::string fileName = blackBoxPath.filename().string();
     std::string path = blackBoxPath.stem().string();
-    std::time_t lastwrite = std::chrono::system_clock::to_time_t(std::experimental::filesystem::last_write_time(blackBoxPath));
+    std::time_t lastwrite = GET_FILE_DATE(blackBoxPath);
     char* trackFileName = p_track->filename;
     const char* trackname = p_track->name;
     int trackversion = p_track->version;
@@ -110,7 +116,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     int decisionCount = 0;
     IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
-    InterventionExecutor->RunDecision(decisions, decisionCount);
+    InterventionExec->RunDecision(decisions, decisionCount);
 
     return decisionMade;
 }
@@ -120,8 +126,8 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::ChangeSettings(InterventionType p_dataSetting)
 {
-    delete InterventionExecutor;
-    InterventionExecutor = Config.SetInterventionType(p_dataSetting);
+    delete InterventionExec;
+    InterventionExec = Config.SetInterventionType(p_dataSetting);
 }
 
 /// @brief         Changes the settings of what data should be collected
@@ -159,7 +165,7 @@ FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-std::experimental::filesystem::path* TEMP_DECISIONMAKER::GetBufferFilePath()
+filesystem::path* TEMP_DECISIONMAKER::GetBufferFilePath()
 {
     return &m_bufferFilePath;
 }

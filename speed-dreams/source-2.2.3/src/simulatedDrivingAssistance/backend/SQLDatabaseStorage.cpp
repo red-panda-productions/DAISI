@@ -1,7 +1,7 @@
 #include "SQLDatabaseStorage.h"
-#include "mediator.h"
+#include "Mediator.h"
 #include <string>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "ConfigEnums.h"
 #include <config.h>
 
@@ -10,9 +10,9 @@
     if (p_inputFile.eof())                                       \
     {                                                            \
         p_inputFile.close();                                     \
-        throw std::exception("Reached end of file prematurely"); \
+        THROW_RPP_EXCEPTION("Reached end of file prematurely");  \
     }                                                            \
-    p_inputFile >> p_string;
+    std::getline(p_inputFile, p_string);
 
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
@@ -53,7 +53,7 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 
 /// @brief Creates a database and stores data from input file into the correct database structure
 /// @param p_inputFilePath path and name of input file
-void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_inputFilePath)
+void SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
@@ -193,7 +193,7 @@ void SQLDatabaseStorage::CreateTables()
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Settings (\n"
         "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
-        "    intervention_mode   ENUM('Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
+        "    intervention_mode   ENUM('Drive', 'Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
         "    \n"
         "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id),\n"
         "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
@@ -227,7 +227,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS GameState (\n"
-        "    game_state_id   INT             NOT NULL AUTO_INCREMENT,\n"
+        "    game_state_id   BIGINT          NOT NULL AUTO_INCREMENT,\n"
         "    x               DOUBLE          NOT NULL,\n"
         "    y               DOUBLE          NOT NULL,\n"
         "    z               DOUBLE          NOT NULL,\n"
@@ -246,7 +246,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS UserInput (\n"
-        "    user_input_id   INT             NOT NULL AUTO_INCREMENT,\n"
+        "    user_input_id   BIGINT          NOT NULL AUTO_INCREMENT,\n"
         "    steer           FLOAT           NOT NULL,\n"
         "    brake           FLOAT           NOT NULL,\n"
         "    gas             FLOAT           NOT NULL,\n"
@@ -260,8 +260,8 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Intervention (\n"
-        "    intervention_id     INT NOT NULL AUTO_INCREMENT,\n"
-        "    trial_id            INT NOT NULL,\n"
+        "    intervention_id     BIGINT NOT NULL AUTO_INCREMENT,\n"
+        "    trial_id            INT    NOT NULL,\n"
         "    tick                BIGINT UNSIGNED NOT NULL,\n"
         "    \n"
         "    CONSTRAINT decision_primary_key PRIMARY KEY (intervention_id),\n"
@@ -270,7 +270,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS SteerDecision (\n"
-        "    intervention_id     INT     NOT NULL,\n"
+        "    intervention_id     BIGINT  NOT NULL,\n"
         "    amount              FLOAT   NOT NULL,\n"
         "    \n"
         "    CONSTRAINT steer_id_primary_key PRIMARY KEY (intervention_id),\n"
@@ -279,7 +279,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS BrakeDecision (\n"
-        "    intervention_id     INT     NOT NULL,\n"
+        "    intervention_id     BIGINT  NOT NULL,\n"
         "    amount              FLOAT   NOT NULL,\n"
         "    \n"
         "    CONSTRAINT brake_id_primary_key PRIMARY KEY (intervention_id),\n"
@@ -288,7 +288,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS LightsDecision (\n"
-        "    intervention_id     INT     NOT NULL,\n"
+        "    intervention_id     BIGINT  NOT NULL,\n"
         "    turn_lights_on      BOOLEAN NOT NULL,\n"
         "    \n"
         "    CONSTRAINT lights_id_primary_key PRIMARY KEY (intervention_id),\n"
@@ -297,7 +297,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS AccelDecision (\n"
-        "    intervention_id     INT     NOT NULL,\n"
+        "    intervention_id     BIGINT  NOT NULL,\n"
         "    amount              FLOAT   NOT NULL,\n"
         "    \n"
         "    CONSTRAINT accel_id_primary_key PRIMARY KEY (intervention_id),\n"
@@ -306,7 +306,7 @@ void SQLDatabaseStorage::CreateTables()
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS GearDecision (\n"
-        "    intervention_id     INT     NOT NULL,\n"
+        "    intervention_id     BIGINT  NOT NULL,\n"
         "    gear                INT     NOT NULL,\n"
         "    \n"
         "    CONSTRAINT gear_id_primary_key PRIMARY KEY (intervention_id),\n"
@@ -327,30 +327,23 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     EXECUTE(INSERT_IGNORE_INTO("Participant", "participant_id", participantId))
 
-    std::string trialDate;
-    std::string trialTime;
+    std::string trialDateTime;
 
-    READ_INPUT(p_inputFile, trialDate);
-    READ_INPUT(p_inputFile, trialTime);
+    READ_INPUT(p_inputFile, trialDateTime);
 
     // blackbox
     std::string blackboxFileName;
-    std::string blackboxVersion;
-    std::string blackboxVersionDate;
-    std::string blackboxVersionTime;
+    std::string blackboxVersionDateTime;
     std::string blackboxName;
 
     READ_INPUT(p_inputFile, blackboxFileName);
-    READ_INPUT(p_inputFile, blackboxVersionDate);
-    READ_INPUT(p_inputFile, blackboxVersionTime);
+    READ_INPUT(p_inputFile, blackboxVersionDateTime);
     READ_INPUT(p_inputFile, blackboxName);
 
-    blackboxVersion = blackboxVersionDate + ' ' + blackboxVersionTime;
-
-    values = "'" + blackboxFileName + "','" + blackboxVersion + "','" + blackboxName + "'";
+    values = "'" + blackboxFileName + "','" + blackboxVersionDateTime + "','" + blackboxName + "'";
 
     EXECUTE(INSERT_IGNORE_INTO("Blackbox", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT blackbox_id FROM Blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersion + "'")
+    EXECUTE_QUERY("SELECT blackbox_id FROM Blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersionDateTime + "'")
 
     int blackboxId;
     GET_INT_FROM_RESULTS(blackboxId)
@@ -390,8 +383,11 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
             values = "'Force'";
             break;
+        case INTERVENTION_TYPE_AUTONOMOUS_AI:
+            values = "'Drive'";
+            break;
         default:
-            throw std::exception("Invalid intervention type index read from buffer file");
+            THROW_RPP_EXCEPTION("Invalid intervention type index read from buffer file");
     }
 
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))
@@ -403,7 +399,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     int settingsId = -1;
     GET_INT_FROM_RESULTS(settingsId);
 
-    values = "'" + trialDate + ' ' + trialTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
+    values = "'" + trialDateTime + "','" + participantId + "','" + std::to_string(blackboxId) + "','" + std::to_string(environmentId) + "','" +
              std::to_string(settingsId) + "'";
 
     // trial
@@ -602,14 +598,21 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
 }
 
 /// @brief Close the connection to the database and clean up.
+///        sql::Statement and sql::Connection objects must be freed explicitly using delete
+///        Might be called in the catch of an error already, so guard when the variables are already deleted.
 void SQLDatabaseStorage::CloseDatabase()
 {
-    m_statement->close();
-    m_connection->close();
+    if (m_statement)
+    {
+        m_statement->close();
+        delete m_statement;
+    }
 
-    // sql::Statement and sql::Connection objects must be freed explicitly using delete
-    delete m_statement;
-    delete m_connection;
+    if (m_connection)
+    {
+        m_connection->close();
+        delete m_connection;
+    }
 }
 
 /// @brief  Runs the database connection by finding the "database_connection_settings.txt" file
@@ -622,7 +625,7 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             and if applicable the "database_encryption_settings.txt".
 ///                             needs "\\" in front
 ///                             if left out path will be data folder
-void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
+void SQLDatabaseStorage::Run(const filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
