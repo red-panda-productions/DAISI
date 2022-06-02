@@ -3,8 +3,9 @@
 #include "Mediator.h"
 #include "tgfclient.h"
 #include "tgf.h"
-#include "../rppUtils/FileDialog.hpp"
-#include <experimental/filesystem>
+#include "FileDialogManager.h"
+#include "RppUtils.hpp"
+#include "FileSystem.hpp"
 #include <string>
 #include "guimenu.h"
 
@@ -263,7 +264,7 @@ void SetPort(void* p_scrHandle, int p_portControl)
 /// @param p_schemaControl the corresponding ui element control integers
 void SetSchema(void* p_scrHandle, int p_schemaControl)
 {
-    strcpy_s(s_dbSettings.Schema, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
+    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_schemaControl));
     GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_dbSettings.Schema);
 }
 
@@ -311,7 +312,7 @@ void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, cons
     }
 
     // Validate input w.r.t. black boxes
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {

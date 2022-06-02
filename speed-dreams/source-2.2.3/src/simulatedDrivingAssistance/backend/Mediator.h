@@ -50,6 +50,17 @@ public:
     tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
+    bool HasMadeSteerDecision();
+    bool HasMadeBrakeDecision();
+    bool HasMadeAccelDecision();
+    void SetSteerDecision(bool p_steerDecision);
+    void SetBrakeDecision(bool p_brakeDecision);
+    void SetAccelDecision(bool p_accelDecision);
+
+    bool CanUseSteer();
+    bool CanUseBrake();
+    bool CanUseAccel();
+
     int GetMaxTime();
 
     static Mediator* GetInstance();
@@ -101,7 +112,7 @@ public:
     /// @brief Removes assigment for singleton behaviour
     void operator=(Mediator const&) = delete;
 
-    CarController CarController;
+    CarController CarControl;
 
 private:
     Mediator() = default;
@@ -121,6 +132,3 @@ private:
 
 /// @brief The standard type of the mediator
 #define SMediator Mediator<SDecisionMaker>
-
-template <>
-SMediator* SMediator::m_instance = nullptr;

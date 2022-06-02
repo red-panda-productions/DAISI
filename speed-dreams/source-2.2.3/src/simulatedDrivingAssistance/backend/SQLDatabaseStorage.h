@@ -2,8 +2,8 @@
 #include "IDataStorage.h"
 #include <string>
 #include <unordered_map>
+#include "MySQLHeaders.h"
 #include <fstream>
-#include "mysql/jdbc.h"
 #include "ConfigEnums.h"
 
 /// @brief A class that can store data to a SQL database
@@ -11,8 +11,8 @@ class SQLDatabaseStorage : IDataStorage
 {
 public:
     SQLDatabaseStorage();
-    void Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath = "");
-    void StoreData(const std::experimental::filesystem::path& p_inputFilePath) override;
+    void Run(const filesystem::path& p_inputFilePath, const std::string& p_dirPath = "");
+    void StoreData(const filesystem::path& p_inputFilePath) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings,
                       const std::string& p_dirPath = "");
 

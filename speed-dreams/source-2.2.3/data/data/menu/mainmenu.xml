@@ -150,7 +150,7 @@
 
     <section name="2">
         <attstr name="type" val="background image"/>
-        <attstr name="image" val="data/img/Main-menu.png"/>
+        <attstr name="image" val="data/img/main-menu.png"/>
     </section>
 
     <section name="3">
