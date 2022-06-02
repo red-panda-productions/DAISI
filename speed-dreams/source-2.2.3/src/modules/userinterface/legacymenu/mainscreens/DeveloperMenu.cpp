@@ -7,6 +7,7 @@
 #include "FileDialogManager.h"
 #include "RppUtils.hpp"
 #include "FileSystem.hpp"
+#include "IndicatorConfig.h"
 
 // Parameters used in the xml files
 #define PRM_SYNC               "SynchronizationButtonList"
@@ -19,18 +20,10 @@
 #define GFMNU_ATT_STEER        "Steer"
 
 #define DEV_FILEPATH    "config/DeveloperMenu.xml"
+#define DEV_XMLPATH     "data/menu/DeveloperMenu.xml"
 #define DEV_SCREEN_NAME "DeveloperMenu"
 
 #define MSG_CHOOSE_REPLAY_NORMAL_TEXT "Choose Replay File: "
-
-#define SET_DEFAULT_THRESHOLDS(accel, brake, steer) \
-    m_decisionThresholds.Accel = accel;             \
-    m_decisionThresholds.Brake = brake;             \
-    m_decisionThresholds.Steer = steer
-
-#define SET_DEFAULT_THRESHOLD_ONLY_SIGNALS      SET_DEFAULT_THRESHOLDS(1, 0.9f, 0.09f)
-#define SET_DEFAULT_THRESHOLD_SHARED_CONTROL    SET_DEFAULT_THRESHOLDS(0.5f, 0.5f, 0.1f)
-#define SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER SET_DEFAULT_THRESHOLDS(0, 0, 0.05f)
 
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
@@ -288,29 +281,27 @@ static void SetSteerThreshold(void*)
 /// @brief Set the default values of threshold boxes based on the InterventionType.
 static void SetDefaultThresholdValues(void*)
 {
-    switch (SMediator::GetInstance()->GetInterventionType())
-    {
-        case INTERVENTION_TYPE_ONLY_SIGNALS:
-        {
-            // set default threshold values for only signals
-            SET_DEFAULT_THRESHOLD_ONLY_SIGNALS;
-            break;
-        }
-        case INTERVENTION_TYPE_SHARED_CONTROL:
-        {
-            // set default threshold values for shared control
-            SET_DEFAULT_THRESHOLD_SHARED_CONTROL;
-            break;
-        }
-        case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
-        {
-            // set default threshold values for complete takeover
-            SET_DEFAULT_THRESHOLD_COMPLETE_TAKEOVER;
-            break;
-        }
-        default:
-            break;
-    }
+    //load the xmlhandle
+    char buf[512];
+    sprintf(buf, "%s%s", GfDataDir(), DEV_XMLPATH);
+    void* m_xmlhandle = GfParmReadFile(buf, GFPARM_RMODE_STD);
+    if (m_xmlhandle == nullptr)
+        throw std::invalid_argument("DeveloperMenu.xml does not exists");
+
+    //load the path in the xml based on the interventiontype
+    std::string p_path = "DefaultThresholdValues/";
+    int m_interventionType = SMediator::GetInstance()->GetInterventionType();
+
+    if (m_interventionType == INTERVENTION_TYPE_NO_SIGNALS)
+        return;
+    p_path += s_interventionTypeString[m_interventionType];
+
+    //set the values to their default determined by the xml file.
+    m_decisionThresholds.Accel = GfParmGetNum(m_xmlhandle, p_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
+    m_decisionThresholds.Brake = GfParmGetNum(m_xmlhandle, p_path.c_str(), GFMNU_ATT_BRAKE, nullptr, 0.9f);
+    m_decisionThresholds.Steer = GfParmGetNum(m_xmlhandle, p_path.c_str(), GFMNU_ATT_STEER, nullptr, 0.05f);
+
+    //set the edit boxes to the correct value
     WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Brake, m_brakeThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Steer, m_steerThresholdControl);
