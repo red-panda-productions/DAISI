@@ -22,11 +22,10 @@ public:
 
         VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);
     }
-    bool StoreData(const filesystem::path& p_inputFilePath) override  //@NOCOVERAGE, This function is needed for building
-    // (IDataStorage is abstract) but is never called by DecisionMaker (which is the class where when testing it, we mock SQLDatabaseStorage)
+    bool StoreData(const filesystem::path& p_inputFilePath) override  //@NOCOVERAGE, This function definition is needed for building (IDataStorage is abstract),
     {
-        return true;  //@NOCOVERAGE, Needed a return value, but as mentioned we don't call the method where we mock this
-    }                 //@NOCOVERAGE, Per above
+        return true;  //@NOCOVERAGE, And needed a return value. However,
+    }                 //@NOCOVERAGE, This function is never called by DecisionMaker (which is the class where when testing it, SQLDatabaseStorage is mocked)
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
                       const std::string& p_username,
