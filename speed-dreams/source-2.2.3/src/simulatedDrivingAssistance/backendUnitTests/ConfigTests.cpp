@@ -19,6 +19,7 @@ TEST_CASE(ConfigTests, InterventionTypeTestNoSignals, InterventionTypeTest, (INT
 TEST_CASE(ConfigTests, InterventionTypeTestOnlySignals, InterventionTypeTest, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(ConfigTests, InterventionTypeTestSharedControl, InterventionTypeTest, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(ConfigTests, InterventionTypeTestCompleteTakeover, InterventionTypeTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+TEST_CASE(ConfigTests, InterventionTypeTestAutonomousAI, InterventionTypeTest, (INTERVENTION_TYPE_AUTONOMOUS_AI))
 
 /// @brief              Tests if the SDAConfig sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer

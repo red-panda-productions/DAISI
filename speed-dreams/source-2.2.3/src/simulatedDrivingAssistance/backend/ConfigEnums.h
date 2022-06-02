@@ -42,8 +42,9 @@ typedef unsigned int InterventionType;
 #define INTERVENTION_TYPE_ONLY_SIGNALS      1
 #define INTERVENTION_TYPE_SHARED_CONTROL    2
 #define INTERVENTION_TYPE_COMPLETE_TAKEOVER 3
+#define INTERVENTION_TYPE_AUTONOMOUS_AI     4
 
-#define NUM_INTERVENTION_TYPES 4
+#define NUM_INTERVENTION_TYPES 5
 
 /// @brief the different ways a race can end
 typedef unsigned int RaceEndType;
@@ -66,15 +67,16 @@ typedef unsigned int DataCompressionType;
 /// @brief The different actions that can be performed
 typedef unsigned int InterventionAction;
 
-#define INTERVENTION_ACTION_STEER_NEUTRAL 0
-#define INTERVENTION_ACTION_STEER_LEFT    1
-#define INTERVENTION_ACTION_STEER_RIGHT   2
+#define INTERVENTION_ACTION_STEER_NEUTRAL  0
+#define INTERVENTION_ACTION_STEER_LEFT     1
+#define INTERVENTION_ACTION_STEER_RIGHT    2
+#define INTERVENTION_ACTION_STEER_STRAIGHT 3
 
-#define INTERVENTION_ACTION_SPEED_NEUTRAL 3
-#define INTERVENTION_ACTION_SPEED_ACCEL   4
-#define INTERVENTION_ACTION_SPEED_BRAKE   5
+#define INTERVENTION_ACTION_SPEED_NEUTRAL 4
+#define INTERVENTION_ACTION_SPEED_ACCEL   5
+#define INTERVENTION_ACTION_SPEED_BRAKE   6
 
-#define NUM_INTERVENTION_ACTION 6
+#define NUM_INTERVENTION_ACTION 7
 
 /// @brief The different types of intervention actions: steer, speed control
 ///        Used to index the active indicators in the IndicatorConfig.

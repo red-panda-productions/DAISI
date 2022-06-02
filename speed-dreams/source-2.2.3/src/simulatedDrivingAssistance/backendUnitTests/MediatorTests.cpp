@@ -79,6 +79,7 @@ TEST_CASE(MediatorTests, InterventionTestNoSignals, InterventionTestMediator, (I
 TEST_CASE(MediatorTests, InterventionTestOnlySignals, InterventionTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTestSharedControl, InterventionTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTestCompleteTakeover, InterventionTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+TEST_CASE(MediatorTests, InterventionTestAutonomousAI, InterventionTestMediator, (INTERVENTION_TYPE_AUTONOMOUS_AI))
 
 /// @brief                      Tests if the Mediator sets and gets the black box sync option correctly
 /// @param p_blackBoxSyncOption The sync option that needs to be set
@@ -147,6 +148,7 @@ TEST_CASE(MediatorTests, InterventionTypeTestNoSignals, InterventionTypeTestMedi
 TEST_CASE(MediatorTests, InterventionTypeTestOnlySignals, InterventionTypeTestMediator, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(MediatorTests, InterventionTypeTestSharedControl, InterventionTypeTestMediator, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(MediatorTests, InterventionTypeTestCompleteTakeover, InterventionTypeTestMediator, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+TEST_CASE(MediatorTests, InterventionTypeTestAutonomousAI, InterventionTypeTestMediator, (INTERVENTION_TYPE_AUTONOMOUS_AI))
 
 /// @brief              Tests if the mediator sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer
@@ -484,4 +486,100 @@ TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
         SDAConfigMediator::GetInstance()->SetSaveRaceToDatabase(controlBool);
         ASSERT_EQ(SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config.GetSaveToDatabaseCheck(), controlBool);
     }
+}
+
+/// @brief tests if the steer decision is correctly set
+TEST(MediatorTests, SetSteerDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool steerBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeSteerDecision(), steerBool);
+    }
+}
+
+/// @brief tests if the brake decision is correctly set
+TEST(MediatorTests, SetBrakeDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool brakeBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeBrakeDecision(), brakeBool);
+    }
+}
+
+/// @brief tests if the accel decision is correctly set
+TEST(MediatorTests, SetAccelDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    Random random;
+
+    for (int i = 0; i < 10; i++)
+    {
+        bool accelBool = random.NextBool();
+        SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
+        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeAccelDecision(), accelBool);
+    }
+}
+
+/// @brief tests if the user can use the controls at the correct moment
+void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel, bool p_dControlSteer, bool p_dControlBrake, bool p_dControlAccel, InterventionType p_interventionType)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    Random random;
+
+    tParticipantControl pControl;
+    pControl.ControlSteer = p_pControlSteer;
+    pControl.ControlBrake = p_pControlBrake;
+    pControl.ControlAccel = p_pControlAccel;
+    SDAConfigMediator::GetInstance()->SetPControlSettings(pControl);
+
+    tAllowedActions dControl;
+    dControl.Steer = p_dControlSteer;
+    dControl.Brake = p_dControlBrake;
+    dControl.Accelerate = p_dControlAccel;
+    SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
+
+    bool steerBool = random.NextBool();
+    bool brakeBool = random.NextBool();
+    bool accelBool = random.NextBool();
+
+    SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
+    SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
+    SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
+    SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
+
+    bool canUseSteerBool = pControl.ControlSteer && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Steer) canUseSteerBool &= !steerBool;
+
+    bool canUseBrakeBool = pControl.ControlBrake && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool;
+
+    bool canUseAccelBool = pControl.ControlAccel && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool;
+
+    ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
+    ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);
+    ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseAccel(), canUseAccelBool);
+}
+
+/// @brief Run the @link #TestDataStorageSave(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
+TEST(MediatorTests, CanUseTest)
+{
+    bool booleans[2]{true, false};
+    InterventionType interventions[5]{INTERVENTION_TYPE_NO_SIGNALS, INTERVENTION_TYPE_ONLY_SIGNALS, INTERVENTION_TYPE_SHARED_CONTROL, INTERVENTION_TYPE_COMPLETE_TAKEOVER, INTERVENTION_TYPE_AUTONOMOUS_AI};
+    PairWiseTest(TestCanUse, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, interventions, 5);
 }

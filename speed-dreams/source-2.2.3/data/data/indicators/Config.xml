@@ -13,8 +13,9 @@
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning_Off.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl_Off.png"/>
-                <attstr name ="complete-takeover" val="Steering_AI_Off.png"/>               
-            </section>            
+                <attstr name ="complete-takeover" val="Steering_CompleteTakeover_Off.png"/>
+                <attstr name ="autonomous-ai"     val="Steering_AI_Off.png"/>
+            </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
                 <attnum name ="xpos"      val="0.745"/>
@@ -32,7 +33,8 @@
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
-                <attstr name ="complete-takeover" val="Steering_AI.png"/>
+                <attstr name ="complete-takeover" val="Steering_CompleteTakeover.png"/>
+                <attstr name ="autonomous-ai"     val="Steering_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
@@ -56,7 +58,31 @@
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
-                <attstr name ="complete-takeover" val="Steering_AI.png"/>
+                <attstr name ="complete-takeover" val="Steering_CompleteTakeover.png"/>
+                <attstr name ="autonomous-ai" val="Steering_AI.png"/>
+            </section>
+            <section name="text">
+                <attstr name ="content"   val="Steering"/>
+                <attnum name ="xpos"      val="0.75"/>
+                <attnum name ="ypos"      val="0"/>
+                <attstr name ="font"      val="jura-normal.glf"/>
+                <attnum name ="font-size" val="300"/>
+            </section>
+            <section name="sound">
+                <attstr name ="source" val="warning_right_driftingleft_tts.wav"/>
+                <attstr name="looping" val="yes"/>
+                <attnum name="loop-interval" val="3"/>
+            </section>
+        </section>
+        <section name ="steer straight">
+            <section name="textures">
+                <attnum name ="xpos" val="0.75"/>
+                <attnum name ="ypos" val="0.04"/>
+                <attstr name ="no-help"           val="Steering_Off.png"/>
+                <attstr name ="signals-only"      val="Steering_Warning.png"/>
+                <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
+                <attstr name ="complete-takeover" val="Steering_CompleteTakeover.png"/>
+                <attstr name ="autonomous-ai" val="Steering_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Steering"/>
@@ -71,7 +97,7 @@
                 <attnum name="loop-interval" val="3"/>
             </section>
         </section>
-        
+
         <!--Speed control actions-->
         <section name="speed neutral">
             <section name="textures">
@@ -82,7 +108,8 @@
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning_Off.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl_Off.png"/>
-                <attstr name ="complete-takeover" val="Speed_AI_Off.png"/>
+                <attstr name ="complete-takeover" val="Speed_CompleteTakeover_Off.png"/>
+                <attstr name ="autonomous-ai"     val="Speed_AI_Off.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
@@ -101,7 +128,8 @@
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
-                <attstr name ="complete-takeover" val="Speed_AI.png"/>
+                <attstr name ="complete-takeover" val="Speed_CompleteTakeover.png"/>
+                <attstr name ="autonomous-ai"     val="Speed_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
@@ -126,7 +154,8 @@
                 <attstr name ="no-help"           val="Speed_Off.png"/>
                 <attstr name ="signals-only"      val="Speed_Warning.png"/>
                 <attstr name ="shared-control"    val="Speed_SharedControl.png"/>
-                <attstr name ="complete-takeover" val="Speed_AI.png"/>
+                <attstr name ="complete-takeover" val="Speed_CompleteTakeover.png"/>
+                <attstr name ="autonomous-ai"     val="Speed_AI.png"/>
             </section>
             <section name="text">
                 <attstr name ="content"   val="Speed"/>
