@@ -68,8 +68,11 @@ void DatabaseTest(const std::string& p_password, const char* p_inputFile)
 {
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
+    std::cout << "Opening Database" << std::endl;
     TestOpenDatabase(sqlDatabaseStorage, p_password);
+    std::cout << "Inserting Data" << std::endl;
     TestInsertTestData(sqlDatabaseStorage, p_inputFile);
+    std::cout << "Closing Database" << std::endl;
     TestCloseDatabase(sqlDatabaseStorage);
 }
 
