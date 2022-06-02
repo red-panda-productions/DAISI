@@ -2,11 +2,7 @@
 #include <fstream>
 #include <car.h>
 #include "ConfigEnums.h"
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
-
-namespace filesystem = std::experimental::filesystem;
+#include "FileSystem.hpp"
 
 #include "DecisionTuple.h"
 

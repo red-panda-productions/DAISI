@@ -5,11 +5,11 @@
 #include "Mediator.h"
 #include "ResearcherMenu.h"
 #include "DeveloperMenu.h"
-#include "../rppUtils/FileDialog.hpp"
-#include "../rppUtils/RppUtils.hpp"
+#include "FileDialogManager.h"
+#include "RppUtils.hpp"
 #include "racescreens.h"
 #include "tracks.h"
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 #include "mainmenu.h"
 
 // Parameters used in the xml files
@@ -29,8 +29,9 @@
 #define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 
-#define PRM_MAX_TIME "MaxTimeEdit"
-#define PRM_USER_ID  "UserIdEdit"
+#define PRM_MAX_TIME     "MaxTimeEdit"
+#define PRM_USER_ID      "UserIdEdit"
+#define PRM_UID_GENERATE "UserIdGenerateButton"
 
 #define PRM_BLACKBOX    "ChooseBlackBoxButton"
 #define PRM_ERROR_LABEL "ErrorLabel"
@@ -56,10 +57,13 @@
 #define MSG_BLACK_BOX_NORMAL_TEXT    "Choose Black Box: "
 #define MSG_ENVIRONMENT_PREFIX       "Choose Environment: "
 #define MSG_ENVIRONMENT_NOT_SELECTED "None selected"
-#define MSG_ERROR_BLACK_BOX_NOT_EXE  "You did not select a valid Black Box"
-#define MSG_ERROR_NO_BLACK_BOX       "You need to select a valid Black Box"
-#define MSG_ERROR_NO_ENVIRONMENT     "You need to select a valid Environment"
-#define MSG_ONLY_HINT                ""
+
+// Error messages
+#define MSG_ONLY_HINT               ""
+#define MSG_ERROR_BLACK_BOX_NOT_EXE "You did not select a valid Black Box"
+#define MSG_ERROR_NO_BLACK_BOX      "You need to select a valid Black Box"
+#define MSG_ERROR_NO_ENVIRONMENT    "You need to select a valid Environment"
+#define MSG_ERROR_NO_UID            "You need to have a user id"
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
@@ -96,8 +100,9 @@ int m_maxTime;
 int m_maxTimeControl;
 
 // User ID
-char m_userId[32];
+char m_userId[32] = "";
 int m_userIdControl;
+bool m_userIdChosen = false;
 
 // Black Box
 int m_blackBoxButtonControl;
@@ -265,6 +270,14 @@ static void SetUserId(void*)
 {
     strcpy(m_userId, GfuiEditboxGetString(s_scrHandle, m_userIdControl));
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
+
+    // Reset error label if we hadn't chosen a user id yet and if the newly assigned value is a valid user id
+    bool validUserId = strcmp(m_userId, "") != 0;
+    if (!m_userIdChosen && validUserId)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);
+    }
+    m_userIdChosen = validUserId;
 }
 
 /// @brief Saves the settings into the ResearcherMenu.xml file
@@ -322,6 +335,11 @@ static void SaveSettingsToDisk()
 /// @brief Saves the settings into the frontend settings and the backend config
 static void SaveSettings(void* /* dummy */)
 {
+    if (!m_userIdChosen)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_NO_UID);
+        return;
+    }
     if (!m_blackBoxChosen)
     {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_NO_BLACK_BOX);
@@ -391,7 +409,7 @@ static void SynchronizeControls()
 
     if (m_blackBoxChosen)
     {
-        std::experimental::filesystem::path path = m_blackBoxFilePath;
+        filesystem::path path = m_blackBoxFilePath;
         std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
         GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
     }
@@ -518,28 +536,52 @@ static void SelectBlackBox(void* /* dummy */)
     }
 
     // Validate input w.r.t. black boxes
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.exe"
     if (path.string().size() <= 7)
     {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
+
+#ifdef WIN32
     // Enforce that file ends in .exe
     if (std::strcmp(path.extension().string().c_str(), ".exe") != 0)
     {
         GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ERROR_BLACK_BOX_NOT_EXE);
         return;
     }
+#endif
 
     // Visual feedback of choice
     std::string buttonText = MSG_BLACK_BOX_NORMAL_TEXT + path.filename().string();
     GfuiButtonSetText(s_scrHandle, m_blackBoxButtonControl, buttonText.c_str());
-    GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);  // Reset error label
+    // Reset error label; but only if we can guarantee the label isn't being used by the user id
+    if (m_userIdChosen)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);
+    }
 
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
     m_blackBoxChosen = true;
+}
+
+/// @brief Generates a random user id
+static void GenerateUid(void* /* dummy */)
+{
+    // Create random userId
+    Random random;
+    int uid = random.NextInt(10000);
+    sprintf(m_userId, "%04d", uid);
+    GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
+
+    // Reset the error label if we hadn't chosen a user id yet
+    if (!m_userIdChosen)
+    {
+        GfuiLabelSetText(s_scrHandle, m_errorLabel, MSG_ONLY_HINT);
+    }
+    m_userIdChosen = true;
 }
 
 /// @brief            Initializes the researcher menu
@@ -605,6 +647,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
+    // Generate UID button
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
+
     // Back button
     m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
     GfParmReleaseHandle(param);
@@ -612,12 +657,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
     GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Developer Screen", nullptr, DeveloperMenuRun, nullptr);
-
-    // Create random userId
-    std::random_device rd;
-    static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<int> distribution(1, 999999999);
-    sprintf(m_userId, "%d", distribution(generator));
 
     // Set default userId
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);

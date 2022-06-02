@@ -2,7 +2,7 @@
 #include "TestUtils.h"
 #include "SDAConfig.h"
 #include "ConfigEnums.h"
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #define INTERVENTION_TYPE_AMOUNT 5
 
 /// @brief                    Tests if the SDAConfig sets and gets the interventionType correctly
@@ -19,6 +19,7 @@ TEST_CASE(ConfigTests, InterventionTypeTestNoSignals, InterventionTypeTest, (INT
 TEST_CASE(ConfigTests, InterventionTypeTestOnlySignals, InterventionTypeTest, (INTERVENTION_TYPE_ONLY_SIGNALS))
 TEST_CASE(ConfigTests, InterventionTypeTestSharedControl, InterventionTypeTest, (INTERVENTION_TYPE_SHARED_CONTROL))
 TEST_CASE(ConfigTests, InterventionTypeTestCompleteTakeover, InterventionTypeTest, (INTERVENTION_TYPE_COMPLETE_TAKEOVER))
+TEST_CASE(ConfigTests, InterventionTypeTestAutonomousAI, InterventionTypeTest, (INTERVENTION_TYPE_AUTONOMOUS_AI))
 
 /// @brief              Tests if the SDAConfig sets and gets the allowed actions correctly
 /// @param p_steer      Whether the black box can steer

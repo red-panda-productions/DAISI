@@ -14,7 +14,7 @@ public:
 
     void Initialize(bool p_connectAsync, BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)
     {
-        InitialDriveSituation = &p_initialDriveSituation;
+        InitialDriveSituation = new BlackBoxData(p_initialDriveSituation);
     }
 
     void Initialize()
@@ -35,6 +35,11 @@ public:
     BlackBoxData* GetBlackBoxData() const
     {
         return InitialDriveSituation;
+    }
+
+    ~SocketBlackBoxMock()
+    {
+        delete InitialDriveSituation;
     }
 
     bool IsDecision = false;
