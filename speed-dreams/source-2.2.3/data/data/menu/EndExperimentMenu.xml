@@ -5,7 +5,7 @@
 <params name="endexperiment">
     <section name="dynamic controls">
 
-        <!-- OK button -->
+        <!-- OK / save the data button -->
         <section name="ok">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
