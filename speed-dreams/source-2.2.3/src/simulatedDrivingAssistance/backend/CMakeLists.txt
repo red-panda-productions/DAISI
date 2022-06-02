@@ -10,6 +10,7 @@ SET(_SOURCES
 	InterventionExecutorAlwaysIntervene.cpp
 	InterventionExecutorIndication.cpp
 	InterventionExecutorNoIntervention.cpp
+	InterventionExecutorAutonomousAI.cpp
 	InterventionExecutorPerformWhenNeeded.cpp
 	InterventionFactory.cpp
 	Mediator.cpp
@@ -41,6 +42,7 @@ SET(_HEADERS
 	InterventionExecutor.h
 	InterventionExecutorAlwaysIntervene.h
     InterventionExecutorIndication.h
+	InterventionExecutorAutonomousAI.h
 	InterventionExecutorNoIntervention.h
 	InterventionExecutorPerformWhenNeeded.h
 	InterventionFactory.h
