@@ -25,6 +25,7 @@ the Free Software Foundation; either version 2 of the License, or
     <attnum name="version" val="4" />
     <attstr name="author" val="Red Panda Productions" />
     <attstr name="description" val="A simple highway with 4 lanes. It resembles a dutch highway. The speed limit here is 100 km/h." />
+    <attstr name="average speed limit" val="100"/>
   </section>
   <section name="Graphic">
     <attstr name="3d description" val="simple-highway-4-100.acc" />

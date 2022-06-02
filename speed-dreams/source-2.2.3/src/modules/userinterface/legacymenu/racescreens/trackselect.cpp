@@ -154,7 +154,6 @@ rmtsUpdateTrackInfo(void)
     // SIMULATED DRIVING ASSISTANCE: add the speed limit text to the track select menu
 	// 9) (Average) speed limit for the full track in km/h.
     ossData.str("");
-    PCurTrack->GetSpeedLimit();
     ossData << PCurTrack->GetSpeedLimit() << " km/h";
     GfuiLabelSetText(ScrHandle, SpeedLimitLabelId, ossData.str().c_str());
 }

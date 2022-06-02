@@ -25,6 +25,7 @@ the Free Software Foundation; either version 2 of the License, or
     <attnum name="version" val="4" />
     <attstr name="author" val="Red Panda Productions" />
     <attstr name="description" val="A smaller version of simple road, 2 lanes 80km/h" />
+    <attstr name="average speed limit" val="80"/>
   </section>
   <section name="Graphic">
     <attstr name="3d description" val="simple-road-small-2-80.acc" />

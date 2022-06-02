@@ -1673,7 +1673,6 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     /* straight */
                     curSeg->type = TR_STR;
                     curSeg->length = curLength;
-                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = sin(alf);  // Precalculate these
                     curSeg->cos = cos(alf);
 
@@ -1727,7 +1726,6 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     curSeg->radiusl = radius - wi2;
                     curSeg->arc = curArc;
                     curSeg->length = curLength;
-                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = 0.0;  // Not used for curves
                     curSeg->cos = 0.0;
 
@@ -1799,7 +1797,6 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     curSeg->radiusl = radius + wi2;
                     curSeg->arc = curArc;
                     curSeg->length = curLength;
-                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = 0.0;  // Not used for curves
                     curSeg->cos = 0.0;
 

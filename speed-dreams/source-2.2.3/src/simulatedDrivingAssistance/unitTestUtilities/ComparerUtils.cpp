@@ -525,7 +525,6 @@ void CompareSegments(tTrackSeg* p_segments1, tTrackSeg* p_segments2, int p_segme
             COMP_ELEM((*segOrig).type2, (*segCopy).type2)
             COMP_ELEM((*segOrig).style, (*segCopy).style)
             COMP_ELEM((*segOrig).length, (*segCopy).length)
-            COMP_ELEM((*segOrig).SpeedLimit, (*segCopy).SpeedLimit)
             COMP_ELEM((*segOrig).width, (*segCopy).width)
             COMP_ELEM((*segOrig).startWidth, (*segCopy).startWidth)
             COMP_ELEM((*segOrig).endWidth, (*segCopy).endWidth)

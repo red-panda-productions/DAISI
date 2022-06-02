@@ -164,6 +164,15 @@
         <attstr name="color" val="0xFFFFFF"/>
         <attstr name="font" val="small_t"/>
     </section>
+    <!-- SIMULATED DRIVING ASSISTANCE: added estimated time label-->
+    <section name="speedlimitlabel">
+        <attstr name="type" val="label"/>
+        <attnum name="max len" val="10"/>
+        <attnum name="x" val="340"/>
+        <attnum name="y" val="80"/>
+        <attstr name="color" val="0xFFFFFF"/>
+        <attstr name="font" val="small_t"/>
+    </section>	
 
 <!-- Track outline image display -->
 	<section name="outlineimage">
@@ -294,6 +303,14 @@
         <attstr name="font" val="small_t"/>
         <attnum name="x" val="270"/>
         <attnum name="y" val="98"/>
+        <attstr name="color" val="0xFFFFFF"/>
+    </section>
+    <section name="10">
+        <attstr name="type" val="label"/>
+        <attstr name="text" val="Speed Limit:"/>
+        <attstr name="font" val="small_t"/>
+        <attnum name="x" val="270"/>
+        <attnum name="y" val="78"/>
         <attstr name="color" val="0xFFFFFF"/>
     </section>
 

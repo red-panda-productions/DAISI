@@ -53,7 +53,8 @@ public:
 	float getLength() const;
     double GetEstimatedTime() const;
 	float getWidth() const;
-    double GetSpeedLimit() const;
+    const std::string& GetSpeedLimit() const;
+    int StringToInteger(std::string str);
 	int getMaxNumOfPitSlots() const;
 
 	bool isUsable() const;
@@ -90,7 +91,7 @@ protected:
 	mutable float _fLength;          // Length (m).
 	mutable float _fWidth;           // Width (m).
     mutable float EstimatedTime;     // SIMULATED DRIVING ASSISTANCE: added Time (m).
-	mutable float SpeedLimit;        // SIMULATED DRIVING ASSISTANCE: added SpeedLimit (m).
+    mutable std::string SpeedLimit;  // SIMULATED DRIVING ASSISTANCE: added SpeedLimit (m).
 	mutable int _nMaxPitSlots;       // Max. number of pit slots (m).
 
 	mutable bool _bUsable;           // False if anything wrong.

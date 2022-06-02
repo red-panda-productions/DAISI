@@ -135,6 +135,8 @@ GetTrackHeader(void *TrackHandle) {
     // Read header
     theTrack->name = GfParmGetStr(TrackHandle, TRK_SECT_HDR, TRK_ATT_NAME, "no name");
     theTrack->descr = GfParmGetStr(TrackHandle, TRK_SECT_HDR, TRK_ATT_DESCR, "no description");
+    /// SIMULATED DRIVING ASSISTANCE: speed limit can be read from the header
+    theTrack->SpeedLimit = GfParmGetStr(TrackHandle, TRK_SECT_HDR, TRK_ATT_AVERAGE_SPEEDLIMIT, "average speed limit");
     theTrack->version = (int)GfParmGetNum(TrackHandle, TRK_SECT_HDR, TRK_ATT_VERSION, (char*)NULL, 0);
     theTrack->width = GfParmGetNum(TrackHandle, TRK_SECT_MAIN, TRK_ATT_WIDTH, (char*)NULL, 15.0);
     theTrack->authors = GfParmGetStr(TrackHandle, TRK_SECT_HDR, TRK_ATT_AUTHOR, "none");

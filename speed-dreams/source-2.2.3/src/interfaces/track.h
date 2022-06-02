@@ -48,6 +48,8 @@
 #define TRK_ATT_DESCR               "description"
 #define TRK_ATT_CAT                 "category"
 #define TRK_ATT_SUBCAT              "subcategory"
+// SIMULATED DRIVING ASSISTANCE: added the speed limit parameter
+#define TRK_ATT_AVERAGE_SPEEDLIMIT  "average speed limit"
 
 #define TRK_ATT_NONE                "none"
 #define TRK_ATT_SHORT               "short"
@@ -373,7 +375,7 @@ typedef struct trackSeg
     /// SIMULATED DRIVING ASSISTANCE: added tdble Time
     tdble Time;                 /**< Estimated time in seconds */
     // SIMULATED DRIVING ASSISTANCE: added tdble SpeedLimit
-    tdble SpeedLimit;           /** Speed limit in km/h for the track*/
+    //tdble SpeedLimit;           /** Speed limit in km/h for the track*/
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
     tdble endWidth;             /**< Width of the end of the segment */
@@ -678,9 +680,9 @@ typedef struct Track
     int           version;      /**< Version of the track type */
     tdble         length;       /**< main track length */
     /// SIMULATED DRIVING ASSISTANCE: added the Time property
-    tdble         Time;         /**< main track time (estimated) */ 
+    tdble         Time;         /**< main track time (estimated) */  
     // SIMULATED DRIVING ASSISTANCE: added the SpeedLimit property
-    tdble         SpeedLimit;   /**< speed limit of the track */      
+    const char    *SpeedLimit;     /**< speed limit of the track */
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */
