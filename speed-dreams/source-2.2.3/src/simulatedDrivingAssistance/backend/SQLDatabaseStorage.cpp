@@ -618,16 +618,17 @@ void SQLDatabaseStorage::CloseDatabase()
     }
 }
 
-/// @brief  Runs the database connection by finding the "database_connection_settings.txt" file
-///         getting the connection properties out of that file
-///         opening the database, storing the data of the bufferfile
-///         and closing the database
-/// @param  p_inputFilePath     path for the buffer file, the content of which is written to the database
-/// @param  p_dirPath           optional parameter: path after the data folder
-///                             for "database_connection_settings.txt" file
-///                             and if applicable the "database_encryption_settings.txt".
-///                             needs "\\" in front
-///                             if left out path will be data folder
+/// @brief   Runs the database connection by finding the "database_connection_settings.txt" file
+///          getting the connection properties out of that file
+///          opening the database, storing the data of the bufferfile
+///          and closing the database
+/// @param   p_inputFilePath     path for the buffer file, the content of which is written to the database
+/// @param   p_dirPath           optional parameter: path after the data folder
+///                              for "database_connection_settings.txt" file
+///                              and if applicable the "database_encryption_settings.txt".
+///                              needs "\\" in front
+///                              if left out path will be data folder
+/// @returns Whether it has successfully written the local buffer file to the database
 bool SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
@@ -637,7 +638,12 @@ bool SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputF
     std::cout << "Writing local buffer file to database" << std::endl;
 
     bool store_success = StoreData(p_inputFilePath);
-    if (!store_success) return false;
+    if (!store_success)
+    {
+        CloseDatabase();
+        return false;
+    }
     CloseDatabase();
     std::cout << "Finished writing to database" << std::endl;
+    return true;
 }
