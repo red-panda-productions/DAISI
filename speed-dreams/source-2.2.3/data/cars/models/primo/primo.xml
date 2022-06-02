@@ -180,7 +180,7 @@
 		<attnum name="cylinders" val="4"/>
 		<attstr name="shape" in="v,l,h,w" val="l"/>
 		<attstr name="position" in="front,mid-front,mid-rear,rear," val="front"/>
-		<attnum name="inertia" unit="kg.m2" val="2.15"/>
+		<attnum name="inertia" unit="kg.m2" val="0.20"/>
 		<attnum name="revs maxi" unit="rpm" val="10000"/>
 		<attnum name="revs limiter" unit="rpm" val="6200"/>
 		<attnum name="tickover" unit="rpm" val="2300"/>
@@ -197,75 +197,75 @@
 				<attnum name="Tq" unit="N.m" val="0"/>
 			</section>
 			<section name="2">
-				<attnum name="rpm" unit="rpm" val="270"/>
+				<attnum name="rpm" unit="rpm" val="1000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="3">
-				<attnum name="rpm" unit="rpm" val="540"/>
+				<attnum name="rpm" unit="rpm" val="2000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="4">
-				<attnum name="rpm" unit="rpm" val="810"/>
+				<attnum name="rpm" unit="rpm" val="3000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="5">
-				<attnum name="rpm" unit="rpm" val="1080"/>
+				<attnum name="rpm" unit="rpm" val="4000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="6">
-				<attnum name="rpm" unit="rpm" val="1350"/>
+				<attnum name="rpm" unit="rpm" val="5000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="7">
-				<attnum name="rpm" unit="rpm" val="1620"/>
+				<attnum name="rpm" unit="rpm" val="6000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="8">
-				<attnum name="rpm" unit="rpm" val="1890"/>
+				<attnum name="rpm" unit="rpm" val="7000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="9">
-				<attnum name="rpm" unit="rpm" val="2160"/>
+				<attnum name="rpm" unit="rpm" val="8000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="10">
-				<attnum name="rpm" unit="rpm" val="2430"/>
+				<attnum name="rpm" unit="rpm" val="9000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="11">
-				<attnum name="rpm" unit="rpm" val="2700"/>
+				<attnum name="rpm" unit="rpm" val="10000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="12">
-				<attnum name="rpm" unit="rpm" val="2970"/>
+				<attnum name="rpm" unit="rpm" val="11000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="13">
-				<attnum name="rpm" unit="rpm" val="3240"/>
+				<attnum name="rpm" unit="rpm" val="12000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="14">
-				<attnum name="rpm" unit="rpm" val="3510"/>
+				<attnum name="rpm" unit="rpm" val="13000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="15">
-				<attnum name="rpm" unit="rpm" val="3780"/>
+				<attnum name="rpm" unit="rpm" val="14000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="16">
-				<attnum name="rpm" unit="rpm" val="4050"/>
+				<attnum name="rpm" unit="rpm" val="15000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="17">
-				<attnum name="rpm" unit="rpm" val="4320"/>
+				<attnum name="rpm" unit="rpm" val="16000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="18">
-				<attnum name="rpm" unit="rpm" val="4590"/>
+				<attnum name="rpm" unit="rpm" val="17000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 			<section name="19">
-				<attnum name="rpm" unit="rpm" val="5200"/>
+				<attnum name="rpm" unit="rpm" val="18000"/>
 				<attnum name="Tq" unit="N.m" val="142.0"/>
 			</section>
 		</section>
@@ -280,40 +280,40 @@
 		<section name="gears">
 			<section name="r">
 				<attnum name="ratio" val="-2.0"/>
-				<attnum name="inertia" val="0.00001"/>
-				<attnum name="efficiency" val="1.0"/>
+				<attnum name="inertia" val="0.0037"/>
+				<attnum name="efficiency" val="0.957"/>
 			</section>
 			<section name="1">
 				<attnum name="ratio" val="3.82"/>
 				<attnum name="inertia" val="0.003"/>
-				<attnum name="efficiency" val="1.0"/>
+				<attnum name="efficiency" val="0.955"/>
 			</section>
 			<section name="2">
 				<attnum name="ratio" val="2.15"/>
 				<attnum name="inertia" val="0.0037"/>
-				<attnum name="efficiency" val="1.0"/>
+				<attnum name="efficiency" val="0.957"/>
 			</section>
 			<section name="3">
 				<attnum name="ratio" val="1.56"/>
 				<attnum name="inertia" val="0.0048"/>
-				<attnum name="efficiency" val="1.0"/>
+				<attnum name="efficiency" val="0.95"/>
 			</section>
 			<section name="4">
 				<attnum name="ratio" val="1.21"/>
-				<attnum name="inertia" val="0.983"/>
-				<attnum name="efficiency" val="1.0"/>
+				<attnum name="inertia" val="0.0064"/>
+				<attnum name="efficiency" val="0.983"/>
 			</section>
 			<section name="5">
 				<attnum name="ratio" val="0.97"/>
 				<attnum name="inertia" val="0.0107"/>
-				<attnum name="efficiency" val="1.0"/>
+				<attnum name="efficiency" val="0.948"/>
 			</section>
 		</section>
 	</section>
 	
 	<section name="Drivetrain">
 		<!-- allowed values RWD, FWD, 4WD -->
-		<attstr name="type" val="FWD"/>
+		<attstr name="type" val="RWD"/>
 		<!-- drive shaft inertia -->
 		<attnum name="inertia" unit="kg.m2" val="0.0091"/>
 	</section>
@@ -337,7 +337,7 @@
 	
 	<section name="Rear Axle">
 		<attnum name="xpos" val="-1.35"/>
-		<attnum name="inertia" unit="kg.m2" val="0.0001"/>
+		<attnum name="inertia" unit="kg.m2" val="0.008"/>
 		<attnum name="roll center height" unit="m" val="0.40"/>
 	</section>
 	
@@ -361,7 +361,7 @@
 		<attnum name="rim diameter" unit="in" val="17.0"/>
 		<attnum name="tire width" unit="mm" val="255"/>
 		<attnum name="tire height-width ratio" val=".40"/>
-		<attnum name="inertia" unit="kg.m2" val="1.2828"/>
+		<attnum name="inertia" unit="kg.m2" val="1.22"/>
 
 		<attnum name="ride height" unit="mm" val="105"/>
 		<attnum name="toe" unit="deg" val="0"/>
@@ -369,7 +369,7 @@
 
 		<attnum name="pressure" unit="kPa" val="200.0"/>
 		<attnum name="stiffness" val="16.0"/>
-		<attnum name="dynamic friction" unit="%" val="50"/>
+		<attnum name="dynamic friction" unit="%" val="80"/>
 		<attnum name="rolling resistance" val="0.02"/>
 		<attnum name="elasticity factor" val="0.86"/>
 		<attnum name="operating load" unit="N" val="3200"/>
@@ -381,7 +381,7 @@
 		<attnum name="rim diameter" unit="in" val="17.0"/>
 		<attnum name="tire width" unit="mm" val="255"/>
 		<attnum name="tire height-width ratio" val=".40"/>
-		<attnum name="inertia" unit="kg.m2" val="1.2828"/>
+		<attnum name="inertia" unit="kg.m2" val="1.22"/>
 
 		<attnum name="ride height" unit="mm" val="105"/>
 		<attnum name="toe" unit="deg" val="0"/>
@@ -389,7 +389,7 @@
 
 		<attnum name="pressure" unit="kPa" val="200.0"/>
 		<attnum name="stiffness" val="16.0"/>
-		<attnum name="dynamic friction" unit="%" val="50"/>
+		<attnum name="dynamic friction" unit="%" val="80"/>
 		<attnum name="rolling resistance" val="0.02"/>
 		<attnum name="elasticity factor" val="0.86"/>
 		<attnum name="operating load" unit="N" val="3200"/>
@@ -401,7 +401,7 @@
 		<attnum name="rim diameter" unit="in" val="18.0"/>
 		<attnum name="tire width" unit="mm" val="300"/>
 		<attnum name="tire height-width ratio" val=".34"/>
-		<attnum name="inertia" unit="kg.m2" val="1.705"/>
+		<attnum name="inertia" unit="kg.m2" val="1.3"/>
 	
 		<attnum name="ride height" unit="mm" val="105"/>
 		<attnum name="toe" unit="deg" val="0"/>
@@ -409,7 +409,7 @@
 
 		<attnum name="pressure" unit="kPa" val="200.0"/>
 		<attnum name="stiffness" val="16.0"/>
-		<attnum name="dynamic friction" unit="%" val="50"/>
+		<attnum name="dynamic friction" unit="%" val="80"/>
 		<attnum name="rolling resistance" val="0.02"/>
 		<attnum name="elasticity factor" val="0.86"/>
 		<attnum name="operating load" unit="N" val="3800"/>
@@ -421,7 +421,7 @@
 		<attnum name="rim diameter" unit="in" val="18.0"/>
 		<attnum name="tire width" unit="mm" val="300"/>
 		<attnum name="tire height-width ratio" val=".34"/>
-		<attnum name="inertia" unit="kg.m2" val="1.705"/>
+		<attnum name="inertia" unit="kg.m2" val="1.3"/>
 
 		<attnum name="ride height" unit="mm" val="105"/>
 		<attnum name="toe" unit="deg" val="0"/>
@@ -429,7 +429,7 @@
 
 		<attnum name="pressure" unit="kPa" val="200.0"/>
 		<attnum name="stiffness" val="16.0"/>
-		<attnum name="dynamic friction" unit="%" val="50"/>
+		<attnum name="dynamic friction" unit="%" val="80"/>
 		<attnum name="rolling resistance" val="0.02"/>
 		<attnum name="elasticity factor" val="0.86"/>
 		<attnum name="operating load" unit="N" val="3800"/>

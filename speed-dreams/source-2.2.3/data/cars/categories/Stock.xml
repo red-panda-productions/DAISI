@@ -25,7 +25,7 @@
     <attnum name="body height" unit="m" min="1.0" max="2.0" val="1.173"/>
 
     <!-- collision bounding box -->
-    <attnum name="overall length" unit="m" min="4.0" max="5.0" val="4.7"/>
+    <attnum name="overall length" unit="m" min="4.0" max="6.0" val="4.7"/>
     <attnum name="overall width" unit="m" min="1.2" max="2.2" val="1.7"/>
     <attnum name="mass" unit="kg" min="900.0" max="1500" val="1150.0"/>
     <attnum name="GC height" unit="m" min="0.1" max="1.0" val="0.30"/>
@@ -43,7 +43,7 @@
 
   <section name="Aerodynamics">
     <attnum name="Cx" min="0.20" max="2.0" val="0.38"/>
-    <attnum name="front area" unit="m2" min="1.0" max="3.0" val="2.085"/>
+    <attnum name="front area" unit="m2" min="0.0" max="3.0" val="2.085"/>
     <attnum name="front Clift" min="0.0" max="1.5" val="0.6"/>
     <attnum name="rear Clift" min="0.0" max="1.5" val="0.4"/>
   </section>
