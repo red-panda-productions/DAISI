@@ -3,7 +3,7 @@ INCLUDE(../../../cmake/macros.cmake)
 project(unitTestUtilities)
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -33,7 +33,6 @@ SET(_SOURCES PairWiseTestGenerator.cpp
 SET(_INLINES PairWiseTestGenerator.inl)
 
 SET(_HEADERS TestUtils.h
-			 ../rppUtils/Random.hpp
 			 PairWiseTestGenerator.h
 			 VariableStore.h
 			 ComparerUtils.h

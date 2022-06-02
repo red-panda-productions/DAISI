@@ -9,9 +9,7 @@
 #include "BlackBoxData.h"
 #include "SQLDatabaseStorage.h"
 #include "FileDataStorage.h"
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 
 /// @brief                     A class that can ask the black box to make a decision
 /// @tparam SocketBlackBox     The SocketBlackBox type
@@ -35,17 +33,17 @@ public:
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void RaceStop(bool p_saveToDatabase);
 
-    InterventionExecutor* InterventionExecutor = nullptr;
+    InterventionExecutor* InterventionExec = nullptr;
     SocketBlackBox BlackBox;
 
     FileDataStorage* GetFileDataStorage();
-    std::experimental::filesystem::path* GetBufferFilePath();
+    filesystem::path* GetBufferFilePath();
     Recorder* GetRecorder();
 
     ~DecisionMaker();
 
 private:
-    std::experimental::filesystem::path m_bufferFilePath;
+    filesystem::path m_bufferFilePath;
     FileDataStorage m_fileBufferStorage;
     DecisionTuple m_decision;
     Recorder* m_recorder = nullptr;
