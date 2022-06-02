@@ -4,33 +4,33 @@
 
 <params name="DeveloperMenu">
 
-	<section name="DefaultThresholdValues">
+    <section name="DefaultThresholdValues">
 
-		<section name="signals-only">
-			<attnum name="Accel" val="1.0"/>
-			<attnum name="Brake" val="0.9"/>
-			<attnum name="Steer" val="0.09"/>
-		</section>
+        <section name="signals-only">
+            <attnum name="Accel" val="1.0"/>
+            <attnum name="Brake" val="0.9"/>
+            <attnum name="Steer" val="0.09"/>
+        </section>
 
-		<section name="shared-control">
-			<attnum name="Accel" val="0.5"/>
-			<attnum name="Brake" val="0.5"/>
-			<attnum name="Steer" val="0.1"/>
-		</section>
+        <section name="shared-control">
+            <attnum name="Accel" val="0.5"/>
+            <attnum name="Brake" val="0.5"/>
+            <attnum name="Steer" val="0.1"/>
+        </section>
 
-		<section name="complete-takeover">
-			<attnum name="Accel" val="0.0"/>
-			<attnum name="Brake" val="0.0"/>
-			<attnum name="Steer" val="0.05"/>
-		</section>
+        <section name="complete-takeover">
+            <attnum name="Accel" val="0.2"/>
+            <attnum name="Brake" val="0.05"/>
+            <attnum name="Steer" val="0.1"/>
+        </section>
 
-		<section name="autonomous-ai">
-			<attnum name="Accel" val="0.0"/>
-			<attnum name="Brake" val="0.0"/>
-			<attnum name="Steer" val="0.05"/>
-		</section>
+        <section name="autonomous-ai">
+            <attnum name="Accel" val="0.0"/>
+            <attnum name="Brake" val="0.0"/>
+            <attnum name="Steer" val="0.05"/>
+        </section>
 
-	</section>
+    </section>
 
     <section name="dynamic controls">
 
