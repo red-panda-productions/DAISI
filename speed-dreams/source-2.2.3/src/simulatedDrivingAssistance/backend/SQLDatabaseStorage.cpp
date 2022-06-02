@@ -65,10 +65,10 @@ void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_
 
     try
     {
-        m_connection->setAutoCommit(false);
+        //m_connection->setAutoCommit(false);
         int trial_id = InsertInitialData(inputFile);
         InsertSimulationData(inputFile, trial_id);
-        m_connection->commit();
+        //m_connection->commit();
     }
     catch (std::exception& e)
     {
@@ -437,7 +437,6 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
 
     // The values are read as a string from p_inputFile, and used as a string in the sql statements,
     // therefore they are not converted to the type they actually are.
-
     while (!p_inputFile.eof())
     {
         // tick
@@ -556,21 +555,12 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
     READ_INPUT(p_inputFile, decision);
     // there shouldn't be more than DECISIONS_AMOUNT decisions made
     int decisionsRead = 0;
-
-    sql::PreparedStatement* insertIntervention = m_connection->prepareStatement("INSERT INTO Intervention (trial_id, tick) VALUES (" + std::to_string(p_trialId) + "," + p_tick + ")");
-    sql::PreparedStatement* selectLastStatement = m_connection->prepareStatement("SELECT LAST_INSERT_ID()");
     while (decision != "NONE" && decisionsRead++ < DECISIONS_AMOUNT)
     {
-        auto start = std::chrono::system_clock::now();
-        //m_statement->execute(INSERT_INTO("Intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
-        insertIntervention->execute();
-
-        auto execute = std::chrono::system_clock::now();
+        m_statement->execute(INSERT_INTO("Intervention", "trial_id, tick", ("'" + std::to_string(p_trialId) + "','" + p_tick + "'")));
         int decisionId;
-        m_resultSet = selectLastStatement->executeQuery();
-        while (m_resultSet->next()) { decisionId = m_resultSet->getInt(1); };
+        SELECT_LAST_ID(decisionId)
 
-        auto selectlast = std::chrono::system_clock::now();
         if (decision == "SteerDecision")
         {
             std::string amount;
@@ -601,16 +591,8 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
             READ_INPUT(p_inputFile, lightsOn);
             EXECUTE(INSERT_INTO("LightsDecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
         }
-        auto decisiont = std::chrono::system_clock::now();
 
         READ_INPUT(p_inputFile, decision);
-
-        auto readInput = std::chrono::system_clock::now();
-
-        std::cout << "execute   : " << std::chrono::duration_cast<std::chrono::microseconds>(execute - start).count() << std::endl;
-        std::cout << "selectlast: " << std::chrono::duration_cast<std::chrono::microseconds>(selectlast - execute).count() << std::endl;
-        std::cout << "decision  : " << std::chrono::duration_cast<std::chrono::microseconds>(decisiont - selectlast).count() << std::endl;
-        std::cout << "readinput : " << std::chrono::duration_cast<std::chrono::microseconds>(readInput - decisiont).count() << std::endl;
     }
 }
 
