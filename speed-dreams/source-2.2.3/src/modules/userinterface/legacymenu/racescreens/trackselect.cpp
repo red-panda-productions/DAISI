@@ -37,7 +37,6 @@
 
 #include "racescreens.h"
 
-
 // Screen handle.
 static void *ScrHandle;
 
@@ -45,7 +44,7 @@ static void *ScrHandle;
 static tRmTrackSelect *MenuData;
 
 // The currently selected track.
-GfTrack* PCurTrack;
+GfTrack *PCurTrack;
 
 // Menu controls.
 static int PrevCategoryArrowId;
@@ -69,11 +68,11 @@ static int MaxPitsLabelId;
 // Max length of track description lines (loaded from menu properties).
 static unsigned DescLinesMaxLen = 35;
 
-/** 
+/**
  * rmtsWordWrap
- * 
+ *
  * Cuts the input string into two, according to the line length given.
- * 
+ *
  * @param   str Input string
  * @param   str1    First line should be placed in here
  * @param   str2    Second line should be placed in here (if needed)
@@ -82,55 +81,56 @@ static unsigned DescLinesMaxLen = 35;
 static void
 rmtsWordWrap(const std::string &str, std::string &str1, std::string &str2, unsigned length)
 {
-	//istream_iterator iterates through the container
-	//using whitespaces as delimiters, so it is an ideal tool
-	//for cutting strings into separate words.
-	std::istringstream istr(str);
-	std::istream_iterator<std::string> it(istr);
-	std::istream_iterator<std::string> end;
+    // istream_iterator iterates through the container
+    // using whitespaces as delimiters, so it is an ideal tool
+    // for cutting strings into separate words.
+    std::istringstream istr(str);
+    std::istream_iterator<std::string> it(istr);
+    std::istream_iterator<std::string> end;
 
-	//str1 + next word still below line length limit?
-	while (it != end && (str1.size() + (*it).size()) < length) {
-		str1 += *it;    //concatenate next word and a space to str1
-		str1 += " ";    //as the iterator eats the whitespace...
-		it++;
-	}//while
-	
-	if (str.size() >= length)    //If input string was longer than required,
-		str2 = str.substr(str1.size()); //put the rest in str2.
-}//rmtsWordWrap
+    // str1 + next word still below line length limit?
+    while (it != end && (str1.size() + (*it).size()) < length)
+    {
+        str1 += *it;  // concatenate next word and a space to str1
+        str1 += " ";  // as the iterator eats the whitespace...
+        it++;
+    }  // while
+
+    if (str.size() >= length)            // If input string was longer than required,
+        str2 = str.substr(str1.size());  // put the rest in str2.
+}  // rmtsWordWrap
 
 static void
 rmtsUpdateTrackInfo(void)
 {
-	if (!PCurTrack)
-		return;
-	
-	// Update GUI with track info.
-	// 0) Track category and name.
-	GfuiLabelSetText(ScrHandle, CategoryEditId, PCurTrack->getCategoryName().c_str());
-	GfuiLabelSetText(ScrHandle, NameEditId, PCurTrack->getName().c_str());
-	
-	// 1) Track description, optionally wrapped in 2 lines
-	std::string strDescLine1, strDescLine2;
-	rmtsWordWrap(PCurTrack->getDescription(), strDescLine1, strDescLine2, DescLinesMaxLen);
-	GfuiLabelSetText(ScrHandle, DescLine1LabelId, strDescLine1.c_str());
-	GfuiLabelSetText(ScrHandle, DescLine2LabelId, strDescLine2.c_str());
+    if (!PCurTrack)
+        return;
 
-	// 2) Authors
-	GfuiLabelSetText(ScrHandle, AuthorsLabelId, PCurTrack->getAuthors().c_str());
+    // Update GUI with track info.
+    // 0) Track category and name.
+    GfuiLabelSetText(ScrHandle, CategoryEditId, PCurTrack->getCategoryName().c_str());
+    GfuiLabelSetText(ScrHandle, NameEditId, PCurTrack->getName().c_str());
 
-	// 3) Width.
-	std::ostringstream ossData;
-	ossData << std::fixed << std::setprecision(0) << PCurTrack->getWidth() << " m";
-	GfuiLabelSetText(ScrHandle, WidthLabelId, ossData.str().c_str());
-	
-	// 4) Length.
-	ossData.str("");
-	ossData << PCurTrack->getLength() << " m";
-	GfuiLabelSetText(ScrHandle, LengthLabelId, ossData.str().c_str());
+    // 1) Track description, optionally wrapped in 2 lines
+    std::string strDescLine1, strDescLine2;
+    rmtsWordWrap(PCurTrack->getDescription(), strDescLine1, strDescLine2, DescLinesMaxLen);
+    GfuiLabelSetText(ScrHandle, DescLine1LabelId, strDescLine1.c_str());
+    GfuiLabelSetText(ScrHandle, DescLine2LabelId, strDescLine2.c_str());
 
-	// SIMULATED DRIVING ASSISTANCE: removed display of pit stops
+    // 2) Authors
+    GfuiLabelSetText(ScrHandle, AuthorsLabelId, PCurTrack->getAuthors().c_str());
+
+    // 3) Width.
+    std::ostringstream ossData;
+    ossData << std::fixed << std::setprecision(0) << PCurTrack->getWidth() << " m";
+    GfuiLabelSetText(ScrHandle, WidthLabelId, ossData.str().c_str());
+
+    // 4) Length.
+    ossData.str("");
+    ossData << PCurTrack->getLength() << " m";
+    GfuiLabelSetText(ScrHandle, LengthLabelId, ossData.str().c_str());
+
+    // SIMULATED DRIVING ASSISTANCE: removed display of pit stops
 
     // SIMULATED DRIVING ASSISTANCE: add the speed limit text to the track select menu
     // 5) (Average) speed limit for the full track in km/h.
@@ -138,11 +138,11 @@ rmtsUpdateTrackInfo(void)
     ossData << PCurTrack->GetSpeedLimit() << " km/h";
     GfuiLabelSetText(ScrHandle, SpeedLimitLabelId, ossData.str().c_str());
 
-	// 6) Outline image.
-	GfuiStaticImageSet(ScrHandle, OutlineImageId, PCurTrack->getOutlineFile().c_str());
+    // 6) Outline image.
+    GfuiStaticImageSet(ScrHandle, OutlineImageId, PCurTrack->getOutlineFile().c_str());
 
-	// 7) Preview image (background).
-	GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
+    // 7) Preview image (background).
+    GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
 
     // SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
     // 8) Estimated time to complete a track in minutes.
@@ -155,185 +155,183 @@ rmtsUpdateTrackInfo(void)
 static void
 rmtsDeactivate(void *screen)
 {
-	GfuiScreenRelease(ScrHandle);
+    GfuiScreenRelease(ScrHandle);
 
-	if (screen) {
-		GfuiScreenActivate(screen);
-	}
+    if (screen)
+    {
+        GfuiScreenActivate(screen);
+    }
 }
 
 static void
 rmtsActivate(void * /* dummy */)
 {
-	GfLogTrace("Entering Track Select menu\n");
+    GfLogTrace("Entering Track Select menu\n");
 
-	// Disable track category combo-box arrows if only one category available
-	// (Note: "Available" does not mean "usable", but this should be enough for releases
-	//        where everything installed is supposed to be usable).
-	if (GfTracks::self()->getCategoryIds().size() <= 1)
-	{
-		GfuiEnable(ScrHandle, PrevCategoryArrowId, GFUI_DISABLE);
-		GfuiEnable(ScrHandle, NextCategoryArrowId, GFUI_DISABLE);
-	}
-	
-	// Disable track combo-box arrows if only one track available in the current category.
-	if (GfTracks::self()->getTracksInCategory(PCurTrack->getCategoryId()).size() <= 1)
-	{
-		GfuiEnable(ScrHandle, PrevTrackArrowId, GFUI_DISABLE);
-		GfuiEnable(ScrHandle, NextTrackArrowId, GFUI_DISABLE);
-	}
+    // Disable track category combo-box arrows if only one category available
+    // (Note: "Available" does not mean "usable", but this should be enough for releases
+    //        where everything installed is supposed to be usable).
+    if (GfTracks::self()->getCategoryIds().size() <= 1)
+    {
+        GfuiEnable(ScrHandle, PrevCategoryArrowId, GFUI_DISABLE);
+        GfuiEnable(ScrHandle, NextCategoryArrowId, GFUI_DISABLE);
+    }
 
-	// Update GUI (current track).
-	rmtsUpdateTrackInfo();
+    // Disable track combo-box arrows if only one track available in the current category.
+    if (GfTracks::self()->getTracksInCategory(PCurTrack->getCategoryId()).size() <= 1)
+    {
+        GfuiEnable(ScrHandle, PrevTrackArrowId, GFUI_DISABLE);
+        GfuiEnable(ScrHandle, NextTrackArrowId, GFUI_DISABLE);
+    }
+
+    // Update GUI (current track).
+    rmtsUpdateTrackInfo();
 }
 
 /* Select next/previous track from currently selected track category */
 static void
 rmtsTrackPrevNext(void *vsel)
 {
- 	const int nSearchDir = (long)vsel > 0 ? +1 : -1;
+    const int nSearchDir = (long)vsel > 0 ? +1 : -1;
 
-	// Select next usable track in the current catergory in the requested direction.
-	PCurTrack = GfTracks::self()->getFirstUsableTrack(PCurTrack->getCategoryId(),
-													  PCurTrack->getId(), nSearchDir, true);
+    // Select next usable track in the current catergory in the requested direction.
+    PCurTrack = GfTracks::self()->getFirstUsableTrack(PCurTrack->getCategoryId(),
+                                                      PCurTrack->getId(), nSearchDir, true);
 
-	// Update GUI
-	rmtsUpdateTrackInfo();
+    // Update GUI
+    rmtsUpdateTrackInfo();
 }
-
 
 /* Select next/previous track category */
 static void
 rmtsTrackCatPrevNext(void *vsel)
 {
- 	const int nSearchDir = (long)vsel > 0 ? +1 : -1;
+    const int nSearchDir = (long)vsel > 0 ? +1 : -1;
 
-	// Select first usable track in the next catergory in the requested direction.
-	PCurTrack = GfTracks::self()->getFirstUsableTrack(PCurTrack->getCategoryId(),
-													  nSearchDir, true);
+    // Select first usable track in the next catergory in the requested direction.
+    PCurTrack = GfTracks::self()->getFirstUsableTrack(PCurTrack->getCategoryId(),
+                                                      nSearchDir, true);
 
-	// Update GUI
-	rmtsUpdateTrackInfo();
-	
-	// Disable track combo-box arrows if only one track available in this category.
-	if (PCurTrack)
-	{
-		const int nEnableTrkChange =
-			GfTracks::self()->getTracksInCategory(PCurTrack->getCategoryId()).size() > 1
-			? GFUI_ENABLE : GFUI_DISABLE;
-		GfuiEnable(ScrHandle, PrevTrackArrowId, nEnableTrkChange);
-		GfuiEnable(ScrHandle, NextTrackArrowId, nEnableTrkChange);
-	}
+    // Update GUI
+    rmtsUpdateTrackInfo();
+
+    // Disable track combo-box arrows if only one track available in this category.
+    if (PCurTrack)
+    {
+        const int nEnableTrkChange =
+            GfTracks::self()->getTracksInCategory(PCurTrack->getCategoryId()).size() > 1
+                ? GFUI_ENABLE
+                : GFUI_DISABLE;
+        GfuiEnable(ScrHandle, PrevTrackArrowId, nEnableTrkChange);
+        GfuiEnable(ScrHandle, NextTrackArrowId, nEnableTrkChange);
+    }
 }
-
 
 static void
 rmtsSelect(void * /* dummy */)
 {
-	// Save currently selected track into the race manager.
-	MenuData->SetTrack(PCurTrack);
+    // Save currently selected track into the race manager.
+    MenuData->SetTrack(PCurTrack);
 
-	// Next screen.
-	rmtsDeactivate(MenuData->nextScreen);
+    // Next screen.
+    rmtsDeactivate(MenuData->nextScreen);
 }
-
 
 static void
 rmtsAddKeys(void)
 {
-	GfuiAddKey(ScrHandle, GFUIK_RETURN, "Select Track", NULL, rmtsSelect, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel Selection", MenuData->prevScreen, rmtsDeactivate, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_LEFT, "Previous Track", (void*)-1, rmtsTrackPrevNext, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_RIGHT, "Next Track", (void*)+1, rmtsTrackPrevNext, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_F1, "Help", ScrHandle, GfuiHelpScreen, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_UP, "Previous Track Category", (void*)-1, rmtsTrackCatPrevNext, NULL);
-	GfuiAddKey(ScrHandle, GFUIK_DOWN, "Next Track Category", (void*)+1, rmtsTrackCatPrevNext, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_RETURN, "Select Track", NULL, rmtsSelect, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel Selection", MenuData->prevScreen, rmtsDeactivate, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_LEFT, "Previous Track", (void *)-1, rmtsTrackPrevNext, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_RIGHT, "Next Track", (void *)+1, rmtsTrackPrevNext, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_F1, "Help", ScrHandle, GfuiHelpScreen, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_UP, "Previous Track Category", (void *)-1, rmtsTrackCatPrevNext, NULL);
+    GfuiAddKey(ScrHandle, GFUIK_DOWN, "Next Track Category", (void *)+1, rmtsTrackCatPrevNext, NULL);
 }
-
 
 /** Interactive track selection
     @param  vs  Pointer on a tRmTrackSelect structure (cast to void *)
     @warning    The race manager's parameters are updated but not saved to the file.
     @ingroup    racemantools
  */
-void
-RmTrackSelect(void *vs)
+void RmTrackSelect(void *vs)
 {
-	MenuData = (tRmTrackSelect*)vs;
+    MenuData = (tRmTrackSelect *)vs;
 
-        // SIMULATED DRIVING ASSISTANCE change: Get track using GetTrack instead of race
-	// Get currently selected track for the current race type
-	// (or the first usable one in the selected category).
-	PCurTrack = MenuData->GetTrack();
-	const std::string strReqTrackId = PCurTrack->getId();
-	const std::string strReqTrackCatId = PCurTrack->getCategoryId();
-	PCurTrack =
-		GfTracks::self()->getFirstUsableTrack(PCurTrack->getCategoryId(), PCurTrack->getId());
-	if (PCurTrack && PCurTrack->getId() != strReqTrackId)
-		GfLogWarning("Could not find / use selected track %s (%s) ; using %s (%s)\n", 
-					 strReqTrackId.c_str(), strReqTrackCatId.c_str(),
-					 PCurTrack->getId().c_str(), PCurTrack->getCategoryId().c_str());
+    // SIMULATED DRIVING ASSISTANCE change: Get track using GetTrack instead of race
+    // Get currently selected track for the current race type
+    // (or the first usable one in the selected category).
+    PCurTrack = MenuData->GetTrack();
+    const std::string strReqTrackId = PCurTrack->getId();
+    const std::string strReqTrackCatId = PCurTrack->getCategoryId();
+    PCurTrack =
+        GfTracks::self()->getFirstUsableTrack(PCurTrack->getCategoryId(), PCurTrack->getId());
+    if (PCurTrack && PCurTrack->getId() != strReqTrackId)
+        GfLogWarning("Could not find / use selected track %s (%s) ; using %s (%s)\n",
+                     strReqTrackId.c_str(), strReqTrackCatId.c_str(),
+                     PCurTrack->getId().c_str(), PCurTrack->getCategoryId().c_str());
 
-	// If not usable, try and get the first usable track going ahead in categories
-	if (!PCurTrack)
-	{
-		PCurTrack = GfTracks::self()->getFirstUsableTrack(strReqTrackCatId, +1, true);
-		if (PCurTrack)
-			GfLogWarning("Could not find / use selected track %s and category %s unusable"
-						 " ; using %s (%s)\n",
-						 strReqTrackId.c_str(), strReqTrackCatId.c_str(),
-						 PCurTrack->getId().c_str(), PCurTrack->getCategoryId().c_str());
-	}
-	
-	// If no usable category/track found, ... return
-	if (!PCurTrack)
-	{
-		GfLogError("No available track for any category ; quitting Track Select menu\n");
-		return; // or exit(1) abruptly ?
-	}
+    // If not usable, try and get the first usable track going ahead in categories
+    if (!PCurTrack)
+    {
+        PCurTrack = GfTracks::self()->getFirstUsableTrack(strReqTrackCatId, +1, true);
+        if (PCurTrack)
+            GfLogWarning(
+                "Could not find / use selected track %s and category %s unusable"
+                " ; using %s (%s)\n",
+                strReqTrackId.c_str(), strReqTrackCatId.c_str(),
+                PCurTrack->getId().c_str(), PCurTrack->getCategoryId().c_str());
+    }
 
-	// Create screen menu and controls.
-	ScrHandle =
-		GfuiScreenCreate((float*)NULL, NULL, rmtsActivate, NULL, (tfuiCallback)NULL, 1);
+    // If no usable category/track found, ... return
+    if (!PCurTrack)
+    {
+        GfLogError("No available track for any category ; quitting Track Select menu\n");
+        return;  // or exit(1) abruptly ?
+    }
 
-	void *hparmMenu = GfuiMenuLoad("trackselectmenu.xml");
-	GfuiMenuCreateStaticControls( ScrHandle, hparmMenu);
+    // Create screen menu and controls.
+    ScrHandle =
+        GfuiScreenCreate((float *)NULL, NULL, rmtsActivate, NULL, (tfuiCallback)NULL, 1);
 
-	PrevCategoryArrowId =
-		GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackcatleftarrow",(void*)-1, rmtsTrackCatPrevNext);
-	NextCategoryArrowId =
-		GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackcatrightarrow",(void*)1, rmtsTrackCatPrevNext);
-	CategoryEditId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "trackcatlabel");
+    void *hparmMenu = GfuiMenuLoad("trackselectmenu.xml");
+    GfuiMenuCreateStaticControls(ScrHandle, hparmMenu);
 
-	PrevTrackArrowId =
-		GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackleftarrow", (void*)-1, rmtsTrackPrevNext);
-	NextTrackArrowId =
-		GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackrightarrow", (void*)1, rmtsTrackPrevNext);
-	NameEditId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "tracklabel");
+    PrevCategoryArrowId =
+        GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackcatleftarrow", (void *)-1, rmtsTrackCatPrevNext);
+    NextCategoryArrowId =
+        GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackcatrightarrow", (void *)1, rmtsTrackCatPrevNext);
+    CategoryEditId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "trackcatlabel");
 
-	OutlineImageId = GfuiMenuCreateStaticImageControl(ScrHandle, hparmMenu, "outlineimage");
+    PrevTrackArrowId =
+        GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackleftarrow", (void *)-1, rmtsTrackPrevNext);
+    NextTrackArrowId =
+        GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "trackrightarrow", (void *)1, rmtsTrackPrevNext);
+    NameEditId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "tracklabel");
 
-	GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "nextbutton", NULL, rmtsSelect);
-	GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "backbutton", MenuData->prevScreen, rmtsDeactivate);
+    OutlineImageId = GfuiMenuCreateStaticImageControl(ScrHandle, hparmMenu, "outlineimage");
 
-	DescLine1LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description1label");
-	DescLine2LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description2label");
-	LengthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "lengthlabel");
-	// SIMULATED DRIVING ASSISTNACE: added label control for estimated time label
-	EstimatedTimeLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "estimatedtimelabel");
-	WidthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "widthlabel");
-	MaxPitsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "pitslabel");
-	AuthorsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "authorslabel");
+    GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "nextbutton", NULL, rmtsSelect);
+    GfuiMenuCreateButtonControl(ScrHandle, hparmMenu, "backbutton", MenuData->prevScreen, rmtsDeactivate);
 
-	// Load menu properties.
-	DescLinesMaxLen = (unsigned)GfuiMenuGetNumProperty(hparmMenu, "nDescLinesMaxLen", 35);
-	
-	GfParmReleaseHandle(hparmMenu);
+    DescLine1LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description1label");
+    DescLine2LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description2label");
+    LengthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "lengthlabel");
+    // SIMULATED DRIVING ASSISTNACE: added label control for estimated time label
+    EstimatedTimeLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "estimatedtimelabel");
+    WidthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "widthlabel");
+    MaxPitsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "pitslabel");
+    AuthorsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "authorslabel");
 
-	// Keyboard shortcuts.
-	rmtsAddKeys();
+    // Load menu properties.
+    DescLinesMaxLen = (unsigned)GfuiMenuGetNumProperty(hparmMenu, "nDescLinesMaxLen", 35);
 
-	// Let's go !
-	GfuiScreenActivate(ScrHandle);
+    GfParmReleaseHandle(hparmMenu);
+
+    // Keyboard shortcuts.
+    rmtsAddKeys();
+
+    // Let's go !
+    GfuiScreenActivate(ScrHandle);
 }
