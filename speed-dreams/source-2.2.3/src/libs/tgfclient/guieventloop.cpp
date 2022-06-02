@@ -20,6 +20,8 @@
 
 #include "tgfclient.h"
 
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality
+
 // Private data (pimp pattern) =============================================
 class GfuiEventLoop::Private
 {
@@ -278,13 +280,14 @@ void GfuiEventLoop::postRedisplay(void)
 	_pPrivate->bRedisplay = true;
 }
 
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality in forceRedisplay function
 void GfuiEventLoop::forceRedisplay()
 {
 	if (_pPrivate->cbDisplay)
 		_pPrivate->cbDisplay();
 }
 
-
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality in redisplay function
 void GfuiEventLoop::redisplay()
 {
 	// Refresh display if requested and if any redisplay CB.

@@ -50,6 +50,8 @@
 #include <racemanagers.h>
 #include <race.h>
 
+// SIMULATED DRIVING ASSISTANCE: removed inclusion of webserver.h
+
 #include "standardgame.h"
 
 #include "racesituation.h"
@@ -966,6 +968,8 @@ ReInitCars(void)
     }
 #endif
   }
+
+  // SIMULATED DRIVING ASSISTANCE: removed WebServer functionality (WebServer lap logger)
 
   ReInfo->_rePitRequester = 0;
 

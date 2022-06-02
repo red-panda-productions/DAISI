@@ -52,6 +52,8 @@
 #include "racemessage.h"
 #include "racenetwork.h"
 
+// SIMULATED DRIVING ASSISTANCE: removed inclusion of webserver.h
+
 
 // The singleton.
 ReSituation* ReSituation::_pSelf = 0;
@@ -376,6 +378,8 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
         replaySituation(pCurrReInfo);
     }
 }
+
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality (WebServer lap logger)
 
 int ReSituationUpdater::threadLoop(void* pUpdater)
 {
