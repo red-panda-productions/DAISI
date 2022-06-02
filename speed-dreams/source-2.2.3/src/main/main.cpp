@@ -40,7 +40,7 @@
 #include <iraceengine.h>
 #include <iuserinterface.h>
 
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 
 #include "Mediator.h"
 

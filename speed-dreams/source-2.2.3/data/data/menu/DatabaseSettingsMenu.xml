@@ -81,11 +81,11 @@
         </section>
 
         <!-- Apply button -->
-        <section name="StartButton">
+        <section name="ApplyButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
-            <attstr name="text" val="Start"/>
-            <attstr name="tip" val="Save changes and start experiment"/>
+            <attstr name="text" val="Apply"/>
+            <attstr name="tip" val="Save database settings"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="550"/>
             <attnum name="y" val="40"/>
@@ -236,7 +236,7 @@
 
         <section name="1">
             <attstr name="type" val="background image"/>
-            <attstr name="image" val="data/img/Main-menu-2.png"/>
+            <attstr name="image" val="data/img/main-menu-2.png"/>
         </section>
         
         <section name="2">

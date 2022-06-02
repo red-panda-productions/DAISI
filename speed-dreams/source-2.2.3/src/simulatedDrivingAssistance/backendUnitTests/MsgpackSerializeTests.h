@@ -4,7 +4,7 @@
 #include "mocks/BlackBoxDataMock.h"
 #include "mocks/PointerManagerMock.h"
 #include <limits>
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #include "TestUtils.h"
 #include <sstream>
 

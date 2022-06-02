@@ -2,6 +2,7 @@
 #include "InterventionExecutorMock.h"
 #include "ConfigEnums.h"
 #include <cstring>
+#include "RppUtils.hpp"
 
 class ConfigMock
 {
