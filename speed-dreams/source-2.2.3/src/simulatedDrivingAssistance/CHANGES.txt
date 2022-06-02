@@ -216,9 +216,6 @@ Changed:
         racing/genparoptv1
             CMakeLists.txt
                 added rppUtils and Filesystem for Linux
-    track/trackv1/
-		    track4.cpp changed CreateSegRing() added speed limit
-		    track.h changed tTrackSeg added speed limit
 
         sound/snddefault/
             CMakeLists.txt

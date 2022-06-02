@@ -6,12 +6,12 @@
 #include <config.h>
 
 /// @brief reads input from input file, unless EOF has been reached
-#define READ_INPUT(p_inputFile, p_string)                        \
-    if (p_inputFile.eof())                                       \
-    {                                                            \
-        p_inputFile.close();                                     \
-        THROW_RPP_EXCEPTION("Reached end of file prematurely");  \
-    }                                                            \
+#define READ_INPUT(p_inputFile, p_string)                       \
+    if (p_inputFile.eof())                                      \
+    {                                                           \
+        p_inputFile.close();                                    \
+        THROW_RPP_EXCEPTION("Reached end of file prematurely"); \
+    }                                                           \
     std::getline(p_inputFile, p_string);
 
 /// @brief executes sql statement
@@ -631,7 +631,7 @@ void SQLDatabaseStorage::CloseDatabase()
 bool SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
-    
+
     bool open_success = OpenDatabase(dbsettings, p_dirPath);
     if (!open_success) return false;
     std::cout << "Writing local buffer file to database" << std::endl;
