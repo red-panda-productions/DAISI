@@ -2,8 +2,8 @@
 #include "IDataStorage.h"
 #include <string>
 #include <unordered_map>
+#include "MySQLHeaders.h"
 #include <fstream>
-#include "mysql/jdbc.h"
 #include "ConfigEnums.h"
 
 /// @brief A class that can store data to a SQL database

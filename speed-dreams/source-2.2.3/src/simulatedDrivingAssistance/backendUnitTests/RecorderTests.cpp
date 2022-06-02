@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "Recorder.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
+#include "FileSystem.hpp"
 #include <tgf.h>
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include <experimental/filesystem>
+
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY "test_test_data"
@@ -15,13 +15,13 @@
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the binary [contents]
 #define ASSERT_BINARY_RECORDER_CONTENTS(folder, recordingName, filename, contents) \
-    ASSERT_BINARY_FILE_CONTENTS(folder + ("\\" recordingName "\\" filename), contents)
+    ASSERT_BINARY_FILE_CONTENTS(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename), contents)
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
 #define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
     {                                                                                               \
-        std::cout << "Reading file from " << (folder + (recordingName "\\" filename)) << std::endl; \
-        std::ifstream file(folder + ("\\" recordingName "\\" filename));                            \
+        std::cout << "Reading file from " << (folder + (recordingName OS_SEPARATOR filename)) << std::endl; \
+        std::ifstream file(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename));                            \
         ASSERT_TRUE(file.is_open());                                                                \
         std::stringstream buffer;                                                                   \
         buffer << file.rdbuf();                                                                     \
@@ -41,8 +41,8 @@
 /// @return Path to the testing directory (without trailing backslash)
 inline std::string GetTestingDirectory()
 {
-    std::experimental::filesystem::path sdaFolder;
-    if (!GetSdaFolder(sdaFolder)) throw std::exception("SDA folder not found");
+    filesystem::path sdaFolder;
+    if (!GetSdaFolder(sdaFolder)) THROW_RPP_EXCEPTION("SDA folder not found");
     return sdaFolder.append(TEST_DIRECTORY).string();
 }
 
@@ -51,23 +51,23 @@ TEST(RecorderTests, RecorderConstructorCreatesEmptyFile)
 {
     std::string folder = GetTestingDirectory();
     // Delete the existing test directory to ensure directories are properly created
-    if (std::experimental::filesystem::exists(folder))
+    if (filesystem::exists(folder))
     {
-        std::experimental::filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
+        filesystem::remove_all(folder);  // @NOCOVERAGE, this folder never exists on github
     }
 
     // Create a recorder without storing any parameters
     Recorder recorder(TEST_DIRECTORY, "constructor_creates_file", 0, 0);
 
     // Ensure file is created with the proper name
-    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME));
-    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME));
-    ASSERT_TRUE(std::experimental::filesystem::exists(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR USER_INPUT_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR DECISIONS_RECORDING_FILE_NAME));
+    ASSERT_TRUE(filesystem::exists(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR SIMULATION_DATA_RECORDING_FILE_NAME));
 
     // Ensure the file is empty
-    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" USER_INPUT_RECORDING_FILE_NAME)
-    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" DECISIONS_RECORDING_FILE_NAME)
-    ASSERT_FILE_EMPTY(folder + "\\constructor_creates_file\\" SIMULATION_DATA_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR USER_INPUT_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR DECISIONS_RECORDING_FILE_NAME)
+    ASSERT_FILE_EMPTY(folder + OS_SEPARATOR "constructor_creates_file" OS_SEPARATOR SIMULATION_DATA_RECORDING_FILE_NAME)
 }
 
 /// @brief Test the recorder with a single parameter, for different compression options and scenarios
@@ -202,7 +202,7 @@ TEST(RecorderTests, WriteOnlyTime)
 
     std::stringstream expectedDecisions;
 
-    expectedDecisions << bits(0) << bits(3) << bits(435) << bits(95875);
+    expectedDecisions << bits(0ul) << bits(3ul) << bits(435ul) << bits(95875ul);
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
 
@@ -313,7 +313,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     if (carHandle == nullptr)
     {
-        throw std::exception("Could not load test_car.xml");  // @NOCOVERAGE, should always be available
+        THROW_RPP_EXCEPTION("Could not load test_car.xml");  // @NOCOVERAGE, should always be available
     }
 
     // Set the car handle to the just loaded xml file
@@ -414,15 +414,15 @@ TEST(RecorderTests, WriteRunSettingsTests)
                                                                                             \
         if (!GetSdaFolder(varName))                                                         \
         {                                                                                   \
-            throw std::exception("Failed to get SDA folder");                               \
+            THROW_RPP_EXCEPTION("Failed to get SDA folder");                                \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
-        std::experimental::filesystem::create_directories(varName);                         \
+        filesystem::create_directories(varName);                         \
                                                                                             \
         /* Delete the existing test directory to ensure directories are properly created */ \
-        if (std::experimental::filesystem::exists(varName))                                 \
+        if (filesystem::exists(varName))                                 \
         {                                                                                   \
-            std::experimental::filesystem::remove_all(varName);                             \
+            filesystem::remove_all(varName);                             \
         }                                                                                   \
                                                                                             \
         filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \
@@ -504,7 +504,7 @@ void AssertTargetVersionChanges(void* p_upgradedRunSettingsHandle, filesystem::p
             AssertV4ToV5Changes(p_upgradedRunSettingsHandle);
             break;
         default:
-            throw std::exception("Unknown target version, cannot assert");
+            THROW_RPP_EXCEPTION("Unknown target version, cannot assert");
     }
 }
 
@@ -517,13 +517,12 @@ class RecorderUpgradeVersionTestFixture : public ::testing::TestWithParam<int>
 TEST_P(RecorderUpgradeVersionTestFixture, UpgradeToVersion)
 {
     int targetVersion = GetParam();
-
     // Start upgrading from the base v0 recording.
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
     ASSERT_TRUE(Recorder::ValidateAndUpdateRecording(toUpgrade, targetVersion));
 
     // Check whether the updated recording settings were correctly created.
-    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), 0, true);
+    void* upgradedRunSettingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
     ASSERT_NE(upgradedRunSettingsHandle, nullptr);
 
     // Now on the targeted version
@@ -548,6 +547,34 @@ TEST(RecorderTests, UpgradeToUnkownVersion)
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, unknownVersion));
     ASSERT_THROW(AssertTargetVersionChanges(nullptr, toUpgrade, unknownVersion), std::exception);
+}
+
+/// @brief Attempts to upgrade to a recording that misses the category in the track xml
+TEST(RecorderTests, UpgradeV0WithMissingCategory)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
+    
+    // Remove category attribute from track xml file
+    void* settingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
+    const char* trackFileName = GfParmGetStr(settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
+    void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+    GfParmRemove(trackHandle, "Header", "category");
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, 1));
+}
+
+/// @brief Attempts to upgrade to a recording that misses the track name in the track xml
+TEST(RecorderTests, UpgradeV0WithMissingName)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
+
+    // Remove track attribute from track xml file
+    void* settingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
+    const char* trackFileName = GfParmGetStr(settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
+    void* trackHandle = GfParmReadFile(trackFileName, 0, true);
+    GfParmRemove(trackHandle, "Header", "name");
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toUpgrade, 1));
 }
 
 TEST(RecorderTests, InvalidXMLSettingsFileValidate)

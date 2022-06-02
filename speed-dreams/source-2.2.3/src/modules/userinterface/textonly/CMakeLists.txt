@@ -13,7 +13,7 @@ ENDIF(OPTION_CLIENT_SERVER)
 
 #INCLUDE_DIRECTORIES(.)
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata ${NETWORKING_INC} backend)
+ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata ${NETWORKING_INC} backend rppUtils)
 ADD_PLIB_INCLUDEDIR()
 
 IF(OPTION_SDL2)

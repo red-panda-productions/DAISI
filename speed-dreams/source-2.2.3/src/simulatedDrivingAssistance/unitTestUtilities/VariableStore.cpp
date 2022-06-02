@@ -4,7 +4,7 @@
 /// @return The singleton instance
 VariableStore& VariableStore::GetInstance()
 {
-    static VariableStore Instance;
+    static VariableStore Instance = {};
 
     return Instance;
 }

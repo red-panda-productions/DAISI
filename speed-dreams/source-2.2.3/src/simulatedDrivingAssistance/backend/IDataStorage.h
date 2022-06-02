@@ -1,10 +1,7 @@
 #pragma once
 
 #include <string>
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-
-#include <experimental/filesystem>
+#include "FileSystem.hpp"
 
 /// @brief An interface for classes that can store data
 class IDataStorage

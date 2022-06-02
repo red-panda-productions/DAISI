@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "TestUtils.h"
 #include "InterventionFactory.h"
-#include "InterventionExecutorAskFor.h"
 #include "InterventionExecutorIndication.h"
 #include "InterventionExecutorPerformWhenNeeded.h"
+#include "InterventionExecutorAutonomousAI.h"
 #include "InterventionExecutorNoIntervention.h"
 #include "InterventionExecutorAlwaysIntervene.h"
 
@@ -22,6 +22,8 @@ TEST(FactoryTests, Creation)
         dynamic_cast<InterventionExecutorPerformWhenNeeded*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_SHARED_CONTROL)), nullptr);
     ASSERT_NE(
         dynamic_cast<InterventionExecutorAlwaysIntervene*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_COMPLETE_TAKEOVER)), nullptr);
+    ASSERT_NE(
+        dynamic_cast<InterventionExecutorAutonomousAI*>(factory.CreateInterventionExecutor(INTERVENTION_TYPE_AUTONOMOUS_AI)), nullptr);
 }
 
 /// @brief Tests if the Factory creates the InterventionExecutorNoIntervention if the input is incorrect
