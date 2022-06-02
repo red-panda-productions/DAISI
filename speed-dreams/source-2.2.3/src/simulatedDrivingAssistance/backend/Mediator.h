@@ -109,7 +109,7 @@ private:
 
     DecisionMaker m_decisionMaker;
 
-    uint32_t m_tickCount = 0;
+    unsigned long m_tickCount = 0;
     tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;

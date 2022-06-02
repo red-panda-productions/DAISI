@@ -4,10 +4,6 @@
 #include <tgf.h>
 #include "RppUtils.hpp"
 
-static_assert(sizeof(float) == 4, "Float should be 4 bytes");
-static_assert(std::numeric_limits<float>::is_iec559, "Should support IEEE 754");
-static_assert(sizeof(double) == 8, "Double should be 8 bytes");
-
 /// @brief Create a file to record the data to. Truncate if the file already exists.
 /// @param p_recordingsFolder The folder to place the file in
 /// @param p_decisionsRecordingFile  The stream to open the file on
@@ -150,8 +146,8 @@ void Recorder::WriteSimulationData(const float* p_simulationData, const double p
 
 /// @brief Write decision data to the output file
 /// @param p_userInput Decision data to write, should be an array >= m_decisionParamAmount
-/// @param p_timestamp Timestamp at which the decision data occurred
-void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const uint32_t p_timestamp)
+/// @param p_timestamp Timestamp at which the decision data occured
+void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const unsigned long p_timestamp)
 {
     if (p_decisions == nullptr)
     {
