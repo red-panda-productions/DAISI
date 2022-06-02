@@ -176,7 +176,8 @@
 #define TRK_VAL_STR                 "str"
 #define TRK_VAL_LFT                 "lft"
 #define TRK_VAL_RGT                 "rgt"
-
+// SIMULATED DRIVING ASSISTANCE: added speed limit
+#define TRK_ATT_SPEEDLIMIT          "speedLimit"
 #define TRK_ATT_LG                  "lg"
 #define TRK_ATT_RADIUS              "radius"
 #define TRK_ATT_RADIUSEND           "end radius"
@@ -369,8 +370,10 @@ typedef struct trackSeg
 #define TR_PITBUILDING	4       /**< Pit building wall (barrier only) */
 
     tdble length;               /**< Length in meters of the middle of the track */
-    /// SIMULATED DRIVING ASSISTANCE: added tdble time
-    tdble Time;               /**< Estimated time in seconds */
+    /// SIMULATED DRIVING ASSISTANCE: added tdble Time
+    tdble Time;                 /**< Estimated time in seconds */
+    // SIMULATED DRIVING ASSISTANCE: added tdble SpeedLimit
+    tdble SpeedLimit;           /** Speed limit in km/h for the track*/
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
     tdble endWidth;             /**< Width of the end of the segment */
@@ -674,8 +677,10 @@ typedef struct Track
     int           nseg;         /**< Number of segments */
     int           version;      /**< Version of the track type */
     tdble         length;       /**< main track length */
-    /// SIMULATED DRIVING ASSISTANCE: added the time property
+    /// SIMULATED DRIVING ASSISTANCE: added the Time property
     tdble         Time;         /**< main track time (estimated) */ 
+    // SIMULATED DRIVING ASSISTANCE: added the SpeedLimit property
+    tdble         SpeedLimit;   /**< speed limit of the track */      
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */

@@ -658,8 +658,10 @@ bool GfTrack::load() const
 	_strDesc = pTrack->descr;
 	_strAuthors = pTrack->authors;
 	_fLength = pTrack->length;
-    /// SIMULATED DRIVING ASSISTANCE: added _fEstimatedTime 
+    /// SIMULATED DRIVING ASSISTANCE: added EstimatedTime 
     EstimatedTime = pTrack->Time;
+    /// SIMULATED DRIVING ASSISTANCE: added SpeedLimit
+    SpeedLimit = pTrack->SpeedLimit;
 	_fWidth = pTrack->width;
 	_nMaxPitSlots = pTrack->pits.nMaxPits;
 

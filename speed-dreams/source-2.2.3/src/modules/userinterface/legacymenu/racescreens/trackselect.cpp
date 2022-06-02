@@ -60,6 +60,8 @@ static int LengthLabelId;
 static int WidthLabelId;
 // SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
 static int EstimatedTimeLabelId;
+// SIMULATED DRIVING ASSISTANCE: added speed limit label menu controls
+static int SpeedLimitLabelId;
 static int DescLine1LabelId;
 static int DescLine2LabelId;
 static int MaxPitsLabelId;
@@ -148,6 +150,13 @@ rmtsUpdateTrackInfo(void)
     PCurTrack->SetEstimatedTime();
     ossData << PCurTrack->GetEstimatedTime() << " minutes";
     GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
+
+    // SIMULATED DRIVING ASSISTANCE: add the speed limit text to the track select menu
+	// 9) (Average) speed limit for the full track in km/h.
+    ossData.str("");
+    PCurTrack->GetSpeedLimit();
+    ossData << PCurTrack->GetSpeedLimit() << " km/h";
+    GfuiLabelSetText(ScrHandle, SpeedLimitLabelId, ossData.str().c_str());
 }
 
 static void
