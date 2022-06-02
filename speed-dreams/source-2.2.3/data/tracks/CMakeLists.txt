@@ -4,7 +4,6 @@ INCLUDE(../../cmake/macros.cmake)
 SD_ADD_SUBDIRECTORY(dirt)
 SD_ADD_SUBDIRECTORY(circuit)
 SD_ADD_SUBDIRECTORY(speedway)
-SD_ADD_SUBDIRECTORY(road)
 
 # Work-in-progress track sets.
 IF(NOT OPTION_OFFICIAL_ONLY)

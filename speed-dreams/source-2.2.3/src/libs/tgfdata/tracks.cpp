@@ -308,9 +308,6 @@ GfTrack* GfTracks::getFirstUsableTrack(const std::string& strCatId,
 									   const std::string& strFromTrackId,
 									   int nSearchDir, bool bSkipFrom) const
 {
-    // SIMULATED DRIVING ASSISTANCE change: Skip the test road so that it won't show in the track selector
-    if (strCatId == "road") return 0;
-
 	// Check and fix nSearchDir.
 	nSearchDir = nSearchDir > 0 ? +1 : -1;
 	
