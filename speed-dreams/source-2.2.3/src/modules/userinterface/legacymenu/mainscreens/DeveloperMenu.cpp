@@ -291,7 +291,7 @@ static void SetDefaultThresholdValues(void*)
     // load the path in the xml based on the interventiontype
     std::string m_path = "DefaultThresholdValues/";
     int m_interventionType = SMediator::GetInstance()->GetInterventionType();
-    //if the intervention type is no signals, don't change any values
+    // if the intervention type is no signals, don't change any values
     if (m_interventionType == INTERVENTION_TYPE_NO_SIGNALS)
         return;
     m_path += s_interventionTypeString[m_interventionType];
