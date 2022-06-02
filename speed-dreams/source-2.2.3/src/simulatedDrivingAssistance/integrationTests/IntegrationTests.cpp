@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "IntegrationTestConfig.h"
 #include "Recorder.h"
 #include <fstream>
@@ -12,8 +12,6 @@
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
-
-namespace filesystem = std::experimental::filesystem;
 
 #define BB_FILE       DECISIONS_RECORDING_FILE_NAME
 #define REPLAY_ARG    "--replay \""
@@ -28,7 +26,7 @@ namespace filesystem = std::experimental::filesystem;
 /// @param  p_bbfile    The path to the black box recording file
 void CheckFiles(const filesystem::path& p_path, filesystem::path& p_bbfile)
 {
-    for (const auto& entry : std::experimental::filesystem::directory_iterator(p_path))
+    for (const auto& entry : filesystem::directory_iterator(p_path))
     {
         filesystem::path file = entry.path();
         filesystem::path filename = file.filename();

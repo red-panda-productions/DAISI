@@ -1,5 +1,5 @@
 #include "GeneratorUtils.h"
-#include "../rppUtils/Random.hpp"
+#include "Random.hpp"
 #include "robot.h"
 
 // Lifted wholesale from BlackBoxDataTests.cpp, provides generator methods for the following structs: tCarElt, tSituation, tTrackSeg and for aTrackSeg*
