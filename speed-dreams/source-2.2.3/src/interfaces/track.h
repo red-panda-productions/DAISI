@@ -178,8 +178,6 @@
 #define TRK_VAL_STR                 "str"
 #define TRK_VAL_LFT                 "lft"
 #define TRK_VAL_RGT                 "rgt"
-// SIMULATED DRIVING ASSISTANCE: added speed limit
-#define TRK_ATT_SPEEDLIMIT          "speedLimit"
 #define TRK_ATT_LG                  "lg"
 #define TRK_ATT_RADIUS              "radius"
 #define TRK_ATT_RADIUSEND           "end radius"
@@ -374,8 +372,6 @@ typedef struct trackSeg
     tdble length;               /**< Length in meters of the middle of the track */
     /// SIMULATED DRIVING ASSISTANCE: added tdble Time
     tdble Time;                 /**< Estimated time in seconds */
-    // SIMULATED DRIVING ASSISTANCE: added tdble SpeedLimit
-    //tdble SpeedLimit;           /** Speed limit in km/h for the track*/
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
     tdble endWidth;             /**< Width of the end of the segment */
