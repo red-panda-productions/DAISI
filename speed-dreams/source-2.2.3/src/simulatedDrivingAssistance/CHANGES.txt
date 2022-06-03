@@ -36,11 +36,14 @@ Added:
         DataCompressionMenu.cpp
         ResearcherMenu.h
         ResearcherMenu.cpp
+        FileDialogManager.h
+        FileDialogManager.cpp
     modules/userinterface/legacymenu/racescreens/
         SaveMenu.cpp
         EndExperimentMenu.cpp
         ConformationMenu.cpp
   data/
+
     data/
         config/
             raceman/
@@ -59,6 +62,8 @@ Added:
             bg-button-two_focused.png
             bg-button-two_pushed.png
             head.png
+            Textbox_EndStart_screen.png
+            Menu_Background_EndStart_screen.png
         indicators/
             *
         menu/
@@ -112,12 +117,17 @@ Changed:
                 changed backend added to ADD_SDLIB_INCLUDEDIR
                 changed frontend added to ADD_SDLIB_LIBRARY
                 changed backend added to ADD_SDLIB_LIBRARY
+                added rppUtils and Filesystem for Linux
         tgf/
             params.cpp
                 Modified xmlGetOuputLine to write floats with full precision.
             tgf.h
                 added GF_LOGGING_ENABLE and GF_LOGGING_DISABLE macro's for clearer code
         tgfclient/
+            CMakeLists.txt
+                Removed WebServer functionalities
+            guieventloop.cpp
+                removed WebServer functionalities
             gui.h
                 added   tGfuiRadioButtonList
                 added   tGfuiRadioButton
@@ -165,8 +175,6 @@ Changed:
 
                 added   GfuiDrawString(): overload
                 added   GfuiFontClass: expose to API
-            webserver.cpp
-                changed NotificationManager::updateWebserverStatusUi
     main/
         main.cpp
             added singletonfolder setup
@@ -175,6 +183,8 @@ Changed:
             added HasValidRaceStartArguments()
 
             changed check to call custom HasValidRaceStartArguments method
+        CMakeLists.txt
+            added rppUtils and Filesystem for Linux
     interfaces/
         playerpref.h
             added   HM_ADRV_FILE define
@@ -192,23 +202,33 @@ Changed:
                  engine.cpp
                     Changed the car->engine.fuelcons to value 0
         racing/standardgame
+            raceresults.cpp
+                removed WebServer functionalities
             raceinit.cpp
                 changed reLoadSingleCar() to fix isHuman flag
                 changed ReInitCars() to fix isHuman flag
                 changed ReCleanup() to also shut down updaters
+                removed WebServer functionalities
             racesituation.cpp
                 change deltaTime to be constant value
+                removed WebServer functionalities
             racestate.cpp
                 changed several RE_STATE_RACE_COOLDOWN modes to RE_STATE_RACE_END modes
             racemain.cpp
                 removed enabling of cooldown and changed it to enabling of race ending
             racetrack.cpp
                 changed ReTrackInit() to load track from Mediator
+            CMakeLists.txt
+                added rppUtils and Filesystem for Linux
+        racing/genparoptv1
+            CMakeLists.txt
+                added rppUtils and Filesystem for Linux
 
         sound/snddefault/
             CMakeLists.txt
                 added frontend
                 added backend
+                added rppUtils and Filesystem for Linux
             grsound.cpp
                 added intervention sound initialization
                 added intervention sound volume setting
@@ -255,6 +275,7 @@ Changed:
                   added    backend in both ADD_SDLIB_LIBRARY and ADD_SDLIB_INCLUDEDIR
                   removed  player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                   added    DataCompressionMenu.cpp and .h
+                  added    rppUtils and Filesystem for Linux
                 legacymenu.h
                     ActivateResearcherMenu()
                 legacymenu.cpp
@@ -348,13 +369,16 @@ Changed:
             textonly/
                 CMakeLists.txt
                     added backend
+                    added rppUtils and Filesystem for Linux
                 textonly.cpp
                     added includes
                     added LoadReplayConfiguration
                     changed TextOnlyUI::activate()
         graphic/
             ssggraph/
-                CMakeLists.txt added connection to frontend module
+                CMakeLists.txt
+                    added connection to frontend module
+                    added rppUtils and Filesystem for Linux
                 grboard.cpp
                     included "Mediator.h"
                     included "IndicatorConfig.h"
@@ -454,16 +478,21 @@ Changed:
 
                 grscreen.h
                     removed selectTrackMap()
-
+    tools/trackgen
+        CMakeLists.txt
+            added rppUtils and Filesystem for Linux
 
   data/
-      config/raceman
-        CMakeLists.txt
-        quickrace.xml
-            changed standard track
-        removed practice.xml
-        removed singleevent-challange.xml
-        removed singleeven-endurance.xml
+      config/
+          CMakeLists.txt 
+              removed WebServer functionalities
+          raceman/
+            CMakeLists.txt
+            quickrace.xml
+               changed standard track
+               removed practice.xml
+               removed singleevent-challange.xml
+               removed singleeven-endurance.xml
       cars/models/primo/
         primo.xml
            removed the fuel cons factor
@@ -524,6 +553,10 @@ Changed:
 
 Deleted:
    src/
+      libs/tgfclient/
+         webserver.cpp and webserver.h
+      data/config/
+         webserver.xml
       modules/
          simu/
             simuv2.1/

@@ -53,6 +53,10 @@ ENDIF(OPTION_SDL2)
 ADD_PLIB_LIBRARY(${_TARGET_NAME} sg ssg ul)
 ADD_DL_LIBRARY(${_TARGET_NAME})
 
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(${_TARGET_NAME} stdc++fs)
+ENDIF(UNIX)
+
 # Needed when using the "MinGW Makefiles" CMake generator (but not with the "MSYS Makefiles" one !?)
 IF(MINGW)
 	TARGET_LINK_LIBRARIES(${_TARGET_NAME} ${MINGW32_LIBRARY})

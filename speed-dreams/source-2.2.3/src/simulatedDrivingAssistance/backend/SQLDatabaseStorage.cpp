@@ -1,7 +1,7 @@
 #include "SQLDatabaseStorage.h"
-#include "mediator.h"
+#include "Mediator.h"
 #include <string>
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "ConfigEnums.h"
 #include <config.h>
 
@@ -10,7 +10,7 @@
     if (p_inputFile.eof())                                       \
     {                                                            \
         p_inputFile.close();                                     \
-        throw std::exception("Reached end of file prematurely"); \
+        THROW_RPP_EXCEPTION("Reached end of file prematurely");  \
     }                                                            \
     std::getline(p_inputFile, p_string);
 
@@ -53,7 +53,7 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 
 /// @brief Creates a database and stores data from input file into the correct database structure
 /// @param p_inputFilePath path and name of input file
-void SQLDatabaseStorage::StoreData(const std::experimental::filesystem::path& p_inputFilePath)
+void SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
 {
     // Check the existence of an input file
     std::ifstream inputFile(p_inputFilePath);
@@ -195,7 +195,7 @@ void SQLDatabaseStorage::CreateTables()
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Settings (\n"
         "    settings_id         INT  NOT NULL AUTO_INCREMENT,\n"
-        "    intervention_mode   ENUM('Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
+        "    intervention_mode   ENUM('Drive', 'Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off',\n"
         "    \n"
         "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id),\n"
         "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
@@ -385,8 +385,11 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
         case INTERVENTION_TYPE_COMPLETE_TAKEOVER:
             values = "'Force'";
             break;
+        case INTERVENTION_TYPE_AUTONOMOUS_AI:
+            values = "'Drive'";
+            break;
         default:
-            throw std::exception("Invalid intervention type index read from buffer file");
+            THROW_RPP_EXCEPTION("Invalid intervention type index read from buffer file");
     }
 
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))
@@ -624,7 +627,7 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             and if applicable the "database_encryption_settings.txt".
 ///                             needs "\\" in front
 ///                             if left out path will be data folder
-void SQLDatabaseStorage::Run(const std::experimental::filesystem::path& p_inputFilePath, const std::string& p_dirPath)
+void SQLDatabaseStorage::Run(const filesystem::path& p_inputFilePath, const std::string& p_dirPath)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 

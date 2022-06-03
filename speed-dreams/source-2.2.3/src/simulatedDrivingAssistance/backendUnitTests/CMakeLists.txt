@@ -2,7 +2,7 @@ INCLUDE(../../../cmake/macros.cmake)
 
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities)
+ADD_SDLIB_INCLUDEDIR(tgf tgfclient math portability backend frontend unitTestUtilities rppUtils)
 
 IF(OPTION_SDL2)
     ADD_SDL2_INCLUDEDIR()
@@ -59,10 +59,14 @@ SET(_MOCK_HEADERS
 SD_ADD_EXECUTABLE(backendUnitTests ${_SOURCES} ${_HEADERS} ${_MOCK_SOURCES} ${_MOCK_HEADERS})
 
 target_link_libraries(
-  backendUnitTests #moet het zelfde zijn
+  backendUnitTests
   gtest_main
   gmock_main
 )
+
+IF(UNIX)
+    TARGET_LINK_LIBRARIES(backendUnitTests stdc++fs)
+ENDIF(UNIX)
 
 ADD_SDLIB_LIBRARY(backendUnitTests tgf tgfclient portability backend frontend unitTestUtilities)
 
@@ -70,7 +74,11 @@ ADD_MSGPACK_PACKAGE(backendUnitTests)
 
 ADD_IPCLIB_PACKAGE(backendUnitTests)
 
-SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+ADD_MYSQL_PACKAGE(backendUnitTests)
+
+IF(WIN32)
+    SD_INSTALL_CUSTOM_3RDPARTY(backendUnitTests)
+ENDIF(WIN32)
 
 include(GoogleTest)
 gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
@@ -79,13 +87,13 @@ gtest_discover_tests(backendUnitTests DISCOVERY_TIMEOUT 600)
 SET(BACKEND_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/simulatedDrivingAssistance/backend")
 
 SET(BAT_NAME "BackendCoverage")
-SET(EXE_PATH "${CMAKE_BINARY_DIR}/bin/backendUnitTests.exe")
+SET(EXE_NAME "backendUnitTests")
 SET(SOURCE_DIR "${BACKEND_SOURCE_DIR}")
 SET(EXCLUDED_SOURCES "${BACKEND_SOURCE_DIR}/IPCPointerManager.h;${BACKEND_SOURCE_DIR}/IPCPointerManager.inl")
 SET(EXCLUDED_LINE "\" *\\\\{ *|.*@NOCOVERAGE.*| *\\\\} *\"")
 
 IF(OPTION_GITHUB_ACTIONS)
-    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "cobertura" "BackendCoverage.xml" "FrontendCoverage.cov")
+    CREATE_OPEN_CPP_COVERAGE_BAT_GITHUB("${BAT_NAME}" "${EXE_NAME}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}" "cobertura" "FrontendCoverage")
 ELSE(OPTION_GITHUB_ACTIONS)
-    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_PATH}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
+    CREATE_OPEN_CPP_COVERAGE_BAT("${BAT_NAME}" "${EXE_NAME}" "${SOURCE_DIR}" "${EXCLUDED_SOURCES}" "${EXCLUDED_LINE}")
 ENDIF(OPTION_GITHUB_ACTIONS)

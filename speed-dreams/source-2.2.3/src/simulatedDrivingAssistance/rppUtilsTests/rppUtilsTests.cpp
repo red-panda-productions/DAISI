@@ -1,4 +1,4 @@
-#include "../rppUtils/RppUtils.hpp"
+#include "RppUtils.hpp"
 #include "../unitTestUtilities/TestUtils.h"
 #include <gtest/gtest.h>
 

@@ -11,24 +11,24 @@
 class FileDataStorageMock
 {
 public:
-    std::experimental::filesystem::path Initialize(tDataToStore p_saveSettings,
-                                                   const std::string& p_fileName,
-                                                   const std::string& p_userId,
-                                                   const std::time_t& p_trialStartTime,
-                                                   const std::string& p_blackboxFilename,
-                                                   const std::string& p_blackboxName,
-                                                   const std::time_t& p_blackboxTime,
-                                                   const std::string& p_environmentFilename,
-                                                   const std::string& p_environmentName,
-                                                   int p_environmentVersion,
-                                                   InterventionType p_interventionType)
+    filesystem::path Initialize(tDataToStore p_saveSettings,
+                                const std::string& p_fileName,
+                                const std::string& p_userId,
+                                const std::time_t& p_trialStartTime,
+                                const std::string& p_blackboxFilename,
+                                const std::string& p_blackboxName,
+                                const std::time_t& p_blackboxTime,
+                                const std::string& p_environmentFilename,
+                                const std::string& p_environmentName,
+                                int p_environmentVersion,
+                                InterventionType p_interventionType)
     {
         SaveSettings = p_saveSettings;
         TrialStartTime = p_trialStartTime;
         BlackboxTime = p_blackboxTime;
         EnvironmentVersion = p_environmentVersion;
-        InterventionType = p_interventionType;
-        std::experimental::filesystem::path filePath = std::experimental::filesystem::temp_directory_path();
+        Intervention = p_interventionType;
+        filesystem::path filePath = filesystem::temp_directory_path();
         filePath.append(p_fileName);
         return {filePath};
     }
@@ -36,7 +36,7 @@ public:
     time_t TrialStartTime;
     time_t BlackboxTime;
     int EnvironmentVersion;
-    InterventionType InterventionType;
+    InterventionType Intervention;
     DecisionTuple* SavedDecisions;
 
     void Shutdown()

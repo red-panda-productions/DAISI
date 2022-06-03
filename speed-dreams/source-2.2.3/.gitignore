@@ -27,10 +27,16 @@ data/certificates/*
 data/tracks/road/flo-experiment-track
 
 BackendCoverage.bat
+BackendCoverage.sh
 
 FrontendCoverage.bat
+FrontendCoverage.sh
 
 UnitUtilitiesCoverage.bat
+UnitUtilitiesCoverage.sh
+
+RppUtilsCoverage.bat
+RppUtilsCoverage.sh
 
 Folder.DotSettings.user
 
@@ -38,9 +44,10 @@ temp/
 
 src/simulatedDrivingAssistance/integrationTests/IntegrationTestConfig.h
 
-RppUtilsCoverage.bat
-
 Folder.DotSettings.user
 
 enc_temp_folder
+
+*Coverage.json
+*Coverage.cov
 
