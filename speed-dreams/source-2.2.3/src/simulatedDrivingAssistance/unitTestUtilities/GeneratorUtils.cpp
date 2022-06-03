@@ -156,6 +156,7 @@ void DestroySegments(TestSegments& p_segments)
         }
         delete p_segments.NextSegments[i].cam;  // COPY NOT IMPLEMENTED
     }
+    delete[] p_segments.NextSegments;
 }
 
 /// @brief Generates a random car
