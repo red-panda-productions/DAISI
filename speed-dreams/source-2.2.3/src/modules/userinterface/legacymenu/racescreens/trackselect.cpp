@@ -59,8 +59,6 @@ static int LengthLabelId;
 static int WidthLabelId;
 // SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
 static int EstimatedTimeLabelId;
-// SIMULATED DRIVING ASSISTANCE: added speed limit label menu controls
-static int SpeedLimitLabelId;
 static int DescLine1LabelId;
 static int DescLine2LabelId;
 static int MaxPitsLabelId;
@@ -132,23 +130,24 @@ rmtsUpdateTrackInfo(void)
 
     // SIMULATED DRIVING ASSISTANCE: removed display of pit stops
 
-    // SIMULATED DRIVING ASSISTANCE: add the speed limit text to the track select menu
-    // 5) (Average) speed limit for the full track in km/h.
-    ossData.str("");
-    ossData << PCurTrack->GetSpeedLimit() << " km/h";
-    GfuiLabelSetText(ScrHandle, SpeedLimitLabelId, ossData.str().c_str());
-
-    // 6) Outline image.
+    // 5) Outline image.
     GfuiStaticImageSet(ScrHandle, OutlineImageId, PCurTrack->getOutlineFile().c_str());
 
-    // 7) Preview image (background).
+    // 6) Preview image (background).
     GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
 
     // SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
-    // 8) Estimated time to complete a track in minutes.
+    // 7) Estimated time to complete a track in minutes.
     ossData.str("");
     PCurTrack->SetEstimatedTime();
-    ossData << PCurTrack->GetEstimatedTime() << " minutes";
+    if (PCurTrack->GetSpeedLimit() == SPEED_LIMIT_UNSPECIFIED)
+    {
+        ossData << "Unknown";
+    }
+    else
+    {
+        ossData << PCurTrack->GetEstimatedTime() << " minutes";
+    }
     GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
 }
 

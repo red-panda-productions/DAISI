@@ -264,6 +264,9 @@
 #define TRK_SECT_SECTORS            "Sectors"
 #define TRK_ATT_SECTOR_DFS          "distance from start"
 
+// SIMULATED DRIVING ASSISTANCE: add default value for unspecified speed limit.
+#define SPEED_LIMIT_UNSPECIFIED 0.0f
+
 
 /* Parameters strings for track physics constants */
 
