@@ -179,10 +179,10 @@
         <section name="DefaultButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
-            <attstr name="text" val="Set defaults"/>
+            <attstr name="text" val="Reset to defaults"/>
             <attstr name="tip" val="Set default value for current interventiontype"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="410"/>
+            <attnum name="x" val="380"/>
             <attnum name="y" val="280"/>
             <attnum name="width" val="130"/>
             <attstr name="font" val="medium"/>
