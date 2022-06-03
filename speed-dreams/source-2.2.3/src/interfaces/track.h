@@ -681,7 +681,7 @@ typedef struct Track
     tTrackSeg	  *seg;         /**< Segment list for the main track */
     tTrackSurface *surfaces;	/**< Segment surface list */
 
-    // SIMULATED DRIVING ASSISTANCE: add speedlimit and estimated time members
+    // SIMULATED DRIVING ASSISTANCE: added speedlimit and estimated time members
     tdble SpeedLimit; /**< speed limit of the track */
     tdble Time;       /**< main track time (estimated) */  
 
