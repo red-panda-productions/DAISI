@@ -3,7 +3,7 @@
 ![integration-tests-windows](https://github.com/red-panda-productions/speed-dreams/actions/workflows/integration-tests-windows.yml/badge.svg)
 ![coverage-windows](https://github.com/red-panda-productions/speed-dreams/actions/workflows/code-coverage-windows.yml/badge.svg) 
 ![coverage-linux](https://github.com/red-panda-productions/speed-dreams/actions/workflows/code-coverage-linux.yml/badge.svg) 
-![linter](https://github.com/red-panda-productions/speed-dreams/actions/workflows/code-coverage-linux.yml/badge.svg) 
+![linter](https://github.com/red-panda-productions/speed-dreams/actions/workflows/lint.yml/badge.svg) 
 
 # DAISI
 
@@ -20,7 +20,7 @@ Download the version for your OS (Release version is recommended) and launch the
 
 ## Getting Started (Developers)
 
-DAISI is a cmake project, setting it up is easy as long as all of the dependencies are installed correctly.
+DAISI is a CMake project; setting it up is easy, as long as all of the dependencies are installed correctly.
 
 ### Prerequirements
 
@@ -52,7 +52,7 @@ sudo apt install ./ipclib.deb libplib-dev libexpat1-dev libopenscenegraph-dev fr
 ### Installation
 
 #### CLI
-1. Clone the repo
+1. Clone the repository
   ```sh
   git clone https://github.com/red-panda-productions/speed-dreams.git
   ```
@@ -72,14 +72,14 @@ sudo apt install ./ipclib.deb libplib-dev libexpat1-dev libopenscenegraph-dev fr
 
 #### CLion or Visual Studio
 
-1. Clone the repo
+1. Clone the repository
   ```sh
   git clone https://github.com/red-panda-productions/speed-dreams.git
   ```
 2. Open [speed-dreams/source-2.2.3](speed-dreams/source-2.2.3)
 3. Configure your project to use x86 compiler
 4. Wait for CMake configuration to finish
-5. Use `build all` do not assume CLion or Visual Studio will correctly figure out which files have changed, they seem to have trouble understanding the relations between the different modules
+5. Use `build all`, do not assume CLion or Visual Studio will correctly figure out which files have changed, they seem to have trouble understanding the relations between the different modules
 
 #### CMake options
 
@@ -108,5 +108,5 @@ Code responsible for loading intervention settings can be found in [src/simulate
 
 ## Acknowledgments
 
-This project is a fork of the [speed-dreams](http://www.speed-dreams.org/) project. All changes to their code are documented in [CHANGES.txt](speed-dreams/source-2.2.3/src/simulatedDrivingAssistance/CHANGES.txt). 
+This project is a fork of the [Speed Dreams](http://www.speed-dreams.org/) project. All changes to their code are documented in [CHANGES.txt](speed-dreams/source-2.2.3/src/simulatedDrivingAssistance/CHANGES.txt). 
 
