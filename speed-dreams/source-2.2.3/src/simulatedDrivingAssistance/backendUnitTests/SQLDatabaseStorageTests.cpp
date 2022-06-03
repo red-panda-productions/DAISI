@@ -113,21 +113,6 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
                                        TEST_DATA_DIRECTORY "correctSettings"));
 }
 
-/// @brief  Connects to the database, then tries to write the local buffer file, but fails as that file does not exist
-TEST(SQLDatabaseStorageTests, TestDatabaseNonExistantFile)
-{
-    ASSERT_TRUE(SetupSingletonsFolder());
-    chdir(SD_DATADIR_SRC);
-    MAKE_TEST_SETTINGS
-
-    testSettings.UseSSL = false;
-    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
-
-    SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_FALSE(sqlDatabaseStorage.Run(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY "no_test_file.txt",
-                                        TEST_DATA_DIRECTORY "correctSettings"));
-}
-
 /// @brief  Tries to connect to the database but fails
 ///         since the settingsfile in testdata/incorrectSettings has the
 ///         incorrect password
@@ -143,6 +128,21 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     SQLDatabaseStorage sqlDatabaseStorage;
     ASSERT_FALSE(sqlDatabaseStorage.Run(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY "test_file.txt",
                                         TEST_DATA_DIRECTORY "incorrectSettings"));
+}
+
+/// @brief  Connects to the database, then tries to write the local buffer file, but fails as that file does not exist
+TEST(SQLDatabaseStorageTests, TestDatabaseRunNonExistingInputFile)
+{
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    MAKE_TEST_SETTINGS
+
+    testSettings.UseSSL = false;
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    SQLDatabaseStorage sqlDatabaseStorage;
+    ASSERT_FALSE(sqlDatabaseStorage.Run(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY "nonExistingTestFile.notAnExtension",
+                                        TEST_DATA_DIRECTORY "correctSettings"));
 }
 
 /// @brief  Tests whether it will throw no exception when there is an encryption file
