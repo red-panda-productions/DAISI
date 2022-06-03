@@ -30,8 +30,8 @@ the Free Software Foundation; either version 2 of the License, or
   <section name="Graphic">
     <attstr name="3d description" val="curved-road-2-80.acc" />
 
-	<section name="background"> 
-	 <attstr name="background image"  val="background-sky.png"/>
+    <section name="background"> 
+     <attstr name="background image"  val="background-sky.png"/>
 
     <attnum name="background color R" val="0.28125"/>
     <attnum name="background color G" val="0.4375"/>
