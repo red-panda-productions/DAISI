@@ -10,18 +10,18 @@
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attstr name="text" val="Save the data"/>
-            <attstr name="tip" val="Exit from the experiment"/>
+            <attstr name="tip" val="Continue to the save data screen"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="440"/>
-            <attnum name="y" val="41"/>
+            <attnum name="x" val="435"/>
+            <attnum name="y" val="40"/>
             <attnum name="width" val="120"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
             <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-80"/>
-            <attnum name="image y" val="-9"/>
-            <attnum name="image width" val="300"/>
+            <attnum name="image x" val="-60"/>
+            <attnum name="image y" val="-7"/>
+            <attnum name="image width" val="280"/>
             <attnum name="image height" val="40"/>
             <attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
             <attstr name="enabled image" val="data/img/bg-button-big.png"/>
