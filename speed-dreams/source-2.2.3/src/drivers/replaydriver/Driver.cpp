@@ -6,11 +6,18 @@
 #include "RppUtils.hpp"
 
 // Throw an exception when the expression is false
-#define ASSERT_OR_THROW(expression, time)                                               \
-    if (!(expression))                                                            \
-    {                                                                             \
-        GfLogError("Assertion failed: " #expression " was false at time %f!\n", time);             \
-        throw std::runtime_error("Assertion failed: " #expression " was false!"); \
+#define ASSERT_OR_THROW(expression, time)                                              \
+    if (!(expression))                                                                 \
+    {                                                                                  \
+        GfLogError("Assertion failed: " #expression " was false at time %f!\n", time); \
+        throw std::runtime_error("Assertion failed: " #expression " was false!");      \
+    }
+
+#define ASSERT_EQ_OR_THROW(a, b, time)                                                         \
+    if (a != b)                                                                                \
+    {                                                                                          \
+        GfLogError("Assertion failed: " #a " = %f, but expected %f at time %f!\n", a, b, time); \
+        throw std::runtime_error("Assertion failed: " #a "!= " #b);                            \
     }
 
 /// @brief Initialize the replay driver
@@ -87,24 +94,24 @@ void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
     p_simulationDataFile >> bits(acc.y);
     p_simulationDataFile >> bits(acc.z);
 
-    ASSERT_OR_THROW(p_car->pub.DynGCg.pos.x == posG.x, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.pos.y == posG.y, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.pos.z == posG.z, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.vel.x == velG.x, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.vel.y == velG.y, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.vel.z == velG.z, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.acc.x == accG.x, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.acc.y == accG.y, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGCg.acc.z == accG.z, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.pos.x == pos.x, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.pos.y == pos.y, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.pos.z == pos.z, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.vel.x == vel.x, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.vel.y == vel.y, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.vel.z == vel.z, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.acc.x == acc.x, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.acc.y == acc.y, currentTime);
-    ASSERT_OR_THROW(p_car->pub.DynGC.acc.z == acc.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.pos.x, posG.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.pos.y, posG.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.pos.z, posG.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.vel.x, velG.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.vel.y, velG.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.vel.z, velG.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.acc.x, accG.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.acc.y, accG.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.acc.z, accG.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.pos.x, pos.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.pos.y, pos.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.pos.z, pos.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.vel.x, vel.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.vel.y, vel.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.vel.z, vel.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.x, acc.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.y, acc.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.z, acc.z, currentTime);
 }
 
 /// @brief Update the car's controls based on recording at that currentTime.
