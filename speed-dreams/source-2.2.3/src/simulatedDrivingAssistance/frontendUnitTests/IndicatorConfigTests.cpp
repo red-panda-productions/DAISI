@@ -16,7 +16,7 @@
 // Enable multiple flags by doing FLAG1 | FLAG2 | FLAG3
 // Check enabled flags by evaluating (flag & FLAG1), (flag & FLAG2), etc. as boolean
 typedef unsigned int DataGeneration;
-#define VALID                 0         // Generates completely valid data
+#define VALID                   0         // Generates completely valid data
 #define CAN_GENERATE_NULL       (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
 #define INVALID_SCR_POS         (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL   (1 << 2)  // Generates invalid loop intervals
@@ -208,7 +208,6 @@ protected:
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_WIDTH, nullptr, data.Texture->Dimensions.Width);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_HEIGHT, nullptr, data.Texture->Dimensions.Height);
-
 
                 // Only need to write to this specific type, because that is the only one that is loaded in again.
                 GfParmSetStr(fileHandle, xmlSection, s_interventionTypeString[p_interventionType], data.Texture->Path);

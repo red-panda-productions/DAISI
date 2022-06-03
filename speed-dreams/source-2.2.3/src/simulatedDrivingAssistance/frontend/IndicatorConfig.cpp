@@ -111,6 +111,7 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     {
         throw std::out_of_range("X and Y positions should be in the range [0,1]");
     }
+
     return {xPos, yPos};
 }
 
