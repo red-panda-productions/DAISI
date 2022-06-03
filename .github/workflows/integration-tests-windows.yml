@@ -59,7 +59,7 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ccache-${{runner.os}}-${{env.BUILD_TYPE}}
+          key: ccache-${{runner.os}}-${{env.BUILD_TYPE}}-2
           max-size: "2GB"
 
       - name: Install MySQL
