@@ -130,7 +130,6 @@ Changed:
                 added getEstimatedTime function
                 added getSpeedLimit function
                 added setEstimatedTime function
-                added StringToInteger function
         tgfclient/
             gui.h
                 added   tGfuiRadioButtonList
