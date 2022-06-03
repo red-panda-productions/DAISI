@@ -493,7 +493,6 @@ bool SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         if (dataToSave == "Decisions")
         {
             if (!InsertDecisions(p_inputFile, p_trialId, tick)) return false;
-            dataToSave.empty();
         }
         else
             hasReadTick = true;
