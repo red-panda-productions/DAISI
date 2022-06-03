@@ -522,7 +522,7 @@ int GfTrack::getMaxNumOfPitSlots() const
 // SIMULATED DRIVING ASSISTANCE: added the GetEstimatedTime function
 /// @brief  Gets the estimated time it takes to complete one round of a track
 /// @return The estimated time it takes to complete one round of a track
-double GfTrack::GetEstimatedTime() const
+float GfTrack::GetEstimatedTime() const
 {
     // Lazy load scheme : read files only when really needed, and only once.
     if (EstimatedTime < 0)
@@ -533,10 +533,10 @@ double GfTrack::GetEstimatedTime() const
 // SIMULATED DRIVING ASSISTANCE: added GetSpeedLimit function
 /// @brief  Gets the speed limit of the track
 /// @return The speed limit of the track which is either 80 km/h or 100 km/h
-const std::string& GfTrack::GetSpeedLimit() const
+float GfTrack::GetSpeedLimit() const
 {
     // Lazy load scheme : read files only when really needed, and only once.
-    if (SpeedLimit.empty())
+    if (SpeedLimit < 0)
         load();
     return SpeedLimit;
 }
@@ -596,11 +596,10 @@ void GfTrack::setWidth(float fWidth)
 
 // SIMULATED DRIVING ASSISTANCE: added the SetEstimatedTime function
 /// @brief Calculates and sets the estimated time it takes to complete a track
+///        Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
 void GfTrack::SetEstimatedTime()
 {
-    /// Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
-    double fEstimatedTime = 60 * (getLength() / (std::stoi(GetSpeedLimit()) * 1000));
-    EstimatedTime = fEstimatedTime;
+    EstimatedTime = 60 * (getLength() / (GetSpeedLimit() * 1000));
 }
 
 void GfTrack::setMaxNumOfPitSlots(int nPitSlots)
@@ -643,12 +642,13 @@ bool GfTrack::load() const
     _strDesc = pTrack->descr;
     _strAuthors = pTrack->authors;
     _fLength = pTrack->length;
-    /// SIMULATED DRIVING ASSISTANCE: added EstimatedTime
-    EstimatedTime = pTrack->Time;
-    /// SIMULATED DRIVING ASSISTANCE: added SpeedLimit
     SpeedLimit = pTrack->SpeedLimit;
     _fWidth = pTrack->width;
     _nMaxPitSlots = pTrack->pits.nMaxPits;
+
+    /// SIMULATED DRIVING ASSISTANCE: added EstimatedTime and SpeedLimit
+    EstimatedTime = pTrack->Time;
+    SpeedLimit = pTrack->SpeedLimit;
 
     // Unload track data.
     piTrackLoader->unload();

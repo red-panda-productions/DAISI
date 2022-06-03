@@ -47,11 +47,12 @@ public:
     const std::string& getOutlineFile() const;
     const std::string& getPreviewFile() const;
     float getLength() const;
-    double GetEstimatedTime() const;
     float getWidth() const;
-    const std::string& GetSpeedLimit() const;
-    int StringToInteger(std::string str);
     int getMaxNumOfPitSlots() const;
+
+    // SIMULATED DRIVING ASSISTANCE: add getters for estimated time and speedlimit
+    float GetEstimatedTime() const;
+    float GetSpeedLimit() const;
 
     bool isUsable() const;
 
@@ -66,8 +67,10 @@ public:
     void setPreviewFile(const std::string& strPreviewFile);
     void setLength(float fLength);
     void setWidth(float fWidth);
-    void SetEstimatedTime();
     void setMaxNumOfPitSlots(int nPitSlots);
+
+    // SIMULATED DRIVING ASSISTANCE: add setter for estimated time
+    void SetEstimatedTime();
 
 protected:
     bool load() const;
@@ -84,9 +87,11 @@ protected:
     mutable std::string _strDesc;     // Description.
     mutable float _fLength;           // Length (m).
     mutable float _fWidth;            // Width (m).
-    mutable float EstimatedTime;      // SIMULATED DRIVING ASSISTANCE: added Time (m).
-    mutable std::string SpeedLimit;   // SIMULATED DRIVING ASSISTANCE: added SpeedLimit (m).
     mutable int _nMaxPitSlots;        // Max. number of pit slots (m).
+
+    // SIMULATED DRIVING ASSISTANCE: added Time (minutes) and SpeedLimit (km/h).
+    mutable float EstimatedTime;
+    mutable float SpeedLimit;
 
     mutable bool _bUsable;  // False if anything wrong.
 };

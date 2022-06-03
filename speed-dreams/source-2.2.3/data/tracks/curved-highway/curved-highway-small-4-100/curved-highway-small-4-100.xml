@@ -25,7 +25,7 @@ the Free Software Foundation; either version 2 of the License, or
     <attnum name="version" val="4" />
     <attstr name="author" val="Red Panda Productions" />
     <attstr name="description" val="A smaller version of the curved highway. It resembles a dutch highway." />
-    <attstr name="average speed limit" val="100"/>
+    <attnum name="average speed limit" val="100"/>
   </section>
   <section name="Graphic">
     <attstr name="3d description" val="curved-highway-small-4-100.acc" />

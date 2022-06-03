@@ -672,15 +672,15 @@ typedef struct Track
     const char    *subcategory; /**< used for the moment for long/short speedway */
     int           nseg;         /**< Number of segments */
     int           version;      /**< Version of the track type */
-    tdble         length;       /**< main track length */
-    /// SIMULATED DRIVING ASSISTANCE: added the Time property
-    tdble         Time;         /**< main track time (estimated) */  
-    // SIMULATED DRIVING ASSISTANCE: added the SpeedLimit property
-    const char*   SpeedLimit;     /**< speed limit of the track */
+    tdble         length;       /**< main track length */ 
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */
     tTrackSurface *surfaces;	/**< Segment surface list */
+
+    // SIMULATED DRIVING ASSISTANCE: add speedlimit and estimated time members
+    tdble SpeedLimit; /**< speed limit of the track */
+    tdble Time;       /**< main track time (estimated) */  
 
     t3Dd		min;
     t3Dd		max;
