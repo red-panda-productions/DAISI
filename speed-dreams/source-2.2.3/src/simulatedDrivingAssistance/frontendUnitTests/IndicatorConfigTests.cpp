@@ -20,7 +20,7 @@ typedef unsigned int DataGeneration;
 #define CAN_GENERATE_NULL       (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
 #define INVALID_SCR_POS         (1 << 1)  // Generates invalid screen positions
 #define INVALID_LOOP_INTERVAL   (1 << 2)  // Generates invalid loop intervals
-#define INVALID_TEXT_DIMENSIONS (1 << 3)  // Generates invalid screen positions
+#define INVALID_TEXT_DIMENSIONS (1 << 3)  // Generates invalid texture dimensions
 
 /// @brief Test Fixture for testing the loading of indicatorconfig data
 ///        Handles the Setup for every test and logs the seed used to generate random data.

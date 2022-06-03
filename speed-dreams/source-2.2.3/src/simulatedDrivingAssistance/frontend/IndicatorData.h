@@ -9,7 +9,7 @@ typedef struct ScreenPosition
     float X, Y;
 } tScreenPosition;
 
-/// @brief Represents a percentage with which the texture will be scaled.
+/// @brief The dimensions of a texture in pixels.
 typedef struct tTextureDimensions
 {
     float Width, Height;

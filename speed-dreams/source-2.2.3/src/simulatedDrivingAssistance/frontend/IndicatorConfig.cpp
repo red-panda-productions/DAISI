@@ -114,9 +114,9 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     return {xPos, yPos};
 }
 
-/// @brief          Loads the screen position data from the indicator config.xml
+/// @brief          Loads the texture dimensions data from the indicator config.xml
 /// @param p_handle The p_handle to the config.xml file
-/// @param p_path   The C-string pointer to the section containing x- and y-pos attributes
+/// @param p_path   The C-string pointer to the section the dimension data
 /// @return         A struct containing the dimensions data
 tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
 {
