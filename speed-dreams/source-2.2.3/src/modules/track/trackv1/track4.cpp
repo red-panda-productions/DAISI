@@ -1323,7 +1323,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
 
         //SIMULATED DRIVING ASSISTANCE: added speed limit
         // if no speed limit is defined it will be infinity
-        float speedLimit = GfParmGetCurNum(TrackHandle, path, TRK_ATT_SPEEDLIMIT, nullptr, std::numeric_limits<float>::infinity());
+        float speedLimit = GfParmGetCurNum(TrackHandle, path, TRK_ATT_SPEEDLIMIT, nullptr, HUGE_VALF);
 
         /* get segment type and lenght */
         if (strcmp(segtype, TRK_VAL_STR) == 0) {
