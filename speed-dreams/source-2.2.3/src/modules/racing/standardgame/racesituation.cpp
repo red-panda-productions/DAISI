@@ -42,9 +42,6 @@
 #include <robot.h>
 #include <raceman.h>
 #include <replay.h>
-#ifdef WEBSERVER
-#include <webserver.h>
-#endif //WEBSERVER
 
 #include "standardgame.h"
 
@@ -54,6 +51,8 @@
 #include "raceresults.h"
 #include "racemessage.h"
 #include "racenetwork.h"
+
+// SIMULATED DRIVING ASSISTANCE: removed inclusion of webserver.h
 
 
 // The singleton.
@@ -378,58 +377,9 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
     if (replayRecord && pCurrReInfo->s->currentTime >= replayTimestamp) {
         replaySituation(pCurrReInfo);
     }
-
-    #ifdef WEBSERVER
-    // webServer lap logger.
-    extern TGFCLIENT_API WebServer webServer;
-    //Find human cars
-    for (int i = 0; i < pCurrReInfo->s->_ncars; i++) {
-        if(pCurrReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
-            //if:
-            //- at least a lap has been done
-            //- a lap is passed
-            //- we have not done the final lap
-            // then log it to the webServer
-            if(pCurrReInfo->s->cars[i]->_laps > 1 && pCurrReInfo->s->cars[i]->_laps > webServer.previousLaps && webServer.raceEndSent==false){
-
-                //remember the current number of laps for next cicle
-                webServer.previousLaps = pCurrReInfo->s->cars[i]->_laps;
-
-                //GfLogInfo("############rain: %i, ",trackLocal->rain); //0=no 1=little 2=medium 3=heawy
-                //GfLogInfo("############WATER: %i, ",trackLocal->water); //0=no 1=little  2=medium  3=heawy
-
-
-                //send the lap info to the server
-                webServer.sendLap(
-                    webServer.raceId,						//race_id
-                    pCurrReInfo->s->cars[i]->_lastLapTime,	//laptime
-                    pCurrReInfo->s->cars[i]->_fuel,			//car remaining fuel at the end of the lap
-                    pCurrReInfo->s->cars[i]->_pos,			//car position
-                    trackLocal->water						//level of water on track
-                    //VERSION_LONG, 						//speed dreams version
-                    //pCurrReInfo->s->cars[i]->_name, 		//player name
-                    //pCurrReInfo->s->cars[i]->_skillLevel,	//player skill level: 0 rokie/ 1 amateour/ 2 semi-pro/ 3 pro
-                    //pCurrReInfo->track->name,				//track name
-                    //strName,								//os info
-                    //pCurrReInfo->s->_raceType,			//type of race: 0 practice/ 1 qualify/ 2 race
-                    //pCurrReInfo->s->cars[i]->_carName,	//car name
-                    //pCurrReInfo->s->cars[i]->_category,	//car category
-                );
-            }
-
-            //if we have already done the last lap but we have not yet sent the raceEnd comunication to the webserver: do it!
-            if(pCurrReInfo->s->cars[i]->_remainingLaps < 0 && webServer.raceEndSent == false){
-                //send race data
-                webServer.sendRaceEnd (
-                    webServer.raceId,
-                    ReInfo->s->cars[i]->_pos				//car end position,
-                );
-            }
-        }
-    }
-    webServer.updateAsyncStatus();
-    #endif //WEBSERVER
 }
+
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality (WebServer lap logger)
 
 int ReSituationUpdater::threadLoop(void* pUpdater)
 {
