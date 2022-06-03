@@ -315,6 +315,7 @@ Changed:
                         removed rmProgressiveTimeModifier.start() call
                         removed controls menu, force feedback menu and quit button
                         changed parameters of GfuiScreenActive() function
+                        removed keybind esc that moved to next menu
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
