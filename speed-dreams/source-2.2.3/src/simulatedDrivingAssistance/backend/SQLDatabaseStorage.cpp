@@ -5,15 +5,6 @@
 #include "ConfigEnums.h"
 #include <config.h>
 
-/// @brief reads input from input file, unless EOF has been reached
-#define READ_INPUT(p_inputFile, p_string)                       \
-    if (p_inputFile.eof())                                      \
-    {                                                           \
-        p_inputFile.close();                                    \
-        THROW_RPP_EXCEPTION("Reached end of file prematurely"); \
-    }                                                           \
-    std::getline(p_inputFile, p_string);
-
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
     m_statement->execute(p_sql);
@@ -42,6 +33,31 @@
 /// @brief the amount of decision types a black box can create each tick
 #define DECISIONS_AMOUNT 5
 
+/// @brief                    Reads input and returns if it can't
+/// @param p_inputFile        The file to read from
+/// @param p_string           The string to write the line to
+/// @param p_errorReturnValue The error value to return
+#define READ_INPUT(p_inputFile, p_string, p_errorReturnValue) \
+    if (!ReadInput((p_inputFile), (p_string)))                \
+    {                                                         \
+        return (p_errorReturnValue);                          \
+    }
+
+/// @brief             Reads input from input file, unless EOF has been reached
+/// @param p_inputFile The input file to read from
+/// @param p_string    The string variable to write the line to
+/// @returns           Whether it read a line
+bool ReadInput(std::ifstream& p_inputFile, std::string& p_string)
+{
+    if (p_inputFile.eof())
+    {
+        p_inputFile.close();
+        return false;
+    }
+    std::getline(p_inputFile, p_string);
+    return true;
+}
+
 /// @brief The constructor of the SQL database storage
 SQLDatabaseStorage::SQLDatabaseStorage()
 {
@@ -51,8 +67,9 @@ SQLDatabaseStorage::SQLDatabaseStorage()
     m_resultSet = nullptr;
 };
 
-/// @brief Creates a database and stores data from input file into the correct database structure
-/// @param p_inputFilePath path and name of input file
+/// @brief   Creates a database and stores data from input file into the correct database structure
+/// @param   p_inputFilePath path and name of input file
+/// @returns Whether the data from the input file could be saved to the database
 bool SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
 {
     // Check the existence of an input file
@@ -63,16 +80,17 @@ bool SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
         return false;
     }
 
-    try
-    {
-        int trial_id = InsertInitialData(inputFile);
-        InsertSimulationData(inputFile, trial_id);
-    }
-    catch (std::exception& e)
+    int trial_id = InsertInitialData(inputFile);
+    if (trial_id == -1)
     {
         CloseDatabase();
         inputFile.close();
-        std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
+        return false;
+    }
+    if (!InsertSimulationData(inputFile, trial_id))
+    {
+        CloseDatabase();
+        inputFile.close();
         return false;
     }
 
@@ -326,22 +344,22 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // participant
     std::string participantId;
 
-    READ_INPUT(p_inputFile, participantId);
+    READ_INPUT(p_inputFile, participantId, -1)
 
     EXECUTE(INSERT_IGNORE_INTO("Participant", "participant_id", participantId))
 
     std::string trialDateTime;
 
-    READ_INPUT(p_inputFile, trialDateTime);
+    READ_INPUT(p_inputFile, trialDateTime, -1)
 
     // blackbox
     std::string blackboxFileName;
     std::string blackboxVersionDateTime;
     std::string blackboxName;
 
-    READ_INPUT(p_inputFile, blackboxFileName);
-    READ_INPUT(p_inputFile, blackboxVersionDateTime);
-    READ_INPUT(p_inputFile, blackboxName);
+    READ_INPUT(p_inputFile, blackboxFileName, -1)
+    READ_INPUT(p_inputFile, blackboxVersionDateTime, -1)
+    READ_INPUT(p_inputFile, blackboxName, -1)
 
     values = "'" + blackboxFileName + "','" + blackboxVersionDateTime + "','" + blackboxName + "'";
 
@@ -356,9 +374,9 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     std::string environmentVersion;
     std::string environmentName;
 
-    READ_INPUT(p_inputFile, environmentFileName);
-    READ_INPUT(p_inputFile, environmentVersion);
-    READ_INPUT(p_inputFile, environmentName);
+    READ_INPUT(p_inputFile, environmentFileName, -1)
+    READ_INPUT(p_inputFile, environmentVersion, -1)
+    READ_INPUT(p_inputFile, environmentName, -1)
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
@@ -371,7 +389,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
     // settings
     // Saved as enum index, but since indices in our code and MySQL are not the same, perform conversion
     std::string interventionMode;
-    READ_INPUT(p_inputFile, interventionMode);
+    READ_INPUT(p_inputFile, interventionMode, -1)
     switch (std::stoi(interventionMode))
     {
         case INTERVENTION_TYPE_NO_SIGNALS:
@@ -390,7 +408,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
             values = "'Drive'";
             break;
         default:
-            THROW_RPP_EXCEPTION("Invalid intervention type index read from buffer file");
+            std::cerr << "Invalid intervention type index read from buffer file" << std::endl;
+            return -1;
     }
 
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))
@@ -417,7 +436,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
 /// @brief Inserts data that is different for each tick in one trial, included tick, user input, gamestate, time step, interventions, and decisions
 /// @param p_trialId id of trial that the simulation is linked with
-void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId)
+bool SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId)
 {
     std::string values;
 
@@ -426,11 +445,11 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
     bool hasReadTick = false;
 
     std::string dataToSave;
-    READ_INPUT(p_inputFile, dataToSave)
+    READ_INPUT(p_inputFile, dataToSave, false)
     if (dataToSave == "GameState")
     {
         saveGameState = true;
-        READ_INPUT(p_inputFile, dataToSave)
+        READ_INPUT(p_inputFile, dataToSave, false)
     }
     if (dataToSave == "UserInput")
     {
@@ -453,7 +472,7 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         }
         else
         {
-            READ_INPUT(p_inputFile, tick)
+            READ_INPUT(p_inputFile, tick, false)
         }
 
         if (tick == "END") break;
@@ -463,23 +482,26 @@ void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const 
         EXECUTE(INSERT_INTO("TimeStep", "trial_id, tick", values))
 
         // gamestate
-        if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
+        if (saveGameState)
+            if (!InsertGameState(p_inputFile, p_trialId, tick)) return false;
 
         // user input
-        if (saveUserInput) InsertUserInput(p_inputFile, p_trialId, tick);
+        if (saveUserInput)
+            if (!InsertUserInput(p_inputFile, p_trialId, tick)) return false;
 
-        READ_INPUT(p_inputFile, dataToSave)
+        READ_INPUT(p_inputFile, dataToSave, false)
         if (dataToSave == "Decisions")
         {
-            InsertDecisions(p_inputFile, p_trialId, tick);
+            if (!InsertDecisions(p_inputFile, p_trialId, tick)) return false;
             dataToSave.empty();
         }
         else
             hasReadTick = true;
     }
+    return true;
 }
 
-void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
+bool SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
 {
     std::string values;
 
@@ -494,15 +516,15 @@ void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p
     std::string acceleration;
     std::string gear;
 
-    READ_INPUT(p_inputFile, x);
-    READ_INPUT(p_inputFile, y);
-    READ_INPUT(p_inputFile, z);
-    READ_INPUT(p_inputFile, directionX);
-    READ_INPUT(p_inputFile, directionY);
-    READ_INPUT(p_inputFile, directionZ);
-    READ_INPUT(p_inputFile, speed);
-    READ_INPUT(p_inputFile, acceleration);
-    READ_INPUT(p_inputFile, gear);
+    READ_INPUT(p_inputFile, x, false)
+    READ_INPUT(p_inputFile, y, false)
+    READ_INPUT(p_inputFile, z, false)
+    READ_INPUT(p_inputFile, directionX, false)
+    READ_INPUT(p_inputFile, directionY, false)
+    READ_INPUT(p_inputFile, directionZ, false)
+    READ_INPUT(p_inputFile, speed, false)
+    READ_INPUT(p_inputFile, acceleration, false)
+    READ_INPUT(p_inputFile, gear, false)
 
     values = "'";
     values.append(x);
@@ -528,10 +550,11 @@ void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p
     values.append(p_tick);
     values.append("'");
 
-    EXECUTE(INSERT_INTO("GameState", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values));
+    EXECUTE(INSERT_INTO("GameState", "x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear, trial_id, tick", values))
+    return true;
 }
 
-void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
+bool SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
 {
     std::string values;
 
@@ -540,23 +563,25 @@ void SQLDatabaseStorage::InsertUserInput(std::ifstream& p_inputFile, const int p
     std::string gas;
     std::string clutch;
 
-    READ_INPUT(p_inputFile, steer);
-    READ_INPUT(p_inputFile, brake);
-    READ_INPUT(p_inputFile, gas);
-    READ_INPUT(p_inputFile, clutch);
+    READ_INPUT(p_inputFile, steer, false)
+    READ_INPUT(p_inputFile, brake, false)
+    READ_INPUT(p_inputFile, gas, false)
+    READ_INPUT(p_inputFile, clutch, false)
 
     values = "'" + steer + "','" + brake + "','" + gas + "','" + clutch + "','" + std::to_string(p_trialId) + "','" + p_tick + "'";
-    EXECUTE(INSERT_INTO("UserInput", "steer, brake, gas, clutch, trial_id, tick", values));
+    EXECUTE(INSERT_INTO("UserInput", "steer, brake, gas, clutch, trial_id, tick", values))
+    return true;
 }
 
 /// @brief Loops through the input file and inserts all decisions that the black box has made
 /// @param p_inputFile the input file to read from
 /// @param p_trialId the trial the decisions are made in
 /// @param p_tick the tick the decisions are made in
-void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
+/// @returns Whether insertion was successful (no premature end of file)
+bool SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)
 {
     std::string decision;
-    READ_INPUT(p_inputFile, decision);
+    READ_INPUT(p_inputFile, decision, false)
     // there shouldn't be more than DECISIONS_AMOUNT decisions made
     int decisionsRead = 0;
     while (decision != "NONE" && decisionsRead++ < DECISIONS_AMOUNT)
@@ -568,36 +593,37 @@ void SQLDatabaseStorage::InsertDecisions(std::ifstream& p_inputFile, const int p
         if (decision == "SteerDecision")
         {
             std::string amount;
-            READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("SteerDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            READ_INPUT(p_inputFile, amount, false)
+            EXECUTE(INSERT_INTO("SteerDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")))
         }
         else if (decision == "BrakeDecision")
         {
             std::string amount;
-            READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("BrakeDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            READ_INPUT(p_inputFile, amount, false)
+            EXECUTE(INSERT_INTO("BrakeDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")))
         }
         else if (decision == "AccelDecision")
         {
             std::string amount;
-            READ_INPUT(p_inputFile, amount);
-            EXECUTE(INSERT_INTO("AccelDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")));
+            READ_INPUT(p_inputFile, amount, false)
+            EXECUTE(INSERT_INTO("AccelDecision", "intervention_id, amount", ("'" + std::to_string(decisionId) + "','" + amount + "'")))
         }
         else if (decision == "GearDecision")
         {
             std::string gear;
-            READ_INPUT(p_inputFile, gear);
-            EXECUTE(INSERT_INTO("GearDecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")));
+            READ_INPUT(p_inputFile, gear, false)
+            EXECUTE(INSERT_INTO("GearDecision", "intervention_id, gear", ("'" + std::to_string(decisionId) + "','" + gear + "'")))
         }
         else if (decision == "LightsDecision")
         {
             std::string lightsOn;
-            READ_INPUT(p_inputFile, lightsOn);
+            READ_INPUT(p_inputFile, lightsOn, false)
             EXECUTE(INSERT_INTO("LightsDecision", "intervention_id, turn_lights_on", ("'" + std::to_string(decisionId) + "','" + lightsOn + "'")));
         }
 
-        READ_INPUT(p_inputFile, decision);
+        READ_INPUT(p_inputFile, decision, false)
     }
+    return true;
 }
 
 /// @brief Close the connection to the database and clean up.

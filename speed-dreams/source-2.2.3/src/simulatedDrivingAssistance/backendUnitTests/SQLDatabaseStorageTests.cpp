@@ -50,8 +50,19 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
     std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY);
-
-    ASSERT_FALSE(p_sqlDatabaseStorage.StoreData(path + p_inputFile));
+    bool success;
+    try
+    {
+        success = p_sqlDatabaseStorage.StoreData(path + p_inputFile);
+    }
+    // Throws an exception, succeeding the test
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+    // If no exceptions was thrown, this test should still have a failure: specifically, in the input file
+    ASSERT_FALSE(success);
 }
 
 /// @brief Closes the database
@@ -172,5 +183,6 @@ TEST_CASE(SQLDatabaseStorageTests, NoGameStateYesData, CatchDatabaseError, (YOUR
 TEST_CASE(SQLDatabaseStorageTests, NoUserInputYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noUserInputYesData.txt"))
 TEST_CASE(SQLDatabaseStorageTests, CatchLightsQuery, CatchDatabaseError, (YOUR_PASSWORD, "test_wrongLightsValue.txt"))
 TEST_CASE(SQLDatabaseStorageTests, CatchPrematureEOF, CatchDatabaseError, (YOUR_PASSWORD, "test_prematureEOF.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoSimulationData, CatchDatabaseError, (YOUR_PASSWORD, "test_noSimulationData.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NonExistingInterventionMode, CatchDatabaseError, (YOUR_PASSWORD, "test_nonExistingInterventionMode.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NonExistingInputFile, CatchDatabaseError, (YOUR_PASSWORD, "nonExistingTestFile"))
