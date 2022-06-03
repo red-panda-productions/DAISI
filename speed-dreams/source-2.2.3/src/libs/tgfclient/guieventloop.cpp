@@ -20,14 +20,7 @@
 
 #include "tgfclient.h"
 
-#ifdef WEBSERVER
-#include "webserver.h"
-
-extern NotificationManager notifications;
-extern TGFCLIENT_API WebServer webServer;
-#endif //WEBSERVER
-
-
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality
 
 // Private data (pimp pattern) =============================================
 class GfuiEventLoop::Private
@@ -287,32 +280,16 @@ void GfuiEventLoop::postRedisplay(void)
 	_pPrivate->bRedisplay = true;
 }
 
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality in forceRedisplay function
 void GfuiEventLoop::forceRedisplay()
 {
-	#ifdef WEBSERVER
-	std::clock_t currentTime =  std::clock();
-	
-	//run the webserver update process and ui at 30 FPS
-	if( ( currentTime - notifications.animationLastExecTime ) > 0.033333333 ){
-
-		webServer.updateAsyncStatus();
-		notifications.updateStatus();		
-
-	}
-	#endif //WEBSERVER
-	
 	if (_pPrivate->cbDisplay)
 		_pPrivate->cbDisplay();
 }
 
-
+// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality in redisplay function
 void GfuiEventLoop::redisplay()
 {
-	#ifdef WEBSERVER
-	//temp
-	_pPrivate->bRedisplay=true;
-	#endif //WEBSERVER	
-
 	// Refresh display if requested and if any redisplay CB.
 	if (_pPrivate->bRedisplay)
 	{
