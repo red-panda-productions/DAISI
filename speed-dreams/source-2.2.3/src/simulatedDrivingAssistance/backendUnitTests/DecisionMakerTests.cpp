@@ -171,7 +171,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_NO_THROW(decisionMaker.RaceStop(true));
     ASSERT_NO_THROW(decisionMaker.RaceStop(false));
     filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
-    ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
+    ASSERT_TRUE(path == *decisionMaker.GetBufferDirectory());
 }
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable

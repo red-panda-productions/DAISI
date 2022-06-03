@@ -16,11 +16,11 @@
 
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
-    m_statement->execute(p_sql);
+    m_statement->execute(p_sql)
 
 /// @brief executes sql statement with return value
 #define EXECUTE_QUERY(p_sql) \
-    m_resultSet = m_statement->executeQuery(p_sql);
+    m_resultSet = m_statement->executeQuery(p_sql)
 
 /// @brief create sql insert ignore statement
 #define INSERT_IGNORE_INTO(p_tableName, p_headers, p_values) \
@@ -53,31 +53,34 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 
 /// @brief Creates a database and stores data from input file into the correct database structure
 /// @param p_inputFilePath path and name of input file
-void SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
+void SQLDatabaseStorage::StoreData(const filesystem::path& p_bufferDirectory)
 {
-    // Check the existence of an input file
-    std::ifstream inputFile(p_inputFilePath);
-    if (inputFile.fail())
+    // Check the existence of the buffer directory
+    if (!filesystem::is_directory(p_bufferDirectory))
     {
-        std::cerr << "[MYSQL] internal dberror: Could not open input file" << std::endl;
+        std::cerr << "[MYSQL] Buffer directory not found: " << p_bufferDirectory.string() << std::endl;
+        return;
+    }
+
+    std::ifstream metaDataStream(BUFFER_FILE_META_DATA(p_bufferDirectory));
+    if (metaDataStream.fail())
+    {
+        std::cerr << "[MYSQL] Buffer file not found: metadata" << std::endl;
         return;
     }
 
     try
     {
-        m_connection->setAutoCommit(false);
-        int trial_id = InsertInitialData(inputFile);
-        InsertSimulationData(inputFile, trial_id);
-        m_connection->commit();
+        //m_connection->setAutoCommit(false);
+        int trial_id = InsertInitialData(metaDataStream);
+        InsertSimulationData(p_bufferDirectory, trial_id);
+        //m_connection->commit();
     }
     catch (std::exception& e)
     {
         CloseDatabase();
-        inputFile.close();
         std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
     }
-
-    inputFile.close();
 }
 
 /// @brief  gets the keys for secure database connection in the data/certificates folder
@@ -99,9 +102,7 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties,
 ///                         "database_encryption_settings.txt" file is located
 ///                         needs "\\" in front
 /// @return                 returns true if connection to database has been made, false otherwise
-bool SQLDatabaseStorage::OpenDatabase(
-    DatabaseSettings p_dbSettings,
-    const std::string& p_dirPath)
+bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings, const std::string& p_dirPath)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -115,6 +116,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     connection_properties["port"] = p_dbSettings.Port;
     connection_properties["OPT_RECONNECT"] = true;
     connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
+    connection_properties["CLIENT_LOCAL_FILES"] = true;
     connection_properties["sslEnforce"] = true;
 
     if (p_dbSettings.UseSSL)
@@ -135,7 +137,7 @@ bool SQLDatabaseStorage::OpenDatabase(
     // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
     m_statement = m_connection->createStatement();
     std::string schema = p_dbSettings.Schema;
-    EXECUTE("CREATE DATABASE IF NOT EXISTS " + schema)
+    EXECUTE("CREATE DATABASE IF NOT EXISTS " + schema);
     m_statement->close();
     delete m_statement;
 
@@ -147,6 +149,7 @@ bool SQLDatabaseStorage::OpenDatabase(
 
     // Our system will always use UTC times. Ensure the database knows this as well.
     EXECUTE("SET @@session.time_zone='+00:00';");
+    EXECUTE("SET GLOBAL local_infile = true;");
 
     // Ensure all tables are created
     CreateTables();
@@ -166,7 +169,7 @@ void SQLDatabaseStorage::CreateTables()
         "    participant_id VARCHAR(255) NOT NULL,    \n"
         "    \n"
         "    CONSTRAINT participant_id_primary_key PRIMARY KEY (participant_id)\n"
-        ")\n")
+        ")\n");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Blackbox (\n"
@@ -178,7 +181,7 @@ void SQLDatabaseStorage::CreateTables()
         "    CONSTRAINT blackbox_id_primary_key PRIMARY KEY (blackbox_id),\n"
         "    \n"
         "    CONSTRAINT file_version UNIQUE (filename, version)\n"
-        ")\n")
+        ")\n");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Environment (\n"
@@ -190,7 +193,7 @@ void SQLDatabaseStorage::CreateTables()
         "    CONSTRAINT environment_id_primary_key PRIMARY KEY (environment_id),\n"
         "    \n"
         "    CONSTRAINT file_version UNIQUE (filename, version)\n"
-        ")\n")
+        ")\n");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Settings (\n"
@@ -200,7 +203,7 @@ void SQLDatabaseStorage::CreateTables()
         "    CONSTRAINT settings_id_primary_key PRIMARY KEY (settings_id),\n"
         "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
         "    \n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Trial (\n"
@@ -216,7 +219,7 @@ void SQLDatabaseStorage::CreateTables()
         "    CONSTRAINT blackbox_id_foreign_key      FOREIGN KEY (blackbox_id)    REFERENCES Blackbox(blackbox_id),\n"
         "    CONSTRAINT environment_id_foreign_key   FOREIGN KEY (environment_id) REFERENCES Environment(environment_id),\n"
         "    CONSTRAINT settings_id_foreign_key      FOREIGN KEY (settings_id)    REFERENCES Settings(settings_id)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS TimeStep (\n"
@@ -225,7 +228,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT trial_tick_primary_key    PRIMARY KEY (trial_id, tick),\n"
         "    CONSTRAINT trial_id_foreign_key      FOREIGN KEY (trial_id) REFERENCES Trial(trial_id)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS GameState (\n"
@@ -244,7 +247,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT game_state_id_primary_key PRIMARY KEY (game_state_id),\n"
         "    CONSTRAINT game_state_time_step_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS UserInput (\n"
@@ -258,7 +261,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT user_input_id_primary_key PRIMARY KEY (user_input_id),\n"
         "    CONSTRAINT user_input_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Intervention (\n"
@@ -268,7 +271,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT decision_primary_key PRIMARY KEY (intervention_id),\n"
         "    CONSTRAINT intervention_timestep_foreign_key FOREIGN KEY (trial_id, tick) REFERENCES TimeStep(trial_id, tick)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS SteerDecision (\n"
@@ -277,7 +280,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT steer_id_primary_key PRIMARY KEY (intervention_id),\n"
         "    CONSTRAINT steer_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS BrakeDecision (\n"
@@ -286,7 +289,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT brake_id_primary_key PRIMARY KEY (intervention_id),\n"
         "    CONSTRAINT brake_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS LightsDecision (\n"
@@ -295,7 +298,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT lights_id_primary_key PRIMARY KEY (intervention_id),\n"
         "    CONSTRAINT lights_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS AccelDecision (\n"
@@ -304,7 +307,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT accel_id_primary_key PRIMARY KEY (intervention_id),\n"
         "    CONSTRAINT accel_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-        ")")
+        ")");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS GearDecision (\n"
@@ -313,7 +316,7 @@ void SQLDatabaseStorage::CreateTables()
         "    \n"
         "    CONSTRAINT gear_id_primary_key PRIMARY KEY (intervention_id),\n"
         "    CONSTRAINT gear_key_is_intervention FOREIGN KEY (intervention_id) REFERENCES Intervention(intervention_id)\n"
-        ")")
+        ")");
 }
 
 /// @brief Inserts the data that stays the same during a trial. Includes participant, blackbox, environment, settings, and trial
@@ -327,7 +330,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     READ_INPUT(p_inputFile, participantId);
 
-    EXECUTE(INSERT_IGNORE_INTO("Participant", "participant_id", participantId))
+    EXECUTE(INSERT_IGNORE_INTO("Participant", "participant_id", participantId));
 
     std::string trialDateTime;
 
@@ -344,8 +347,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     values = "'" + blackboxFileName + "','" + blackboxVersionDateTime + "','" + blackboxName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("Blackbox", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT blackbox_id FROM Blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersionDateTime + "'")
+    EXECUTE(INSERT_IGNORE_INTO("Blackbox", "filename, version, name", values));
+    EXECUTE_QUERY("SELECT blackbox_id FROM Blackbox WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersionDateTime + "'");
 
     int blackboxId;
     GET_INT_FROM_RESULTS(blackboxId)
@@ -361,8 +364,8 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
     values = "'" + environmentFileName + "','" + environmentVersion + "','" + environmentName + "'";
 
-    EXECUTE(INSERT_IGNORE_INTO("Environment", "filename, version, name", values))
-    EXECUTE_QUERY("SELECT environment_id FROM Environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
+    EXECUTE(INSERT_IGNORE_INTO("Environment", "filename, version, name", values));
+    EXECUTE_QUERY("SELECT environment_id FROM Environment WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'");
 
     int environmentId;
     GET_INT_FROM_RESULTS(environmentId)
@@ -392,11 +395,11 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
             THROW_RPP_EXCEPTION("Invalid intervention type index read from buffer file");
     }
 
-    EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values))
+    EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values));
     EXECUTE_QUERY(
         "SELECT settings_id FROM Settings WHERE "
         "intervention_mode = " +
-        values)
+        values);
 
     int settingsId = -1;
     GET_INT_FROM_RESULTS(settingsId);
@@ -405,7 +408,7 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
              std::to_string(settingsId) + "'";
 
     // trial
-    EXECUTE(INSERT_INTO("Trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values))
+    EXECUTE(INSERT_INTO("Trial", "trial_time, participant_id, blackbox_id, environment_id, settings_id", values));
     EXECUTE_QUERY("SELECT LAST_INSERT_ID()");
 
     int trialId = -1;
@@ -416,66 +419,152 @@ int SQLDatabaseStorage::InsertInitialData(std::ifstream& p_inputFile)
 
 /// @brief Inserts data that is different for each tick in one trial, included tick, user input, gamestate, time step, interventions, and decisions
 /// @param p_trialId id of trial that the simulation is linked with
-void SQLDatabaseStorage::InsertSimulationData(std::ifstream& p_inputFile, const int p_trialId)
+void SQLDatabaseStorage::InsertSimulationData(const filesystem::path& p_bufferDirectory, const int p_trialId)
 {
-    std::string values;
+    filesystem::path timeStepsPath = BUFFER_FILE_TIMESTEPS(p_bufferDirectory);
+    filesystem::path gameStatePath = BUFFER_FILE_GAMESTATE(p_bufferDirectory);
+    filesystem::path userInputPath = BUFFER_FILE_USERINPUT(p_bufferDirectory);
+    filesystem::path decisionsPath = BUFFER_FILE_DECISIONS(p_bufferDirectory);
 
-    bool saveGameState = false;
-    bool saveUserInput = false;
-    bool hasReadTick = false;
+    std::ifstream timeStepsStream(timeStepsPath);
+    std::ifstream gameStateStream(gameStatePath);
+    std::ifstream userInputStream(userInputPath);
+    std::ifstream decisionsStream(decisionsPath);
 
-    std::string dataToSave;
-    READ_INPUT(p_inputFile, dataToSave)
-    if (dataToSave == "GameState")
-    {
-        saveGameState = true;
-        READ_INPUT(p_inputFile, dataToSave)
-    }
-    if (dataToSave == "UserInput")
-    {
-        saveUserInput = true;
-    }
-    else
-        hasReadTick = true;
+    // TODO: FIX FILEPATHS GETTING ESCAPED 2x (by c++ and MySQL), causing all backslashes to disappear.
 
-    // The values are read as a string from p_inputFile, and used as a string in the sql statements,
-    // therefore they are not converted to the type they actually are.
-    while (!p_inputFile.eof())
-    {
-        // tick
-        std::string tick;
-        // if decisions aren't saved, dataToSave has read the tick value in the previous loop
-        if (hasReadTick)
-        {
-            hasReadTick = false;
-            tick = dataToSave;
-        }
-        else
-        {
-            READ_INPUT(p_inputFile, tick)
-        }
+    std::string sqlStat = 
+        "LOAD DATA LOCAL INFILE '" + timeStepsPath.string() + "' INTO TABLE TimeStep "
+        "   LINES TERMINATED BY '\\n' IGNORE 1 LINES "
+        "   (tick) " 
+        "   SET trial_id = " + std::to_string(p_trialId) + ";";
 
-        if (tick == "END") break;
+    EXECUTE(sqlStat);
 
-        values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
+    EXECUTE(
+        "LOAD DATA LOCAL INFILE '" + gameStatePath.string() + "' INTO TABLE GameState "
+        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES "
+        "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
+        "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
-        EXECUTE(INSERT_INTO("TimeStep", "trial_id, tick", values))
+    EXECUTE(
+        "LOAD DATA LOCAL INFILE '" + userInputPath.string() + "' INTO TABLE UserInput "
+	    "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' IGNORE 1 LINES "
+        "   (tick, steer, brake, gas, clutch) "
+        "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
-        // gamestate
-        if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
+    EXECUTE(
+        "CREATE TEMPORARY TABLE TempInterventionData ( "
+        "   temp_intervention_id BIGINT          NOT NULL AUTO_INCREMENT, "
+        "   temp_trial_id        INT             NOT NULL, "
+        "   temp_tick            BIGINT UNSIGNED NOT NULL, "
+        "   temp_steer_decision  FLOAT           NOT NULL, "
+        "   temp_brake_decision  FLOAT           NOT NULL, "
+        "   temp_accel_decision  FLOAT           NOT NULL, "
+        "   temp_gear_decision   INT             NOT NULL, "
+        "   temp_lights_decision BOOLEAN         NOT NULL, "
+        "   PRIMARY KEY(temp_intervention_id) "
+        ");");
 
-        // user input
-        if (saveUserInput) InsertUserInput(p_inputFile, p_trialId, tick);
+    EXECUTE(
+        "LOAD DATA LOCAL INFILE '" + decisionsPath.string() + "' INTO TABLE TempInterventionData "
+        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' IGNORE 1 LINES "
+        "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
+        "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
+    
+    EXECUTE(
+        "INSERT INTO Intervention(trial_id, tick) "
+        "   SELECT temp_trial_id, temp_tick "
+        "   FROM TempInterventionData;");
 
-        READ_INPUT(p_inputFile, dataToSave)
-        if (dataToSave == "Decisions")
-        {
-            InsertDecisions(p_inputFile, p_trialId, tick);
-            dataToSave.empty();
-        }
-        else
-            hasReadTick = true;
-    }
+    EXECUTE(
+        "INSERT INTO SteerDecision(intervention_id, amount) "
+        "   SELECT temp_intervention_id, temp_steer_decision "
+        "   FROM TempInterventionData;");
+    
+    EXECUTE(
+        "INSERT INTO BrakeDecision(intervention_id, amount) "
+        "   SELECT temp_intervention_id, temp_brake_decision "
+        "   FROM TempInterventionData;");
+    
+    EXECUTE(
+        "INSERT INTO AccelDecision(intervention_id, amount) "
+        "   SELECT temp_intervention_id, temp_accel_decision "
+        "   FROM TempInterventionData;");
+    
+    EXECUTE(
+        "INSERT INTO GearDecision(intervention_id, gear) "
+        "   SELECT temp_intervention_id, temp_gear_decision "
+        "   FROM TempInterventionData;");
+    
+    EXECUTE(
+        "INSERT INTO LightsDecision(intervention_id, turn_lights_on) "
+        "   SELECT temp_intervention_id, temp_lights_decision "
+        "   FROM TempInterventionData;");
+    
+
+
+
+
+
+    //std::string values;
+
+    //bool saveGameState = false;
+    //bool saveUserInput = false;
+    //bool hasReadTick = false;
+
+    //std::string dataToSave;
+    //READ_INPUT(p_inputFile, dataToSave)
+    //if (dataToSave == "GameState")
+    //{
+    //    saveGameState = true;
+    //    READ_INPUT(p_inputFile, dataToSave)
+    //}
+    //if (dataToSave == "UserInput")
+    //{
+    //    saveUserInput = true;
+    //}
+    //else
+    //    hasReadTick = true;
+
+    //// The values are read as a string from p_inputFile, and used as a string in the sql statements,
+    //// therefore they are not converted to the type they actually are.
+    //while (!p_inputFile.eof())
+    //{
+    //    // tick
+    //    std::string tick;
+    //    // if decisions aren't saved, dataToSave has read the tick value in the previous loop
+    //    if (hasReadTick)
+    //    {
+    //        hasReadTick = false;
+    //        tick = dataToSave;
+    //    }
+    //    else
+    //    {
+    //        READ_INPUT(p_inputFile, tick)
+    //    }
+
+    //    if (tick == "END") break;
+
+    //    values = "'" + std::to_string(p_trialId) + "','" + tick + "'";
+
+    //    EXECUTE(INSERT_INTO("TimeStep", "trial_id, tick", values))
+
+    //    // gamestate
+    //    if (saveGameState) InsertGameState(p_inputFile, p_trialId, tick);
+
+    //    // user input
+    //    if (saveUserInput) InsertUserInput(p_inputFile, p_trialId, tick);
+
+    //    READ_INPUT(p_inputFile, dataToSave)
+    //    if (dataToSave == "Decisions")
+    //    {
+    //        InsertDecisions(p_inputFile, p_trialId, tick);
+    //        dataToSave.empty();
+    //    }
+    //    else
+    //        hasReadTick = true;
+    //}
 }
 
 void SQLDatabaseStorage::InsertGameState(std::ifstream& p_inputFile, const int p_trialId, const std::string& p_tick)

@@ -144,7 +144,9 @@ typedef struct DecisionThresholds
 #define STANDARD_THRESHOLD_BRAKE 0.9f
 #define STANDARD_THRESHOLD_STEER 0.04f
 
-#define DATA_BUFFER_FILE_META_DATA "meta-data-buffer.txt"
-#define DATA_BUFFER_FILE_GAMESTATE "gamestate-buffer.csv"
-#define DATA_BUFFER_FILE_USERINPUT "userinput-buffer.csv "
-#define DATA_BUFFER_FILE_DECISIONS "decisions-buffer.csv"
+#define DATA_BUFFER_TEMP_DIRECTORY "DAISI-data-buffers"
+#define BUFFER_FILE_META_DATA(bufferDir) filesystem::path(bufferDir).append("meta-data-buffer.txt")
+#define BUFFER_FILE_TIMESTEPS(bufferDir) filesystem::path(bufferDir).append("timesteps-buffer.csv")
+#define BUFFER_FILE_GAMESTATE(bufferDir) filesystem::path(bufferDir).append("gamestate-buffer.csv")
+#define BUFFER_FILE_USERINPUT(bufferDir) filesystem::path(bufferDir).append("userinput-buffer.csv")
+#define BUFFER_FILE_DECISIONS(bufferDir) filesystem::path(bufferDir).append("decisions-buffer.csv")
