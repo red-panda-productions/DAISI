@@ -84,7 +84,6 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
     unsigned int interventiontype = Config.GetInterventionType();
 
     m_bufferFilePath = m_fileBufferStorage.Initialize(dataCollectionSetting,
-                                                      BUFFER_FILE_PATH,
                                                       userId,
                                                       currentTime,
                                                       fileName,

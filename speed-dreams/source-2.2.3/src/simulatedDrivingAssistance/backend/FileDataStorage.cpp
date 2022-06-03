@@ -25,7 +25,6 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
 /// @brief Initialize the file data storage.
 /// End result: a file is created at the given filepath, and initial data is written to the file.
 /// @param p_saveSettings Settings for what data to store.
-/// @param p_fileName Path of the file to save.
 /// @param p_userId User ID of the current player.
 /// @param p_trialStartTime Start time of the current race
 /// @param p_blackboxFilename Filename without path (e.g. "blackbox.exe") for the current black box
@@ -38,7 +37,6 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
 /// @return returns the path of the buffer file
 filesystem::path FileDataStorage::Initialize(
     tDataToStore p_saveSettings,
-    const std::string& p_fileName,
     const std::string& p_userId,
     const std::time_t& p_trialStartTime,
     const std::string& p_blackboxFilename,
@@ -50,13 +48,21 @@ filesystem::path FileDataStorage::Initialize(
     InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
-    filesystem::path filePath = filesystem::temp_directory_path();
-    filePath.append(p_fileName.c_str());
-    create_directories(filePath.parent_path());
+    filesystem::path bufferDirectory = filesystem::temp_directory_path().append("DAISI-data-buffers");
+    filesystem::create_directory(bufferDirectory);
+
+    filesystem::path metaDataBuffer = filesystem::path(bufferDirectory).append(DATA_BUFFER_FILE_META_DATA);
+    filesystem::path gameStateBuffer = filesystem::path(bufferDirectory).append(DATA_BUFFER_FILE_GAMESTATE);
+    filesystem::path userInputBuffer = filesystem::path(bufferDirectory).append(DATA_BUFFER_FILE_USERINPUT);
+    filesystem::path interventionsBuffer = filesystem::path(bufferDirectory).append(DATA_BUFFER_FILE_DECISIONS);
+
+    std::ofstream metaDataStream(metaDataBuffer);
+    m_gameStateStream.open(gameStateBuffer);
+    m_userInputStream.open(userInputBuffer);
+    m_decisionsStream.open(interventionsBuffer);
 
     // Initialize member variables
     m_saveSettings = p_saveSettings;
-    m_outputStream.open(filePath);
     m_totalPosX = 0;
     m_totalPosY = 0;
     m_totalPosZ = 0;
@@ -67,30 +73,22 @@ filesystem::path FileDataStorage::Initialize(
     m_totalMovAccX = 0;
 
     // User and trial data
-    WRITE_STRING(m_outputStream, p_userId);
-    WriteTime(m_outputStream, p_trialStartTime);
+    WRITE_STRING(metaDataStream, p_userId);
+    WriteTime(metaDataStream, p_trialStartTime);
     // Black box data
-    WRITE_STRING(m_outputStream, p_blackboxFilename);
-    WriteTime(m_outputStream, p_blackboxTime);
-    WRITE_STRING(m_outputStream, p_blackboxName);
+    WRITE_STRING(metaDataStream, p_blackboxFilename);
+    WriteTime(metaDataStream, p_blackboxTime);
+    WRITE_STRING(metaDataStream, p_blackboxName);
     // Environment data
-    WRITE_STRING(m_outputStream, p_environmentFilename);
-    WRITE_VAR(m_outputStream, p_environmentVersion);
-    WRITE_STRING(m_outputStream, p_environmentName);
+    WRITE_STRING(metaDataStream, p_environmentFilename);
+    WRITE_VAR(metaDataStream, p_environmentVersion);
+    WRITE_STRING(metaDataStream, p_environmentName);
     // Intervention data
-    WRITE_VAR(m_outputStream, p_interventionType);
-    // Headers to indicate what data will be saved
-    if (m_saveSettings.EnvironmentData)
-    {
-        WRITE_STRING(m_outputStream, "GameState");
-    }
-    if (m_saveSettings.HumanData)
-    {
-        WRITE_STRING(m_outputStream, "UserInput");
-    }
-    m_outputStream.flush();
+    WRITE_VAR(metaDataStream, p_interventionType);
 
-    return {filePath};
+    metaDataStream.close();
+
+    return {bufferDirectory};
 }
 
 /// @brief Sets the compression rate of the file data storage
@@ -109,8 +107,10 @@ int FileDataStorage::GetCompressionRate() const
 /// End result: any possible final data is written and the file is released.
 void FileDataStorage::Shutdown()
 {
-    m_outputStream << "END";
     m_outputStream.close();
+    m_gameStateStream.close();
+    m_userInputStream.close();
+    m_decisionsStream.close();
 }
 
 /// @brief Save the current driving situation to the buffer
@@ -142,15 +142,15 @@ void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTupl
     WRITE_VAR(m_outputStream, p_timestamp);
     if (m_saveSettings.CarData)
     {
-        WriteCarData();
+        WriteCarData(p_timestamp);
     }
     if (m_saveSettings.HumanData)
     {
-        WriteHumanData();
+        WriteHumanData(p_timestamp);
     }
     if (m_saveSettings.InterventionData)
     {
-        WriteInterventionData();
+        WriteInterventionData(p_timestamp);
     }
     m_compressionStep = 0;
 }
@@ -208,43 +208,66 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
 }
 
 /// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
-void FileDataStorage::WriteCarData()
+void FileDataStorage::WriteCarData(unsigned long p_timestamp)
 {
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-rotation
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-rotation
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-rotation
-    WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
-    WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
-    WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+    m_gameStateStream << GetAverage(m_totalPosX) << ','
+                      << GetAverage(m_totalPosY) << ','
+                      << GetAverage(m_totalPosZ) << ','
+                      << GetAverage(m_totalPosAx) << ','
+                      << GetAverage(m_totalPosAy) << ','
+                      << GetAverage(m_totalPosAz) << ','
+                      << GetAverage(m_totalMovVelX) << ','
+                      << GetAverage(m_totalMovAccX) << ','
+                      << GetLeastCommon(m_gearValues) << ','
+                      << p_timestamp << '\n';
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-rotation
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-rotation
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-rotation
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
+    // WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
+    // WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
 }
 
 /// @brief Writes the human data from the last m_compressionRate time steps to the buffer file
-void FileDataStorage::WriteHumanData()
+void FileDataStorage::WriteHumanData(unsigned long p_timestamp)
 {
-    WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
-    WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
-    WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
-    WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+    m_userInputStream << GetMedian(m_steerValues) << ','
+                      << GetMedian(m_brakeValues) << ','
+                      << GetMedian(m_accelValues) << ','
+                      << GetMedian(m_clutchValues) << ','
+                      << p_timestamp << '\n';
+
+    // WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
+    // WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
+    // WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
+    // WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
 }
 
 /// @brief Writes the intervention data from the last m_compressionRate time steps to the buffer file
-void FileDataStorage::WriteInterventionData()
+void FileDataStorage::WriteInterventionData(unsigned long p_timestamp)
 {
-    bool decisionMade = false;
-    WriteDecision(GetMedian(m_steerDecision), "SteerDecision", decisionMade);
-    WriteDecision(GetMedian(m_brakeDecision), "BrakeDecision", decisionMade);
-    WriteDecision(GetMedian(m_accelDecision), "AccelDecision", decisionMade);
-    WriteDecision(GetLeastCommon(m_gearDecision), "GearDecision", decisionMade);
-    WriteDecision(GetLeastCommon(m_lightDecision), "LightsDecision", decisionMade);
+    m_decisionsStream << p_timestamp << ','
+                      << GetMedian(m_steerDecision) << ','
+                      << GetMedian(m_brakeDecision) << ','
+                      << GetMedian(m_accelDecision) << ','
+                      << GetLeastCommon(m_gearDecision) << ','
+                      << GetLeastCommon(m_lightDecision) << '\n';
 
-    if (!decisionMade)
-    {
-        WRITE_STRING(m_outputStream, "Decisions");
-    }
-    WRITE_STRING(m_outputStream, "NONE");
+    /* bool decisionMade = false;
+     WriteDecision(GetMedian(m_steerDecision), "SteerDecision", decisionMade);
+     WriteDecision(GetMedian(m_brakeDecision), "BrakeDecision", decisionMade);
+     WriteDecision(GetMedian(m_accelDecision), "AccelDecision", decisionMade);
+     WriteDecision(GetLeastCommon(m_gearDecision), "GearDecision", decisionMade);
+     WriteDecision(GetLeastCommon(m_lightDecision), "LightsDecision", decisionMade);
+
+     if (!decisionMade)
+     {
+         WRITE_STRING(m_outputStream, "Decisions");
+     }
+     WRITE_STRING(m_outputStream, "NONE");*/
 }
 
 /// @brief Writes the p_decisionType data from the last m_compressionRate time steps to the buffer file

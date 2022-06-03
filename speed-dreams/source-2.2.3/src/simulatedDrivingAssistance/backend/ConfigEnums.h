@@ -143,3 +143,8 @@ typedef struct DecisionThresholds
 #define STANDARD_THRESHOLD_ACCEL 0.9f
 #define STANDARD_THRESHOLD_BRAKE 0.9f
 #define STANDARD_THRESHOLD_STEER 0.04f
+
+#define DATA_BUFFER_FILE_META_DATA "meta-data-buffer.txt"
+#define DATA_BUFFER_FILE_GAMESTATE "gamestate-buffer.csv"
+#define DATA_BUFFER_FILE_USERINPUT "userinput-buffer.csv "
+#define DATA_BUFFER_FILE_DECISIONS "decisions-buffer.csv"

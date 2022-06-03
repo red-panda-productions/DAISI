@@ -20,8 +20,7 @@
     std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24))
 
 /// @brief Dummy parameters to use to quickly initialise a FileDataStorage system.
-#define DUMMY_INITIALISATION_PARAMETERS TEST_FILE_DIR "/" TEST_FILE_NAME, \
-                                        "Player1",                        \
+#define DUMMY_INITIALISATION_PARAMETERS "Player1",                        \
                                         timeSimStart,                     \
                                         "notABlackBox.exe",               \
                                         "Really just a string",           \

@@ -17,10 +17,15 @@ class FileDataStorage
 private:
     /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
     tDataToStore m_saveSettings;
-    /// @brief Output filestream to write data to, should be initialized through @link FileDataStorage::Initialize
+    
     std::ofstream m_outputStream = {};
+    std::ofstream m_gameStateStream = {};
+    std::ofstream m_userInputStream = {};
+    std::ofstream m_decisionsStream = {};
+
     /// @brief Integer that determines the compression rate
     int m_compressionRate = 1;
+
     /// @brief Integer that determines the current step of the compression
     int m_compressionStep = 0;
 
@@ -37,9 +42,9 @@ private:
     void SaveHumanData(tCarElt* p_car);
     void SaveInterventionData(DecisionTuple& p_decisions);
 
-    void WriteCarData();
-    void WriteHumanData();
-    void WriteInterventionData();
+    void WriteCarData(unsigned long p_timestamp);
+    void WriteHumanData(unsigned long p_timestamp);
+    void WriteInterventionData(unsigned long p_timestamp);
 
     void GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_startPartition, float& p_endPartition);
     int RandomPartition(float* p_values, int p_start, int p_end);
@@ -58,7 +63,6 @@ public:
 
     filesystem::path Initialize(
         tDataToStore p_saveSettings,
-        const std::string& p_fileName,
         const std::string& p_userId,
         const std::time_t& p_trialStartTime,
         const std::string& p_blackboxFilename,
