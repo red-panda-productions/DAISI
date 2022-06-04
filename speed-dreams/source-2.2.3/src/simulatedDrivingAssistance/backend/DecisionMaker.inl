@@ -21,7 +21,7 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
-    template const tBufferPaths& DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                            \
+    template tBufferPaths DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                                   \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
@@ -157,7 +157,7 @@ FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-const tBufferPaths& TEMP_DECISIONMAKER::GetBufferPaths()
+tBufferPaths TEMP_DECISIONMAKER::GetBufferPaths()
 {
     return m_bufferPaths;
 }

@@ -37,7 +37,7 @@ public:
     SocketBlackBox BlackBox;
 
     FileDataStorage* GetFileDataStorage();
-    const tBufferPaths& GetBufferPaths();
+    tBufferPaths GetBufferPaths();
     Recorder* GetRecorder();
 
     ~DecisionMaker();
