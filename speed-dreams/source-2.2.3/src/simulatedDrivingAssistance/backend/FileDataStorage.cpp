@@ -34,7 +34,7 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
 /// @param p_environmentVersion  Version of the current environment
 /// @param p_interventionType    Intervention type for the current race
 /// @return                      The path to the directory containing the buffer files
-filesystem::path FileDataStorage::Initialize(
+tBufferPaths FileDataStorage::Initialize(
     tDataToStore p_saveSettings,
     const std::string& p_userId,
     const std::time_t& p_trialStartTime,
@@ -47,14 +47,22 @@ filesystem::path FileDataStorage::Initialize(
     InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
-    filesystem::path bufferDirectory = filesystem::temp_directory_path().append(DATA_BUFFER_TEMP_DIRECTORY);
+    filesystem::path bufferDirectory = filesystem::temp_directory_path().append(BUFFER_TEMP_DIRECTORY);
     filesystem::create_directory(bufferDirectory);
 
-    std::ofstream metaDataStream(BUFFER_FILE_META_DATA(bufferDirectory));
-    m_timeStepsStream.open(BUFFER_FILE_TIMESTEPS(bufferDirectory));
-    m_gameStateStream.open(BUFFER_FILE_GAMESTATE(bufferDirectory));
-    m_userInputStream.open(BUFFER_FILE_USERINPUT(bufferDirectory));
-    m_decisionsStream.open(BUFFER_FILE_DECISIONS(bufferDirectory));
+    tBufferPaths bufferPaths = {
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_META_DATA),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_TIMESTEPS),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_GAMESTATE),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_USERINPUT),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_DECISIONS),
+    };
+
+    std::ofstream metaDataStream(bufferPaths.MetaData);
+    m_timeStepsStream.open(bufferPaths.TimeSteps);
+    m_gameStateStream.open(bufferPaths.GameState);
+    m_userInputStream.open(bufferPaths.UserInput);
+    m_decisionsStream.open(bufferPaths.Decisions);
 
     // Initialize member variables
     m_saveSettings = p_saveSettings;
@@ -67,22 +75,16 @@ filesystem::path FileDataStorage::Initialize(
     m_totalMovVelX = 0;
     m_totalMovAccX = 0;
 
-    // User and trial data
+    // Write meta-data to file.
     WRITE_LINE(metaDataStream, p_userId);
-    WriteTime(metaDataStream, p_trialStartTime);
-
-    // Black box data
     WRITE_LINE(metaDataStream, p_blackboxFilename);
     WriteTime(metaDataStream, p_blackboxTime);
     WRITE_LINE(metaDataStream, p_blackboxName);
-
-    // Environment data
     WRITE_LINE(metaDataStream, p_environmentFilename);
     WRITE_LINE(metaDataStream, p_environmentVersion);
     WRITE_LINE(metaDataStream, p_environmentName);
-
-    // Intervention data
     WRITE_LINE(metaDataStream, p_interventionType);
+    WriteTime(metaDataStream, p_trialStartTime);
 
     metaDataStream.close();
 
@@ -92,7 +94,7 @@ filesystem::path FileDataStorage::Initialize(
     WRITE_LINE(m_userInputStream, "tick, steer, brake, gas, clutch");
     WRITE_LINE(m_decisionsStream, "tick, steer_decision, brake_decision, accel_decision, gear_decision, lights_decision");
 
-    return bufferDirectory;
+    return bufferPaths;
 }
 
 /// @brief Sets the compression rate of the file data storage
@@ -121,7 +123,7 @@ void FileDataStorage::Shutdown()
 /// @param p_car Current car status in Speed Dreams
 /// @param p_situation Current situation in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp)
 {
     // Save all values from this time step into a buffer array for compression.
     if (m_saveSettings.CarData) SaveCarData(p_car);
@@ -207,7 +209,7 @@ void FileDataStorage::WriteCarData(unsigned long p_timestamp)
     WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAz));      // z-rotation
     WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovVelX));    // speed
     WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovAccX));    // acceleration
-    WRITE_LINE(m_gameStateStream, GetLeastCommon(m_gearValues));  // gear
+    WRITE_LINE(m_gameStateStream, GetLeastCommon(m_gearValues)); // gear
 }
 
 /// @brief Writes the human data from the last m_compressionRate time steps to the buffer file

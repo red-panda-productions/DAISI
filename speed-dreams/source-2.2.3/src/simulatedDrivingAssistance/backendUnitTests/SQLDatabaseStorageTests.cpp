@@ -18,7 +18,7 @@
     testSettings.UseSSL = true;                                                    \
     strcpy_s(testSettings.CACertFilePath, SETTINGS_NAME_LENGTH, "CA.txt");         \
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
-    strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt");
+    strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt")
 
 #define TEST_DATA_DIRECTORY OS_SEPARATOR "databaseTestData" OS_SEPARATOR
 
@@ -40,7 +40,7 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 {
     std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
 
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile));
+    //ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile));
 }
 
 /// @brief Test if exception is thrown when input data is incorrect
@@ -51,7 +51,7 @@ void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const 
     std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
 
     testing::internal::CaptureStderr();
-    p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile);
+    //p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile);
     std::string output = testing::internal::GetCapturedStderr();
     ASSERT_THAT(output, testing::HasSubstr("[MYSQL] internal dberror: "));
 }
@@ -110,7 +110,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
     SQLDatabaseStorage sqlDatabaseStorage;
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY OS_SEPARATOR "correctSettings"));
+    //ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY OS_SEPARATOR "correctSettings"));
 }
 
 /// @brief  Tries to connect to the database but fails
@@ -130,7 +130,7 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
     // Tests for an exception when it can't find the settings file
     // because the directory doesn't exist.
     testing::internal::CaptureStderr();
-    sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "incorrectSettings");
+    //sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "incorrectSettings");
     std::string output = testing::internal::GetCapturedStderr();
     ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
 }
@@ -148,7 +148,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote" OS_SEPARATOR "correctRemote"));
+    //ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote" OS_SEPARATOR "correctRemote"));
 }
 
 #define YOUR_PASSWORD "PASSWORD"

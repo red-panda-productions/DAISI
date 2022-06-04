@@ -37,13 +37,13 @@ public:
     SocketBlackBox BlackBox;
 
     FileDataStorage* GetFileDataStorage();
-    filesystem::path* GetBufferDirectory();
+    const tBufferPaths& GetBufferPaths();
     Recorder* GetRecorder();
 
     ~DecisionMaker();
 
 private:
-    filesystem::path m_bufferDirectory;
+    tBufferPaths m_bufferPaths;
     FileDataStorage m_fileBufferStorage;
     DecisionTuple m_decision;
     Recorder* m_recorder = nullptr;

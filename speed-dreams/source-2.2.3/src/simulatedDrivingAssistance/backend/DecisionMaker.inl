@@ -21,7 +21,7 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
-    template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferDirectory();                                          \
+    template const tBufferPaths& DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                            \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
@@ -82,10 +82,10 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
     int trackVersion = p_track->version;
     unsigned int interventionType = Config.GetInterventionType();
 
-    m_bufferDirectory = m_fileBufferStorage.Initialize(dataCollectionSetting, userId, currentTime,
-                                                       bbFileName, bbPath, lastwrite,
-                                                       trackFileName, trackName, trackVersion,
-                                                       interventionType);
+    m_bufferPaths = m_fileBufferStorage.Initialize(dataCollectionSetting, userId, currentTime,
+                                                   bbFileName, bbPath, lastwrite,
+                                                   trackFileName, trackName, trackVersion,
+                                                   interventionType);
     m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
 }
 
@@ -98,7 +98,7 @@ template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage,
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
     const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
-    m_fileBufferStorage.Save(p_car, p_situation, m_decision, p_tickCount);
+    m_fileBufferStorage.Save(p_car, m_decision, p_tickCount);
 
     if (decisionMade && m_recorder)
     {
@@ -142,10 +142,10 @@ void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
 {
     BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
-    if (true)
+    if (p_saveToDatabase)
     {
-        SQLDatabaseStorage sqlDatabaseStorage;
-        sqlDatabaseStorage.Run(m_bufferDirectory);
+        SQLDatabaseStorage sqlDatabaseStorage(Config.GetDataCollectionSetting());
+        sqlDatabaseStorage.Run(m_bufferPaths);
     }
     m_recorder = nullptr;
 }
@@ -157,9 +157,9 @@ FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-filesystem::path* TEMP_DECISIONMAKER::GetBufferDirectory()
+const tBufferPaths& TEMP_DECISIONMAKER::GetBufferPaths()
 {
-    return &m_bufferDirectory;
+    return m_bufferPaths;
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>

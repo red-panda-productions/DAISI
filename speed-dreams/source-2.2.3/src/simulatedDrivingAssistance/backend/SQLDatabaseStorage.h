@@ -11,22 +11,27 @@ class SQLDatabaseStorage : IDataStorage
 {
 public:
     SQLDatabaseStorage();
-    void Run(const filesystem::path& p_bufferDirectory, const std::string& p_dirPath = "");
-    void StoreData(const filesystem::path& p_bufferDirectory) override;
+    SQLDatabaseStorage(tDataToStore p_dataToStore);
+    void Run(const tBufferPaths& p_bufferPaths, const std::string& p_dirPath = "");
+    void StoreData(const tBufferPaths& p_bufferPaths) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings, const std::string& p_dirPath = "");
     void CloseDatabase();
 
 private:
     void CreateTables();
-    int InsertInitialData(std::ifstream& p_inputFile);
-    void InsertSimulationData(const filesystem::path& p_bufferDirectory, int p_trialId);
-    void InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
-    void InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
+    int InsertMetaData(std::ifstream& p_inputFileStream);
+    void InsertSimulationData(const tBufferPaths& p_bufferPaths, int p_trialId);
+
+    void InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId);
+    void InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId);
+    void InsertDecisions(const filesystem::path& p_decisionsPath, const int p_trialId);
+
     void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;
     sql::Statement* m_statement;
     sql::ResultSet* m_resultSet;
+
+    tDataToStore m_dataToStore;
 };

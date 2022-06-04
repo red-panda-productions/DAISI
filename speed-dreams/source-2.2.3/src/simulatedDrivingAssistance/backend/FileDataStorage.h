@@ -17,7 +17,7 @@ class FileDataStorage
 private:
     /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
     tDataToStore m_saveSettings;
-    
+
     std::ofstream m_timeStepsStream = {};
     std::ofstream m_gameStateStream = {};
     std::ofstream m_userInputStream = {};
@@ -61,7 +61,7 @@ public:
         p_values[p_compressionStep] = p_value;
     }
 
-    filesystem::path Initialize(
+    tBufferPaths Initialize(
         tDataToStore p_saveSettings,
         const std::string& p_userId,
         const std::time_t& p_trialStartTime,
@@ -93,7 +93,7 @@ public:
 
     void Shutdown();
 
-    void Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp);
+    void Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp);
 
     ~FileDataStorage() = default;
 };

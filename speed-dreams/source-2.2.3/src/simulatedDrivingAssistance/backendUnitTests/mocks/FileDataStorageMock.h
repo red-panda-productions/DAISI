@@ -11,16 +11,16 @@
 class FileDataStorageMock
 {
 public:
-    filesystem::path Initialize(tDataToStore p_saveSettings,
-                                const std::string& p_userId,
-                                const std::time_t& p_trialStartTime,
-                                const std::string& p_blackboxFilename,
-                                const std::string& p_blackboxName,
-                                const std::time_t& p_blackboxTime,
-                                const std::string& p_environmentFilename,
-                                const std::string& p_environmentName,
-                                int p_environmentVersion,
-                                InterventionType p_interventionType)
+    tBufferPaths Initialize(tDataToStore p_saveSettings,
+                            const std::string& p_userId,
+                            const std::time_t& p_trialStartTime,
+                            const std::string& p_blackboxFilename,
+                            const std::string& p_blackboxName,
+                            const std::time_t& p_blackboxTime,
+                            const std::string& p_environmentFilename,
+                            const std::string& p_environmentName,
+                            int p_environmentVersion,
+                            InterventionType p_interventionType)
     {
         SaveSettings = p_saveSettings;
         TrialStartTime = p_trialStartTime;
@@ -41,7 +41,7 @@ public:
     {
     }
 
-    void Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
+    void Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp)
     {
         SavedDecisions = &p_decisions;
     }
