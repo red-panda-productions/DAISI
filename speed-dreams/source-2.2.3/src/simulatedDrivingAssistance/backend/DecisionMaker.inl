@@ -142,7 +142,7 @@ void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
 {
     BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
-    if (p_saveToDatabase)
+    if (true)
     {
         SQLDatabaseStorage sqlDatabaseStorage;
         sqlDatabaseStorage.Run(m_bufferDirectory);

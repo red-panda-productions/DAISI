@@ -1,6 +1,7 @@
 #include "SQLDatabaseStorage.h"
 #include "Mediator.h"
 #include <string>
+#include <regex>
 #include "RppUtils.hpp"
 #include "ConfigEnums.h"
 #include <config.h>
@@ -39,6 +40,7 @@
 #define GET_INT_FROM_RESULTS(p_int) \
     while (m_resultSet->next()) p_int = m_resultSet->getInt(1);
 
+
 /// @brief the amount of decision types a black box can create each tick
 #define DECISIONS_AMOUNT 5
 
@@ -71,10 +73,10 @@ void SQLDatabaseStorage::StoreData(const filesystem::path& p_bufferDirectory)
 
     try
     {
-        //m_connection->setAutoCommit(false);
+        m_connection->setAutoCommit(false);
         int trial_id = InsertInitialData(metaDataStream);
         InsertSimulationData(p_bufferDirectory, trial_id);
-        //m_connection->commit();
+        m_connection->commit();
     }
     catch (std::exception& e)
     {
@@ -431,31 +433,27 @@ void SQLDatabaseStorage::InsertSimulationData(const filesystem::path& p_bufferDi
     std::ifstream userInputStream(userInputPath);
     std::ifstream decisionsStream(decisionsPath);
 
-    // TODO: FIX FILEPATHS GETTING ESCAPED 2x (by c++ and MySQL), causing all backslashes to disappear.
-
-    std::string sqlStat = 
-        "LOAD DATA LOCAL INFILE '" + timeStepsPath.string() + "' INTO TABLE TimeStep "
+    EXECUTE(
+        "LOAD DATA LOCAL INFILE '" + Escape(timeStepsPath) + "' INTO TABLE TimeStep "
         "   LINES TERMINATED BY '\\n' IGNORE 1 LINES "
-        "   (tick) " 
-        "   SET trial_id = " + std::to_string(p_trialId) + ";";
-
-    EXECUTE(sqlStat);
+        "   (tick) "
+        "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + gameStatePath.string() + "' INTO TABLE GameState "
+        "LOAD DATA LOCAL INFILE '" + Escape(gameStatePath) + "' INTO TABLE GameState "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES "
         "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + userInputPath.string() + "' INTO TABLE UserInput "
+        "LOAD DATA LOCAL INFILE '" + Escape(userInputPath) + "' INTO TABLE UserInput "
 	    "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' IGNORE 1 LINES "
         "   (tick, steer, brake, gas, clutch) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
     EXECUTE(
         "CREATE TEMPORARY TABLE TempInterventionData ( "
-        "   temp_intervention_id BIGINT          NOT NULL AUTO_INCREMENT, "
+        "   temp_intervention_id BIGINT			 NOT NULL AUTO_INCREMENT, "
         "   temp_trial_id        INT             NOT NULL, "
         "   temp_tick            BIGINT UNSIGNED NOT NULL, "
         "   temp_steer_decision  FLOAT           NOT NULL, "
@@ -467,10 +465,20 @@ void SQLDatabaseStorage::InsertSimulationData(const filesystem::path& p_bufferDi
         ");");
 
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + decisionsPath.string() + "' INTO TABLE TempInterventionData "
+        "LOAD DATA LOCAL INFILE '" + Escape(decisionsPath) + "' INTO TABLE TempInterventionData "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' IGNORE 1 LINES "
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
         "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
+
+    EXECUTE("CREATE TEMPORARY TABLE TempInterventionData2 AS SELECT * FROM TempInterventionData;");
+
+    // Create trigger for saving the auto incremented id into the temp table.
+    EXECUTE(
+        "CREATE TRIGGER store_id_trig AFTER INSERT ON Intervention" 
+        "   FOR EACH ROW"
+        "       UPDATE TempInterventionData2"
+        "       SET temp_intervention_id = NEW.intervention_id"
+        "       WHERE temp_tick = NEW.tick;");
     
     EXECUTE(
         "INSERT INTO Intervention(trial_id, tick) "
@@ -480,27 +488,29 @@ void SQLDatabaseStorage::InsertSimulationData(const filesystem::path& p_bufferDi
     EXECUTE(
         "INSERT INTO SteerDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_steer_decision "
-        "   FROM TempInterventionData;");
+        "   FROM TempInterventionData2;");
     
     EXECUTE(
         "INSERT INTO BrakeDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_brake_decision "
-        "   FROM TempInterventionData;");
+        "   FROM TempInterventionData2;");
     
     EXECUTE(
         "INSERT INTO AccelDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_accel_decision "
-        "   FROM TempInterventionData;");
+        "   FROM TempInterventionData2;");
     
     EXECUTE(
         "INSERT INTO GearDecision(intervention_id, gear) "
         "   SELECT temp_intervention_id, temp_gear_decision "
-        "   FROM TempInterventionData;");
+        "   FROM TempInterventionData2;");
     
     EXECUTE(
         "INSERT INTO LightsDecision(intervention_id, turn_lights_on) "
         "   SELECT temp_intervention_id, temp_lights_decision "
-        "   FROM TempInterventionData;");
+        "   FROM TempInterventionData2;");
+
+    EXECUTE("DROP TRIGGER sda_schema.store_id_trig");
     
 
 

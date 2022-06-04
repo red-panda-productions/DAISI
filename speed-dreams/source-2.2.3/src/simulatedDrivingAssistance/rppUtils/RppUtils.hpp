@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <regex>
 #include <fstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
@@ -84,6 +85,14 @@ inline float CharArrToFloat(const char* p_c)
 inline filesystem::path SingletonsFilePath()
 {
     return {filesystem::temp_directory_path().append("Singletons")};
+}
+
+/// @brief        Adds an extra escape character in front of every backslash (\\) to (\\\\)
+/// @param p_path The path to double escape
+/// @return       A string containing the new extra escaped path.
+inline std::string Escape(filesystem::path p_path)
+{
+    return std::regex_replace(p_path.string(), std::regex("\\\\"), "\\\\");
 }
 
 /// @brief   Deletes the contents of the singletons folder
