@@ -43,6 +43,7 @@ Added:
         EndExperimentMenu.cpp
         ConformationMenu.cpp
   data/
+
     data/
         config/
             raceman/
@@ -131,6 +132,10 @@ Changed:
                 added getSpeedLimit function
                 added setEstimatedTime function
         tgfclient/
+            CMakeLists.txt
+                Removed WebServer functionalities
+            guieventloop.cpp
+                removed WebServer functionalities
             gui.h
                 added   tGfuiRadioButtonList
                 added   tGfuiRadioButton
@@ -178,8 +183,6 @@ Changed:
 
                 added   GfuiDrawString(): overload
                 added   GfuiFontClass: expose to API
-            webserver.cpp
-                changed NotificationManager::updateWebserverStatusUi
     main/
         main.cpp
             added singletonfolder setup
@@ -209,12 +212,16 @@ Changed:
                  engine.cpp
                     Changed the car->engine.fuelcons to value 0
         racing/standardgame
+            raceresults.cpp
+                removed WebServer functionalities
             raceinit.cpp
                 changed reLoadSingleCar() to fix isHuman flag
                 changed ReInitCars() to fix isHuman flag
                 changed ReCleanup() to also shut down updaters
+                removed WebServer functionalities
             racesituation.cpp
                 change deltaTime to be constant value
+                removed WebServer functionalities
             racestate.cpp
                 changed several RE_STATE_RACE_COOLDOWN modes to RE_STATE_RACE_END modes
             racemain.cpp
@@ -488,13 +495,16 @@ Changed:
             added rppUtils and Filesystem for Linux
 
   data/
-      config/raceman
-        CMakeLists.txt
-        quickrace.xml
-            changed standard track
-        removed practice.xml
-        removed singleevent-challange.xml
-        removed singleeven-endurance.xml
+      config/
+          CMakeLists.txt 
+              removed WebServer functionalities
+          raceman/
+            CMakeLists.txt
+            quickrace.xml
+               changed standard track
+               removed practice.xml
+               removed singleevent-challange.xml
+               removed singleeven-endurance.xml
       cars/models/primo/
         primo.xml
            removed the fuel cons factor
@@ -556,6 +566,10 @@ Changed:
 
 Deleted:
    src/
+      libs/tgfclient/
+         webserver.cpp and webserver.h
+      data/config/
+         webserver.xml
       modules/
          simu/
             simuv2.1/

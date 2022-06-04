@@ -28,13 +28,10 @@
 #include <algorithm>
 #include <string>
 
-#ifdef WEBSERVER
-#include <webserver.h>
-#endif //WEBSERVER
-
 #include <portability.h>
 #include <robot.h>
 
+// SIMUATED DRIVING ASSISTANCE: removed inclusion of webserver.h
 
 #include "standardgame.h"
 
