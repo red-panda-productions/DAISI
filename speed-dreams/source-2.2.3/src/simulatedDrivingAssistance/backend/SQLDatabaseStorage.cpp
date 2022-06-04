@@ -66,6 +66,7 @@ void SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
     try
     {
         int trial_id = InsertInitialData(inputFile);
+        SaveTrialIdToMetadata(trial_id);
         InsertSimulationData(inputFile, trial_id);
     }
     catch (std::exception& e)
@@ -636,4 +637,20 @@ void SQLDatabaseStorage::Run(const filesystem::path& p_inputFilePath, const std:
         CloseDatabase();
         std::cout << "Finished writing to database" << std::endl;
     }
+}
+void SQLDatabaseStorage::SaveTrialIdToMetadata(int p_trialId)
+{
+#define META_BUFFER_FILENAME "sda_metabuffer.bin"
+
+    filesystem::path bufferPath = filesystem::temp_directory_path();
+    bufferPath.append(META_BUFFER_FILENAME);
+    std::fstream blackboxBuffer;
+    blackboxBuffer.open(bufferPath, std::ios::binary | std::fstream::in | std::fstream::out);
+    if (!blackboxBuffer.good()) return;
+
+    blackboxBuffer.seekp(0, std::ios::beg);
+    blackboxBuffer << bits(p_trialId);
+
+    blackboxBuffer.flush();
+    blackboxBuffer.close();
 }

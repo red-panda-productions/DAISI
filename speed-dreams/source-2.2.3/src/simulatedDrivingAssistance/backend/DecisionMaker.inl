@@ -148,13 +148,13 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
 {
-    BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
     if (p_saveToDatabase)
     {
         SQLDatabaseStorage sqlDatabaseStorage;
         sqlDatabaseStorage.Run(m_bufferFilePath);
     }
+    BlackBox.Shutdown();
     m_recorder = nullptr;
 }
 
