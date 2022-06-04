@@ -10,6 +10,11 @@
 /// @brief the max size of the array in which data is stored
 #define COMPRESSION_LIMIT 50
 
+#define TIMESTEPS_CSV_HEADER "tick"
+#define GAMESTATE_CSV_HEADER "tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear"
+#define USERINPUT_CSV_HEADER "tick, steer, brake, gas, clutch"
+#define DECISIONS_CSV_HEADER "tick, steer_decision, brake_decision, accel_decision, gear_decision, lights_decision"
+
 /// @brief               A class that can store data to a file
 /// @tparam BlackBoxData The data that needs to be stored
 class FileDataStorage
@@ -39,7 +44,7 @@ private:
     Random m_random;
 
     void SaveCarData(tCarElt* p_car);
-    void SaveHumanData(tCarElt* p_car);
+    void SaveHumanData(tCarCtrl p_ctrl);
     void SaveInterventionData(DecisionTuple& p_decisions);
 
     void WriteCarData(unsigned long p_timestamp);
@@ -80,9 +85,6 @@ public:
     void AddForAveraging(float& p_total, float p_value);
 
     float GetAverage(float& p_total) const;
-
-    template <typename TNumber>
-    void WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade);
 
     template <typename TNumber>
     void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep);

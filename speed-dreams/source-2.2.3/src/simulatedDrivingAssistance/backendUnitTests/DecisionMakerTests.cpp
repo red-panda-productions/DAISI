@@ -171,12 +171,13 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_NO_THROW(decisionMaker.RaceStop(true));
     ASSERT_NO_THROW(decisionMaker.RaceStop(false));
 
-    tBufferPaths bufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
-    ASSERT_EQ(bufferPaths.MetaData, decisionMaker.GetBufferPaths().MetaData);
-    ASSERT_EQ(bufferPaths.TimeSteps, decisionMaker.GetBufferPaths().TimeSteps);
-    ASSERT_EQ(bufferPaths.GameState, decisionMaker.GetBufferPaths().GameState);
-    ASSERT_EQ(bufferPaths.UserInput, decisionMaker.GetBufferPaths().UserInput);
-    ASSERT_EQ(bufferPaths.Decisions, decisionMaker.GetBufferPaths().Decisions);
+    tBufferPaths vsBufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
+    tBufferPaths dmBufferPaths = decisionMaker.GetBufferPaths();
+    ASSERT_EQ(vsBufferPaths.MetaData, dmBufferPaths.MetaData);
+    ASSERT_EQ(vsBufferPaths.TimeSteps, dmBufferPaths.TimeSteps);
+    ASSERT_EQ(vsBufferPaths.GameState, dmBufferPaths.GameState);
+    ASSERT_EQ(vsBufferPaths.UserInput, dmBufferPaths.UserInput);
+    ASSERT_EQ(vsBufferPaths.Decisions, dmBufferPaths.Decisions);
     ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
 }
 

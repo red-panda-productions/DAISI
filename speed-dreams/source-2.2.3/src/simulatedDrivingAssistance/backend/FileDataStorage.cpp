@@ -89,10 +89,10 @@ tBufferPaths FileDataStorage::Initialize(
     metaDataStream.close();
 
     // Write a header to the buffer files to help with future debugging.
-    WRITE_LINE(m_timeStepsStream, "tick");
-    WRITE_LINE(m_gameStateStream, "tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear");
-    WRITE_LINE(m_userInputStream, "tick, steer, brake, gas, clutch");
-    WRITE_LINE(m_decisionsStream, "tick, steer_decision, brake_decision, accel_decision, gear_decision, lights_decision");
+    WRITE_LINE(m_timeStepsStream, TIMESTEPS_CSV_HEADER);
+    WRITE_LINE(m_gameStateStream, GAMESTATE_CSV_HEADER);
+    WRITE_LINE(m_userInputStream, USERINPUT_CSV_HEADER);
+    WRITE_LINE(m_decisionsStream, DECISIONS_CSV_HEADER);
 
     return bufferPaths;
 }
@@ -127,7 +127,7 @@ void FileDataStorage::Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned 
 {
     // Save all values from this time step into a buffer array for compression.
     if (m_saveSettings.CarData) SaveCarData(p_car);
-    if (m_saveSettings.HumanData) SaveHumanData(p_car);
+    if (m_saveSettings.HumanData) SaveHumanData(p_car->ctrl);
     if (m_saveSettings.InterventionData) SaveInterventionData(p_decisions);
 
     // Advance a compression check and return from function if data should not be saved yet.
@@ -162,13 +162,12 @@ void FileDataStorage::SaveCarData(tCarElt* p_car)
 }
 
 /// @brief Saves the human data from the last time step
-void FileDataStorage::SaveHumanData(tCarElt* p_car)
+void FileDataStorage::SaveHumanData(tCarCtrl p_ctrl)
 {
-    tCarCtrl ctrl = p_car->ctrl;
-    AddToArray<float>(m_steerValues, ctrl.steer, m_compressionStep);
-    AddToArray<float>(m_brakeValues, ctrl.brakeCmd, m_compressionStep);
-    AddToArray<float>(m_accelValues, ctrl.accelCmd, m_compressionStep);
-    AddToArray<float>(m_clutchValues, ctrl.clutchCmd, m_compressionStep);
+    AddToArray<float>(m_steerValues, p_ctrl.steer, m_compressionStep);
+    AddToArray<float>(m_brakeValues, p_ctrl.brakeCmd, m_compressionStep);
+    AddToArray<float>(m_accelValues, p_ctrl.accelCmd, m_compressionStep);
+    AddToArray<float>(m_clutchValues, p_ctrl.clutchCmd, m_compressionStep);
 }
 
 /// @brief Saves the intervention data from the last time step
@@ -194,7 +193,7 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
         AddToArray<TNumber>(p_values, p_value, p_compressionStep);
         return;
     }
-    AddToArray<TNumber>(p_values, -1, p_compressionStep);
+    AddToArray<TNumber>(p_values, 0, p_compressionStep);
 }
 
 /// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
