@@ -28,7 +28,12 @@ public:
         EnvironmentVersion = p_environmentVersion;
         Intervention = p_interventionType;
         filesystem::path filePath = filesystem::temp_directory_path();
-        return {filePath};
+        return {
+            filePath.append("1"),
+            filePath.append("2"),
+            filePath.append("3"),
+            filePath.append("4"),
+            filePath.append("5")};
     }
     tDataToStore SaveSettings;
     time_t TrialStartTime;

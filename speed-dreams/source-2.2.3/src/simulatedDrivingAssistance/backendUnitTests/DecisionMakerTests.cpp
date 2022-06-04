@@ -170,8 +170,14 @@ TEST(DecisionMakerTests, RaceStopTest)
     chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop(true));
     ASSERT_NO_THROW(decisionMaker.RaceStop(false));
-    /*filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
-    ASSERT_TRUE(path == *decisionMaker.GetBufferPaths());*/
+
+    tBufferPaths bufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
+    ASSERT_EQ(bufferPaths.MetaData, decisionMaker.GetBufferPaths().MetaData);
+    ASSERT_EQ(bufferPaths.TimeSteps, decisionMaker.GetBufferPaths().TimeSteps);
+    ASSERT_EQ(bufferPaths.GameState, decisionMaker.GetBufferPaths().GameState);
+    ASSERT_EQ(bufferPaths.UserInput, decisionMaker.GetBufferPaths().UserInput);
+    ASSERT_EQ(bufferPaths.Decisions, decisionMaker.GetBufferPaths().Decisions);
+    ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
 }
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable

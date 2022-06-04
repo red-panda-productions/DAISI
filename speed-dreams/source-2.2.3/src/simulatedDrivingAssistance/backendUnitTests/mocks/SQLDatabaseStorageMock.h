@@ -17,11 +17,9 @@ public:
 
     void Run(const tBufferPaths& p_bufferPaths)
     {
-        /*InputFilePath = p_inputFilePath;
+        const auto bufferPaths = new tBufferPaths(p_bufferPaths);
 
-        const auto path = new filesystem::path(p_inputFilePath);
-
-        VariableStore::GetInstance().Variables[0] = static_cast<void*>(path);*/
+        VariableStore::GetInstance().Variables[0] = static_cast<void*>(bufferPaths);
     }
 
     void StoreData(const tBufferPaths& p_bufferPaths) override  //@NOCOVERAGE, This function is needed for building but is never called
