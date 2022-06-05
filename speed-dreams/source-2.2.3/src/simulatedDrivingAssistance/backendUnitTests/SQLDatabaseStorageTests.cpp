@@ -55,24 +55,6 @@ TEST(SQLDatabaseStorageTests, TestConstructAndCloseNoCrash)
     sqlDataBaseStorage.CloseDatabase();
 }
 
-TEST(SQLDatabaseStorageTests, TestParameterizedConstructor)
-{
-    tDataToStore settings = {false, false, false, false, false};
-    SQLDatabaseStorage sqlDataBaseStorage(settings);
-
-    // Test whether settings were stored by checking whether the gamesate, etc. files are not being loaded.
-    tBufferPaths bufferPaths = VALID_BUFFER_DATA;
-    bufferPaths.GameState = "";
-    bufferPaths.UserInput = "";
-    bufferPaths.Decisions = "";
-
-    MAKE_TEST_SETTINGS;
-    ASSERT_TRUE(SetupSingletonsFolder());
-    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
-
-    NO_ERROR_CONTAINING(sqlDataBaseStorage.Run(bufferPaths), "[MYSQL]");
-}
-
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
 /// @param p_password password of database to connect to
@@ -106,6 +88,7 @@ TEST(SQLDatabaseStorageTests, TestOpenAndCloseDatabaseTwice)
     ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
     ASSERT_NO_THROW(sqlDataBaseStorage.CloseDatabase());
     ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+    ASSERT_NO_THROW(sqlDataBaseStorage.CloseDatabase());
 }
 
 TEST(SQLDatabaseStorageTests, TestStoreDataMetaDataBufferNotFound)
@@ -170,8 +153,52 @@ TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionType4, TestStoreData
 TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionTypeInvalid, TestStoreDataFailInternalDbError,
           ({FULL_TEST_DATA_PATH("meta-data-intervention-invalid.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
 
-TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidTrialId, TestStoreDataFailInternalDbError,
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidMetaDataType, TestStoreDataFailInternalDbError,
           ({FULL_TEST_DATA_PATH("meta-data-invalid-datetime.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataIncomplete, TestStoreDataFailInternalDbError,
+          ({FULL_TEST_DATA_PATH("meta-data-incomplete.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
 
 TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidContraintFailTick, TestStoreDataFailInternalDbError,
           ({VALID_META_DATA, FULL_TEST_DATA_PATH("timesteps-constraint-fail.csv"), VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+
+TEST(SQLDatabaseStorageTests, TestRunDataStorage)
+{
+    MAKE_TEST_SETTINGS;
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    SQLDatabaseStorage sqlDataBaseStorage;
+    NO_ERROR_CONTAINING(sqlDataBaseStorage.Run(VALID_BUFFER_DATA), "[MYSQL]");
+}
+
+TEST(SQLDatabaseStorageTests, TestRunParameterizedConstructor)
+{
+    tDataToStore settings = {false, false, false, false, false};
+    SQLDatabaseStorage sqlDataBaseStorage(settings);
+
+    // Test whether settings were stored by checking whether the gamesate, etc. files are not being loaded.
+    tBufferPaths bufferPaths = VALID_BUFFER_DATA;
+    bufferPaths.GameState = "";
+    bufferPaths.UserInput = "";
+    bufferPaths.Decisions = "";
+
+    MAKE_TEST_SETTINGS;
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    NO_ERROR_CONTAINING(sqlDataBaseStorage.Run(bufferPaths), "[MYSQL]");
+}
+
+TEST(SQLDatabaseStorageTests, TestRunCannotOpenDatabase)
+{
+    MAKE_TEST_SETTINGS;
+    sprintf(testSettings.Username, "SOMETHINGINCORRECT");
+
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    SQLDatabaseStorage sqlDataBaseStorage;
+    CATCH_ERROR_CONTAINING(sqlDataBaseStorage.Run(VALID_BUFFER_DATA), "Could not open database: ");
+}

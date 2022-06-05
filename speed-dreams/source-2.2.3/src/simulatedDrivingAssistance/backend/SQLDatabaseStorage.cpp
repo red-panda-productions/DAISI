@@ -34,8 +34,6 @@
 
 #define STORE_ID_TRIGGER_NAME "store_id_trigger"
 
-
-
 /// @brief The constructor of the SQL database storage
 SQLDatabaseStorage::SQLDatabaseStorage()
     : SQLDatabaseStorage({true, true, true, true, true}) {};
@@ -116,7 +114,7 @@ bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
     }
     catch (std::exception& e)
     {
-        std::cerr << "Could not open database" << e.what() << std::endl;
+        std::cerr << "Could not open database: " << e.what() << std::endl;
         return false;
     }
 
@@ -190,6 +188,11 @@ void SQLDatabaseStorage::CreateTables()
         "    CONSTRAINT settings_unique UNIQUE (intervention_mode)\n"
         "    \n"
         ")");
+
+    // Need to keep the enum column up-to-date, simply updating the create table will not be run since it exists.
+    EXECUTE(
+        "ALTER TABLE Settings MODIFY COLUMN intervention_mode "
+        "ENUM('Drive', 'Force', 'Shared', 'Suggest', 'Off') NOT NULL DEFAULT 'Off';");
 
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Trial (\n"
