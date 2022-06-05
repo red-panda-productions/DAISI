@@ -11,7 +11,7 @@ class SQLDatabaseStorage : IDataStorage
 {
 public:
     SQLDatabaseStorage();
-    explicit SQLDatabaseStorage(tDataToStore p_dataToStore);
+    SQLDatabaseStorage(tDataToStore p_dataToStore);
     void Run(const tBufferPaths& p_bufferPaths);
     void StoreData(const tBufferPaths& p_bufferPaths) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings);

@@ -257,7 +257,7 @@ void FileDataStorage::WriteDecision(TNumber p_value, char p_separator)
     {
         m_decisionsStream << p_value;
     }
-    m_decisionsStream << separator;
+    m_decisionsStream << p_separator;
 }
 
 /// @brief Add the new value to the total of the current time steps
