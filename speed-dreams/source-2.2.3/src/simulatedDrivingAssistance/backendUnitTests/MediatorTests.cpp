@@ -568,10 +568,10 @@ void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel
     if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Steer) canUseSteerBool &= !steerBool;
 
     bool canUseBrakeBool = pControl.ControlBrake && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool && !accelBool;
 
     bool canUseAccelBool = pControl.ControlAccel && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool && !brakeBool;
 
     ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
     ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);

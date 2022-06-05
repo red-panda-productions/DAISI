@@ -32,6 +32,12 @@
         SMediator::GetInstance()->SetThresholdSettings(decisionThresholds);                                                   \
         /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/                                     \
         SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);                                        \
+                                                                                                                              \
+        AllowedActions allowedActions;                                                                                        \
+        allowedActions.Steer = true;                                                                                          \
+        allowedActions.Brake = true;                                                                                          \
+        allowedActions.Accelerate = true;                                                                                     \
+        SMediator::GetInstance()->SetAllowedActions(allowedActions);                                                          \
     }
 
 #define TEARDOWN_DECISION_TEST \
