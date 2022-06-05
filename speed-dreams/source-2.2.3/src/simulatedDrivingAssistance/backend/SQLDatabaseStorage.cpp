@@ -34,7 +34,7 @@
 
 #define STORE_ID_TRIGGER_NAME "store_id_trigger"
 
-/// @brief The constructor of the SQL database storage
+/// @brief The constructor of the SQL database storage, defaults to storing all data.
 SQLDatabaseStorage::SQLDatabaseStorage()
     : SQLDatabaseStorage({true, true, true, true, true}) {};
 

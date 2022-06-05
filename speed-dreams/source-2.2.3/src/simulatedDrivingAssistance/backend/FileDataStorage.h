@@ -15,8 +15,7 @@
 #define USERINPUT_CSV_HEADER "tick, steer, brake, gas, clutch"
 #define DECISIONS_CSV_HEADER "tick, steer_decision, brake_decision, accel_decision, gear_decision, lights_decision"
 
-/// @brief               A class that can store data to a file
-/// @tparam BlackBoxData The data that needs to be stored
+/// @brief A class that can store simulation data to buffer files
 class FileDataStorage
 {
 public:
@@ -37,11 +36,11 @@ public:
         int p_environmentVersion,
         InterventionType p_interventionType);
 
-    void Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp);
+    void Save(tCarElt* p_car, const DecisionTuple& p_decisions, unsigned long p_timestamp);
 
     /// @brief Add the new value to the array in the correct compression step
-    /// @param p_values Array with values from the current compression step
-    /// @param p_value The new value of this time step for the variable
+    /// @param p_values          Array with values from the current compression step
+    /// @param p_value           The new value of this time step for the variable
     /// @param p_compressionStep The current compression step
     template <typename TNumber>
     void AddToArray(TNumber* p_values, TNumber p_value, int p_compressionStep) const
@@ -82,8 +81,8 @@ private:
     Random m_random;
 
     void SaveCarData(tCarElt* p_car);
-    void SaveHumanData(tCarCtrl p_ctrl);
-    void SaveInterventionData(DecisionTuple& p_decisions);
+    void SaveHumanData(const tCarCtrl& p_ctrl);
+    void SaveInterventionData(const DecisionTuple& p_decisions);
 
     template <typename TNumber>
     void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep);

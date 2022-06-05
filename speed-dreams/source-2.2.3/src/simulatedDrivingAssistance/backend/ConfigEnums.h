@@ -145,6 +145,7 @@ typedef struct DecisionThresholds
 #define STANDARD_THRESHOLD_BRAKE 0.9f
 #define STANDARD_THRESHOLD_STEER 0.04f
 
+// Buffer directory name and file names
 #define BUFFER_TEMP_DIRECTORY "DAISI-data-buffers"
 #define BUFFER_FILE_META_DATA "meta-data-buffer.txt"
 #define BUFFER_FILE_TIMESTEPS "timesteps-buffer.csv"
@@ -152,6 +153,7 @@ typedef struct DecisionThresholds
 #define BUFFER_FILE_USERINPUT "userinput-buffer.csv"
 #define BUFFER_FILE_DECISIONS "decisions-buffer.csv"
 
+/// @brief Struct containing all the file paths to the buffer files
 typedef struct BufferPaths
 {
     filesystem::path MetaData;

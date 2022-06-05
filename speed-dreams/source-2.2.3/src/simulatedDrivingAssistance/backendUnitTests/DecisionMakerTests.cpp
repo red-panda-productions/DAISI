@@ -162,7 +162,7 @@ BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
 END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2, arr, 2);
 
-/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct path
+/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct buffer paths
 TEST(DecisionMakerTests, RaceStopTest)
 {
     TDecisionMaker decisionMaker;

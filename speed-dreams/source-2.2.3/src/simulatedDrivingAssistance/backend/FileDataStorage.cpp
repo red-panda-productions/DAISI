@@ -10,7 +10,6 @@
 
 // Some random value that will not occur in a decision
 #define SKIP_DECISION -123456
-#define GET_DECISION_VALUE(value) (value == SKIP_DECISION) ? "NULL" : value;
 
 /// @brief Write a time variable to a stream as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string),
 ///  finished by a newline.
@@ -114,7 +113,7 @@ int FileDataStorage::GetCompressionRate() const
 }
 
 /// @brief Shutdown the file data storage.
-/// End result: any possible final data is written and the file is released.
+/// End result: any possible final data is written and the files are released.
 void FileDataStorage::Shutdown()
 {
     m_timeStepsStream.close();
@@ -123,11 +122,11 @@ void FileDataStorage::Shutdown()
     m_decisionsStream.close();
 }
 
-/// @brief Save the current driving situation to the buffer
-/// @param p_car Current car status in Speed Dreams
-/// @param p_situation Current situation in Speed Dreams
+/// @brief Save the current simulation data to the buffers
+///        Uses data compression to compress data if needed.
+/// @param p_car       Current car status in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt* p_car, const DecisionTuple& p_decisions, unsigned long p_timestamp)
 {
     // Save all values from this time step into a buffer array for compression.
     if (m_saveSettings.CarData) SaveCarData(p_car);
@@ -145,11 +144,12 @@ void FileDataStorage::Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned 
     if (m_saveSettings.HumanData) WriteHumanData(p_timestamp);
     if (m_saveSettings.InterventionData) WriteInterventionData(p_timestamp);
 
-    // Rest compression
+    // Reset compression
     m_compressionStep = 0;
 }
 
 /// @brief Saves the car data from the last time step
+/// @param p_car The car object to save
 void FileDataStorage::SaveCarData(tCarElt* p_car)
 {
     Posd pos = p_car->pub.DynGCg.pos;
@@ -166,7 +166,8 @@ void FileDataStorage::SaveCarData(tCarElt* p_car)
 }
 
 /// @brief Saves the human data from the last time step
-void FileDataStorage::SaveHumanData(tCarCtrl p_ctrl)
+/// @param p_ctrl The human control struct
+void FileDataStorage::SaveHumanData(const tCarCtrl& p_ctrl)
 {
     AddToArray<float>(m_steerValues, p_ctrl.steer, m_compressionStep);
     AddToArray<float>(m_brakeValues, p_ctrl.brakeCmd, m_compressionStep);
@@ -175,7 +176,8 @@ void FileDataStorage::SaveHumanData(tCarCtrl p_ctrl)
 }
 
 /// @brief Saves the intervention data from the last time step
-void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
+/// @param p_decisions The decision data to store
+void FileDataStorage::SaveInterventionData(const DecisionTuple& p_decisions)
 {
     SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteer(), m_steerDecision, m_compressionStep);
     SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrake(), m_brakeDecision, m_compressionStep);
@@ -185,10 +187,10 @@ void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
 }
 
 /// @brief Saves the decision data from the last time step
-/// @param p_decisionMade boolean that determines whether a decision is made
-/// @param p_value the value of the decision
-/// @param p_values array of values from previous decisions
-/// @param p_compressionStep the current step the program is in
+/// @param p_decisionMade    Boolean that determines whether a decision is made
+/// @param p_value           The value of the decision
+/// @param p_values          Array of values from previous decisions
+/// @param p_compressionStep The current compression step
 template <typename TNumber>
 void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep)
 {
@@ -201,6 +203,7 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
 }
 
 /// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
+/// @param p_timestamp The current simulation tick.
 void FileDataStorage::WriteCarData(unsigned long p_timestamp)
 {
     WRITE_CSV(m_gameStateStream, p_timestamp);
@@ -215,7 +218,8 @@ void FileDataStorage::WriteCarData(unsigned long p_timestamp)
     WRITE_LINE(m_gameStateStream, GetLeastCommon(m_gearValues)); // gear
 }
 
-/// @brief Writes the human data from the last m_compressionRate time steps to the buffer file
+/// @brief Writes the human input data from the last m_compressionRate time steps to the buffer file
+/// @param p_timestamp The current simulation tick.
 void FileDataStorage::WriteHumanData(unsigned long p_timestamp)
 {
     WRITE_CSV(m_userInputStream, p_timestamp);
@@ -226,6 +230,7 @@ void FileDataStorage::WriteHumanData(unsigned long p_timestamp)
 }
 
 /// @brief Writes the intervention data from the last m_compressionRate time steps to the buffer file
+/// @param p_timestamp The current simulation tick.
 void FileDataStorage::WriteInterventionData(unsigned long p_timestamp)
 {
     WRITE_CSV(m_decisionsStream, p_timestamp);
@@ -252,7 +257,6 @@ void FileDataStorage::WriteDecision(TNumber p_value, char separator)
     {
         m_decisionsStream << p_value;
     }
-
     m_decisionsStream << separator;
 }
 

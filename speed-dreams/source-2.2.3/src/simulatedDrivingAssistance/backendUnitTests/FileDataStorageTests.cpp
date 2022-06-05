@@ -5,13 +5,6 @@
 #include "mocks/BlackBoxDataMock.h"
 #include <algorithm>
 
-/// @brief The file directory to use for writing test files to, relative to the OS's Temp folder.
-/// This directory should be allowed to be deleted by tests.
-#define TEST_FILE_DIR "testDataStorageDir"
-
-/// @brief The filename to use for writing test files to.
-#define TEST_FILE_NAME "testDataStorage.txt"
-
 /// @brief Get dummy time variables. These set the trial to have started now,
 ///  the black box to have been created yesterday, and the environment last year.
 #define GET_DUMMY_TIMES                                                           \
@@ -48,7 +41,7 @@
 /// @brief Standard compression rate
 #define COMPRESSION_RATE 5
 
-/// @brief Get a tCarElt variable "car" and fill it with random data for variables relevant to the FileDataStorage system.
+/// @brief Creates a car with random values
 #define CREATE_RANDOM_CAR(random, car)          \
     car.pub.DynGCg.pos.x = random.NextFloat();  \
     car.pub.DynGCg.pos.y = random.NextFloat();  \
@@ -64,7 +57,7 @@
     car.ctrl.accelCmd = random.NextFloat();     \
     car.ctrl.clutchCmd = random.NextFloat();
 
-// Write the output to be expected in the gamestate buffer file to a stream.
+/// @brief Write the output to be expected in the gamestate buffer file to a stream.
 #define WRITE_EXPECTED_CAR(expected, car)    \
     expected << car.pub.DynGCg.pos.x << ','  \
              << car.pub.DynGCg.pos.y << ','  \
@@ -76,14 +69,14 @@
              << car.pub.DynGC.acc.x << ','   \
              << car.priv.gear << '\n'
 
-// Write the output to be expected in the userinput buffer file to a stream.
+/// @brief Write the output to be expected in the userinput buffer file to a stream.
 #define WRITE_EXPECTED_CONTROLS(expected, ctrl) \
     expected << ctrl.steer << ','               \
              << ctrl.brakeCmd << ','            \
              << ctrl.accelCmd << ','            \
              << ctrl.clutchCmd << '\n'
 
-// Write the output to be expected in the decisions buffer file to a stream.
+/// @brief Write the output to be expected in the decisions buffer file to a stream.
 #define WRITE_EXPECTED_DECISION(expected, contains, value, separator) \
     if (contains)                                                     \
         expected << value;                                            \
@@ -122,6 +115,9 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
     return decisions;
 }
 
+/// @brief Writes the given tuple to the expected stringstream, values depend on whether a decision was made
+/// @param p_expected  The stringstream storing the expected test output
+/// @param p_decisions The struct containg the decisions
 void WriteExpectedDecisions(std::stringstream& p_expected, const DecisionTuple& p_decisions)
 {
     WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsSteer(), p_decisions.GetSteer(), ',');
@@ -184,6 +180,7 @@ TEST(FileDataStorageTests, TestWriteEnvironmentData)
     SUCCEED();  // TODO: implement whenever this checkbox gets used.
 }
 
+/// @brief Tests whether the gamestate is correctly written to the corresponding buffer file
 TEST(FileDataStorageTests, TestWriteGameStateData)
 {
     GET_DUMMY_TIMES;
@@ -217,6 +214,7 @@ TEST(FileDataStorageTests, TestWriteGameStateData)
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
 }
 
+/// @brief Tests whether the userinput is correctly written to the corresponding buffer file
 TEST(FileDataStorageTests, TestWriteUserInputData)
 {
     GET_DUMMY_TIMES;
@@ -250,6 +248,13 @@ TEST(FileDataStorageTests, TestWriteUserInputData)
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
 }
 
+/// @brief Tests whether the decisions are correctly written to the corresponding buffer file
+/// @param p_storeDecisions Whether to store decisions at all (corresponding to tDataToStore)
+/// @param p_doSteer        Whether to store the steer decision
+/// @param p_doBrake        Whether to store the brake decision
+/// @param p_doAccel        Whether to store the accel decision
+/// @param p_doGear         Whether to store the gear decision
+/// @param p_doLights       Whether to store the lights on decision
 void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
     GET_DUMMY_TIMES;
@@ -325,7 +330,7 @@ TEST(FileDataStorageTests, TestWriteInternalMetaData)
     SUCCEED();  // TODO: implement whenever this checkbox gets used.
 }
 
-/// @brief Run the FileDataStorage saving only minimal data and ensure the file is correct and located in the correct directory
+/// @brief Run the FileDataStorage saving only minimal data for a variable amount of ticks.
 /// @param p_numberOfTicks How many ticks to save (default 1)
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
@@ -359,13 +364,12 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 }
 
 /// @brief Test the data storage system's Save function over 3 timesteps with certain modules enabled.
-/// Data used will be randomly generated.
-/// No decisions will be tested.
-/// @param p_storeEnvironment Whether to save environment data
-/// @param p_storeCar Whether to save car data
-/// @param p_storeControls Whether to save player control data
-/// @param p_storeDecisions Whether to save intervention data
-/// @param p_storeMeta Whether to save metadata
+///        Data used will be randomly generated.
+/// @param p_storeEnvironment Whether to save environment data (TODO: implement when used)
+/// @param p_storeCar         Whether to save car data
+/// @param p_storeControls    Whether to save player control data
+/// @param p_storeDecisions   Whether to save intervention data
+/// @param p_storeMeta        Whether to save metadata (TODO: implement when used)
 void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions, bool p_storeMeta)
 {
     GET_DUMMY_TIMES;
@@ -376,6 +380,7 @@ void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControl
         p_storeControls,
         p_storeDecisions,
         p_storeMeta};
+
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
     tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
@@ -437,29 +442,17 @@ void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControl
     ASSERT_STREQ(decisionsContents.str().c_str(), expectedDecisions.str().c_str());
 }
 
-/// @brief Run the @link #TestDataStorageSave(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
+/// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
 TEST(FileDataStorageTests, PairWiseTestWriteData)
 {
     bool booleans[2]{true, false};
     PairWiseTest(TestWriteData, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
 }
 
-/// @brief Test that the FileDataStorage creates the file and directory it should write to if the directory does not yet exist
-TEST(FileDataStorageTests, CreatesFileDirectoryIfNotExists)
-{
-    // Delete the existing test directory to ensure directories are properly created
-    if (filesystem::exists(TEST_FILE_DIR))
-    {
-        filesystem::remove_all(TEST_FILE_DIR);  // @NOCOVERAGE, deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
-    }
-
-    TestNoStorageWithTimestamps();
-}
-
 /// @brief Test that the FileDataStorage works properly when the same file is written to twice.
+//         The buffer files should be wiped when re-used.
 TEST(FileDataStorageTests, WriteSameFileTwice)
 {
-    // Write less data the second time, to ensure data is cleared and not simply overwritten
     TestNoStorageWithTimestamps(2);
     TestNoStorageWithTimestamps(1);
 }
@@ -467,10 +460,13 @@ TEST(FileDataStorageTests, WriteSameFileTwice)
 /// @brief Test that the FileDataStorage works properly when we only write the initial data and no ticks
 TEST_CASE(FileDataStorageTests, WriteNoTicks, TestNoStorageWithTimestamps, (0))
 
+/// @brief Test that the FileDataStorage works properly for a long run.
+TEST_CASE(FileDataStorageTests, WriteLongRun, TestNoStorageWithTimestamps, (1000000))
+
 /// @brief Test helper function to get the median of an array
-/// @param p_values array to get the median of
-/// @param p_compressionRate the compression rate of the array
-/// @return median of the array
+/// @param p_values          Array to get the median of
+/// @param p_compressionRate The compression rate of the array
+/// @return                  Median of the array
 float HelperGetMedian(float* p_values, int p_compressionRate)
 {
     std::sort(p_values, p_values + p_compressionRate);
@@ -478,8 +474,8 @@ float HelperGetMedian(float* p_values, int p_compressionRate)
     return p_values[middle];
 }
 
-/// @brief Test for checking data is correctly set for different compression rates for 20 ticks
-/// @param p_compressionRate the compression rate to be tested with
+/// @brief Test for checking whether data is correctly compressed for different compression rates for COMPRESSION_LIMIT + 1 ticks
+/// @param p_compressionRate The compression rate to be tested with
 void TestDataStorageSaveCompressionRates(int p_compressionRate)
 {
     GET_DUMMY_TIMES;
@@ -504,7 +500,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
     expectedGameState << GAMESTATE_CSV_HEADER << '\n';
     expectedUserInput << USERINPUT_CSV_HEADER << '\n';
 
-    for (int tick = 0; tick < 20; tick++)
+    for (int tick = 0; tick <= COMPRESSION_LIMIT; tick++)
     {
         CREATE_RANDOM_CAR(rnd, car);
 
@@ -569,20 +565,24 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
     ASSERT_STREQ(userInputContents.str().c_str(), expectedUserInput.str().c_str());
 }
 
-/// @brief Test for checking data is correctly set for compression rate 1
+/// @brief Test for checking data is correctly compressed for compression rate 1
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates1, TestDataStorageSaveCompressionRates, (1))
 
-/// @brief Test for checking data is correctly set for compression rate 3
+/// @brief Test for checking data is correctly compressed for compression rate 3
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates3, TestDataStorageSaveCompressionRates, (3))
 
-/// @brief Test for checking data is correctly set for compression rate 5
+/// @brief Test for checking data is correctly compressed for compression rate 5
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates5, TestDataStorageSaveCompressionRates, (5))
 
-/// @brief Test for checking data is correctly set for compression rate 7
+/// @brief Test for checking data is correctly compressed for compression rate 7
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates7, TestDataStorageSaveCompressionRates, (7))
 
-/// @brief Test for checking data is correctly set for compression rate 9
+/// @brief Test for checking data is correctly compressed for compression rate 9
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates9, TestDataStorageSaveCompressionRates, (9))
+
+/// @brief Test for checking data is correctly compressed for the max compression rate
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionLimit, TestDataStorageSaveCompressionRates, (COMPRESSION_LIMIT))
+
 
 /// @brief Test for checking the compression rate is correctly set
 TEST(FileDataStorageTests, SetCompressionsRateTest)
