@@ -29,6 +29,7 @@ typedef struct DatabaseSettings
     int Port;
     char Schema[SETTINGS_NAME_LENGTH];
     bool UseSSL;
+    bool VerifySSL = true;
     char CACertFilePath[SETTINGS_NAME_LENGTH];
     char PublicCertFilePath[SETTINGS_NAME_LENGTH];
     char PrivateCertFilePath[SETTINGS_NAME_LENGTH];
@@ -37,7 +38,6 @@ typedef struct DatabaseSettings
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 
-// TODO: remove INTERVENTION_TYPE_ASK_FOR
 #define INTERVENTION_TYPE_NO_SIGNALS        0
 #define INTERVENTION_TYPE_ONLY_SIGNALS      1
 #define INTERVENTION_TYPE_SHARED_CONTROL    2

@@ -12,9 +12,9 @@ class SQLDatabaseStorage : IDataStorage
 public:
     SQLDatabaseStorage();
     SQLDatabaseStorage(tDataToStore p_dataToStore);
-    void Run(const tBufferPaths& p_bufferPaths, const std::string& p_dirPath = "");
+    void Run(const tBufferPaths& p_bufferPaths);
     void StoreData(const tBufferPaths& p_bufferPaths) override;
-    bool OpenDatabase(DatabaseSettings p_dbSettings, const std::string& p_dirPath = "");
+    bool OpenDatabase(DatabaseSettings p_dbSettings);
     void CloseDatabase();
 
 private:

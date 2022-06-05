@@ -81,6 +81,7 @@ void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
 /// @param p_dbSettings             The database settings used to retrieve the certificate names.
 void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
 {
+    p_connectionProperties["sslVerify"] = p_dbSettings.VerifySSL;
     p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
     p_connectionProperties["sslCert"] = p_dbSettings.PublicCertFilePath;
     p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;
@@ -89,11 +90,8 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties,
 /// @brief                  Connect to the specified database.
 ///                         Initialise the database with the proper tables if they don't exist yet.
 /// @param p_dbSettings     Struct containing all settings for a database connection
-/// @param p_dirPath        optional: path relative to the datafolder in which the
-///                         "database_encryption_settings.txt" file is located
-///                         needs "\\" in front
 /// @return                 returns true if connection to database has been made, false otherwise
-bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings, const std::string& p_dirPath)
+bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -530,11 +528,11 @@ void SQLDatabaseStorage::CloseDatabase()
 ///                             and if applicable the "database_encryption_settings.txt".
 ///                             needs "\\" in front
 ///                             if left out path will be data folder
-void SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths, const std::string& p_dirPath)
+void SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
-    if (OpenDatabase(dbsettings, p_dirPath))
+    if (OpenDatabase(dbsettings))
     {
         std::cout << "Writing local buffer file to database" << std::endl;
         StoreData(p_bufferPaths);
