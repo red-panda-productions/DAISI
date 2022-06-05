@@ -449,7 +449,7 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 {
     EXECUTE(
         "CREATE TEMPORARY TABLE TempInterventionData ( "
-        "   temp_intervention_id BIGINT			 NOT NULL AUTO_INCREMENT, "
+        "   temp_intervention_id BIGINT	         NOT NULL AUTO_INCREMENT, "
         "   temp_trial_id        INT             NOT NULL, "
         "   temp_tick            BIGINT UNSIGNED NOT NULL, "
         "   temp_steer_decision  FLOAT, "
