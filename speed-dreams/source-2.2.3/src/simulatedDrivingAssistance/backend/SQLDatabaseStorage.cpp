@@ -70,6 +70,7 @@ void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
     }
     catch (std::exception& e)
     {
+        m_connection->rollback();
         std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
     }
 }
@@ -81,7 +82,6 @@ void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
 /// @param p_dbSettings             The database settings used to retrieve the certificate names.
 void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
 {
-    p_connectionProperties["sslVerify"] = p_dbSettings.VerifySSL;
     p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
     p_connectionProperties["sslCert"] = p_dbSettings.PublicCertFilePath;
     p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;

@@ -29,7 +29,6 @@ typedef struct DatabaseSettings
     int Port;
     char Schema[SETTINGS_NAME_LENGTH];
     bool UseSSL;
-    bool VerifySSL = true;
     char CACertFilePath[SETTINGS_NAME_LENGTH];
     char PublicCertFilePath[SETTINGS_NAME_LENGTH];
     char PrivateCertFilePath[SETTINGS_NAME_LENGTH];
