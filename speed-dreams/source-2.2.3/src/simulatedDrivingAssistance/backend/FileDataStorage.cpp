@@ -207,15 +207,15 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
 void FileDataStorage::WriteCarData(unsigned long p_timestamp)
 {
     WRITE_CSV(m_gameStateStream, p_timestamp);
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosX));       // x-position
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosY));       // y-position
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosZ));       // z-position
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAx));      // x-rotation
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAy));      // y-rotation
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAz));      // z-rotation
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovVelX));    // speed
-    WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovAccX));    // acceleration
-    WRITE_LINE(m_gameStateStream, GetLeastCommon(m_gearValues)); // gear
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosX));        // x-position
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosY));        // y-position
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosZ));        // z-position
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAx));       // x-rotation
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAy));       // y-rotation
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAz));       // z-rotation
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovVelX));     // speed
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovAccX));     // acceleration
+    WRITE_LINE(m_gameStateStream, GetLeastCommon(m_gearValues));  // gear
 }
 
 /// @brief Writes the human input data from the last m_compressionRate time steps to the buffer file
@@ -223,10 +223,10 @@ void FileDataStorage::WriteCarData(unsigned long p_timestamp)
 void FileDataStorage::WriteHumanData(unsigned long p_timestamp)
 {
     WRITE_CSV(m_userInputStream, p_timestamp);
-    WRITE_CSV(m_userInputStream, GetMedian(m_steerValues));   // steer
-    WRITE_CSV(m_userInputStream, GetMedian(m_brakeValues));   // brake
-    WRITE_CSV(m_userInputStream, GetMedian(m_accelValues));   // gas
-    WRITE_LINE(m_userInputStream, GetMedian(m_clutchValues)); // clutch
+    WRITE_CSV(m_userInputStream, GetMedian(m_steerValues));    // steer
+    WRITE_CSV(m_userInputStream, GetMedian(m_brakeValues));    // brake
+    WRITE_CSV(m_userInputStream, GetMedian(m_accelValues));    // gas
+    WRITE_LINE(m_userInputStream, GetMedian(m_clutchValues));  // clutch
 }
 
 /// @brief Writes the intervention data from the last m_compressionRate time steps to the buffer file
@@ -247,7 +247,7 @@ void FileDataStorage::WriteInterventionData(unsigned long p_timestamp)
 /// @param p_value   The value corresponding to the decision
 /// @param separator The separator to append after the value
 template <typename TNumber>
-void FileDataStorage::WriteDecision(TNumber p_value, char separator)
+void FileDataStorage::WriteDecision(TNumber p_value, char p_separator)
 {
     if (p_value == static_cast<TNumber>(SKIP_DECISION))
     {

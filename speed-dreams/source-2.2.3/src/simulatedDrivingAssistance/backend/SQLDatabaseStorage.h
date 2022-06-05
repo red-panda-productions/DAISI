@@ -11,7 +11,7 @@ class SQLDatabaseStorage : IDataStorage
 {
 public:
     SQLDatabaseStorage();
-    SQLDatabaseStorage(tDataToStore p_dataToStore);
+    explicit SQLDatabaseStorage(tDataToStore p_dataToStore);
     void Run(const tBufferPaths& p_bufferPaths);
     void StoreData(const tBufferPaths& p_bufferPaths) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings);
@@ -22,9 +22,9 @@ private:
     int InsertMetaData(std::ifstream& p_inputFileStream);
     void InsertSimulationData(const tBufferPaths& p_bufferPaths, int p_trialId);
 
-    void InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId);
-    void InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId);
-    void InsertDecisions(const filesystem::path& p_decisionsPath, const int p_trialId);
+    void InsertGameState(const filesystem::path& p_gameStatePath, int p_trialId);
+    void InsertUserInput(const filesystem::path& p_userInputPath, int p_trialId);
+    void InsertDecisions(const filesystem::path& p_decisionsPath, int p_trialId);
 
     void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 

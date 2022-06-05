@@ -7,12 +7,12 @@
 #include <config.h>
 
 /// @brief reads input from input file, unless EOF has been reached
-#define READ_LINE(p_inputFileStream, p_string)                   \
-    if (p_inputFileStream.eof())                                 \
-    {                                                            \
-        p_inputFileStream.close();                               \
-        THROW_RPP_EXCEPTION("Reached end of file prematurely");  \
-    }                                                            \
+#define READ_LINE(p_inputFileStream, p_string)                  \
+    if (p_inputFileStream.eof())                                \
+    {                                                           \
+        p_inputFileStream.close();                              \
+        THROW_RPP_EXCEPTION("Reached end of file prematurely"); \
+    }                                                           \
     std::getline(p_inputFileStream, p_string);
 
 /// @brief executes sql statement
@@ -30,13 +30,13 @@
 /// @brief Executes a query and retrieves the integer result
 #define GET_INT_FROM_QUERY(p_int, p_querySql)            \
     m_resultSet = m_statement->executeQuery(p_querySql); \
-    while (m_resultSet->next()) p_int = m_resultSet->getInt(1); 
+    while (m_resultSet->next()) p_int = m_resultSet->getInt(1);
 
 #define STORE_ID_TRIGGER_NAME "store_id_trigger"
 
 /// @brief The constructor of the SQL database storage, defaults to storing all data.
 SQLDatabaseStorage::SQLDatabaseStorage()
-    : SQLDatabaseStorage({true, true, true, true, true}) {};
+    : SQLDatabaseStorage({true, true, true, true, true}){};
 
 /// @brief The parameterized constructor of the SQL database storage
 /// @param p_dataToStore The data to actually store in the database

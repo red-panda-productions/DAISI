@@ -58,7 +58,7 @@ public:
 
 private:
     /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
-    tDataToStore m_saveSettings;
+    tDataToStore m_saveSettings = {};
 
     std::ofstream m_timeStepsStream = {};
     std::ofstream m_gameStateStream = {};
@@ -73,10 +73,16 @@ private:
 
     float m_totalPosX = 0, m_totalPosY = 0, m_totalPosZ = 0, m_totalPosAx = 0, m_totalPosAy = 0, m_totalPosAz = 0;
     float m_totalMovVelX = 0, m_totalMovAccX = 0;
-    int m_gearValues[COMPRESSION_LIMIT];
-    float m_steerValues[COMPRESSION_LIMIT], m_brakeValues[COMPRESSION_LIMIT], m_accelValues[COMPRESSION_LIMIT], m_clutchValues[COMPRESSION_LIMIT];
-    float m_steerDecision[COMPRESSION_LIMIT], m_brakeDecision[COMPRESSION_LIMIT], m_accelDecision[COMPRESSION_LIMIT];
-    int m_gearDecision[COMPRESSION_LIMIT], m_lightDecision[COMPRESSION_LIMIT];
+    int m_gearValues[COMPRESSION_LIMIT] = {};
+    float m_steerValues[COMPRESSION_LIMIT] = {};
+    float m_brakeValues[COMPRESSION_LIMIT] = {};
+    float m_accelValues[COMPRESSION_LIMIT] = {};
+    float m_clutchValues[COMPRESSION_LIMIT] = {};
+    float m_steerDecision[COMPRESSION_LIMIT] = {};
+    float m_brakeDecision[COMPRESSION_LIMIT] = {};
+    float m_accelDecision[COMPRESSION_LIMIT] = {};
+    int m_gearDecision[COMPRESSION_LIMIT] = {};
+    int m_lightDecision[COMPRESSION_LIMIT] = {};
 
     Random m_random;
 
@@ -92,7 +98,7 @@ private:
     void WriteInterventionData(unsigned long p_timestamp);
 
     template <typename TNumber>
-    void WriteDecision(TNumber p_value, char separator);
+    void WriteDecision(TNumber p_value, char p_separator);
 
     void GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_startPartition, float& p_endPartition);
     int RandomPartition(float* p_values, int p_start, int p_end);
