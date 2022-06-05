@@ -3,7 +3,9 @@
 
 void BrakeDecision::RunIndicateCommands()
 {
-    if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI) return;
+    float threshold = SMediator::GetInstance()->GetThresholdSettings().Brake;
+    if (BrakeAmount < threshold && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI) return;
+    if (!SMediator::GetInstance()->GetAllowedActions().Brake) return;
 
     SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_SPEED_BRAKE);
 }
@@ -12,7 +14,8 @@ void BrakeDecision::RunIndicateCommands()
 /// @param p_allowedActions The allowed black box actions, for determining whether or not the command may be rans
 void BrakeDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
 {
-    if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake || !p_allowedActions.Brake)
+    float threshold = SMediator::GetInstance()->GetThresholdSettings().Brake;
+    if (BrakeAmount < threshold || !p_allowedActions.Brake)
     {
         SMediator::GetInstance()->SetBrakeDecision(false);
         return;

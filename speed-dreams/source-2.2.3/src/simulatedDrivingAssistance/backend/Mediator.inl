@@ -294,7 +294,7 @@ bool Mediator<DecisionMaker>::CanUseBrake()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Brake)
     {
-        canControlBrake &= !HasMadeBrakeDecision();
+        canControlBrake &= !HasMadeBrakeDecision() && !HasMadeAccelDecision();
     }
 
     return canControlBrake;
@@ -309,7 +309,7 @@ bool Mediator<DecisionMaker>::CanUseAccel()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Accelerate)
     {
-        canControlAccel &= !HasMadeAccelDecision();
+        canControlAccel &= !HasMadeAccelDecision() && !HasMadeBrakeDecision();
     }
 
     return canControlAccel;

@@ -3,6 +3,8 @@
 
 void SteerDecision::RunIndicateCommands()
 {
+    if (!SMediator::GetInstance()->GetAllowedActions().Steer) return;
+    
     float threshold = SMediator::GetInstance()->GetThresholdSettings().Steer;
     if (SteerAmount <= -threshold)
     {
