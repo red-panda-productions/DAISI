@@ -19,6 +19,44 @@
 /// @tparam BlackBoxData The data that needs to be stored
 class FileDataStorage
 {
+public:
+    FileDataStorage() = default;
+    ~FileDataStorage() = default;
+
+    void Shutdown();
+
+    tBufferPaths Initialize(
+        tDataToStore p_saveSettings,
+        const std::string& p_userId,
+        const std::time_t& p_trialStartTime,
+        const std::string& p_blackboxFilename,
+        const std::string& p_blackboxName,
+        const std::time_t& p_blackboxTime,
+        const std::string& p_environmentFilename,
+        const std::string& p_environmentName,
+        int p_environmentVersion,
+        InterventionType p_interventionType);
+
+    void Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp);
+
+    /// @brief Add the new value to the array in the correct compression step
+    /// @param p_values Array with values from the current compression step
+    /// @param p_value The new value of this time step for the variable
+    /// @param p_compressionStep The current compression step
+    template <typename TNumber>
+    void AddToArray(TNumber* p_values, TNumber p_value, int p_compressionStep) const
+    {
+        p_values[p_compressionStep] = p_value;
+    }
+
+    void SetCompressionRate(int p_compressionRate);
+    int GetCompressionRate() const;
+
+    void AddForAveraging(float& p_total, float p_value);
+    float GetAverage(float& p_total) const;
+    float GetMedian(float* p_values);
+    int GetLeastCommon(int* p_values) const;
+
 private:
     /// @brief Boolean array to determine what to save and what not to save. Uses indices as in ConfigEnums.h
     tDataToStore m_saveSettings;
@@ -47,57 +85,19 @@ private:
     void SaveHumanData(tCarCtrl p_ctrl);
     void SaveInterventionData(DecisionTuple& p_decisions);
 
+    template <typename TNumber>
+    void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep);
+
     void WriteCarData(unsigned long p_timestamp);
     void WriteHumanData(unsigned long p_timestamp);
     void WriteInterventionData(unsigned long p_timestamp);
 
+    template <typename TNumber>
+    void WriteDecision(TNumber p_value, char separator);
+
     void GetMedianUtil(float* p_values, int p_start, int p_end, int p_middle, float& p_startPartition, float& p_endPartition);
     int RandomPartition(float* p_values, int p_start, int p_end);
     int Partition(float* p_values, int p_start, int p_end);
-
-public:
-    /// @brief Add the new value to the array in the correct compression step
-    /// @param p_values Array with values from the current compression step
-    /// @param p_value The new value of this time step for the variable
-    /// @param p_compressionStep The current compression step
-    template <typename TNumber>
-    void AddToArray(TNumber* p_values, TNumber p_value, int p_compressionStep) const
-    {
-        p_values[p_compressionStep] = p_value;
-    }
-
-    tBufferPaths Initialize(
-        tDataToStore p_saveSettings,
-        const std::string& p_userId,
-        const std::time_t& p_trialStartTime,
-        const std::string& p_blackboxFilename,
-        const std::string& p_blackboxName,
-        const std::time_t& p_blackboxTime,
-        const std::string& p_environmentFilename,
-        const std::string& p_environmentName,
-        int p_environmentVersion,
-        InterventionType p_interventionType);
-
-    void SetCompressionRate(int p_compressionRate);
-
-    int GetCompressionRate() const;
-
-    void AddForAveraging(float& p_total, float p_value);
-
-    float GetAverage(float& p_total) const;
-
-    template <typename TNumber>
-    void SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep);
-
-    float GetMedian(float* p_values);
-
-    int GetLeastCommon(int* p_values) const;
-
-    void Shutdown();
-
-    void Save(tCarElt* p_car, DecisionTuple& p_decisions, unsigned long p_timestamp);
-
-    ~FileDataStorage() = default;
 };
 
 /// @brief Standard implementation of the file data storage

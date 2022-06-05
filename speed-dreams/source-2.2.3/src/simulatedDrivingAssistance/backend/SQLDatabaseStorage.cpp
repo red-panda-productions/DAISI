@@ -38,7 +38,8 @@
 SQLDatabaseStorage::SQLDatabaseStorage()
     : SQLDatabaseStorage({true, true, true, true, true}) {};
 
-/// @brief The constructor of the SQL database storage
+/// @brief The parameterized constructor of the SQL database storage
+/// @param p_dataToStore The data to actually store in the database
 SQLDatabaseStorage::SQLDatabaseStorage(tDataToStore p_dataToStore)
 {
     m_driver = nullptr;
@@ -48,8 +49,8 @@ SQLDatabaseStorage::SQLDatabaseStorage(tDataToStore p_dataToStore)
     m_dataToStore = p_dataToStore;
 };
 
-/// @brief Creates a database and stores data from input file into the correct database structure
-/// @param p_inputFilePath path and name of input file
+/// @brief Creates a database and stores data from the buffer files into the correct database tables
+/// @param p_bufferPaths Struct containg the paths to all the buffer files.
 void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
 {
     std::ifstream metaDataStream(p_bufferPaths.MetaData);
@@ -73,11 +74,10 @@ void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
     }
 }
 
-/// @brief  gets the keys for secure database connection in the data/certificates folder
-///         and adds them to the connection properties
-///         name of the keys are set in the database_encryption_settings.txt file
-/// @param p_connectionProperties   SQL connection properties to which the keys are added.
-/// @param p_dbSettings             The database settings used to retrieve the certificate names.
+/// @brief Gets the keys for secure database connection in the data/certificates folder
+///        and adds them to the connection properties
+/// @param p_connectionProperties SQL connection properties to which the keys are added.
+/// @param p_dbSettings           The database settings used to retrieve the certificate names.
 void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
 {
     p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
@@ -85,10 +85,10 @@ void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties,
     p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;
 }
 
-/// @brief                  Connect to the specified database.
-///                         Initialise the database with the proper tables if they don't exist yet.
-/// @param p_dbSettings     Struct containing all settings for a database connection
-/// @return                 returns true if connection to database has been made, false otherwise
+/// @brief Connect to the specified database and set session variables.
+///        Initialise the database with the proper tables if they don't exist yet.
+/// @param p_dbSettings Struct containing all settings for a database connection
+/// @return             Returns true if connection to database has been made, false otherwise
 bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
 {
     // Initialise SQL driver
@@ -308,8 +308,8 @@ void SQLDatabaseStorage::CreateTables()
         ")");
 }
 
-/// @brief Inserts the data that stays the same during a trial. Includes participant, blackbox, environment, settings, and trial
-/// @return trialId
+/// @brief Inserts meta data about the trial. Includes participant, blackbox, environment, settings, and trial.
+/// @return trialId The auto-incremented id corresponding to this trial.
 int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 {
     std::string values;
@@ -398,13 +398,15 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
     return trialId;
 }
 
-/// @brief Inserts data that is different for each tick in one trial, included tick, user input, gamestate, time step, interventions, and decisions
-/// @param p_trialId id of trial that the simulation is linked with
+/// @brief Inserts all simulation data into the database, by loading the corresponding buffer files.
+///        Files are only loaded if this data needs to be stored.
+/// @param p_bufferPaths Struct containg the paths to all the buffer files.
+/// @param p_trialId     The id corresponding to this trial's data.
 void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths, const int p_trialId)
 {
     EXECUTE(
         "LOAD DATA LOCAL INFILE '" + Escape(p_bufferPaths.TimeSteps) + "' INTO TABLE TimeStep "
-        "   LINES TERMINATED BY '\\n' IGNORE 1 LINES "
+        "   LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
@@ -413,28 +415,36 @@ void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths,
     if (m_dataToStore.InterventionData) InsertDecisions(p_bufferPaths.Decisions, p_trialId);
 }
 
+/// @brief Loads the gamestate buffer file into the corresponding database table.
+/// @param p_gameStatePath The buffer file to read from
+/// @param p_trialId       The id corresponding to this trial's data.
 void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId)
 {
     EXECUTE(
         "LOAD DATA LOCAL INFILE '" + Escape(p_gameStatePath) + "' INTO TABLE GameState "
-        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES "
+        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\n' IGNORE 1 LINES "
         "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
 }
 
+/// @brief Loads the userinput buffer file into the corresponding database table.
+/// @param p_userInputPath The buffer file to read from
+/// @param p_trialId       The id corresponding to this trial's data.
 void SQLDatabaseStorage::InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId)
 {
     EXECUTE(
         "LOAD DATA LOCAL INFILE '" + Escape(p_userInputPath) + "' INTO TABLE UserInput "
-        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' IGNORE 1 LINES "
+        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick, steer, brake, gas, clutch) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
 }
 
-/// @brief Loops through the input file and inserts all decisions that the black box has made
-/// @param p_inputFileStream the input file to read from
-/// @param p_trialId the trial the decisions are made in
-/// @param p_tick the tick the decisions are made in
+/// @brief Loads the decisions buffer file into the database by first loading it into a temporary table.
+///        From this table, the interventions are inserted and the auto-incremented id is stored into another temp table.
+///        From this second temp table, all the decisions are then copied into the actual decision tables, linking to the intervention_id.
+///        Decisions that are NULL (\N in the buffer file) are NOT stored.
+/// @param p_decisionsPath The buffer file to read from
+/// @param p_trialId       The id corresponding to this trial's data.
 void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath, const int p_trialId)
 {
     EXECUTE(
@@ -442,18 +452,18 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
         "   temp_intervention_id BIGINT			 NOT NULL AUTO_INCREMENT, "
         "   temp_trial_id        INT             NOT NULL, "
         "   temp_tick            BIGINT UNSIGNED NOT NULL, "
-        "   temp_steer_decision  FLOAT           NOT NULL, "
-        "   temp_brake_decision  FLOAT           NOT NULL, "
-        "   temp_accel_decision  FLOAT           NOT NULL, "
-        "   temp_gear_decision   INT             NOT NULL, "
-        "   temp_lights_decision BOOLEAN         NOT NULL, "
+        "   temp_steer_decision  FLOAT, "
+        "   temp_brake_decision  FLOAT, "
+        "   temp_accel_decision  FLOAT, "
+        "   temp_gear_decision   INT, "
+        "   temp_lights_decision BOOLEAN, "
         "   PRIMARY KEY(temp_intervention_id) "
         ");");
 
     // Load decisions csv file into temp table.
     EXECUTE(
         "LOAD DATA LOCAL INFILE '" + Escape(p_decisionsPath) + "' INTO TABLE TempInterventionData "
-        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\n' IGNORE 1 LINES "
+        "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
         "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
 
@@ -478,34 +488,38 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
     EXECUTE(
         "INSERT INTO SteerDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_steer_decision "
-        "   FROM TempInterventionDataWithCorrectId;");
+        "   FROM TempInterventionDataWithCorrectId "
+        "   WHERE temp_steer_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO BrakeDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_brake_decision "
-        "   FROM TempInterventionDataWithCorrectId;");
+        "   FROM TempInterventionDataWithCorrectId "
+        "   WHERE temp_brake_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO AccelDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_accel_decision "
-        "   FROM TempInterventionDataWithCorrectId;");
+        "   FROM TempInterventionDataWithCorrectId "
+        "   WHERE temp_accel_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO GearDecision(intervention_id, gear) "
         "   SELECT temp_intervention_id, temp_gear_decision "
-        "   FROM TempInterventionDataWithCorrectId;");
+        "   FROM TempInterventionDataWithCorrectId "
+        "   WHERE temp_gear_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO LightsDecision(intervention_id, turn_lights_on) "
         "   SELECT temp_intervention_id, temp_lights_decision "
-        "   FROM TempInterventionDataWithCorrectId;");
+        "   FROM TempInterventionDataWithCorrectId "
+        "   WHERE temp_lights_decision IS NOT NULL;");
 
     EXECUTE("DROP TRIGGER " STORE_ID_TRIGGER_NAME ";");
 }
 
 /// @brief Close the connection to the database and clean up.
 ///        sql::Statement and sql::Connection objects must be freed explicitly using delete
-///        Might be called in the catch of an error already, so guard when the variables are already deleted.
 void SQLDatabaseStorage::CloseDatabase()
 {
     if (m_statement)
@@ -521,16 +535,8 @@ void SQLDatabaseStorage::CloseDatabase()
     }
 }
 
-/// @brief  Runs the database connection by finding the "database_connection_settings.txt" file
-///         getting the connection properties out of that file
-///         opening the database, storing the data of the bufferfile
-///         and closing the database
-/// @param  p_inputFilePath     path for the buffer file, the content of which is written to the database
-/// @param  p_dirPath           optional parameter: path after the data folder
-///                             for "database_connection_settings.txt" file
-///                             and if applicable the "database_encryption_settings.txt".
-///                             needs "\\" in front
-///                             if left out path will be data folder
+/// @brief Runs the database storage with the given connection properties from the Mediator.
+/// @param p_bufferPaths Struct containg the paths to all the buffer files.
 void SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();

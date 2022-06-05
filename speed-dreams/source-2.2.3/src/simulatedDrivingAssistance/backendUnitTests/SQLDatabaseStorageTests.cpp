@@ -49,26 +49,35 @@
     std::string output = testing::internal::GetCapturedStderr(); \
     ASSERT_THAT(output, Not(testing::HasSubstr(errorMsg)));
 
+/// @brief Tests whether closing the database without opening it doesnt throw an error.
 TEST(SQLDatabaseStorageTests, TestConstructAndCloseNoCrash)
 {
     SQLDatabaseStorage sqlDataBaseStorage;
-    sqlDataBaseStorage.CloseDatabase();
+    ASSERT_NO_THROW(sqlDataBaseStorage.CloseDatabase());
 }
 
-/// @brief Connects to database using the given password
-/// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
-/// @param p_password password of database to connect to
-void TestOpenDatabaseSuccess(bool p_useSSL)
+/// @brief Tests whether connection to the database fails due to invalid certificates.
+TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailSSL)
 {
     MAKE_TEST_SETTINGS;
-    testSettings.UseSSL = p_useSSL;
+    testSettings.UseSSL = true;
+    SQLDatabaseStorage sqlDataBaseStorage;
+
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.OpenDatabase(testSettings)),
+        "Could not open database");
+}
+
+/// @brief Tests whether the database can be successfully opened when not using SSL 
+TEST(SQLDatabaseStorageTests, TestOpenDatabaseSuccessNoSSL)
+{
+    MAKE_TEST_SETTINGS;
+    testSettings.UseSSL = false;
     SQLDatabaseStorage sqlDataBaseStorage;
     ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
 }
 
-TEST_CASE(SQLDatabaseStorageTests, TestOpenDatabaseSuccessSSL, TestOpenDatabaseSuccess, (true));
-TEST_CASE(SQLDatabaseStorageTests, TestOpenDatabaseSuccessNoSSL, TestOpenDatabaseSuccess, (false));
-
+/// @brief Tests whether connection to the database is not possible with an incorrect password.
 TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailIncorrectPassword)
 {
     MAKE_TEST_SETTINGS;
@@ -80,6 +89,7 @@ TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailIncorrectPassword)
         "Could not open database");
 }
 
+/// @brief Tests whether the database can be opened and closed multiple times without crashing.
 TEST(SQLDatabaseStorageTests, TestOpenAndCloseDatabaseTwice)
 {
     MAKE_TEST_SETTINGS;
@@ -91,6 +101,7 @@ TEST(SQLDatabaseStorageTests, TestOpenAndCloseDatabaseTwice)
     ASSERT_NO_THROW(sqlDataBaseStorage.CloseDatabase());
 }
 
+/// @brief Tests whether the database throws an exception when the metadata buffer file is not found.
 TEST(SQLDatabaseStorageTests, TestStoreDataMetaDataBufferNotFound)
 {
     MAKE_TEST_SETTINGS;
@@ -102,6 +113,8 @@ TEST(SQLDatabaseStorageTests, TestStoreDataMetaDataBufferNotFound)
     CATCH_ERROR_CONTAINING(sqlDataBaseStorage.StoreData(bufferPaths), "[MYSQL] Buffer file not found: ");
 }
 
+/// @brief Tests whether the data from the given buffer files is stored without throwing a MYSQL error.
+/// @param p_bufferPaths The data buffers to store
 void TestStoreDataSuccess(tBufferPaths p_bufferPaths)
 {
     MAKE_TEST_SETTINGS;
@@ -111,6 +124,8 @@ void TestStoreDataSuccess(tBufferPaths p_bufferPaths)
     NO_ERROR_CONTAINING(sqlDataBaseStorage.StoreData(p_bufferPaths), "[MYSQL]");
 }
 
+/// @brief Tests whether a MYSQL error is thrown when the data from the given buffer files is trying to be stored
+/// @param p_bufferPaths The data buffers to store
 void TestStoreDataFailInternalDbError(tBufferPaths p_bufferPaths)
 {
     MAKE_TEST_SETTINGS;
@@ -119,6 +134,8 @@ void TestStoreDataFailInternalDbError(tBufferPaths p_bufferPaths)
 
     CATCH_ERROR_CONTAINING(sqlDataBaseStorage.StoreData(p_bufferPaths), "[MYSQL] internal dberror: ");
 }
+
+// Varying test cases using the above test error/no error functions for storing to the database. 
 
 TEST_CASE(SQLDatabaseStorageTests, TestStoreDataValid, TestStoreDataSuccess,
           ({VALID_META_DATA, VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
@@ -163,6 +180,7 @@ TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidContraintFailTick, TestSt
           ({VALID_META_DATA, FULL_TEST_DATA_PATH("timesteps-constraint-fail.csv"), VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
 
 
+/// @brief Test whether the valid buffer data can be successfully stored by calling the run function.
 TEST(SQLDatabaseStorageTests, TestRunDataStorage)
 {
     MAKE_TEST_SETTINGS;
@@ -173,6 +191,8 @@ TEST(SQLDatabaseStorageTests, TestRunDataStorage)
     NO_ERROR_CONTAINING(sqlDataBaseStorage.Run(VALID_BUFFER_DATA), "[MYSQL]");
 }
 
+/// @brief Test whether the constructor is set correctly,
+///        by testing whether invalid buffer files are ignored and thus doesn't throw an error.
 TEST(SQLDatabaseStorageTests, TestRunParameterizedConstructor)
 {
     tDataToStore settings = {false, false, false, false, false};
@@ -191,6 +211,7 @@ TEST(SQLDatabaseStorageTests, TestRunParameterizedConstructor)
     NO_ERROR_CONTAINING(sqlDataBaseStorage.Run(bufferPaths), "[MYSQL]");
 }
 
+/// @brief Test whether the database storage cannot run when provided with an invalid username.
 TEST(SQLDatabaseStorageTests, TestRunCannotOpenDatabase)
 {
     MAKE_TEST_SETTINGS;

@@ -8,6 +8,10 @@
 #define WRITE_CSV(stream, val)  stream << val << ','
 #define WRITE_LINE(stream, val) stream << val << '\n'
 
+// Some random value that will not occur in a decision
+#define SKIP_DECISION -123456
+#define GET_DECISION_VALUE(value) (value == SKIP_DECISION) ? "NULL" : value;
+
 /// @brief Write a time variable to a stream as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string),
 ///  finished by a newline.
 /// @param stream Output stream to write time to.
@@ -193,7 +197,7 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
         AddToArray<TNumber>(p_values, p_value, p_compressionStep);
         return;
     }
-    AddToArray<TNumber>(p_values, 0, p_compressionStep);
+    AddToArray<TNumber>(p_values, SKIP_DECISION, p_compressionStep);
 }
 
 /// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
@@ -225,11 +229,31 @@ void FileDataStorage::WriteHumanData(unsigned long p_timestamp)
 void FileDataStorage::WriteInterventionData(unsigned long p_timestamp)
 {
     WRITE_CSV(m_decisionsStream, p_timestamp);
-    WRITE_CSV(m_decisionsStream, GetMedian(m_steerDecision));
-    WRITE_CSV(m_decisionsStream, GetMedian(m_brakeDecision));
-    WRITE_CSV(m_decisionsStream, GetMedian(m_accelDecision));
-    WRITE_CSV(m_decisionsStream, GetLeastCommon(m_gearDecision));
-    WRITE_LINE(m_decisionsStream, GetLeastCommon(m_lightDecision));
+    WriteDecision(GetMedian(m_steerDecision), ',');
+    WriteDecision(GetMedian(m_brakeDecision), ',');
+    WriteDecision(GetMedian(m_accelDecision), ',');
+    WriteDecision(GetLeastCommon(m_gearDecision), ',');
+    WriteDecision(GetLeastCommon(m_lightDecision), '\n');
+}
+
+/// @brief Writes a decision to the decision buffer file. In case the decision should be skipped,
+///        it writes '\N' which corresponds to NULL in the MySQL LOAD DATA INFILE statement
+/// @tparam TNumber  The type of the decision value
+/// @param p_value   The value corresponding to the decision
+/// @param separator The separator to append after the value
+template <typename TNumber>
+void FileDataStorage::WriteDecision(TNumber p_value, char separator)
+{
+    if (p_value == static_cast<TNumber>(SKIP_DECISION))
+    {
+        m_decisionsStream << "\\N";
+    }
+    else
+    {
+        m_decisionsStream << p_value;
+    }
+
+    m_decisionsStream << separator;
 }
 
 /// @brief Add the new value to the total of the current time steps

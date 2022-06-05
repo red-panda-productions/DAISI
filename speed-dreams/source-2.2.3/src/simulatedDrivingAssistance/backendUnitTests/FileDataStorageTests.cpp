@@ -64,7 +64,7 @@
     car.ctrl.accelCmd = random.NextFloat();     \
     car.ctrl.clutchCmd = random.NextFloat();
 
-/// @brief Write to a stream variable "expected" the data expected to be seen in a file when environment is stored
+// Write the output to be expected in the gamestate buffer file to a stream.
 #define WRITE_EXPECTED_CAR(expected, car)    \
     expected << car.pub.DynGCg.pos.x << ','  \
              << car.pub.DynGCg.pos.y << ','  \
@@ -76,18 +76,20 @@
              << car.pub.DynGC.acc.x << ','   \
              << car.priv.gear << '\n'
 
+// Write the output to be expected in the userinput buffer file to a stream.
 #define WRITE_EXPECTED_CONTROLS(expected, ctrl) \
     expected << ctrl.steer << ','               \
              << ctrl.brakeCmd << ','            \
              << ctrl.accelCmd << ','            \
              << ctrl.clutchCmd << '\n'
 
-#define WRITE_EXPECTED_DECISIONS(expected, decisions) \
-    expected << decisions.GetSteer() << ','           \
-             << decisions.GetBrake() << ','           \
-             << decisions.GetAccel() << ','           \
-             << decisions.GetGear() << ','            \
-             << decisions.GetLights() << '\n'
+// Write the output to be expected in the decisions buffer file to a stream.
+#define WRITE_EXPECTED_DECISION(expected, contains, value, separator) \
+    if (contains)                                                     \
+        expected << value;                                            \
+    else                                                              \
+        expected << "\\N";                                            \
+    expected << separator
 
 /// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
 /// @param date Time to format and write to the stream.
@@ -118,6 +120,15 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
     if (p_doGear) decisions.SetGear(p_random.NextInt());
     if (p_doLights) decisions.SetLights(p_random.NextBool());
     return decisions;
+}
+
+void WriteExpectedDecisions(std::stringstream& p_expected, const DecisionTuple& p_decisions)
+{
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsSteer(), p_decisions.GetSteer(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsBrake(), p_decisions.GetBrake(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsAccel(), p_decisions.GetAccel(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsGear(), p_decisions.GetGear(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsLights(), p_decisions.GetLights(), '\n');
 }
 
 /// @brief Tests whether the file data storage is initialized correctly.
@@ -261,7 +272,7 @@ void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, b
         if (p_storeDecisions)
         {
             expected << tick << ',';
-            WRITE_EXPECTED_DECISIONS(expected, decisions);
+            WriteExpectedDecisions(expected, decisions);
         }
     }
 
@@ -403,7 +414,7 @@ void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControl
         if (p_storeDecisions)
         {
             expectedDecisions << tick << ',';
-            WRITE_EXPECTED_DECISIONS(expectedDecisions, tuple);
+            WriteExpectedDecisions(expectedDecisions, tuple);
         }
     }
 
