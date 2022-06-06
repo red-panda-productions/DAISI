@@ -96,7 +96,7 @@ To start an experiment with a blackbox select the blackbox executable and start 
 
 To change icons or sounds check the examples in [speed-dreams/source-2.2.3/data/data/indicators](speed-dreams/source-2.2.3/data/data/indicators)
 
-For more information check the documentation [here](documentation/).
+⚠Documentation is still in progress but will be found [here](documentation/).
 
 ## Project structure
 
