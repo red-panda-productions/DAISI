@@ -347,6 +347,12 @@ SimCarTelemetry(int nCarIndex, bool bOn)
     SimTelemetry = bOn ? nCarIndex : -1;
 }
 
+#include <ostream>
+#include <fstream>
+#include <iostream>
+
+std::ofstream debugLogFile("gerries_debug_log.txt");
+
 void
 SimUpdate(tSituation *s, double deltaTime)
 {

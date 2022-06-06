@@ -949,6 +949,11 @@ SimTelemetryOut(tCar *car)
 	    fprintf(stderr,"BzFR%+7.1f%% BzLR%+7.1f%%\n", 100.0 * ForceFront / (ForceTotal1), 100.0 * ForceLeft / (ForceTotal2));
 	}
 }
+#include <iostream>
+#include <ostream>
+#include <fstream>
+extern std::ofstream debugLogFile;
+
 
 void
 SimCarUpdate(tCar *car, tSituation * /* s */)

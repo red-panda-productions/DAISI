@@ -143,9 +143,18 @@ typedef struct
 
 #else
 
-#define CHECK_VAR(_var_, _msg_)
-#define CHECK(_car_)
+#define DUMP_V3(v3, f) \
+    f << #v3 << ": " << v3.x << " " << v3.y << " " << v3.z << " " << std::endl;
 
+#define CHECK_VAR(_var_, _msg_)
+#define CHECK(_car_) \
+DUMP_V3(car->carElt->pub.DynGC.pos, debugLogFile) \
+DUMP_V3(car->carElt->pub.DynGC.vel, debugLogFile) \
+DUMP_V3(car->carElt->pub.DynGC.acc, debugLogFile) \
+DUMP_V3(car->carElt->pub.DynGCg.pos, debugLogFile) \
+DUMP_V3(car->carElt->pub.DynGCg.vel, debugLogFile) \
+DUMP_V3(car->carElt->pub.DynGCg.acc, debugLogFile)\
+    debugLogFile.flush();
 #endif
 
 #endif /* _CAR__H_ */

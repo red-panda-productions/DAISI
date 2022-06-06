@@ -86,6 +86,12 @@ jobs:
         working-directory: ${{runner.workspace}}/build
         run: ctest -V
 
+      - name: Upload debug log
+        uses: actions/upload-artifact@v2
+        with:
+            name: debug_log.txt
+            path: ${{github.workspace}}/speed-dreams/source-2.2.3/data/gerries_debug_log.txt
+
       - name: Upload test results
         uses: actions/upload-artifact@v2
         if: failure()
