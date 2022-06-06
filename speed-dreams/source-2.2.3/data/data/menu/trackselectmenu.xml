@@ -139,7 +139,7 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="small_t"/>
 	</section>
-	<!-- SIMULATED DRIVING ASSISTANCE: added estimated time label and removed pits label-->
+    <!-- SIMULATED DRIVING ASSISTANCE: added estimated time label and removed pits label-->
     <section name="estimatedtimelabel">
         <attstr name="type" val="label"/>
         <attnum name="max len" val="10"/>

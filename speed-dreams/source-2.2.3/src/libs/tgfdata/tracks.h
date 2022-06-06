@@ -52,7 +52,7 @@ public:
 	float getWidth() const;
 	int getMaxNumOfPitSlots() const;
 
-	// SIMULATED DRIVING ASSISTANCE: add getters for estimated time and speedlimit
+    // SIMULATED DRIVING ASSISTANCE: add getters for estimated time and speedlimit
     float GetEstimatedTime() const;
     float GetSpeedLimit() const;
 
@@ -71,7 +71,7 @@ public:
 	void setWidth(float fWidth);
 	void setMaxNumOfPitSlots(int nPitSlots);
 
-	// SIMULATED DRIVING ASSISTANCE: add setter for estimated time
+    // SIMULATED DRIVING ASSISTANCE: add setter for estimated time
     void SetEstimatedTime();
 
 protected:
@@ -93,7 +93,7 @@ protected:
 	mutable float _fWidth;           // Width (m).
 	mutable int _nMaxPitSlots;       // Max. number of pit slots (m).
 
-	// SIMULATED DRIVING ASSISTANCE: added Time (minutes) and SpeedLimit (km/h).
+    // SIMULATED DRIVING ASSISTANCE: added Time (minutes) and SpeedLimit (km/h).
     mutable float EstimatedTime;
     mutable float SpeedLimit;
 
