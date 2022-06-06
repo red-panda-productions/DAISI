@@ -50,12 +50,6 @@ public:
     tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
-    bool HasMadeSteerDecision();
-    bool HasMadeBrakeDecision();
-    bool HasMadeAccelDecision();
-    void SetSteerDecision(bool p_steerDecision);
-    void SetBrakeDecision(bool p_brakeDecision);
-    void SetAccelDecision(bool p_accelDecision);
 
     bool CanUseSteer();
     bool CanUseBrake();

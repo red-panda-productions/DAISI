@@ -22,7 +22,8 @@
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                                           \
-    template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
+    template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();                                                         \
+    template DecisionTuple DecisionMaker<type1, type2, type3, type4, type5>::GetDecisions();
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
 #define BUFFER_FILE_PATH   "race_data_buffer.txt"
@@ -95,6 +96,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
                                                       trackversion,
                                                       interventiontype);
     m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
+    m_decision.Reset();
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -174,4 +176,10 @@ template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage,
 Recorder* TEMP_DECISIONMAKER::GetRecorder()
 {
     return m_recorder;
+}
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+DecisionTuple TEMP_DECISIONMAKER::GetDecisions()
+{
+    return m_decision;
 }

@@ -184,11 +184,11 @@ void FileDataStorage::SaveHumanData(tCarElt* p_car)
 /// @brief Saves the intervention data from the last time step
 void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
 {
-    SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteer(), m_steerDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrake(), m_brakeDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsAccel(), p_decisions.GetAccel(), m_accelDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsGear(), p_decisions.GetGear(), m_gearDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsLights(), static_cast<int>(p_decisions.GetLights()), m_lightDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteerAmount(), m_steerDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrakeAmount(), m_brakeDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsAccel(), p_decisions.GetAccelAmount(), m_accelDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsGear(), p_decisions.GetGearAmount(), m_gearDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsLights(), static_cast<int>(p_decisions.GetLightsAmount()), m_lightDecision, m_compressionStep);
 }
 
 /// @brief Saves the decision data from the last time step

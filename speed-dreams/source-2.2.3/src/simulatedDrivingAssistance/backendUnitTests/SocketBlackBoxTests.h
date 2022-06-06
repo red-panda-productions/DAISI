@@ -51,8 +51,8 @@ void BlackBoxSideAsync()
     ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
 
     // check the result
-    ASSERT_ALMOST_EQ(decisions.GetSteer(), STEER_VALUE, TOLERANCE);
-    ASSERT_ALMOST_EQ(decisions.GetBrake(), BRAKE_VALUE, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisions.GetSteerAmount(), STEER_VALUE, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisions.GetBrakeAmount(), BRAKE_VALUE, TOLERANCE);
 
     // shut the server down
     bb.Shutdown();
@@ -77,8 +77,8 @@ void BlackBoxSideSync()
     ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
 
     // check the result
-    ASSERT_ALMOST_EQ(decisions.GetSteer(), STEER_VALUE, TOLERANCE);
-    ASSERT_ALMOST_EQ(decisions.GetBrake(), BRAKE_VALUE, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisions.GetSteerAmount(), STEER_VALUE, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisions.GetBrakeAmount(), BRAKE_VALUE, TOLERANCE);
 
     // shut the server down
     bb.Shutdown();

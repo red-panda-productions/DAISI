@@ -13,25 +13,17 @@ public:
 
     IDecision** GetActiveDecisions(int& p_count);
 
-    void SetBrake(float p_brakeValue);
+    void SetBrakeDecision(float p_brakeValue);
+    void SetSteerDecision(float p_steerValue);
+    void SetGearDecision(int p_gearValue);
+    void SetAccelDecision(float p_accelValue);
+    void SetLightsDecision(bool p_lightsValue);
 
-    void SetSteer(float p_steerValue);
-
-    void SetGear(int p_gearValue);
-
-    void SetAccel(float p_accelValue);
-
-    void SetLights(bool p_lightsValue);
-
-    float GetBrake() const;
-
-    float GetSteer() const;
-
-    int GetGear() const;
-
-    float GetAccel() const;
-
-    bool GetLights() const;
+    float GetBrakeAmount() const;
+    float GetSteerAmount() const;
+    int GetGearAmount() const;
+    float GetAccelAmount() const;
+    bool GetLightsAmount() const;
 
     bool ContainsBrake() const;
     bool ContainsSteer() const;
@@ -39,15 +31,12 @@ public:
     bool ContainsAccel() const;
     bool ContainsLights() const;
 
+    void Reset();
+
 private:
     IDecision* m_buffer[DECISIONS_COUNT] = {};
 
     BrakeDecision m_brakeDecision;
-    bool m_brakeActive = false;
     SteerDecision m_steerDecision;
-    bool m_steerActive = false;
     AccelDecision m_accelDecision;
-    bool m_accelActive = false;
-    bool m_gearActive = false;
-    bool m_lightsActive = false;
 };

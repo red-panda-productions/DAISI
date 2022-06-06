@@ -14,6 +14,15 @@
 #include "portability.h"
 #include "RppUtils.hpp"
 #include "VariableStore.h"
+#include "Mediator.h"
+#include "Mediator.inl"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>
 
@@ -21,6 +30,9 @@
 /// @param  p_decisionMaker the decision maker that will be initialized
 void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     GfInit(false);
     tCarElt car;
     tSituation situation;
@@ -81,6 +93,9 @@ TEST(DecisionMakerTests, InitializeTestEmpty)
 /// @param  p_isDecision Whether the black box made a decision
 void DecisionTest(bool p_isDecision)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
@@ -99,10 +114,10 @@ void DecisionTest(bool p_isDecision)
 
     RecorderMock* recorder = decisionMaker.GetRecorder();
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
-    ASSERT_EQ(recorder->CurrentDecisions.GetSteer(), storage->SavedDecisions->GetSteer());
-    ASSERT_EQ(recorder->CurrentDecisions.GetBrake(), storage->SavedDecisions->GetBrake());
-    ASSERT_EQ(recorder->CurrentDecisions.GetAccel(), storage->SavedDecisions->GetAccel());
-    ASSERT_EQ(recorder->CurrentDecisions.GetGear(), storage->SavedDecisions->GetGear());
+    ASSERT_EQ(recorder->CurrentDecisions.GetSteerAmount(), storage->SavedDecisions->GetSteerAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetBrakeAmount(), storage->SavedDecisions->GetBrakeAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetAccelAmount(), storage->SavedDecisions->GetAccelAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetGearAmount(), storage->SavedDecisions->GetGearAmount());
     ASSERT_EQ(recorder->CurrentTimestamp, 0);
     InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mock == nullptr);
@@ -117,6 +132,9 @@ TEST_CASE(DecisionMakerTests, DecisionTestFalse, DecisionTest, (false))
 /// @param  p_intervention  The setting that needs to be set
 void ChangeSettingsTest(InterventionType p_intervention)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     TDecisionMaker decisionMaker;
     decisionMaker.ChangeSettings(p_intervention);
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
@@ -135,6 +153,8 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAutonomousAI, ChangeSettingsTest
 /// @param  p_dataToStore data settings that will be set.
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     decisionMaker.SetDataCollectionSettings(p_dataToStore);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
@@ -165,6 +185,8 @@ END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2,
 /// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct path
 TEST(DecisionMakerTests, RaceStopTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
@@ -177,6 +199,8 @@ TEST(DecisionMakerTests, RaceStopTest)
 /// @brief Tests if the GetFileDataStorage correctly gets the variable
 TEST(DecisionMakerTests, GetFileDataStorageTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
     ASSERT_FALSE(storage == nullptr);

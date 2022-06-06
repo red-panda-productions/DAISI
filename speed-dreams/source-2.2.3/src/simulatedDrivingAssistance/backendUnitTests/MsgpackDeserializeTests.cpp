@@ -7,15 +7,28 @@
 #include "DecisionTuple.h"
 #include "mocks/BlackBoxDataMock.h"
 
+#include "Mediator.h"
+#include "Mediator.inl"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
+
 #define STEER                     "Steer"
 #define BRAKE                     "Brake"
 #define NON_EXISTING_DECISION_KEY "NON_EXISTING_DECISION_KEY"
 
 #define TOLERANCE 0.0001
 
+
 /// @brief Tests if all (currently) existing variables can be deserialized into a decision correctly
 TEST(MsgpackDeserializeTests, Deserialize)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     Random random;
     float controlSteerValue = random.NextFloat(1000);
     float controlBrakeValue = random.NextFloat(1000);
@@ -32,8 +45,8 @@ TEST(MsgpackDeserializeTests, Deserialize)
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_ALMOST_EQ(decisionTuple.GetSteer(), controlSteerValue, TOLERANCE);
-    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisionTuple.GetSteerAmount(), controlSteerValue, TOLERANCE);
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrakeAmount(), controlBrakeValue, TOLERANCE);
 }
 
 /// @brief Tests if the program throws when there are no variables to receive
@@ -57,6 +70,9 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
 /// @brief Tests if a variable is Not A Number when received data is not parsable to the correct type.
 TEST(MsgpackDeserializeTests, UnparsableData)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     Random random;
     std::string unparsableString = "This is not a float";
     float controlBrakeValue = random.NextFloat();
@@ -73,8 +89,8 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
 
-    ASSERT_TRUE(isnan(decisionTuple.GetSteer()));
-    ASSERT_ALMOST_EQ(decisionTuple.GetBrake(), controlBrakeValue, 0.000001);
+    ASSERT_TRUE(isnan(decisionTuple.GetSteerAmount()));
+    ASSERT_ALMOST_EQ(decisionTuple.GetBrakeAmount(), controlBrakeValue, 0.000001);
 }
 
 /// @brief Tests if program throws when if a variable to parse does not exist in the function map.

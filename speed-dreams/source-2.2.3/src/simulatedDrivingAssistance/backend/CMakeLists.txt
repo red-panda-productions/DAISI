@@ -7,6 +7,7 @@ SET(_SOURCES
 	DecisionMaker.cpp
 	DecisionTuple.cpp
 	FileDataStorage.cpp
+	IDecision.cpp
 	InterventionExecutorAlwaysIntervene.cpp
 	InterventionExecutorIndication.cpp
 	InterventionExecutorNoIntervention.cpp

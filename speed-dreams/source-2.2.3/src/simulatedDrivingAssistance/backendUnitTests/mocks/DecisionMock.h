@@ -4,14 +4,31 @@
 class DecisionMock : public IDecision
 {
 public:
+    DecisionMock()
+    {
+        SetInterventionAmount(1);
+    }
+
     // @brief    increases the indicate integer variable by 1
-    void RunIndicateCommands() override
+    void ShowIntervention(float p_interventionAmount) override
     {
         Indicate++;
     }
 
+    // always reach the threshold
+    bool ReachThreshold(float p_interventionAmount) override
+    {
+        return true;
+    }
+
+    // always intervene
+    bool CanIntervene(tAllowedActions p_allowedActions) override
+    {
+        return true;
+    }
+
     // @brief    increases the intervene integer variable by 1
-    void RunInterveneCommands(tAllowedActions p_allowedActions) override
+    void DoIntervention(float p_interventionAmount) override
     {
         Intervene++;
     }

@@ -40,6 +40,8 @@ public:
     filesystem::path* GetBufferFilePath();
     Recorder* GetRecorder();
 
+    DecisionTuple GetDecisions();
+
     ~DecisionMaker();
 
 private:

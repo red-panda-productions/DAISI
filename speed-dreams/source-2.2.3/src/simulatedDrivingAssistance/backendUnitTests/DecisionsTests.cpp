@@ -31,7 +31,7 @@
         tDecisionThresholds decisionThresholds{STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_STEER}; \
         SMediator::GetInstance()->SetThresholdSettings(decisionThresholds);                                                   \
         /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/                                     \
-        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_ONLY_SIGNALS);                                        \
+        SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_SHARED_CONTROL);                                      \
                                                                                                                               \
         AllowedActions allowedActions;                                                                                        \
         allowedActions.Steer = true;                                                                                          \
@@ -86,7 +86,7 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
     BrakeDecision brakeDecision = {};
 
     float controlBrakeAmount = random.NextFloat(STANDARD_THRESHOLD_BRAKE, STANDARD_THRESHOLD_BRAKE + 10);
-    brakeDecision.BrakeAmount = controlBrakeAmount;
+    brakeDecision.SetInterventionAmount(controlBrakeAmount);
     // Determine what the brake amount should be after running
     float targetBrakeAmount = allowedActions.Brake ? controlBrakeAmount : SMediator::GetInstance()->CarControl.GetBrakeCmd();
 
@@ -97,7 +97,7 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
 
     AccelDecision accelDecision = {};
     float controlAccelAmount = random.NextFloat(STANDARD_THRESHOLD_ACCEL, STANDARD_THRESHOLD_ACCEL + 10);
-    accelDecision.AccelAmount = controlAccelAmount;
+    accelDecision.SetInterventionAmount(controlAccelAmount);
     // Determine what the accel amount should be after running
     float targetAccelAmount = allowedActions.Accelerate ? controlAccelAmount : SMediator::GetInstance()->CarControl.GetAccelCmd();
 
@@ -108,7 +108,7 @@ TEST_P(DecisionTestCombinatorial, RunInterveneDecisions)
 
     SteerDecision steerDecision = {};
     float controlSteerAmount = random.NextFloat(STANDARD_THRESHOLD_STEER, STANDARD_THRESHOLD_STEER + 10);
-    steerDecision.SteerAmount = controlSteerAmount;
+    steerDecision.SetInterventionAmount(controlSteerAmount);
     // Determine what the steer amount should be after running
     float targetSteerAmount = allowedActions.Steer ? controlSteerAmount : SMediator::GetInstance()->CarControl.GetSteerCmd();
 
@@ -138,14 +138,18 @@ TEST_P(DecisionTest, BrakeRunIndicateTest)
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
+    tAllowedActions allowedActions;
+    allowedActions.Brake = true;
+
     BrakeDecision brakeDecision = {};
-    brakeDecision.BrakeAmount = GetParam();
+    brakeDecision.SetInterventionAmount(GetParam());
+    brakeDecision.RunInterveneCommands(allowedActions);
     brakeDecision.RunIndicateCommands();
 
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the break amount is above the STANDARD_THRESHOLD_BRAKE, INTERVENTION_ACTION_BRAKE indicator should be active
-    if (brakeDecision.BrakeAmount >= STANDARD_THRESHOLD_BRAKE || SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
+    if (brakeDecision.GetInterventionAmount() > STANDARD_THRESHOLD_BRAKE || SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
     {
         ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_BRAKE));
     }
@@ -167,20 +171,24 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
+    tAllowedActions allowedActions;
+    allowedActions.Steer = true;
+
     SteerDecision steerDecision = {};
-    steerDecision.SteerAmount = GetParam();
+    steerDecision.SetInterventionAmount(GetParam());
+    steerDecision.RunInterveneCommands(allowedActions);
     steerDecision.RunIndicateCommands();
 
     // TODO: Update to have multiple indicators when indicator code is updated
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the steer amount is above the STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_LEFT indicator should be active
-    if (steerDecision.SteerAmount >= STANDARD_THRESHOLD_STEER)
+    if (steerDecision.GetInterventionAmount() > STANDARD_THRESHOLD_STEER)
     {
         ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_LEFT));
     }
     // if the steer amount is below the -STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_RIGHT indicator should be active
-    else if (steerDecision.SteerAmount <= -STANDARD_THRESHOLD_STEER)
+    else if (steerDecision.GetInterventionAmount() < -STANDARD_THRESHOLD_STEER)
     {
         ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_RIGHT));
     }
@@ -201,14 +209,18 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
     snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
+    tAllowedActions allowedActions;
+    allowedActions.Accelerate = true;
+
     AccelDecision accelDecision = {};
-    accelDecision.AccelAmount = GetParam();
+    accelDecision.SetInterventionAmount(GetParam());
+    accelDecision.RunInterveneCommands(allowedActions);
     accelDecision.RunIndicateCommands();
 
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the accelerate amount is above the STANDARD_THRESHOLD_ACCEL, INTERVENTION_ACTION_ACCELERATE indicator should be active
-    if (accelDecision.AccelAmount >= STANDARD_THRESHOLD_ACCEL || SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
+    if (accelDecision.GetInterventionAmount() > STANDARD_THRESHOLD_ACCEL || SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
     {
         ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
     }

@@ -5,8 +5,8 @@
 class SteerDecision : public IDecision
 {
 public:
-    float SteerAmount = 0;
-
-    void RunIndicateCommands() override;
-    void RunInterveneCommands(tAllowedActions p_allowedActions) override;
+    void ShowIntervention(float p_interventionAmount) override;
+    bool ReachThreshold(float p_interventionAmount) override;
+    bool CanIntervene(tAllowedActions p_allowedActions) override;
+    void DoIntervention(float p_interventionAmount) override;
 };

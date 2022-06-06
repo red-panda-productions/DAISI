@@ -2,11 +2,18 @@
 #include "TestUtils.h"
 #include "tgf.h"
 #include "SDAConfig.h"
-#include "mocks/DecisionMakerMock.h"
 #include "RppUtils.hpp"
 #include "mocks/DecisionMock.h"
 #include "IndicatorConfig.h"
+#include "Mediator.h"
+#include "Mediator.inl"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
 
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 /// @brief                      framework for a test that checks if a mode get run
 /// @param p_interventionType  parameter that determines the mode.
 void InterventionExecutorTest(unsigned int p_interventionType)
@@ -14,6 +21,8 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     DecisionMock dmock = {};  // mock of a decision
     Random random;
     int decisionCount = random.NextInt(1, 10);  // choses a random value of amount of decisions the decisionMaker gets sent
+
+    SDAConfigMediator::ClearInstance();
 
     // setting up the config
     ASSERT_TRUE(SetupSingletonsFolder());
@@ -26,6 +35,8 @@ void InterventionExecutorTest(unsigned int p_interventionType)
 
     SDAConfig config;
 
+
+    SMediator::GetInstance()->SetInterventionType(p_interventionType);
     InterventionExecutor* intervention = config.SetInterventionType(p_interventionType);  // determines the interventiontype that will be run
 
     // fill an array with the same reference of length decisionCount (used to check if it runs through all decisions correctly)

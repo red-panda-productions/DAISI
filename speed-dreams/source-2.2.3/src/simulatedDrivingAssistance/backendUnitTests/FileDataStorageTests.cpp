@@ -99,11 +99,11 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
 {
     // Generate a random decision based on parameters
     DecisionTuple decisions;
-    if (p_doSteer) decisions.SetSteer(p_random.NextFloat());
-    if (p_doBrake) decisions.SetBrake(p_random.NextFloat());
-    if (p_doAccel) decisions.SetAccel(p_random.NextFloat());
-    if (p_doGear) decisions.SetGear(p_random.NextInt());
-    if (p_doLights) decisions.SetLights(p_random.NextBool());
+    if (p_doSteer) decisions.SetSteerDecision(p_random.NextFloat());
+    if (p_doBrake) decisions.SetBrakeDecision(p_random.NextFloat());
+    if (p_doAccel) decisions.SetAccelDecision(p_random.NextFloat());
+    if (p_doGear) decisions.SetGearDecision(p_random.NextInt());
+    if (p_doLights) decisions.SetLightsDecision(p_random.NextBool());
     return decisions;
 }
 
@@ -121,27 +121,27 @@ void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected
     if (p_doSteer)
     {
         p_expected << "SteerDecision" << std::endl
-                   << std::to_string(p_decisions.GetSteer()) << std::endl;
+                   << std::to_string(p_decisions.GetSteerAmount()) << std::endl;
     }
     if (p_doBrake)
     {
         p_expected << "BrakeDecision" << std::endl
-                   << std::to_string(p_decisions.GetBrake()) << std::endl;
+                   << std::to_string(p_decisions.GetBrakeAmount()) << std::endl;
     }
     if (p_doAccel)
     {
         p_expected << "AccelDecision" << std::endl
-                   << std::to_string(p_decisions.GetAccel()) << std::endl;
+                   << std::to_string(p_decisions.GetAccelAmount()) << std::endl;
     }
     if (p_doGear)
     {
         p_expected << "GearDecision" << std::endl
-                   << std::to_string(p_decisions.GetGear()) << std::endl;
+                   << std::to_string(p_decisions.GetGearAmount()) << std::endl;
     }
     if (p_doLights)
     {
         p_expected << "LightsDecision" << std::endl
-                   << std::to_string(p_decisions.GetLights()) << std::endl;
+                   << std::to_string(p_decisions.GetLightsAmount()) << std::endl;
     }
     p_expected << "NONE" << std::endl;
 }
