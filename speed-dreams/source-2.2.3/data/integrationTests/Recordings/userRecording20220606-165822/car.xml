@@ -8,9 +8,9 @@
     <attnum name="body length" unit="m" val="4.300000"/>
     <attnum name="body width" unit="m" val="1.852000"/>
     <attnum name="body height" unit="m" val="1.170000"/>
-    <attnum name="overall length" unit="m" min="4.000000" val="5.000000"/>
+    <attnum name="overall length" unit="m" val="5.460000"/>
     <attnum name="overall width" unit="m" val="1.852000"/>
-    <attnum name="mass" unit="kg" min="900.000000" val="1500.000000"/>
+    <attnum name="mass" unit="kg" val="1350.000000"/>
     <attnum name="GC height" unit="m" val="0.300000"/>
     <attnum name="front-rear weight repartition" val="0.430000"/>
     <attnum name="front right-left weight repartition" val="0.500000"/>
@@ -22,7 +22,7 @@
 
   <section name="Aerodynamics">
     <attnum name="Cx" val="0.530000"/>
-    <attnum name="front area" unit="m2" val="2.000000"/>
+    <attnum name="front area" unit="m2" val="0.530000"/>
     <attnum name="front Clift" val="0.620000"/>
     <attnum name="rear Clift" val="0.640000"/>
   </section>
@@ -43,8 +43,8 @@
 
   <section name="Engine">
     <attnum name="revs maxi" unit="rpm" val="10000.000977"/>
-    <attnum name="revs limiter" unit="rpm" val="4500.000000"/>
-    <attnum name="tickover" unit="rpm" max="3000.000000" val="900.000000"/>
+    <attnum name="revs limiter" unit="rpm" val="6200.000000"/>
+    <attnum name="tickover" unit="rpm" val="2300.000000"/>
     <attnum name="fuel cons factor" max="1.300000" val="1.100000"/>
     <attnum name="torque def step" unit="rpm" val="1000.000000"/>
     <attnum name="inertia" unit="kg.m2" val="0.200000"/>
@@ -215,12 +215,6 @@
         <attnum name="efficiency" val="0.948000"/>
       </section>
 
-      <section name="6">
-        <attnum name="ratio" min="0.000000" max="5.000000" val="0.750000"/>
-        <attnum name="inertia" val="0.015000"/>
-        <attnum name="efficiency" val="0.940000"/>
-      </section>
-
     </section>
 
   </section>
@@ -275,7 +269,7 @@
     <attnum name="ride height" unit="mm" val="105.000000"/>
     <attnum name="toe" unit="deg" val="0.000000"/>
     <attnum name="stiffness" val="16.000000"/>
-    <attnum name="dynamic friction" unit="%" max="90.000000" val="70.000000"/>
+    <attnum name="dynamic friction" unit="%" val="80.000000"/>
     <attnum name="rolling resistance" val="0.020000"/>
     <attnum name="mu" val="1.300000"/>
     <attnum name="camber" unit="deg" val="-2.000000"/>
@@ -293,7 +287,7 @@
     <attnum name="ride height" unit="mm" val="105.000000"/>
     <attnum name="toe" unit="deg" val="0.000000"/>
     <attnum name="stiffness" val="16.000000"/>
-    <attnum name="dynamic friction" unit="%" max="90.000000" val="70.000000"/>
+    <attnum name="dynamic friction" unit="%" val="80.000000"/>
     <attnum name="rolling resistance" val="0.020000"/>
     <attnum name="mu" val="1.300000"/>
     <attnum name="camber" unit="deg" val="-2.000000"/>
@@ -307,11 +301,11 @@
     <attnum name="rim diameter" unit="in" val="18.000000"/>
     <attnum name="tire width" unit="mm" val="300.000000"/>
     <attnum name="tire height-width ratio" val="0.340000"/>
-    <attnum name="inertia" unit="kg.m2" min="1.200000" val="1.300000"/>
+    <attnum name="inertia" unit="kg.m2" val="1.300000"/>
     <attnum name="ride height" unit="mm" val="105.000000"/>
     <attnum name="toe" unit="deg" val="0.000000"/>
     <attnum name="stiffness" val="16.000000"/>
-    <attnum name="dynamic friction" unit="%" max="90.000000" val="70.000000"/>
+    <attnum name="dynamic friction" unit="%" val="80.000000"/>
     <attnum name="rolling resistance" val="0.020000"/>
     <attnum name="mu" val="1.300000"/>
     <attnum name="camber" unit="deg" val="-2.000000"/>
@@ -325,11 +319,11 @@
     <attnum name="rim diameter" unit="in" val="18.000000"/>
     <attnum name="tire width" unit="mm" val="300.000000"/>
     <attnum name="tire height-width ratio" val="0.340000"/>
-    <attnum name="inertia" unit="kg.m2" min="1.200000" val="1.300000"/>
+    <attnum name="inertia" unit="kg.m2" val="1.300000"/>
     <attnum name="ride height" unit="mm" val="105.000000"/>
     <attnum name="toe" unit="deg" val="0.000000"/>
     <attnum name="stiffness" val="16.000000"/>
-    <attnum name="dynamic friction" unit="%" max="90.000000" val="70.000000"/>
+    <attnum name="dynamic friction" unit="%" val="80.000000"/>
     <attnum name="rolling resistance" val="0.020000"/>
     <attnum name="mu" val="1.300000"/>
     <attnum name="camber" unit="deg" val="-2.000000"/>
