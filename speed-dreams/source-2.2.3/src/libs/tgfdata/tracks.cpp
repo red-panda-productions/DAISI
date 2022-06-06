@@ -1,5 +1,4 @@
 /***************************************************************************
-
     file                 : tracks.cpp
     created              : Sun Nov 21 19:00:00 CET 2010
     copyright            : (C) 2010 by Jean-Philippe MEURET
@@ -529,6 +528,28 @@ int GfTrack::getMaxNumOfPitSlots() const
 	return _nMaxPitSlots;
 }
 
+// SIMULATED DRIVING ASSISTANCE: added the GetEstimatedTime function
+/// @brief  Gets the estimated time it takes to complete one round of a track
+/// @return The estimated time it takes to complete one round of a track
+float GfTrack::GetEstimatedTime() const
+{
+    // Lazy load scheme : read files only when really needed, and only once.
+    if (EstimatedTime < 0)
+        load();
+    return EstimatedTime;
+}
+
+// SIMULATED DRIVING ASSISTANCE: added GetSpeedLimit function
+/// @brief  Gets the speed limit of the track
+/// @return The speed limit of the track which is either 80 km/h or 100 km/h
+float GfTrack::GetSpeedLimit() const
+{
+    // Lazy load scheme : read files only when really needed, and only once.
+    if (SpeedLimit < 0)
+        load();
+    return SpeedLimit;
+}
+
 bool GfTrack::isUsable() const
 {
 	// Must load to know if really usable.
@@ -582,6 +603,14 @@ void GfTrack::setWidth(float fWidth)
 	_fWidth = fWidth;
 }
 
+// SIMULATED DRIVING ASSISTANCE: added the SetEstimatedTime function
+/// @brief Calculates and sets the estimated time it takes to complete a track
+///        Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
+void GfTrack::SetEstimatedTime()
+{
+    EstimatedTime = 60 * (getLength() / (GetSpeedLimit() * 1000));
+}
+
 void GfTrack::setMaxNumOfPitSlots(int nPitSlots)
 {
 	_nMaxPitSlots = nPitSlots;
@@ -624,6 +653,11 @@ bool GfTrack::load() const
 	_fLength = pTrack->length;
 	_fWidth = pTrack->width;
 	_nMaxPitSlots = pTrack->pits.nMaxPits;
+
+	
+    /// SIMULATED DRIVING ASSISTANCE: added EstimatedTime and SpeedLimit
+    EstimatedTime = pTrack->Time;
+    SpeedLimit = pTrack->SpeedLimit;
 
     // Unload track data.
     piTrackLoader->unload();

@@ -3,7 +3,35 @@
 <!DOCTYPE params SYSTEM "../tgf/params.dtd">
 
 <params name="DeveloperMenu">
-    
+
+    <section name="DefaultThresholdValues">
+
+        <section name="signals-only">
+            <attnum name="Accel" val="1.0"/>
+            <attnum name="Brake" val="0.9"/>
+            <attnum name="Steer" val="0.09"/>
+        </section>
+
+        <section name="shared-control">
+            <attnum name="Accel" val="0.82"/>
+            <attnum name="Brake" val="0.5"/>
+            <attnum name="Steer" val="0.1"/>
+        </section>
+
+        <section name="complete-takeover">
+            <attnum name="Accel" val="0.9"/>
+            <attnum name="Brake" val="0.05"/>
+            <attnum name="Steer" val="0.1"/>
+        </section>
+
+        <section name="autonomous-ai">
+            <attnum name="Accel" val="0.0"/>
+            <attnum name="Brake" val="0.0"/>
+            <attnum name="Steer" val="0.05"/>
+        </section>
+
+    </section>
+
     <section name="dynamic controls">
 
         <!-- Button list to determining whether to run async- or synchronously-->
@@ -170,6 +198,28 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
+        <!-- Default button-->
+        <section name="DefaultButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Reset to defaults"/>
+            <attstr name="tip" val="Set default value for current interventiontype"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="380"/>
+            <attnum name="y" val="280"/>
+            <attnum name="width" val="130"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
     </section>
 
     <section name="static controls">

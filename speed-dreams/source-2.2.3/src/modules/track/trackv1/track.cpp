@@ -141,6 +141,9 @@ GetTrackHeader(void *TrackHandle) {
     theTrack->category = GfParmGetStr(TrackHandle, TRK_SECT_HDR, TRK_ATT_CAT, "road");
     theTrack->subcategory = GfParmGetStr(TrackHandle, TRK_SECT_HDR, TRK_ATT_SUBCAT, "none");
 
+    /// SIMULATED DRIVING ASSISTANCE: read average speed limit
+    theTrack->SpeedLimit = GfParmGetNum(TrackHandle, TRK_SECT_HDR, TRK_ATT_AVERAGE_SPEEDLIMIT, nullptr, SPEED_LIMIT_UNSPECIFIED);
+
     // Read Local Info section
     tTrackLocalInfo *local = &theTrack->local;
     local->station = GfParmGetStr(TrackHandle, TRK_SECT_LOCAL, TRK_ATT_STATION, "LFPG");

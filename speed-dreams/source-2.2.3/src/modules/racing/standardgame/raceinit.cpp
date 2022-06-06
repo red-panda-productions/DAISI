@@ -44,14 +44,13 @@
 
 
 #include <tgf.hpp>
-#ifdef WEBSERVER
-#include <webserver.h>
 #include "racewebmetar.h"
-#endif //WEBSERVER
 #include <portability.h>
 
 #include <racemanagers.h>
 #include <race.h>
+
+// SIMULATED DRIVING ASSISTANCE: removed inclusion of webserver.h
 
 #include "standardgame.h"
 
@@ -63,11 +62,6 @@
 #include "racecareer.h"
 
 #include "raceinit.h"
-
-#ifdef WEBSERVER
-extern TGFCLIENT_API WebServer webServer;
-#endif //WEBSERVER
-
 
 static const char *aPszSkillLevelNames[] =
     { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
@@ -974,30 +968,8 @@ ReInitCars(void)
     }
 #endif
   }
-    #ifdef WEBSERVER
-    // webServer lap logger.
-    //Find human cars
-    for (int i = 0; i < ReInfo->s->_ncars; i++) {
-        if(ReInfo->s->cars[i]->_driverType == RM_DRV_HUMAN){
 
-            //login
-            webServer.sendLogin(ReInfo->s->cars[i]->_driverIndex);
-
-            //send race data
-            webServer.sendRaceStart (
-                ReInfo->s->cars[i]->_skillLevel,	//user_skill,
-                ReInfo->track->internalname,		//track_id,
-                ReInfo->s->cars[i]->_carName,		//car_id
-                ReInfo->s->_raceType,				//type of race: 0 practice/ 1 qualify/ 2 race
-                ReInfo->s->cars[i]->_carHandle,		//car setup file,
-                ReInfo->s->cars[i]->_pos,			//car starting position,
-                VERSION_LONG 						//speed dreams version
-            );
-
-        }
-    }
-    #endif //WEBSERVER
-
+  // SIMULATED DRIVING ASSISTANCE: removed WebServer functionality (WebServer lap logger)
 
   ReInfo->_rePitRequester = 0;
 
