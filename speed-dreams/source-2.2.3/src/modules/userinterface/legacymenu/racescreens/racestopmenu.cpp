@@ -137,7 +137,7 @@ rmQuitHookActivate(void * /* dummy */)
 {
     //quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, RACE_EXIT));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, /*RACE_EXIT*/ -1));
 }
 
 static void *pvQuitHookHandle = 0;

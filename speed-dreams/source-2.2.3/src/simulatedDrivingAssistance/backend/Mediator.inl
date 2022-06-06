@@ -38,6 +38,7 @@
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::SetSaveRaceToDatabase(bool p_saveToDatabase);                                                                         \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template void Mediator<type>::SaveData();                                                                                                           \
     template void Mediator<type>::SetDatabaseSettings(tDatabaseSettings p_dbSettings);                                                                  \
     template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
     template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
@@ -385,8 +386,14 @@ void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
     bool saveToDatabase = m_decisionMaker.Config.GetSaveToDatabaseCheck();
-    m_decisionMaker.RaceStop(saveToDatabase);
+    m_decisionMaker.CloseRecorder();
     m_inRace = false;
+}
+
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SaveData()
+{
+    m_decisionMaker.SaveData();
 }
 
 /// @brief            Sets the database connection settings for the database server

@@ -105,6 +105,7 @@ void Driver::Shutdown()
 {
     m_humanDriver.shutdown(m_index);
     SMediator::GetInstance()->RaceStop();
+    //SMediator::GetInstance()->SaveData();
     delete m_recorder;
 }
 

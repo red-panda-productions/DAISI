@@ -18,7 +18,8 @@
     template bool DecisionMaker<type1, type2, type3, type4, type5>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
-    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::CloseRecorder();                                                            \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SaveData();                                                                 \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                                           \
@@ -146,17 +147,21 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 /// @brief                  When the race stops, the simulation needs to be shutdown correctly and check if it needs to be stroed in the database
 /// @param p_saveToDatabase bool that determines if the simulation data collected will be stored in the database
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
+void TEMP_DECISIONMAKER::CloseRecorder()
 {
     BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
-    if (p_saveToDatabase)
-    {
-        SQLDatabaseStorage sqlDatabaseStorage;
-        sqlDatabaseStorage.Run(m_bufferFilePath);
-    }
     m_recorder = nullptr;
 }
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SaveData()
+{
+    m_fileBufferStorage.Shutdown();
+    SQLDatabaseStorage sqlDatabaseStorage;
+    sqlDatabaseStorage.Run(m_bufferFilePath);
+}
+
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()

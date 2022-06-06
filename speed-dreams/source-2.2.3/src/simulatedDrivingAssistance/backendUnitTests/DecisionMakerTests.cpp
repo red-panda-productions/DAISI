@@ -168,8 +168,8 @@ TEST(DecisionMakerTests, RaceStopTest)
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
-    ASSERT_NO_THROW(decisionMaker.RaceStop(true));
-    ASSERT_NO_THROW(decisionMaker.RaceStop(false));
+    ASSERT_NO_THROW(decisionMaker.SaveData());
+    ASSERT_NO_THROW(decisionMaker.CloseRecorder());
     filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
     ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
 }
