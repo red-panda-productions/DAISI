@@ -58,6 +58,8 @@ static int OutlineImageId;
 static int AuthorsLabelId;
 static int LengthLabelId;
 static int WidthLabelId;
+// SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
+static int EstimatedTimeLabelId;
 static int DescLine1LabelId;
 static int DescLine2LabelId;
 static int MaxPitsLabelId;
@@ -126,19 +128,27 @@ rmtsUpdateTrackInfo(void)
 	ossData << PCurTrack->getLength() << " m";
 	GfuiLabelSetText(ScrHandle, LengthLabelId, ossData.str().c_str());
 
-	// 5) Max number of pits slots.
-	ossData.str("");
-	if (PCurTrack->getMaxNumOfPitSlots())
-		ossData << PCurTrack->getMaxNumOfPitSlots();
-	else
-		ossData << "None";
-	GfuiLabelSetText(ScrHandle, MaxPitsLabelId, ossData.str().c_str());
+	// SIMULATED DRIVING ASSISTANCE: removed display of pit stops
 
-	// 6) Outline image.
+	// 5) Outline image.
 	GfuiStaticImageSet(ScrHandle, OutlineImageId, PCurTrack->getOutlineFile().c_str());
 
-	// 7) Preview image (background).
+	// 6) Preview image (background).
 	GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
+
+	// SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
+    // 7) Estimated time to complete a track in minutes.
+    ossData.str("");
+    PCurTrack->SetEstimatedTime();
+    if (PCurTrack->GetSpeedLimit() == SPEED_LIMIT_UNSPECIFIED)
+    {
+        ossData << "Unknown";
+    }
+    else
+    {
+        ossData << PCurTrack->GetEstimatedTime() << " minutes";
+    }
+    GfuiLabelSetText(ScrHandle, EstimatedTimeLabelId, ossData.str().c_str());
 }
 
 static void
@@ -309,6 +319,8 @@ RmTrackSelect(void *vs)
 	DescLine1LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description1label");
 	DescLine2LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description2label");
 	LengthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "lengthlabel");
+    // SIMULATED DRIVING ASSISTNACE: added label control for estimated time label
+    EstimatedTimeLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "estimatedtimelabel");
 	WidthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "widthlabel");
 	MaxPitsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "pitslabel");
 	AuthorsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "authorslabel");

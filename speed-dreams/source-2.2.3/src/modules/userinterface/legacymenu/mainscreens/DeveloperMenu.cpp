@@ -7,6 +7,7 @@
 #include "FileDialogManager.h"
 #include "RppUtils.hpp"
 #include "FileSystem.hpp"
+#include "IndicatorConfig.h"
 
 // Parameters used in the xml files
 #define PRM_SYNC               "SynchronizationButtonList"
@@ -19,6 +20,7 @@
 #define GFMNU_ATT_STEER        "Steer"
 
 #define DEV_FILEPATH    "config/DeveloperMenu.xml"
+#define DEV_XMLPATH     "data/menu/DeveloperMenu.xml"
 #define DEV_SCREEN_NAME "DeveloperMenu"
 
 #define MSG_CHOOSE_REPLAY_NORMAL_TEXT "Choose Replay File: "
@@ -42,6 +44,9 @@ int m_chooseReplayFileButton;
 int m_accelThresholdControl;
 int m_brakeThresholdControl;
 int m_steerThresholdControl;
+
+// Control for the default values
+int m_defaultButton;
 
 // Synchronization type
 SyncType m_sync;
@@ -232,6 +237,16 @@ static void ChooseReplayFile(void* /* dummy */)
     m_replayFileChosen = true;
 }
 
+/// @brief                    Write the thresholdvalue in the textbox
+/// @param p_threshold        The value to write in the textbox
+/// @param p_thresholdControl The edit box to write to
+static void WriteThresholdValue(float& p_threshold, int p_thresholdControl)
+{
+    char buf[32];
+    sprintf(buf, "%g", p_threshold);
+    GfuiEditboxSetString(s_scrHandle, p_thresholdControl, buf);
+}
+
 /// @brief                    Read the edit box value and clamp it
 /// @param p_threshold        The value to change
 /// @param p_thresholdControl The edit box to read from and write to
@@ -242,9 +257,7 @@ static void SetThreshold(float& p_threshold, int p_thresholdControl)
     Clamp(p_threshold, 0.0f, 1.0f);
 
     // Write the clamped value to the text box.
-    char buf[32];
-    sprintf(buf, "%g", p_threshold);
-    GfuiEditboxSetString(s_scrHandle, p_thresholdControl, buf);
+    WriteThresholdValue(p_threshold, p_thresholdControl);
 }
 
 /// @brief Handle input in the accel threshold textbox
@@ -263,6 +276,35 @@ static void SetBrakeThreshold(void*)
 static void SetSteerThreshold(void*)
 {
     SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
+}
+
+/// @brief Set the default values of threshold boxes based on the InterventionType.
+static void SetDefaultThresholdValues(void*)
+{
+    // load the xmlhandle
+    char buf[512];
+    sprintf(buf, "%s%s", GfDataDir(), DEV_XMLPATH);
+    void* m_xmlHandle = GfParmReadFile(buf, GFPARM_RMODE_STD);
+    if (m_xmlHandle == nullptr)
+        throw std::invalid_argument("DeveloperMenu.xml does not exists");
+
+    // load the path in the xml based on the interventiontype
+    std::string m_path = "DefaultThresholdValues/";
+    int m_interventionType = SMediator::GetInstance()->GetInterventionType();
+    // if the intervention type is no signals, don't change any values
+    if (m_interventionType == INTERVENTION_TYPE_NO_SIGNALS)
+        return;
+    m_path += s_interventionTypeString[m_interventionType];
+
+    // set the values to their default determined by the xml file.
+    m_decisionThresholds.Accel = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
+    m_decisionThresholds.Brake = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_BRAKE, nullptr, 0.9f);
+    m_decisionThresholds.Steer = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_STEER, nullptr, 0.05f);
+
+    // set the edit boxes to the correct value
+    WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
+    WriteThresholdValue(m_decisionThresholds.Brake, m_brakeThresholdControl);
+    WriteThresholdValue(m_decisionThresholds.Steer, m_steerThresholdControl);
 }
 
 /// @brief            Initializes the developer menu
@@ -286,6 +328,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     m_syncButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
+    m_defaultButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultThresholdValues);
 
     // Edit boxes
     m_accelThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "AccelThresholdEdit", nullptr, nullptr, SetAccelThreshold);

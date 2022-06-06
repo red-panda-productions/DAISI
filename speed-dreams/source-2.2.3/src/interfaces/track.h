@@ -46,6 +46,8 @@
 #define TRK_ATT_DESCR               "description"
 #define TRK_ATT_CAT                 "category"
 #define TRK_ATT_SUBCAT              "subcategory"
+// SIMULATED DRIVING ASSISTANCE: added the speed limit parameter
+#define TRK_ATT_AVERAGE_SPEEDLIMIT  "average speed limit"
 
 #define TRK_ATT_NONE                "none"
 #define TRK_ATT_SHORT               "short"
@@ -174,7 +176,6 @@
 #define TRK_VAL_STR                 "str"
 #define TRK_VAL_LFT                 "lft"
 #define TRK_VAL_RGT                 "rgt"
-
 #define TRK_ATT_LG                  "lg"
 #define TRK_ATT_RADIUS              "radius"
 #define TRK_ATT_RADIUSEND           "end radius"
@@ -262,6 +263,9 @@
 
 #define TRK_SECT_SECTORS            "Sectors"
 #define TRK_ATT_SECTOR_DFS          "distance from start"
+
+// SIMULATED DRIVING ASSISTANCE: add default value for unspecified speed limit.
+#define SPEED_LIMIT_UNSPECIFIED 0.0f
 
 
 /* Parameters strings for track physics constants */
@@ -367,6 +371,8 @@ typedef struct trackSeg
 #define TR_PITBUILDING	4       /**< Pit building wall (barrier only) */
 
     tdble length;               /**< Length in meters of the middle of the track */
+    /// SIMULATED DRIVING ASSISTANCE: added tdble Time
+    tdble Time;                 /**< Estimated time in seconds */
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
     tdble endWidth;             /**< Width of the end of the segment */
@@ -669,11 +675,15 @@ typedef struct Track
     const char    *subcategory; /**< used for the moment for long/short speedway */
     int           nseg;         /**< Number of segments */
     int           version;      /**< Version of the track type */
-    tdble         length;       /**< main track length */
+    tdble         length;       /**< main track length */ 
     tdble         width;        /**< main track width */
     tTrackPitInfo pits;         /**< Pits information */
     tTrackSeg	  *seg;         /**< Segment list for the main track */
     tTrackSurface *surfaces;	/**< Segment surface list */
+
+    // SIMULATED DRIVING ASSISTANCE: added speedlimit and estimated time members
+    tdble SpeedLimit; /**< speed limit of the track */
+    tdble Time;       /**< main track time (estimated) */  
 
     t3Dd		min;
     t3Dd		max;
