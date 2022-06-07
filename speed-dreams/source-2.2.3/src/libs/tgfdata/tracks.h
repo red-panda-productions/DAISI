@@ -1,11 +1,9 @@
 /***************************************************************************
-
     file                 : tracks.h
     created              : Sun Nov 21 19:00:00 CET 2010
     copyright            : (C) 2010 by Jean-Philippe MEURET
     web                  : speed-dreams.sourceforge.net
     version              : $Id: tracks.h 4902 2012-08-27 10:04:20Z kmetykog $
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -54,6 +52,10 @@ public:
 	float getWidth() const;
 	int getMaxNumOfPitSlots() const;
 
+    // SIMULATED DRIVING ASSISTANCE: add getters for estimated time and speedlimit
+    float GetEstimatedTime() const;
+    float GetSpeedLimit() const;
+
 	bool isUsable() const;
 	
 	void setId(const std::string& strId);
@@ -68,6 +70,9 @@ public:
 	void setLength(float fLength);
 	void setWidth(float fWidth);
 	void setMaxNumOfPitSlots(int nPitSlots);
+
+    // SIMULATED DRIVING ASSISTANCE: add setter for estimated time
+    void SetEstimatedTime();
 
 protected:
 
@@ -87,6 +92,10 @@ protected:
 	mutable float _fLength;          // Length (m).
 	mutable float _fWidth;           // Width (m).
 	mutable int _nMaxPitSlots;       // Max. number of pit slots (m).
+
+    // SIMULATED DRIVING ASSISTANCE: added Time (minutes) and SpeedLimit (km/h).
+    mutable float EstimatedTime;
+    mutable float SpeedLimit;
 
 	mutable bool _bUsable;           // False if anything wrong.
 };
@@ -139,4 +148,3 @@ protected:
 };
 
 #endif /* __TGFTRACKS_H__ */
-
