@@ -42,4 +42,5 @@ private:
     bool InsertDecisions(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick) {}
     bool InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick) {}
     bool InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick) {}
+    void SaveTrialIdToMetadata(int p_trialId) {}
 };

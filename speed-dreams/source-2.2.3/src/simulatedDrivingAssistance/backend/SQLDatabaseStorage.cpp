@@ -5,6 +5,8 @@
 #include "ConfigEnums.h"
 #include <config.h>
 
+#define META_BUFFER_FILENAME "sda_metabuffer.bin"
+
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
     m_statement->execute(p_sql);
@@ -680,8 +682,6 @@ bool SQLDatabaseStorage::Run(const filesystem::path& p_inputFilePath, const std:
 /// @param p_trialId The trial id to save
 void SQLDatabaseStorage::SaveTrialIdToMetadata(int p_trialId)
 {
-#define META_BUFFER_FILENAME "sda_metabuffer.bin"
-
     filesystem::path bufferPath = filesystem::temp_directory_path();
     bufferPath.append(META_BUFFER_FILENAME);
     std::fstream blackboxBuffer;

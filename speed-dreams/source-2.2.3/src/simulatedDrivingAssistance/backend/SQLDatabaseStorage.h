@@ -17,6 +17,7 @@ public:
                       const std::string& p_dirPath = "");
 
     void CloseDatabase();
+    void SaveTrialIdToMetadata(int p_trialId);
 
 private:
     void CreateTables();
@@ -26,7 +27,7 @@ private:
     bool InsertGameState(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     bool InsertUserInput(std::ifstream& p_inputFile, int p_trialId, const std::string& p_tick);
     void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
-    void SaveTrialIdToMetadata(int p_trialId);
+
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

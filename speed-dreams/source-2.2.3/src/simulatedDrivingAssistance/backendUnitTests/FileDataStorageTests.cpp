@@ -1,5 +1,5 @@
-#include "FileSystem.hpp"
 #include <gtest/gtest.h>
+#include "FileSystem.hpp"
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
