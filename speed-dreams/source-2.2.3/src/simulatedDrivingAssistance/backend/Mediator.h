@@ -16,6 +16,7 @@ public:
     void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
     void SaveData();
+    void CloseRecorder();
     bool TimeOut();
 
     void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
