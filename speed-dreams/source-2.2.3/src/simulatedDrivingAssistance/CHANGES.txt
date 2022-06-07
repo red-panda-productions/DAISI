@@ -91,6 +91,9 @@ Added:
 
 Changed:
   src/
+    tools/trackgen/
+        track.cpp
+            added definition for the estimated time of a track
     drivers/simplix/src/
         unitdriver.cpp
             Changed the oFuelCons value to 0
@@ -123,6 +126,11 @@ Changed:
                 Modified xmlGetOuputLine to write floats with full precision.
             tgf.h
                 added GF_LOGGING_ENABLE and GF_LOGGING_DISABLE macro's for clearer code
+        tgfdata/
+            tracks.h and tracks.cpp
+                added getEstimatedTime function
+                added getSpeedLimit function
+                added setEstimatedTime function
         tgfclient/
             CMakeLists.txt
                 Removed WebServer functionalities
@@ -191,6 +199,8 @@ Changed:
             added   HM_ATT_INTERV_TGGLE define
             added   CMD_INTERV_TGGLE define
             changed CMD_END_OF_LIST to match the new amount of cmds.
+        track.h
+            added properties for the estimated time of a track
         sound.h
             added intervention sound volume xml parameter 
     modules/
@@ -370,6 +380,8 @@ Changed:
                     changed rmtsSelect(): replaced usage of race manager with SetTrack function
                     changed RmTrackSelect(): replaced usage of race manager with GetTrack function
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
+                    added EstimatedTimeLabelId
+                    added functionality to show the estimated time label (number '9')
             textonly/
                 CMakeLists.txt
                     added backend
@@ -537,6 +549,7 @@ Changed:
                 changed player button to control button
             trackselectmenu.xml
                 changed position size of category and track buttons
+                added EstimatedTimeLabel
             forcefeedbackconfigmenu.xml
                 changed background image
             controlconfigmenu.xml

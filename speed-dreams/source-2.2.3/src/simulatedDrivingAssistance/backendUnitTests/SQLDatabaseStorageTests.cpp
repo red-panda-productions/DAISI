@@ -20,7 +20,8 @@
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
     strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt");
 
-#define TEST_DATA_DIRECTORY OS_SEPARATOR "databaseTestData" OS_SEPARATOR
+#define TEST_DATA_DIRECTORY    OS_SEPARATOR "databaseTestData" OS_SEPARATOR
+#define TEST_SIMDATA_DIRECTORY "testSimulationData" OS_SEPARATOR
 
 /// @brief Connects to database using the given password
 /// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
@@ -30,7 +31,7 @@ void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::strin
     MAKE_TEST_SETTINGS;
 
     testSettings.UseSSL = false;
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase(testSettings));
+    ASSERT_TRUE(p_sqlDatabaseStorage.OpenDatabase(testSettings));
 }
 
 /// @brief Inserts test data in opened database
@@ -38,9 +39,9 @@ void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::strin
 /// @param p_inputFile name of file with test data to insert
 void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
-    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
+    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY);
 
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile));
+    ASSERT_TRUE(p_sqlDatabaseStorage.StoreData(path + p_inputFile));
 }
 
 /// @brief Test if exception is thrown when input data is incorrect
@@ -48,12 +49,20 @@ void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_
 /// @param p_inputFile name of file with test data to insert
 void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
 {
-    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
-
-    testing::internal::CaptureStderr();
-    p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile);
-    std::string output = testing::internal::GetCapturedStderr();
-    ASSERT_THAT(output, testing::HasSubstr("[MYSQL] internal dberror: "));
+    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY);
+    bool success;
+    try
+    {
+        success = p_sqlDatabaseStorage.StoreData(path + p_inputFile);
+    }
+    // Throws an exception, succeeding the test
+    catch (std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+    // If no exceptions was thrown, this test should still have a failure: specifically, in the input file
+    ASSERT_FALSE(success);
 }
 
 /// @brief Closes the database
@@ -70,8 +79,11 @@ void DatabaseTest(const std::string& p_password, const char* p_inputFile)
 {
     chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
+    std::cout << "Opening Database" << std::endl;
     TestOpenDatabase(sqlDatabaseStorage, p_password);
+    std::cout << "Inserting Data" << std::endl;
     TestInsertTestData(sqlDatabaseStorage, p_inputFile);
+    std::cout << "Closing Database" << std::endl;
     TestCloseDatabase(sqlDatabaseStorage);
 }
 
@@ -102,15 +114,14 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    MAKE_TEST_SETTINGS;
+    MAKE_TEST_SETTINGS
 
     testSettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the directory doesn't exist.
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY OS_SEPARATOR "correctSettings"));
+    ASSERT_TRUE(sqlDatabaseStorage.Run(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY "test_file.txt",
+                                       TEST_DATA_DIRECTORY "correctSettings"));
 }
 
 /// @brief  Tries to connect to the database but fails
@@ -120,19 +131,29 @@ TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    MAKE_TEST_SETTINGS;
+    MAKE_TEST_SETTINGS
     sprintf(testSettings.Password, "WRONGPASSWORD");
     testSettings.UseSSL = false;
     SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
-    chdir(SD_DATADIR_SRC);
     SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the directory doesn't exist.
-    testing::internal::CaptureStderr();
-    sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "incorrectSettings");
-    std::string output = testing::internal::GetCapturedStderr();
-    ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
+    ASSERT_FALSE(sqlDatabaseStorage.Run(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY "test_file.txt",
+                                        TEST_DATA_DIRECTORY "incorrectSettings"));
+}
+
+/// @brief  Connects to the database, then tries to write the local buffer file, but fails as that file does not exist
+TEST(SQLDatabaseStorageTests, TestDatabaseRunNonExistingInputFile)
+{
+    ASSERT_TRUE(SetupSingletonsFolder());
+    chdir(SD_DATADIR_SRC);
+    MAKE_TEST_SETTINGS
+
+    testSettings.UseSSL = false;
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    SQLDatabaseStorage sqlDatabaseStorage;
+    ASSERT_FALSE(sqlDatabaseStorage.Run(SD_DATADIR_SRC TEST_DATA_DIRECTORY TEST_SIMDATA_DIRECTORY "nonExistingTestFile.notAnExtension",
+                                        TEST_DATA_DIRECTORY "correctSettings"));
 }
 
 /// @brief  Tests whether it will throw no exception when there is an encryption file
@@ -142,7 +163,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 {
     ASSERT_TRUE(SetupSingletonsFolder());
     chdir(SD_DATADIR_SRC);
-    MAKE_TEST_SETTINGS;
+    MAKE_TEST_SETTINGS
 
     SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
@@ -153,7 +174,7 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
 
 #define YOUR_PASSWORD "PASSWORD"
 
-TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"));
+TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"))
 TEST_CASE(SQLDatabaseStorageTests, TimeDatabase, DatabaseTimeTest, (YOUR_PASSWORD, "test_file.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NoUserInput, DatabaseTimeTest, (YOUR_PASSWORD, "test_noUserInput.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NoGameState, DatabaseTimeTest, (YOUR_PASSWORD, "test_noGameState.txt"))
@@ -162,5 +183,6 @@ TEST_CASE(SQLDatabaseStorageTests, NoGameStateYesData, CatchDatabaseError, (YOUR
 TEST_CASE(SQLDatabaseStorageTests, NoUserInputYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noUserInputYesData.txt"))
 TEST_CASE(SQLDatabaseStorageTests, CatchLightsQuery, CatchDatabaseError, (YOUR_PASSWORD, "test_wrongLightsValue.txt"))
 TEST_CASE(SQLDatabaseStorageTests, CatchPrematureEOF, CatchDatabaseError, (YOUR_PASSWORD, "test_prematureEOF.txt"))
+TEST_CASE(SQLDatabaseStorageTests, NoSimulationData, CatchDatabaseError, (YOUR_PASSWORD, "test_noSimulationData.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NonExistingInterventionMode, CatchDatabaseError, (YOUR_PASSWORD, "test_nonExistingInterventionMode.txt"))
 TEST_CASE(SQLDatabaseStorageTests, NonExistingInputFile, CatchDatabaseError, (YOUR_PASSWORD, "nonExistingTestFile"))
