@@ -675,6 +675,9 @@ bool SQLDatabaseStorage::Run(const filesystem::path& p_inputFilePath, const std:
     std::cout << "Finished writing to database" << std::endl;
     return true;
 }
+
+/// @brief Saves the trial id from the database to a buffer file with the meta data from a blackbox
+/// @param p_trialId The trial id to save
 void SQLDatabaseStorage::SaveTrialIdToMetadata(int p_trialId)
 {
 #define META_BUFFER_FILENAME "sda_metabuffer.bin"
