@@ -23,6 +23,9 @@
 #include <GL/glext.h>
 #endif
 
+// SIMULATED DRIVING ASSISTANCE CHANGE: Included ConfigEnums to force experiment setup
+#include <ConfigEnums.h>
+
 #include <plib/ssg.h>
 #include <glfeatures.h> // GfglFeatures
 #include <robot.h>	//ROB_SECT_ARBITRARY
@@ -41,7 +44,6 @@
 #include "grboard.h"
 #include "grtracklight.h"
 #include "grbackground.h"
-
 
 int grMaxTextureUnits = 0;
 
@@ -517,6 +519,8 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
         grScreens[i]->initBoard();
     }
 
+    // SIMULATED DRIVING ASSISTANCE: Removed these functionalities when FORCE_EXPERIMENT_SETUP is defined.
+#ifndef FORCE_EXPERIMENT_SETUP
     GfuiAddKey(screen, GFUIK_END,      "Zoom Minimum", (void*)GR_ZOOM_MIN,	grSetZoom, NULL);
     GfuiAddKey(screen, GFUIK_HOME,     "Zoom Maximum", (void*)GR_ZOOM_MAX,	grSetZoom, NULL);
     GfuiAddKey(screen, '*',            "Zoom Default", (void*)GR_ZOOM_DFLT,	grSetZoom, NULL);
@@ -546,6 +550,7 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
     GfuiAddKey(screen, ')',            "UnSplit Screen", (void*)GR_SPLIT_REM, grSplitScreen, NULL);
     GfuiAddKey(screen, '_',            "Split Screen Arrangement", (void*)GR_SPLIT_ARR, grSplitScreen, NULL);
     GfuiAddKey(screen, GFUIK_TAB,      "Next (split) Screen", (void*)GR_NEXT_SCREEN, grChangeScreen, NULL);
+#endif
 
     GfLogInfo("Current screen is #%d (out of %d)\n", nCurrentScreenIndex, grNbActiveScreens);
 

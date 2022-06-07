@@ -15,7 +15,7 @@
 
   <section name="environment">
     <section name="track">
-      <attstr name="filename" val="tracks/road/test_highway/test_highway.xml"/>
+      <attstr name="filename" val="tracks/simple-highway/simple-highway-small-4-80/simple-highway-small-4-80.xml"/>
     </section>
 
   </section>
