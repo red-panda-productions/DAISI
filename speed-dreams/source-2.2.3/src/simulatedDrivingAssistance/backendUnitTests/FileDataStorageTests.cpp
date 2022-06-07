@@ -699,3 +699,22 @@ TEST(FileDataStorageTests, GetLeastCommonTest)
         ASSERT_EQ(fileDataStorage.GetLeastCommon(values), leastCommonVal);
     }
 }
+
+/// @brief tests that a non-initialized file can be closed without throwing an error
+TEST(FileDataStorageTests, CloseNonIntializedFile)
+{
+    FileDataStorage fileDataStorage;
+    ASSERT_NO_THROW(fileDataStorage.Shutdown());
+}
+
+/// @brief tests that an already closed file can be closed withou throwing an error
+TEST(FileDataStorageTests, CloseAlreadyClosedFile)
+{
+    FileDataStorage fileDataStorage;
+    DataToStore params = { false, false, false, false, false };
+    GET_DUMMY_TIMES;
+    fileDataStorage.SetCompressionRate(1);
+    filesystem::path actualPath = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    fileDataStorage.Shutdown();
+    ASSERT_NO_THROW(fileDataStorage.Shutdown());
+}

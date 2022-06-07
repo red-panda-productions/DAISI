@@ -48,9 +48,18 @@ public:
         Config.SetDataCollectionSettings(p_dataSetting);
     }
 
+    void RaceStop()
+    {
+        CloseRecorder();
+    }
+
     void CloseRecorder()
     {
         MStoppedRace = true;
+    }
+
+    void SaveData()
+    {
     }
 
     bool MStoppedRace;

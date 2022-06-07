@@ -386,15 +386,18 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
+    CloseRecorder();
     m_inRace = false;
 }
 
+/// @brief Tells the decisonmaker that the data should be saved
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SaveData()
 {
     m_decisionMaker.SaveData();
 }
 
+/// @brief Tells the decisionmaker to close down the recorder file (to stop it from creating more inputs)
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::CloseRecorder()
 {

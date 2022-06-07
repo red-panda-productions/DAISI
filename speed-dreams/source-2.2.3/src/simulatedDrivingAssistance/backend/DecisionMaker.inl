@@ -144,8 +144,7 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 {
 }
 
-/// @brief                  When the race stops, the simulation needs to be shutdown correctly and check if it needs to be stroed in the database
-/// @param p_saveToDatabase bool that determines if the simulation data collected will be stored in the database
+/// @brief When the race stops, the simulation needs to be shutdown correctly
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::CloseRecorder()
 {
@@ -154,10 +153,10 @@ void TEMP_DECISIONMAKER::CloseRecorder()
     m_recorder = nullptr;
 }
 
+/// @brief When the "save to database" button gets pressed, the data needs to be saved to the external database
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::SaveData()
 {
-    m_fileBufferStorage.Shutdown();
     SQLDatabaseStorage sqlDatabaseStorage;
     sqlDatabaseStorage.Run(m_bufferFilePath);
 }

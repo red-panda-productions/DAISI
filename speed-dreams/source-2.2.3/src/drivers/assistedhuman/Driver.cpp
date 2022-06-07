@@ -104,7 +104,6 @@ void Driver::EndRace(tCarElt* p_car, tSituation* p_situation)
 void Driver::Shutdown()
 {
     m_humanDriver.shutdown(m_index);
-    SMediator::GetInstance()->CloseRecorder();
     SMediator::GetInstance()->RaceStop();
     delete m_recorder;
 }
