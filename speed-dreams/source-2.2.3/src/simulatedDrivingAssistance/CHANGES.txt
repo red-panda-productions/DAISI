@@ -43,6 +43,7 @@ Added:
         EndExperimentMenu.cpp
         ConformationMenu.cpp
   data/
+
     data/
         config/
             raceman/
@@ -90,6 +91,9 @@ Added:
 
 Changed:
   src/
+    tools/trackgen/
+        track.cpp
+            added definition for the estimated time of a track
     drivers/simplix/src/
         unitdriver.cpp
             Changed the oFuelCons value to 0
@@ -122,7 +126,16 @@ Changed:
                 Modified xmlGetOuputLine to write floats with full precision.
             tgf.h
                 added GF_LOGGING_ENABLE and GF_LOGGING_DISABLE macro's for clearer code
+        tgfdata/
+            tracks.h and tracks.cpp
+                added getEstimatedTime function
+                added getSpeedLimit function
+                added setEstimatedTime function
         tgfclient/
+            CMakeLists.txt
+                Removed WebServer functionalities
+            guieventloop.cpp
+                removed WebServer functionalities
             gui.h
                 added   tGfuiRadioButtonList
                 added   tGfuiRadioButton
@@ -170,8 +183,6 @@ Changed:
 
                 added   GfuiDrawString(): overload
                 added   GfuiFontClass: expose to API
-            webserver.cpp
-                changed NotificationManager::updateWebserverStatusUi
     main/
         main.cpp
             added singletonfolder setup
@@ -188,6 +199,8 @@ Changed:
             added   HM_ATT_INTERV_TGGLE define
             added   CMD_INTERV_TGGLE define
             changed CMD_END_OF_LIST to match the new amount of cmds.
+        track.h
+            added properties for the estimated time of a track
         sound.h
             added intervention sound volume xml parameter 
     modules/
@@ -199,12 +212,16 @@ Changed:
                  engine.cpp
                     Changed the car->engine.fuelcons to value 0
         racing/standardgame
+            raceresults.cpp
+                removed WebServer functionalities
             raceinit.cpp
                 changed reLoadSingleCar() to fix isHuman flag
                 changed ReInitCars() to fix isHuman flag
                 changed ReCleanup() to also shut down updaters
+                removed WebServer functionalities
             racesituation.cpp
                 change deltaTime to be constant value
+                removed WebServer functionalities
             racestate.cpp
                 changed several RE_STATE_RACE_COOLDOWN modes to RE_STATE_RACE_END modes
             racemain.cpp
@@ -359,6 +376,8 @@ Changed:
                     changed rmtsSelect(): replaced usage of race manager with SetTrack function
                     changed RmTrackSelect(): replaced usage of race manager with GetTrack function
                     removed .h and .cpp files: player, graph, opengl, advanced, simu, ai, hostsettings config
+                    added EstimatedTimeLabelId
+                    added functionality to show the estimated time label (number '9')
             textonly/
                 CMakeLists.txt
                     added backend
@@ -476,13 +495,16 @@ Changed:
             added rppUtils and Filesystem for Linux
 
   data/
-      config/raceman
-        CMakeLists.txt
-        quickrace.xml
-            changed standard track
-        removed practice.xml
-        removed singleevent-challange.xml
-        removed singleeven-endurance.xml
+      config/
+          CMakeLists.txt 
+              removed WebServer functionalities
+          raceman/
+            CMakeLists.txt
+            quickrace.xml
+               changed standard track
+               removed practice.xml
+               removed singleevent-challange.xml
+               removed singleeven-endurance.xml
       cars/models/primo/
         primo.xml
            removed the fuel cons factor
@@ -522,6 +544,7 @@ Changed:
                 changed player button to control button
             trackselectmenu.xml
                 changed position size of category and track buttons
+                added EstimatedTimeLabel
             forcefeedbackconfigmenu.xml
                 changed background image
             controlconfigmenu.xml
@@ -543,6 +566,10 @@ Changed:
 
 Deleted:
    src/
+      libs/tgfclient/
+         webserver.cpp and webserver.h
+      data/config/
+         webserver.xml
       modules/
          simu/
             simuv2.1/
