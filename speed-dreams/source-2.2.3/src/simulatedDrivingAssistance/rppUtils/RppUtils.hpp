@@ -90,7 +90,7 @@ inline filesystem::path SingletonsFilePath()
 /// @brief        Adds an extra escape character in front of every backslash (\\) -> (\\\\)
 /// @param p_path The path to escape all the file separators for.
 /// @return       A string containing the newly escaped path.
-inline std::string Escape(const filesystem::path& p_path)
+inline std::string AddEscapeCharacter(const filesystem::path& p_path)
 {
     return std::regex_replace(p_path.string(), std::regex("\\\\"), "\\\\");
 }

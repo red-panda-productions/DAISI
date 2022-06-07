@@ -41,12 +41,12 @@ SQLDatabaseStorage::SQLDatabaseStorage()
 /// @brief The parameterized constructor of the SQL database storage
 /// @param p_dataToStore The data to actually store in the database
 SQLDatabaseStorage::SQLDatabaseStorage(tDataToStore p_dataToStore)
+    : m_dataToStore(p_dataToStore)
 {
     m_driver = nullptr;
     m_connection = nullptr;
     m_statement = nullptr;
     m_resultSet = nullptr;
-    m_dataToStore = p_dataToStore;
 };
 
 /// @brief Creates a database and stores data from the buffer files into the correct database tables
@@ -67,10 +67,15 @@ void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
         InsertSimulationData(p_bufferPaths, trialId);
         m_connection->commit();
     }
-    catch (std::exception& e)
+    catch (sql::SQLException& e)
     {
+        std::cerr << "ERROR: SQLException in " << __FILE__;
+        std::cerr << "(" << __FUNCTION__ << ")" << std::endl;
+        std::cerr << "ERROR: " << e.what();
+        std::cerr << " (MySQL error code: " << e.getErrorCode();
+        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
         m_connection->rollback();
-        std::cerr << "[MYSQL] internal dberror: " << e.what() << std::endl;
     }
 }
 
@@ -112,9 +117,15 @@ bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
     {
         m_connection = m_driver->connect(connection_properties);
     }
-    catch (std::exception& e)
+    catch (sql::SQLException& e)
     {
-        std::cerr << "Could not open database: " << e.what() << std::endl;
+        std::cerr << "Could not open database" << std::endl;
+        std::cerr << "ERROR: SQLException in " << __FILE__;
+        std::cerr << "(" << __FUNCTION__ << ")" << std::endl;
+        std::cerr << "ERROR: " << e.what();
+        std::cerr << " (MySQL error code: " << e.getErrorCode();
+        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
         return false;
     }
 
@@ -405,7 +416,7 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + Escape(p_bufferPaths.TimeSteps) + "' INTO TABLE TimeStep "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) + "' INTO TABLE TimeStep "
         "   LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
@@ -421,7 +432,7 @@ void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths,
 void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + Escape(p_gameStatePath) + "' INTO TABLE GameState "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) + "' INTO TABLE GameState "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\n' IGNORE 1 LINES "
         "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
@@ -433,7 +444,7 @@ void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath
 void SQLDatabaseStorage::InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + Escape(p_userInputPath) + "' INTO TABLE UserInput "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) + "' INTO TABLE UserInput "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick, steer, brake, gas, clutch) "
         "   SET trial_id = " + std::to_string(p_trialId) + ";");
@@ -462,27 +473,32 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 
     // Load decisions csv file into temp table.
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + Escape(p_decisionsPath) + "' INTO TABLE TempInterventionData "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) + "' INTO TABLE TempInterventionData "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
         "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
 
-    // Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
-    EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
+    //// Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
+    //EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
 
-    // Create trigger for saving the auto incremented id into (a copy of) the temp table.
-    EXECUTE(
-        "CREATE TRIGGER " STORE_ID_TRIGGER_NAME " AFTER INSERT ON Intervention"
-        "   FOR EACH ROW"
-        "       UPDATE TempInterventionDataWithCorrectId"
-        "       SET temp_intervention_id = NEW.intervention_id"
-        "       WHERE temp_tick = NEW.tick;");
+    //// Create trigger for saving the auto incremented id into (a copy of) the temp table.
+    //EXECUTE(
+    //    "CREATE TRIGGER " STORE_ID_TRIGGER_NAME " AFTER INSERT ON Intervention"
+    //    "   FOR EACH ROW"
+    //    "       UPDATE TempInterventionDataWithCorrectId"
+    //    "       SET temp_intervention_id = NEW.intervention_id"
+    //    "       WHERE temp_tick = NEW.tick;");
 
     // Insert all interventions, which will trigger the auto_incremented id to be stored in TempInterventionDataWithCorrectId.
     EXECUTE(
         "INSERT INTO Intervention(trial_id, tick) "
         "   SELECT temp_trial_id, temp_tick "
         "   FROM TempInterventionData;");
+
+    EXECUTE(
+        "UPDATE TempInterventionData "
+        "   JOIN Intervention ON TempInterventionData.temp_tick = Intervention.tick "
+        "   SET TempInterventionData.temp_intervention_id = Intervention.intervention_id;");
 
     // Extract columns corresponding to each table from TempInterventionDataWithCorrectId
     EXECUTE(
@@ -515,7 +531,7 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
         "   FROM TempInterventionDataWithCorrectId "
         "   WHERE temp_lights_decision IS NOT NULL;");
 
-    EXECUTE("DROP TRIGGER " STORE_ID_TRIGGER_NAME ";");
+    //EXECUTE("DROP TRIGGER " STORE_ID_TRIGGER_NAME ";");
 }
 
 /// @brief Close the connection to the database and clean up.

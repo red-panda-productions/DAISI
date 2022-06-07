@@ -317,13 +317,11 @@ TEST_CASE(FileDataStorageTests, DecisionsBrakeStored, TestWriteDecisions, (true,
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer decisions are made
 TEST_CASE(FileDataStorageTests, DecisionsSteerStored, TestWriteDecisions, (true, true, false, false, false, false))
 
-/// @brief Test whether the FileDataStorage stores properly for every combination of decision made
-TEST(FileDataStorageTests, PairWiseTestWriteDecisions)
-{
-    bool alwaysTrue[1]{true};
-    bool booleans[2]{true, false};
-    PairWiseTest(TestWriteDecisions, alwaysTrue, 1, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
-}
+/// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible combinations.
+BEGIN_TEST_COMBINATORIAL(FileDataStorageTests, CombinatorialTestWriteDecisions)
+bool booleans[2]{true, false};
+END_TEST_COMBINATORIAL6(TestWriteDecisions, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
 
 TEST(FileDataStorageTests, TestWriteInternalMetaData)
 {
@@ -442,12 +440,10 @@ void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControl
     ASSERT_STREQ(decisionsContents.str().c_str(), expectedDecisions.str().c_str());
 }
 
-/// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
-TEST(FileDataStorageTests, PairWiseTestWriteData)
-{
-    bool booleans[2]{true, false};
-    PairWiseTest(TestWriteData, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
-}
+/// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible combinations.
+BEGIN_TEST_COMBINATORIAL(FileDataStorageTests,CombinatorialTestWriteData)
+bool booleans[2]{true, false};
+END_TEST_COMBINATORIAL5(TestWriteData, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Test that the FileDataStorage works properly when the same file is written to twice.
 //         The buffer files should be wiped when re-used.
