@@ -478,16 +478,16 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
         "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
 
-    //// Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
-    //EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
+    // Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
+    EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
 
-    //// Create trigger for saving the auto incremented id into (a copy of) the temp table.
-    //EXECUTE(
-    //    "CREATE TRIGGER " STORE_ID_TRIGGER_NAME " AFTER INSERT ON Intervention"
-    //    "   FOR EACH ROW"
-    //    "       UPDATE TempInterventionDataWithCorrectId"
-    //    "       SET temp_intervention_id = NEW.intervention_id"
-    //    "       WHERE temp_tick = NEW.tick;");
+    // Create trigger for saving the auto incremented id into (a copy of) the temp table.
+    EXECUTE(
+        "CREATE TRIGGER " STORE_ID_TRIGGER_NAME " AFTER INSERT ON Intervention"
+        "   FOR EACH ROW"
+        "       UPDATE TempInterventionDataWithCorrectId"
+        "       SET temp_intervention_id = NEW.intervention_id"
+        "       WHERE temp_tick = NEW.tick;");
 
     // Insert all interventions, which will trigger the auto_incremented id to be stored in TempInterventionDataWithCorrectId.
     EXECUTE(
@@ -495,10 +495,10 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
         "   SELECT temp_trial_id, temp_tick "
         "   FROM TempInterventionData;");
 
-    EXECUTE(
+    /*EXECUTE(
         "UPDATE TempInterventionData "
         "   JOIN Intervention ON TempInterventionData.temp_tick = Intervention.tick "
-        "   SET TempInterventionData.temp_intervention_id = Intervention.intervention_id;");
+        "   SET TempInterventionData.temp_intervention_id = Intervention.intervention_id;");*/
 
     // Extract columns corresponding to each table from TempInterventionDataWithCorrectId
     EXECUTE(
@@ -531,7 +531,7 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
         "   FROM TempInterventionDataWithCorrectId "
         "   WHERE temp_lights_decision IS NOT NULL;");
 
-    //EXECUTE("DROP TRIGGER " STORE_ID_TRIGGER_NAME ";");
+    EXECUTE("DROP TRIGGER " STORE_ID_TRIGGER_NAME ";");
 }
 
 /// @brief Close the connection to the database and clean up.
