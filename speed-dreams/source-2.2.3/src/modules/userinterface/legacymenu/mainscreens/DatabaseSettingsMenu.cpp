@@ -77,42 +77,49 @@ static void OnActivate(void* /* dummy */)
     SynchronizeControls(s_scrHandle, control);
 }
 
-/// @brief Returns to the Data selection menu screen
+/// @brief Returns to the data selection menu screen
 static void GoBack(void* /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
 }
 
+/// @brief Check if connection can be made with the database
 static void CheckConnectionCallback(void* /* dummy */)
 {
     CheckCurrentConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
 }
 
+/// @brief Sets the username in the menu and the temporary settings
 static void SetUsernameCallback(void*)
 {
     SetUsername(s_scrHandle, m_usernameControl);
 }
 
+/// @brief Sets the password in the menu and the temporary settings
 static void SetPasswordCallback(void*)
 {
     ChangePassword(s_scrHandle, m_passwordControl);
 }
 
+/// @brief Sets the address in the menu and the temporary settings
 static void SetAddressCallback(void*)
 {
     SetAddress(s_scrHandle, m_addressControl);
 }
 
+/// @brief Sets the port in the menu and the temporary settings
 static void SetPortCallback(void*)
 {
     SetPort(s_scrHandle, m_portControl);
 }
 
+/// @brief Sets the schema name in the menu and the temporary settings
 static void SetSchemaCallback(void*)
 {
     SetSchema(s_scrHandle, m_schemaControl);
 }
 
+/// @brief Sets the schema name in the menu and the temporary settings
 static void SetUseSSLCallback(tCheckBoxInfo* p_info)
 {
     SetUseSSL(p_info, s_scrHandle, m_caCertFileDialogControl, m_publicCertFileDialogControl, m_privateCertFileDialogControl);

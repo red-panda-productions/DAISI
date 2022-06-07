@@ -103,7 +103,7 @@ static void LoadDefaultSettings()
     m_dataToStore.MetaData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
 }
 
-/// @brief Loads the user menu settings from the local config file
+/// @brief Checks if the saved connection can connect to the database
 static void OnActivate(void* /* dummy */)
 {
     CheckSavedConnection(s_scrHandle, m_dbStatus, &m_isConnecting);

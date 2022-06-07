@@ -198,6 +198,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
 /// @brief                    Checks if a connection can be established between speed dreams and the database with saved settings
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
+/// @param  p_isConnecting    Checks if a connection is already being made
 void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
 {
     if (*p_isConnecting) return;
@@ -209,6 +210,7 @@ void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isCo
 /// @brief                    Checks if a connection can be established between speed dreams and the database with current settings
 /// @param  p_scrHandle       The screen handle for writing on the screen
 /// @param  p_dbStatusControl The status control handle to write letters to the screen
+/// @param  p_isConnecting    Checks if a connection is already being made
 void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
 {
     if (*p_isConnecting) return;
@@ -229,6 +231,7 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
 /// @brief Handle input in the Password textbox
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
+/// @param p_password the password filled in by the user
 void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
 {
     char replacement[SETTINGS_NAME_LENGTH];
@@ -242,11 +245,17 @@ void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, replacement);
 }
 
+/// @brief Fill in the saved password
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_passwordControl the corresponding ui element control integers
 void FillInPassword(void* p_scrHandle, int p_passwordControl)
 {
     SetPassword(p_scrHandle, p_passwordControl, s_dbSettings.Password);
 }
 
+/// @brief Fill in the password typed by the user and save the given passwordn in the tempDbSettings
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_passwordControl the corresponding ui element control integers
 void ChangePassword(void* p_scrHandle, int p_passwordControl)
 {
     strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
@@ -329,7 +338,7 @@ void SelectCert(void* p_scrHandle, int p_buttonControl, int p_labelControl, cons
     }
 
     // Validate input w.r.t. black boxes
-    std::experimental::filesystem::path path = buf;
+    filesystem::path path = buf;
     // Minimum file length: "{Drive Letter}:\{empty file name}.pem"
     if (path.string().size() <= 7)
     {

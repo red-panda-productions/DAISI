@@ -499,8 +499,7 @@ static void LoadConfigSettings(void* p_param)
     SynchronizeControls();
 }
 
-/// @brief Called whenever the menu is (re)opened. Loads the user menu settings from the local config file,
-///  and handles other logic that has to be performed whenever the screen is opened.
+/// @brief Called whenever the menu is (re)opened. Handles logic that has to be performed whenever the screen is opened.
 static void OnActivate(void* /* dummy */)
 {
     // Ensure the track loader is initialized again.
