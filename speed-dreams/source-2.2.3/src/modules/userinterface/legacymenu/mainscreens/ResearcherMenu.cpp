@@ -599,7 +599,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "NextButton", s_scrHandle, SaveSettings);
 
     // Task radio button controls
     m_allowedActionsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_STEER, nullptr, SelectAllowedSteer);
