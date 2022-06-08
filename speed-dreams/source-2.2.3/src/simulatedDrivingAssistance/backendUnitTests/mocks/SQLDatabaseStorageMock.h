@@ -10,7 +10,7 @@
 class SQLDatabaseStorageMock : IDataStorage
 {
 public:
-    SQLDatabaseStorageMock(){}
+    SQLDatabaseStorageMock() {}
 
     SQLDatabaseStorageMock(tDataToStore p_dataToStore)
         : SQLDatabaseStorageMock() {}
@@ -22,15 +22,17 @@ public:
         VariableStore::GetInstance().Variables[0] = static_cast<void*>(bufferPaths);
     }
 
-    void StoreData(const tBufferPaths& p_bufferPaths) override  //@NOCOVERAGE, This function is needed for building but is never called
-    {
-    }
+    // This function definition is needed for building (IDataStorage is abstract), but will not be used and therefore not covered.
+    bool StoreData(const tBufferPaths& p_bufferPaths) override  //@NOCOVERAGE
+    {                                                           //@NOCOVERAGE
+        return true;                                            //@NOCOVERAGE
+    }                                                           //@NOCOVERAGE
 
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
                       const std::string& p_username,
                       const std::string& p_password,
-                      const std::string& p_schemaName){};
+                      const std::string& p_schemaName) {}
 
     void CloseDatabase() {}
 };

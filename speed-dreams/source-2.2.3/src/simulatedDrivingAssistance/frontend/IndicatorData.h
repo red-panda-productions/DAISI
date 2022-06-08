@@ -9,6 +9,12 @@ typedef struct ScreenPosition
     float X, Y;
 } tScreenPosition;
 
+/// @brief The dimensions of a texture in pixels.
+typedef struct tTextureDimensions
+{
+    float Width, Height;
+} tTextureDimensions;
+
 /// @brief Stores data related to playing a sound in-game.
 ///        The actual sounds are loaded from their path in the respective module.
 typedef struct SoundData
@@ -27,6 +33,7 @@ typedef struct TextureData
 {
     const char* Path;
     tScreenPosition ScrPos;
+    tTextureDimensions Dimensions;
 } tTextureData;
 
 /// @brief Stores data related to drawing text on the Hud.

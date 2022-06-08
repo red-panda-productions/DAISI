@@ -8,5 +8,5 @@
 class IDataStorage
 {
 public:
-    virtual void StoreData(const tBufferPaths& p_bufferPaths) = 0;
+    virtual bool StoreData(const tBufferPaths& p_bufferPaths) = 0;
 };

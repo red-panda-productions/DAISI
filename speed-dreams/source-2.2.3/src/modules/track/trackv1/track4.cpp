@@ -1,11 +1,9 @@
 /***************************************************************************
-
     file                 : track4.cpp
     created              : Sat May 18 12:46:26 CEST 2002
     copyright            : (C) 2002 by Eric Espie
     email                : eric.espie@torcs.org
     version              : $Id: track4.cpp 6947 2020-04-25 00:32:30Z scttgs0 $
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -1321,6 +1319,10 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
         // TODO: is the (int) intended?
         DoVfactor = (float) ((int) GfParmGetCurNum(TrackHandle, path, TRK_ATT_DOVFACTOR, (char*)NULL, 1.0)) ;
 
+        //SIMULATED DRIVING ASSISTANCE: added speed limit
+        // if no speed limit is defined it will be infinity
+        float speedLimit = GfParmGetCurNum(TrackHandle, path, TRK_ATT_SPEEDLIMIT, nullptr, HUGE_VALF);
+
         /* get segment type and lenght */
         if (strcmp(segtype, TRK_VAL_STR) == 0) {
             /* straight */
@@ -1507,6 +1509,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     /* straight */
                     curSeg->type = TR_STR;
                     curSeg->length = curLength;
+                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = sin(alf);								// Precalculate these
                     curSeg->cos = cos(alf);
 
@@ -1558,6 +1561,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     curSeg->radiusl = radius - wi2;
                     curSeg->arc = curArc;
                     curSeg->length = curLength;
+                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = 0.0;	//Not used for curves
                     curSeg->cos = 0.0;
 
@@ -1626,6 +1630,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
                     curSeg->radiusl = radius + wi2;
                     curSeg->arc = curArc;
                     curSeg->length = curLength;
+                    curSeg->SpeedLimit = speedLimit;
                     curSeg->sin = 0.0;	//Not used for curves
                     curSeg->cos = 0.0;
 

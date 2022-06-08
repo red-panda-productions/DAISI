@@ -15,6 +15,13 @@
     }                                                           \
     std::getline(p_inputFileStream, p_string);
 
+#define LOG_MYSQL_EXCEPTION(except)                               \
+    std::cerr << "[MYSQL] ERROR: SQLException in " << __FILE__;   \
+    std::cerr << "(" << __FUNCTION__ << ")" << std::endl;         \
+    std::cerr << "ERROR: " << except.what();                      \
+    std::cerr << " (MySQL error code: " << except.getErrorCode(); \
+    std::cerr << ", SQLState: " << except.getSQLState() << " )" << std::endl
+
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
     m_statement->execute(p_sql)
@@ -34,9 +41,10 @@
 
 #define STORE_ID_TRIGGER_NAME "store_id_trigger"
 
+
 /// @brief The constructor of the SQL database storage, defaults to storing all data.
 SQLDatabaseStorage::SQLDatabaseStorage()
-    : SQLDatabaseStorage({true, true, true, true, true}){};
+    : SQLDatabaseStorage({true, true, true, true}){};
 
 /// @brief The parameterized constructor of the SQL database storage
 /// @param p_dataToStore The data to actually store in the database
@@ -47,47 +55,6 @@ SQLDatabaseStorage::SQLDatabaseStorage(tDataToStore p_dataToStore)
     m_connection = nullptr;
     m_statement = nullptr;
     m_resultSet = nullptr;
-};
-
-/// @brief Creates a database and stores data from the buffer files into the correct database tables
-/// @param p_bufferPaths Struct containg the paths to all the buffer files.
-void SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
-{
-    std::ifstream metaDataStream(p_bufferPaths.MetaData);
-    if (metaDataStream.fail())
-    {
-        std::cerr << "[MYSQL] Buffer file not found: " << p_bufferPaths.MetaData.string() << std::endl;
-        return;
-    }
-
-    try
-    {
-        m_connection->setAutoCommit(false);
-        int trialId = InsertMetaData(metaDataStream);
-        InsertSimulationData(p_bufferPaths, trialId);
-        m_connection->commit();
-    }
-    catch (sql::SQLException& e)
-    {
-        std::cerr << "ERROR: SQLException in " << __FILE__;
-        std::cerr << "(" << __FUNCTION__ << ")" << std::endl;
-        std::cerr << "ERROR: " << e.what();
-        std::cerr << " (MySQL error code: " << e.getErrorCode();
-        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
-
-        m_connection->rollback();
-    }
-}
-
-/// @brief Gets the keys for secure database connection in the data/certificates folder
-///        and adds them to the connection properties
-/// @param p_connectionProperties SQL connection properties to which the keys are added.
-/// @param p_dbSettings           The database settings used to retrieve the certificate names.
-void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
-{
-    p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
-    p_connectionProperties["sslCert"] = p_dbSettings.PublicCertFilePath;
-    p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;
 }
 
 /// @brief Connect to the specified database and set session variables.
@@ -120,11 +87,7 @@ bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
     catch (sql::SQLException& e)
     {
         std::cerr << "Could not open database" << std::endl;
-        std::cerr << "ERROR: SQLException in " << __FILE__;
-        std::cerr << "(" << __FUNCTION__ << ")" << std::endl;
-        std::cerr << "ERROR: " << e.what();
-        std::cerr << " (MySQL error code: " << e.getErrorCode();
-        std::cerr << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+        LOG_MYSQL_EXCEPTION(e);
 
         return false;
     }
@@ -150,6 +113,17 @@ bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
     CreateTables();
 
     return true;
+}
+
+/// @brief Gets the keys for secure database connection in the data/certificates folder
+///        and adds them to the connection properties
+/// @param p_connectionProperties SQL connection properties to which the keys are added.
+/// @param p_dbSettings           The database settings used to retrieve the certificate names.
+void SQLDatabaseStorage::PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings)
+{
+    p_connectionProperties["sslCA"] = p_dbSettings.CACertFilePath;
+    p_connectionProperties["sslCert"] = p_dbSettings.PublicCertFilePath;
+    p_connectionProperties["sslKey"] = p_dbSettings.PrivateCertFilePath;
 }
 
 /// @brief Executes sql create statements to create all tables
@@ -319,6 +293,38 @@ void SQLDatabaseStorage::CreateTables()
         ")");
 }
 
+/// @brief Creates a database and stores data from the buffer files into the correct database tables
+/// @param p_bufferPaths Struct containg the paths to all the buffer files.
+bool SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
+{
+    std::ifstream metaDataStream(p_bufferPaths.MetaData);
+    if (metaDataStream.fail())
+    {
+        std::cerr << "Buffer file not found: " << p_bufferPaths.MetaData.string() << std::endl;
+        return false;
+    }
+
+    try
+    {
+        m_connection->setAutoCommit(false);
+        int trialId = InsertMetaData(metaDataStream);
+        InsertSimulationData(p_bufferPaths, trialId);
+        m_connection->commit();
+        return true;
+    }
+    catch (sql::SQLException& e)
+    {
+        LOG_MYSQL_EXCEPTION(e);
+        m_connection->rollback();
+        return false;
+    }
+    catch (std::exception& e)
+    {
+        m_connection->rollback();
+        throw e;      
+    }
+}
+
 /// @brief Inserts meta data about the trial. Includes participant, blackbox, environment, settings, and trial.
 /// @return trialId The auto-incremented id corresponding to this trial.
 int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
@@ -387,7 +393,8 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
             values = "'Drive'";
             break;
         default:
-            THROW_RPP_EXCEPTION("Invalid intervention type index read from buffer file");
+            std::cerr << "Invalid intervention type index read from buffer file" << std::endl;
+            return -1;
     }
 
     int settingsId = -1;
@@ -481,6 +488,8 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
     // Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
     EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
 
+    EXECUTE("DROP TRIGGER IF EXISTS " STORE_ID_TRIGGER_NAME ";");
+
     // Create trigger for saving the auto incremented id into (a copy of) the temp table.
     EXECUTE(
         "CREATE TRIGGER " STORE_ID_TRIGGER_NAME " AFTER INSERT ON Intervention"
@@ -536,7 +545,8 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 
 /// @brief Close the connection to the database and clean up.
 ///        sql::Statement and sql::Connection objects must be freed explicitly using delete
-void SQLDatabaseStorage::CloseDatabase()
+/// @param returnVal The value to return, indicating whether the database was succesfully used.
+bool SQLDatabaseStorage::CloseDatabase(const bool p_returnVal)
 {
     if (m_statement)
     {
@@ -549,19 +559,23 @@ void SQLDatabaseStorage::CloseDatabase()
         m_connection->close();
         delete m_connection;
     }
+
+    return p_returnVal;
 }
 
 /// @brief Runs the database storage with the given connection properties from the Mediator.
 /// @param p_bufferPaths Struct containg the paths to all the buffer files.
-void SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
+bool SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
 {
     DatabaseSettings dbsettings = SMediator::GetInstance()->GetDatabaseSettings();
 
-    if (OpenDatabase(dbsettings))
-    {
-        std::cout << "Writing local buffer file to database" << std::endl;
-        StoreData(p_bufferPaths);
-        CloseDatabase();
-        std::cout << "Finished writing to database" << std::endl;
-    }
+    bool openDb = OpenDatabase(dbsettings);
+    if (!openDb) return CloseDatabase(false);
+    std::cout << "Writing local buffer file to database" << std::endl;
+
+    bool storeDb = StoreData(p_bufferPaths);
+    if (!storeDb) return CloseDatabase(false);
+
+    std::cout << "Finished writing to database" << std::endl;
+    return CloseDatabase(true);;
 }

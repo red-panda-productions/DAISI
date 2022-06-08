@@ -134,7 +134,7 @@ TEST(FileDataStorageTests, TestInitialization)
 {
     GET_DUMMY_TIMES;
 
-    tDataToStore settings = {true, true, true, true, true};
+    tDataToStore settings = {true, true, true, true};
     FileDataStorage fileDataStorage;
     tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
 
@@ -185,7 +185,7 @@ TEST(FileDataStorageTests, TestWriteGameStateData)
 {
     GET_DUMMY_TIMES;
 
-    tDataToStore settings = {false, true, false, false, false};
+    tDataToStore settings = {false, true, false, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
     tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
@@ -219,7 +219,7 @@ TEST(FileDataStorageTests, TestWriteUserInputData)
 {
     GET_DUMMY_TIMES;
 
-    tDataToStore settings = {false, false, true, false, false};
+    tDataToStore settings = {false, false, true, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
     tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
@@ -259,7 +259,7 @@ void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, b
 {
     GET_DUMMY_TIMES;
 
-    tDataToStore settings = {false, false, false, p_storeDecisions, false};
+    tDataToStore settings = {false, false, false, p_storeDecisions};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
     tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
@@ -332,15 +332,12 @@ TEST(FileDataStorageTests, TestWriteInternalMetaData)
 /// @param p_numberOfTicks How many ticks to save (default 1)
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
-    // Initialise class, read+write no values
-    DataToStore params = {false, false, false, false, false};
-
     GET_DUMMY_TIMES;
 
-    // Write a file with dummy initialization data, save timestamp 0 as many times as needed, and shut down
+    tDataToStore settings = {false, false, false, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
-    tBufferPaths bufferPaths = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
 
     DecisionTuple tuple = {};
 
@@ -376,8 +373,7 @@ void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControl
         p_storeEnvironment,
         p_storeCar,
         p_storeControls,
-        p_storeDecisions,
-        p_storeMeta};
+        p_storeDecisions};
 
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
@@ -476,7 +472,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
 {
     GET_DUMMY_TIMES;
 
-    tDataToStore settings = {true, true, true, false, true};
+    tDataToStore settings = {true, true, true, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(p_compressionRate);
     tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);

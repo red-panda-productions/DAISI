@@ -2,6 +2,9 @@
 
 #include "FileSystem.hpp"
 
+#define FORCE_EXPERIMENT_SETUP
+
+
 /// @brief The different actions that a black box can take
 typedef struct AllowedActions
 {
@@ -130,8 +133,9 @@ typedef struct DataToStore
     bool CarData;
     bool HumanData;
     bool InterventionData;
-    bool MetaData;
 } tDataToStore;
+
+#define NUM_DATATOSTORE_ELEMENTS 4
 
 /// @brief The threshold amounts for decisions. floats are values between 0 and 1.
 typedef struct DecisionThresholds
