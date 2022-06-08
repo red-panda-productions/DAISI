@@ -503,63 +503,49 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
         "   SET temp_trial_id = " +
         std::to_string(p_trialId) + ";");
 
-    // Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
-    EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
-
-    EXECUTE("DROP TRIGGER IF EXISTS " STORE_ID_TRIGGER_NAME ";");
-
-    // Create trigger for saving the auto incremented id into (a copy of) the temp table.
-    EXECUTE(
-        "CREATE TRIGGER " STORE_ID_TRIGGER_NAME
-        " AFTER INSERT ON Intervention"
-        "   FOR EACH ROW"
-        "       UPDATE TempInterventionDataWithCorrectId"
-        "       SET temp_intervention_id = NEW.intervention_id"
-        "       WHERE temp_tick = NEW.tick;");
-
-    // Insert all interventions, which will trigger the auto_incremented id to be stored in TempInterventionDataWithCorrectId.
+    // Insert all data into the Intervention table
     EXECUTE(
         "INSERT INTO Intervention(trial_id, tick) "
         "   SELECT temp_trial_id, temp_tick "
         "   FROM TempInterventionData;");
 
-    /*EXECUTE(
+    // Update intervention_ids in TempInterventionData with the AUTO_INCREMENTED intervention_ids from Intervention
+    EXECUTE(
         "UPDATE TempInterventionData "
         "   JOIN Intervention ON TempInterventionData.temp_tick = Intervention.tick "
-        "   SET TempInterventionData.temp_intervention_id = Intervention.intervention_id;");*/
+        "   AND TempInterventionData.temp_trial_id = Intervention.trial_id "
+        "   SET TempInterventionData.temp_intervention_id = Intervention.intervention_id;");
 
-    // Extract columns corresponding to each table from TempInterventionDataWithCorrectId
+    // Extract columns corresponding to each table from TempInterventionData
     EXECUTE(
         "INSERT INTO SteerDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_steer_decision "
-        "   FROM TempInterventionDataWithCorrectId "
+        "   FROM TempInterventionData "
         "   WHERE temp_steer_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO BrakeDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_brake_decision "
-        "   FROM TempInterventionDataWithCorrectId "
+        "   FROM TempInterventionData "
         "   WHERE temp_brake_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO AccelDecision(intervention_id, amount) "
         "   SELECT temp_intervention_id, temp_accel_decision "
-        "   FROM TempInterventionDataWithCorrectId "
+        "   FROM TempInterventionData "
         "   WHERE temp_accel_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO GearDecision(intervention_id, gear) "
         "   SELECT temp_intervention_id, temp_gear_decision "
-        "   FROM TempInterventionDataWithCorrectId "
+        "   FROM TempInterventionData "
         "   WHERE temp_gear_decision IS NOT NULL;");
 
     EXECUTE(
         "INSERT INTO LightsDecision(intervention_id, turn_lights_on) "
         "   SELECT temp_intervention_id, temp_lights_decision "
-        "   FROM TempInterventionDataWithCorrectId "
+        "   FROM TempInterventionData "
         "   WHERE temp_lights_decision IS NOT NULL;");
-
-    EXECUTE("DROP TRIGGER " STORE_ID_TRIGGER_NAME ";");
 }
 
 /// @brief Close the connection to the database and clean up.
@@ -597,5 +583,4 @@ bool SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
 
     std::cout << "Finished writing to database" << std::endl;
     return CloseDatabase(true);
-    ;
 }
