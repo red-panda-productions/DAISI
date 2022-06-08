@@ -55,7 +55,7 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    if(!p_emptyPath)
+    if (!p_emptyPath)
     {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
@@ -168,6 +168,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
+    ASSERT_NO_THROW(decisionMaker.RaceStop());
     ASSERT_NO_THROW(decisionMaker.SaveData());
     ASSERT_NO_THROW(decisionMaker.CloseRecorder());
     filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
