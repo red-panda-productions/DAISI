@@ -7,25 +7,25 @@
 
         <!-- OK / save the data button -->
         <section name="ok">
-            <attstr name="type" val="text button"/>
-            <attstr name="show box" val="no"/>
-            <attstr name="text" val="Continue"/>
-            <attstr name="tip" val="Continue to the save data screen"/>
-            <attstr name="h align" val="left"/>
-            <attnum name="x" val="435"/>
-            <attnum name="y" val="40"/>
-            <attnum name="width" val="120"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="focused color" val="0xFFFFFF"/>
-            <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-60"/>
-            <attnum name="image y" val="-7"/>
-            <attnum name="image width" val="280"/>
-            <attnum name="image height" val="40"/>
-            <attstr name="focused image" val="data/img/bg-button-big-focused.png"/>
-            <attstr name="enabled image" val="data/img/bg-button-big.png"/>
-            <attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
+		<attstr name="type" val="text button"/>
+		<attstr name="show box" val="no"/>            
+		<attstr name="text" val="Continue"/>
+		<attstr name="tip" val="Continue to the save data screen"/>
+		<attstr name="h align" val="left"/>
+		<attnum name="x" val="290"/>
+		<attnum name="y" val="41"/>
+		<attnum name="width" val="120"/>
+		<attstr name="font" val="medium"/>
+		<attstr name="color" val="0xFFFFFF"/>
+		<attstr name="focused color" val="0xFFFFFF"/>
+		<attstr name="pushed color" val="0xFFFFFF"/>
+		<attnum name="image x" val="-10"/>
+		<attnum name="image y" val="4"/>
+		<attnum name="image width" val="60"/>
+		<attnum name="image height" val="16"/>
+		<attstr name="focused image" val="data/img/button-left-focused.png"/>
+		<attstr name="enabled image" val="data/img/button-left.png"/>
+		<attstr name="pushed image" val="data/img/button-left-pushed.png"/>  
         </section>
 
     </section>
@@ -43,17 +43,17 @@
 
         <section name="2">
             <attstr name="type" val="static image"/>
-            <attnum name="x" val="110"/>
-            <attnum name="y" val="395"/>
+            <attnum name="x" val="100"/>
+            <attnum name="y" val="240"/>
             <attnum name="width" val="450"/>
             <attnum name="height" val="50"/>
             <attstr name="image" val="data/img/Textbox-EndExperiment.png"/>
         </section>
 
-        <section name="3">
+       <section name="3">
             <attstr name="type" val="label"/>
             <attnum name="x" val="130"/>
-            <attnum name="y" val="410"/>
+            <attnum name="y" val="260"/>
             <attstr name="text" val="This is the end of the experiment"/>
             <attnum name="width" val="450"/>
             <attnum name="height" val="20"/>
@@ -65,6 +65,15 @@
             <attstr name="image" val="data/img/EndExperiment-bg.png"/>
         </section>
 
+        <section name="5">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="210"/>
+            <attnum name="y" val="245"/>
+            <attstr name="text" val="Click continue or press enter"/>
+            <attnum name="width" val="450"/>
+            <attnum name="height" val="20"/>
+            <attstr name="font" val="medium_big"/>
+        </section>
     </section>
 
 </params>
