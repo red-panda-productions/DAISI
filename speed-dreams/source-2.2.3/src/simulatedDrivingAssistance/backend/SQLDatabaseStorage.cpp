@@ -404,7 +404,7 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
             break;
         default:
             std::cerr << "Invalid intervention type index read from buffer file" << std::endl;
-            return -1;
+            break;
     }
 
     int settingsId = -1;
