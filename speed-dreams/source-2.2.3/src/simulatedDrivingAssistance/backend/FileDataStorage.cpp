@@ -109,8 +109,6 @@ int FileDataStorage::GetCompressionRate() const
 /// End result: any possible final data is written and the file is released.
 void FileDataStorage::Shutdown()
 {
-    if (!m_outputStream.is_open())
-        return;
     m_outputStream << "END";
     m_outputStream.close();
 }

@@ -50,19 +50,22 @@ public:
 
     void RaceStop()
     {
-        CloseRecorder();
+        MStoppedRace = true;
     }
 
     void CloseRecorder()
     {
-        MStoppedRace = true;
+        MRecorderClosed = true;
     }
 
     void SaveData()
     {
+        MDatasaved = true;
     }
 
     bool MStoppedRace;
+    bool MRecorderClosed;
+    bool MDatasaved;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;
     bool Decision;

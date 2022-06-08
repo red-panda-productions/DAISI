@@ -453,25 +453,30 @@ TEST(MediatorTests, RaceStop)
     ASSERT_FALSE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
 }
 
+/// @brief Tests if the mediator closes the recorder file correctly
+TEST(MediatorTests, CloseRecorder)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MRecorderClosed = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->CloseRecorder());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MRecorderClosed);
+}
+
 /// @brief Tests if the mediator stops the race correctly if it saves the data.
 TEST(MediatorTests, SaveData)
 {
     MockMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    MockMediator::GetInstance()->SetInRace(true);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
+    MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->SaveData());
-    ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
-    ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved);
 
-    MockMediator::GetInstance()->SetInRace(false);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
+    MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved = true;
     ASSERT_NO_THROW(MockMediator::GetInstance()->SaveData());
-    ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
-    ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_FALSE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved);
 }
 
 /// @brief Tests if the TimeOut function returns the correct time out

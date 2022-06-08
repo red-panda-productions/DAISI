@@ -386,7 +386,7 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
-    CloseRecorder();
+    m_decisionMaker.RaceStop();
     m_inRace = false;
 }
 
