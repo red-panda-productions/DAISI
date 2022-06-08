@@ -16,7 +16,6 @@
 #define PRM_CAR_DATA        "CheckboxCarData"
 #define PRM_HUMAN_DATA      "CheckboxUserData"
 #define PRM_INTRV_DATA      "CheckboxInterventionData"
-#define PRM_META_DATA       "CheckboxMetaData"
 #define PRM_DATABASE_STATUS "DatabaseStatusLabel"
 
 #define PRM_COMP "CompButton"
@@ -31,7 +30,7 @@ static void* s_dbSettingsMenu = nullptr;
 // Data to store
 tDataToStore m_dataToStore;
 
-int m_dataToStoreControl[5];
+int m_dataToStoreControl[NUM_DATATOSTORE_ELEMENTS];
 int m_dbStatus;
 
 bool m_isConnecting = false;
@@ -64,13 +63,6 @@ static void ChangeInterventionStorage(tCheckBoxInfo* p_info)
     m_dataToStore.InterventionData = p_info->bChecked;
 }
 
-/// @brief        Enables or disables whether decision maker parameters will be collected real-time
-/// @param p_info Information on the checkbox
-static void ChangeMetaDataStorage(tCheckBoxInfo* p_info)
-{
-    m_dataToStore.MetaData = p_info->bChecked;
-}
-
 /// @brief Synchronizes all the menu controls with the internal settings
 static void SynchronizeControls()
 {
@@ -78,7 +70,6 @@ static void SynchronizeControls()
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[1], m_dataToStore.CarData);
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[2], m_dataToStore.HumanData);
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[3], m_dataToStore.InterventionData);
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[4], m_dataToStore.MetaData);
 }
 
 /// @brief         Initializes the menu setting from the DataSelectionMenu.xml file
@@ -89,7 +80,6 @@ static void LoadConfigSettings(void* p_param)
     m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, false);
     m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, false);
     m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, false);
-    m_dataToStore.MetaData = GfuiMenuControlGetBoolean(p_param, PRM_META_DATA, GFMNU_ATTR_CHECKED, false);
     SynchronizeControls();
 }
 
@@ -100,7 +90,6 @@ static void LoadDefaultSettings()
     m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
     m_dataToStore.HumanData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
     m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
-    m_dataToStore.MetaData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[4]);
 }
 
 /// @brief Loads the user menu settings from the local config file
@@ -139,7 +128,6 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.CarData));
     GfParmSetStr(readParam, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.HumanData));
     GfParmSetStr(readParam, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.InterventionData));
-    GfParmSetStr(readParam, PRM_META_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.MetaData));
 
     GfParmWriteFile(nullptr, readParam, "DataSelectionMenu");
     GfParmReleaseHandle(readParam);
@@ -227,7 +215,6 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA, nullptr, ChangeCarStorage);
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);
-    m_dataToStoreControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_META_DATA, nullptr, ChangeMetaDataStorage);
     m_dbStatus = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DATABASE_STATUS);
 
     // Compression button control

@@ -9,7 +9,7 @@
         <section name="ok">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
-            <attstr name="text" val="Save the data"/>
+            <attstr name="text" val="Continue"/>
             <attstr name="tip" val="Continue to the save data screen"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="435"/>
