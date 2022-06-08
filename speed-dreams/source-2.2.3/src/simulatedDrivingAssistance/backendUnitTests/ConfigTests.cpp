@@ -71,14 +71,13 @@ END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 void PControlTest(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
 {
     SDAConfig config;
-    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention, p_force};
+    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention};
     config.SetPControlSettings(arr);
     tParticipantControl pControl = config.GetPControlSettings();
     ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
     ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
     ASSERT_EQ(arr.ControlBrake, pControl.ControlBrake);
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
