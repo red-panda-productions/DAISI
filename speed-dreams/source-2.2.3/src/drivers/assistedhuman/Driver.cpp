@@ -3,6 +3,8 @@
 #include "ConfigEnums.h"
 #include <chrono>
 
+#define TIMEOUT_WARNING 1000
+
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
 /// @param p_index The driver's index (starting from 1)
@@ -45,7 +47,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
 
     long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 5);
 
-    if (milliseconds > 1000)
+    if (milliseconds > TIMEOUT_WARNING)
     {
         GfLogWarning("SLOW BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
         return;
