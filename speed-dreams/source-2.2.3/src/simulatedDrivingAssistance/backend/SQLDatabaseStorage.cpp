@@ -15,12 +15,12 @@
     }                                                           \
     std::getline(p_inputFileStream, p_string);
 
-#define LOG_MYSQL_EXCEPTION(except)                               \
-    std::cerr << "[MYSQL] ERROR: SQLException in " << __FILE__;   \
-    std::cerr << "(" << __FUNCTION__ << ")" << std::endl;         \
-    std::cerr << "ERROR: " << except.what();                      \
-    std::cerr << " (MySQL error code: " << except.getErrorCode(); \
-    std::cerr << ", SQLState: " << except.getSQLState() << " )" << std::endl
+#define LOG_MYSQL_EXCEPTION(p_except)                               \
+    std::cerr << "[MYSQL] ERROR: SQLException in " << __FILE__;     \
+    std::cerr << "(" << __FUNCTION__ << ")" << std::endl;           \
+    std::cerr << "ERROR: " << p_except.what();                      \
+    std::cerr << " (MySQL error code: " << p_except.getErrorCode(); \
+    std::cerr << ", SQLState: " << p_except.getSQLState() << " )" << std::endl
 
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
@@ -411,7 +411,8 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values));
     GET_INT_FROM_QUERY(settingsId,
                        "SELECT settings_id FROM Settings "
-                       "WHERE intervention_mode = " + values);
+                       "WHERE intervention_mode = " +
+                           values);
 
     // Trial
     std::string trialDateTime;

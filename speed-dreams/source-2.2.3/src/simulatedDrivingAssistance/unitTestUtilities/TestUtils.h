@@ -206,6 +206,8 @@ inline bool ActiveIndicatorsContains(std::vector<tIndicatorData> p_activeIndicat
 /// @param  count4		The amount of elements in the fourth array
 /// @param  arrname5	The array name of the fifth array
 /// @param  count5		The amount of elements in the fifth array
+/// @param  arrname6	The array name of the sixth array
+/// @param  count6		The amount of elements in the sixth array
 #define END_TEST_COMBINATORIAL6(method_name, arrname1, count1, arrname2, count2, arrname3, count3, arrname4, count4, arrname5, count5, arrname6, count6) \
     for (int a = 0; a < (count1); a++)                                                                                                                   \
     {                                                                                                                                                    \
