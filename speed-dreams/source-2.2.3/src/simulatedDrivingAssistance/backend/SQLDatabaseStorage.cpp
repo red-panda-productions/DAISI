@@ -34,13 +34,17 @@
 #define INSERT_INTO(p_tableName, p_headers, p_values) \
     "INSERT INTO " p_tableName "(" p_headers ") VALUES (" + p_values + ");"
 
+#define GET_INT_FROM_QUERY(p_int, p_sql)            \
+    m_resultSet = m_statement->executeQuery(p_sql); \
+    while (m_resultSet->next()) p_int = m_resultSet->getInt(1)
+
 /// @brief Executes a query and retrieves the integer result
-#define GET_INT_FROM_QUERY(p_int, p_querySql)            \
-    m_resultSet = m_statement->executeQuery(p_querySql); \
-    while (m_resultSet->next()) p_int = m_resultSet->getInt(1);
+#define GET_INT_FROM_PREP_QUERY(p_int, p_prepStmt) \
+    m_resultSet = p_prepStmt->executeQuery();      \
+    delete p_prepStmt;                             \
+    while (m_resultSet->next()) p_int = m_resultSet->getInt(1)
 
 #define STORE_ID_TRIGGER_NAME "store_id_trigger"
-
 
 /// @brief The constructor of the SQL database storage, defaults to storing all data.
 SQLDatabaseStorage::SQLDatabaseStorage()
@@ -321,7 +325,7 @@ bool SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
     catch (std::exception& e)
     {
         m_connection->rollback();
-        throw e;      
+        throw e;
     }
 }
 
@@ -329,6 +333,8 @@ bool SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
 /// @return trialId The auto-incremented id corresponding to this trial.
 int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 {
+    sql::PreparedStatement* prepStmt;
+
     std::string values;
 
     // Store participant meta-data
@@ -350,9 +356,11 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 
     int blackboxId = -1;
     EXECUTE(INSERT_IGNORE_INTO("Blackbox", "filename, version, name", values));
-    GET_INT_FROM_QUERY(blackboxId,
-        "SELECT blackbox_id FROM Blackbox "
-        "WHERE filename = '" + blackboxFileName + "' AND version = '" + blackboxVersionDateTime + "'")
+    prepStmt = m_connection->prepareStatement(
+        "SELECT blackbox_id FROM Blackbox WHERE filename = ? AND version = ?;");
+    prepStmt->setString(1, blackboxFileName);
+    prepStmt->setDateTime(2, blackboxVersionDateTime);
+    GET_INT_FROM_PREP_QUERY(blackboxId, prepStmt);
 
     // Store environment meta-data
     std::string environmentFileName;
@@ -367,9 +375,11 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 
     int environmentId = -1;
     EXECUTE(INSERT_IGNORE_INTO("Environment", "filename, version, name", values));
-    GET_INT_FROM_QUERY(environmentId, 
-        "SELECT environment_id FROM Environment "
-        "WHERE filename = '" + environmentFileName + "' AND version = '" + environmentVersion + "'")
+    prepStmt = m_connection->prepareStatement(
+        "SELECT environment_id FROM Environment WHERE filename = ? AND version = ?;");
+    prepStmt->setString(1, environmentFileName);
+    prepStmt->setInt(2, std::stoi(environmentVersion));
+    GET_INT_FROM_PREP_QUERY(environmentId, prepStmt);
 
     // Settings
     // Saved as enum index, but since indices in our code and MySQL are not the same, perform conversion
@@ -399,9 +409,9 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 
     int settingsId = -1;
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values));
-    GET_INT_FROM_QUERY(settingsId, 
-        "SELECT settings_id FROM Settings "
-        "WHERE intervention_mode = " + values);
+    GET_INT_FROM_QUERY(settingsId,
+                       "SELECT settings_id FROM Settings "
+                       "WHERE intervention_mode = " + values);
 
     // Trial
     std::string trialDateTime;
@@ -423,10 +433,12 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) + "' INTO TABLE TimeStep "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) +
+        "' INTO TABLE TimeStep "
         "   LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick) "
-        "   SET trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET trial_id = " +
+        std::to_string(p_trialId) + ";");
 
     if (m_dataToStore.CarData) InsertGameState(p_bufferPaths.GameState, p_trialId);
     if (m_dataToStore.HumanData) InsertUserInput(p_bufferPaths.UserInput, p_trialId);
@@ -439,10 +451,12 @@ void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths,
 void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) + "' INTO TABLE GameState "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) +
+        "' INTO TABLE GameState "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\n' IGNORE 1 LINES "
         "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
-        "   SET trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET trial_id = " +
+        std::to_string(p_trialId) + ";");
 }
 
 /// @brief Loads the userinput buffer file into the corresponding database table.
@@ -451,10 +465,12 @@ void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath
 void SQLDatabaseStorage::InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) + "' INTO TABLE UserInput "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) +
+        "' INTO TABLE UserInput "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick, steer, brake, gas, clutch) "
-        "   SET trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET trial_id = " +
+        std::to_string(p_trialId) + ";");
 }
 
 /// @brief Loads the decisions buffer file into the database by first loading it into a temporary table.
@@ -480,10 +496,12 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 
     // Load decisions csv file into temp table.
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) + "' INTO TABLE TempInterventionData "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) +
+        "' INTO TABLE TempInterventionData "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
-        "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET temp_trial_id = " +
+        std::to_string(p_trialId) + ";");
 
     // Create a copy of the temp table, which will be used to insert the auto_incremented intervention_id into.
     EXECUTE("CREATE TEMPORARY TABLE TempInterventionDataWithCorrectId AS SELECT * FROM TempInterventionData;");
@@ -492,7 +510,8 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 
     // Create trigger for saving the auto incremented id into (a copy of) the temp table.
     EXECUTE(
-        "CREATE TRIGGER " STORE_ID_TRIGGER_NAME " AFTER INSERT ON Intervention"
+        "CREATE TRIGGER " STORE_ID_TRIGGER_NAME
+        " AFTER INSERT ON Intervention"
         "   FOR EACH ROW"
         "       UPDATE TempInterventionDataWithCorrectId"
         "       SET temp_intervention_id = NEW.intervention_id"
@@ -577,5 +596,6 @@ bool SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
     if (!storeDb) return CloseDatabase(false);
 
     std::cout << "Finished writing to database" << std::endl;
-    return CloseDatabase(true);;
+    return CloseDatabase(true);
+    ;
 }
