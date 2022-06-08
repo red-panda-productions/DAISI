@@ -180,6 +180,14 @@ typedef struct
     DUMP_V3(car->DynGCg.vel, debugLogFile) \
     DUMP_V3(car->DynGCg.acc, debugLogFile) \
     debugLogFile.flush();
+
+#define LOG_AND_CALL(a)              \
+    debugLogFile << #a << std::endl; \
+    a;
+
+#define LOG_VAR(a) \
+    debugLogFile << #a << ": " << a << std::endl;
+
 #endif
 
 #endif /* _CAR__H_ */

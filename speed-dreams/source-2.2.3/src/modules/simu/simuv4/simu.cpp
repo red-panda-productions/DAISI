@@ -350,12 +350,15 @@ SimCarTelemetry(int nCarIndex, bool bOn)
 #include <ostream>
 #include <fstream>
 #include <iostream>
+#include <iomanip>      // std::setprecision
 
 std::ofstream debugLogFile("gerries_debug_log.txt");
 
 void
 SimUpdate(tSituation *s, double deltaTime)
 {
+    debugLogFile << std::endl << "Current time: " << s->currentTime << std::endl;
+
     int i;
     int ncar;
     tCarElt *carElt;
@@ -363,7 +366,7 @@ SimUpdate(tSituation *s, double deltaTime)
 
     SimDeltaTime = (tdble) deltaTime;
 
-    SimAtmosphereUpdate(s);
+    LOG_AND_CALL(SimAtmosphereUpdate(s));
 
     for (ncar = 0; ncar < s->_ncars; ncar++)
     {
@@ -400,30 +403,30 @@ SimUpdate(tSituation *s, double deltaTime)
 
         CHECK(car);
 
-        ctrlCheck(car);
+        LOG_AND_CALL(ctrlCheck(car));
         CHECK(car);
 
-        SimInstantReConfig(car);
+        LOG_AND_CALL(SimInstantReConfig(car));
         CHECK(car);
 
-        SimSteerUpdate(car);
+        LOG_AND_CALL(SimSteerUpdate(car));
         CHECK(car);
 
-        SimGearboxUpdate(car);
+        LOG_AND_CALL(SimGearboxUpdate(car));
         CHECK(car);
 
-        SimEngineUpdateTq(car);
+        LOG_AND_CALL(SimEngineUpdateTq(car));
         CHECK(car);
 
         if (!(s->_raceState & RM_RACE_PRESTART) || car->carElt->_skillLevel == 3)
         {
-            SimCarUpdateWheelPos(car);
+            LOG_AND_CALL(SimCarUpdateWheelPos(car));
             CHECK(car);
 
-            SimBrakeSystemUpdate(car);
+            LOG_AND_CALL(SimBrakeSystemUpdate(car));
             CHECK(car);
 
-            SimAeroUpdate(car, s);
+            LOG_AND_CALL(SimAeroUpdate(car, s));
             CHECK(car);
 
             for (i = 0; i < 2; i++)
@@ -450,13 +453,13 @@ SimUpdate(tSituation *s, double deltaTime)
             }
             CHECK(car);
 
-            SimTransmissionUpdate(car);
+            LOG_AND_CALL(SimTransmissionUpdate(car));
             CHECK(car);
 
-            SimWheelUpdateRotation(car);
+            LOG_AND_CALL(SimWheelUpdateRotation(car));
             CHECK(car);
 
-            SimCarUpdate(car, s);
+            LOG_AND_CALL(SimCarUpdate(car, s));
             CHECK(car);
         }
         else
@@ -466,7 +469,7 @@ SimUpdate(tSituation *s, double deltaTime)
         }
     }
 
-    SimCarCollideCars(s);
+    LOG_AND_CALL(SimCarCollideCars(s));
 
     /* printf ("%f - ", s->currentTime); */
 
@@ -482,7 +485,7 @@ SimUpdate(tSituation *s, double deltaTime)
         }
 
         CHECK(car);
-        SimCarUpdate2(car, s); /* telemetry */
+        LOG_AND_CALL(SimCarUpdate2(car, s)); /* telemetry */
 
         /* copy back the data to carElt */
 
