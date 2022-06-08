@@ -688,7 +688,6 @@ void SQLDatabaseStorage::SaveTrialIdToMetadata(int p_trialId)
 
     if (!filesystem::exists(bufferPath)) return;
     blackboxBuffer.open(bufferPath, std::ios::binary | std::fstream::in | std::fstream::out);
-    if (!blackboxBuffer.good()) throw std::exception("Could not open metadata buffer file");
 
     blackboxBuffer.seekp(0, std::ios::beg);
     blackboxBuffer << bits(p_trialId);
