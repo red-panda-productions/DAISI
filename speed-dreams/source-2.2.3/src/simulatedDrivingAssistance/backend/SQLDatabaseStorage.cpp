@@ -89,9 +89,9 @@ bool SQLDatabaseStorage::StoreData(const filesystem::path& p_inputFilePath)
         inputFile.close();
         return false;
     }
-  
+
     SaveTrialIdToMetadata(trial_id);
-  
+
     if (!InsertSimulationData(inputFile, trial_id))
     {
         CloseDatabase();

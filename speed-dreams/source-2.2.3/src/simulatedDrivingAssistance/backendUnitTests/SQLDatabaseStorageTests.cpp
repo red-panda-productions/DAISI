@@ -172,7 +172,6 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
     ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote" OS_SEPARATOR "correctRemote"));
 }
 
-
 TEST(SQLDatabaseStorageTests, SaveTrialIdTest)
 {
     // delete buffer file to make sure it doesn't exist
