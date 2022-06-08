@@ -7,6 +7,10 @@
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
 #include "FileSystem.hpp"
+#include "GeneratorUtils.h"
+#include "Random.hpp"
+
+#define BLACK_BOX_TESTS 5
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
@@ -374,7 +378,20 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 
     // Initialize the decision maker with the full path to the current black box executable
     // If recording is disabled a nullptr is passed
-    m_decisionMaker.Initialize(m_tickCount, &car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr);
+
+    TestSegments segments = GenerateSegments();
+    tCarElt cars[BLACK_BOX_TESTS];
+    tSituation situations[BLACK_BOX_TESTS];
+    BlackBoxData testData[BLACK_BOX_TESTS];
+    Random random;
+    for(int i = 0; i < BLACK_BOX_TESTS; i++)
+    {
+        cars[i] = GenerateCar(segments);
+        situations[i] = GenerateSituation();
+        testData[i] = BlackBoxData(&cars[i],&situations[i],static_cast<unsigned long>(random.NextUInt()),segments.NextSegments,segments.NextSegmentsCount);
+    }
+
+    m_decisionMaker.Initialize(m_tickCount, &car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr, testData, BLACK_BOX_TESTS);
 
     m_inRace = true;
 }
