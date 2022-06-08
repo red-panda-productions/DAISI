@@ -379,7 +379,6 @@ static void BackToMain(void* /* dummy */)
     GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
 
-
 #if SDL_FORCEFEEDBACK
 /// @brief Opens the force feedback settings menu
 static void
