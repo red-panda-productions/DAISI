@@ -322,12 +322,6 @@ BEGIN_TEST_COMBINATORIAL(FileDataStorageTests, CombinatorialTestWriteDecisions)
 bool booleans[2]{true, false};
 END_TEST_COMBINATORIAL6(TestWriteDecisions, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
-
-TEST(FileDataStorageTests, TestWriteInternalMetaData)
-{
-    SUCCEED();  // TODO: implement whenever this checkbox gets used.
-}
-
 /// @brief Run the FileDataStorage saving only minimal data for a variable amount of ticks.
 /// @param p_numberOfTicks How many ticks to save (default 1)
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
@@ -437,7 +431,7 @@ void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControl
 }
 
 /// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible combinations.
-BEGIN_TEST_COMBINATORIAL(FileDataStorageTests,CombinatorialTestWriteData)
+BEGIN_TEST_COMBINATORIAL(FileDataStorageTests, CombinatorialTestWriteData)
 bool booleans[2]{true, false};
 END_TEST_COMBINATORIAL5(TestWriteData, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
@@ -574,7 +568,6 @@ TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates9, TestDataSt
 
 /// @brief Test for checking data is correctly compressed for the max compression rate
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionLimit, TestDataStorageSaveCompressionRates, (COMPRESSION_LIMIT))
-
 
 /// @brief Test for checking the compression rate is correctly set
 TEST(FileDataStorageTests, SetCompressionsRateTest)
