@@ -29,7 +29,13 @@
 
 #define RACE_MANAGER_NAME "replay"
 
-#define INTEGRATION_TESTS_BLACK_BOX                   "replayBlackbox/SDAReplay.exe"
+#ifdef WIN32
+#define INTEGRATION_TESTS_EXTENSION ".exe"
+#else
+#define INTEGRATION_TESTS_EXTENSION
+#endif
+
+#define INTEGRATION_TESTS_BLACK_BOX                   "replayBlackbox/SDAReplay" INTEGRATION_TESTS_EXTENSION
 #define INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY "replayBlackbox/"
 
 static void* s_scrHandle = nullptr;
@@ -231,7 +237,7 @@ static void ChooseReplayFile(void* /* dummy */)
 {
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, err, true);
+    bool success = SelectFile(buf, err, true,nullptr,  nullptr, 0, true);
     if (!success)
     {
         return;
@@ -314,8 +320,7 @@ static void StartReplay(void*)
         std::string bbArgs = GenerateBBArguments(filesystem::path(m_replayFilePath).append(DECISIONS_RECORDING_FILE_NAME));
 
         // Start the replay black box
-        PROCESS_INFORMATION bbInfo;
-        StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo, INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY);
+        StartExecutable(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str());
 
         // Start the race engine state automaton
         LmRaceEngine().startNewRace();
