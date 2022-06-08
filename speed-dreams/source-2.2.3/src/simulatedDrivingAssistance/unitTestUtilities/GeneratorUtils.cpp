@@ -79,6 +79,7 @@ tTrackSeg GenerateSegment()
     segment.type = random.NextInt(1, 4);
     segment.type2 = random.NextInt(1, 6);
     segment.style = random.NextInt(5);
+    segment.SpeedLimit = random.NextFloat();
     segment.length = random.NextFloat();
     segment.width = random.NextFloat();
     segment.startWidth = random.NextFloat();
