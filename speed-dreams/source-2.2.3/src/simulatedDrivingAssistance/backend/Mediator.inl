@@ -382,11 +382,11 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
     tSituation situations[BLACK_BOX_TESTS];
     BlackBoxData testData[BLACK_BOX_TESTS];
     Random random;
-    for(int i = 0; i < BLACK_BOX_TESTS; i++)
+    for (int i = 0; i < BLACK_BOX_TESTS; i++)
     {
         cars[i] = GenerateCar(segments);
         situations[i] = GenerateSituation();
-        testData[i] = BlackBoxData(&cars[i],&situations[i],static_cast<unsigned long>(random.NextUInt()),segments.NextSegments,segments.NextSegmentsCount);
+        testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(random.NextUInt()), segments.NextSegments, segments.NextSegmentsCount);
     }
 
     m_decisionMaker.Initialize(m_tickCount, &car, p_situation, p_track, blackBoxFilePath, recordBB ? p_recorder : nullptr, testData, BLACK_BOX_TESTS);
