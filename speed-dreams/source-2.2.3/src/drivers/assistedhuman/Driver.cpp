@@ -1,6 +1,7 @@
 #include "Driver.h"
 #include "Mediator.h"
 #include "ConfigEnums.h"
+#include <chrono>
 
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
@@ -38,7 +39,18 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
     m_humanDriver.init_track(m_index, p_track, p_carHandle, p_carParmHandle, p_situation);
     m_humanDriver.SetRecorder(useRecorder ? m_recorder : nullptr);
 
+    auto start = std::chrono::system_clock::now();
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation, m_recorder);
+    auto end = std::chrono::system_clock::now();
+
+    long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 5;
+
+    if(milliseconds > 1000)
+    {
+        GfLogWarning("SLOW BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
+        return;
+    }
+    GfLogInfo("Blackbox took %ld milliseconds (on average) to respond over %i tests\n", milliseconds, BLACK_BOX_TESTS);
 }
 
 /// @brief Start a new race.

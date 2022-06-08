@@ -10,8 +10,6 @@
 #include "GeneratorUtils.h"
 #include "Random.hpp"
 
-#define BLACK_BOX_TESTS 5
-
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
     template InterventionType Mediator<type>::GetInterventionType();                                                                                    \
