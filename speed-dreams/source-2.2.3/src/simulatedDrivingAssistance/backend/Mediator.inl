@@ -386,7 +386,6 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
-    m_decisionMaker.RaceStop();
     m_inRace = false;
 }
 

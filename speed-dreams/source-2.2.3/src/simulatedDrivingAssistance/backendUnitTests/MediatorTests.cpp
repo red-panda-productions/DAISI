@@ -439,16 +439,12 @@ TEST(MediatorTests, RaceStop)
     ASSERT_TRUE(SetupSingletonsFolder());
 
     MockMediator::GetInstance()->SetInRace(true);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
     ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
 
     MockMediator::GetInstance()->SetInRace(false);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
     ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_FALSE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
 }
 
 /// @brief Tests if the mediator closes the recorder file correctly

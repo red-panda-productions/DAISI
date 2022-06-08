@@ -40,7 +40,6 @@ public:
     Recorder* GetRecorder();
 
     ~DecisionMaker();
-    void RaceStop();
     void CloseRecorder();
     void SaveData();
 

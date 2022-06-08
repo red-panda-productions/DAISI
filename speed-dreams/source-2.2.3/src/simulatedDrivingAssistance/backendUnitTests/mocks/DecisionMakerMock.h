@@ -48,11 +48,6 @@ public:
         Config.SetDataCollectionSettings(p_dataSetting);
     }
 
-    void RaceStop()
-    {
-        MStoppedRace = true;
-    }
-
     void CloseRecorder()
     {
         MRecorderClosed = true;
@@ -63,7 +58,6 @@ public:
         MDatasaved = true;
     }
 
-    bool MStoppedRace;
     bool MRecorderClosed;
     bool MDatasaved;
     InterventionType Type;
