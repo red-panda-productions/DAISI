@@ -13,7 +13,6 @@
 #include "mainmenu.h"
 #include <playerpref.h>
 
-
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
 #define PRM_ALLOWED_ACCELERATE "CheckboxAllowedAccelerate"
@@ -380,9 +379,9 @@ static void BackToMain(void* /* dummy */)
     GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added rmForceFeedbackConfigHookActivate(void*) from stopracemenu.cpp
+
 #if SDL_FORCEFEEDBACK
-// ForceFeedbackConfig hook ********************************************
+/// @brief Opens the force feedback settings menu
 static void
 rmForceFeedbackConfigHookActivate(void* /* dummy */)
 {
@@ -391,12 +390,12 @@ rmForceFeedbackConfigHookActivate(void* /* dummy */)
 
     sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
     prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-    // SIMULATED DRIVING ASSISTANCE CHANGE: hard code carName and curPlayerIdx as we use only one car and one human driver
     snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, HUMAN_DRIVER_INDEX);
 
     GfuiScreenActivate(ForceFeedbackMenuInit(s_scrHandle, prHandle, HUMAN_DRIVER_INDEX, PRIMO_CAR_NAME));
 }
 #endif
+
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
 {
@@ -645,9 +644,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Generate UID button
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
-    #if SDL_FORCEFEEDBACK
+#if SDL_FORCEFEEDBACK
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_FORCE_FEEDBACK_BUTTON, nullptr, rmForceFeedbackConfigHookActivate);
-    #endif
+#endif
 
     // Back button
     m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
