@@ -201,10 +201,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
 /// @param  p_isConnecting    Checks if a connection is already being made
 void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
 {
-    if (*p_isConnecting) return;
-    *p_isConnecting = true;
-    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_dbSettings, p_isConnecting);
-    t.detach();
+    CheckConnection(p_scrHandle, p_dbStatusControl, p_isConnecting, s_dbSettings);
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database with current settings
@@ -213,9 +210,19 @@ void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isCo
 /// @param  p_isConnecting    Checks if a connection is already being made
 void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting)
 {
+    CheckConnection(p_scrHandle, p_dbStatusControl, p_isConnecting, s_tempDbSettings);
+}
+
+/// @brief                          Checks if a connection can be established between speed dreams and the database with current settings
+/// @param  p_scrHandle             The screen handle for writing on the screen
+/// @param  p_dbStatusControl       The status control handle to write letters to the screen
+/// @param  p_isConnecting          Checks if a connection is already being made
+/// @param  p_connectionSettings    the settings to check the connection with
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting, tDatabaseSettings p_connectionSettings)
+{
     if (*p_isConnecting) return;
     *p_isConnecting = true;
-    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, s_tempDbSettings, p_isConnecting);
+    std::thread t(AsyncCheckConnection, p_scrHandle, p_dbStatusControl, p_connectionSettings, p_isConnecting);
     t.detach();
 }
 

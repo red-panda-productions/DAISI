@@ -92,7 +92,7 @@ static void LoadDefaultSettings()
     m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
 }
 
-/// @brief Checks if the saved connection can connect to the database
+/// @brief Checks if the saved connection settings can connect to the database
 static void OnActivate(void* /* dummy */)
 {
     CheckSavedConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
