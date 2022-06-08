@@ -14,25 +14,10 @@
         throw std::runtime_error("Assertion failed: " #expression " was false!");      \
     }
 
-void hexify(float val)
-{
-    union
-    {
-        float f;
-        uint32_t u;
-    } f2u;
-    f2u.f = val;
-
-    GfLogError("0x%" PRIx32 "\n", f2u.u);
-}
-
 #define ASSERT_EQ_OR_THROW(a, b, time)                                                          \
     if (a != b)                                                                                 \
     {                                                                                           \
-        hexify(a);                                                                              \
-        hexify(b);                                                                              \
         GfLogError("Assertion failed: " #a " = %f, but expected %f at time %f!\n", a, b, time); \
-                                                                                                \
         throw std::runtime_error("Assertion failed: " #a "!= " #b);                             \
     }
 

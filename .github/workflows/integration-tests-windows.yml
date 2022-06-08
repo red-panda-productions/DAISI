@@ -59,7 +59,7 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          key: ccache-${{runner.os}}-${{env.BUILD_TYPE}}-2
+          key: ccache-${{runner.os}}-${{env.BUILD_TYPE}}
           max-size: "2GB"
 
       - name: Install MySQL
@@ -85,12 +85,6 @@ jobs:
       - name: Test
         working-directory: ${{runner.workspace}}/build
         run: ctest -V
-
-      - name: Upload debug log
-        uses: actions/upload-artifact@v2
-        with:
-            name: debug_log.txt
-            path: ${{github.workspace}}/speed-dreams/source-2.2.3/data/gerries_debug_log.txt
 
       - name: Upload test results
         uses: actions/upload-artifact@v2

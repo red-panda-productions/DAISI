@@ -143,50 +143,8 @@ typedef struct
 
 #else
 
-#include <inttypes.h>
-
-#define hexify(x, y, z, f)                   \
-    {                                        \
-        union                                \
-        {                                    \
-            float f;                         \
-            uint32_t u;                      \
-        } f2u;                               \
-        f2u.f = x;                           \
-                                             \
-        f << std::hex << f2u.u << " ";       \
-        f2u.f = y;                           \
-        f << std::hex << f2u.u << " ";       \
-        f2u.f = z;                           \
-        f << std::hex << f2u.u << std::dec << std::endl; \
-    }
-
-#define DUMP_V3(v3, f)                                                          \
-    f << #v3 << ": " << v3.x << " " << v3.y << " " << v3.z << " " << std::endl; \
-    hexify(v3.x, v3.y, v3.z, f);
-
 #define CHECK_VAR(_var_, _msg_)
-#define CHECK(_car_)                                   \
-    DUMP_V3(car->carElt->pub.DynGC.pos, debugLogFile)  \
-    DUMP_V3(car->carElt->pub.DynGC.vel, debugLogFile)  \
-    DUMP_V3(car->carElt->pub.DynGC.acc, debugLogFile)  \
-    DUMP_V3(car->carElt->pub.DynGCg.pos, debugLogFile) \
-    DUMP_V3(car->carElt->pub.DynGCg.vel, debugLogFile) \
-    DUMP_V3(car->carElt->pub.DynGCg.acc, debugLogFile) \
-    DUMP_V3(car->DynGC.pos, debugLogFile)  \
-    DUMP_V3(car->DynGC.vel, debugLogFile)  \
-    DUMP_V3(car->DynGC.acc, debugLogFile)  \
-    DUMP_V3(car->DynGCg.pos, debugLogFile) \
-    DUMP_V3(car->DynGCg.vel, debugLogFile) \
-    DUMP_V3(car->DynGCg.acc, debugLogFile) \
-    debugLogFile.flush();
-
-#define LOG_AND_CALL(a)              \
-    debugLogFile << #a << std::endl; \
-    a;
-
-#define LOG_VAR(a) \
-    debugLogFile << #a << ": " << a << std::endl;
+#define CHECK(_car_)
 
 #endif
 

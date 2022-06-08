@@ -24,11 +24,6 @@
 
 #include "sim.h"
 
-#include <iostream>
-#include <ostream>
-#include <fstream>
-extern std::ofstream debugLogFile;
-
 const tdble aMax = 1.0f; /*  */
 static const char *SuspSect[4] = {SECT_FRNTRGTSUSP, SECT_FRNTLFTSUSP, SECT_REARRGTSUSP, SECT_REARLFTSUSP};
 
@@ -657,15 +652,12 @@ SimCarUpdateSpeed(tCar *car)
 {
 	// fuel consumption
 	tdble delta_fuel = car->fuel_prev - car->fuel;
-        LOG_VAR(delta_fuel);
 	car->fuel_prev = car->fuel;
-        LOG_VAR(car->fuel);
 	if (delta_fuel > 0) {
 		car->carElt->_fuelTotal += delta_fuel;
 	}
 	tdble fi;
 	tdble as = sqrt(car->airSpeed2);
-        LOG_VAR(as);
 	if (as<0.1) {
 		fi = 99.9f;
 	} else {
@@ -673,7 +665,6 @@ SimCarUpdateSpeed(tCar *car)
 	}
 	tdble alpha = 0.1f;
 	car->carElt->_fuelInstant = (tdble)((1.0-alpha)*car->carElt->_fuelInstant + alpha*fi);
-        LOG_VAR(car->carElt->_fuelInstant);
 
 	tdble	Cosz, Sinz;
 	//tdble	mass;
@@ -682,9 +673,7 @@ SimCarUpdateSpeed(tCar *car)
 		
 	Cosz = car->Cosz;
 	Sinz = car->Sinz;
-
-        LOG_VAR(car->DynGCg.acc.y);
-        LOG_VAR(SimDeltaTime);
+	
 	car->DynGCg.vel.x += car->DynGCg.acc.x * SimDeltaTime;
 	car->DynGCg.vel.y += car->DynGCg.acc.y * SimDeltaTime;
 	car->DynGCg.vel.z += car->DynGCg.acc.z * SimDeltaTime;
@@ -961,21 +950,20 @@ SimTelemetryOut(tCar *car)
 	}
 }
 
-
 void
 SimCarUpdate(tCar *car, tSituation * /* s */)
 {
-        LOG_AND_CALL(SimCarUpdateForces(car));
+	SimCarUpdateForces(car);
 	CHECK(car);
-	LOG_AND_CALL(SimCarUpdateSpeed(car));
+	SimCarUpdateSpeed(car);
 	CHECK(car);
-	LOG_AND_CALL(SimCarUpdateCornerPos(car));
+	SimCarUpdateCornerPos(car);
 	CHECK(car);
-	LOG_AND_CALL(SimCarUpdatePos(car));
+	SimCarUpdatePos(car);
 	CHECK(car);
-	LOG_AND_CALL(SimCarCollideZ(car));
+	SimCarCollideZ(car);
 	CHECK(car);
-	LOG_AND_CALL(SimCarCollideXYScene(car));
+	SimCarCollideXYScene(car);
 	CHECK(car);
 	
 	/* update car->carElt->setup.reqRepair with damage */
