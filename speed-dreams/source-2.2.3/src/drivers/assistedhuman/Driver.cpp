@@ -45,7 +45,7 @@ void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandl
     SMediator::GetInstance()->RaceStart(p_track, p_carHandle, p_carParmHandle, p_situation, m_recorder);
     auto end = std::chrono::system_clock::now();
 
-    long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / 5);
+    long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
 
     if (milliseconds > TIMEOUT_WARNING)
     {
