@@ -15,8 +15,8 @@
 
   <section name="environment">
     <section name="track">
-      <attstr name="category" val="road"/>
-      <attstr name="name" val="Test_Highway"/>
+      <attstr name="category" val="curved-highway"/>
+      <attstr name="name" val="Small Highway 4 Lanes [80 km/h]"/>
     </section>
 
   </section>
