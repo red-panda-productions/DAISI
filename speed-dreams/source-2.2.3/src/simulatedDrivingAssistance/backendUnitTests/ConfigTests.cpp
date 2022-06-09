@@ -83,7 +83,7 @@ void PControlTest(bool p_steer, bool p_gas, bool p_brake, bool p_intervention)
 /// @brief Tests the SDAConfig ParticipantControlSettings for every possible boolean combination (first 3)
 BEGIN_TEST_COMBINATORIAL(ConfigTests, PControlSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL5(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTest, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                   Tests if the SDAConfig sets and gets the replay recorder status correctly
 /// @param p_recorderSetting The recorder setting
