@@ -2,10 +2,11 @@
 
 #include <string>
 #include "FileSystem.hpp"
+#include "ConfigEnums.h"
 
 /// @brief An interface for classes that can store data
 class IDataStorage
 {
 public:
-    virtual bool StoreData(const filesystem::path& p_filePath) = 0;
+    virtual bool StoreData(const tBufferPaths& p_bufferPaths) = 0;
 };
