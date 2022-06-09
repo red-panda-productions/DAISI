@@ -20,6 +20,7 @@
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
     template void DecisionMaker<type1, type2, type3, type4, type5>::CloseRecorder();                                                            \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SaveData();                                                                 \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::ShutdownBlackBox();                                                         \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                                           \
@@ -158,6 +159,11 @@ void TEMP_DECISIONMAKER::SaveData()
 {
     SQLDatabaseStorage sqlDatabaseStorage;
     sqlDatabaseStorage.Run(m_bufferFilePath);
+}
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::ShutdownBlackBox()
+{
     BlackBox.Shutdown();
 }
 

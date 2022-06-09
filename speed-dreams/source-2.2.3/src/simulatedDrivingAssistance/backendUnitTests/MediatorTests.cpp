@@ -464,13 +464,20 @@ TEST(MediatorTests, SaveData)
     MockMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
-    MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved = false;
+    MockMediator::GetInstance()->GetDecisionMaker()->MDataSaved = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->SaveData());
-    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved);
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDataSaved);
+}
 
-    MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved = true;
-    ASSERT_NO_THROW(MockMediator::GetInstance()->SaveData());
-    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDatasaved);
+TEST(MediatorTests, ShutdownBlackbox)
+{
+
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MBlackboxShutdowned = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->ShutdownBlackBox());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MBlackboxShutdowned);
 }
 
 /// @brief Tests if the TimeOut function returns the correct time out

@@ -11,19 +11,26 @@
 
 static void* s_menuHandle = nullptr;
 
+/// @brief tells the mediator to save the experiment
+static void EndActiveExperiment()
+{
+    SMediator* mediator = SMediator::GetInstance();
+    mediator->CloseRecorder();
+    mediator->SaveData();
+    mediator->ShutdownBlackBox();
+}
+
 /// @brief tells the mediator to save experiment data and restart the race
 static void OnAcceptRestart(void* /* dummy */)
 {
-    SMediator::GetInstance()->CloseRecorder();
-    SMediator::GetInstance()->SaveData();
+    EndActiveExperiment();
     LmRaceEngine().restartRace();
 }
 
 /// @brief tells the mediator to save experiment data and abort the race
 static void OnAcceptAbort(void* p_prevMenu)
 {
-    SMediator::GetInstance()->CloseRecorder();
-    SMediator::GetInstance()->SaveData();
+    EndActiveExperiment();
     LmRaceEngine().abortRace();
     GfuiScreenActivate(MainMenuInit((p_prevMenu)));
     LmRaceEngine().cleanup();
@@ -33,8 +40,7 @@ static void OnAcceptAbort(void* p_prevMenu)
 /// @brief tells the mediator to save experiment data
 static void OnAcceptFinished(void* p_prevMenu)
 {
-    SMediator::GetInstance()->CloseRecorder();
-    SMediator::GetInstance()->SaveData();
+    EndActiveExperiment();
     GfuiScreenActivate(MainMenuInit((p_prevMenu)));
     LmRaceEngine().cleanup();
     LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);

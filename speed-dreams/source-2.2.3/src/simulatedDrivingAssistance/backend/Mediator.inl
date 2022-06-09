@@ -38,6 +38,7 @@
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::SetSaveRaceToDatabase(bool p_saveToDatabase);                                                                         \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template void Mediator<type>::ShutdownBlackBox();                                                                                                   \
     template void Mediator<type>::SaveData();                                                                                                           \
     template void Mediator<type>::CloseRecorder();                                                                                                      \
     template void Mediator<type>::SetDatabaseSettings(tDatabaseSettings p_dbSettings);                                                                  \
@@ -387,6 +388,13 @@ void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
     m_inRace = false;
+}
+
+/// @brief Tells the decisionmaker that the blackbox should be closed
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::ShutdownBlackBox()
+{
+    m_decisionMaker.ShutdownBlackBox();
 }
 
 /// @brief Tells the decisonmaker that the data should be saved

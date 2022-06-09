@@ -42,6 +42,7 @@ public:
     ~DecisionMaker();
     void CloseRecorder();
     void SaveData();
+    void ShutdownBlackBox();
 
 private:
     filesystem::path m_bufferFilePath;

@@ -55,11 +55,17 @@ public:
 
     void SaveData()
     {
-        MDatasaved = true;
+        MDataSaved = true;
+    }
+
+    void ShutdownBlackBox()
+    {
+        MBlackboxShutdowned = true;
     }
 
     bool MRecorderClosed;
-    bool MDatasaved;
+    bool MDataSaved;
+    bool MBlackboxShutdowned;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;
     bool Decision;
