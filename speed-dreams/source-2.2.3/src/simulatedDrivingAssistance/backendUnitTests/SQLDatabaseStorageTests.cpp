@@ -172,11 +172,12 @@ TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
     ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote" OS_SEPARATOR "correctRemote"));
 }
 
+/// @brief Tests if the first 4 bytes in buffer file are correctly overwritten by SaveTrialIdToMetadata
 TEST(SQLDatabaseStorageTests, SaveTrialIdTest)
 {
     // delete buffer file to make sure it doesn't exist
     filesystem::path bufferPath = filesystem::temp_directory_path();
-    bufferPath.append("sda_metabuffer.bin");
+    bufferPath.append("sda_blackbox_internal_metadata_buffer.bin");
     filesystem::remove(bufferPath);
 
     Random random;
@@ -185,9 +186,10 @@ TEST(SQLDatabaseStorageTests, SaveTrialIdTest)
     SQLDatabaseStorage sqlDatabaseStorage;
     sqlDatabaseStorage.SaveTrialIdToMetadata(controlTrialId);
 
+    // SaveTrialIdToMetadata shouldn't create the file, but only open if it exists
     ASSERT_FALSE(filesystem::exists(bufferPath));
 
-    // create buffer file and write and
+    // create buffer file and write control data
     std::ofstream controlBufferFile(bufferPath, std::ios::binary);
     ASSERT_TRUE(controlBufferFile.good());
 
@@ -206,6 +208,7 @@ TEST(SQLDatabaseStorageTests, SaveTrialIdTest)
 
     sqlDatabaseStorage.SaveTrialIdToMetadata(controlTrialId);
 
+    // Read data and assert equality with control data
     std::ifstream testBufferFile(bufferPath, std::ios::binary);
 
     int testTrialId;
