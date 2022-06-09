@@ -139,7 +139,7 @@ void SQLDatabaseStorage::CreateTables()
 {
     EXECUTE(
         "CREATE TABLE IF NOT EXISTS Participant (\n"
-        "    participant_id VARCHAR(255) NOT NULL,    \n"
+        "    participant_id VARCHAR(255) NOT NULL,\n"
         "    \n"
         "    CONSTRAINT participant_id_primary_key PRIMARY KEY (participant_id)\n"
         ")\n");
@@ -411,8 +411,7 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values));
     GET_INT_FROM_QUERY(settingsId,
                        "SELECT settings_id FROM Settings "
-                       "WHERE intervention_mode = " +
-                           values);
+                       "WHERE intervention_mode = " + values);
 
     // Trial
     std::string trialDateTime;
@@ -434,12 +433,10 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) +
-        "' INTO TABLE TimeStep "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) + "' INTO TABLE TimeStep "
         "   LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick) "
-        "   SET trial_id = " +
-        std::to_string(p_trialId) + ";");
+        "   SET trial_id = " + std::to_string(p_trialId) + ";");
 
     if (m_dataToStore.CarData) InsertGameState(p_bufferPaths.GameState, p_trialId);
     if (m_dataToStore.HumanData) InsertUserInput(p_bufferPaths.UserInput, p_trialId);
@@ -452,12 +449,10 @@ void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths,
 void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) +
-        "' INTO TABLE GameState "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) + "' INTO TABLE GameState "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\n' IGNORE 1 LINES "
         "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
-        "   SET trial_id = " +
-        std::to_string(p_trialId) + ";");
+        "   SET trial_id = " + std::to_string(p_trialId) + ";");
 }
 
 /// @brief Loads the userinput buffer file into the corresponding database table.
@@ -466,12 +461,10 @@ void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath
 void SQLDatabaseStorage::InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) +
-        "' INTO TABLE UserInput "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) + "' INTO TABLE UserInput "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick, steer, brake, gas, clutch) "
-        "   SET trial_id = " +
-        std::to_string(p_trialId) + ";");
+        "   SET trial_id = " + std::to_string(p_trialId) + ";");
 }
 
 /// @brief Loads the decisions buffer file into the database by first loading it into a temporary table.
@@ -497,12 +490,10 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 
     // Load decisions csv file into temp table.
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) +
-        "' INTO TABLE TempInterventionData "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) + "' INTO TABLE TempInterventionData "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
-        "   SET temp_trial_id = " +
-        std::to_string(p_trialId) + ";");
+        "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
 
     // Insert all data into the Intervention table
     EXECUTE(
