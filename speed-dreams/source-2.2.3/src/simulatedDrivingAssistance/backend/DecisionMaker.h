@@ -31,7 +31,6 @@ public:
 
     void ChangeSettings(InterventionType p_dataSetting);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
-    void RaceStop(bool p_saveToDatabase);
 
     InterventionExecutor* InterventionExec = nullptr;
     SocketBlackBox BlackBox;
@@ -41,6 +40,9 @@ public:
     Recorder* GetRecorder();
 
     ~DecisionMaker();
+    void CloseRecorder();
+    void SaveData();
+    void ShutdownBlackBox();
 
 private:
     tBufferPaths m_bufferPaths;

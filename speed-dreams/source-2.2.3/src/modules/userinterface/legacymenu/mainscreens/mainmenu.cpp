@@ -64,7 +64,7 @@ static void
 onExitMenuActivate(void * /*dummy*/)
 {
     // just exit the game, don't ask if you want to save (replay) data
-    GfuiScreenActivate(ExitMenuInit(MenuHandle, false, NORMAL_EXIT));
+    GfuiScreenActivate(ExitMenuInit(MenuHandle));
 }
 
 static void
