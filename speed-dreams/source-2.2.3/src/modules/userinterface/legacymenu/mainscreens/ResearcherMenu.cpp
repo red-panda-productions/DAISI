@@ -71,7 +71,6 @@
 
 #define TRACK_LOADER_MODULE_NAME "trackv1"
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added include for force feedback config and defines
 #if SDL_FORCEFEEDBACK
 #include <forcefeedbackconfig.h>
 #define HUMAN_DRIVER_INDEX        1

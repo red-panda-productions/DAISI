@@ -68,7 +68,7 @@ END_TEST_COMBINATORIAL3(IndicatorTest, booleans, 2, booleans, 2, booleans, 2)
 /// @param p_brake        Whether to enable participant brake control
 /// @param p_intervention Whether to enable participant intervention control
 /// @param p_force        Whether to enable force feedback
-void PControlTest(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
+void PControlTest(bool p_steer, bool p_gas, bool p_brake, bool p_intervention)
 {
     SDAConfig config;
     tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention};
