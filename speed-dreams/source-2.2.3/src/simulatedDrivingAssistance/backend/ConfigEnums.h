@@ -52,9 +52,8 @@ typedef unsigned int RaceEndType;
 
 #define NORMAL_EXIT   0
 #define RACE_RESTART  1
-#define RACE_EXIT     2
-#define RACE_ABORT    3
-#define RACE_FINISHED 4
+#define RACE_ABORT    2
+#define RACE_FINISHED 3
 
 /// @brief The different types of data compression that can be done
 typedef unsigned int DataCompressionType;
