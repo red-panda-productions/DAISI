@@ -266,7 +266,7 @@ bool Mediator<DecisionMaker>::CanUseBrake()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && (GetAllowedActions().Brake || GetAllowedActions().Accelerate))
     {
-        DecisionTuple& decision = m_decisionMaker.GetDecisions();
+        DecisionTuple decision = m_decisionMaker.GetDecisions();
         canControlBrake = canControlBrake && !decision.ContainsAccel() && !decision.ContainsBrake();
     }
 
@@ -282,7 +282,7 @@ bool Mediator<DecisionMaker>::CanUseAccel()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && (GetAllowedActions().Accelerate || GetAllowedActions().Brake))
     {
-        DecisionTuple& decision = m_decisionMaker.GetDecisions();
+        DecisionTuple decision = m_decisionMaker.GetDecisions();
         canControlAccel = canControlAccel && !decision.ContainsAccel() && !decision.ContainsBrake();
     }
 

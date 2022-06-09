@@ -25,7 +25,8 @@
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template tBufferPaths DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                                   \
     template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();                                                         \
-    template DecisionTuple DecisionMaker<type1, type2, type3, type4, type5>::GetDecisions();
+    template DecisionTuple DecisionMaker<type1, type2, type3, type4, type5>::GetDecisions();                                                    \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SetDecisions(DecisionTuple p_decision);
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
 #define MAX_ULONG          4294967295
@@ -183,4 +184,10 @@ template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage,
 DecisionTuple TEMP_DECISIONMAKER::GetDecisions()
 {
     return m_decision;
+}
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SetDecisions(DecisionTuple p_decision)
+{
+    m_decision = p_decision;
 }

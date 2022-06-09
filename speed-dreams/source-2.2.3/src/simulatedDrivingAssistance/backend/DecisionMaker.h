@@ -40,6 +40,7 @@ public:
     Recorder* GetRecorder();
 
     DecisionTuple GetDecisions();
+    void SetDecisions(DecisionTuple p_decision);
 
     ~DecisionMaker();
     void CloseRecorder();

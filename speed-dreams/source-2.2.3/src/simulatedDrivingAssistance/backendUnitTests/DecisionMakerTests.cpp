@@ -27,6 +27,8 @@
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>
 
+#define TEST_COUNT 20
+
 /// @brief				 Tests if the decision maker can be initialized
 /// @param  p_decisionMaker the decision maker that will be initialized
 void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
@@ -216,4 +218,30 @@ TEST(DecisionMakerTests, GetFileDataStorageTest)
     TDecisionMaker decisionMaker;
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
     ASSERT_FALSE(storage == nullptr);
+}
+
+/// @brief Tests if the GetDecision correctly gets the decision tuple
+TEST(DecisionMakerTests, GetDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    TDecisionMaker decisionMaker;
+
+    Random random;
+
+    for (int i = 0; i < TEST_COUNT; i++)
+    {
+        DecisionTuple decision;
+        float accel = random.NextFloat();
+        float brake = random.NextFloat();
+        float steer = random.NextFloat();
+        decision.SetAccelDecision(accel);
+        decision.SetBrakeDecision(brake);
+        decision.SetSteerDecision(steer);
+
+        decisionMaker.SetDecisions(decision);
+        ASSERT_EQ(accel, decisionMaker.GetDecisions().GetAccelAmount());
+        ASSERT_EQ(brake, decisionMaker.GetDecisions().GetBrakeAmount());
+        ASSERT_EQ(steer, decisionMaker.GetDecisions().GetSteerAmount());
+    }
 }
