@@ -15,7 +15,7 @@
 
   <section name="environment">
     <section name="track">
-      <attstr name="category" val="road"/>
+      <attstr name="category" val="curved-road"/>
       <attstr name="name" val="i do not exist"/>
     </section>
 
