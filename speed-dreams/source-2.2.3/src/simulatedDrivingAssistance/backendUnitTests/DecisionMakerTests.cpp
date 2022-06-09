@@ -163,7 +163,7 @@ BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
 END_TEST_COMBINATORIAL4(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2);
 
-/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct path
+/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct buffer paths
 TEST(DecisionMakerTests, RaceStopTest)
 {
     TDecisionMaker decisionMaker;
@@ -171,8 +171,15 @@ TEST(DecisionMakerTests, RaceStopTest)
     chdir(SD_DATADIR_SRC);
     ASSERT_NO_THROW(decisionMaker.RaceStop(true));
     ASSERT_NO_THROW(decisionMaker.RaceStop(false));
-    filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
-    ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
+
+    tBufferPaths vsBufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
+    tBufferPaths dmBufferPaths = decisionMaker.GetBufferPaths();
+    ASSERT_EQ(vsBufferPaths.MetaData, dmBufferPaths.MetaData);
+    ASSERT_EQ(vsBufferPaths.TimeSteps, dmBufferPaths.TimeSteps);
+    ASSERT_EQ(vsBufferPaths.GameState, dmBufferPaths.GameState);
+    ASSERT_EQ(vsBufferPaths.UserInput, dmBufferPaths.UserInput);
+    ASSERT_EQ(vsBufferPaths.Decisions, dmBufferPaths.Decisions);
+    ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
 }
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable

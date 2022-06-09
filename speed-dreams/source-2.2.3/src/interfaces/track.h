@@ -177,6 +177,8 @@
 #define TRK_VAL_LFT                 "lft"
 #define TRK_VAL_RGT                 "rgt"
 #define TRK_ATT_LG                  "lg"
+// SIMULATED DRIVING ASSISTANCE: added speed limit
+#define TRK_ATT_SPEEDLIMIT          "speedLimit"
 #define TRK_ATT_RADIUS              "radius"
 #define TRK_ATT_RADIUSEND           "end radius"
 #define TRK_ATT_ARC                 "arc"
@@ -370,6 +372,7 @@ typedef struct trackSeg
 #define TR_FENCE	3           /**< Fence (no width) (barrier only) */
 #define TR_PITBUILDING	4       /**< Pit building wall (barrier only) */
 
+    float SpeedLimit;           // SIMULATED DRIVING ASSISTANCE: added a speed limit to the track
     tdble length;               /**< Length in meters of the middle of the track */
     /// SIMULATED DRIVING ASSISTANCE: added tdble Time
     tdble Time;                 /**< Estimated time in seconds */
