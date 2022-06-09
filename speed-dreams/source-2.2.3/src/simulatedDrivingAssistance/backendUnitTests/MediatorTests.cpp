@@ -536,14 +536,11 @@ void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel
     dControl.Accelerate = p_dControlAccel;
     SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
 
-    bool steerBool = random.NextBool();
-    bool brakeBool = random.NextBool();
-    bool accelBool = random.NextBool();
+    bool steerBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsSteer();
+    bool brakeBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsBrake();
+    bool accelBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsAccel();
 
     SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
-    SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().SetSteerDecision(steerBool ? 1 : 0);
-    SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().SetBrakeDecision(brakeBool ? 1 : 0);
-    SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().SetAccelDecision(accelBool ? 1 : 0);
 
     bool canUseSteerBool = pControl.ControlSteer && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
     if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Steer) canUseSteerBool &= !steerBool;

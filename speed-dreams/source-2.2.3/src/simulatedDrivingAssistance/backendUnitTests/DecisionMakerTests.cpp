@@ -30,9 +30,6 @@
 /// @param  p_decisionMaker the decision maker that will be initialized
 void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 {
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-
     GfInit(false);
     tCarElt car;
     tSituation situation;
@@ -78,6 +75,8 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 /// @brief Runs the initialize test function
 TEST(DecisionMakerTests, InitializeTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
 }
@@ -85,6 +84,8 @@ TEST(DecisionMakerTests, InitializeTest)
 /// @brief Runs the initialize test function with empty path
 TEST(DecisionMakerTests, InitializeTestEmpty)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker, true);
 }
@@ -204,7 +205,6 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_EQ(vsBufferPaths.UserInput, dmBufferPaths.UserInput);
     ASSERT_EQ(vsBufferPaths.Decisions, dmBufferPaths.Decisions);
     ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
-
 }
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable

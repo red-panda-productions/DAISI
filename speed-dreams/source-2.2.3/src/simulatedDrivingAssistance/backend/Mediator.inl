@@ -252,7 +252,7 @@ bool Mediator<DecisionMaker>::CanUseSteer()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Steer)
     {
-        canControlSteer &= !m_decisionMaker.GetDecisions().ContainsSteer();
+        canControlSteer = canControlSteer && !m_decisionMaker.GetDecisions().ContainsSteer();
     }
     return canControlSteer;
 }
@@ -264,9 +264,10 @@ bool Mediator<DecisionMaker>::CanUseBrake()
 {
     bool canControlBrake = GetPControlSettings().ControlBrake && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
 
-    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Brake)
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && (GetAllowedActions().Brake || GetAllowedActions().Accelerate))
     {
-        canControlBrake &= !m_decisionMaker.GetDecisions().ContainsAccel() && !m_decisionMaker.GetDecisions().ContainsBrake();
+        DecisionTuple& decision = m_decisionMaker.GetDecisions();
+        canControlBrake = canControlBrake && !decision.ContainsAccel() && !decision.ContainsBrake();
     }
 
     return canControlBrake;
@@ -279,9 +280,10 @@ bool Mediator<DecisionMaker>::CanUseAccel()
 {
     bool canControlAccel = GetPControlSettings().ControlAccel && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
 
-    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Accelerate)
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && (GetAllowedActions().Accelerate || GetAllowedActions().Brake))
     {
-        canControlAccel &= !m_decisionMaker.GetDecisions().ContainsAccel() && !m_decisionMaker.GetDecisions().ContainsBrake();
+        DecisionTuple& decision = m_decisionMaker.GetDecisions();
+        canControlAccel = canControlAccel && !decision.ContainsAccel() && !decision.ContainsBrake();
     }
 
     return canControlAccel;
