@@ -203,6 +203,8 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
                   nullptr,
                   &startupInformation,
                   &processInformation);
+
+    free(args);
 }
 
 /// @brief                       Starts a process from which you can also get the process handle
@@ -349,10 +351,16 @@ inline bool StringToBool(const char* p_string)
 
 /// @brief           Generates arguments for the black box executable
 /// @param  p_bbfile The path to the black box recording file
+/// @param  p_filename The name of the file that will be executed, optionally set as the first argument as some environments expect that to be the case.
 /// @return          The arguments
-inline std::string GenerateBBArguments(const filesystem::path& p_bbfile)
+inline std::string GenerateBBArguments(const filesystem::path& p_bbfile, const std::string& p_filename = "")
 {
     std::stringstream args;
+
+    if(!p_filename.empty())
+    {
+        args << p_filename << " ";
+    }
 
     args << BB_ARG << "\"" << p_bbfile << "\"";
 

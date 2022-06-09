@@ -27,7 +27,7 @@
 
 #define MSG_CHOOSE_REPLAY_NORMAL_TEXT "Choose Replay File: "
 
-#define RACE_MANAGER_NAME "replay"
+#define RACE_MANAGER_NAME "replay_visual"
 
 #ifdef WIN32
 #define INTEGRATION_TESTS_EXTENSION ".exe"
@@ -317,7 +317,7 @@ static void StartReplay(void*)
         // Configure the new race (but don't enter the config. menu tree).
         LmRaceEngine().configureRace(/* bInteractive */ false);
 
-        std::string bbArgs = GenerateBBArguments(filesystem::path(m_replayFilePath).append(DECISIONS_RECORDING_FILE_NAME));
+        std::string bbArgs = GenerateBBArguments(filesystem::path(m_replayFilePath).append(DECISIONS_RECORDING_FILE_NAME), INTEGRATION_TESTS_BLACK_BOX);
 
         // Start the replay black box
         StartExecutable(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str());
