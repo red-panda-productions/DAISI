@@ -451,8 +451,8 @@ void AssertV0ToV1Changes(void* p_upgradedRunSettingsHandle, filesystem::path& p_
 
     const char* name = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
     const char* category = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
+    ASSERT_STRCASEEQ(name, "Small Highway 4 Lanes [80 km/h]");
+    ASSERT_STRCASEEQ(category, "simple-highway");
     delete[] name;
     delete[] category;
 

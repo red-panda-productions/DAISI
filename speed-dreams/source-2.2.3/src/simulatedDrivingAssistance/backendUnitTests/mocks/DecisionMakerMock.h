@@ -49,9 +49,19 @@ public:
         Config.SetDataCollectionSettings(p_dataSetting);
     }
 
-    void RaceStop(bool p_saveToDatabase)
+    void CloseRecorder()
     {
-        MStoppedRace = true;
+        MRecorderClosed = true;
+    }
+
+    void SaveData()
+    {
+        MDataSaved = true;
+    }
+
+    void ShutdownBlackBox()
+    {
+        MBlackboxShutdowned = true;
     }
 
     DecisionTuple GetDecisions()
@@ -59,7 +69,9 @@ public:
         return DecisionT;
     }
 
-    bool MStoppedRace;
+    bool MRecorderClosed;
+    bool MDataSaved;
+    bool MBlackboxShutdowned;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;
     bool Decision;
