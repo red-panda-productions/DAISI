@@ -1,5 +1,7 @@
 #pragma once
 
+#include "FileSystem.hpp"
+
 #define FORCE_EXPERIMENT_SETUP
 
 /// @brief The different actions that a black box can take
@@ -37,7 +39,6 @@ typedef struct DatabaseSettings
 /// @brief The different interventions that can be done
 typedef unsigned int InterventionType;
 
-// TODO: remove INTERVENTION_TYPE_ASK_FOR
 #define INTERVENTION_TYPE_NO_SIGNALS        0
 #define INTERVENTION_TYPE_ONLY_SIGNALS      1
 #define INTERVENTION_TYPE_SHARED_CONTROL    2
@@ -145,3 +146,21 @@ typedef struct DecisionThresholds
 #define STANDARD_THRESHOLD_ACCEL 0.9f
 #define STANDARD_THRESHOLD_BRAKE 0.9f
 #define STANDARD_THRESHOLD_STEER 0.04f
+
+// Buffer directory name and file names
+#define BUFFER_TEMP_DIRECTORY "DAISI-data-buffers"
+#define BUFFER_FILE_META_DATA "meta-data-buffer.txt"
+#define BUFFER_FILE_TIMESTEPS "timesteps-buffer.csv"
+#define BUFFER_FILE_GAMESTATE "gamestate-buffer.csv"
+#define BUFFER_FILE_USERINPUT "userinput-buffer.csv"
+#define BUFFER_FILE_DECISIONS "decisions-buffer.csv"
+
+/// @brief Struct containing all the file paths to the buffer files
+typedef struct BufferPaths
+{
+    filesystem::path MetaData;
+    filesystem::path TimeSteps;
+    filesystem::path GameState;
+    filesystem::path UserInput;
+    filesystem::path Decisions;
+} tBufferPaths;

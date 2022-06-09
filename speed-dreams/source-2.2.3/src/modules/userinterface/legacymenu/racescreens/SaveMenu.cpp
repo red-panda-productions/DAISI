@@ -14,10 +14,10 @@ static void* s_menuHandle = nullptr;
 /// @brief tells the mediator to save the experiment
 static void EndActiveExperiment()
 {
-    SMediator* mediator = SMediator::GetInstance();
-    mediator->CloseRecorder();
-    mediator->SaveData();
-    mediator->ShutdownBlackBox();
+    SMediator* m_mediator = SMediator::GetInstance();
+    m_mediator->CloseRecorder();
+    m_mediator->SaveData();
+    m_mediator->ShutdownBlackBox();
 }
 
 /// @brief tells the mediator to save experiment data and restart the race

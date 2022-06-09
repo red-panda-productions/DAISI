@@ -14,9 +14,9 @@ static void* s_menuHandle = nullptr;
 /// @brief tell the mediator to not save the experiment
 static void EndActiveExperiment()
 {
-    SMediator* mediator = SMediator::GetInstance();
-    mediator->CloseRecorder();
-    mediator->ShutdownBlackBox();
+    SMediator* m_mediator = SMediator::GetInstance();
+    m_mediator->CloseRecorder();
+    m_mediator->ShutdownBlackBox();
 }
 
 /// @brief tells the mediator to not save experiment data and restart SpeedDreams
