@@ -60,7 +60,7 @@ public:
 
     void ShutdownBlackBox()
     {
-        MBlackboxShutdowned = true;
+        MBlackboxShutdowned
     }
 
     bool MRecorderClosed;

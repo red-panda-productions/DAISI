@@ -471,7 +471,6 @@ TEST(MediatorTests, SaveData)
 
 TEST(MediatorTests, ShutdownBlackbox)
 {
-
     MockMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
 
