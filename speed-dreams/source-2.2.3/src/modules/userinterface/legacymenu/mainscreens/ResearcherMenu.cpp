@@ -502,6 +502,10 @@ static void LoadConfigSettings(void* p_param)
 ///  and handles other logic that has to be performed whenever the screen is opened.
 static void OnActivate(void* /* dummy */)
 {
+    // Ensure the track loader is initialized again.
+    // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
+    InitializeTrackLoader();
+
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
@@ -514,10 +518,6 @@ static void OnActivate(void* /* dummy */)
         return;
     }
     LoadDefaultSettings();
-
-    // Ensure the track loader is initialized again.
-    // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
-    InitializeTrackLoader();
 
     SynchronizeControls();
 }
@@ -603,7 +603,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "NextButton", s_scrHandle, SaveSettings);
 
     // Task radio button controls
     m_allowedActionsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_STEER, nullptr, SelectAllowedSteer);

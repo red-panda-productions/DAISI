@@ -162,7 +162,7 @@ void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
     // Initialise class, read+write no values
-    DataToStore params = {false, false, false, false, false};
+    DataToStore params = {false, false, false, false};
 
     GET_DUMMY_TIMES;
     std::stringstream expected;
@@ -205,16 +205,14 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 /// @param p_storeCar Whether to save car data
 /// @param p_storeControls Whether to save player control data
 /// @param p_storeDecisions Whether to save intervention data
-/// @param p_storeMeta Whether to save metadata
-void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions, bool p_storeMeta)
+void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions)
 {
     Random random;
     tDataToStore params = {
         p_storeEnvironment,
         p_storeCar,
         p_storeControls,
-        p_storeDecisions,
-        p_storeMeta};
+        p_storeDecisions};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
 
@@ -281,7 +279,7 @@ void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeC
 TEST(FileDataStorageTests, TestDataStorageSingle)
 {
     bool booleans[2]{true, false};
-    PairWiseTest(TestDataStorageSave, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
+    PairWiseTest(TestDataStorageSave, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
 }
 
 void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
@@ -291,8 +289,7 @@ void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_
         false,
         false,
         false,
-        p_storeDecisions,
-        false};
+        p_storeDecisions};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
 
@@ -368,7 +365,6 @@ TEST(FileDataStorageTests, DecisionsAfterData)
 {
     Random random;
     tDataToStore params = {
-        true,
         true,
         true,
         true,
@@ -450,7 +446,7 @@ float HelperGetMedian(float* p_values, int p_compressionRate)
 void TestDataStorageSaveCompressionRates(int p_compressionRate)
 {
     Random random;
-    tDataToStore params = {true, true, true, false, true};
+    tDataToStore params = {true, true, true, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(p_compressionRate);
 

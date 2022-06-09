@@ -23,7 +23,8 @@
     @version	$Id: racerunningmenus.cpp 6084 2015-08-21 00:07:15Z beaglejoe $
 */
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
+// SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing and included ConfigEnums to force experiment setup
+#include <ConfigEnums.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -40,7 +41,6 @@
 
 #include "legacymenu.h"
 #include "racescreens.h"
-
 
 static void	*rmScreenHandle = 0;
 static int	rmPauseId;
@@ -454,8 +454,11 @@ rmOpenHelpScreen(void * /* dummy */)
 static void
 rmAddKeys()
 {
+    GfuiAddKey(rmScreenHandle, GFUIK_ESCAPE, "Stop current race", (void*)RE_STATE_RACE_STOP, rmApplyState, NULL);
+
+	// SIMULATED DRIVING ASSISTANCE: Removed these functionalities when FORCE_EXPERIMENT_SETUP is defined.
+#ifndef FORCE_EXPERIMENT_SETUP
     GfuiAddKey(rmScreenHandle, GFUIK_F1,  "Help", NULL, rmOpenHelpScreen, NULL);
-    GfuiAddKey(rmScreenHandle, GFUIK_F12, "Screen shot", NULL, GfuiScreenShot, NULL);
 
     GfuiAddKey(rmScreenHandle, '-', "Slow down time",    (void*)-1, rmTimeMod, NULL);
     GfuiAddKey(rmScreenHandle, '+', "Accelerate time",   (void*)+1, rmTimeMod, NULL);
@@ -463,7 +466,6 @@ rmAddKeys()
 	
     // SIMULATED DRIVING ASSISTANCE CHANGE: Removed pause button
 
-    GfuiAddKey(rmScreenHandle, GFUIK_ESCAPE,  "Stop current race", (void*)RE_STATE_RACE_STOP, rmApplyState, NULL);
     GfuiAddKey(rmScreenHandle, 'q', GFUIM_ALT, "Quit game now, save nothing",    (void*)RE_STATE_EXIT, rmApplyState, NULL);
     GfuiAddKey(rmScreenHandle, ' ', "Skip pre-start",    (void*)0, rmSkipPreStart, NULL);
 	
@@ -472,6 +474,7 @@ rmAddKeys()
 	
     GfuiAddKey(rmScreenHandle, 'c', "Movie capture (if enabled)", (void*)0, rmToggleMovieCapture, NULL);
     GfuiAddKey(rmScreenHandle, 'o', "Hide / Show mouse cursor",   (void*)0, rmHideShowMouseCursor, NULL);
+#endif
 }
 
 void *
