@@ -15,6 +15,9 @@
 #define PRM_CA_CERT_DIALOG      "CACertDialog"
 #define PRM_PUBLIC_CERT_DIALOG  "PublicCertDialog"
 #define PRM_PRIVATE_CERT_DIALOG "PrivateCertDialog"
+#define PRM_CA_CERT_LABEL       "CaCertLabel"
+#define PRM_PUBLIC_CERT_LABEL   "PublicCertLabel"
+#define PRM_PRIVATE_CERT_LABEL  "PrivateCertLabel"
 
 #define CERT_PEM                     ".pem"
 #define CERT_KEY                     ".key"
@@ -67,7 +70,8 @@ void SetPort(void* p_scrHandle, int p_portControl);
 
 void SetSchema(void* p_scrHandle, int p_schemaControl);
 
-void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl);
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
+                int p_caLabel, int p_publicLabel, int p_privateLabel);
 
 void InitCertificates(void* p_param);
 

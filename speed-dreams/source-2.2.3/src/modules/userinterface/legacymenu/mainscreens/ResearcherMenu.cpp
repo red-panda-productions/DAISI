@@ -602,6 +602,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("ResearcherMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
+    // Generate UID button
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
+
     // ApplyButton control
     m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "NextButton", s_scrHandle, SaveSettings);
 
@@ -646,9 +649,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
-
-    // Generate UID button
-    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
     // Back button
     m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);

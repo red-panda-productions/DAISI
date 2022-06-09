@@ -274,12 +274,16 @@ void SetSchema(void* p_scrHandle, int p_schemaControl)
 /// @param p_caControl the corresponding ui element control integers
 /// @param p_publicControl the corresponding ui element control integers
 /// @param p_privateControl the corresponding ui element control integers
-void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl)
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
+                int p_caLabel, int p_publicLabel, int p_privateLabel)
 {
     s_dbSettings.UseSSL = p_info->bChecked;
     GfuiVisibilitySet(p_scrHandle, p_caControl, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_publicControl, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_privateControl, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_caLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateLabel, s_dbSettings.UseSSL);
 }
 
 /// @brief Initializes the certificate filepaths.

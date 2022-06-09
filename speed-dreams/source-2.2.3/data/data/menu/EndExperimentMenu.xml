@@ -4,30 +4,28 @@
 
 <params name="endexperiment">
     <section name="dynamic controls">
-
         <!-- OK / save the data button -->
         <section name="ok">
-		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>            
-		<attstr name="text" val="Continue"/>
-		<attstr name="tip" val="Continue to the save data screen"/>
-		<attstr name="h align" val="left"/>
-		<attnum name="x" val="290"/>
-		<attnum name="y" val="41"/>
-		<attnum name="width" val="120"/>
-		<attstr name="font" val="medium"/>
-		<attstr name="color" val="0xFFFFFF"/>
-		<attstr name="focused color" val="0xFFFFFF"/>
-		<attstr name="pushed color" val="0xFFFFFF"/>
-		<attnum name="image x" val="-10"/>
-		<attnum name="image y" val="4"/>
-		<attnum name="image width" val="60"/>
-		<attnum name="image height" val="16"/>
-		<attstr name="focused image" val="data/img/button-left-focused.png"/>
-		<attstr name="enabled image" val="data/img/button-left.png"/>
-		<attstr name="pushed image" val="data/img/button-left-pushed.png"/>  
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Continue"/>
+            <attstr name="tip" val="Continue to the save data screen"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="290"/>
+            <attnum name="y" val="41"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
-
     </section>
 
     <section name="static controls">
