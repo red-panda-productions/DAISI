@@ -4,7 +4,7 @@
 /// @brief                  Will only intervene the simulation when needed
 /// @param  p_decisions     The decisions
 /// @param  p_decisionCount The amount of decisions
-void InterventionExecutorPerformWhenNeeded::RunDecision(IDecision** p_decisions, int p_decisionCount)
+void InterventionExecutorPerformWhenNeeded::RunDecision(Decision** p_decisions, int p_decisionCount)
 {
     SMediator* mediator = SMediator::GetInstance();
     mediator->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_NEUTRAL);

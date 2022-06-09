@@ -13,7 +13,7 @@ DecisionTuple::DecisionTuple()
 /// @brief        Gets all active decisions
 /// @param  count Returns the amount of decisions
 /// @return       The decisions
-IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
+Decision** DecisionTuple::GetActiveDecisions(int& p_count)
 {
     p_count = 0;
     if (m_brakeDecision.GetDecisionMade())

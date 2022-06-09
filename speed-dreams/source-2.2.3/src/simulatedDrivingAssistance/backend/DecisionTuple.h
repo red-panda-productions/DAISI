@@ -11,7 +11,7 @@ struct DecisionTuple
 public:
     DecisionTuple();
 
-    IDecision** GetActiveDecisions(int& p_count);
+    Decision** GetActiveDecisions(int& p_count);
 
     void SetBrakeDecision(float p_brakeValue);
     void SetSteerDecision(float p_steerValue);
@@ -34,7 +34,7 @@ public:
     void Reset();
 
 private:
-    IDecision* m_buffer[DECISIONS_COUNT] = {};
+    Decision* m_buffer[DECISIONS_COUNT] = {};
 
     BrakeDecision m_brakeDecision;
     SteerDecision m_steerDecision;

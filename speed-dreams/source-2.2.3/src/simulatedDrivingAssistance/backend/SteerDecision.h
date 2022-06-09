@@ -1,8 +1,8 @@
 #pragma once
-#include "IDecision.h"
+#include "Decision.h"
 
 /// @brief Represents a steer decision that can be made by an AI
-class SteerDecision : public IDecision
+class SteerDecision : public Decision
 {
 public:
     void ShowIntervention(float p_interventionAmount) override;

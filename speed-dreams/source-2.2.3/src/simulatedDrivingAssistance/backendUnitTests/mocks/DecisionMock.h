@@ -1,7 +1,7 @@
 #pragma once
-#include "IDecision.h"
+#include "Decision.h"
 
-class DecisionMock : public IDecision
+class DecisionMock : public Decision
 {
 public:
     DecisionMock()

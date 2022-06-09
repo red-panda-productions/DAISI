@@ -111,7 +111,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     }
 
     int decisionCount = 0;
-    IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
+    Decision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
     InterventionExec->RunDecision(decisions, decisionCount);
 

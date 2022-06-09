@@ -40,7 +40,7 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     InterventionExecutor* intervention = config.SetInterventionType(p_interventionType);  // determines the interventiontype that will be run
 
     // fill an array with the same reference of length decisionCount (used to check if it runs through all decisions correctly)
-    IDecision** decisionmocks = new IDecision*[decisionCount];
+    Decision** decisionmocks = new Decision*[decisionCount];
     for (int i = 0; i < decisionCount; i++) { decisionmocks[i] = &dmock; }
 
     // Run the RunDecision code of the interventiontype.

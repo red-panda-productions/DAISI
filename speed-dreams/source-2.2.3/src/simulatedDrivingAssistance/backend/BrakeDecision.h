@@ -1,8 +1,8 @@
 #pragma once
-#include "IDecision.h"
+#include "Decision.h"
 
 /// @brief Represents a brake decision that can be made by an AI
-class BrakeDecision : public IDecision
+class BrakeDecision : public Decision
 {
 public:
     void ShowIntervention(float p_interventionAmount) override;

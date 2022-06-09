@@ -1,8 +1,8 @@
 #pragma once
-#include "IDecision.h"
+#include "Decision.h"
 
 /// @brief Represents a accelerate decision that can be made by an AI
-class AccelDecision : public IDecision
+class AccelDecision : public Decision
 {
 public:
     void ShowIntervention(float p_interventionAmount) override;

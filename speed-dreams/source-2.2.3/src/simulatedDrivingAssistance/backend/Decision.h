@@ -2,7 +2,7 @@
 #include "ConfigEnums.h"
 
 /// @brief An interface for a decision that can be made by an AI
-class IDecision
+class Decision
 {
 public:
     /// @brief Can show an indicator
@@ -23,7 +23,7 @@ public:
     /// @brief resets the current decision
     void Reset();
 
-    virtual ~IDecision() = default;
+    virtual ~Decision() = default;
 
 protected:
     virtual void ShowIntervention(float p_interventionAmount) = 0;
