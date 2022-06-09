@@ -10,6 +10,16 @@
 #include "TestUtils.h"
 #include "mocks/PointerManagerMock.h"
 #include "mocks/BlackBoxDataMock.h"
+#include "Mediator.h"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
+
 #define TEST_BUFFER_SIZE 512
 #define TOLERANCE        0.1f
 #define STEER_VALUE      1.0f
@@ -96,6 +106,9 @@ void TestDriveSituation(std::vector<std::string>& p_driveSituation, BlackBoxData
 /// @param p_async whether or not the connection is async
 void SocketTest(void (*p_blackboxFunction)(), bool p_async)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     // creates a connection between the black box and a client
     SETUP(p_blackboxFunction)
 
