@@ -271,7 +271,11 @@ TEST(RecorderTests, WriteDecisions)
         decisionTuple.SetBrakeDecision(random.NextFloat(0, 1));
         decisionTuple.SetGearDecision(random.NextInt(0, 10));
         decisionTuple.SetSteerDecision(random.NextFloat(0, 1));
-        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteerAmount()) << bits(decisionTuple.GetAccelAmount()) << bits(decisionTuple.GetBrakeAmount()) << bits(static_cast<float>(decisionTuple.GetGearAmount()));
+        expectedDecisionsData << bits(timestamp)
+                              << bits(decisionTuple.GetSteerAmount())
+                              << bits(decisionTuple.GetAccelAmount())
+                              << bits(decisionTuple.GetBrakeAmount())
+                              << bits(static_cast<float>(decisionTuple.GetGearAmount()));
         recorder.WriteDecisions(&decisionTuple, timestamp++);
     }
 

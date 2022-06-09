@@ -6,11 +6,11 @@
 #include "SocketBlackBoxTests.h"
 #include "DecisionTuple.h"
 #include "mocks/BlackBoxDataMock.h"
-
 #include "Mediator.h"
 #include "Mediator.inl"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
+
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
 
@@ -23,7 +23,6 @@
 
 #define TOLERANCE 0.0001
 
-
 /// @brief Tests if all (currently) existing variables can be deserialized into a decision correctly
 TEST(MsgpackDeserializeTests, Deserialize)
 {
@@ -33,14 +32,14 @@ TEST(MsgpackDeserializeTests, Deserialize)
     float controlSteerValue = random.NextFloat(1000);
     float controlBrakeValue = random.NextFloat(1000);
 
-    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue), std::to_string(controlBrakeValue) };
+    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.VariablesToReceive = { STEER, BRAKE };
+    socketBlackBox.VariablesToReceive = {STEER, BRAKE};
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
@@ -56,7 +55,7 @@ TEST(MsgpackDeserializeTests, NoVariablesToReceive)
     float controlSteerValue = random.NextFloat(1000);
     float controlBrakeValue = random.NextFloat(1000);
 
-    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue), std::to_string(controlBrakeValue) };
+    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
@@ -77,14 +76,14 @@ TEST(MsgpackDeserializeTests, UnparsableData)
     std::string unparsableString = "This is not a float";
     float controlBrakeValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = { unparsableString, std::to_string(controlBrakeValue) };
+    std::vector<std::string> mockMessageFromBlackBox = {unparsableString, std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.VariablesToReceive = { STEER, BRAKE };
+    socketBlackBox.VariablesToReceive = {STEER, BRAKE};
 
     DecisionTuple decisionTuple;
     socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple);
@@ -100,14 +99,14 @@ TEST(MsgpackDeserializeTests, NonExistingDecisionKey)
     std::string unparsableString = "This is not a float";
     float controlBrakeValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = { unparsableString, std::to_string(controlBrakeValue) };
+    std::vector<std::string> mockMessageFromBlackBox = {unparsableString, std::to_string(controlBrakeValue)};
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.VariablesToReceive = { NON_EXISTING_DECISION_KEY, BRAKE };
+    socketBlackBox.VariablesToReceive = {NON_EXISTING_DECISION_KEY, BRAKE};
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -121,14 +120,14 @@ TEST(MsgpackDeserializeTests, TooManyVariablesReceived)
     float controlBrakeValue = random.NextFloat();
     float extraValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue), std::to_string(controlBrakeValue), std::to_string(extraValue) };
+    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue), std::to_string(controlBrakeValue), std::to_string(extraValue)};
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.VariablesToReceive = { STEER, BRAKE };
+    socketBlackBox.VariablesToReceive = {STEER, BRAKE};
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);
@@ -140,14 +139,14 @@ TEST(MsgpackDeserializeTests, TooLittleVariablesReceived)
     Random random;
     float controlSteerValue = random.NextFloat();
 
-    std::vector<std::string> mockMessageFromBlackBox = { std::to_string(controlSteerValue) };
+    std::vector<std::string> mockMessageFromBlackBox = {std::to_string(controlSteerValue)};
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, mockMessageFromBlackBox);
 
     SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
     socketBlackBox.Initialize();
 
-    socketBlackBox.VariablesToReceive = { STEER, BRAKE };
+    socketBlackBox.VariablesToReceive = {STEER, BRAKE};
 
     DecisionTuple decisionTuple;
     ASSERT_THROW(socketBlackBox.DeserializeBlackBoxResults(sbuffer.data(), sbuffer.size(), decisionTuple), std::exception);

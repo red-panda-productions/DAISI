@@ -4,6 +4,15 @@
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
 #include <algorithm>
+#include "Mediator.h"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 /// @brief Get dummy time variables. These set the trial to have started now,
 ///  the black box to have been created yesterday, and the environment last year.
@@ -257,6 +266,9 @@ TEST(FileDataStorageTests, TestWriteUserInputData)
 /// @param p_doLights       Whether to store the lights on decision
 void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {false, false, false, p_storeDecisions};

@@ -9,6 +9,7 @@
 #include "Mediator.inl"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
+
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
 
@@ -34,7 +35,6 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, INTERVENTION_TYPE_SHARED_CONTROL);
 
     SDAConfig config;
-
 
     SMediator::GetInstance()->SetInterventionType(p_interventionType);
     InterventionExecutor* intervention = config.SetInterventionType(p_interventionType);  // determines the interventiontype that will be run
