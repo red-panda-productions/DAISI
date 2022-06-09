@@ -489,7 +489,7 @@ void AssertV5ToV6Changes(void* p_upgradedRunSettingsHandle)
 {
     ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_INTERNAL_NAME));
     ASSERT_FALSE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME));
-    ASSERT_STREQ(GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_INTERNAL_NAME, nullptr), "test_highway");
+    ASSERT_STREQ(GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_INTERNAL_NAME, nullptr), "simple-highway-small-4-80");
 }
 
 /// @brief                             Asserts whether the last changes to reach the target version are actually in the file now.
