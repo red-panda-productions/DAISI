@@ -22,11 +22,10 @@ public:
         VariableStore::GetInstance().Variables[0] = static_cast<void*>(bufferPaths);
     }
 
-    // This function definition is needed for building (IDataStorage is abstract), but will not be used and therefore not covered.
-    bool StoreData(const tBufferPaths& p_bufferPaths) override  //@NOCOVERAGE
-    {                                                           //@NOCOVERAGE
-        return true;                                            //@NOCOVERAGE
-    }                                                           //@NOCOVERAGE
+    bool StoreData(const tBufferPaths& p_bufferPaths) override  // @NOCOVERAGE, This function definition is needed for building (IDataStorage is abstract), but will not be used and therefore not covered.
+    {                                                           // @NOCOVERAGE
+        return true;                                            // @NOCOVERAGE
+    }                                                           // @NOCOVERAGE
 
     bool OpenDatabase(const std::string& p_hostName,
                       int p_port,
