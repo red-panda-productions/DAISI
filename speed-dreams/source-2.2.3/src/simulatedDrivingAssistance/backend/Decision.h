@@ -9,9 +9,11 @@ public:
     void RunIndicateCommands();
 
     /// @brief Intervenes the simulation if allowed to run the command
+    /// @param p_allowedActions The allowed black box actions
     void RunInterveneCommands(tAllowedActions p_allowedActions);
 
     /// @brief Sets the intervention amount and checks whether the threshold is reached
+    /// @param p_interventionAmount The intervention amount
     void SetInterventionAmount(float p_interventionAmount);
 
     /// @brief Gets the intervention amount

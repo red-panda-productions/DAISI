@@ -162,30 +162,40 @@ void TEMP_DECISIONMAKER::ShutdownBlackBox()
     BlackBox.Shutdown();
 }
 
+/// @brief Gets the file data storage buffer
+/// @return the file data storage buffer
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 {
     return &m_fileBufferStorage;
 }
 
+/// @brief Gets the file data storage buffer path
+/// @return the file data storage buffer path
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 tBufferPaths TEMP_DECISIONMAKER::GetBufferPaths()
 {
     return m_bufferPaths;
 }
 
+/// @brief Gets the recorder
+/// @return the recorder
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 Recorder* TEMP_DECISIONMAKER::GetRecorder()
 {
     return m_recorder;
 }
 
+/// @brief Gets the decision tuple
+/// @return the decision tuple
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 DecisionTuple TEMP_DECISIONMAKER::GetDecisions()
 {
     return m_decision;
 }
 
+/// @brief Sets the decision tuple
+/// @param p_decision the decision tuple
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::SetDecisions(DecisionTuple p_decision)
 {
