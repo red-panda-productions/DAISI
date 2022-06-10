@@ -71,7 +71,7 @@ void SetPort(void* p_scrHandle, int p_portControl);
 void SetSchema(void* p_scrHandle, int p_schemaControl);
 
 void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
-                int p_caLabel, int p_publicLabel, int p_privateLabel);
+               int p_caLabel, int p_publicLabel, int p_privateLabel);
 
 void InitCertificates(void* p_param);
 

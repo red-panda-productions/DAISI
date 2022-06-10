@@ -268,14 +268,17 @@ void SetSchema(void* p_scrHandle, int p_schemaControl)
     GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_dbSettings.Schema);
 }
 
-/// @brief        Enables/disables the SSL option
-/// @param p_info Information on the checkbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_caControl the corresponding ui element control integers
-/// @param p_publicControl the corresponding ui element control integers
+/// @brief                  Enables/disables the SSL option
+/// @param p_info           Information on the checkbox
+/// @param p_scrHandle      The screen handle which to operate the functions on
+/// @param p_caControl      the corresponding ui element control integers
+/// @param p_publicControl  the corresponding ui element control integers
 /// @param p_privateControl the corresponding ui element control integers
+/// @param p_caLabel        the corresponding ui element control integers
+/// @param p_publicLabel    the corresponding ui element control integers
+/// @para, p_privateLabel   the corresponding ui element control integers
 void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
-                int p_caLabel, int p_publicLabel, int p_privateLabel)
+               int p_caLabel, int p_publicLabel, int p_privateLabel)
 {
     s_dbSettings.UseSSL = p_info->bChecked;
     GfuiVisibilitySet(p_scrHandle, p_caControl, s_dbSettings.UseSSL);

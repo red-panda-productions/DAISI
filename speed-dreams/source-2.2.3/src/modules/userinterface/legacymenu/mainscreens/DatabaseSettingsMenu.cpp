@@ -118,7 +118,7 @@ static void SetSchemaCallback(void*)
 static void SetUseSSLCallback(tCheckBoxInfo* p_info)
 {
     SetUseSSL(p_info, s_scrHandle, m_caCertFileDialogControl, m_publicCertFileDialogControl, m_privateCertFileDialogControl,
-        m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
+              m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 }
 
 /// @brief            Initializes the database settings menu
