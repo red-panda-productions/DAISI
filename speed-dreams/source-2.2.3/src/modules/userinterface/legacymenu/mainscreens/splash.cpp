@@ -236,7 +236,7 @@ static void splashDisplay( void )
 	gluOrtho2D(0, 640, 0, 480);
 	
 	static float grWhite[4] = {1.0, 1.0, 1.0, 1.0};
-
+    //SIMULATED DRIVING ASSISTANCE: removed version string
 
 	GfuiSwapBuffers();
 }
