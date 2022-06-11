@@ -100,7 +100,7 @@
         <section name="ErrorLabel">
             <attstr name="type" val="label"/>
             <attnum name="x" val="10"/>
-            <attnum name="y" val="100"/>
+            <attnum name="y" val="80"/>
             <!-- Label for showing error messages to the user. Needs to be 39 characters long.
             Default value contains this many spaces so maxlength is set correctly -->
             <attstr name="text" val="                                       "/>

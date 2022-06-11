@@ -16,20 +16,24 @@
 #define ONLINE_TEXT_COLOR     {0, 1, 0, 1};
 #define OFFLINE_TEXT_COLOR    {1, 0, 0, 1};
 
+// The current selected connections
 static tDatabaseSettings s_tempDbSettings;
+
+// The last applied database settings
 static tDatabaseSettings s_dbSettings;
+
 static char s_portString[SETTINGS_NAME_LENGTH];
 
 void ConvertPortString()
 {
     try
     {
-        s_tempDbSettings.Port = std::stoi(s_portString);
+        s_dbSettings.Port = std::stoi(s_portString);
     }
     catch (std::exception&)
     {
         std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
-        s_tempDbSettings.Port = 0;
+        s_dbSettings.Port = 0;
     }
 }
 
