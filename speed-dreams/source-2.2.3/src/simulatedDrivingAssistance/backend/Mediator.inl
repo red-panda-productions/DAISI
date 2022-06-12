@@ -40,6 +40,9 @@
     template void Mediator<type>::RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder); \
     template void Mediator<type>::SetSaveRaceToDatabase(bool p_saveToDatabase);                                                                         \
     template void Mediator<type>::RaceStop();                                                                                                           \
+    template void Mediator<type>::ShutdownBlackBox();                                                                                                   \
+    template void Mediator<type>::SaveData();                                                                                                           \
+    template void Mediator<type>::CloseRecorder();                                                                                                      \
     template void Mediator<type>::SetDatabaseSettings(tDatabaseSettings p_dbSettings);                                                                  \
     template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
     template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
@@ -399,9 +402,28 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
     if (!m_inRace) return;
-    bool saveToDatabase = m_decisionMaker.Config.GetSaveToDatabaseCheck();
-    m_decisionMaker.RaceStop(saveToDatabase);
     m_inRace = false;
+}
+
+/// @brief Tells the decisionmaker that the blackbox should be closed
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::ShutdownBlackBox()
+{
+    m_decisionMaker.ShutdownBlackBox();
+}
+
+/// @brief Tells the decisonmaker that the data should be saved
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SaveData()
+{
+    m_decisionMaker.SaveData();
+}
+
+/// @brief Tells the decisionmaker to close down the recorder file (to stop it from creating more inputs)
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::CloseRecorder()
+{
+    m_decisionMaker.CloseRecorder();
 }
 
 /// @brief            Sets the database connection settings for the database server
