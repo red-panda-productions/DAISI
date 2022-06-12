@@ -158,10 +158,11 @@ int main(int argc, char* argv[])
 
     // Create and initialize the application (graphical or text-only UI).
     GfApplication* pApp;
+    // SIMULATED DRIVING ASSISTANCE: changed name
     if (bTextOnly)
-        pApp = new GfApplication("Speed Dreams", VERSION_LONG, "an Open Motorsport Sim");
+        pApp = new GfApplication("DAISI", "", "an Open Driving Simulator");
     else
-        pApp = new GfuiApplication("Speed Dreams", VERSION_LONG, "an Open Motorsport Sim");
+        pApp = new GfuiApplication("DAISI", "", "an Open Driving Simulator");
     pApp->initialize(/*bLoggingEnabled=*/true, argc, argv);
 
     // Register app. specific options and help text.

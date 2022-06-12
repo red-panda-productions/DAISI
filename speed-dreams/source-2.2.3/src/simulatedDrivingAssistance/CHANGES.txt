@@ -191,6 +191,7 @@ Changed:
             added HasValidRaceStartArguments()
 
             changed check to call custom HasValidRaceStartArguments method
+            changed main() changed application name
         CMakeLists.txt
             added rppUtils and Filesystem for Linux
     interfaces/
