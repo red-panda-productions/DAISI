@@ -119,6 +119,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="1">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />
         <attnum name="lg" unit="m" val="292.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -167,6 +168,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 1">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="12.999999999999998" />
         <attnum name="radius" unit="m" val="550.0" />
         <attnum name="z start" unit="m" val="0.0" />
@@ -216,6 +218,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 1">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="0.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -264,6 +267,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 2">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="38.0" />
         <attnum name="radius" unit="m" val="296.0" />
         <attnum name="end radius" unit="m" val="170.0" />
@@ -314,6 +318,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 2">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="416.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -362,6 +367,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 3">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="14.0" />
         <attnum name="radius" unit="m" val="702.0" />
         <attnum name="end radius" unit="m" val="100.0" />
@@ -412,6 +418,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 4">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="10.0" />
         <attnum name="radius" unit="m" val="753.0" />
         <attnum name="end radius" unit="m" val="95.0" />
@@ -462,6 +469,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 3">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="162.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -510,6 +518,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 5">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="56.0" />
         <attnum name="radius" unit="m" val="222.0" />
         <attnum name="z start" unit="m" val="0.0" />
@@ -559,6 +568,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 4">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="136.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -607,6 +617,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 6">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="3.0" />
         <attnum name="radius" unit="m" val="98.0" />
         <attnum name="end radius" unit="m" val="708.0" />
@@ -657,6 +668,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 5">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="117.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -705,6 +717,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 7">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="25.0" />
         <attnum name="radius" unit="m" val="300.0" />
         <attnum name="end radius" unit="m" val="277.0" />
@@ -755,6 +768,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 6">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="614.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -803,6 +817,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 8">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="18.0" />
         <attnum name="radius" unit="m" val="277.0" />
         <attnum name="end radius" unit="m" val="299.0" />
@@ -853,6 +868,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 9">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="10.0" />
         <attnum name="radius" unit="m" val="290.0" />
         <attnum name="z start" unit="m" val="0.0" />
@@ -902,6 +918,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 7">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />
         <attnum name="lg" unit="m" val="825.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -950,6 +967,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 10">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="90.0" />
         <attnum name="radius" unit="m" val="95.0" />
         <attnum name="end radius" unit="m" val="50.0" />
@@ -1000,6 +1018,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 8">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="263.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1048,6 +1067,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 11">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="46.0" />
         <attnum name="radius" unit="m" val="475.0" />
         <attnum name="end radius" unit="m" val="173.0" />
@@ -1098,6 +1118,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 9">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="487.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1146,6 +1167,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 12">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="16.0" />
         <attnum name="radius" unit="m" val="559.0" />
         <attnum name="end radius" unit="m" val="569.0" />
@@ -1196,6 +1218,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 10">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="640.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1244,6 +1267,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 13">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="34.0" />
         <attnum name="radius" unit="m" val="322.0" />
         <attnum name="end radius" unit="m" val="497.0" />
@@ -1294,6 +1318,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 14">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="28.0" />
         <attnum name="radius" unit="m" val="419.0" />
         <attnum name="end radius" unit="m" val="543.0" />
@@ -1344,6 +1369,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 11">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="477.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1392,6 +1418,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 15">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="41.0" />
         <attnum name="radius" unit="m" val="173.0" />
         <attnum name="end radius" unit="m" val="147.0" />
@@ -1442,6 +1469,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 12">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="643.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1490,6 +1518,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 16">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="65.0" />
         <attnum name="radius" unit="m" val="108.0" />
         <attnum name="end radius" unit="m" val="72.0" />
@@ -1540,6 +1569,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 17">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="25.0" />
         <attnum name="radius" unit="m" val="222.0" />
         <attnum name="end radius" unit="m" val="342.0" />
@@ -1590,6 +1620,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 13">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="1000.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1638,6 +1669,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 19">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="28.0" />
         <attnum name="radius" unit="m" val="822.0" />
         <attnum name="end radius" unit="m" val="906.0" />
@@ -1688,6 +1720,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 14">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="977.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1736,6 +1769,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 20">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="20.0" />
         <attnum name="radius" unit="m" val="906.0" />
         <attnum name="end radius" unit="m" val="916.0" />
@@ -1786,6 +1820,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 15">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="1000.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1834,6 +1869,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 21">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="91.0" />
         <attnum name="radius" unit="m" val="238.0" />
         <attnum name="end radius" unit="m" val="153.0" />
@@ -1884,6 +1920,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 16">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="610.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -1932,6 +1969,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 22">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="8.0" />
         <attnum name="radius" unit="m" val="906.0" />
         <attnum name="end radius" unit="m" val="942.0" />
@@ -1982,6 +2020,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 17">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="127.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -2030,6 +2069,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 23">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="50.0" />
         <attnum name="radius" unit="m" val="400.0" />
         <attnum name="end radius" unit="m" val="517.0" />
@@ -2080,6 +2120,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 18">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="666.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -2128,6 +2169,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 24">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="36.0" />
         <attnum name="radius" unit="m" val="870.0" />
         <attnum name="end radius" unit="m" val="692.0" />
@@ -2178,6 +2220,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 25">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="58.0" />
         <attnum name="radius" unit="m" val="565.0" />
         <attnum name="end radius" unit="m" val="682.0" />
@@ -2228,6 +2271,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 19">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="1000.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -2276,6 +2320,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 26">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="56.0" />
         <attnum name="radius" unit="m" val="932.0" />
         <attnum name="end radius" unit="m" val="786.0" />
@@ -2326,6 +2371,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 27">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="97.0" />
         <attnum name="radius" unit="m" val="835.0" />
         <attnum name="end radius" unit="m" val="773.0" />
@@ -2376,6 +2422,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 28">
         <attstr name="type" val="rgt" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="8.0" />
         <attnum name="radius" unit="m" val="410.0" />
         <attnum name="end radius" unit="m" val="209.0" />
@@ -2426,6 +2473,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 22">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="388.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />
@@ -2474,6 +2522,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="curve 29">
         <attstr name="type" val="lft" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="arc" unit="deg" val="16.0" />
         <attnum name="radius" unit="m" val="602.0" />
         <attnum name="end radius" unit="m" val="309.0" />
@@ -2524,6 +2573,7 @@ the Free Software Foundation; either version 2 of the License, or
       <!--******************************-->
       <section name="straight 21">
         <attstr name="type" val="str" />
+        <attnum name="speedLimit" val ="80" />  
         <attnum name="lg" unit="m" val="143.0" />
         <attnum name="z start" unit="m" val="0.0" />
         <attnum name="z end" unit="m" val="0.0" />

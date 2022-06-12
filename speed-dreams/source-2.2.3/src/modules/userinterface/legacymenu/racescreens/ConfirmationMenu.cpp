@@ -11,25 +11,25 @@
 
 static void* s_menuHandle = nullptr;
 
-/// @brief tells the mediator to not save experiment data and close SpeedDreams
-static void OnAcceptExit(void* /* dummy */)
+/// @brief tell the mediator to not save the experiment
+static void EndActiveExperiment()
 {
-    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
-    LmRaceEngine().abortRace();  // Do cleanup to get back correct setup files
-    LegacyMenu::self().quit();
+    SMediator* m_mediator = SMediator::GetInstance();
+    m_mediator->CloseRecorder();
+    m_mediator->ShutdownBlackBox();
 }
 
 /// @brief tells the mediator to not save experiment data and restart SpeedDreams
 static void OnAcceptRestart(void* /* dummy */)
 {
-    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
+    EndActiveExperiment();
     LmRaceEngine().restartRace();
 }
 
 /// @brief tells the mediator to save experiment data and abort the race
 static void OnAcceptAbort(void* p_prevMenu)
 {
-    SMediator::GetInstance()->SetSaveRaceToDatabase(false);
+    EndActiveExperiment();
     LmRaceEngine().abortRace();
     GfuiScreenActivate(MainMenuInit((p_prevMenu)));
     LmRaceEngine().cleanup();
@@ -39,7 +39,7 @@ static void OnAcceptAbort(void* p_prevMenu)
 /// @brief tells the mediator to save experiment data
 static void OnAcceptFinished(void* p_prevMenu)
 {
-    SMediator::GetInstance()->SetSaveRaceToDatabase(true);
+    EndActiveExperiment();
     GfuiScreenActivate(MainMenuInit((p_prevMenu)));
     LmRaceEngine().cleanup();
     LegacyMenu::self().shutdownGraphics(/*bUnloadModule=*/true);
@@ -56,11 +56,6 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
 
     switch (p_raceEndType)
     {
-        case RACE_EXIT:
-        {
-            GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptExit);
-            break;
-        }
         case RACE_RESTART:
         {
             GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_IM_SURE_BUTTON, nullptr, OnAcceptRestart);

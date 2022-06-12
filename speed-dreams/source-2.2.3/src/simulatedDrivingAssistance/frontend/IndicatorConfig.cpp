@@ -111,7 +111,26 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
     {
         throw std::out_of_range("X and Y positions should be in the range [0,1]");
     }
+
     return {xPos, yPos};
+}
+
+/// @brief          Loads the texture dimensions data from the indicator config.xml
+/// @param p_handle The p_handle to the config.xml file
+/// @param p_path   The C-string pointer to the section the dimension data
+/// @return         A struct containing the dimensions data
+tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
+{
+    float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0);
+    float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0);
+
+    // Check whether width and height are not negative floats
+    if (width < 0.0f || height < 0.0f)
+    {
+        throw std::out_of_range("Width and height should not be negative");
+    }
+
+    return {width, height};
 }
 
 /// @brief                    Loads the texture indicator data from the indicator config.xml
@@ -127,6 +146,7 @@ tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, I
     tTextureData* data = new TextureData;
     data->Path = GfParmGetStr(p_handle, p_path.c_str(), s_interventionTypeString[p_interventionType], "");
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
+    data->Dimensions = LoadDimensions(p_handle, p_path.c_str());
     return data;
 }
 

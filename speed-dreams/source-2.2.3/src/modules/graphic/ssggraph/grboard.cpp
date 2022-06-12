@@ -423,10 +423,6 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
     // Guard if texture data is null or the texture itself is null
     if (!p_data || !p_texture) return;
 
-    // Dimensions of the icon on the screen (will be put in XML settings file later)
-    float iconWidth = 100;
-    float iconHeight = 100;
-
     // Duplicate the current matrix and enable opengl settings.
     glPushMatrix();
     glEnable(GL_BLEND);
@@ -447,9 +443,9 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
     glBegin(GL_TRIANGLE_STRIP);
     glColor4f(1.0, 1.0, 1.0, 0.0);
     glTexCoord2f(0.0, 0.0); glVertex2f(0, 0);
-    glTexCoord2f(0.0, 1.0); glVertex2f(0, iconHeight);
-    glTexCoord2f(1.0, 0.0); glVertex2f(iconWidth, 0);
-    glTexCoord2f(1.0, 1.0); glVertex2f(iconWidth, iconHeight);
+    glTexCoord2f(0.0, 1.0); glVertex2f(0, p_data->Dimensions.Height);
+    glTexCoord2f(1.0, 0.0); glVertex2f(p_data->Dimensions.Width, 0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(p_data->Dimensions.Width, p_data->Dimensions.Height);
     glEnd();
 
     // Unbind the texture and pop the translated matrix of the stack.
