@@ -160,9 +160,9 @@ int main(int argc, char* argv[])
     GfApplication* pApp;
     // SIMULATED DRIVING ASSISTANCE: changed name
     if (bTextOnly)
-        pApp = new GfApplication("DAISI", "", "an Open Driving Simulator");
+        pApp = new GfApplication("DAISI", "", "Driving Assistance Interface for Simulated Interventions");
     else
-        pApp = new GfuiApplication("DAISI", "", "an Open Driving Simulator");
+        pApp = new GfuiApplication("DAISI", "", "Driving Assistance Interface for Simulated Interventions");
     pApp->initialize(/*bLoggingEnabled=*/true, argc, argv);
 
     // Register app. specific options and help text.
