@@ -5,8 +5,6 @@
 #include "ConfigEnums.h"
 #include <config.h>
 
-#define META_BUFFER_FILENAME "sda_blackbox_internal_metadata_buffer.bin"
-
 /// @brief executes sql statement
 #define EXECUTE(p_sql) \
     m_statement->execute(p_sql);

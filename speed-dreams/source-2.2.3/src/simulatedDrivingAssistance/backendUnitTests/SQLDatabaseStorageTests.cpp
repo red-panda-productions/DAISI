@@ -177,7 +177,7 @@ TEST(SQLDatabaseStorageTests, SaveTrialIdTest)
 {
     // delete buffer file to make sure it doesn't exist
     filesystem::path bufferPath = filesystem::temp_directory_path();
-    bufferPath.append("sda_blackbox_internal_metadata_buffer.bin");
+    bufferPath.append(META_BUFFER_FILENAME);
     filesystem::remove(bufferPath);
 
     Random random;
