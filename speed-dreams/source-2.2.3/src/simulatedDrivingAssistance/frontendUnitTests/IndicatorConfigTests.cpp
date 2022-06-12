@@ -16,10 +16,11 @@
 // Enable multiple flags by doing FLAG1 | FLAG2 | FLAG3
 // Check enabled flags by evaluating (flag & FLAG1), (flag & FLAG2), etc. as boolean
 typedef unsigned int DataGeneration;
-#define VALID                 0         // Generates completely valid data
-#define CAN_GENERATE_NULL     (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
-#define INVALID_SCR_POS       (1 << 1)  // Generates invalid screen positions
-#define INVALID_LOOP_INTERVAL (1 << 2)  // Generates invalid loop intervals
+#define VALID                   0         // Generates completely valid data
+#define CAN_GENERATE_NULL       (1 << 0)  // Generates valid data with a chance to not generate sound/text/texture data
+#define INVALID_SCR_POS         (1 << 1)  // Generates invalid screen positions
+#define INVALID_LOOP_INTERVAL   (1 << 2)  // Generates invalid loop intervals
+#define INVALID_TEXT_DIMENSIONS (1 << 3)  // Generates invalid texture dimensions
 
 /// @brief Test Fixture for testing the loading of indicatorconfig data
 ///        Handles the Setup for every test and logs the seed used to generate random data.
@@ -79,6 +80,13 @@ protected:
         return (m_rnd.NextBool()) ? m_rnd.NextFloat(1.0f, FLT_MAX) : m_rnd.NextFloat(-FLT_MAX, 0);
     }
 
+    /// @brief  Creates a random invalid texture dimension in the range [-FLOAT_MAX..0]
+    /// @return The invalid screen coordinate.
+    float CreateInvalidTextureDimension()
+    {
+        return m_rnd.NextFloat(-FLT_MAX, 0);
+    }
+
     /// @brief       Creates randomly generated screen positions
     /// @param p_gen The flags to use when generating data
     /// @return      The generated screen position
@@ -89,6 +97,18 @@ protected:
             return {CreateInvalidScreenCoord(), CreateInvalidScreenCoord()};
         }
         return {m_rnd.NextFloatIncl(0, 1.0f), m_rnd.NextFloatIncl(0, 1.0f)};
+    }
+
+    /// @brief       Creates randomly generated texture dimensions
+    /// @param p_gen The flags to use when generating data
+    /// @return      The generated texture dimensions
+    tTextureDimensions CreateRandomTextureDimensions(DataGeneration p_gen)
+    {
+        if (p_gen & INVALID_TEXT_DIMENSIONS)
+        {
+            return {CreateInvalidTextureDimension(), CreateInvalidTextureDimension()};
+        }
+        return {m_rnd.NextFloatIncl(0, FLT_MAX), m_rnd.NextFloatIncl(0, FLT_MAX)};
     }
 
     /// @brief       Creates randomly generated texture data
@@ -106,6 +126,7 @@ protected:
         GenerateRandomCharArray(buf, m_rnd.NextInt(0, PATH_BUF_SIZE - 1));
         data->Path = buf;
         data->ScrPos = CreateRandomScreenPosition(p_gen);
+        data->Dimensions = CreateRandomTextureDimensions(p_gen);
 
         return data;
     }
@@ -185,6 +206,8 @@ protected:
                 snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
+                GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_WIDTH, nullptr, data.Texture->Dimensions.Width);
+                GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_HEIGHT, nullptr, data.Texture->Dimensions.Height);
 
                 // Only need to write to this specific type, because that is the only one that is loaded in again.
                 GfParmSetStr(fileHandle, xmlSection, s_interventionTypeString[p_interventionType], data.Texture->Path);
@@ -328,6 +351,19 @@ TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidScreenPosition)
     {
         // Create random indicator data with invalid screen positions and write it to xml
         std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_SCR_POS);
+        const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
+
+        ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath, SMediator::GetInstance()->GetInterventionType()), std::out_of_range);
+    }
+}
+
+/// @brief Tests whether the IndicatorConfig correctly throws an error for invalid texture dimensions
+TEST_F(IndicatorConfigLoadingTests, ThrowExceptionInvalidTextureDimensions)
+{
+    for (int i = 0; i < NUM_OF_TESTS; i++)
+    {
+        // Create random indicator data with invalid texture dimensions and write it to xml
+        std::vector<tIndicatorData> rndData = CreateRandomIndicatorData(INVALID_TEXT_DIMENSIONS);
         const char* filepath = WriteIndicatorDataToXml(rndData, INTERVENTION_TYPE_ONLY_SIGNALS);
 
         ASSERT_THROW(IndicatorConfig::GetInstance()->LoadIndicatorData(filepath, SMediator::GetInstance()->GetInterventionType()), std::out_of_range);
