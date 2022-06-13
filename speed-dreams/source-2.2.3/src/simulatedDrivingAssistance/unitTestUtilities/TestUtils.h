@@ -194,6 +194,42 @@ inline bool ActiveIndicatorsContains(std::vector<tIndicatorData> p_activeIndicat
     }                                                                                                                                  \
     }
 
+/// @brief				End a combinatorial test with 5 arrays
+/// @param  method_name The method that needs to be called in the test
+/// @param  arrname1	The array name of the first array
+/// @param  count1		The amount of elements in the first array
+/// @param  arrname2	The array name of the second array
+/// @param  count2		The amount of elements in the second array
+/// @param  arrname3	The array name of the third array
+/// @param  count3		The amount of elements in the third array
+/// @param  arrname4	The array name of the fourth array
+/// @param  count4		The amount of elements in the fourth array
+/// @param  arrname5	The array name of the fifth array
+/// @param  count5		The amount of elements in the fifth array
+/// @param  arrname6	The array name of the sixth array
+/// @param  count6		The amount of elements in the sixth array
+#define END_TEST_COMBINATORIAL6(method_name, arrname1, count1, arrname2, count2, arrname3, count3, arrname4, count4, arrname5, count5, arrname6, count6) \
+    for (int a = 0; a < (count1); a++)                                                                                                                   \
+    {                                                                                                                                                    \
+        for (int b = 0; b < (count2); b++)                                                                                                               \
+        {                                                                                                                                                \
+            for (int c = 0; c < (count3); c++)                                                                                                           \
+            {                                                                                                                                            \
+                for (int d = 0; d < (count4); d++)                                                                                                       \
+                {                                                                                                                                        \
+                    for (int e = 0; e < (count5); e++)                                                                                                   \
+                    {                                                                                                                                    \
+                        for (int f = 0; f < (count6); f++)                                                                                               \
+                        {                                                                                                                                \
+                            method_name((arrname1)[a], (arrname2)[b], (arrname3)[c], (arrname4)[d], (arrname5)[e], (arrname6)[f]);                       \
+                        }                                                                                                                                \
+                    }                                                                                                                                    \
+                }                                                                                                                                        \
+            }                                                                                                                                            \
+        }                                                                                                                                                \
+    }                                                                                                                                                    \
+    }
+
 /// @brief A pairwise test for 2 arrays
 template <typename T1, typename T2>
 inline void PairWiseTest(void (*p_func)(T1, T2), T1* p_input1, int p_count1, T2* p_input2, int p_count2)

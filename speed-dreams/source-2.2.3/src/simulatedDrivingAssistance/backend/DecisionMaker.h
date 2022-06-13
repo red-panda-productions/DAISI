@@ -31,19 +31,21 @@ public:
 
     void ChangeSettings(InterventionType p_dataSetting);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
-    void RaceStop(bool p_saveToDatabase);
 
     InterventionExecutor* InterventionExec = nullptr;
     SocketBlackBox BlackBox;
 
     FileDataStorage* GetFileDataStorage();
-    filesystem::path* GetBufferFilePath();
+    tBufferPaths GetBufferPaths();
     Recorder* GetRecorder();
 
     ~DecisionMaker();
+    void CloseRecorder();
+    void SaveData();
+    void ShutdownBlackBox();
 
 private:
-    filesystem::path m_bufferFilePath;
+    tBufferPaths m_bufferPaths;
     FileDataStorage m_fileBufferStorage;
     DecisionTuple m_decision;
     Recorder* m_recorder = nullptr;

@@ -236,8 +236,7 @@ static void splashDisplay( void )
 	gluOrtho2D(0, 640, 0, 480);
 	
 	static float grWhite[4] = {1.0, 1.0, 1.0, 1.0};
-	GfuiDrawString(GfuiApp().version().c_str(), grWhite, GFUI_FONT_SMALL_C,
-				   440-8, 8, 200, GFUI_ALIGN_HR);
+    //SIMULATED DRIVING ASSISTANCE: removed version string
 
 	GfuiSwapBuffers();
 }

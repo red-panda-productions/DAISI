@@ -196,25 +196,23 @@ END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, boolean
 /// @param p_intervention Control intervention toggle option
 /// @param p_gas          Control gas option
 /// @param p_steer        Control steering option
-/// @param p_force        Force feedback option
-void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
+void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention, p_force};
+    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
     ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
     ASSERT_EQ(arr.ControlBrake, pControl.ControlBrake);
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL5(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the Mediator sets and gets the MaxTime correctly
 TEST(MediatorTests, MaxTimeTest)
@@ -439,16 +437,44 @@ TEST(MediatorTests, RaceStop)
     ASSERT_TRUE(SetupSingletonsFolder());
 
     MockMediator::GetInstance()->SetInRace(true);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
     ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
 
     MockMediator::GetInstance()->SetInRace(false);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
     ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_FALSE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
+}
+
+/// @brief Tests if the mediator closes the recorder file correctly
+TEST(MediatorTests, CloseRecorder)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MRecorderClosed = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->CloseRecorder());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MRecorderClosed);
+}
+
+/// @brief Tests if the mediator stops the race correctly if it saves the data.
+TEST(MediatorTests, SaveData)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MDataSaved = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->SaveData());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDataSaved);
+}
+
+TEST(MediatorTests, ShutdownBlackbox)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MBlackboxShutdowned = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->ShutdownBlackBox());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MBlackboxShutdowned);
 }
 
 /// @brief Tests if the TimeOut function returns the correct time out

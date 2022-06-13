@@ -52,7 +52,7 @@ onAcceptExit(void* /* dummy */)
  *
  */
 
-void* ExitMenuInit(void* p_prevMenu, bool p_raceExit, RaceEndType p_raceEndType)
+void* ExitMenuInit(void* p_prevMenu)
 {
     if (MenuHandle)
     {

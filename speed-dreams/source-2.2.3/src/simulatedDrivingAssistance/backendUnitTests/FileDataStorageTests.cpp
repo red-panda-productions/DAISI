@@ -5,13 +5,6 @@
 #include "mocks/BlackBoxDataMock.h"
 #include <algorithm>
 
-/// @brief The file directory to use for writing test files to, relative to the OS's Temp folder.
-/// This directory should be allowed to be deleted by tests.
-#define TEST_FILE_DIR "testDataStorageDir"
-
-/// @brief The filename to use for writing test files to.
-#define TEST_FILE_NAME "testDataStorage.txt"
-
 /// @brief Get dummy time variables. These set the trial to have started now,
 ///  the black box to have been created yesterday, and the environment last year.
 #define GET_DUMMY_TIMES                                                           \
@@ -20,19 +13,27 @@
     std::time_t timeBlackBox = std::chrono::system_clock::to_time_t(now - std::chrono::hours(24))
 
 /// @brief Dummy parameters to use to quickly initialise a FileDataStorage system.
-#define DUMMY_INITIALISATION_PARAMETERS TEST_FILE_DIR "/" TEST_FILE_NAME, \
-                                        "Player1",                        \
-                                        timeSimStart,                     \
-                                        "notABlackBox.exe",               \
-                                        "Really just a string",           \
-                                        timeBlackBox,                     \
-                                        "environmentAlsoFake.xml",        \
-                                        "Name of a dummy environment",    \
-                                        0,                                \
+#define DUMMY_INITIALISATION_PARAMETERS "Player1",                     \
+                                        timeSimStart,                  \
+                                        "notABlackBox.exe",            \
+                                        "Really just a string",        \
+                                        timeBlackBox,                  \
+                                        "environmentAlsoFake.xml",     \
+                                        "Name of a dummy environment", \
+                                        0,                             \
                                         INTERVENTION_TYPE_ONLY_SIGNALS
 
-/// @brief Get an unsigned long variable "tickCount" with a random value
-#define GET_RANDOM_TICKCOUNT unsigned long tickCount = random.NextUInt();
+// Values written at the top of a file initialised with the dummy parameters above
+#define DUMMY_INITIALISATION_FILE_ENTRIES                                    \
+    "Player1" << std::endl                                                   \
+              << "notABlackBox.exe" << std::endl                             \
+              << GetTimeAsString(timeBlackBox) << std::endl                  \
+              << "Really just a string" << std::endl                         \
+              << "environmentAlsoFake.xml" << std::endl                      \
+              << "0" << std::endl                                            \
+              << "Name of a dummy environment" << std::endl                  \
+              << std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) << std::endl \
+              << GetTimeAsString(timeSimStart) << std::endl
 
 /// @brief The amount of tests for multiple tests
 #define TEST_AMOUNT 20
@@ -40,9 +41,8 @@
 /// @brief Standard compression rate
 #define COMPRESSION_RATE 5
 
-/// @brief Get a tCarElt variable "car" and fill it with random data for variables relevant to the FileDataStorage system.
-#define GET_RANDOM_CAR                          \
-    tCarElt car = {};                           \
+/// @brief Creates a car with random values
+#define CREATE_RANDOM_CAR(random, car)          \
     car.pub.DynGCg.pos.x = random.NextFloat();  \
     car.pub.DynGCg.pos.y = random.NextFloat();  \
     car.pub.DynGCg.pos.z = random.NextFloat();  \
@@ -57,24 +57,32 @@
     car.ctrl.accelCmd = random.NextFloat();     \
     car.ctrl.clutchCmd = random.NextFloat();
 
-/// @brief Get a tSituation variable "situation" and fill it with random data for variables relevant to the FileDataStorage system.
-#define GET_RANDOM_SITUATION tSituation situation = {};  // Currently no variables of tSituation are used yet
+/// @brief Write the output to be expected in the gamestate buffer file to a stream.
+#define WRITE_EXPECTED_CAR(expected, car)    \
+    expected << car.pub.DynGCg.pos.x << ','  \
+             << car.pub.DynGCg.pos.y << ','  \
+             << car.pub.DynGCg.pos.z << ','  \
+             << car.pub.DynGCg.pos.ax << ',' \
+             << car.pub.DynGCg.pos.ay << ',' \
+             << car.pub.DynGCg.pos.az << ',' \
+             << car.pub.DynGC.vel.x << ','   \
+             << car.pub.DynGC.acc.x << ','   \
+             << car.priv.gear << '\n'
 
-/// @brief Write to a stream variable "expected" the data expected to be seen in a file when environment is stored
-#define WRITE_EXPECTED_CAR expected << std::to_string(car.pub.DynGCg.pos.x) << std::endl  \
-                                    << std::to_string(car.pub.DynGCg.pos.y) << std::endl  \
-                                    << std::to_string(car.pub.DynGCg.pos.z) << std::endl  \
-                                    << std::to_string(car.pub.DynGCg.pos.ax) << std::endl \
-                                    << std::to_string(car.pub.DynGCg.pos.ay) << std::endl \
-                                    << std::to_string(car.pub.DynGCg.pos.az) << std::endl \
-                                    << std::to_string(car.pub.DynGC.vel.x) << std::endl   \
-                                    << std::to_string(car.pub.DynGC.acc.x) << std::endl   \
-                                    << std::to_string(car.priv.gear) << std::endl;
+/// @brief Write the output to be expected in the userinput buffer file to a stream.
+#define WRITE_EXPECTED_CONTROLS(expected, ctrl) \
+    expected << ctrl.steer << ','               \
+             << ctrl.brakeCmd << ','            \
+             << ctrl.accelCmd << ','            \
+             << ctrl.clutchCmd << '\n'
 
-#define WRITE_EXPECTED_CONTROLS expected << std::to_string(car.ctrl.steer) << std::endl    \
-                                         << std::to_string(car.ctrl.brakeCmd) << std::endl \
-                                         << std::to_string(car.ctrl.accelCmd) << std::endl \
-                                         << std::to_string(car.ctrl.clutchCmd) << std::endl
+/// @brief Write the output to be expected in the decisions buffer file to a stream.
+#define WRITE_EXPECTED_DECISION(expected, contains, value, separator) \
+    if (contains)                                                     \
+        expected << value;                                            \
+    else                                                              \
+        expected << "\\N";                                            \
+    expected << separator
 
 /// @brief Convert a time variable to a string as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string)
 /// @param date Time to format and write to the stream.
@@ -107,323 +115,330 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
     return decisions;
 }
 
-/// @brief Write to a stream the data expected to be seen in a file when decisions are stored
-/// @param decisions The tuple containing the decision data
-/// @param expected The stream containing the expected values of the file
-/// @param p_doSteer Whether a Steer decision  should be written
-/// @param p_doBrake Whether a Brake decision  should be written
-/// @param p_doAccel Whether a Accel decision  should be written
-/// @param p_doGear Whether a Gear decision  should be written
-/// @param p_doLights Whether a Lights decision  should be written
-void WriteExpectedDecisions(DecisionTuple& p_decisions, std::ostream& p_expected, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+/// @brief Writes the given tuple to the expected stringstream, values depend on whether a decision was made
+/// @param p_expected  The stringstream storing the expected test output
+/// @param p_decisions The struct containg the decisions
+void WriteExpectedDecisions(std::stringstream& p_expected, const DecisionTuple& p_decisions)
 {
-    p_expected << "Decisions" << std::endl;
-    if (p_doSteer)
-    {
-        p_expected << "SteerDecision" << std::endl
-                   << std::to_string(p_decisions.GetSteer()) << std::endl;
-    }
-    if (p_doBrake)
-    {
-        p_expected << "BrakeDecision" << std::endl
-                   << std::to_string(p_decisions.GetBrake()) << std::endl;
-    }
-    if (p_doAccel)
-    {
-        p_expected << "AccelDecision" << std::endl
-                   << std::to_string(p_decisions.GetAccel()) << std::endl;
-    }
-    if (p_doGear)
-    {
-        p_expected << "GearDecision" << std::endl
-                   << std::to_string(p_decisions.GetGear()) << std::endl;
-    }
-    if (p_doLights)
-    {
-        p_expected << "LightsDecision" << std::endl
-                   << std::to_string(p_decisions.GetLights()) << std::endl;
-    }
-    p_expected << "NONE" << std::endl;
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsSteer(), p_decisions.GetSteer(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsBrake(), p_decisions.GetBrake(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsAccel(), p_decisions.GetAccel(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsGear(), p_decisions.GetGear(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsLights(), p_decisions.GetLights(), '\n');
 }
 
-// Values written at the top of a file initialised with the dummy parameters above
-#define DUMMY_INITIALISATION_FILE_ENTRIES "Player1" << std::endl                                  \
-                                                    << GetTimeAsString(timeSimStart) << std::endl \
-                                                    << "notABlackBox.exe" << std::endl            \
-                                                    << GetTimeAsString(timeBlackBox) << std::endl \
-                                                    << "Really just a string" << std::endl        \
-                                                    << "environmentAlsoFake.xml" << std::endl     \
-                                                    << "0" << std::endl                           \
-                                                    << "Name of a dummy environment" << std::endl \
-                                                    << std::to_string(INTERVENTION_TYPE_ONLY_SIGNALS) << std::endl
+/// @brief Tests whether the file data storage is initialized correctly.
+///        Checks whether the buffer filepaths are valid
+///        and whether the correct initial information has been written to the buffer files.
+TEST(FileDataStorageTests, TestInitialization)
+{
+    GET_DUMMY_TIMES;
 
-/// @brief Run the FileDataStorage saving only minimal data and ensure the file is correct and located in the correct directory
+    tDataToStore settings = {true, true, true, true};
+    FileDataStorage fileDataStorage;
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
+
+    ASSERT_TRUE(filesystem::is_directory(bufferPaths.MetaData.parent_path()));
+    ASSERT_TRUE(filesystem::is_directory(bufferPaths.TimeSteps.parent_path()));
+    ASSERT_TRUE(filesystem::is_directory(bufferPaths.GameState.parent_path()));
+    ASSERT_TRUE(filesystem::is_directory(bufferPaths.UserInput.parent_path()));
+    ASSERT_TRUE(filesystem::is_directory(bufferPaths.Decisions.parent_path()));
+
+    ASSERT_EQ(bufferPaths.MetaData.filename(), BUFFER_FILE_META_DATA);
+    ASSERT_EQ(bufferPaths.TimeSteps.filename(), BUFFER_FILE_TIMESTEPS);
+    ASSERT_EQ(bufferPaths.GameState.filename(), BUFFER_FILE_GAMESTATE);
+    ASSERT_EQ(bufferPaths.UserInput.filename(), BUFFER_FILE_USERINPUT);
+    ASSERT_EQ(bufferPaths.Decisions.filename(), BUFFER_FILE_DECISIONS);
+
+    fileDataStorage.Shutdown();
+
+    std::ifstream metaDataStream(bufferPaths.MetaData);
+    std::ifstream timeStepsStream(bufferPaths.TimeSteps);
+    std::ifstream gameStateStream(bufferPaths.GameState);
+    std::ifstream userInputStream(bufferPaths.UserInput);
+    std::ifstream decisionsStream(bufferPaths.Decisions);
+
+    std::stringstream contents;
+    contents << metaDataStream.rdbuf();
+    contents << timeStepsStream.rdbuf();
+    contents << gameStateStream.rdbuf();
+    contents << userInputStream.rdbuf();
+    contents << decisionsStream.rdbuf();
+
+    std::stringstream expected;
+    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
+    expected << TIMESTEPS_CSV_HEADER << '\n';
+    expected << GAMESTATE_CSV_HEADER << '\n';
+    expected << USERINPUT_CSV_HEADER << '\n';
+    expected << DECISIONS_CSV_HEADER << '\n';
+
+    ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+};
+
+TEST(FileDataStorageTests, TestWriteEnvironmentData)
+{
+    SUCCEED();  // TODO: implement whenever this checkbox gets used.
+}
+
+/// @brief Tests whether the gamestate is correctly written to the corresponding buffer file
+TEST(FileDataStorageTests, TestWriteGameStateData)
+{
+    GET_DUMMY_TIMES;
+
+    tDataToStore settings = {false, true, false, false};
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
+
+    Random rnd;
+    tCarElt car = {};
+    DecisionTuple dummy = {};
+
+    std::stringstream expected;
+    expected << GAMESTATE_CSV_HEADER << '\n';
+    for (int tick = 0; tick < 100; tick++)
+    {
+        CREATE_RANDOM_CAR(rnd, car);
+        fileDataStorage.Save(&car, dummy, tick);
+
+        expected << tick << ',';
+        WRITE_EXPECTED_CAR(expected, car);
+    }
+
+    fileDataStorage.Shutdown();
+
+    std::ifstream file(bufferPaths.GameState);
+    std::stringstream contents;
+    contents << file.rdbuf();
+
+    ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+}
+
+/// @brief Tests whether the userinput is correctly written to the corresponding buffer file
+TEST(FileDataStorageTests, TestWriteUserInputData)
+{
+    GET_DUMMY_TIMES;
+
+    tDataToStore settings = {false, false, true, false};
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
+
+    Random rnd;
+    tCarElt car = {};
+    DecisionTuple dummy = {};
+
+    std::stringstream expected;
+    expected << USERINPUT_CSV_HEADER << '\n';
+    for (int tick = 0; tick < 100; tick++)
+    {
+        CREATE_RANDOM_CAR(rnd, car);
+        fileDataStorage.Save(&car, dummy, tick);
+
+        expected << tick << ',';
+        WRITE_EXPECTED_CONTROLS(expected, car.ctrl);
+    }
+
+    fileDataStorage.Shutdown();
+
+    std::ifstream file(bufferPaths.UserInput);
+    std::stringstream contents;
+    contents << file.rdbuf();
+
+    ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+}
+
+/// @brief Tests whether the decisions are correctly written to the corresponding buffer file
+/// @param p_storeDecisions Whether to store decisions at all (corresponding to tDataToStore)
+/// @param p_doSteer        Whether to store the steer decision
+/// @param p_doBrake        Whether to store the brake decision
+/// @param p_doAccel        Whether to store the accel decision
+/// @param p_doGear         Whether to store the gear decision
+/// @param p_doLights       Whether to store the lights on decision
+void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
+{
+    GET_DUMMY_TIMES;
+
+    tDataToStore settings = {false, false, false, p_storeDecisions};
+    FileDataStorage fileDataStorage;
+    fileDataStorage.SetCompressionRate(1);
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
+
+    Random rnd;
+    DecisionTuple decisions;
+
+    std::stringstream expected;
+    expected << DECISIONS_CSV_HEADER << '\n';
+    for (int tick = 0; tick < 100; tick++)
+    {
+        decisions = GenerateDecisions(rnd, p_doSteer, p_doBrake, p_doAccel, p_doGear, p_doLights);
+        fileDataStorage.Save(nullptr, decisions, tick);
+
+        if (p_storeDecisions)
+        {
+            expected << tick << ',';
+            WriteExpectedDecisions(expected, decisions);
+        }
+    }
+
+    fileDataStorage.Shutdown();
+
+    std::ifstream file(bufferPaths.Decisions);
+    std::stringstream contents;
+    contents << file.rdbuf();
+
+    ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+}
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved but none are made
+TEST_CASE(FileDataStorageTests, DecisionsNoneStored, TestWriteDecisions, (true, false, false, false, false, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved and all decisions are made
+TEST_CASE(FileDataStorageTests, DecisionsAllStored, TestWriteDecisions, (true, true, true, true, true, true))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should not be saved and none are made
+TEST_CASE(FileDataStorageTests, DecisionsDisabledNoDecisions, TestWriteDecisions, (false, false, false, false, false, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should not be saved but all decisions are made
+TEST_CASE(FileDataStorageTests, DecisionsDisabledAllDecisions, TestWriteDecisions, (false, true, true, true, true, true))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only light decisions are made
+TEST_CASE(FileDataStorageTests, DecisionsLightStored, TestWriteDecisions, (true, false, false, false, false, true))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only gear decisions are made
+TEST_CASE(FileDataStorageTests, DecisionsGearStored, TestWriteDecisions, (true, false, false, false, true, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer accelerate are made
+TEST_CASE(FileDataStorageTests, DecisionsAccelStored, TestWriteDecisions, (true, false, false, true, false, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only brake decisions are made
+TEST_CASE(FileDataStorageTests, DecisionsBrakeStored, TestWriteDecisions, (true, false, true, false, false, false))
+
+/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer decisions are made
+TEST_CASE(FileDataStorageTests, DecisionsSteerStored, TestWriteDecisions, (true, true, false, false, false, false))
+
+/// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible combinations.
+BEGIN_TEST_COMBINATORIAL(FileDataStorageTests, CombinatorialTestWriteDecisions)
+bool booleans[2]{true, false};
+END_TEST_COMBINATORIAL6(TestWriteDecisions, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+
+/// @brief Run the FileDataStorage saving only minimal data for a variable amount of ticks.
 /// @param p_numberOfTicks How many ticks to save (default 1)
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
-    // Initialise class, read+write no values
-    DataToStore params = {false, false, false, false};
-
     GET_DUMMY_TIMES;
-    std::stringstream expected;
 
-    // Write a file with dummy initialization data, save timestamp 0 as many times as needed, and shut down
+    tDataToStore settings = {false, false, false, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
-    filesystem::path actualPath = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
 
+    DecisionTuple tuple = {};
+
+    std::stringstream expected;
+    expected << TIMESTEPS_CSV_HEADER << '\n';
     for (int i = 0; i < p_numberOfTicks; i++)
     {
-        DecisionTuple tuple;
-        fileDataStorage.Save(nullptr, nullptr, tuple, 0);
-        expected << "0" << std::endl;
+        fileDataStorage.Save(nullptr, tuple, 0);
+        expected << 0 << '\n';
     }
+
     fileDataStorage.Shutdown();
-    expected << "END";
 
-    // Check if the file is truly written to the Windows temporary directory
-    filesystem::path path = filesystem::temp_directory_path();
-    path.append(TEST_FILE_DIR);
-    path.append(TEST_FILE_NAME);
-    std::string expectedPath = path.string();
-    ASSERT_STREQ(expectedPath.c_str(), actualPath.string().c_str());
+    std::ifstream file(bufferPaths.TimeSteps);
+    std::stringstream contents;
+    contents << file.rdbuf();
 
-    // Read the written file
-    std::ifstream reader(actualPath.c_str());
-    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-    reader.close();
-
-    // Check contents
-    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
+    ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
 }
 
 /// @brief Test the data storage system's Save function over 3 timesteps with certain modules enabled.
-/// Data used will be randomly generated.
-/// No decisions will be tested.
-/// @param p_storeEnvironment Whether to save environment data
-/// @param p_storeCar Whether to save car data
-/// @param p_storeControls Whether to save player control data
-/// @param p_storeDecisions Whether to save intervention data
-void TestDataStorageSave(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions)
+///        Data used will be randomly generated.
+/// @param p_storeEnvironment Whether to save environment data (TODO: implement when used)
+/// @param p_storeCar         Whether to save car data
+/// @param p_storeControls    Whether to save player control data
+/// @param p_storeDecisions   Whether to save intervention data
+/// @param p_storeMeta        Whether to save metadata (TODO: implement when used)
+void TestWriteData(bool p_storeEnvironment, bool p_storeCar, bool p_storeControls, bool p_storeDecisions, bool p_storeMeta)
 {
-    Random random;
-    tDataToStore params = {
+    GET_DUMMY_TIMES;
+
+    tDataToStore settings = {
         p_storeEnvironment,
         p_storeCar,
         p_storeControls,
         p_storeDecisions};
+
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(1);
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
 
-    // Create a string to save all intended random data to
-    std::stringstream expected;
+    Random rnd;
+    tCarElt car = {};
 
-    // Initialise buffer file
-    GET_DUMMY_TIMES;
-    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
-    if (p_storeEnvironment)
-    {
-        expected << "GameState" << std::endl;
-    }
-    if (p_storeControls)
-    {
-        expected << "UserInput" << std::endl;
-    }
+    std::stringstream expectedGameState;
+    std::stringstream expectedUserInput;
+    std::stringstream expectedDecisions;
+    expectedGameState << GAMESTATE_CSV_HEADER << '\n';
+    expectedUserInput << USERINPUT_CSV_HEADER << '\n';
+    expectedDecisions << DECISIONS_CSV_HEADER << '\n';
 
-    for (int i = 0; i < 3; i++)
+    for (int tick = 0; tick < 3; tick++)
     {
         // Save with random data
-        GET_RANDOM_TICKCOUNT;
-        GET_RANDOM_CAR;
-        GET_RANDOM_SITUATION;
+        CREATE_RANDOM_CAR(rnd, car);
+        DecisionTuple tuple = GenerateDecisions(rnd, true, true, true, true, true);
 
-        DecisionTuple tuple;
-
-        fileDataStorage.Save(&car, &situation, tuple, tickCount);
+        fileDataStorage.Save(&car, tuple, tick);
 
         // Define our expectations
-        expected << std::to_string(tickCount) << std::endl;
         if (p_storeCar)
         {
-            WRITE_EXPECTED_CAR;
+            expectedGameState << tick << ',';
+            WRITE_EXPECTED_CAR(expectedGameState, car);
         }
+
         if (p_storeControls)
         {
-            WRITE_EXPECTED_CONTROLS;
+            expectedUserInput << tick << ',';
+            WRITE_EXPECTED_CONTROLS(expectedUserInput, car.ctrl);
         }
+
         if (p_storeDecisions)
         {
-            expected << "Decisions"
-                     << "\n"
-                     << "NONE"
-                     << "\n";
+            expectedDecisions << tick << ',';
+            WriteExpectedDecisions(expectedDecisions, tuple);
         }
     }
 
-    // Finish the buffer file
-    expected << "END";
     fileDataStorage.Shutdown();
 
-    // Read the written file
-    std::ifstream reader(path);
-    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-    reader.close();
+    std::ifstream gameStateFile(bufferPaths.GameState);
+    std::ifstream userInputFile(bufferPaths.UserInput);
+    std::ifstream decisionsFile(bufferPaths.Decisions);
 
-    // Check contents
-    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
+    std::stringstream gameStateContents;
+    std::stringstream userInputContents;
+    std::stringstream decisionsContents;
+
+    gameStateContents << gameStateFile.rdbuf();
+    userInputContents << userInputFile.rdbuf();
+    decisionsContents << decisionsFile.rdbuf();
+
+    ASSERT_STREQ(gameStateContents.str().c_str(), expectedGameState.str().c_str());
+    ASSERT_STREQ(userInputContents.str().c_str(), expectedUserInput.str().c_str());
+    ASSERT_STREQ(decisionsContents.str().c_str(), expectedDecisions.str().c_str());
 }
 
-/// @brief Run the @link #TestDataStorageSave(bool,bool,bool,bool,bool) test with all possible pairs of datasets enabled at least once.
-TEST(FileDataStorageTests, TestDataStorageSingle)
-{
-    bool booleans[2]{true, false};
-    PairWiseTest(TestDataStorageSave, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
-}
-
-void TestDataStorageSaveDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
-{
-    Random random;
-    tDataToStore params = {
-        false,
-        false,
-        false,
-        p_storeDecisions};
-    FileDataStorage fileDataStorage;
-    fileDataStorage.SetCompressionRate(1);
-
-    // Create a string to save all intended random data to
-    std::stringstream expected;
-
-    // Initialise buffer file
-    GET_DUMMY_TIMES;
-    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
-
-    DecisionTuple decisions = GenerateDecisions(random, p_doSteer, p_doBrake, p_doAccel, p_doGear, p_doLights);
-
-    // Save any tick
-    GET_RANDOM_TICKCOUNT;
-    fileDataStorage.Save(nullptr, nullptr, decisions, tickCount);
-    expected << std::to_string(tickCount) << std::endl;
-
-    if (p_storeDecisions)
-    {
-        WriteExpectedDecisions(decisions, expected, p_doSteer, p_doBrake, p_doAccel, p_doGear, p_doLights);
-    }
-    // Finish the buffer file
-    expected << "END";
-    fileDataStorage.Shutdown();
-
-    // Read the written file
-    std::ifstream reader(path);
-    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-    reader.close();
-
-    // Check contents
-    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
-}
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved but none are made
-TEST_CASE(FileDataStorageTests, DecisionsNoneStored, TestDataStorageSaveDecisions, (true, false, false, false, false, false))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved and all decisions are made
-TEST_CASE(FileDataStorageTests, DecisionsAllStored, TestDataStorageSaveDecisions, (true, true, true, true, true, true))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should not be saved and none are made
-TEST_CASE(FileDataStorageTests, DecisionsDisabledNoDecisions, TestDataStorageSaveDecisions, (false, false, false, false, false, false))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should not be saved but all decisions are made
-TEST_CASE(FileDataStorageTests, DecisionsDisabledAllDecisions, TestDataStorageSaveDecisions, (false, true, true, true, true, true))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only light decisions are made
-TEST_CASE(FileDataStorageTests, DecisionsLightStored, TestDataStorageSaveDecisions, (true, false, false, false, false, true))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only gear decisions are made
-TEST_CASE(FileDataStorageTests, DecisionsGearStored, TestDataStorageSaveDecisions, (true, false, false, false, true, false))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer accelerate are made
-TEST_CASE(FileDataStorageTests, DecisionsAccelStored, TestDataStorageSaveDecisions, (true, false, false, true, false, false))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only brake decisions are made
-TEST_CASE(FileDataStorageTests, DecisionsBrakeStored, TestDataStorageSaveDecisions, (true, false, true, false, false, false))
-
-/// @brief Test whether the FileDataStorage stores properly when decisions should be saved; only steer decisions are made
-TEST_CASE(FileDataStorageTests, DecisionsSteerStored, TestDataStorageSaveDecisions, (true, true, false, false, false, false))
-
-/// @brief Test whether the FileDataStorage stores properly for every combination of decision made
-TEST(FileDataStorageTests, DecisionsCombinations)
-{
-    bool alwaysTrue[1]{true};
-    bool booleans[2]{true, false};
-    PairWiseTest(TestDataStorageSaveDecisions, alwaysTrue, 1, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2);
-}
-
-/// @brief Test writing decisions after data to ensure the order is as expected
-TEST(FileDataStorageTests, DecisionsAfterData)
-{
-    Random random;
-    tDataToStore params = {
-        true,
-        true,
-        true,
-        true};
-    FileDataStorage fileDataStorage;
-    fileDataStorage.SetCompressionRate(1);
-
-    // Create a string to save all intended random data to
-    std::stringstream expected;
-
-    // Initialise buffer file
-    GET_DUMMY_TIMES;
-    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES
-             << "GameState" << std::endl
-             << "UserInput" << std::endl;
-
-    // Generate and write data
-    GET_RANDOM_TICKCOUNT;
-    GET_RANDOM_CAR;
-    GET_RANDOM_SITUATION;
-    expected << std::to_string(tickCount) << std::endl;
-    WRITE_EXPECTED_CAR;
-    WRITE_EXPECTED_CONTROLS;
-
-    // Generate and write decisions
-    DecisionTuple decisions = GenerateDecisions(random, true, true, true, true, true);
-    fileDataStorage.Save(&car, &situation, decisions, tickCount);
-    WriteExpectedDecisions(decisions, expected, true, true, true, true, true);
-
-    // Finish the buffer file
-    expected << "END";
-    fileDataStorage.Shutdown();
-
-    // Read the written file
-    std::ifstream reader(path);
-    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-    reader.close();
-
-    // Check contents
-    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
-}
-
-/// @brief Test that the FileDataStorage creates the file and directory it should write to if the directory does not yet exist
-TEST(FileDataStorageTests, CreatesFileDirectoryIfNotExists)
-{
-    // Delete the existing test directory to ensure directories are properly created
-    if (filesystem::exists(TEST_FILE_DIR))
-    {
-        filesystem::remove_all(TEST_FILE_DIR);  // @NOCOVERAGE, deletes your folder if it exists to ensure it is properly created, not needed for test if folder did not exist anyway.
-    }
-
-    TestNoStorageWithTimestamps();
-}
+/// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible combinations.
+BEGIN_TEST_COMBINATORIAL(FileDataStorageTests, CombinatorialTestWriteData)
+bool booleans[2]{true, false};
+END_TEST_COMBINATORIAL5(TestWriteData, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Test that the FileDataStorage works properly when the same file is written to twice.
+//         The buffer files should be wiped when re-used.
 TEST(FileDataStorageTests, WriteSameFileTwice)
 {
-    // Write less data the second time, to ensure data is cleared and not simply overwritten
     TestNoStorageWithTimestamps(2);
     TestNoStorageWithTimestamps(1);
 }
@@ -431,48 +446,49 @@ TEST(FileDataStorageTests, WriteSameFileTwice)
 /// @brief Test that the FileDataStorage works properly when we only write the initial data and no ticks
 TEST_CASE(FileDataStorageTests, WriteNoTicks, TestNoStorageWithTimestamps, (0))
 
+/// @brief Test that the FileDataStorage works properly for a long run.
+TEST_CASE(FileDataStorageTests, WriteLongRun, TestNoStorageWithTimestamps, (1000000))
+
 /// @brief Test helper function to get the median of an array
-/// @param p_values array to get the median of
-/// @param p_compressionRate the compression rate of the array
-/// @return median of the array
+/// @param p_values          Array to get the median of
+/// @param p_compressionRate The compression rate of the array
+/// @return                  Median of the array
 float HelperGetMedian(float* p_values, int p_compressionRate)
 {
     std::sort(p_values, p_values + p_compressionRate);
     int middle = static_cast<int>(std::floor(static_cast<float>(p_compressionRate) / 2));
     return p_values[middle];
 }
-/// @brief Test for checking data is correctly set for different compression rates for 20 ticks
-/// @param p_compressionRate the compression rate to be tested with
+
+/// @brief Test for checking whether data is correctly compressed for different compression rates for COMPRESSION_LIMIT + 1 ticks
+/// @param p_compressionRate The compression rate to be tested with
 void TestDataStorageSaveCompressionRates(int p_compressionRate)
 {
-    Random random;
-    tDataToStore params = {true, true, true, false};
+    GET_DUMMY_TIMES;
+
+    tDataToStore settings = {true, true, true, false};
     FileDataStorage fileDataStorage;
     fileDataStorage.SetCompressionRate(p_compressionRate);
+    tBufferPaths bufferPaths = fileDataStorage.Initialize(settings, DUMMY_INITIALISATION_PARAMETERS);
 
     int compressionStep = 0;
-    // Create a string to save all intended random data to
-    std::stringstream expected;
-
-    // Initialise buffer file
-    GET_DUMMY_TIMES;
-    filesystem::path path = fileDataStorage.Initialize(params, DUMMY_INITIALISATION_PARAMETERS);
-    expected << DUMMY_INITIALISATION_FILE_ENTRIES;
-    expected << "GameState" << std::endl
-             << "UserInput" << std::endl;
-
     float totalPosX = 0, totalPosY = 0, totalPosZ = 0, totalPosAx = 0, totalPosAy = 0, totalPosAz = 0;
     float totalMovVelX = 0, totalMovAccX = 0;
     int gearValues[COMPRESSION_LIMIT];
     float steerValues[COMPRESSION_LIMIT], brakeValues[COMPRESSION_LIMIT], accelValues[COMPRESSION_LIMIT], clutchValues[COMPRESSION_LIMIT];
 
-    for (int i = 0; i < 20; i++)
-    {
-        // Save with random data
-        GET_RANDOM_CAR;
-        GET_RANDOM_SITUATION;
+    Random rnd;
+    tCarElt car = {};
+    DecisionTuple dummy = {};
 
-        DecisionTuple tuple;
+    std::stringstream expectedGameState;
+    std::stringstream expectedUserInput;
+    expectedGameState << GAMESTATE_CSV_HEADER << '\n';
+    expectedUserInput << USERINPUT_CSV_HEADER << '\n';
+
+    for (int tick = 0; tick <= COMPRESSION_LIMIT; tick++)
+    {
+        CREATE_RANDOM_CAR(rnd, car);
 
         Posd pos = car.pub.DynGCg.pos;
         tDynPt mov = car.pub.DynGC;
@@ -485,6 +501,7 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
         fileDataStorage.AddForAveraging(totalMovVelX, mov.vel.x);                     // speed
         fileDataStorage.AddForAveraging(totalMovAccX, mov.acc.x);                     // acceleration
         fileDataStorage.AddToArray<int>(gearValues, car.priv.gear, compressionStep);  // gear
+
         tCarCtrl ctrl = car.ctrl;
         fileDataStorage.AddToArray<float>(steerValues, ctrl.steer, compressionStep);       // steer
         fileDataStorage.AddToArray<float>(brakeValues, ctrl.brakeCmd, compressionStep);    // brake
@@ -496,48 +513,61 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
         // Define our expectations
         if (compressionStep == p_compressionRate)
         {
-            expected << std::to_string(i) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalPosX)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalPosY)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalPosZ)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalPosAx)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalPosAy)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalPosAz)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalMovVelX)) << std::endl
-                     << std::to_string(fileDataStorage.GetAverage(totalMovAccX)) << std::endl
-                     << std::to_string(fileDataStorage.GetLeastCommon(gearValues)) << std::endl
-                     << std::to_string(HelperGetMedian(steerValues, p_compressionRate)) << std::endl
-                     << std::to_string(HelperGetMedian(brakeValues, p_compressionRate)) << std::endl
-                     << std::to_string(HelperGetMedian(accelValues, p_compressionRate)) << std::endl
-                     << std::to_string(HelperGetMedian(clutchValues, p_compressionRate)) << std::endl;
+            expectedGameState << tick << ','
+                              << fileDataStorage.GetAverage(totalPosX) << ','
+                              << fileDataStorage.GetAverage(totalPosY) << ','
+                              << fileDataStorage.GetAverage(totalPosZ) << ','
+                              << fileDataStorage.GetAverage(totalPosAx) << ','
+                              << fileDataStorage.GetAverage(totalPosAy) << ','
+                              << fileDataStorage.GetAverage(totalPosAz) << ','
+                              << fileDataStorage.GetAverage(totalMovVelX) << ','
+                              << fileDataStorage.GetAverage(totalMovAccX) << ','
+                              << fileDataStorage.GetLeastCommon(gearValues) << '\n';
+
+            expectedUserInput << tick << ','
+                              << HelperGetMedian(steerValues, p_compressionRate) << ','
+                              << HelperGetMedian(brakeValues, p_compressionRate) << ','
+                              << HelperGetMedian(accelValues, p_compressionRate) << ','
+                              << HelperGetMedian(clutchValues, p_compressionRate) << '\n';
+
             compressionStep = 0;
         }
 
-        fileDataStorage.Save(&car, &situation, tuple, i);
+        fileDataStorage.Save(&car, dummy, tick);
     }
 
-    // Finish the buffer file
-    expected << "END";
     fileDataStorage.Shutdown();
 
-    // Read the written file
-    std::ifstream reader(path);
-    std::string fileContents((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-    reader.close();
+    std::ifstream gameStateFile(bufferPaths.GameState);
+    std::ifstream userInputFile(bufferPaths.UserInput);
 
-    // Check contents
-    ASSERT_STREQ(fileContents.c_str(), expected.str().c_str());
+    std::stringstream gameStateContents;
+    std::stringstream userInputContents;
+
+    gameStateContents << gameStateFile.rdbuf();
+    userInputContents << userInputFile.rdbuf();
+
+    ASSERT_STREQ(gameStateContents.str().c_str(), expectedGameState.str().c_str());
+    ASSERT_STREQ(userInputContents.str().c_str(), expectedUserInput.str().c_str());
 }
-/// @brief Test for checking data is correctly set for compression rate 1
+
+/// @brief Test for checking data is correctly compressed for compression rate 1
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates1, TestDataStorageSaveCompressionRates, (1))
-/// @brief Test for checking data is correctly set for compression rate 3
+
+/// @brief Test for checking data is correctly compressed for compression rate 3
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates3, TestDataStorageSaveCompressionRates, (3))
-/// @brief Test for checking data is correctly set for compression rate 5
+
+/// @brief Test for checking data is correctly compressed for compression rate 5
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates5, TestDataStorageSaveCompressionRates, (5))
-/// @brief Test for checking data is correctly set for compression rate 7
+
+/// @brief Test for checking data is correctly compressed for compression rate 7
 TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates7, TestDataStorageSaveCompressionRates, (7))
-/// @brief Test for checking data is correctly set for compression rate 9
-TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates10, TestDataStorageSaveCompressionRates, (9))
+
+/// @brief Test for checking data is correctly compressed for compression rate 9
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionRates9, TestDataStorageSaveCompressionRates, (9))
+
+/// @brief Test for checking data is correctly compressed for the max compression rate
+TEST_CASE(FileDataStorageTests, TestDataStorageSaveCompressionLimit, TestDataStorageSaveCompressionRates, (COMPRESSION_LIMIT))
 
 /// @brief Test for checking the compression rate is correctly set
 TEST(FileDataStorageTests, SetCompressionsRateTest)
@@ -553,6 +583,7 @@ TEST(FileDataStorageTests, SetCompressionsRateTest)
         ASSERT_EQ(compressionRate, fileDataStorage.GetCompressionRate());
     }
 }
+
 /// @brief Test that values correctly gets added to the sum
 TEST(FileDataStorageTests, AddForAveragingTest)
 {
