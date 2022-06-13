@@ -112,7 +112,7 @@ Changed:
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
                 added   m_prevIntervention member
-                added   NO_KEYBOARD define: clarify magic number
+                added   ALLOW_KEYBOARD define: clarify magic number
                 changed the MaxFuelPerMeter value to 0
                 changed the fuel_cons_factor to value 0
             CMakeLists.txt
@@ -191,6 +191,7 @@ Changed:
             added HasValidRaceStartArguments()
 
             changed check to call custom HasValidRaceStartArguments method
+            changed main() changed application name
         CMakeLists.txt
             added rppUtils and Filesystem for Linux
     interfaces/
@@ -324,6 +325,8 @@ Changed:
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
                         added controls
+                    splash.cpp
+                        changed splashDisplay() removed version string
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
@@ -380,7 +383,6 @@ Changed:
                         added Yn[] from removed playerconfig.cpp
                         added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
-                        added button for accessing the force feedback settings
                 trackselect.cpp
                     changed rmtsSelect(): replaced usage of race manager with SetTrack function
                     changed RmTrackSelect(): replaced usage of race manager with GetTrack function
@@ -557,8 +559,6 @@ Changed:
                 added EstimatedTimeLabel
             forcefeedbackconfigmenu.xml
                 changed background image
-            controlconfigmenu.xml
-                added button for force feedback control
             trackselectmenu.xml
                 changed position of category button
                 changed position of track button
