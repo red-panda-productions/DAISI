@@ -129,7 +129,7 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
     mediator->SetBlackBoxFilePath("");
 
     tDataToStore dataToStore{};
-    dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = dataToStore.MetaData = false;
+    dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = false;
     mediator->SetDataCollectionSettings(dataToStore);
 
     tIndicator indicators{};
@@ -149,7 +149,6 @@ bool LoadReplayConfiguration(GfRaceManager*& p_selRaceMan)
     participantControl.ControlAccel = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
     participantControl.ControlBrake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, "false"));
     participantControl.ControlInterventionToggle = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, "false"));
-    participantControl.ForceFeedback = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, "false"));
     mediator->SetPControlSettings(participantControl);
 
     tAllowedActions allowedActions{};

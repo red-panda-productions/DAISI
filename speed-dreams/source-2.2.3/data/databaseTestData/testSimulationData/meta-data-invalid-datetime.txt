@@ -1,0 +1,9 @@
+1253299283
+ClientBlackBox.exe
+?
+ClientBlackBox
+tracks/simple-road/simple-road-small-2-80/simple-road-small-2-80.xml
+4
+Small Road 2 Lanes [80 km/h]
+2
+?

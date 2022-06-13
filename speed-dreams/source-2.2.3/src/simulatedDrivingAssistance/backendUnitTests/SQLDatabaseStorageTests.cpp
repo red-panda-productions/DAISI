@@ -15,152 +15,232 @@
     testSettings.Port = 3306;                                                      \
     strcpy_s(testSettings.Address, SETTINGS_NAME_LENGTH, "127.0.0.1");             \
     strcpy_s(testSettings.Schema, SETTINGS_NAME_LENGTH, "sda_test");               \
-    testSettings.UseSSL = true;                                                    \
+    testSettings.UseSSL = false;                                                   \
     strcpy_s(testSettings.CACertFilePath, SETTINGS_NAME_LENGTH, "CA.txt");         \
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
-    strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt");
+    strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt")
 
-#define TEST_DATA_DIRECTORY OS_SEPARATOR "databaseTestData" OS_SEPARATOR
+#define TEST_DATA_DIRECTORY "databaseTestData" OS_SEPARATOR
+#define FULL_TEST_DATA_PATH(filename) SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData" OS_SEPARATOR filename
 
-/// @brief Connects to database using the given password
-/// @param p_sqlDatabaseStorage SQLDatabaseStorage that will be connected
-/// @param p_password password of database to connect to
-void TestOpenDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage, const std::string& p_password)
+#define VALID_META_DATA FULL_TEST_DATA_PATH("meta-data-intervention-0.txt")
+#define VALID_TIMESTEPS FULL_TEST_DATA_PATH("timesteps-buffer.csv")
+#define VALID_GAMESTATE FULL_TEST_DATA_PATH("gamestate-buffer.csv")
+#define VALID_USERINPUT FULL_TEST_DATA_PATH("userinput-buffer.csv")
+#define VALID_DECISIONS FULL_TEST_DATA_PATH("decisions-buffer.csv")
+
+#define VALID_BUFFER_DATA                                                                   \
+    {                                                                                       \
+        VALID_META_DATA, VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS \
+    }
+
+// Testing helper function that asserts whether an error is catched with the corresponding message.
+#define CATCH_ERROR_CONTAINING(statement, errorMsg)              \
+    testing::internal::CaptureStderr();                          \
+    statement;                                                   \
+    std::string output = testing::internal::GetCapturedStderr(); \
+    ASSERT_THAT(output, testing::HasSubstr(errorMsg));
+
+// Testing helper function that asserts whether there was NO error catched with the corresponding message.
+#define NO_ERROR_CONTAINING(statement, errorMsg)                 \
+    testing::internal::CaptureStderr();                          \
+    statement;                                                   \
+    std::string output = testing::internal::GetCapturedStderr(); \
+    ASSERT_THAT(output, Not(testing::HasSubstr(errorMsg)));
+
+/// @brief Tests whether connection to the database fails due to invalid certificates.
+TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailSSL)
 {
     MAKE_TEST_SETTINGS;
+    testSettings.UseSSL = true;
+    SQLDatabaseStorage sqlDataBaseStorage;
 
-    testSettings.UseSSL = false;
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.OpenDatabase(testSettings));
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.OpenDatabase(testSettings)),
+        "[MYSQL] ERROR: ");
 }
 
-/// @brief Inserts test data in opened database
-/// @param p_sqlDatabaseStorage SQLDatabaseStorage connected to the database
-/// @param p_inputFile name of file with test data to insert
-void TestInsertTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
+/// @brief Tests whether the database can be successfully opened when not using SSL
+TEST(SQLDatabaseStorageTests, TestOpenDatabaseSuccessNoSSL)
 {
-    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
-
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile));
-}
-
-/// @brief Test if exception is thrown when input data is incorrect
-/// @param p_sqlDatabaseStorage SQLDatabaseStorage connected to the database
-/// @param p_inputFile name of file with test data to insert
-void TestCatchIncorrectTestData(SQLDatabaseStorage& p_sqlDatabaseStorage, const char* p_inputFile)
-{
-    std::string path(SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData");
-
-    testing::internal::CaptureStderr();
-    p_sqlDatabaseStorage.StoreData(path + OS_SEPARATOR + p_inputFile);
-    std::string output = testing::internal::GetCapturedStderr();
-    ASSERT_THAT(output, testing::HasSubstr("[MYSQL] internal dberror: "));
-}
-
-/// @brief Closes the database
-/// @param p_sqlDatabaseStorage SQLDatabseStorage to disconnect from database
-void TestCloseDatabase(SQLDatabaseStorage& p_sqlDatabaseStorage)
-{
-    ASSERT_NO_THROW(p_sqlDatabaseStorage.CloseDatabase());
-}
-
-/// @brief tests if the connecting, storing, and closing happens without any issues
-/// @param p_password password of database to connect to
-/// @param p_inputFile test data to store
-void DatabaseTest(const std::string& p_password, const char* p_inputFile)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    TestOpenDatabase(sqlDatabaseStorage, p_password);
-    TestInsertTestData(sqlDatabaseStorage, p_inputFile);
-    TestCloseDatabase(sqlDatabaseStorage);
-}
-
-/// @brief tests if all database functionality happens fast enough
-/// @param p_password password of database to connect to
-/// @param p_inputFile test data to store
-void DatabaseTimeTest(const std::string& p_password, const char* p_inputFile)
-{
-    chdir(SD_DATADIR_SRC);
-    ASSERT_DURATION_LE(2, DatabaseTest(p_password, p_inputFile))
-}
-
-/// @brief tests if an exception is thrown when the input data is incorrect
-/// @param p_password password of database to connect to
-/// @param p_inputFile test data to store
-void CatchDatabaseError(const std::string& p_password, const char* p_inputFile)
-{
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    TestOpenDatabase(sqlDatabaseStorage, p_password);
-    TestCatchIncorrectTestData(sqlDatabaseStorage, p_inputFile);
-}
-
-/// @brief  Connects to the database, if the settings in test_data/correctSettings
-///         has the correct password, otherwise it has the same
-///         coverage path as TestDatabaseRunIncorrect
-TEST(SQLDatabaseStorageTests, TestDatabaseRunCorrect)
-{
-    ASSERT_TRUE(SetupSingletonsFolder());
-    chdir(SD_DATADIR_SRC);
     MAKE_TEST_SETTINGS;
-
     testSettings.UseSSL = false;
-    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
-
-    SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the directory doesn't exist.
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY OS_SEPARATOR "correctSettings"));
+    SQLDatabaseStorage sqlDataBaseStorage;
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
 }
 
-/// @brief  Tries to connect to the database but fails
-///         since the settingsfile in testdata/incorrectSettings has the
-///         incorrect password
-TEST(SQLDatabaseStorageTests, TestDatabaseRunIncorrect)
+/// @brief Tests whether connection to the database is not possible with an incorrect password.
+TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailIncorrectPassword)
 {
-    ASSERT_TRUE(SetupSingletonsFolder());
-    chdir(SD_DATADIR_SRC);
     MAKE_TEST_SETTINGS;
     sprintf(testSettings.Password, "WRONGPASSWORD");
-    testSettings.UseSSL = false;
-    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+    SQLDatabaseStorage sqlDataBaseStorage;
 
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    // Tests for an exception when it can't find the settings file
-    // because the directory doesn't exist.
-    testing::internal::CaptureStderr();
-    sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "incorrectSettings");
-    std::string output = testing::internal::GetCapturedStderr();
-    ASSERT_THAT(output, testing::HasSubstr("Could not open database"));
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.OpenDatabase(testSettings)),
+        "[MYSQL] ERROR: ");
 }
 
-/// @brief  Tests whether it will throw no exception when there is an encryption file
-///         a settings file and a certificates folder with fake certificates, named in the
-///         encryption file
-TEST(SQLDatabaseStorageTests, TestRemoteCorrectFakeCert)
+/// @brief Tests whether closing the database without opening it doesnt throw an error.
+TEST(SQLDatabaseStorageTests, TestReturnCloseParameter)
 {
-    ASSERT_TRUE(SetupSingletonsFolder());
-    chdir(SD_DATADIR_SRC);
-    MAKE_TEST_SETTINGS;
+    SQLDatabaseStorage sqlDataBaseStorage;
+    ASSERT_TRUE(sqlDataBaseStorage.CloseDatabase(true));
 
-    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
-
-    chdir(SD_DATADIR_SRC);
-    SQLDatabaseStorage sqlDatabaseStorage;
-    ASSERT_NO_THROW(sqlDatabaseStorage.Run("test_file.txt", TEST_DATA_DIRECTORY "remote" OS_SEPARATOR "correctRemote"));
+    SQLDatabaseStorage sqlDataBaseStorage2;
+    ASSERT_FALSE(sqlDataBaseStorage2.CloseDatabase(false));
 }
 
-#define YOUR_PASSWORD "PASSWORD"
+/// @brief Tests whether the database can be opened and closed multiple times without crashing.
+TEST(SQLDatabaseStorageTests, TestOpenAndCloseDatabaseTwice)
+{
+    MAKE_TEST_SETTINGS;
+    SQLDatabaseStorage sqlDataBaseStorage;
 
-TEST_CASE(SQLDatabaseStorageTests, InitialiseDatabase, DatabaseTest, (YOUR_PASSWORD, "test_file.txt"));
-TEST_CASE(SQLDatabaseStorageTests, TimeDatabase, DatabaseTimeTest, (YOUR_PASSWORD, "test_file.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NoUserInput, DatabaseTimeTest, (YOUR_PASSWORD, "test_noUserInput.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NoGameState, DatabaseTimeTest, (YOUR_PASSWORD, "test_noGameState.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NoDecisions, DatabaseTest, (YOUR_PASSWORD, "test_noDecisions.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NoGameStateYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noGameStateYesData.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NoUserInputYesData, CatchDatabaseError, (YOUR_PASSWORD, "test_noUserInputYesData.txt"))
-TEST_CASE(SQLDatabaseStorageTests, CatchLightsQuery, CatchDatabaseError, (YOUR_PASSWORD, "test_wrongLightsValue.txt"))
-TEST_CASE(SQLDatabaseStorageTests, CatchPrematureEOF, CatchDatabaseError, (YOUR_PASSWORD, "test_prematureEOF.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NonExistingInterventionMode, CatchDatabaseError, (YOUR_PASSWORD, "test_nonExistingInterventionMode.txt"))
-TEST_CASE(SQLDatabaseStorageTests, NonExistingInputFile, CatchDatabaseError, (YOUR_PASSWORD, "nonExistingTestFile"))
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+    ASSERT_NO_THROW(sqlDataBaseStorage.CloseDatabase(true));
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+    ASSERT_NO_THROW(sqlDataBaseStorage.CloseDatabase(true));
+}
+
+/// @brief Tests whether the database throws an exception when the metadata buffer file is not found.
+TEST(SQLDatabaseStorageTests, TestStoreDataMetaDataBufferNotFound)
+{
+    MAKE_TEST_SETTINGS;
+    SQLDatabaseStorage sqlDataBaseStorage;
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+
+    tBufferPaths bufferPaths = VALID_BUFFER_DATA;
+    bufferPaths.MetaData = "";
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.StoreData(bufferPaths)), 
+        "Buffer file not found: ");
+}
+
+TEST(SQLDatabaseStorageTests, TestStoreDataIncomplete)
+{
+    MAKE_TEST_SETTINGS;
+    SQLDatabaseStorage sqlDataBaseStorage;
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+
+    tBufferPaths bufferPaths = VALID_BUFFER_DATA;
+    bufferPaths.MetaData = FULL_TEST_DATA_PATH("meta-data-incomplete.txt");
+    ASSERT_THROW(sqlDataBaseStorage.StoreData(bufferPaths), std::exception);
+}
+
+/// @brief Tests whether the data from the given buffer files is stored without throwing a MYSQL error.
+/// @param p_bufferPaths The data buffers to store
+void TestStoreDataSuccess(tBufferPaths p_bufferPaths)
+{
+    MAKE_TEST_SETTINGS;
+    SQLDatabaseStorage sqlDataBaseStorage;
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+
+    NO_ERROR_CONTAINING(
+        ASSERT_TRUE(sqlDataBaseStorage.StoreData(p_bufferPaths)), 
+        "[MYSQL]");
+}
+
+/// @brief Tests whether a MYSQL error is thrown when the data from the given buffer files is trying to be stored
+/// @param p_bufferPaths The data buffers to store
+void TestStoreDataFailError(tBufferPaths p_bufferPaths)
+{
+    MAKE_TEST_SETTINGS;
+    SQLDatabaseStorage sqlDataBaseStorage;
+    ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
+
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.StoreData(p_bufferPaths)), 
+        "[MYSQL] ERROR: ");
+}
+
+// Varying test cases using the above test error/no error functions for storing to the database.
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataValid, TestStoreDataSuccess,
+          ({VALID_META_DATA, VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidTimestepsNotFound, TestStoreDataFailError,
+          ({VALID_META_DATA, "", VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidGamestateNotFound, TestStoreDataFailError,
+          ({VALID_META_DATA, VALID_TIMESTEPS, "", VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidUserinputNotFound, TestStoreDataFailError,
+          ({VALID_META_DATA, VALID_TIMESTEPS, VALID_GAMESTATE, "", VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidDecisionsNotFound, TestStoreDataFailError,
+          ({VALID_META_DATA, VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, ""}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionType0, TestStoreDataSuccess,
+          ({FULL_TEST_DATA_PATH("meta-data-intervention-0.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionType1, TestStoreDataSuccess,
+          ({FULL_TEST_DATA_PATH("meta-data-intervention-1.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionType2, TestStoreDataSuccess,
+          ({FULL_TEST_DATA_PATH("meta-data-intervention-2.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionType3, TestStoreDataSuccess,
+          ({FULL_TEST_DATA_PATH("meta-data-intervention-3.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionType4, TestStoreDataSuccess,
+          ({FULL_TEST_DATA_PATH("meta-data-intervention-4.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInterventionTypeInvalid, TestStoreDataFailError,
+          ({FULL_TEST_DATA_PATH("meta-data-intervention-invalid.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidMetaDataType, TestStoreDataFailError,
+          ({FULL_TEST_DATA_PATH("meta-data-invalid-datetime.txt"), VALID_TIMESTEPS, VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+TEST_CASE(SQLDatabaseStorageTests, TestStoreDataInvalidContraintFailTick, TestStoreDataFailError,
+          ({VALID_META_DATA, FULL_TEST_DATA_PATH("timesteps-constraint-fail.csv"), VALID_GAMESTATE, VALID_USERINPUT, VALID_DECISIONS}));
+
+/// @brief Test whether the valid buffer data can be successfully stored by calling the run function.
+TEST(SQLDatabaseStorageTests, TestRunDataStorage)
+{
+    MAKE_TEST_SETTINGS;
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    SQLDatabaseStorage sqlDataBaseStorage;
+    NO_ERROR_CONTAINING(
+        ASSERT_TRUE(sqlDataBaseStorage.Run(VALID_BUFFER_DATA)), 
+        "[MYSQL]");
+}
+
+/// @brief Test whether the constructor is set correctly,
+///        by testing whether invalid buffer files are ignored and thus doesn't throw an error.
+TEST(SQLDatabaseStorageTests, TestRunParameterizedConstructor)
+{
+    tDataToStore settings = {false, false, false, false};
+    SQLDatabaseStorage sqlDataBaseStorage(settings);
+
+    // Test whether settings were stored by checking whether the gamesate, etc. files are not being loaded.
+    tBufferPaths bufferPaths = VALID_BUFFER_DATA;
+    bufferPaths.GameState = "";
+    bufferPaths.UserInput = "";
+    bufferPaths.Decisions = "";
+
+    MAKE_TEST_SETTINGS;
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    NO_ERROR_CONTAINING(
+        ASSERT_TRUE(sqlDataBaseStorage.Run(bufferPaths)), 
+        "[MYSQL]");
+}
+
+/// @brief Test whether the database storage cannot run when provided with an invalid username.
+TEST(SQLDatabaseStorageTests, TestRunCannotOpenDatabase)
+{
+    MAKE_TEST_SETTINGS;
+    sprintf(testSettings.Username, "SOMETHINGINCORRECT");
+
+    ASSERT_TRUE(SetupSingletonsFolder());
+    SMediator::GetInstance()->SetDatabaseSettings(testSettings);
+
+    SQLDatabaseStorage sqlDataBaseStorage;
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.Run(VALID_BUFFER_DATA)), 
+        "[MYSQL] ERROR: ");
+}

@@ -340,7 +340,6 @@ TEST(RecorderTests, WriteRunSettingsTests)
     participantControl.ControlAccel = random.NextBool();
     participantControl.ControlBrake = random.NextBool();
     participantControl.ControlInterventionToggle = random.NextBool();
-    participantControl.ForceFeedback = random.NextBool();
 
     int maxTime = random.NextInt();
 
@@ -375,7 +374,6 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, nullptr), BoolToString(participantControl.ControlInterventionToggle));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlAccel));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteer));
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
 
     ASSERT_EQ(GfParmGetNum(handle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, 0), static_cast<tdble>(maxTime));
 
@@ -439,8 +437,8 @@ void AssertV0ToV1Changes(void* p_upgradedRunSettingsHandle, filesystem::path& p_
 
     const char* name = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
     const char* category = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
+    ASSERT_STRCASEEQ(name, "Small Highway 4 Lanes [80 km/h]");
+    ASSERT_STRCASEEQ(category, "simple-highway");
     delete[] name;
     delete[] category;
 

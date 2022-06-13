@@ -1,6 +1,6 @@
 #include <tgfclient.h>
 #include <random>
-#include <forcefeedback.h>
+#include <forcefeedbackconfig.h>
 #include "guimenu.h"
 #include "Mediator.h"
 #include "ResearcherMenu.h"
@@ -11,6 +11,7 @@
 #include "tracks.h"
 #include "FileSystem.hpp"
 #include "mainmenu.h"
+#include <playerpref.h>
 
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
@@ -49,7 +50,7 @@
 
 // Constant numbers
 #define INDICATOR_AMOUNT       3
-#define PCONTROL_AMOUNT        5
+#define PCONTROL_AMOUNT        4
 #define ALLOWED_ACTIONS_AMOUNT 3
 #define MAX_TIME               1440
 
@@ -69,6 +70,13 @@
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
 
 #define TRACK_LOADER_MODULE_NAME "trackv1"
+
+#if SDL_FORCEFEEDBACK
+#include <forcefeedbackconfig.h>
+#define HUMAN_DRIVER_INDEX        1
+#define PRIMO_CAR_NAME            "primo"
+#define PRM_FORCE_FEEDBACK_BUTTON "ForceFeedbackButton"
+#endif
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -91,9 +99,6 @@ InterventionType m_interventionType;
 
 // Participant control
 tParticipantControl m_pControl;
-
-// Force feedback manager
-extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 // Max time
 int m_maxTime;
@@ -205,12 +210,6 @@ static void SelectInterventionType(tRadioButtonInfo* p_info)
     m_interventionType = (InterventionType)p_info->Selected;
 }
 
-/// @brief Opens the menu to select an environment
-static void SelectEnvironment(void* /* dummy */)
-{
-    RmTrackSelect(&m_trackMenuSettings);
-}
-
 /// @brief        Enables/disables the possibility for participants to control steering
 /// @param p_info Information on the checkbox
 static void SelectControlSteer(tCheckBoxInfo* p_info)
@@ -237,13 +236,6 @@ static void SelectControlBrake(tCheckBoxInfo* p_info)
 static void SelectControlInterventionOnOff(tCheckBoxInfo* p_info)
 {
     m_pControl.ControlInterventionToggle = p_info->bChecked;
-}
-
-/// @brief        Enables/disables the possibility for participants to control steering
-/// @param p_info Information on the checkbox
-static void SelectForceFeedback(tCheckBoxInfo* p_info)
-{
-    m_pControl.ForceFeedback = p_info->bChecked;
 }
 
 /// @brief Handle input in the max time textbox
@@ -309,7 +301,6 @@ static void SaveSettingsToDisk()
     GfParmSetStr(readParam, PRM_CTRL_ACCEL, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlAccel));
     GfParmSetStr(readParam, PRM_CTRL_BRAKE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlBrake));
     GfParmSetStr(readParam, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ControlInterventionToggle));
-    GfParmSetStr(readParam, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_pControl.ForceFeedback));
 
     // Save max time to xml file
     char buf[32];
@@ -368,10 +359,6 @@ static void SaveSettings(void* /* dummy */)
     // Save settings in the ResearcherMenu.xml
     SaveSettingsToDisk();
 
-    // Enable/Disable force feedback in the force feedback manager
-    forceFeedback.effectsConfig["globalEffect"]["enabled"] = m_pControl.ForceFeedback;
-    forceFeedback.saveConfiguration();
-
     // Make sure developer screen is also saving its settings
     ConfigureDeveloperSettings();
 
@@ -379,10 +366,33 @@ static void SaveSettings(void* /* dummy */)
     GfuiScreenActivate(s_nextHandle);
 }
 
+/// @brief Opens the menu to select an environment
+static void SelectEnvironment(void* /* dummy */)
+{
+    RmTrackSelect(&m_trackMenuSettings);
+}
+
+/// @brief Returns to the main menu
 static void BackToMain(void* /* dummy */)
 {
     GfuiScreenActivate(MainMenuInit(s_scrHandle));
 }
+
+#if SDL_FORCEFEEDBACK
+/// @brief Opens the force feedback settings menu
+static void
+rmForceFeedbackConfigHookActivate(void* /* dummy */)
+{
+    void* prHandle;
+    char buf[100];
+
+    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
+    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
+    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, HUMAN_DRIVER_INDEX);
+
+    GfuiScreenActivate(ForceFeedbackMenuInit(s_scrHandle, prHandle, HUMAN_DRIVER_INDEX, PRIMO_CAR_NAME));
+}
+#endif
 
 /// @brief Synchronizes all the menu controls in the researcher menu to the internal variables
 static void SynchronizeControls()
@@ -401,7 +411,6 @@ static void SynchronizeControls()
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[1], m_pControl.ControlAccel);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[2], m_pControl.ControlBrake);
     GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[3], m_pControl.ControlInterventionToggle);
-    GfuiCheckboxSetChecked(s_scrHandle, m_pControlControl[4], m_pControl.ForceFeedback);
 
     char buf[32];
     sprintf(buf, "%d", m_maxTime);
@@ -441,7 +450,6 @@ static void LoadDefaultSettings()
     m_pControl.ControlAccel = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[1]);
     m_pControl.ControlBrake = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[2]);
     m_pControl.ControlInterventionToggle = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[3]);
-    m_pControl.ForceFeedback = GfuiCheckboxIsChecked(s_scrHandle, m_pControlControl[4]);
 
     m_maxTime = std::stoi(GfuiEditboxGetString(s_scrHandle, m_maxTimeControl));
 }
@@ -465,7 +473,6 @@ static void LoadConfigSettings(void* p_param)
     m_pControl.ControlAccel = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_ACCEL, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlBrake = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_BRAKE, GFMNU_ATTR_CHECKED, false);
     m_pControl.ControlInterventionToggle = GfuiMenuControlGetBoolean(p_param, PRM_CTRL_INTRV_TGGLE, GFMNU_ATTR_CHECKED, false);
-    m_pControl.ForceFeedback = GfuiMenuControlGetBoolean(p_param, PRM_FORCE_FEEDBACK, GFMNU_ATTR_CHECKED, false);
 
     // Set the max time setting from the xml file
     m_maxTime = std::stoi(GfParmGetStr(p_param, PRM_MAX_TIME, GFMNU_ATTR_TEXT, nullptr));
@@ -498,23 +505,9 @@ static void LoadConfigSettings(void* p_param)
     SynchronizeControls();
 }
 
-/// @brief Called whenever the menu is (re)opened. Loads the user menu settings from the local config file,
-///  and handles other logic that has to be performed whenever the screen is opened.
+/// @brief Called whenever the menu is (re)opened. Handles logic that has to be performed whenever the screen is opened.
 static void OnActivate(void* /* dummy */)
 {
-    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
-    if (GfFileExists(buf))
-    {
-        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
-        // Initialize settings with the retrieved xml file
-        LoadConfigSettings(param);
-        GfParmReleaseHandle(param);
-        return;
-    }
-    LoadDefaultSettings();
-
     // Ensure the track loader is initialized again.
     // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
     InitializeTrackLoader();
@@ -603,7 +596,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
     // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
+    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "NextButton", s_scrHandle, SaveSettings);
 
     // Task radio button controls
     m_allowedActionsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_STEER, nullptr, SelectAllowedSteer);
@@ -641,7 +634,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_ACCEL, nullptr, SelectControlAccel);
     m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_BRAKE, nullptr, SelectControlBrake);
     m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
-    m_pControlControl[4] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_FORCE_FEEDBACK, nullptr, SelectForceFeedback);
 
     // Textbox controls
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
@@ -649,6 +641,10 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Generate UID button
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
+
+#if SDL_FORCEFEEDBACK
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_FORCE_FEEDBACK_BUTTON, nullptr, rmForceFeedbackConfigHookActivate);
+#endif
 
     // Back button
     m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
@@ -660,6 +656,19 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Set default userId
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);
+
+    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
+    char buf[512];
+    sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
+    if (GfFileExists(buf))
+    {
+        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+        // Initialize settings with the retrieved xml file
+        LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
+        return s_scrHandle;
+    }
+    LoadDefaultSettings();
 
     return s_scrHandle;
 }
