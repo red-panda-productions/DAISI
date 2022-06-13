@@ -19,6 +19,7 @@ public:
     bool OpenDatabase(DatabaseSettings p_dbSettings);
     bool CloseDatabase(bool p_returnVal);
 
+    static void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 private:
     void CreateDatabaseSchema(DatabaseSettings p_dbSettings);
     void CreateTables();
@@ -30,8 +31,6 @@ private:
     void InsertDecisions(const filesystem::path& p_decisionsPath, int p_trialId);
 
     std::vector<std::string> GetMissingPrivileges(DatabaseSettings p_dbSettings);
-
-    void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;

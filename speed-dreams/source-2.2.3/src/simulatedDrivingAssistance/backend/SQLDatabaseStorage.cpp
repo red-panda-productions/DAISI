@@ -127,7 +127,6 @@ std::vector<std::string> SQLDatabaseStorage::GetMissingPrivileges(DatabaseSettin
         // To require a new privilege simply add it as "UNION ALL SELECT '{privilege name}'"
         "    ("
         "        SELECT NULL AS privilege_type"
-        "        UNION ALL SELECT 'FILE'"
         "        UNION ALL SELECT 'CREATE'"
         "        UNION ALL SELECT 'CREATE TEMPORARY TABLES'"
         "        UNION ALL SELECT 'SELECT'"
@@ -178,7 +177,7 @@ bool SQLDatabaseStorage::TestConnection(DatabaseSettings p_dbSettings)
     // Connect to the database, which both checks whether this is possible and initialises m_connection
     if (!ConnectDatabase(p_dbSettings))
     {
-        std::cout << "SQL connection test failed: Database could not be connected" << std::endl;
+        std::cerr << "SQL connection test failed: Database could not be connected" << std::endl;
         return CloseDatabase(false);
     }
 
@@ -189,7 +188,7 @@ bool SQLDatabaseStorage::TestConnection(DatabaseSettings p_dbSettings)
     std::vector<std::string> missing_privileges = GetMissingPrivileges(p_dbSettings);
     if (!missing_privileges.empty())
     {
-        std::cout << "SQL connection test failed: Database user "
+        std::cerr << "SQL connection test failed: Database user "
                   << p_dbSettings.Username
                   << " is missing "
                   << missing_privileges.size()
@@ -199,9 +198,9 @@ bool SQLDatabaseStorage::TestConnection(DatabaseSettings p_dbSettings)
 
         for (const std::string& missing_privilege : missing_privileges)
         {
-            std::cout << " '" << missing_privilege << "'";
+            std::cerr << " '" << missing_privilege << "'";
         }
-        std::cout << "." << std::endl;
+        std::cerr << "." << std::endl;
         return CloseDatabase(false);
     }
 
