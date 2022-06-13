@@ -44,7 +44,7 @@ wget https://github.com/red-panda-productions/ipc-lib/releases/download/v1.1.0/i
 sudo apt install ./ipclib.deb libplib-dev libexpat1-dev libopenscenegraph-dev freeglut3-dev libvorbis-dev libsdl2-dev libopenal-dev libenet-dev libjpeg-dev libpng-dev libcurl4-openssl-dev libmysqlcppconn-dev libmsgpack-dev ninja-build
 ```
 
-### Optionally for testing:
+### Optional for testing:
  - A local MySQL database with:
    - Username: `SDATest`
    - Password: `PASSWORD`
@@ -93,8 +93,6 @@ sudo apt install ./ipclib.deb libplib-dev libexpat1-dev libopenscenegraph-dev fr
 One example algorithm is shipped with the source code and can be found in [speed-dreams/source-2.2.3/data/blackbox](speed-dreams/source-2.2.3/data/blackbox). Note that this is windows only, for more samples or to compile one for linux go to [SDALib](https://github.com/red-panda-productions/SDALib/).
 
 To start an experiment with a blackbox select the blackbox executable and start the run. The blackbox will automatically be started and connected to DAISI.
-
-To change icons or sounds check the examples in [speed-dreams/source-2.2.3/data/data/indicators](speed-dreams/source-2.2.3/data/data/indicators)
 
 ⚠Documentation is still WIP but will be found [here](documentation/).
 
