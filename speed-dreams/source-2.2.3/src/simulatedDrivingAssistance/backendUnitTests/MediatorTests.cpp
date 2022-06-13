@@ -196,7 +196,6 @@ END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, boolean
 /// @param p_intervention Control intervention toggle option
 /// @param p_gas          Control gas option
 /// @param p_steer        Control steering option
-/// @param p_force        Force feedback option
 void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention)
 {
     SDAConfigMediator::ClearInstance();

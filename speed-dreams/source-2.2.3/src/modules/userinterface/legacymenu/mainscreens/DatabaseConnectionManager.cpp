@@ -24,6 +24,7 @@ static tDatabaseSettings s_dbSettings;
 
 static char s_portString[SETTINGS_NAME_LENGTH];
 
+/// @brief Converts the port string to an integer
 void ConvertPortString()
 {
     try
@@ -34,6 +35,34 @@ void ConvertPortString()
     {
         std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
         s_dbSettings.Port = 0;
+    }
+}
+
+/// @brief Converts the port string to an integer and save into the saved settings
+void ConvertSavedPortString()
+{
+    try
+    {
+        s_dbSettings.Port = std::stoi(s_portString);
+    }
+    catch (std::exception&)
+    {
+        std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
+        s_dbSettings.Port = 0;
+    }
+}
+
+/// @brief Converts the port string to an integer and save into the temporary settings
+void ConvertCurrentPortString()
+{
+    try
+    {
+        s_tempDbSettings.Port = std::stoi(s_portString);
+    }
+    catch (std::exception&)
+    {
+        std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
+        s_tempDbSettings.Port = 0;
     }
 }
 
@@ -105,6 +134,7 @@ void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
     strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, "");
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Address));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Port));
+    ConvertSavedPortString();
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_control.Schema));
     s_dbSettings.UseSSL = SETTINGS_NAME_LENGTH, GfuiCheckboxIsChecked(p_scrHandle, p_control.UseSSL);
     SaveDBSettingsToDisk();
@@ -121,7 +151,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
-    ConvertPortString();
+    ConvertSavedPortString();
     strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
     s_dbSettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
     strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
@@ -256,6 +286,15 @@ void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, replacement);
 }
 
+/// @brief Handle input in the Password textbox
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_passwordControl the corresponding ui element control integers
+void ClearPassword(void* p_scrHandle, int p_passwordControl)
+{
+
+    GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
+}
+
 /// @brief Fill in the saved password
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
@@ -264,7 +303,7 @@ void FillInPassword(void* p_scrHandle, int p_passwordControl)
     SetPassword(p_scrHandle, p_passwordControl, s_dbSettings.Password);
 }
 
-/// @brief Fill in the password typed by the user and save the given passwordn in the tempDbSettings
+/// @brief Fill in the password typed by the user and save the given password in the tempDbSettings
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
 void ChangePassword(void* p_scrHandle, int p_passwordControl)
@@ -289,7 +328,7 @@ void SetPort(void* p_scrHandle, int p_portControl)
 {
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_portControl));
 
-    ConvertPortString();
+    ConvertCurrentPortString();
 
     char buf[32];
     sprintf(buf, "%d", s_tempDbSettings.Port);

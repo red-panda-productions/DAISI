@@ -101,6 +101,12 @@ static void SetPasswordCallback(void*)
     ChangePassword(s_scrHandle, m_passwordControl);
 }
 
+/// @brief Gets the password in the menu and the temporary settings
+static void ClearPasswordCallback(void*)
+{
+    ClearPassword(s_scrHandle, m_passwordControl);
+}
+
 /// @brief Sets the address in the menu and the temporary settings
 static void SetAddressCallback(void*)
 {
@@ -151,7 +157,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
 
     // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsernameCallback);
-    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, SetPasswordCallback, SetPasswordCallback);
+    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, ClearPasswordCallback, SetPasswordCallback);
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddressCallback);
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPortCallback);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchemaCallback);
