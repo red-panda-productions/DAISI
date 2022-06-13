@@ -55,7 +55,7 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    if(!p_emptyPath)
+    if (!p_emptyPath)
     {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
@@ -169,8 +169,10 @@ TEST(DecisionMakerTests, RaceStopTest)
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
-    ASSERT_NO_THROW(decisionMaker.RaceStop(true));
-    ASSERT_NO_THROW(decisionMaker.RaceStop(false));
+
+    ASSERT_NO_THROW(decisionMaker.CloseRecorder());
+    ASSERT_NO_THROW(decisionMaker.SaveData());
+    ASSERT_NO_THROW(decisionMaker.ShutdownBlackBox());
 
     tBufferPaths vsBufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
     tBufferPaths dmBufferPaths = decisionMaker.GetBufferPaths();
@@ -180,6 +182,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_EQ(vsBufferPaths.UserInput, dmBufferPaths.UserInput);
     ASSERT_EQ(vsBufferPaths.Decisions, dmBufferPaths.Decisions);
     ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
+
 }
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable

@@ -18,7 +18,9 @@
     template bool DecisionMaker<type1, type2, type3, type4, type5>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
-    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::CloseRecorder();                                                            \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SaveData();                                                                 \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::ShutdownBlackBox();                                                         \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template tBufferPaths DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                                   \
@@ -135,19 +137,26 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 {
 }
 
-/// @brief                  When the race stops, the simulation needs to be shutdown correctly and check if it needs to be stroed in the database
-/// @param p_saveToDatabase bool that determines if the simulation data collected will be stored in the database
+/// @brief When the data has been saved or doesn't get saved, the bufferfile needs to be closed correctly
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
+void TEMP_DECISIONMAKER::CloseRecorder()
+{
+    m_fileBufferStorage.Shutdown();
+    m_recorder = nullptr;
+}
+
+/// @brief When the "save to database" button gets pressed, the data needs to be saved to the external database
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SaveData()
+{
+    SQLDatabaseStorage sqlDatabaseStorage;
+    sqlDatabaseStorage.Run(m_bufferPaths);
+}
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::ShutdownBlackBox()
 {
     BlackBox.Shutdown();
-    m_fileBufferStorage.Shutdown();
-    if (p_saveToDatabase)
-    {
-        SQLDatabaseStorage sqlDatabaseStorage(Config.GetDataCollectionSetting());
-        sqlDatabaseStorage.Run(m_bufferPaths);
-    }
-    m_recorder = nullptr;
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
