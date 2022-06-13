@@ -41,15 +41,6 @@
 
 #include <deque>
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added include for force feedback config and defines
-#if SDL_FORCEFEEDBACK
-#include <forcefeedbackconfig.h>
-#define HUMAN_DRIVER_INDEX        1
-#define PRIMO_CAR_NAME            "primo"
-#define PRM_FORCE_FEEDBACK_BUTTON "ForceFeedbackButton"
-#endif
-
-
 static void *ScrHandle = NULL;
 static void	*PrevScrHandle = NULL;
 static void	*PrefHdle = NULL;
@@ -61,7 +52,7 @@ static tCtrlMouseInfo MouseInfo;
 static char	CurrentSection[256];
 
 // SIMULATED DRIVING ASSISTANCE: add define for clarity of important magic number.
-#define NO_KEYBOARD 0
+#define ALLOW_KEYBOARD 1
 
 /* Control command information */
 static tCmdInfo Cmd[] = {
@@ -94,8 +85,8 @@ static tCmdInfo Cmd[] = {
     {HM_ATT_DASHB_INC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_INC_MIN,   0, HM_ATT_DASHB_INC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
 
-    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
-    {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, NO_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, keyboard allowed, preferred joy button.
+    {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, ALLOW_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
 
 static const int MaxCmd = sizeof(Cmd) / sizeof(Cmd[0]);
 static const int ICmdReverseGear = 9;
@@ -965,24 +956,6 @@ DevCalibrate(void * /* dummy */)
 	GfuiScreenActivate(nextCalMenu);
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: added rmForceFeedbackConfigHookActivate(void*) from stopracemenu.cpp
-#if SDL_FORCEFEEDBACK
-// ForceFeedbackConfig hook ********************************************
-static void
-rmForceFeedbackConfigHookActivate(void * /* dummy */)
-{
-    void *prHandle;
-    char buf[100];
-
-    sprintf(buf, "%s%s", GfLocalDir(), HM_PREF_FILE);
-    prHandle = GfParmReadFile(buf, GFPARM_RMODE_REREAD);
-    // SIMULATED DRIVING ASSISTANCE CHANGE: hard code carName and curPlayerIdx as we use only one car and one human driver
-    snprintf(buf, sizeof(buf), "%s/%s/%d", HM_SECT_PREF, HM_LIST_DRV, HUMAN_DRIVER_INDEX);
-
-    GfuiScreenActivate(ForceFeedbackMenuInit(ScrHandle, prHandle, HUMAN_DRIVER_INDEX, PRIMO_CAR_NAME));
-}
-#endif
-
 // SIMULATED DRIVING ASSISTANCE: removed prefHdle, index, GearChangeMode, and set those in the function
 // according to now removed playerconfigmenu
 /* */
@@ -1064,10 +1037,6 @@ ControlMenuInit(void *prevMenu, int saveOnExit)
     GfuiMenuCreateButtonControl(ScrHandle,param,"cancel",PrevScrHandle,onQuit);
     GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel", PrevScrHandle, onQuit, NULL);
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: added force feedback setting
-#if SDL_FORCEFEEDBACK
-    GfuiMenuCreateButtonControl(ScrHandle, param, PRM_FORCE_FEEDBACK_BUTTON, nullptr, rmForceFeedbackConfigHookActivate);
-#endif
     /* General callback for keyboard keys */
     GfuiKeyEventRegister(ScrHandle, onKeyAction);
 

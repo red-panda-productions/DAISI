@@ -103,8 +103,6 @@ typedef struct ParticipantControl
     bool ControlAccel;
     bool ControlBrake;
     bool ControlInterventionToggle;
-
-    bool ForceFeedback;
 } tParticipantControl;
 
 /// @brief The different types of black boxes
