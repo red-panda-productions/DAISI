@@ -191,6 +191,7 @@ Changed:
             added HasValidRaceStartArguments()
 
             changed check to call custom HasValidRaceStartArguments method
+            changed main() changed application name
         CMakeLists.txt
             added rppUtils and Filesystem for Linux
     interfaces/
@@ -324,6 +325,8 @@ Changed:
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
                         added controls
+                    splash.cpp
+                        changed splashDisplay() removed version string
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
