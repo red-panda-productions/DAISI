@@ -25,7 +25,7 @@ static tDatabaseSettings s_dbSettings;
 static char s_portString[SETTINGS_NAME_LENGTH];
 
 /// @brief Converts the port string to an integer
-void ConvertPortString(tDatabaseSettings &p_dbSettings)
+void ConvertPortString(tDatabaseSettings& p_dbSettings)
 {
     try
     {
@@ -275,7 +275,6 @@ void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
 /// @param p_passwordControl the corresponding ui element control integers
 void ClearPassword(void* p_scrHandle, int p_passwordControl)
 {
-
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
 }
 
