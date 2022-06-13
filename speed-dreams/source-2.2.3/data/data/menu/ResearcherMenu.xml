@@ -96,6 +96,15 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
+        <section name="BlackBoxStatus">
+	        <attstr name="type" val="label"/>
+	        <attnum name="x" val="570"/>
+	        <attnum name="y" val="155"/>
+	        <attstr name="text" val="Unknown"/>
+	        <attstr name="h align" val="right"/>
+	        <attstr name="font" val="medium_t"/>
+        </section>
+
         <!-- Although this is a label, this is not a static control as we want to change it -->
         <section name="ErrorLabel">
             <attstr name="type" val="label"/>

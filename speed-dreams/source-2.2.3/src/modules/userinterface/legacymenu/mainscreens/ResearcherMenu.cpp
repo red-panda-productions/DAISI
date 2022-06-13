@@ -11,6 +11,8 @@
 #include "tracks.h"
 #include "FileSystem.hpp"
 #include "mainmenu.h"
+#include "SocketBlackBox.h"
+#include "GeneratorUtils.h"
 
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
@@ -40,6 +42,8 @@
 #define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
 #define PRM_ENVIRONMENT_NAME     "EnvironmentName"
 
+#define PRM_BLACK_BOX_STATUS "BlackBoxStatus"
+
 #define PRM_DEV         "DevButton"
 #define GFMNU_ATTR_PATH "path"
 
@@ -65,10 +69,22 @@
 #define MSG_ERROR_NO_ENVIRONMENT    "You need to select a valid Environment"
 #define MSG_ERROR_NO_UID            "You need to have a user id"
 
+// Black box test result messages
+#define MSG_BLACK_BOX_FAST "Fast"
+#define MSG_BLACK_BOX_SLOW "Slow"
+#define MSG_BLACK_BOX_TESTING "Testing"
+
+// Black box test result colors
+#define SLOW_TEXT_COLOR {1, 0, 0, 1}
+#define FAST_TEXT_COLOR {0, 1, 0, 1}
+#define CONNECTING_TEXT_COLOR {1, 1, 1, 1}
+
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
 
 #define TRACK_LOADER_MODULE_NAME "trackv1"
+
+#define TIMEOUT_WARNING 1000
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -121,6 +137,59 @@ int m_applyButton;
 
 // Back button;
 int m_backButton;
+
+// Blackbox Test result
+int m_blackBoxTestResultControl;
+
+
+static void TestBlackBoxAsync()
+{
+    float connectingColor[4] = CONNECTING_TEXT_COLOR;
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
+    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
+    StartExecutable(m_blackBoxFilePath);
+    SSocketBlackBox blackBox;
+    TestSegments segments = GenerateSegments();
+    tCarElt cars[BLACK_BOX_TESTS];
+    tSituation situations[BLACK_BOX_TESTS];
+    BlackBoxData testData[BLACK_BOX_TESTS];
+    Random random;
+    for (int i = 0; i < BLACK_BOX_TESTS; i++)
+    {
+        cars[i] = GenerateCar(segments);
+        situations[i] = GenerateSituation();
+        testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(random.NextUInt()), segments.NextSegments, segments.NextSegmentsCount);
+    }
+    auto start = std::chrono::system_clock::now();
+    blackBox.Initialize(false, testData[0], testData, BLACK_BOX_TESTS);
+    auto end = std::chrono::system_clock::now();
+    blackBox.Shutdown();
+
+    // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
+    long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
+
+    if (milliseconds > TIMEOUT_WARNING)
+    {
+        float slowColor[4] = SLOW_TEXT_COLOR;
+        GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_SLOW);
+        GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, slowColor);
+        GfLogWarning("SLOW BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
+        return;
+    }
+
+    float fastColor[4] = FAST_TEXT_COLOR;
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_FAST);
+    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, fastColor);
+    GfLogInfo("Blackbox took %ld milliseconds (on average) to respond over %i tests\n", milliseconds, BLACK_BOX_TESTS);
+}
+
+static void TestBlackBox()
+{
+    std::cout << "testing bb " << std::endl;
+    if (strcmp(m_blackBoxFilePath, "") == 0) return;
+    std::thread t(TestBlackBoxAsync);
+    t.detach();
+}
 
 /// @brief Save the given GfTrack as the used environment
 /// @param p_gfTrack Pointer to the GfTrack to use
@@ -506,6 +575,8 @@ static void OnActivate(void* /* dummy */)
     // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
     InitializeTrackLoader();
 
+    // Test black box
+
     // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in ResearcherMenuInit
     char buf[512];
     sprintf(buf, "%s%s", GfLocalDir(), RESEARCH_FILEPATH);
@@ -515,6 +586,7 @@ static void OnActivate(void* /* dummy */)
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param);
         GfParmReleaseHandle(param);
+        TestBlackBox();
         return;
     }
     LoadDefaultSettings();
@@ -565,6 +637,7 @@ static void SelectBlackBox(void* /* dummy */)
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
     m_blackBoxChosen = true;
+    TestBlackBox();
 }
 
 /// @brief Generates a random user id
@@ -647,6 +720,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
+    // Black box test result
+    m_blackBoxTestResultControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_BLACK_BOX_STATUS, false);
+    
     // Generate UID button
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
