@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE params SYSTEM "../../../src/libs/tgf/params.dtd">
+
+<params name="elevation-highway" type="parameter">
+  <section name="Header">
+    <attstr name="name" val="Elevation Highway"/>
+  </section>
+</params>
