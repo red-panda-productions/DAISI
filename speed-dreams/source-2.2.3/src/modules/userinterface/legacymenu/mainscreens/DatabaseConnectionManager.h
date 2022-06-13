@@ -58,11 +58,21 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control);
 
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting, tDatabaseSettings p_connectionSettings);
+
+void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
+
+void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
 
 void SetUsername(void* p_scrHandle, int p_usernameControl);
 
-void SetPassword(void* p_scrHandle, int p_passwordControl);
+void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password);
+
+void ClearPassword(void* p_scrHandle, int p_passwordControl);
+
+void FillInPassword(void* p_scrHandle, int p_passwordControl);
+
+void ChangePassword(void* p_scrHandle, int p_passwordControl);
 
 void SetAddress(void* p_scrHandle, int p_addressControl);
 

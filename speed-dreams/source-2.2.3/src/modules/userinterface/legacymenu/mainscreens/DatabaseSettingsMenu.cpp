@@ -75,46 +75,60 @@ static void OnActivate(void* /* dummy */)
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
+    FillInPassword(s_scrHandle, m_passwordControl);
+    CheckSavedConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
     SynchronizeControls(s_scrHandle, control);
-    SetPassword(s_scrHandle, m_passwordControl);
 }
 
-/// @brief Returns to the main menu screen
+/// @brief Returns to the data selection menu screen
 static void GoBack(void* /* dummy */)
 {
     GfuiScreenActivate(DataSelectionMenuInit(s_scrHandle));
 }
 
+/// @brief Check if connection can be made with the database
 static void CheckConnectionCallback(void* /* dummy */)
 {
-    CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
+    CheckCurrentConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
 }
 
+/// @brief Sets the username in the menu and the temporary settings
 static void SetUsernameCallback(void*)
 {
     SetUsername(s_scrHandle, m_usernameControl);
 }
 
+/// @brief Sets the password in the menu and the temporary settings
 static void SetPasswordCallback(void*)
 {
-    SetPassword(s_scrHandle, m_passwordControl);
+    ChangePassword(s_scrHandle, m_passwordControl);
 }
 
+/// @brief Gets the password in the menu and the temporary settings
+static void ClearPasswordCallback(void*)
+{
+    ClearPassword(s_scrHandle, m_passwordControl);
+}
+
+/// @brief Sets the address in the menu and the temporary settings
 static void SetAddressCallback(void*)
 {
     SetAddress(s_scrHandle, m_addressControl);
 }
 
+/// @brief Sets the port in the menu and the temporary settings
 static void SetPortCallback(void*)
 {
     SetPort(s_scrHandle, m_portControl);
 }
 
+/// @brief Sets the schema name in the menu and the temporary settings
 static void SetSchemaCallback(void*)
 {
     SetSchema(s_scrHandle, m_schemaControl);
 }
 
+/// @brief Sets the schema name in the menu and the temporary settings
 static void SetUseSSLCallback(tCheckBoxInfo* p_info)
 {
     SetUseSSL(p_info, s_scrHandle, m_caCertFileDialogControl, m_publicCertFileDialogControl, m_privateCertFileDialogControl,
@@ -150,7 +164,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
 
     // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsernameCallback);
-    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, SetPasswordCallback, SetPasswordCallback);
+    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, ClearPasswordCallback, SetPasswordCallback);
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddressCallback);
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPortCallback);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchemaCallback);
@@ -167,7 +181,23 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     // Set s_dbSettings on start so that the menu doesn't have to be activated manually
     OnActivate(s_scrHandle);
 
-    CheckConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
+    CheckSavedConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
+
+    tDbControlSettings control;
+    control.Username = m_usernameControl;
+    control.Password = m_passwordControl;
+    control.Address = m_addressControl;
+    control.Port = m_portControl;
+    control.Schema = m_schemaControl;
+    control.UseSSL = m_useSSLControl;
+    control.CACertificateButton = m_caCertFileDialogControl;
+    control.CACertificateLabel = m_caCertDialogLabel;
+    control.PublicCertificateButton = m_publicCertFileDialogControl;
+    control.PublicCertificateLabel = m_publicCertDialogLabel;
+    control.PrivateCertificateButton = m_privateCertFileDialogControl;
+    control.PrivateCertificateLabel = m_publicCertDialogLabel;
+    LoadDBSettings(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control);
 
     return s_scrHandle;
 }
