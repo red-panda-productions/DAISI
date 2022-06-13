@@ -28,7 +28,8 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_FILTERSP
 /// @param p_folder   Whether to select files (true) or folders (false)
 /// @param p_names    The names of the types of file to select
 /// @param p_exts     The extension filters of the types of file to select
-///	@param p_extCount The amount of extensions/names provided
+/// @param p_extCount The amount of extensions/names provided
+/// @param p_linuxDirectories Whether to allow the user to select directories on Linux or not, ignored on windows
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
 bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount, bool p_linuxDirectories)
 {
@@ -182,7 +183,8 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 /// @param p_folder   Whether to select files (true) or folders (false)
 /// @param p_names    The names of the types of file to select
 /// @param p_exts     The extension filters of the types of file to select
-///	@param p_extCount The amount of extensions/names provided
+/// @param p_extCount The amount of extensions/names provided
+/// @param p_linuxDirectories Whether to allow the user to select directories on Linux or not, ignored on windows
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
 bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount, bool p_linuxDirectories)
 {

@@ -18,15 +18,15 @@
     ASSERT_BINARY_FILE_CONTENTS(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename), contents)
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
-#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
-    {                                                                                               \
+#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                                     \
+    {                                                                                                       \
         std::cout << "Reading file from " << (folder + (recordingName OS_SEPARATOR filename)) << std::endl; \
-        std::ifstream file(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename));                            \
-        ASSERT_TRUE(file.is_open());                                                                \
-        std::stringstream buffer;                                                                   \
-        buffer << file.rdbuf();                                                                     \
-        std::cout << buffer.str() << std::endl;                                                     \
-        ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
+        std::ifstream file(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename));                    \
+        ASSERT_TRUE(file.is_open());                                                                        \
+        std::stringstream buffer;                                                                           \
+        buffer << file.rdbuf();                                                                             \
+        std::cout << buffer.str() << std::endl;                                                             \
+        ASSERT_STREQ(buffer.str().c_str(), contents);                                                       \
     }
 
 /// @brief Assert that the file at the given path is empty
@@ -409,7 +409,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     GfInit(false);                                                                          \
     filesystem::path varName;                                                               \
     filesystem::current_path(SD_DATADIR_SRC);                                               \
-    SetupSingletonsFolder();                                                                \
+    ASSERT_TRUE(SetupSingletonsFolder());                                                   \
                                                                                             \
     {                                                                                       \
         filesystem::path sourcePath(RECORDING_TEST_DATA);                                   \
@@ -420,12 +420,12 @@ TEST(RecorderTests, WriteRunSettingsTests)
             THROW_RPP_EXCEPTION("Failed to get SDA folder");                                \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
-        filesystem::create_directories(varName);                         \
+        filesystem::create_directories(varName);                                            \
                                                                                             \
         /* Delete the existing test directory to ensure directories are properly created */ \
-        if (filesystem::exists(varName))                                 \
+        if (filesystem::exists(varName))                                                    \
         {                                                                                   \
-            filesystem::remove_all(varName);                             \
+            filesystem::remove_all(varName);                                                \
         }                                                                                   \
                                                                                             \
         filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \
