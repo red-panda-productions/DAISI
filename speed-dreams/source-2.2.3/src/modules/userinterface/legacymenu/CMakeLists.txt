@@ -77,7 +77,7 @@ ADD_INTERFACE_INCLUDEDIR()
 
 
 
-# SIMULATED DRIVING ASSISTANCE CHANGE: added backend
+# SIMULATED DRIVING ASSISTANCE CHANGE: added backend and UnitTestUtilities
 ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC} unitTestUtilities rppUtils)
 
 ADD_PLIB_INCLUDEDIR()
@@ -111,7 +111,7 @@ SD_ADD_LIBRARY(legacymenu MODULE ${LEGACYMENU_SOURCES} ${LEGACYMENU_HEADERS})
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose) 
 #SET_TARGET_PROPERTIES(legacymenu PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)
 
-# SIMULATED DRIVING ASSISTANCE CHANGE: added backend
+# SIMULATED DRIVING ASSISTANCE CHANGE: added backend and unitTestUtilities
 ADD_SDLIB_LIBRARY(legacymenu portability tgf tgfclient tgfdata backend ${NETWORKING_LIB} unitTestUtilities)
 
 IF(UNIX)
