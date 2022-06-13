@@ -20,7 +20,7 @@
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
     strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt")
 
-#define TEST_DATA_DIRECTORY "databaseTestData" OS_SEPARATOR
+#define TEST_DATA_DIRECTORY           "databaseTestData" OS_SEPARATOR
 #define FULL_TEST_DATA_PATH(filename) SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData" OS_SEPARATOR filename
 
 #define VALID_META_DATA FULL_TEST_DATA_PATH("meta-data-intervention-0.txt")
@@ -113,7 +113,7 @@ TEST(SQLDatabaseStorageTests, TestStoreDataMetaDataBufferNotFound)
     tBufferPaths bufferPaths = VALID_BUFFER_DATA;
     bufferPaths.MetaData = "";
     CATCH_ERROR_CONTAINING(
-        ASSERT_FALSE(sqlDataBaseStorage.StoreData(bufferPaths)), 
+        ASSERT_FALSE(sqlDataBaseStorage.StoreData(bufferPaths)),
         "Buffer file not found: ");
 }
 
@@ -137,7 +137,7 @@ void TestStoreDataSuccess(tBufferPaths p_bufferPaths)
     ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
 
     NO_ERROR_CONTAINING(
-        ASSERT_TRUE(sqlDataBaseStorage.StoreData(p_bufferPaths)), 
+        ASSERT_TRUE(sqlDataBaseStorage.StoreData(p_bufferPaths)),
         "[MYSQL]");
 }
 
@@ -150,7 +150,7 @@ void TestStoreDataFailError(tBufferPaths p_bufferPaths)
     ASSERT_TRUE(sqlDataBaseStorage.OpenDatabase(testSettings));
 
     CATCH_ERROR_CONTAINING(
-        ASSERT_FALSE(sqlDataBaseStorage.StoreData(p_bufferPaths)), 
+        ASSERT_FALSE(sqlDataBaseStorage.StoreData(p_bufferPaths)),
         "[MYSQL] ERROR: ");
 }
 
@@ -204,7 +204,7 @@ TEST(SQLDatabaseStorageTests, TestRunDataStorage)
 
     SQLDatabaseStorage sqlDataBaseStorage;
     NO_ERROR_CONTAINING(
-        ASSERT_TRUE(sqlDataBaseStorage.Run(VALID_BUFFER_DATA)), 
+        ASSERT_TRUE(sqlDataBaseStorage.Run(VALID_BUFFER_DATA)),
         "[MYSQL]");
 }
 
@@ -226,7 +226,7 @@ TEST(SQLDatabaseStorageTests, TestRunParameterizedConstructor)
     SMediator::GetInstance()->SetDatabaseSettings(testSettings);
 
     NO_ERROR_CONTAINING(
-        ASSERT_TRUE(sqlDataBaseStorage.Run(bufferPaths)), 
+        ASSERT_TRUE(sqlDataBaseStorage.Run(bufferPaths)),
         "[MYSQL]");
 }
 
@@ -241,7 +241,7 @@ TEST(SQLDatabaseStorageTests, TestRunCannotOpenDatabase)
 
     SQLDatabaseStorage sqlDataBaseStorage;
     CATCH_ERROR_CONTAINING(
-        ASSERT_FALSE(sqlDataBaseStorage.Run(VALID_BUFFER_DATA)), 
+        ASSERT_FALSE(sqlDataBaseStorage.Run(VALID_BUFFER_DATA)),
         "[MYSQL] ERROR: ");
 }
 
