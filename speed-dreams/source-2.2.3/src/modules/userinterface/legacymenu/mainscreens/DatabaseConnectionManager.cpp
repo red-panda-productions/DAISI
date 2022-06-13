@@ -63,8 +63,7 @@ void SaveDBSettingsToDisk()
     // Save max time to xml file
     GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, s_dbSettings.Username);
 
-    // Do not save the password
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, s_dbSettings.Password);
 
     GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, s_dbSettings.Address);
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, s_portString);
@@ -276,6 +275,22 @@ void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
 void ClearPassword(void* p_scrHandle, int p_passwordControl)
 {
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
+}
+
+/// Delete the password in from the settings and from the XML file
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_passwordControl the corresponding ui element control integers
+void DeletePassword(void* p_scrHandle, int p_passwordControl)
+{
+    GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, "");
+    strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, "");
+    std::string dstStr("config/DatabaseSettingsMenu.xml");
+    char dst[512];
+    sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
+    void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+    GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
 }
 
 /// @brief Fill in the saved password
