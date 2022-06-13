@@ -71,14 +71,23 @@
 #define MSG_ERROR_NO_UID            "You need to have a user id"
 
 // Black box test result messages
-#define MSG_BLACK_BOX_FAST "  Fast"
-#define MSG_BLACK_BOX_SLOW "  Slow"
+#define MSG_BLACK_BOX_FAST    "  Fast"
+#define MSG_BLACK_BOX_SLOW    "  Slow"
 #define MSG_BLACK_BOX_TESTING "Testing"
 
 // Black box test result colors
-#define SLOW_TEXT_COLOR {1, 0, 0, 1}
-#define FAST_TEXT_COLOR {0, 1, 0, 1}
-#define CONNECTING_TEXT_COLOR {1, 1, 1, 1}
+#define SLOW_TEXT_COLOR \
+    {                   \
+        1, 0, 0, 1      \
+    }
+#define FAST_TEXT_COLOR \
+    {                   \
+        0, 1, 0, 1      \
+    }
+#define CONNECTING_TEXT_COLOR \
+    {                         \
+        1, 1, 1, 1            \
+    }
 
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
@@ -93,7 +102,6 @@
 #define PRIMO_CAR_NAME            "primo"
 #define PRM_FORCE_FEEDBACK_BUTTON "ForceFeedbackButton"
 #endif
-
 
 // GUI screen handles
 static void* s_scrHandle = nullptr;
@@ -146,7 +154,6 @@ int m_backButton;
 
 // Blackbox Test result
 int m_blackBoxTestResultControl;
-
 
 static void TestBlackBoxAsync()
 {
@@ -583,9 +590,9 @@ static void OnActivate(void* /* dummy */)
     // Ensure the track loader is initialized again.
     // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
     InitializeTrackLoader();
-    
+
     TestBlackBox();
-  
+
     SynchronizeControls();
 }
 
@@ -716,7 +723,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Black box test result
     m_blackBoxTestResultControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_BLACK_BOX_STATUS, false);
-    
+
     // Generate UID button
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 

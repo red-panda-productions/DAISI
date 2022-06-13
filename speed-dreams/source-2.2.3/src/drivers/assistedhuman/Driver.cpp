@@ -2,7 +2,6 @@
 #include "Mediator.h"
 #include "ConfigEnums.h"
 
-
 /// @brief Initialize the driver with the given track
 /// Make sure the human driver is initialized and ready to drive.
 /// @param p_index The driver's index (starting from 1)
