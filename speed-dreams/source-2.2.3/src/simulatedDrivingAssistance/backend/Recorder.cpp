@@ -116,7 +116,6 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlAccel));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, BoolToString(p_participantControl.ControlBrake));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, BoolToString(p_participantControl.ControlInterventionToggle));
-    GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, BoolToString(p_participantControl.ForceFeedback));
 
     GfParmSetNum(settingsFileHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, (tdble)p_maxTime);
 
