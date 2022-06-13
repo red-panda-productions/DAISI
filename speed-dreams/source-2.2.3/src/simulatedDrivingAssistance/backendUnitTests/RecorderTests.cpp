@@ -674,7 +674,6 @@ TEST(RecorderTests, ReadValidRecording)
     ASSERT_TRUE(mediator->GetPControlSettings().ControlAccel);
     ASSERT_TRUE(mediator->GetPControlSettings().ControlBrake);
     ASSERT_TRUE(mediator->GetPControlSettings().ControlInterventionToggle);
-    ASSERT_TRUE(mediator->GetPControlSettings().ForceFeedback);
 
     ASSERT_EQ(mediator->GetThresholdSettings().Accel, STANDARD_THRESHOLD_ACCEL);
     ASSERT_EQ(mediator->GetThresholdSettings().Brake, STANDARD_THRESHOLD_BRAKE);
