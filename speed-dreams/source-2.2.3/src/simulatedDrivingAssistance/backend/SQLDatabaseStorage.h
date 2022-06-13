@@ -20,6 +20,7 @@ public:
     bool CloseDatabase(bool p_returnVal);
 
     static void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
+
 private:
     void CreateDatabaseSchema(DatabaseSettings p_dbSettings);
     void CreateTables();

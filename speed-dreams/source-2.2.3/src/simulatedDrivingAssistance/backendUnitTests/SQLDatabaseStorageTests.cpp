@@ -138,7 +138,6 @@ TEST(SQLDatabaseStorageTests, TestTestConnectionNotEnoughPermissions)
     CATCH_ERROR_CONTAINING(
         ASSERT_FALSE(sqlDatabaseStorage.TestConnection(testSettings)),
         "SQL connection test failed: Database user " TEST_UNPRIVILEGED_USER_USERNAME " is missing ");
-
 }
 
 /// @brief Tests whether closing the database without opening it doesnt throw an error.
