@@ -151,8 +151,8 @@ int m_blackBoxTestResultControl;
 static void TestBlackBoxAsync()
 {
     float connectingColor[4] = CONNECTING_TEXT_COLOR;
-    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
     GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
     StartExecutable(m_blackBoxFilePath);
     SSocketBlackBox blackBox;
     TestSegments segments = GenerateSegments();
@@ -174,15 +174,13 @@ static void TestBlackBoxAsync()
     // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
     long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
 
-
-
     if (milliseconds > TIMEOUT_WARNING)
     {
         float slowColor[4] = SLOW_TEXT_COLOR;
         GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_SLOW);
         GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, slowColor);
-        
         GfLogWarning("SLOW BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
+        GfuiApp().eventLoop().postRedisplay();
         return;
     }
 
@@ -190,6 +188,7 @@ static void TestBlackBoxAsync()
     GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_FAST);
     GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, fastColor);
     GfLogInfo("Blackbox took %ld milliseconds (on average) to respond over %i tests\n", milliseconds, BLACK_BOX_TESTS);
+    GfuiApp().eventLoop().postRedisplay();
 }
 
 static void TestBlackBox()
