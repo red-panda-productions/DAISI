@@ -92,26 +92,10 @@ static void LoadDefaultSettings()
     m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
 }
 
-/// @brief Loads the user menu settings from the local config file
+/// @brief Checks if the saved connection settings can connect to the database
 static void OnActivate(void* /* dummy */)
 {
-    tDbControlSettings control;
-    LoadDBSettings(s_dbSettingsMenu, control);
-    CheckConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
-
-    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
-    std::string strPath("config/DataSelectionMenu.xml");
-    char buf[512];
-    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
-    if (GfFileExists(buf))
-    {
-        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
-        // Initialize settings with the retrieved xml file
-        LoadConfigSettings(param);
-        GfParmReleaseHandle(param);
-        return;
-    }
-    LoadDefaultSettings();
+    CheckSavedConnection(s_scrHandle, m_dbStatus, &m_isConnecting);
 }
 
 /// @brief Saves the settings into the local DataSelectionMenu.xml file
@@ -226,6 +210,20 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuDefaultKeysAdd(s_scrHandle);
     GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_prevHandle, GoBack, nullptr);
     GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Data Compression Screen", nullptr, DataCompressionMenuRun, nullptr);
+
+    // Retrieves the saved user xml file, if it doesn't exist the settings are already initialized in DataSelectionMenuInit
+    std::string strPath("config/DataSelectionMenu.xml");
+    char buf[512];
+    sprintf(buf, "%s%s", GfLocalDir(), strPath.c_str());
+    if (GfFileExists(buf))
+    {
+        void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
+        // Initialize settings with the retrieved xml file
+        LoadConfigSettings(param);
+        GfParmReleaseHandle(param);
+        return s_scrHandle;
+    }
+    LoadDefaultSettings();
 
     return s_scrHandle;
 }
