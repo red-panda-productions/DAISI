@@ -112,7 +112,7 @@ Changed:
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
                 added   m_prevIntervention member
-                added   NO_KEYBOARD define: clarify magic number
+                added   ALLOW_KEYBOARD define: clarify magic number
                 changed the MaxFuelPerMeter value to 0
                 changed the fuel_cons_factor to value 0
             CMakeLists.txt
