@@ -346,7 +346,6 @@ void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_
     GfuiVisibilitySet(p_scrHandle, p_caLabel, s_tempDbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_publicLabel, s_tempDbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_privateLabel, s_tempDbSettings.UseSSL);
-
 }
 
 /// @brief Initializes the certificate filepaths.
