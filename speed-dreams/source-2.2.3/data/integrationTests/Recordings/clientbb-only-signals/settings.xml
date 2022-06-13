@@ -34,7 +34,7 @@
   </section>
 
   <section name="max_time">
-    <attnum name="max_time" val="2.000000"/>
+    <attnum name="max_time" val="1.000000"/>
   </section>
 
   <section name="allowed_actions">
@@ -46,7 +46,7 @@
   <section name="thresholds">
     <attnum name="treshold_accel" val="0.820000"/>
     <attnum name="treshold_brake" val="0.500000"/>
-    <attnum name="treshold_steer" val="0.100000"/>
+    <attnum name="treshold_steer" val="0.010000"/>
   </section>
 
 </params>

@@ -113,6 +113,7 @@ void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
     ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.x, acc.x, currentTime);
     ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.y, acc.y, currentTime);
     ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.z, acc.z, currentTime);
+    GfLogInfo("Simulation data validated at time %f\n", currentTime);
 }
 
 /// @brief Update the car's controls based on recording at that currentTime.
