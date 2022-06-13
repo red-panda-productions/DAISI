@@ -25,45 +25,29 @@ static tDatabaseSettings s_dbSettings;
 static char s_portString[SETTINGS_NAME_LENGTH];
 
 /// @brief Converts the port string to an integer
-void ConvertPortString()
+void ConvertPortString(tDatabaseSettings &p_dbSettings)
 {
     try
     {
-        s_dbSettings.Port = std::stoi(s_portString);
+        p_dbSettings.Port = std::stoi(s_portString);
     }
     catch (std::exception&)
     {
         std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
-        s_dbSettings.Port = 0;
+        p_dbSettings.Port = 0;
     }
 }
 
 /// @brief Converts the port string to an integer and save into the saved settings
 void ConvertSavedPortString()
 {
-    try
-    {
-        s_dbSettings.Port = std::stoi(s_portString);
-    }
-    catch (std::exception&)
-    {
-        std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
-        s_dbSettings.Port = 0;
-    }
+    ConvertPortString(s_dbSettings);
 }
 
 /// @brief Converts the port string to an integer and save into the temporary settings
 void ConvertCurrentPortString()
 {
-    try
-    {
-        s_tempDbSettings.Port = std::stoi(s_portString);
-    }
-    catch (std::exception&)
-    {
-        std::cerr << "Could not convert " << s_portString << " to int" << std::endl;
-        s_tempDbSettings.Port = 0;
-    }
+    ConvertPortString(s_tempDbSettings);
 }
 
 /// @brief Saves the settings into the DatabaseSettingsMenu.xml file
