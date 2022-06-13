@@ -7,8 +7,6 @@
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
 #include "FileSystem.hpp"
-#include "GeneratorUtils.h"
-#include "Random.hpp"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \

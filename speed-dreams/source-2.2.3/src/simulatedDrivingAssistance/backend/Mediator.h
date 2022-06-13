@@ -6,7 +6,6 @@
 #include "CarController.h"
 #include "Recorder.h"
 
-#define BLACK_BOX_TESTS 5
 /// @brief			      The Main communication between the front- and backend
 /// @tparam DecisionMaker The decisionMaker type
 template <typename DecisionMaker>

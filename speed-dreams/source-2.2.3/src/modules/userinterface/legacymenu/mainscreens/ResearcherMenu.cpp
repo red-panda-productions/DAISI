@@ -14,6 +14,7 @@
 #include "SocketBlackBox.h"
 #include "GeneratorUtils.h"
 #include <playerpref.h>
+#include <string>
 
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
@@ -70,20 +71,32 @@
 #define MSG_ERROR_NO_ENVIRONMENT    "You need to select a valid Environment"
 #define MSG_ERROR_NO_UID            "You need to have a user id"
 
+// Amount of black box tests
+#define BLACK_BOX_TESTS 5
+
 // Black box test result messages
-#define MSG_BLACK_BOX_FAST    "  Fast"
-#define MSG_BLACK_BOX_SLOW    "  Slow"
-#define MSG_BLACK_BOX_TESTING "Testing"
+#define MSG_BLACK_BOX_FAST     "Fast"
+#define MSG_BLACK_BOX_MODERATE "Moderate"
+#define MSG_BLACK_BOX_SLOW     "Slow"
+#define MSG_BLACK_BOX_TESTING  "Testing"
 
 // Black box test result colors
-#define SLOW_TEXT_COLOR \
-    {                   \
-        1, 0, 0, 1      \
-    }
+
 #define FAST_TEXT_COLOR \
     {                   \
         0, 1, 0, 1      \
     }
+
+#define MODERATE_TEXT_COLOR \
+    {                       \
+        1, 1, 0, 1          \
+    }
+
+#define SLOW_TEXT_COLOR \
+    {                   \
+        1, 0, 0, 1      \
+    }
+
 #define CONNECTING_TEXT_COLOR \
     {                         \
         1, 1, 1, 1            \
@@ -94,7 +107,8 @@
 
 #define TRACK_LOADER_MODULE_NAME "trackv1"
 
-#define TIMEOUT_WARNING 1000
+#define MODERATE_TIME 100
+#define SLOW_TIME     250
 
 #if SDL_FORCEFEEDBACK
 #include <forcefeedbackconfig.h>
@@ -155,6 +169,7 @@ int m_backButton;
 // Blackbox Test result
 int m_blackBoxTestResultControl;
 
+/// @brief The async function that tests the black box connection
 static void TestBlackBoxAsync()
 {
     float connectingColor[4] = CONNECTING_TEXT_COLOR;
@@ -181,23 +196,38 @@ static void TestBlackBoxAsync()
     // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
     long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
 
-    if (milliseconds > TIMEOUT_WARNING)
+    std::string time = " (" + std::to_string(milliseconds) + "ms)";
+
+    if (milliseconds > SLOW_TIME)
     {
-        float slowColor[4] = SLOW_TEXT_COLOR;
-        GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_SLOW);
-        GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, slowColor);
+        float color[4] = SLOW_TEXT_COLOR;
+        std::string msg = MSG_BLACK_BOX_SLOW + time;
+        GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
+        GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
         GfLogWarning("SLOW BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
         GfuiApp().eventLoop().postRedisplay();
         return;
     }
+    if (milliseconds > MODERATE_TIME)
+    {
+        float color[4] = MODERATE_TEXT_COLOR;
+        std::string msg = MSG_BLACK_BOX_MODERATE + time;
+        GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
+        GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
+        GfLogWarning("MODERATE BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this might not be fast enough!\n", milliseconds, BLACK_BOX_TESTS);
+        GfuiApp().eventLoop().postRedisplay();
+        return;
+    }
 
-    float fastColor[4] = FAST_TEXT_COLOR;
-    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_FAST);
-    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, fastColor);
+    float color[4] = FAST_TEXT_COLOR;
+    std::string msg = MSG_BLACK_BOX_FAST + time;
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
+    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
     GfLogInfo("Blackbox took %ld milliseconds (on average) to respond over %i tests\n", milliseconds, BLACK_BOX_TESTS);
     GfuiApp().eventLoop().postRedisplay();
 }
 
+/// @brief Tests if the black box is considered fast enough for the program
 static void TestBlackBox()
 {
     std::cout << "testing bb " << std::endl;
