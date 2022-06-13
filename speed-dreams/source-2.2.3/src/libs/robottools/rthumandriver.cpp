@@ -1786,7 +1786,8 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     if (SMediator::GetInstance()->GetPControlSettings().ControlInterventionToggle && 
         ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
         || (input.type == GFCTRL_TYPE_MOUSE_BUT && mouseInfo->edgeup[input.val]) 
-        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1)))
+        || (input.type == GFCTRL_TYPE_JOY_ATOB && input.deadZone == 1)) 
+        || (input.type == GFCTRL_TYPE_KEYBOARD && keyInfo[lookUpKeyMap(input.val)].edgeDn))
     {
         InterventionType currentType = SMediator::GetInstance()->GetInterventionType();
         IndicatorConfig::GetInstance()->ResetActiveIndicatorsToNeutral();

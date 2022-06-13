@@ -61,7 +61,7 @@ static tCtrlMouseInfo MouseInfo;
 static char	CurrentSection[256];
 
 // SIMULATED DRIVING ASSISTANCE: add define for clarity of important magic number.
-#define NO_KEYBOARD 0
+#define ALLOW_KEYBOARD 1
 
 /* Control command information */
 static tCmdInfo Cmd[] = {
@@ -94,8 +94,8 @@ static tCmdInfo Cmd[] = {
     {HM_ATT_DASHB_INC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_INC_MIN,   0, HM_ATT_DASHB_INC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
 
-    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, no keyboard allowed, preferred joy button.
-    {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, NO_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
+    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, keyboard allowed, preferred joy button.
+    {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, ALLOW_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
 
 static const int MaxCmd = sizeof(Cmd) / sizeof(Cmd[0]);
 static const int ICmdReverseGear = 9;
