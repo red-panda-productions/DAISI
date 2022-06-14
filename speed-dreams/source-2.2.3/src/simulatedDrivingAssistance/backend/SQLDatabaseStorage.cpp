@@ -433,6 +433,7 @@ bool SQLDatabaseStorage::StoreData(const tBufferPaths& p_bufferPaths)
     {
         m_connection->setAutoCommit(false);
         int trialId = InsertMetaData(metaDataStream);
+        SaveTrialIdToMetadata(trialId);
         InsertSimulationData(p_bufferPaths, trialId);
         m_connection->commit();
         return true;
@@ -705,4 +706,22 @@ bool SQLDatabaseStorage::Run(const tBufferPaths& p_bufferPaths)
 
     std::cout << "Finished writing to database" << std::endl;
     return CloseDatabase(true);
+}
+
+/// @brief Saves the trial id from the database to a buffer file with the meta data from a blackbox
+/// @param p_trialId The trial id to save
+void SQLDatabaseStorage::SaveTrialIdToMetadata(int p_trialId)
+{
+    filesystem::path bufferPath = filesystem::temp_directory_path();
+    bufferPath.append(META_BUFFER_FILENAME);
+    std::fstream blackboxBuffer;
+
+    if (!filesystem::exists(bufferPath)) return;
+    blackboxBuffer.open(bufferPath, std::ios::binary | std::fstream::in | std::fstream::out);
+
+    blackboxBuffer.seekp(0, std::ios::beg);
+    blackboxBuffer << bits(p_trialId);
+
+    blackboxBuffer.flush();
+    blackboxBuffer.close();
 }
