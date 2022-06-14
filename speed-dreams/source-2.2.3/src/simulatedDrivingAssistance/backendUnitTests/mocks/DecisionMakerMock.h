@@ -5,6 +5,7 @@
 #include "car.h"
 #include "ConfigMock.h"
 #include "Recorder.h"
+#include "DecisionMock.h"
 
 template <class ConfigMock>
 class DecisionMakerMock
@@ -63,6 +64,11 @@ public:
         MBlackboxShutdowned = true;
     }
 
+    DecisionTuple GetDecisions()
+    {
+        return DecisionT;
+    }
+
     bool MRecorderClosed;
     bool MDataSaved;
     bool MBlackboxShutdowned;
@@ -83,6 +89,8 @@ public:
     int TestAmount = 0;
 
     ConfigMock Config;
+
+    DecisionTuple DecisionT;
 
     ~DecisionMakerMock() = default;
 };

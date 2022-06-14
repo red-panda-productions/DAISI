@@ -7,6 +7,7 @@ SET(_SOURCES
 	DecisionMaker.cpp
 	DecisionTuple.cpp
 	FileDataStorage.cpp
+        Decision.cpp
 	InterventionExecutorAlwaysIntervene.cpp
 	InterventionExecutorIndication.cpp
 	InterventionExecutorNoIntervention.cpp
@@ -38,7 +39,7 @@ SET(_HEADERS
 	DecisionTuple.h
 	FileDataStorage.h
 	IDataStorage.h
-	IDecision.h
+        Decision.h
 	InterventionExecutor.h
 	InterventionExecutorAlwaysIntervene.h
     InterventionExecutorIndication.h

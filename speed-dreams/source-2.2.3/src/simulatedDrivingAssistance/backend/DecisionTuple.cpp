@@ -1,3 +1,4 @@
+#include <iostream>
 #include "DecisionTuple.h"
 
 /// @brief Constructs a decision tuple
@@ -12,20 +13,20 @@ DecisionTuple::DecisionTuple()
 /// @brief        Gets all active decisions
 /// @param  count Returns the amount of decisions
 /// @return       The decisions
-IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
+Decision** DecisionTuple::GetActiveDecisions(int& p_count)
 {
     p_count = 0;
-    if (m_brakeActive)
+    if (m_brakeDecision.GetDecisionMade())
     {
         m_buffer[p_count++] = &m_brakeDecision;
     }
 
-    if (m_steerActive)
+    if (m_steerDecision.GetDecisionMade())
     {
         m_buffer[p_count++] = &m_steerDecision;
     }
 
-    if (m_accelActive)
+    if (m_accelDecision.GetDecisionMade())
     {
         m_buffer[p_count++] = &m_accelDecision;
     }
@@ -35,66 +36,61 @@ IDecision** DecisionTuple::GetActiveDecisions(int& p_count)
 
 /// @brief               Sets the brake value of a decision
 /// @param  p_brakeValue The value
-void DecisionTuple::SetBrake(float p_brakeValue)
+void DecisionTuple::SetBrakeDecision(float p_brakeValue)
 {
-    m_brakeDecision.BrakeAmount = p_brakeValue;
-    m_brakeActive = true;
+    m_brakeDecision.SetInterventionAmount(p_brakeValue);
 }
 
 /// @brief               Sets the steer value of a decision
 /// @param  p_steerValue The value
-void DecisionTuple::SetSteer(float p_steerValue)
+void DecisionTuple::SetSteerDecision(float p_steerValue)
 {
-    m_steerDecision.SteerAmount = p_steerValue;
-    m_steerActive = true;
+    m_steerDecision.SetInterventionAmount(p_steerValue);
 }
 
-void DecisionTuple::SetGear(int p_gearValue)
+void DecisionTuple::SetGearDecision(int p_gearValue)
 {
     // TODO: When a GearDecision is created, set its value here
-    m_gearActive = true;
 }
 
-void DecisionTuple::SetAccel(float p_accelValue)
+void DecisionTuple::SetAccelDecision(float p_accelValue)
 {
-    m_accelDecision.AccelAmount = p_accelValue;
-    m_accelActive = true;
+    m_accelDecision.SetInterventionAmount(p_accelValue);
 }
 
-void DecisionTuple::SetLights(bool p_lightsValue)
+void DecisionTuple::SetLightsDecision(bool p_lightsValue)
 {
     // TODO: When a LightsDecision is created, set its value here
-    m_lightsActive = true;
 }
 
 /// @brief  Gets the brake value
 /// @return The brake value
-float DecisionTuple::GetBrake() const
+float DecisionTuple::GetBrakeAmount() const
 {
-    return m_brakeDecision.BrakeAmount;
+    return m_brakeDecision.GetInterventionAmount();
 }
 
 /// @brief  Gets the steer value
 /// @return The steer value
-float DecisionTuple::GetSteer() const
+float DecisionTuple::GetSteerAmount() const
 {
-    return m_steerDecision.SteerAmount;
+    return m_steerDecision.GetInterventionAmount();
 }
 
-int DecisionTuple::GetGear() const
+int DecisionTuple::GetGearAmount() const
 {
     // TODO: When a GearDecision is created, get its value here
     return 0;
 }
 
-float DecisionTuple::GetAccel() const
+float DecisionTuple::GetAccelAmount() const
 {
-    return m_accelDecision.AccelAmount;
+    return m_accelDecision.GetInterventionAmount();
 }
 
 /// @brief Gets whether to turn the lights on or off
 /// @return True if the headlights should be on, False if the headlights should be off
-bool DecisionTuple::GetLights() const
+bool DecisionTuple::GetLightsAmount() const
 {
     // TODO: When a LightsDecision is created, get its value here
     return false;
@@ -104,33 +100,41 @@ bool DecisionTuple::GetLights() const
 /// @return True if tuple contains a brake decision
 bool DecisionTuple::ContainsBrake() const
 {
-    return m_brakeActive;
+    return m_brakeDecision.GetDecisionMade();
 }
 
 /// @brief Gets whether this tuple contains a steer decision
 /// @return True if tuple contains a steer decision
 bool DecisionTuple::ContainsSteer() const
 {
-    return m_steerActive;
+    return m_steerDecision.GetDecisionMade();
 }
 
 /// @brief Gets whether this tuple contains a gear shift decision
 /// @return True if tuple contains a gear shift decision
 bool DecisionTuple::ContainsGear() const
 {
-    return m_gearActive;
+    return false;
 }
 
 /// @brief Gets whether this tuple contains an acceleration decision
 /// @return True if tuple contains an acceleration decision
 bool DecisionTuple::ContainsAccel() const
 {
-    return m_accelActive;
+    return m_accelDecision.GetDecisionMade();
 }
 
 /// @brief Gets whether this tuple contains a headlights decision
 /// @return True if tuple contains a headlights decision
 bool DecisionTuple::ContainsLights() const
 {
-    return m_lightsActive;
+    return false;
+}
+
+/// @brief Reset all decisions
+void DecisionTuple::Reset()
+{
+    m_accelDecision.Reset();
+    m_brakeDecision.Reset();
+    m_steerDecision.Reset();
 }
