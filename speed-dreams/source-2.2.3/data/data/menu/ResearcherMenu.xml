@@ -6,7 +6,7 @@
 
     <section name="dynamic controls">
 
-        <!-- Checkboxes for selecting a the allowed black box action -->
+        <!-- Checkboxes for selecting the allowed black box actions -->
         <section name="CheckboxAllowedSteer">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Steer"/>
@@ -60,96 +60,6 @@
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
             <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-10"/>
-            <attnum name="image y" val="4"/>
-            <attnum name="image width" val="60"/>
-            <attnum name="image height" val="16"/>
-            <attstr name="focused image" val="data/img/button-left-focused.png"/>
-            <attstr name="enabled image" val="data/img/button-left.png"/>
-            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
-        </section>
-
-
-        <!-- Choose black box button-->
-        <section name="ChooseBlackBoxButton">
-            <attstr name="type" val="text button"/>
-            <attstr name="show box" val="no"/>
-            <!-- Below value is "Choose Black Box: " followed by 260 (max filepath size) spaces, 
-            as giving a new value to a button's text is only as long as the original length,
-            although even with the small font, a name that long would go off-screen -->
-            <attstr name="text" val="Choose Black Box:                                                                                                                                                                                                                                                                     "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
-            <attstr name="h align" val="left"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="140"/>
-            <attnum name="width" val="145"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="focused color" val="0xFFFFFF"/>
-            <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-10"/>
-            <attnum name="image y" val="4"/>
-            <attnum name="image width" val="60"/>
-            <attnum name="image height" val="16"/>
-            <attstr name="focused image" val="data/img/button-left-focused.png"/>
-            <attstr name="enabled image" val="data/img/button-left.png"/>
-            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
-        </section>
-
-        <!-- Although this is a label, this is not a static control as we want to change it -->
-        <section name="ErrorLabel">
-            <attstr name="type" val="label"/>
-            <attnum name="x" val="10"/>
-            <attnum name="y" val="80"/>
-            <!-- Label for showing error messages to the user. Needs to be 39 characters long.
-            Default value contains this many spaces so maxlength is set correctly -->
-            <attstr name="text" val="                                       "/>
-            <attstr name="tip" val="You must choose a user id, an environment, and a file that could be a correct black box: *.exe"/>
-            <attnum name="width" val="210"/>
-            <attstr name="h align" val="left"/>
-            <attstr name="font" val="medium_t"/>
-            <attstr name="color" val="0xFFAD34"/>
-        </section>
-
-        <!-- Choose environment button-->
-        <section name="ChooseEnvironmentButton">
-            <attstr name="type" val="text button"/>
-            <attstr name="show box" val="no"/>
-            <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces,
-            as giving a new value to a button's text is only as long as the original length,
-            although even with the small font, a name that long would go off-screen -->
-            <attstr name="text" val="Choose Environment:                                                                                                                                                                                                                                                                     "/>
-            <attstr name="tip" val="Open a menu to select the driving environment"/>
-            <attstr name="h align" val="left"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="110"/>
-            <attnum name="width" val="145"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="color" val="0xFFFFFF"/>
-            <attstr name="focused color" val="0xFFFFFF"/>
-            <attstr name="pushed color" val="0xFFFFFF"/>
-            <attnum name="image x" val="-10"/>
-            <attnum name="image y" val="4"/>
-            <attnum name="image width" val="60"/>
-            <attnum name="image height" val="16"/>
-            <attstr name="focused image" val="data/img/button-left-focused.png"/>
-            <attstr name="enabled image" val="data/img/button-left.png"/>
-            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
-        </section>
-		
-        <section name="ForceFeedbackButton">
-            <attstr name="type" val="text button"/>
-            <attstr name="show box" val="no"/>
-            <attstr name="text" val="Force Feedback Settings"/>
-            <attstr name="tip" val="Click to configure force feedback settings"/>
-            <attnum name="x" val="20"/>
-            <attnum name="y" val="170"/>
-            <attstr name="h align" val="left"/>
-            <attnum name="width" val="155"/>
-            <attstr name="font" val="medium"/>
-            <attstr name="color" val="OxFFFFFF"/>
-            <attstr name="focused color" val="0xFFFFFF"/>
-            <attstr name="pushed color" val="0xFFCC00"/>
             <attnum name="image x" val="-10"/>
             <attnum name="image y" val="4"/>
             <attnum name="image width" val="60"/>
@@ -236,7 +146,6 @@
         </section>
 
         <!-- Checkboxes for selecting what a participant can control -->
-
         <section name="CheckboxPControlSteer">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Steer"/>
@@ -294,7 +203,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="16"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="240"/>
+            <attnum name="y" val="250"/>
             <attnum name="width" val="50"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -306,10 +215,122 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="70"/>
-            <attnum name="y" val="210"/>
+            <attnum name="y" val="220"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium"/>
+        </section>
+
+        <!-- Open force feedback settings button -->
+        <section name="ForceFeedbackButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Force Feedback Settings"/>
+            <attstr name="tip" val="Click to configure force feedback settings"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="190"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="width" val="155"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="OxFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFCC00"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Choose black box button -->
+        <section name="ChooseBlackBoxButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <!-- Below value is "Choose Black Box: " followed by 260 (max filepath size) spaces,
+            as giving a new value to a button's text is only as long as the original length,
+            although even with the small font, a name that long would go off-screen -->
+            <attstr name="text" val="Choose Black Box:                                                                                                                                                                                                                                                                     "/>
+            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="160"/>
+            <attnum name="width" val="145"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Choose environment button -->
+        <section name="ChooseEnvironmentButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <!-- Below value is "Choose Environment: " followed by 260 (max filepath size) spaces,
+            as giving a new value to a button's text is only as long as the original length,
+            although even with the small font, a name that long would go off-screen -->
+            <attstr name="text" val="Choose Environment:                                                                                                                                                                                                                                                                     "/>
+            <attstr name="tip" val="Open a menu to select the driving environment"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="130"/>
+            <attnum name="width" val="145"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Button for going to the developer screen -->
+        <section name="SetDefaultThresholdsButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Set Threshold to default"/>
+            <attstr name="tip" val="Set the threshold settings to their default values"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="20"/>
+            <attnum name="y" val="100"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+        </section>
+
+        <!-- Although this is a label, this is not a static control as we want to change it -->
+        <section name="ErrorLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="40"/>
+            <attnum name="y" val="80"/>
+            <!-- Label for showing error messages to the user. Needs to be 39 characters long.
+            Default value contains this many spaces so maxlength is set correctly -->
+            <attstr name="text" val="                                       "/>
+            <attnum name="width" val="210"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+            <attstr name="color" val="0xFFAD34"/>
         </section>
 
         <!-- Button for generating a userId -->
@@ -317,7 +338,7 @@
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
             <attnum name="x" val="230"/>
-            <attnum name="y" val="207"/>
+            <attnum name="y" val="217"/>
             <attnum name="width" val="75"/>
             <attstr name="text" val="Generate"/>
             <attstr name="tip" val ="Generate a random, four-digit user id"/>
@@ -429,7 +450,7 @@
         <section name="6">
             <attstr name="type" val="label"/>
             <attnum name="x" val="80"/>
-            <attnum name="y" val="240"/>
+            <attnum name="y" val="250"/>
             <attstr name="text" val="Max Time in minutes"/>
             <attstr name="tip" val="Set the maximum simulation time in minutes"/>
             <attstr name="h align" val="left"/>
@@ -439,7 +460,7 @@
         <section name="7">
             <attstr name="type" val="label"/>
             <attnum name="x" val="20"/>
-            <attnum name="y" val="210"/>
+            <attnum name="y" val="220"/>
             <attstr name="text" val="User ID"/>
             <attstr name="tip" val="Give the user an ID"/>
             <attstr name="h align" val="left"/>
