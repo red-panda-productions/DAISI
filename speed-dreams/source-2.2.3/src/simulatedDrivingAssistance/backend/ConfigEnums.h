@@ -153,8 +153,10 @@ typedef struct DecisionThresholds
 #define BUFFER_FILE_GAMESTATE "gamestate-buffer.csv"
 #define BUFFER_FILE_USERINPUT "userinput-buffer.csv"
 #define BUFFER_FILE_DECISIONS "decisions-buffer.csv"
+#define META_BUFFER_FILENAME  "sda_blackbox_internal_metadata_buffer.bin"
 
 /// @brief Struct containing all the file paths to the buffer files
+/// Doesn't contain path to meta buffer as its use is different
 typedef struct BufferPaths
 {
     filesystem::path MetaData;
