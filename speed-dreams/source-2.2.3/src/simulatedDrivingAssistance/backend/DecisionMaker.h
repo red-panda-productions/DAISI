@@ -39,6 +39,9 @@ public:
     tBufferPaths GetBufferPaths();
     Recorder* GetRecorder();
 
+    DecisionTuple GetDecisions();
+    void SetDecisions(DecisionTuple p_decision);
+
     ~DecisionMaker();
     void CloseRecorder();
     void SaveData();
