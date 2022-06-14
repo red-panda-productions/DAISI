@@ -22,6 +22,9 @@ int m_privateCertFileDialogControl;
 int m_caCertDialogLabel;
 int m_publicCertDialogLabel;
 int m_privateCertDialogLabel;
+int m_caCertLabel;
+int m_publicCertLabel;
+int m_privateCertLabel;
 int m_dbStatusControl;
 bool m_certChosen = false;
 
@@ -74,7 +77,7 @@ static void OnActivate(void* /* dummy */)
     LoadDBSettings(s_scrHandle, control);
     FillInPassword(s_scrHandle, m_passwordControl);
     CheckSavedConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
-    SynchronizeControls(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control, m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 }
 
 /// @brief Returns to the data selection menu screen
@@ -134,7 +137,8 @@ static void SetSchemaCallback(void*)
 /// @brief Sets the schema name in the menu and the temporary settings
 static void SetUseSSLCallback(tCheckBoxInfo* p_info)
 {
-    SetUseSSL(p_info, s_scrHandle, m_caCertFileDialogControl, m_publicCertFileDialogControl, m_privateCertFileDialogControl);
+    SetUseSSL(p_info, s_scrHandle, m_caCertFileDialogControl, m_publicCertFileDialogControl, m_privateCertFileDialogControl,
+              m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 }
 
 /// @brief            Initializes the database settings menu
@@ -161,6 +165,9 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_caCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CA_CERT_DIALOG, s_scrHandle, SelectCACert);
     m_publicCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PUBLIC_CERT_DIALOG, s_scrHandle, SelectPublicCert);
     m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
+    m_caCertLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_CA_CERT_LABEL, false);
+    m_privateCertLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_PRIVATE_CERT_LABEL, false);
+    m_publicCertLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_PUBLIC_CERT_LABEL, false);
 
     // Textbox controls
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsernameCallback);
@@ -170,6 +177,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchemaCallback);
     m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSLCallback);
     m_dbStatusControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DBSTATUS, false);
+
     InitCertificates(param);
 
     GfParmReleaseHandle(param);
@@ -196,7 +204,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
-    SynchronizeControls(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control, m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 
     return s_scrHandle;
 }
