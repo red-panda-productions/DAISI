@@ -17,6 +17,7 @@ public:
     bool StoreData(const tBufferPaths& p_bufferPaths) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings);
     bool CloseDatabase(bool p_returnVal);
+    void SaveTrialIdToMetadata(int p_trialId);
 
 private:
     void CreateTables();
