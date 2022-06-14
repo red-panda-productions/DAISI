@@ -131,12 +131,7 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
     strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-    const char* test = GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, nullptr);
-    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, "");
-    if(test != NULL)
-    {
-        strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, test);
-    }
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, ""));
     strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
     strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
     ConvertSavedPortString();
@@ -282,7 +277,7 @@ void ClearPassword(void* p_scrHandle, int p_passwordControl)
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
 }
 
-/// Delete the password in from the settings and from the XML file
+/// @brief Delete the password in from the settings and from the XML file
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
 void DeletePassword(void* p_scrHandle, int p_passwordControl)
