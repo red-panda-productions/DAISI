@@ -63,8 +63,7 @@ void SaveDBSettingsToDisk()
     // Save max time to xml file
     GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, s_dbSettings.Username);
 
-    // Do not save the password
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, s_dbSettings.Password);
 
     GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, s_dbSettings.Address);
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, s_portString);
@@ -131,16 +130,16 @@ void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
 void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
-    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-
-    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, "User"));
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, ""));
+    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, "Localhost"));
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, "3306"));
     ConvertSavedPortString();
-    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, "sda_schema"));
     s_dbSettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
-    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
-    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
-    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
+    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, "CA.pem"));
+    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, "Server.pem"));
+    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, "priv.pem"));
 
     const char* filePath = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr);
     if (filePath)
@@ -276,6 +275,22 @@ void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
 void ClearPassword(void* p_scrHandle, int p_passwordControl)
 {
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
+}
+
+/// @brief Delete the password in from the settings and from the XML file
+/// @param p_scrHandle The screen handle which to operate the functions on
+/// @param p_passwordControl the corresponding ui element control integers
+void DeletePassword(void* p_scrHandle, int p_passwordControl)
+{
+    GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, "");
+    strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, "");
+    std::string dstStr("config/DatabaseSettingsMenu.xml");
+    char dst[512];
+    sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
+    void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+    GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
 }
 
 /// @brief Fill in the saved password

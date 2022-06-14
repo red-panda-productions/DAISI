@@ -156,10 +156,10 @@ void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const unsigned l
 
     float decisionValues[DECISION_RECORD_PARAM_AMOUNT] =
         {
-            p_decisions->GetSteer(),
-            p_decisions->GetAccel(),
-            p_decisions->GetBrake(),
-            static_cast<float>(p_decisions->GetGear())};
+            p_decisions->GetSteerAmount(),
+            p_decisions->GetAccelAmount(),
+            p_decisions->GetBrakeAmount(),
+            static_cast<float>(p_decisions->GetGearAmount())};
     WriteRecording(decisionValues, p_timestamp, m_decisionsRecordingFile, DECISION_RECORD_PARAM_AMOUNT, false, nullptr);
 }
 

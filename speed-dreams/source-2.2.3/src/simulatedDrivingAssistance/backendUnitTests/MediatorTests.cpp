@@ -514,51 +514,6 @@ TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
     }
 }
 
-/// @brief tests if the steer decision is correctly set
-TEST(MediatorTests, SetSteerDecisionTest)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool steerBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeSteerDecision(), steerBool);
-    }
-}
-
-/// @brief tests if the brake decision is correctly set
-TEST(MediatorTests, SetBrakeDecisionTest)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool brakeBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeBrakeDecision(), brakeBool);
-    }
-}
-
-/// @brief tests if the accel decision is correctly set
-TEST(MediatorTests, SetAccelDecisionTest)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool accelBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeAccelDecision(), accelBool);
-    }
-}
-
 /// @brief tests if the user can use the controls at the correct moment
 void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel, bool p_dControlSteer, bool p_dControlBrake, bool p_dControlAccel, InterventionType p_interventionType)
 {
@@ -579,23 +534,20 @@ void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel
     dControl.Accelerate = p_dControlAccel;
     SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
 
-    bool steerBool = random.NextBool();
-    bool brakeBool = random.NextBool();
-    bool accelBool = random.NextBool();
+    bool steerBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsSteer();
+    bool brakeBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsBrake();
+    bool accelBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsAccel();
 
     SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
-    SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
-    SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
-    SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
 
     bool canUseSteerBool = pControl.ControlSteer && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
     if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Steer) canUseSteerBool &= !steerBool;
 
     bool canUseBrakeBool = pControl.ControlBrake && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool && !accelBool;
 
     bool canUseAccelBool = pControl.ControlAccel && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool && !brakeBool;
 
     ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
     ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);
