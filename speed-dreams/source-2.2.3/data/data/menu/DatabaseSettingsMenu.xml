@@ -149,7 +149,7 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 		
-		<!-- Delete password button -->
+        <!-- Delete password button -->
         <section name="DeletePasswordButton">
             <attstr name="type" val="text button"/>
             <attstr name="show box" val="no"/>
