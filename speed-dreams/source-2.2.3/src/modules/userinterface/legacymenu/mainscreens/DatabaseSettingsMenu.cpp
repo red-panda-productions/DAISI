@@ -77,7 +77,7 @@ static void OnActivate(void* /* dummy */)
     LoadDBSettings(s_scrHandle, control);
     FillInPassword(s_scrHandle, m_passwordControl);
     CheckSavedConnection(s_scrHandle, m_dbStatusControl, &m_connecting);
-    SynchronizeControls(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control, m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 }
 
 /// @brief Returns to the data selection menu screen
@@ -197,7 +197,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
-    SynchronizeControls(s_scrHandle, control);
+    SynchronizeControls(s_scrHandle, control, m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 
     return s_scrHandle;
 }

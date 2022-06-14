@@ -266,7 +266,7 @@
             <attstr name="type" val="background image"/>
             <attstr name="image" val="data/img/main-menu-2.png"/>
         </section>
-        
+
         <section name="2">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>

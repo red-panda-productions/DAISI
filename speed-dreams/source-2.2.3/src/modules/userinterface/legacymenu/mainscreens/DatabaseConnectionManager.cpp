@@ -81,7 +81,11 @@ void SaveDBSettingsToDisk()
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_control the corresponding ui element control integers
-void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
+/// @param p_caCertLabel the corresponding ui element control integer
+/// @param p_publicCertLabel the corresponding ui element control integer
+/// @param p_privateCertLabel the corresponding ui element control integer
+void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control,
+    int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, s_dbSettings.Username);
     GfuiEditboxSetString(p_scrHandle, p_control.Address, s_dbSettings.Address);
@@ -107,6 +111,9 @@ void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
     GfuiVisibilitySet(p_scrHandle, p_control.CACertificateButton, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_control.PublicCertificateButton, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_control.PrivateCertificateButton, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_caCertLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateCertLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicCertLabel, s_dbSettings.UseSSL);
 }
 
 /// @brief Loads the default menu settings from the controls into the internal variables
@@ -131,16 +138,16 @@ void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
 void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
-    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, "nullptr"));
 
-    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, "nullptr"));
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, "ullptr"));
     ConvertSavedPortString();
-    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, "nullptr"));
     s_dbSettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
-    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
-    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
-    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
+    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, "nullptr"));
+    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, "nullptr"));
+    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, "nullptr)"));
 
     const char* filePath = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr);
     if (filePath)

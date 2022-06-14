@@ -50,7 +50,8 @@ typedef struct DbControlSettings
 
 void SaveDBSettingsToDisk();
 
-void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control);
+void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control,
+    int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel);
 
 void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
