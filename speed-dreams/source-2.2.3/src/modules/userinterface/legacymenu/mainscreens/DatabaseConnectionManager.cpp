@@ -85,7 +85,7 @@ void SaveDBSettingsToDisk()
 /// @param p_publicCertLabel the corresponding ui element control integer
 /// @param p_privateCertLabel the corresponding ui element control integer
 void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control,
-    int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel)
+                         int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, s_dbSettings.Username);
     GfuiEditboxSetString(p_scrHandle, p_control.Address, s_dbSettings.Address);
@@ -148,7 +148,6 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
     strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, "CA.pem"));
     strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, "Server.pem"));
     strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, "priv.pem"));
-
 
     const char* filePath = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr);
     if (filePath)
