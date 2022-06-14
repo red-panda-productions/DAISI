@@ -71,6 +71,8 @@ void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password);
 
 void ClearPassword(void* p_scrHandle, int p_passwordControl);
 
+void DeletePassword(void* p_scrHandle, int p_passwordControl);
+
 void FillInPassword(void* p_scrHandle, int p_passwordControl);
 
 void ChangePassword(void* p_scrHandle, int p_passwordControl);
