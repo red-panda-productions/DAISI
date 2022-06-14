@@ -23,10 +23,10 @@
 
 // converts abstract decision to concrete decision with correct value
 #define DECISION_LAMBDA(p_function) [](std::string& p_string, DecisionTuple& p_decisionTuple) { p_function; }
-#define CONVERT_TO_STEER_DECISION   DECISION_LAMBDA(p_decisionTuple.SetSteer(stringToFloat(p_string)))
-#define CONVERT_TO_BRAKE_DECISION   DECISION_LAMBDA(p_decisionTuple.SetBrake(stringToFloat(p_string)))
-#define CONVERT_TO_GEAR_DECISION    DECISION_LAMBDA(p_decisionTuple.SetGear(std::stoi(p_string)))
-#define CONVERT_TO_ACCEL_DECISION   DECISION_LAMBDA(p_decisionTuple.SetAccel(stringToFloat(p_string)))
+#define CONVERT_TO_STEER_DECISION   DECISION_LAMBDA(p_decisionTuple.SetSteerDecision(stringToFloat(p_string)))
+#define CONVERT_TO_BRAKE_DECISION   DECISION_LAMBDA(p_decisionTuple.SetBrakeDecision(stringToFloat(p_string)))
+#define CONVERT_TO_GEAR_DECISION    DECISION_LAMBDA(p_decisionTuple.SetGearDecision(std::stoi(p_string)))
+#define CONVERT_TO_ACCEL_DECISION   DECISION_LAMBDA(p_decisionTuple.SetAccelDecision(stringToFloat(p_string)))
 
 /// @brief		   Checks if the action was reported successfully from IPCLib
 /// @param  p_stmt The action that needs to be checked

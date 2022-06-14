@@ -45,15 +45,9 @@
     template DatabaseSettings Mediator<type>::GetDatabaseSettings();                                                                                    \
     template bool Mediator<type>::CheckConnection(DatabaseSettings p_dbSettings);                                                                       \
     template bool Mediator<type>::TimeOut();                                                                                                            \
-    template bool Mediator<type>::HasMadeSteerDecision();                                                                                               \
-    template bool Mediator<type>::HasMadeBrakeDecision();                                                                                               \
-    template bool Mediator<type>::HasMadeAccelDecision();                                                                                               \
     template bool Mediator<type>::CanUseSteer();                                                                                                        \
     template bool Mediator<type>::CanUseBrake();                                                                                                        \
     template bool Mediator<type>::CanUseAccel();                                                                                                        \
-    template void Mediator<type>::SetSteerDecision(bool p_steerDecision);                                                                               \
-    template void Mediator<type>::SetBrakeDecision(bool p_brakeDecision);                                                                               \
-    template void Mediator<type>::SetAccelDecision(bool p_accelDecision);                                                                               \
     template Mediator<type>* Mediator<type>::GetInstance();
 
 /// @brief        Sets the allowed actions in SDAConfig to p_allowedActions
@@ -174,7 +168,6 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetThresholdSettings(tDecisionThresholds p_thresholds)
 {
     m_thresholds = p_thresholds;
-    CarControl.SetThresholds(&p_thresholds);
 }
 
 /// @brief  Gets the allowed black box actions setting
@@ -250,30 +243,6 @@ int Mediator<DecisionMaker>::GetMaxTime()
     return m_decisionMaker.Config.GetMaxTime();
 }
 
-/// @brief  Gets whether there has been done a steer decision
-/// @return The steer decision
-template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::HasMadeSteerDecision()
-{
-    return CarControl.HasMadeSteerDecision();
-}
-
-/// @brief  Gets whether there has been done a brake decision
-/// @return The brake decision
-template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::HasMadeBrakeDecision()
-{
-    return CarControl.HasMadeBrakeDecision();
-}
-
-/// @brief  Gets whether there has been done an accel decision
-/// @return The accel decision
-template <typename DecisionMaker>
-bool Mediator<DecisionMaker>::HasMadeAccelDecision()
-{
-    return CarControl.HasMadeAccelDecision();
-}
-
 /// @brief  Gets whether the user can steer
 /// @return whether the user can steer
 template <typename DecisionMaker>
@@ -283,7 +252,7 @@ bool Mediator<DecisionMaker>::CanUseSteer()
 
     if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Steer)
     {
-        canControlSteer &= !HasMadeSteerDecision();
+        canControlSteer = canControlSteer && !m_decisionMaker.GetDecisions().ContainsSteer();
     }
     return canControlSteer;
 }
@@ -295,9 +264,10 @@ bool Mediator<DecisionMaker>::CanUseBrake()
 {
     bool canControlBrake = GetPControlSettings().ControlBrake && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
 
-    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Brake)
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && (GetAllowedActions().Brake || GetAllowedActions().Accelerate))
     {
-        canControlBrake &= !HasMadeBrakeDecision();
+        DecisionTuple decision = m_decisionMaker.GetDecisions();
+        canControlBrake = canControlBrake && !decision.ContainsAccel() && !decision.ContainsBrake();
     }
 
     return canControlBrake;
@@ -310,36 +280,13 @@ bool Mediator<DecisionMaker>::CanUseAccel()
 {
     bool canControlAccel = GetPControlSettings().ControlAccel && GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI;
 
-    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && GetAllowedActions().Accelerate)
+    if (GetInterventionType() == INTERVENTION_TYPE_COMPLETE_TAKEOVER && (GetAllowedActions().Accelerate || GetAllowedActions().Brake))
     {
-        canControlAccel &= !HasMadeAccelDecision();
+        DecisionTuple decision = m_decisionMaker.GetDecisions();
+        canControlAccel = canControlAccel && !decision.ContainsAccel() && !decision.ContainsBrake();
     }
 
     return canControlAccel;
-}
-
-/// @brief  Sets the steer decision
-/// @param p_steerDecision The steer decision
-template <typename DecisionMaker>
-void Mediator<DecisionMaker>::SetSteerDecision(bool p_steerDecision)
-{
-    return CarControl.SetSteerDecision(p_steerDecision);
-}
-
-/// @brief  Sets the brake decision
-/// @param p_brakeDecision The brake decision
-template <typename DecisionMaker>
-void Mediator<DecisionMaker>::SetBrakeDecision(bool p_brakeDecision)
-{
-    return CarControl.SetBrakeDecision(p_brakeDecision);
-}
-
-/// @brief  Sets the accel decision
-/// @param p_accelDecision The accel decision
-template <typename DecisionMaker>
-void Mediator<DecisionMaker>::SetAccelDecision(bool p_accelDecision)
-{
-    return CarControl.SetAccelDecision(p_accelDecision);
 }
 
 /// @brief              Does one drive tick in the framework
