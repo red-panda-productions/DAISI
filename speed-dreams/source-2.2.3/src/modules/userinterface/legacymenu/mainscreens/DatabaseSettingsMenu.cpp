@@ -107,6 +107,12 @@ static void ClearPasswordCallback(void*)
     ClearPassword(s_scrHandle, m_passwordControl);
 }
 
+/// @brief Deletes the password in the menu and from the XML file
+static void DeletePasswordCallback(void*)
+{
+    DeletePassword(s_scrHandle, m_passwordControl);
+}
+
 /// @brief Sets the address in the menu and the temporary settings
 static void SetAddressCallback(void*)
 {
@@ -151,6 +157,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, GoBack);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnectionCallback);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "DeletePasswordButton", s_scrHandle, DeletePasswordCallback);
     m_caCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CA_CERT_DIALOG, s_scrHandle, SelectCACert);
     m_publicCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PUBLIC_CERT_DIALOG, s_scrHandle, SelectPublicCert);
     m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
