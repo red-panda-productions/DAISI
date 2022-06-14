@@ -148,6 +148,15 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
+        <section name="CaCertLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="295"/>
+            <attstr name="text" val="Client Authority Certificate:"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+
 		
         <!-- Delete password button -->
         <section name="DeletePasswordButton">
@@ -170,16 +179,17 @@
             <attstr name="focused image" val="data/img/button-left-focused.png"/>
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+
         </section>
         
         <section name="CACertDialog">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <attstr name="text" val="Select CA certificate:"/>                                                                                                                                                                                                                                                                 "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="tip" val="Open a file dialog to select a certificate authority certificate with .pem extension"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="420"/>
-            <attnum name="y" val="250"/>
+            <attnum name="y" val="270"/>
             <attnum name="width" val="145"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -193,12 +203,21 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
+        <section name="PublicCertLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="245"/>
+            <attstr name="text" val="Public Server Certificate:"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
         
         <section name="PublicCertDialog">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <attstr name="text" val="Select public certificate:"/>                                                                                                                                                                                                                                                                 "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="tip" val="Open a file dialog to select a public server certificate with .pem extension"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="420"/>
             <attnum name="y" val="220"/>
@@ -215,15 +234,24 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
+        <section name="PrivateCertLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="195"/>
+            <attstr name="text" val="Private Client Key:"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
         
         <section name="PrivateCertDialog">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <attstr name="text" val="Select private certificate:"/>                                                                                                                                                                                                                                                                 "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="tip" val="Open a file dialog to select a private client key with .key extension"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="420"/>
-            <attnum name="y" val="190"/>
+            <attnum name="y" val="170"/>
             <attnum name="width" val="145"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -237,6 +265,7 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
         
         <section name="CertificateSettings">
             <attstr name="CA certificate" val="CA.pem"/>
@@ -261,7 +290,7 @@
             <attstr name="type" val="background image"/>
             <attstr name="image" val="data/img/main-menu-2.png"/>
         </section>
-        
+
         <section name="2">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
