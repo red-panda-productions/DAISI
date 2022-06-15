@@ -194,7 +194,6 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
-    decisionMaker.SetDataCollectionSettings({true, true, true});
     chdir(SD_DATADIR_SRC);
 
     ASSERT_NO_THROW(decisionMaker.CloseRecorder());

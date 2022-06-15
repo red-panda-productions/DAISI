@@ -13,7 +13,7 @@ public:
     SQLDatabaseStorageMock()
         : SQLDatabaseStorageMock({true, true, true, true}) {}
 
-    SQLDatabaseStorageMock(tDataToStore p_dataToStore)
+    explicit SQLDatabaseStorageMock(tDataToStore p_dataToStore)
     {
         const auto dataToStore = new tDataToStore(p_dataToStore);
 
