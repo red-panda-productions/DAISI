@@ -182,6 +182,13 @@ TEST(FileDataStorageTests, TestInitialization)
     expected << DECISIONS_CSV_HEADER << '\n';
 
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+
+    metaDataStream.close();
+    timeStepsStream.close();
+    gameStateStream.close();
+    userInputStream.close();
+    decisionsStream.close();
+
 };
 
 /// @brief Tests whether the gamestate is correctly written to the corresponding buffer file
@@ -216,6 +223,8 @@ TEST(FileDataStorageTests, TestWriteGameStateData)
     contents << file.rdbuf();
 
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+
+    file.close();
 }
 
 /// @brief Tests whether the userinput is correctly written to the corresponding buffer file
@@ -250,6 +259,8 @@ TEST(FileDataStorageTests, TestWriteUserInputData)
     contents << file.rdbuf();
 
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+
+    file.close();
 }
 
 /// @brief Tests whether the decisions are correctly written to the corresponding buffer file
@@ -295,6 +306,8 @@ void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, b
     contents << file.rdbuf();
 
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+
+    file.close();
 }
 
 /// @brief Test whether the FileDataStorage stores properly when decisions should be saved but none are made
@@ -357,6 +370,8 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
     contents << file.rdbuf();
 
     ASSERT_STREQ(contents.str().c_str(), expected.str().c_str());
+
+    file.close();
 }
 
 /// @brief Test the data storage system's Save function over 3 timesteps with certain modules enabled.
@@ -432,6 +447,10 @@ void TestWriteData(bool p_storeCar, bool p_storeControls, bool p_storeDecisions)
     ASSERT_STREQ(gameStateContents.str().c_str(), expectedGameState.str().c_str());
     ASSERT_STREQ(userInputContents.str().c_str(), expectedUserInput.str().c_str());
     ASSERT_STREQ(decisionsContents.str().c_str(), expectedDecisions.str().c_str());
+
+    gameStateFile.close();
+    userInputFile.close();
+    decisionsFile.close();
 }
 
 /// @brief Run the TestWriteData(bool,bool,bool,bool,bool) test with all possible combinations.
@@ -553,6 +572,9 @@ void TestDataStorageSaveCompressionRates(int p_compressionRate)
 
     ASSERT_STREQ(gameStateContents.str().c_str(), expectedGameState.str().c_str());
     ASSERT_STREQ(userInputContents.str().c_str(), expectedUserInput.str().c_str());
+
+    gameStateFile.close();
+    userInputFile.close();
 }
 
 /// @brief Test for checking data is correctly compressed for compression rate 1
