@@ -5,6 +5,7 @@
 #include "car.h"
 #include "ConfigMock.h"
 #include "Recorder.h"
+#include "DecisionMock.h"
 
 template <class ConfigMock>
 class DecisionMakerMock
@@ -48,12 +49,29 @@ public:
         Config.SetDataCollectionSettings(p_dataSetting);
     }
 
-    void RaceStop(bool p_saveToDatabase)
+    void CloseRecorder()
     {
-        MStoppedRace = true;
+        MRecorderClosed = true;
     }
 
-    bool MStoppedRace;
+    void SaveData()
+    {
+        MDataSaved = true;
+    }
+
+    void ShutdownBlackBox()
+    {
+        MBlackboxShutdowned = true;
+    }
+
+    DecisionTuple GetDecisions()
+    {
+        return DecisionT;
+    }
+
+    bool MRecorderClosed;
+    bool MDataSaved;
+    bool MBlackboxShutdowned;
     InterventionType Type;
     FileDataStorageMock FileBufferStorage;
     bool Decision;
@@ -71,6 +89,8 @@ public:
     int TestAmount = 0;
 
     ConfigMock Config;
+
+    DecisionTuple DecisionT;
 
     ~DecisionMakerMock() = default;
 };

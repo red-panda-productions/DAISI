@@ -18,14 +18,17 @@
     template bool DecisionMaker<type1, type2, type3, type4, type5>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
-    template void DecisionMaker<type1, type2, type3, type4, type5>::RaceStop(bool p_saveToDatabase);                                            \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::CloseRecorder();                                                            \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SaveData();                                                                 \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::ShutdownBlackBox();                                                         \
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
-    template filesystem::path* DecisionMaker<type1, type2, type3, type4, type5>::GetBufferFilePath();                                           \
-    template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
+    template tBufferPaths DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                                   \
+    template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();                                                         \
+    template DecisionTuple DecisionMaker<type1, type2, type3, type4, type5>::GetDecisions();                                                    \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SetDecisions(DecisionTuple p_decision);
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
-#define BUFFER_FILE_PATH   "race_data_buffer.txt"
 #define MAX_ULONG          4294967295
 
 #ifdef WIN32
@@ -75,26 +78,20 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
     tDataToStore dataCollectionSetting = Config.GetDataCollectionSetting();
     char* userId = Config.GetUserId();
     std::time_t currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::string fileName = blackBoxPath.filename().string();
-    std::string path = blackBoxPath.stem().string();
+    std::string bbFileName = blackBoxPath.filename().string();
+    std::string bbPath = blackBoxPath.stem().string();
     std::time_t lastwrite = GET_FILE_DATE(blackBoxPath);
     char* trackFileName = p_track->filename;
-    const char* trackname = p_track->name;
-    int trackversion = p_track->version;
-    unsigned int interventiontype = Config.GetInterventionType();
+    const char* trackName = p_track->name;
+    int trackVersion = p_track->version;
+    unsigned int interventionType = Config.GetInterventionType();
 
-    m_bufferFilePath = m_fileBufferStorage.Initialize(dataCollectionSetting,
-                                                      BUFFER_FILE_PATH,
-                                                      userId,
-                                                      currentTime,
-                                                      fileName,
-                                                      path,
-                                                      lastwrite,
-                                                      trackFileName,
-                                                      trackname,
-                                                      trackversion,
-                                                      interventiontype);
+    m_bufferPaths = m_fileBufferStorage.Initialize(dataCollectionSetting, userId, currentTime,
+                                                   bbFileName, bbPath, lastwrite,
+                                                   trackFileName, trackName, trackVersion,
+                                                   interventionType);
     m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
+    m_decision.Reset();
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -106,7 +103,7 @@ template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage,
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
     const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
-    m_fileBufferStorage.Save(p_car, p_situation, m_decision, p_tickCount);
+    m_fileBufferStorage.Save(p_car, m_decision, p_tickCount);
 
     if (decisionMade && m_recorder)
     {
@@ -114,7 +111,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     }
 
     int decisionCount = 0;
-    IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
+    Decision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
     InterventionExec->RunDecision(decisions, decisionCount);
 
@@ -143,35 +140,64 @@ TEMP_DECISIONMAKER::~DecisionMaker()
 {
 }
 
-/// @brief                  When the race stops, the simulation needs to be shutdown correctly and check if it needs to be stroed in the database
-/// @param p_saveToDatabase bool that determines if the simulation data collected will be stored in the database
+/// @brief When the data has been saved or doesn't get saved, the bufferfile needs to be closed correctly
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-void TEMP_DECISIONMAKER::RaceStop(bool p_saveToDatabase)
+void TEMP_DECISIONMAKER::CloseRecorder()
 {
-    BlackBox.Shutdown();
     m_fileBufferStorage.Shutdown();
-    if (p_saveToDatabase)
-    {
-        SQLDatabaseStorage sqlDatabaseStorage;
-        sqlDatabaseStorage.Run(m_bufferFilePath);
-    }
     m_recorder = nullptr;
 }
 
+/// @brief When the "save to database" button gets pressed, the data needs to be saved to the external database
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SaveData()
+{
+    SQLDatabaseStorage sqlDatabaseStorage;
+    sqlDatabaseStorage.Run(m_bufferPaths);
+}
+
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::ShutdownBlackBox()
+{
+    BlackBox.Shutdown();
+}
+
+/// @brief Gets the file data storage buffer
+/// @return the file data storage buffer
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 {
     return &m_fileBufferStorage;
 }
 
+/// @brief Gets the file data storage buffer path
+/// @return the file data storage buffer path
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
-filesystem::path* TEMP_DECISIONMAKER::GetBufferFilePath()
+tBufferPaths TEMP_DECISIONMAKER::GetBufferPaths()
 {
-    return &m_bufferFilePath;
+    return m_bufferPaths;
 }
 
+/// @brief Gets the recorder
+/// @return the recorder
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 Recorder* TEMP_DECISIONMAKER::GetRecorder()
 {
     return m_recorder;
+}
+
+/// @brief Gets the decision tuple
+/// @return the decision tuple
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+DecisionTuple TEMP_DECISIONMAKER::GetDecisions()
+{
+    return m_decision;
+}
+
+/// @brief Sets the decision tuple
+/// @param p_decision the decision tuple
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SetDecisions(DecisionTuple p_decision)
+{
+    m_decision = p_decision;
 }

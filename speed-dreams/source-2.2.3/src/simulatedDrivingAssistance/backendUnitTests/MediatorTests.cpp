@@ -196,25 +196,23 @@ END_TEST_COMBINATORIAL3(IndicatorTestMediator, booleans, 2, booleans, 2, boolean
 /// @param p_intervention Control intervention toggle option
 /// @param p_gas          Control gas option
 /// @param p_steer        Control steering option
-/// @param p_force        Force feedback option
-void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention, bool p_force)
+void PControlTestMediator(bool p_steer, bool p_gas, bool p_brake, bool p_intervention)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention, p_force};
+    tParticipantControl arr = {p_steer, p_gas, p_brake, p_intervention};
     SDAConfigMediator::GetInstance()->SetPControlSettings(arr);
     tParticipantControl pControl = SDAConfigMediator::GetInstance()->GetPControlSettings();
     ASSERT_EQ(arr.ControlSteer, pControl.ControlSteer);
     ASSERT_EQ(arr.ControlAccel, pControl.ControlAccel);
     ASSERT_EQ(arr.ControlBrake, pControl.ControlBrake);
     ASSERT_EQ(arr.ControlInterventionToggle, pControl.ControlInterventionToggle);
-    ASSERT_EQ(arr.ForceFeedback, pControl.ForceFeedback);
 }
 
 /// @brief Tests the Mediator ParticipantControlSettings for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(MediatorTests, PControlSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL5(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(PControlTestMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the Mediator sets and gets the MaxTime correctly
 TEST(MediatorTests, MaxTimeTest)
@@ -324,12 +322,11 @@ TEST(MediatorTests, EnvironmentFilePathTest)
 /// @param p_car          The car data setting
 /// @param p_human        The human data setting
 /// @param p_intervention The intervention data setting
-/// @param p_meta         The meta data setting
-void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_intervention, bool p_meta)
+void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_intervention)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tDataToStore arr = {p_env, p_car, p_human, p_intervention, p_meta};
+    tDataToStore arr = {p_env, p_car, p_human, p_intervention};
     SDAConfigMediator::GetInstance()->SetDataCollectionSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tDataToStore dataToStore = config.GetDataCollectionSetting();
@@ -337,13 +334,12 @@ void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_interventi
     ASSERT_EQ(arr.CarData, dataToStore.CarData);
     ASSERT_EQ(arr.HumanData, dataToStore.HumanData);
     ASSERT_EQ(arr.InterventionData, dataToStore.InterventionData);
-    ASSERT_EQ(arr.MetaData, dataToStore.MetaData);
 }
 
 /// @brief Tests the Mediator DataCollectionSetting for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(MediatorTests, DataCollectionSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL5(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL4(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                         Tests if the mediator gets and sets the replay recorder option correctly
 /// @param p_replayRecorderSetting The replay recorder option
@@ -441,16 +437,44 @@ TEST(MediatorTests, RaceStop)
     ASSERT_TRUE(SetupSingletonsFolder());
 
     MockMediator::GetInstance()->SetInRace(true);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
     ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
 
     MockMediator::GetInstance()->SetInRace(false);
-    MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace = false;
     ASSERT_NO_THROW(MockMediator::GetInstance()->RaceStop());
     ASSERT_FALSE(MockMediator::GetInstance()->GetInRace());
-    ASSERT_FALSE(MockMediator::GetInstance()->GetDecisionMaker()->MStoppedRace);
+}
+
+/// @brief Tests if the mediator closes the recorder file correctly
+TEST(MediatorTests, CloseRecorder)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MRecorderClosed = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->CloseRecorder());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MRecorderClosed);
+}
+
+/// @brief Tests if the mediator stops the race correctly if it saves the data.
+TEST(MediatorTests, SaveData)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MDataSaved = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->SaveData());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MDataSaved);
+}
+
+TEST(MediatorTests, ShutdownBlackbox)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
+    MockMediator::GetInstance()->GetDecisionMaker()->MBlackboxShutdowned = false;
+    ASSERT_NO_THROW(MockMediator::GetInstance()->ShutdownBlackBox());
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->MBlackboxShutdowned);
 }
 
 /// @brief Tests if the TimeOut function returns the correct time out
@@ -490,51 +514,6 @@ TEST(MediatorTests, ChangeSaveToDatabaseValueTest)
     }
 }
 
-/// @brief tests if the steer decision is correctly set
-TEST(MediatorTests, SetSteerDecisionTest)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool steerBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeSteerDecision(), steerBool);
-    }
-}
-
-/// @brief tests if the brake decision is correctly set
-TEST(MediatorTests, SetBrakeDecisionTest)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool brakeBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeBrakeDecision(), brakeBool);
-    }
-}
-
-/// @brief tests if the accel decision is correctly set
-TEST(MediatorTests, SetAccelDecisionTest)
-{
-    SDAConfigMediator::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool accelBool = random.NextBool();
-        SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
-        ASSERT_EQ(SDAConfigMediator::GetInstance()->HasMadeAccelDecision(), accelBool);
-    }
-}
-
 /// @brief tests if the user can use the controls at the correct moment
 void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel, bool p_dControlSteer, bool p_dControlBrake, bool p_dControlAccel, InterventionType p_interventionType)
 {
@@ -555,23 +534,20 @@ void TestCanUse(bool p_pControlSteer, bool p_pControlBrake, bool p_pControlAccel
     dControl.Accelerate = p_dControlAccel;
     SDAConfigMediator::GetInstance()->SetAllowedActions(dControl);
 
-    bool steerBool = random.NextBool();
-    bool brakeBool = random.NextBool();
-    bool accelBool = random.NextBool();
+    bool steerBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsSteer();
+    bool brakeBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsBrake();
+    bool accelBool = SDAConfigMediator::GetInstance()->GetDecisionMaker()->GetDecisions().ContainsAccel();
 
     SDAConfigMediator::GetInstance()->SetInterventionType(p_interventionType);
-    SDAConfigMediator::GetInstance()->SetSteerDecision(steerBool);
-    SDAConfigMediator::GetInstance()->SetBrakeDecision(brakeBool);
-    SDAConfigMediator::GetInstance()->SetAccelDecision(accelBool);
 
     bool canUseSteerBool = pControl.ControlSteer && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
     if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Steer) canUseSteerBool &= !steerBool;
 
     bool canUseBrakeBool = pControl.ControlBrake && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Brake) canUseBrakeBool &= !brakeBool && !accelBool;
 
     bool canUseAccelBool = pControl.ControlAccel && p_interventionType != INTERVENTION_TYPE_AUTONOMOUS_AI;
-    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool;
+    if (p_interventionType == INTERVENTION_TYPE_COMPLETE_TAKEOVER && dControl.Accelerate) canUseAccelBool &= !accelBool && !brakeBool;
 
     ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseSteer(), canUseSteerBool);
     ASSERT_EQ(SDAConfigMediator::GetInstance()->CanUseBrake(), canUseBrakeBool);

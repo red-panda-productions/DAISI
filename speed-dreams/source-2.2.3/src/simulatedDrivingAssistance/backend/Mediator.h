@@ -15,6 +15,9 @@ public:
     void DriveTick(tCarElt* p_car, tSituation* p_situation);
     void RaceStart(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation, Recorder* p_recorder = nullptr);
     void RaceStop();
+    void ShutdownBlackBox();
+    void SaveData();
+    void CloseRecorder();
     bool TimeOut();
 
     void SetDatabaseSettings(tDatabaseSettings p_dbSettings);
@@ -50,12 +53,6 @@ public:
     tDecisionThresholds GetThresholdSettings();
     bool GetReplayRecorderSetting();
     bool GetBlackBoxSyncOption();
-    bool HasMadeSteerDecision();
-    bool HasMadeBrakeDecision();
-    bool HasMadeAccelDecision();
-    void SetSteerDecision(bool p_steerDecision);
-    void SetBrakeDecision(bool p_brakeDecision);
-    void SetAccelDecision(bool p_accelDecision);
 
     bool CanUseSteer();
     bool CanUseBrake();

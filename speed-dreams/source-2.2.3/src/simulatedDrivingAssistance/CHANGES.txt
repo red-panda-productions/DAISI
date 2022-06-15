@@ -112,7 +112,7 @@ Changed:
                     added conditions around partipant input for steering/throttle/brake
                 added   SetRecorder()
                 added   m_prevIntervention member
-                added   NO_KEYBOARD define: clarify magic number
+                added   ALLOW_KEYBOARD define: clarify magic number
                 changed the MaxFuelPerMeter value to 0
                 changed the fuel_cons_factor to value 0
             CMakeLists.txt
@@ -191,6 +191,7 @@ Changed:
             added HasValidRaceStartArguments()
 
             changed check to call custom HasValidRaceStartArguments method
+            changed main() changed application name
         CMakeLists.txt
             added rppUtils and Filesystem for Linux
     interfaces/
@@ -233,6 +234,11 @@ Changed:
         racing/genparoptv1
             CMakeLists.txt
                 added rppUtils and Filesystem for Linux
+        track/trackv1/
+            track4.cpp 
+                changed CreateSegRing() added speed limit
+            track.h
+                changed tTrackSeg added speed limit
 
         sound/snddefault/
             CMakeLists.txt
@@ -277,6 +283,9 @@ Changed:
                     raceconfigstate.cpp
                         included "racemanagers.h"
                         changed RmConfigRunState(): assign ts.SetTrack and ts.GetTrack instead of removed ts.pRace
+                    racerunningmenus.cpp
+                        included <ConfigEnums.h>
+                        removed the help menu and other unnecessary functionalities for experiments when FORCE_EXPERIMENT_SETUP is defined
                 CMakeList.txt
                   added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
@@ -316,6 +325,8 @@ Changed:
                     optionsmenu.cpp
                         removed graphics, advanced graphics, opengl, simulation, ai opponents menu
                         added controls
+                    splash.cpp
+                        changed splashDisplay() removed version string
                 racescreens/
                     raceresultsmenus.cpp
                         included "EndExperimentMenu.h"
@@ -329,6 +340,7 @@ Changed:
                         removed rmProgressiveTimeModifier.start() call
                         removed controls menu, force feedback menu and quit button
                         changed parameters of GfuiScreenActive() function
+                        removed keybind esc that moved to next menu
                     racerunningmenus.cpp
                         removed RmProgressiveTimeModifier implementation and calls
                         changed rmAddKeys()
@@ -371,7 +383,6 @@ Changed:
                         added Yn[] from removed playerconfig.cpp
                         added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
-                        added button for accessing the force feedback settings
                 trackselect.cpp
                     changed rmtsSelect(): replaced usage of race manager with SetTrack function
                     changed RmTrackSelect(): replaced usage of race manager with GetTrack function
@@ -481,7 +492,8 @@ Changed:
                     removed *arcade_color_;
 
                 grmain.cpp
-                    changed initView(): removed keybinds for removed hud elements
+                    included <ConfigEnums.h>
+                    changed initView(): removed keybinds for removed hud elements and removed camera manipulation options when FORCE_EXPERIMENT_SETUP is defined
                     changed shutdownCars(): removed unused shutdown board
                     removed grSelectTrackMap()
 
@@ -547,8 +559,6 @@ Changed:
                 added EstimatedTimeLabel
             forcefeedbackconfigmenu.xml
                 changed background image
-            controlconfigmenu.xml
-                added button for force feedback control
             trackselectmenu.xml
                 changed position of category button
                 changed position of track button

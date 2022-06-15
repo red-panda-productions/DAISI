@@ -14,8 +14,20 @@
 #include "portability.h"
 #include "RppUtils.hpp"
 #include "VariableStore.h"
+#include "Mediator.h"
+#include "Mediator.inl"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>
+
+#define TEST_COUNT 20
 
 /// @brief				 Tests if the decision maker can be initialized
 /// @param  p_decisionMaker the decision maker that will be initialized
@@ -55,7 +67,7 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
     // TODO make comparer for car, track and situation so the entire object can be compared
-    if(!p_emptyPath)
+    if (!p_emptyPath)
     {
         ASSERT_TRUE(storage->EnvironmentVersion == track.version);
     }
@@ -66,6 +78,8 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 /// @brief Runs the initialize test function
 TEST(DecisionMakerTests, InitializeTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
 }
@@ -73,6 +87,8 @@ TEST(DecisionMakerTests, InitializeTest)
 /// @brief Runs the initialize test function with empty path
 TEST(DecisionMakerTests, InitializeTestEmpty)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker, true);
 }
@@ -81,6 +97,9 @@ TEST(DecisionMakerTests, InitializeTestEmpty)
 /// @param  p_isDecision Whether the black box made a decision
 void DecisionTest(bool p_isDecision)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
@@ -99,10 +118,10 @@ void DecisionTest(bool p_isDecision)
 
     RecorderMock* recorder = decisionMaker.GetRecorder();
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
-    ASSERT_EQ(recorder->CurrentDecisions.GetSteer(), storage->SavedDecisions->GetSteer());
-    ASSERT_EQ(recorder->CurrentDecisions.GetBrake(), storage->SavedDecisions->GetBrake());
-    ASSERT_EQ(recorder->CurrentDecisions.GetAccel(), storage->SavedDecisions->GetAccel());
-    ASSERT_EQ(recorder->CurrentDecisions.GetGear(), storage->SavedDecisions->GetGear());
+    ASSERT_EQ(recorder->CurrentDecisions.GetSteerAmount(), storage->SavedDecisions->GetSteerAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetBrakeAmount(), storage->SavedDecisions->GetBrakeAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetAccelAmount(), storage->SavedDecisions->GetAccelAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetGearAmount(), storage->SavedDecisions->GetGearAmount());
     ASSERT_EQ(recorder->CurrentTimestamp, 0);
     InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mock == nullptr);
@@ -117,6 +136,9 @@ TEST_CASE(DecisionMakerTests, DecisionTestFalse, DecisionTest, (false))
 /// @param  p_intervention  The setting that needs to be set
 void ChangeSettingsTest(InterventionType p_intervention)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     TDecisionMaker decisionMaker;
     decisionMaker.ChangeSettings(p_intervention);
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
@@ -135,49 +157,91 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAutonomousAI, ChangeSettingsTest
 /// @param  p_dataToStore data settings that will be set.
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     decisionMaker.SetDataCollectionSettings(p_dataToStore);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().EnvironmentData == p_dataToStore.EnvironmentData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().HumanData == p_dataToStore.HumanData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().InterventionData == p_dataToStore.InterventionData);
-    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().MetaData == p_dataToStore.MetaData);
 }
 
 /// @brief				 Performs the data collection test with the given parameters
-/// @param  p_environmentData, p_carData, p_humanData , p_interventionData, p_metaData are the individual data settings
-void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData, bool p_metaData)
+/// @param  p_environmentData whether the environment data will be saved
+/// @param  p_carData whether the car data will be saved
+/// @param  p_humanData whether the human data will be saved
+/// @param  p_interventionData whether the intervention data will be saved
+void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData)
 {
     DataToStore dataSettings = {
         p_environmentData,
         p_carData,
         p_humanData,
-        p_interventionData,
-        p_metaData};
+        p_interventionData};
     SetDataCollectionSettingsTest(dataSettings);
 }
 
 /// @brief Does the SetDataCollectionSettingsTest with all possible boolean combinations
 BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
-END_TEST_COMBINATORIAL5(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2, arr, 2);
+END_TEST_COMBINATORIAL4(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2);
 
-/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct path
+/// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct buffer paths
 TEST(DecisionMakerTests, RaceStopTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
-    ASSERT_NO_THROW(decisionMaker.RaceStop(true));
-    ASSERT_NO_THROW(decisionMaker.RaceStop(false));
-    filesystem::path path = *static_cast<filesystem::path*>(VariableStore::GetInstance().Variables[0]);
-    ASSERT_TRUE(path == *decisionMaker.GetBufferFilePath());
+
+    ASSERT_NO_THROW(decisionMaker.CloseRecorder());
+    ASSERT_NO_THROW(decisionMaker.SaveData());
+    ASSERT_NO_THROW(decisionMaker.ShutdownBlackBox());
+
+    tBufferPaths vsBufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
+    tBufferPaths dmBufferPaths = decisionMaker.GetBufferPaths();
+    ASSERT_EQ(vsBufferPaths.MetaData, dmBufferPaths.MetaData);
+    ASSERT_EQ(vsBufferPaths.TimeSteps, dmBufferPaths.TimeSteps);
+    ASSERT_EQ(vsBufferPaths.GameState, dmBufferPaths.GameState);
+    ASSERT_EQ(vsBufferPaths.UserInput, dmBufferPaths.UserInput);
+    ASSERT_EQ(vsBufferPaths.Decisions, dmBufferPaths.Decisions);
+    ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
 }
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable
 TEST(DecisionMakerTests, GetFileDataStorageTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
     ASSERT_FALSE(storage == nullptr);
+}
+
+/// @brief Tests if the GetDecision correctly gets the decision tuple
+TEST(DecisionMakerTests, GetDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    TDecisionMaker decisionMaker;
+
+    Random random;
+
+    for (int i = 0; i < TEST_COUNT; i++)
+    {
+        DecisionTuple decision;
+        float accel = random.NextFloat();
+        float brake = random.NextFloat();
+        float steer = random.NextFloat();
+        decision.SetAccelDecision(accel);
+        decision.SetBrakeDecision(brake);
+        decision.SetSteerDecision(steer);
+
+        decisionMaker.SetDecisions(decision);
+        ASSERT_EQ(accel, decisionMaker.GetDecisions().GetAccelAmount());
+        ASSERT_EQ(brake, decisionMaker.GetDecisions().GetBrakeAmount());
+        ASSERT_EQ(steer, decisionMaker.GetDecisions().GetSteerAmount());
+    }
 }

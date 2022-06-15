@@ -4,10 +4,12 @@
 #include "FileSystem.hpp"
 #include <iostream>
 
-// Write a string to the stream, as the string in text format (without conversion)
-#define WRITE_STRING(stream, string) stream << string << "\n"
-// Write a variable to the stream
-#define WRITE_VAR(stream, val) stream << std::to_string(val) << "\n"  // Binary: stream.write(reinterpret_cast<const char*>(&val), sizeof(val)); stream << "\n"
+// Helper functions to write to the buffer file streams
+#define WRITE_CSV(stream, val)  stream << val << ','
+#define WRITE_LINE(stream, val) stream << val << '\n'
+
+// Some random value that will not occur in a decision
+#define SKIP_DECISION -123456
 
 /// @brief Write a time variable to a stream as a DateTime entry (aka as a "YYYY-MM-DD hh:mm:ss" string),
 ///  finished by a newline.
@@ -19,26 +21,24 @@ inline void WriteTime(std::ostream& p_stream, time_t p_date)
     // Thus allocate space for 20 characters.
     char buffer[20];
     strftime(buffer, 20, "%F %T", gmtime(&p_date));
-    p_stream << buffer << "\n";
+    WRITE_LINE(p_stream, buffer);
 }
 
-/// @brief Initialize the file data storage.
-/// End result: a file is created at the given filepath, and initial data is written to the file.
-/// @param p_saveSettings Settings for what data to store.
-/// @param p_fileName Path of the file to save.
-/// @param p_userId User ID of the current player.
-/// @param p_trialStartTime Start time of the current race
-/// @param p_blackboxFilename Filename without path (e.g. "blackbox.exe") for the current black box
-/// @param p_blackboxName Name of the current black box (e.g. "My Lane Keeping Algorithm")
-/// @param p_blackboxTime Timestamp for when the current black box was last updated
+/// @brief Initialize the file data storage, writes meta data to a one of the buffer files.
+///        Sets up up all other file streams to the buffer files.
+/// @param p_saveSettings        Settings for what data to store.
+/// @param p_userId              User ID of the current player.
+/// @param p_trialStartTime      Start time of the current race
+/// @param p_blackboxFilename    Filename without path (e.g. "blackbox.exe") for the current black box
+/// @param p_blackboxName        Name of the current black box (e.g. "My Lane Keeping Algorithm")
+/// @param p_blackboxTime        Timestamp for when the current black box was last updated
 /// @param p_environmentFilename Filename without path (e.g. "highway.xml") for the current environment
-/// @param p_environmentName Name of the current environment (e.g. "Espie Circuit")
-/// @param p_environmentVersion Version of the current environment
-/// @param p_interventionType Intervention type for the current race
-/// @return returns the path of the buffer file
-filesystem::path FileDataStorage::Initialize(
+/// @param p_environmentName     Name of the current environment (e.g. "Espie Circuit")
+/// @param p_environmentVersion  Version of the current environment
+/// @param p_interventionType    Intervention type for the current race
+/// @return                      The path to the directory containing the buffer files
+tBufferPaths FileDataStorage::Initialize(
     tDataToStore p_saveSettings,
-    const std::string& p_fileName,
     const std::string& p_userId,
     const std::time_t& p_trialStartTime,
     const std::string& p_blackboxFilename,
@@ -50,13 +50,25 @@ filesystem::path FileDataStorage::Initialize(
     InterventionType p_interventionType)
 {
     // Create file directory if not yet exists
-    filesystem::path filePath = filesystem::temp_directory_path();
-    filePath.append(p_fileName.c_str());
-    create_directories(filePath.parent_path());
+    filesystem::path bufferDirectory = filesystem::temp_directory_path().append(BUFFER_TEMP_DIRECTORY);
+    filesystem::create_directory(bufferDirectory);
+
+    tBufferPaths bufferPaths = {
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_META_DATA),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_TIMESTEPS),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_GAMESTATE),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_USERINPUT),
+        filesystem::path(bufferDirectory).append(BUFFER_FILE_DECISIONS),
+    };
+
+    std::ofstream metaDataStream(bufferPaths.MetaData);
+    m_timeStepsStream.open(bufferPaths.TimeSteps);
+    m_gameStateStream.open(bufferPaths.GameState);
+    m_userInputStream.open(bufferPaths.UserInput);
+    m_decisionsStream.open(bufferPaths.Decisions);
 
     // Initialize member variables
     m_saveSettings = p_saveSettings;
-    m_outputStream.open(filePath);
     m_totalPosX = 0;
     m_totalPosY = 0;
     m_totalPosZ = 0;
@@ -66,31 +78,26 @@ filesystem::path FileDataStorage::Initialize(
     m_totalMovVelX = 0;
     m_totalMovAccX = 0;
 
-    // User and trial data
-    WRITE_STRING(m_outputStream, p_userId);
-    WriteTime(m_outputStream, p_trialStartTime);
-    // Black box data
-    WRITE_STRING(m_outputStream, p_blackboxFilename);
-    WriteTime(m_outputStream, p_blackboxTime);
-    WRITE_STRING(m_outputStream, p_blackboxName);
-    // Environment data
-    WRITE_STRING(m_outputStream, p_environmentFilename);
-    WRITE_VAR(m_outputStream, p_environmentVersion);
-    WRITE_STRING(m_outputStream, p_environmentName);
-    // Intervention data
-    WRITE_VAR(m_outputStream, p_interventionType);
-    // Headers to indicate what data will be saved
-    if (m_saveSettings.EnvironmentData)
-    {
-        WRITE_STRING(m_outputStream, "GameState");
-    }
-    if (m_saveSettings.HumanData)
-    {
-        WRITE_STRING(m_outputStream, "UserInput");
-    }
-    m_outputStream.flush();
+    // Write meta-data to file.
+    WRITE_LINE(metaDataStream, p_userId);
+    WRITE_LINE(metaDataStream, p_blackboxFilename);
+    WriteTime(metaDataStream, p_blackboxTime);
+    WRITE_LINE(metaDataStream, p_blackboxName);
+    WRITE_LINE(metaDataStream, p_environmentFilename);
+    WRITE_LINE(metaDataStream, p_environmentVersion);
+    WRITE_LINE(metaDataStream, p_environmentName);
+    WRITE_LINE(metaDataStream, p_interventionType);
+    WriteTime(metaDataStream, p_trialStartTime);
 
-    return {filePath};
+    metaDataStream.close();
+
+    // Write a header to the buffer files to help with future debugging.
+    WRITE_LINE(m_timeStepsStream, TIMESTEPS_CSV_HEADER);
+    WRITE_LINE(m_gameStateStream, GAMESTATE_CSV_HEADER);
+    WRITE_LINE(m_userInputStream, USERINPUT_CSV_HEADER);
+    WRITE_LINE(m_decisionsStream, DECISIONS_CSV_HEADER);
+
+    return bufferPaths;
 }
 
 /// @brief Sets the compression rate of the file data storage
@@ -106,56 +113,43 @@ int FileDataStorage::GetCompressionRate() const
 }
 
 /// @brief Shutdown the file data storage.
-/// End result: any possible final data is written and the file is released.
+/// End result: any possible final data is written and the files are released.
 void FileDataStorage::Shutdown()
 {
-    m_outputStream << "END";
-    m_outputStream.close();
+    m_timeStepsStream.close();
+    m_gameStateStream.close();
+    m_userInputStream.close();
+    m_decisionsStream.close();
 }
 
-/// @brief Save the current driving situation to the buffer
-/// @param p_car Current car status in Speed Dreams
-/// @param p_situation Current situation in Speed Dreams
+/// @brief Save the current simulation data to the buffers
+///        Uses data compression to compress data if needed.
+/// @param p_car       Current car status in Speed Dreams
 /// @param p_timestamp Current tick
-void FileDataStorage::Save(tCarElt* p_car, tSituation* p_situation, DecisionTuple& p_decisions, unsigned long p_timestamp)
+void FileDataStorage::Save(tCarElt* p_car, const DecisionTuple& p_decisions, unsigned long p_timestamp)
 {
-    // save all values from this time step
-    if (m_saveSettings.CarData)
-    {
-        SaveCarData(p_car);
-    }
-    if (m_saveSettings.HumanData)
-    {
-        SaveHumanData(p_car);
-    }
+    // Save all values from this time step into a buffer array for compression.
+    if (m_saveSettings.CarData) SaveCarData(p_car);
+    if (m_saveSettings.HumanData) SaveHumanData(p_car->ctrl);
+    if (m_saveSettings.InterventionData) SaveInterventionData(p_decisions);
 
-    if (m_saveSettings.InterventionData)
-    {
-        SaveInterventionData(p_decisions);
-    }
-
+    // Advance a compression check and return from function if data should not be saved yet.
     m_compressionStep++;
-
     if (m_compressionStep != m_compressionRate) return;
 
-    // save to the file at the end of the compression time step
-    WRITE_VAR(m_outputStream, p_timestamp);
-    if (m_saveSettings.CarData)
-    {
-        WriteCarData();
-    }
-    if (m_saveSettings.HumanData)
-    {
-        WriteHumanData();
-    }
-    if (m_saveSettings.InterventionData)
-    {
-        WriteInterventionData();
-    }
+    // Otherwise write all data to the files from the compression arrays.
+    WRITE_LINE(m_timeStepsStream, p_timestamp);
+
+    if (m_saveSettings.CarData) WriteCarData(p_timestamp);
+    if (m_saveSettings.HumanData) WriteHumanData(p_timestamp);
+    if (m_saveSettings.InterventionData) WriteInterventionData(p_timestamp);
+
+    // Reset compression
     m_compressionStep = 0;
 }
 
 /// @brief Saves the car data from the last time step
+/// @param p_car The car object to save
 void FileDataStorage::SaveCarData(tCarElt* p_car)
 {
     Posd pos = p_car->pub.DynGCg.pos;
@@ -172,30 +166,31 @@ void FileDataStorage::SaveCarData(tCarElt* p_car)
 }
 
 /// @brief Saves the human data from the last time step
-void FileDataStorage::SaveHumanData(tCarElt* p_car)
+/// @param p_ctrl The human control struct
+void FileDataStorage::SaveHumanData(const tCarCtrl& p_ctrl)
 {
-    tCarCtrl ctrl = p_car->ctrl;
-    AddToArray<float>(m_steerValues, ctrl.steer, m_compressionStep);
-    AddToArray<float>(m_brakeValues, ctrl.brakeCmd, m_compressionStep);
-    AddToArray<float>(m_accelValues, ctrl.accelCmd, m_compressionStep);
-    AddToArray<float>(m_clutchValues, ctrl.clutchCmd, m_compressionStep);
+    AddToArray<float>(m_steerValues, p_ctrl.steer, m_compressionStep);
+    AddToArray<float>(m_brakeValues, p_ctrl.brakeCmd, m_compressionStep);
+    AddToArray<float>(m_accelValues, p_ctrl.accelCmd, m_compressionStep);
+    AddToArray<float>(m_clutchValues, p_ctrl.clutchCmd, m_compressionStep);
 }
 
 /// @brief Saves the intervention data from the last time step
-void FileDataStorage::SaveInterventionData(DecisionTuple& p_decisions)
+/// @param p_decisions The decision data to store
+void FileDataStorage::SaveInterventionData(const DecisionTuple& p_decisions)
 {
-    SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteer(), m_steerDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrake(), m_brakeDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsAccel(), p_decisions.GetAccel(), m_accelDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsGear(), p_decisions.GetGear(), m_gearDecision, m_compressionStep);
-    SaveDecision(p_decisions.ContainsLights(), static_cast<int>(p_decisions.GetLights()), m_lightDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsSteer(), p_decisions.GetSteerAmount(), m_steerDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsBrake(), p_decisions.GetBrakeAmount(), m_brakeDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsAccel(), p_decisions.GetAccelAmount(), m_accelDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsGear(), p_decisions.GetGearAmount(), m_gearDecision, m_compressionStep);
+    SaveDecision(p_decisions.ContainsLights(), static_cast<int>(p_decisions.GetLightsAmount()), m_lightDecision, m_compressionStep);
 }
 
 /// @brief Saves the decision data from the last time step
-/// @param p_decisionMade boolean that determines whether a decision is made
-/// @param p_value the value of the decision
-/// @param p_values array of values from previous decisions
-/// @param p_compressionStep the current step the program is in
+/// @param p_decisionMade    Boolean that determines whether a decision is made
+/// @param p_value           The value of the decision
+/// @param p_values          Array of values from previous decisions
+/// @param p_compressionStep The current compression step
 template <typename TNumber>
 void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber* p_values, int p_compressionStep)
 {
@@ -204,66 +199,65 @@ void FileDataStorage::SaveDecision(bool p_decisionMade, TNumber p_value, TNumber
         AddToArray<TNumber>(p_values, p_value, p_compressionStep);
         return;
     }
-    AddToArray<TNumber>(p_values, -1, p_compressionStep);
+    AddToArray<TNumber>(p_values, SKIP_DECISION, p_compressionStep);
 }
 
 /// @brief Writes the car data from the last m_compressionRate time steps to the buffer file
-void FileDataStorage::WriteCarData()
+/// @param p_timestamp The current simulation tick.
+void FileDataStorage::WriteCarData(unsigned long p_timestamp)
 {
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosX));       // x-position
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosY));       // y-position
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosZ));       // z-position
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAx));      // x-rotation
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAy));      // y-rotation
-    WRITE_VAR(m_outputStream, GetAverage(m_totalPosAz));      // z-rotation
-    WRITE_VAR(m_outputStream, GetAverage(m_totalMovVelX));    // speed
-    WRITE_VAR(m_outputStream, GetAverage(m_totalMovAccX));    // acceleration
-    WRITE_VAR(m_outputStream, GetLeastCommon(m_gearValues));  // gear
+    WRITE_CSV(m_gameStateStream, p_timestamp);
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosX));        // x-position
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosY));        // y-position
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosZ));        // z-position
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAx));       // x-rotation
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAy));       // y-rotation
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalPosAz));       // z-rotation
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovVelX));     // speed
+    WRITE_CSV(m_gameStateStream, GetAverage(m_totalMovAccX));     // acceleration
+    WRITE_LINE(m_gameStateStream, GetLeastCommon(m_gearValues));  // gear
 }
 
-/// @brief Writes the human data from the last m_compressionRate time steps to the buffer file
-void FileDataStorage::WriteHumanData()
+/// @brief Writes the human input data from the last m_compressionRate time steps to the buffer file
+/// @param p_timestamp The current simulation tick.
+void FileDataStorage::WriteHumanData(unsigned long p_timestamp)
 {
-    WRITE_VAR(m_outputStream, GetMedian(m_steerValues));   // steer
-    WRITE_VAR(m_outputStream, GetMedian(m_brakeValues));   // brake
-    WRITE_VAR(m_outputStream, GetMedian(m_accelValues));   // gas
-    WRITE_VAR(m_outputStream, GetMedian(m_clutchValues));  // clutch
+    WRITE_CSV(m_userInputStream, p_timestamp);
+    WRITE_CSV(m_userInputStream, GetMedian(m_steerValues));    // steer
+    WRITE_CSV(m_userInputStream, GetMedian(m_brakeValues));    // brake
+    WRITE_CSV(m_userInputStream, GetMedian(m_accelValues));    // gas
+    WRITE_LINE(m_userInputStream, GetMedian(m_clutchValues));  // clutch
 }
 
 /// @brief Writes the intervention data from the last m_compressionRate time steps to the buffer file
-void FileDataStorage::WriteInterventionData()
+/// @param p_timestamp The current simulation tick.
+void FileDataStorage::WriteInterventionData(unsigned long p_timestamp)
 {
-    bool decisionMade = false;
-    WriteDecision(GetMedian(m_steerDecision), "SteerDecision", decisionMade);
-    WriteDecision(GetMedian(m_brakeDecision), "BrakeDecision", decisionMade);
-    WriteDecision(GetMedian(m_accelDecision), "AccelDecision", decisionMade);
-    WriteDecision(GetLeastCommon(m_gearDecision), "GearDecision", decisionMade);
-    WriteDecision(GetLeastCommon(m_lightDecision), "LightsDecision", decisionMade);
-
-    if (!decisionMade)
-    {
-        WRITE_STRING(m_outputStream, "Decisions");
-    }
-    WRITE_STRING(m_outputStream, "NONE");
+    WRITE_CSV(m_decisionsStream, p_timestamp);
+    WriteDecision(GetMedian(m_steerDecision), ',');
+    WriteDecision(GetMedian(m_brakeDecision), ',');
+    WriteDecision(GetMedian(m_accelDecision), ',');
+    WriteDecision(GetLeastCommon(m_gearDecision), ',');
+    WriteDecision(GetLeastCommon(m_lightDecision), '\n');
 }
 
-/// @brief Writes the p_decisionType data from the last m_compressionRate time steps to the buffer file
-/// @param p_decision the value of the p_decisionType of the last time m_comrpessionRate time steps
-/// @param p_decisionType the current decision type
-/// @param p_decisionMade if there has already been a decision made
+/// @brief Writes a decision to the decision buffer file. In case the decision should be skipped,
+///        it writes '\N' which corresponds to NULL in the MySQL LOAD DATA INFILE statement
+/// @tparam TNumber  The type of the decision value
+/// @param p_value   The value corresponding to the decision
+/// @param separator The separator to append after the value
 template <typename TNumber>
-void FileDataStorage::WriteDecision(TNumber p_decision, const std::string& p_decisionType, bool& p_decisionMade)
+void FileDataStorage::WriteDecision(TNumber p_value, char p_separator)
 {
-    if (p_decision == -1) return;
-
-    if (!p_decisionMade)
+    if (p_value == static_cast<TNumber>(SKIP_DECISION))
     {
-        p_decisionMade = true;
-        WRITE_STRING(m_outputStream, "Decisions");
+        m_decisionsStream << "\\N";
     }
-
-    WRITE_STRING(m_outputStream, p_decisionType);
-    WRITE_VAR(m_outputStream, p_decision);
+    else
+    {
+        m_decisionsStream << p_value;
+    }
+    m_decisionsStream << p_separator;
 }
 
 /// @brief Add the new value to the total of the current time steps

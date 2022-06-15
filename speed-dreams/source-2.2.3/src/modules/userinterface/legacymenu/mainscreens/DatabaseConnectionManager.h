@@ -15,6 +15,9 @@
 #define PRM_CA_CERT_DIALOG      "CACertDialog"
 #define PRM_PUBLIC_CERT_DIALOG  "PublicCertDialog"
 #define PRM_PRIVATE_CERT_DIALOG "PrivateCertDialog"
+#define PRM_CA_CERT_LABEL       "CaCertLabel"
+#define PRM_PUBLIC_CERT_LABEL   "PublicCertLabel"
+#define PRM_PRIVATE_CERT_LABEL  "PrivateCertLabel"
 
 #define CERT_PEM                     ".pem"
 #define CERT_KEY                     ".key"
@@ -47,7 +50,8 @@ typedef struct DbControlSettings
 
 void SaveDBSettingsToDisk();
 
-void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control);
+void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control,
+                         int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel);
 
 void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
@@ -55,11 +59,19 @@ void LoadConfigSettings(void* p_param, tDbControlSettings& p_control);
 
 void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control);
 
-void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
+void CheckConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting, tDatabaseSettings p_connectionSettings);
+
+void CheckCurrentConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
+
+void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isConnecting);
 
 void SetUsername(void* p_scrHandle, int p_usernameControl);
 
-void SetPassword(void* p_scrHandle, int p_passwordControl);
+void DeletePassword(void* p_scrHandle, int p_passwordControl);
+
+void FillInPassword(void* p_scrHandle, int p_passwordControl);
+
+void ChangePassword(void* p_scrHandle, int p_passwordControl);
 
 void SetAddress(void* p_scrHandle, int p_addressControl);
 
@@ -67,7 +79,8 @@ void SetPort(void* p_scrHandle, int p_portControl);
 
 void SetSchema(void* p_scrHandle, int p_schemaControl);
 
-void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl);
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
+               int p_caLabel, int p_publicLabel, int p_privateLabel);
 
 void InitCertificates(void* p_param);
 

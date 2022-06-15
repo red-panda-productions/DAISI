@@ -137,7 +137,7 @@ rmQuitHookActivate(void * /* dummy */)
 {
     //quit game asks you if you want to quit the game.
     if (rmStopScrHandle)
-        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle, true, RACE_EXIT));
+        GfuiScreenActivate(ExitMenuInit(rmStopScrHandle));
 }
 
 static void *pvQuitHookHandle = 0;
@@ -202,8 +202,7 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
 
     // Register keyboard shortcuts.
     GfuiMenuDefaultKeysAdd(hscreen);
-    GfuiAddKey(hscreen, GFUIK_ESCAPE, pszCancelTip,
-               aButtons[nCancelIndex].screen, GfuiScreenActivate, NULL);
+    // SIMULATED DRIVING ASSISTANCE: removed esc keybind that moved to the next menu
 
     // Close menu XML descriptor.
     GfParmReleaseHandle(hmenu);

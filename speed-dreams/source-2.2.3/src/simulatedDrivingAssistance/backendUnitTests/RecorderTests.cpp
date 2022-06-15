@@ -4,7 +4,16 @@
 #include "RppUtils.hpp"
 #include "FileSystem.hpp"
 #include <tgf.h>
+#include "Mediator.h"
+#include "Mediator.inl"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
 
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 /// @brief Directory to store test files in when testing the recorder (relative to the test_data folder)
 #define TEST_DIRECTORY "test_test_data"
@@ -18,15 +27,15 @@
     ASSERT_BINARY_FILE_CONTENTS(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename), contents)
 
 /// @brief Assert the contents of [filename] of recording [recordingName] located in [folder] match the string [contents]
-#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                             \
-    {                                                                                               \
+#define ASSERT_FILE_CONTENTS(folder, recordingName, filename, contents)                                     \
+    {                                                                                                       \
         std::cout << "Reading file from " << (folder + (recordingName OS_SEPARATOR filename)) << std::endl; \
-        std::ifstream file(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename));                            \
-        ASSERT_TRUE(file.is_open());                                                                \
-        std::stringstream buffer;                                                                   \
-        buffer << file.rdbuf();                                                                     \
-        std::cout << buffer.str() << std::endl;                                                     \
-        ASSERT_STREQ(buffer.str().c_str(), contents);                                               \
+        std::ifstream file(folder + (OS_SEPARATOR recordingName OS_SEPARATOR filename));                    \
+        ASSERT_TRUE(file.is_open());                                                                        \
+        std::stringstream buffer;                                                                           \
+        buffer << file.rdbuf();                                                                             \
+        std::cout << buffer.str() << std::endl;                                                             \
+        ASSERT_STREQ(buffer.str().c_str(), contents);                                                       \
     }
 
 /// @brief Assert that the file at the given path is empty
@@ -245,6 +254,9 @@ TEST(RecorderTests, WriteSameFileTwice)
 
 TEST(RecorderTests, WriteDecisions)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     Random random(0x534732);
     std::string folder = GetTestingDirectory();
     std::stringstream expectedDecisionsData;
@@ -255,11 +267,15 @@ TEST(RecorderTests, WriteDecisions)
     for (int i = 0; i < 10; i++)
     {
         DecisionTuple decisionTuple;
-        decisionTuple.SetAccel(random.NextFloat(0, 1));
-        decisionTuple.SetBrake(random.NextFloat(0, 1));
-        decisionTuple.SetGear(random.NextInt(0, 10));
-        decisionTuple.SetSteer(random.NextFloat(0, 1));
-        expectedDecisionsData << bits(timestamp) << bits(decisionTuple.GetSteer()) << bits(decisionTuple.GetAccel()) << bits(decisionTuple.GetBrake()) << bits(static_cast<float>(decisionTuple.GetGear()));
+        decisionTuple.SetAccelDecision(random.NextFloat(0, 1));
+        decisionTuple.SetBrakeDecision(random.NextFloat(0, 1));
+        decisionTuple.SetGearDecision(random.NextInt(0, 10));
+        decisionTuple.SetSteerDecision(random.NextFloat(0, 1));
+        expectedDecisionsData << bits(timestamp);
+        expectedDecisionsData << bits(decisionTuple.GetSteerAmount());
+        expectedDecisionsData << bits(decisionTuple.GetAccelAmount());
+        expectedDecisionsData << bits(decisionTuple.GetBrakeAmount());
+        expectedDecisionsData << bits(static_cast<float>(decisionTuple.GetGearAmount()));
         recorder.WriteDecisions(&decisionTuple, timestamp++);
     }
 
@@ -340,7 +356,6 @@ TEST(RecorderTests, WriteRunSettingsTests)
     participantControl.ControlAccel = random.NextBool();
     participantControl.ControlBrake = random.NextBool();
     participantControl.ControlInterventionToggle = random.NextBool();
-    participantControl.ForceFeedback = random.NextBool();
 
     int maxTime = random.NextInt();
 
@@ -375,7 +390,6 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, nullptr), BoolToString(participantControl.ControlInterventionToggle));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, nullptr), BoolToString(participantControl.ControlAccel));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, nullptr), BoolToString(participantControl.ControlSteer));
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_FORCE_FEEDBACK, nullptr), BoolToString(participantControl.ForceFeedback));
 
     ASSERT_EQ(GfParmGetNum(handle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, 0), static_cast<tdble>(maxTime));
 
@@ -417,12 +431,12 @@ TEST(RecorderTests, WriteRunSettingsTests)
             THROW_RPP_EXCEPTION("Failed to get SDA folder");                                \
         }                                                                                   \
         varName.append(TEST_DIRECTORY).append("upgraded-" source);                          \
-        filesystem::create_directories(varName);                         \
+        filesystem::create_directories(varName);                                            \
                                                                                             \
         /* Delete the existing test directory to ensure directories are properly created */ \
-        if (filesystem::exists(varName))                                 \
+        if (filesystem::exists(varName))                                                    \
         {                                                                                   \
-            filesystem::remove_all(varName);                             \
+            filesystem::remove_all(varName);                                                \
         }                                                                                   \
                                                                                             \
         filesystem::copy(sourcePath, varName, filesystem::copy_options::recursive);         \
@@ -439,8 +453,8 @@ void AssertV0ToV1Changes(void* p_upgradedRunSettingsHandle, filesystem::path& p_
 
     const char* name = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME, nullptr);
     const char* category = GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
-    ASSERT_STRCASEEQ(name, "test_highway");
-    ASSERT_STRCASEEQ(category, "road");
+    ASSERT_STRCASEEQ(name, "Small Highway 4 Lanes [80 km/h]");
+    ASSERT_STRCASEEQ(category, "simple-highway");
     delete[] name;
     delete[] category;
 
@@ -553,7 +567,7 @@ TEST(RecorderTests, UpgradeToUnkownVersion)
 TEST(RecorderTests, UpgradeV0WithMissingCategory)
 {
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-recording", toUpgrade);
-    
+
     // Remove category attribute from track xml file
     void* settingsHandle = GfParmReadFile(filesystem::path(toUpgrade).append(RUN_SETTINGS_FILE_NAME).string().c_str(), GFPARM_RMODE_STD);
     const char* trackFileName = GfParmGetStr(settingsHandle, PATH_TRACK, KEY_FILENAME, nullptr);
