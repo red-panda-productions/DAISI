@@ -380,7 +380,7 @@ template <typename DecisionMaker>
 bool Mediator<DecisionMaker>::CheckConnection(DatabaseSettings p_dbSettings)
 {
     SQLDatabaseStorage test;
-    bool connectable = test.OpenDatabase(p_dbSettings);
+    bool connectable = test.TestConnection(p_dbSettings);
     return connectable;
 }
 
