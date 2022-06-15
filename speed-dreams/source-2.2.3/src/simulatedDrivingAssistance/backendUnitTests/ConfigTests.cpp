@@ -188,7 +188,7 @@ TEST_CASE(ConfigTests, BlackBoxSyncOptionTestSync, BlackBoxSyncOptionTestConfig,
 /// @param p_car          The car data setting
 /// @param p_human        The human data setting
 /// @param p_intervention The intervention data setting
-void TestBoolArr( bool p_car, bool p_human, bool p_intervention)
+void TestBoolArr(bool p_car, bool p_human, bool p_intervention)
 {
     SDAConfig config;
     tDataToStore arr = {p_car, p_human, p_intervention};
