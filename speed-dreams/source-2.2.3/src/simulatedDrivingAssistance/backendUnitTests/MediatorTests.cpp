@@ -317,7 +317,7 @@ TEST(MediatorTests, EnvironmentFilePathTest)
     }
 }
 
-/// @brief                Tests if the Mediator sets and gets the DataCollectionSetting correctl
+/// @brief                Tests if the Mediator sets and gets the DataCollectionSetting correctly
 /// @param p_car          The car data setting
 /// @param p_human        The human data setting
 /// @param p_intervention The intervention data setting

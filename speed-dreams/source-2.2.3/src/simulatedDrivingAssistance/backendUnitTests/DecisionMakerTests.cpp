@@ -217,7 +217,7 @@ void TestOnlySaveDataToStore(bool p_carData, bool p_humanData, bool p_interventi
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
-    decisionMaker.SetDataCollectionSettings({false, p_carData, p_humanData, p_interventionData});
+    decisionMaker.SetDataCollectionSettings({p_carData, p_humanData, p_interventionData});
     decisionMaker.SaveData();
 
     // Assert whether the dataToStore is correctly stored in the variable store (by the SQLDatabaseStorageMock)
