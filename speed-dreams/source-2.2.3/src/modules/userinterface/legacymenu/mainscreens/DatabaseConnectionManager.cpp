@@ -201,7 +201,9 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     }
     catch (std::exception& e)
     {
-        GfLogError("Cannot open database. Database is offline or invalid ");
+        GfLogError("Error occurred while checking connectability of database: ");
+        GfLogError(e.what());
+        GfLogError("\n");
     }
     if (connectable)
     {
@@ -210,6 +212,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
         *p_isConnecting = false;
+        GfuiApp().eventLoop().postRedisplay();
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
@@ -217,6 +220,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
     *p_isConnecting = false;
+    GfuiApp().eventLoop().postRedisplay();
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database with saved settings

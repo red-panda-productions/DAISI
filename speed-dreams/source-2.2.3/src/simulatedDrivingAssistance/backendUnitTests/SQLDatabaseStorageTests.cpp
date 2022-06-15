@@ -8,10 +8,15 @@
 #include <config.h>
 #include "Mediator.h"
 
+#define TEST_USER_USERNAME              "SDATest"
+#define TEST_USER_PASSWORD              "PASSWORD"
+#define TEST_UNPRIVILEGED_USER_USERNAME "SDATestWithoutPrivileges"
+#define TEST_UNPRIVILEGED_USER_PASSWORD "password"
+
 #define MAKE_TEST_SETTINGS                                                         \
     tDatabaseSettings testSettings;                                                \
-    strcpy_s(testSettings.Username, SETTINGS_NAME_LENGTH, "SDATest");              \
-    strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, "PASSWORD");             \
+    strcpy_s(testSettings.Username, SETTINGS_NAME_LENGTH, TEST_USER_USERNAME);     \
+    strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, TEST_USER_PASSWORD);     \
     testSettings.Port = 3306;                                                      \
     strcpy_s(testSettings.Address, SETTINGS_NAME_LENGTH, "127.0.0.1");             \
     strcpy_s(testSettings.Schema, SETTINGS_NAME_LENGTH, "sda_test");               \
@@ -79,6 +84,60 @@ TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailIncorrectPassword)
     CATCH_ERROR_CONTAINING(
         ASSERT_FALSE(sqlDataBaseStorage.OpenDatabase(testSettings)),
         "[MYSQL] ERROR: ");
+}
+
+TEST(SQLDatabaseStorageTests, TestTestConnectionFailIncorrectPassword)
+{
+    MAKE_TEST_SETTINGS;
+    sprintf(testSettings.Password, "WRONGPASSWORD");
+    SQLDatabaseStorage sqlDataBaseStorage;
+
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDataBaseStorage.TestConnection(testSettings)),
+        "SQL connection test failed: Database could not be connected");
+}
+
+/// @brief Connect to the given database to create a user without any privileges if the user does not yet exist
+///        Assumes the user specified in p_testSettings has enough rights to create new users
+/// @param p_testSettings Settings to connect to the database with
+void CreatePermissionlessUser(tDatabaseSettings p_testSettings)
+{
+    sql::Driver* driver = sql::mysql::get_mysql_driver_instance();
+    sql::ConnectOptionsMap connection_properties;
+    std::string address = p_testSettings.Address;
+    connection_properties["hostName"] = "tcp://" + address;
+    connection_properties["userName"] = p_testSettings.Username;
+    connection_properties["password"] = p_testSettings.Password;
+    connection_properties["port"] = p_testSettings.Port;
+    connection_properties["OPT_RECONNECT"] = true;
+    connection_properties["CLIENT_MULTI_STATEMENTS"] = false;
+    connection_properties["CLIENT_LOCAL_FILES"] = true;
+    connection_properties["sslEnforce"] = true;
+    if (p_testSettings.UseSSL) SQLDatabaseStorage::PutKeys(connection_properties, p_testSettings);
+    sql::Connection* connection = driver->connect(connection_properties);
+    sql::Statement* statement = connection->createStatement();
+    statement->execute("CREATE USER IF NOT EXISTS '" TEST_UNPRIVILEGED_USER_USERNAME "'@'localhost' IDENTIFIED by '" TEST_UNPRIVILEGED_USER_PASSWORD "'");
+    statement->close();
+    delete statement;
+    connection->close();
+    delete connection;
+}
+
+TEST(SQLDatabaseStorageTests, TestTestConnectionNotEnoughPermissions)
+{
+    MAKE_TEST_SETTINGS;
+
+    // Ensure the unprivileged user exists
+    CreatePermissionlessUser(testSettings);
+
+    strcpy_s(testSettings.Username, SETTINGS_NAME_LENGTH, TEST_UNPRIVILEGED_USER_USERNAME);
+    strcpy_s(testSettings.Password, SETTINGS_NAME_LENGTH, TEST_UNPRIVILEGED_USER_PASSWORD);
+
+    // Check whether we get an error for not having enough permissions
+    SQLDatabaseStorage sqlDatabaseStorage;
+    CATCH_ERROR_CONTAINING(
+        ASSERT_FALSE(sqlDatabaseStorage.TestConnection(testSettings)),
+        "SQL connection test failed: Database user " TEST_UNPRIVILEGED_USER_USERNAME " is missing ");
 }
 
 /// @brief Tests whether closing the database without opening it doesnt throw an error.
