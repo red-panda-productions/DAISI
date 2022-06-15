@@ -80,7 +80,11 @@ void SaveDBSettingsToDisk()
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_control the corresponding ui element control integers
-void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
+/// @param p_caCertLabel the corresponding ui element control integer
+/// @param p_publicCertLabel the corresponding ui element control integer
+/// @param p_privateCertLabel the corresponding ui element control integer
+void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control,
+                         int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, s_dbSettings.Username);
     GfuiEditboxSetString(p_scrHandle, p_control.Address, s_dbSettings.Address);
@@ -106,6 +110,9 @@ void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
     GfuiVisibilitySet(p_scrHandle, p_control.CACertificateButton, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_control.PublicCertificateButton, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_control.PrivateCertificateButton, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_caCertLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateCertLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicCertLabel, s_dbSettings.UseSSL);
 }
 
 /// @brief Loads the default menu settings from the controls into the internal variables
@@ -194,7 +201,9 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     }
     catch (std::exception& e)
     {
-        GfLogError("Cannot open database. Database is offline or invalid ");
+        GfLogError("Error occurred while checking connectability of database: ");
+        GfLogError(e.what());
+        GfLogError("\n");
     }
     if (connectable)
     {
@@ -203,6 +212,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
         *p_isConnecting = false;
+        GfuiApp().eventLoop().postRedisplay();
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
@@ -210,6 +220,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
     *p_isConnecting = false;
+    GfuiApp().eventLoop().postRedisplay();
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database with saved settings
@@ -342,18 +353,25 @@ void SetSchema(void* p_scrHandle, int p_schemaControl)
     GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_tempDbSettings.Schema);
 }
 
-/// @brief        Enables/disables the SSL option
-/// @param p_info Information on the checkbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_caControl the corresponding ui element control integers
-/// @param p_publicControl the corresponding ui element control integers
+/// @brief                  Enables/disables the SSL option
+/// @param p_info           Information on the checkbox
+/// @param p_scrHandle      The screen handle which to operate the functions on
+/// @param p_caControl      the corresponding ui element control integers
+/// @param p_publicControl  the corresponding ui element control integers
 /// @param p_privateControl the corresponding ui element control integers
-void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl)
+/// @param p_caLabel        the corresponding ui element control integers
+/// @param p_publicLabel    the corresponding ui element control integers
+/// @para, p_privateLabel   the corresponding ui element control integers
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
+               int p_caLabel, int p_publicLabel, int p_privateLabel)
 {
     s_tempDbSettings.UseSSL = p_info->bChecked;
     GfuiVisibilitySet(p_scrHandle, p_caControl, s_tempDbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_publicControl, s_tempDbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_privateControl, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_caLabel, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicLabel, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateLabel, s_tempDbSettings.UseSSL);
 }
 
 /// @brief Initializes the certificate filepaths.

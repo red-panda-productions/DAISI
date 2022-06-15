@@ -29,7 +29,7 @@
 	    <attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Start"/>
-		<attstr name="tip" val="Setup and start a race, championship or career"/>
+		<attstr name="tip" val="Setup and start an experiment"/>
 		<attnum name="x" val="50"/>
 		<attnum name="y" val="330"/>
 		<attnum name="width" val="320"/>
@@ -51,7 +51,7 @@
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Options"/>
-		<attstr name="tip" val="Options for graphics, sound and opponents"/>
+		<attstr name="tip" val="Options for controls, display and sound"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="50"/>
 		<attnum name="y" val="275"/>
@@ -74,7 +74,7 @@
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Credits"/>
 		<attstr name="h align" val="Left"/>
-		<attstr name="tip" val="All people behind Speed Dreams"/>
+		<attstr name="tip" val="All people behind DAISI"/>
 		<attnum name="x" val="50"/>
 		<attnum name="y" val="220"/>
 		<attnum name="width" val="320"/>
@@ -117,7 +117,7 @@
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Quit"/>
-		<attstr name="tip" val="Quit Speed Dreams"/>
+		<attstr name="tip" val="Quit DAISI"/>
 		<attstr name="h align" val="left"/>
         <attnum name="x" val="50"/>
         <attnum name="y" val="165"/>
