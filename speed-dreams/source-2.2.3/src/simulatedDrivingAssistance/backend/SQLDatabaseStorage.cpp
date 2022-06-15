@@ -61,11 +61,10 @@ SQLDatabaseStorage::SQLDatabaseStorage(tDataToStore p_dataToStore)
     m_resultSet = nullptr;
 }
 
-/// @brief Connect to the specified database and set session variables.
-///        Initialise the database with the proper tables if they don't exist yet.
+/// @brief Connect to the specified database. Initialize m_connection without further effects.
 /// @param p_dbSettings Struct containing all settings for a database connection
-/// @return             Returns true if connection to database has been made, false otherwise
-bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
+/// @return true if connection to database has been made, false otherwise
+bool SQLDatabaseStorage::ConnectDatabase(DatabaseSettings p_dbSettings)
 {
     // Initialise SQL driver
     m_driver = sql::mysql::get_mysql_driver_instance();
@@ -95,13 +94,135 @@ bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
 
         return false;
     }
+    return true;
+}
 
-    // Create the database schema if this is a new schema. This has to be done before setting the schema on the connection.
+/// @brief Create the database schema on the database if the schema does not yet exist.
+///  Note: m_statement will be overridden and deleted by this operation.
+/// @param p_dbSettings Database settings to get schema name from
+void SQLDatabaseStorage::CreateDatabaseSchema(DatabaseSettings p_dbSettings)
+{
     m_statement = m_connection->createStatement();
     std::string schema = p_dbSettings.Schema;
     EXECUTE("CREATE DATABASE IF NOT EXISTS " + schema);
     m_statement->close();
     delete m_statement;
+}
+
+/// @brief Get a vector containing all missing privileges from the required set.
+///        Requires m_connection and m_statement to be initialised for the database already.
+///        Overrides and deletes m_resultSet
+/// @param p_dbSettings Database settings to use when checking privileges
+/// @return Vector containing the names of all missing privileges for the current connection
+std::vector<std::string> SQLDatabaseStorage::GetMissingPrivileges(DatabaseSettings p_dbSettings)
+{
+    // Prepare query to receive list of missing privileges.
+    // Using prepared statement sanitizes schema input (which could break otherwise)
+    sql::PreparedStatement* prepStmt = m_connection->prepareStatement(
+        "SELECT * FROM "
+        // Create a union of all desired grants
+        // Preferably you'd use a temporary table in this situation, but we cannot do that without a database scheme,
+        //   and we do not yet know whether we have rights to create or access one.
+        // Starting selection with null to display all privileges clearly.
+        // To require a new privilege simply add it as "UNION ALL SELECT '{privilege name}'"
+        "    ("
+        "        SELECT NULL AS privilege_type"
+        "        UNION ALL SELECT 'CREATE'"
+        "        UNION ALL SELECT 'CREATE TEMPORARY TABLES'"
+        "        UNION ALL SELECT 'SELECT'"
+        "        UNION ALL SELECT 'INSERT'"
+        "        UNION ALL SELECT 'REFERENCES'"
+        "        UNION ALL SELECT 'UPDATE'"
+        "        UNION ALL SELECT 'ALTER'"
+        "    ) required_grants "
+        //   Filter away all grants that have been granted, such that only missing grants remain
+        "    WHERE required_grants.privilege_type NOT IN ("
+        "    SELECT PRIVILEGE_TYPE FROM ("
+        //       Select all privileges and the grantee (which may include wildcards)
+        "        SELECT PRIVILEGE_TYPE, GRANTEE FROM ("
+        "            SELECT PRIVILEGE_TYPE, GRANTEE FROM information_schema.USER_PRIVILEGES up"
+        "            UNION ALL"
+        "            SELECT PRIVILEGE_TYPE, GRANTEE FROM information_schema.SCHEMA_PRIVILEGES sp "
+        "                WHERE ? LIKE sp.TABLE_SCHEMA"
+        "         ) all_grants "
+        //        Check which grants are correct for the current use
+        //        USER() returns the name as \"name@address\". GRANTEE is formatted as \"'name'@'address'\" (with additional parentheses). Add these in manually. "
+        //        Note that this breaks if the user's username includes an '@' or a '''"
+        "         WHERE CONCAT(\"'\", REPLACE(USER(), '@', \"'@'\"), \"'\") LIKE all_grants.GRANTEE "
+        "    ) AS grants"
+        ")");
+
+    // Execute query to get missing privileges on the selected database schema
+    prepStmt->setString(1, p_dbSettings.Schema);
+    m_resultSet = prepStmt->executeQuery();
+    delete prepStmt;
+
+    // Retrieve results
+    std::vector<std::string> missing_privileges = {};
+    while (m_resultSet->next())
+    {
+        sql::SQLString missing_privilege = m_resultSet->getString(1);
+        missing_privileges.push_back(missing_privilege.asStdString());
+    }
+    delete m_resultSet;
+    return missing_privileges;
+}
+
+/// @brief Test whether the provided database settings are suitable to make a connection to said database.
+///  This includes verifying the user has the proper privileges.
+///  Note: m_connection and m_statement will be overridden and deleted by this operation.
+/// @return true if arguments are suitable for connection, false otherwise.
+bool SQLDatabaseStorage::TestConnection(DatabaseSettings p_dbSettings)
+{
+    // Connect to the database, which both checks whether this is possible and initialises m_connection
+    if (!ConnectDatabase(p_dbSettings))
+    {
+        std::cerr << "SQL connection test failed: Database could not be connected" << std::endl;
+        return CloseDatabase(false);
+    }
+
+    // Create a statement to allow retrieval of privileges assigned to the user account
+    m_statement = m_connection->createStatement();
+
+    // Check if there are any missing privileges, and if so, write these to the console and return
+    std::vector<std::string> missing_privileges = GetMissingPrivileges(p_dbSettings);
+    if (!missing_privileges.empty())
+    {
+        std::cerr << "SQL connection test failed: Database user "
+                  << p_dbSettings.Username
+                  << " is missing "
+                  << missing_privileges.size()
+                  << " required permissions on schema "
+                  << p_dbSettings.Schema
+                  << ":";
+
+        for (const std::string& missing_privilege : missing_privileges)
+        {
+            std::cerr << " '" << missing_privilege << "'";
+        }
+        std::cerr << "." << std::endl;
+        return CloseDatabase(false);
+    }
+
+    // Close database, cleaning m_connection and m_statement
+    return CloseDatabase(true);
+}
+
+/// @brief Connect to the specified database and set session variables.
+///        Initialise the database with the proper tables if they don't exist yet.
+/// @param p_dbSettings Struct containing all settings for a database connection
+/// @return             Returns true if connection to database has been made, false otherwise
+bool SQLDatabaseStorage::OpenDatabase(DatabaseSettings p_dbSettings)
+{
+    // Establish connection to the database
+    if (!ConnectDatabase(p_dbSettings))
+    {
+        return false;
+    }
+
+    // Create the database schema if this is a new schema.
+    // This has to be done before setting the schema on the connection.
+    CreateDatabaseSchema(p_dbSettings);
 
     // Set the correct database schema and create (reusable statement)
     m_connection->setSchema(p_dbSettings.Schema);
@@ -412,7 +533,8 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
     EXECUTE(INSERT_IGNORE_INTO("Settings", "intervention_mode", values));
     GET_INT_FROM_QUERY(settingsId,
                        "SELECT settings_id FROM Settings "
-                       "WHERE intervention_mode = " + values);
+                       "WHERE intervention_mode = " +
+                           values);
 
     // Trial
     std::string trialDateTime;
@@ -434,10 +556,12 @@ int SQLDatabaseStorage::InsertMetaData(std::ifstream& p_inputFileStream)
 void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) + "' INTO TABLE TimeStep "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_bufferPaths.TimeSteps) +
+        "' INTO TABLE TimeStep "
         "   LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick) "
-        "   SET trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET trial_id = " +
+        std::to_string(p_trialId) + ";");
 
     if (m_dataToStore.CarData) InsertGameState(p_bufferPaths.GameState, p_trialId);
     if (m_dataToStore.HumanData) InsertUserInput(p_bufferPaths.UserInput, p_trialId);
@@ -450,10 +574,12 @@ void SQLDatabaseStorage::InsertSimulationData(const tBufferPaths& p_bufferPaths,
 void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) + "' INTO TABLE GameState "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_gameStatePath) +
+        "' INTO TABLE GameState "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\n' IGNORE 1 LINES "
         "   (tick, x, y, z, direction_x, direction_y, direction_z, speed, acceleration, gear) "
-        "   SET trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET trial_id = " +
+        std::to_string(p_trialId) + ";");
 }
 
 /// @brief Loads the userinput buffer file into the corresponding database table.
@@ -462,10 +588,12 @@ void SQLDatabaseStorage::InsertGameState(const filesystem::path& p_gameStatePath
 void SQLDatabaseStorage::InsertUserInput(const filesystem::path& p_userInputPath, const int p_trialId)
 {
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) + "' INTO TABLE UserInput "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_userInputPath) +
+        "' INTO TABLE UserInput "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (tick, steer, brake, gas, clutch) "
-        "   SET trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET trial_id = " +
+        std::to_string(p_trialId) + ";");
 }
 
 /// @brief Loads the decisions buffer file into the database by first loading it into a temporary table.
@@ -491,10 +619,12 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 
     // Load decisions csv file into temp table.
     EXECUTE(
-        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) + "' INTO TABLE TempInterventionData "
+        "LOAD DATA LOCAL INFILE '" + AddEscapeCharacter(p_decisionsPath) +
+        "' INTO TABLE TempInterventionData "
         "   FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES "
         "   (temp_tick, temp_steer_decision, temp_brake_decision, temp_accel_decision, temp_gear_decision, temp_lights_decision) "
-        "   SET temp_trial_id = " + std::to_string(p_trialId) + ";");
+        "   SET temp_trial_id = " +
+        std::to_string(p_trialId) + ";");
 
     // Insert all data into the Intervention table
     EXECUTE(

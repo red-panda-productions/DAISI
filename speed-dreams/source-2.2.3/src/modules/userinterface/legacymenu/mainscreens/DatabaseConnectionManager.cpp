@@ -201,7 +201,9 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     }
     catch (std::exception& e)
     {
-        GfLogError("Cannot open database. Database is offline or invalid ");
+        GfLogError("Error occurred while checking connectability of database: ");
+        GfLogError(e.what());
+        GfLogError("\n");
     }
     if (connectable)
     {
