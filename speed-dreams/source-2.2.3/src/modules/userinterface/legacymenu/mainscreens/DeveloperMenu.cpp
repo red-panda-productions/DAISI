@@ -43,7 +43,7 @@ int m_brakeThresholdControl;
 int m_steerThresholdControl;
 
 // The current interventionType set in the researcher menu
-int m_tempInterventionType;
+InterventionType m_tempInterventionType;
 
 // Synchronization type
 SyncType m_sync;
@@ -314,7 +314,7 @@ void RemoteSetDefaultThresholdValues()
 
 /// @brief                    Set the temporary interventionType to p_interventionType
 /// @param p_interventionType The intervention type
-void SetTempInterventionType(int p_interventionType)
+void SetTempInterventionType(InterventionType p_interventionType)
 {
     m_tempInterventionType = p_interventionType;
 }

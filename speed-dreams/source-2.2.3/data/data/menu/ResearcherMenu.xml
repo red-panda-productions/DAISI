@@ -55,7 +55,7 @@
             <attstr name="h align" val="left"/>
             <attnum name="x" val="253"/>
             <attnum name="y" val="40"/>
-            <attnum name="width" val="120"/>
+            <attnum name="width" val="140"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -230,7 +230,7 @@
             <attnum name="x" val="20"/>
             <attnum name="y" val="190"/>
             <attstr name="h align" val="left"/>
-            <attnum name="width" val="155"/>
+            <attnum name="width" val="190"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="OxFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -282,7 +282,7 @@
             <attstr name="h align" val="left"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="130"/>
-            <attnum name="width" val="145"/>
+            <attnum name="width" val="165"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -305,7 +305,7 @@
             <attstr name="h align" val="left"/>
             <attnum name="x" val="20"/>
             <attnum name="y" val="100"/>
-            <attnum name="width" val="120"/>
+            <attnum name="width" val="190"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -365,7 +365,7 @@
             <attstr name="h align" val="left"/>
             <attnum name="x" val="550"/>
             <attnum name="y" val="41"/>
-            <attnum name="width" val="120"/>
+            <attnum name="width" val="50"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
@@ -388,7 +388,7 @@
             <attstr name="h align" val="left"/>
             <attnum name="x" val="40"/>
             <attnum name="y" val="41"/>
-            <attnum name="width" val="120"/>
+            <attnum name="width" val="50"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
             <attstr name="focused color" val="0xFFFFFF"/>
