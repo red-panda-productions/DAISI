@@ -261,14 +261,6 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
     GfuiEditboxSetString(p_scrHandle, p_usernameControl, s_tempDbSettings.Username);
 }
 
-/// @brief Handle input in the Password textbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_passwordControl the corresponding ui element control integers
-void ClearPassword(void* p_scrHandle, int p_passwordControl)
-{
-    GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
-}
-
 /// @brief Delete the password in from the settings and from the XML file
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers

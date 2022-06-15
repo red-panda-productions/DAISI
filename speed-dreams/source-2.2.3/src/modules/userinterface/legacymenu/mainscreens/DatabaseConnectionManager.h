@@ -67,8 +67,6 @@ void CheckSavedConnection(void* p_scrHandle, int p_dbStatusControl, bool* p_isCo
 
 void SetUsername(void* p_scrHandle, int p_usernameControl);
 
-void ClearPassword(void* p_scrHandle, int p_passwordControl);
-
 void DeletePassword(void* p_scrHandle, int p_passwordControl);
 
 void FillInPassword(void* p_scrHandle, int p_passwordControl);
