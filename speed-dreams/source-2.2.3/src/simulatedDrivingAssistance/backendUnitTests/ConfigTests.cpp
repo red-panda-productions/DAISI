@@ -185,17 +185,15 @@ TEST_CASE(ConfigTests, BlackBoxSyncOptionTestAsync, BlackBoxSyncOptionTestConfig
 TEST_CASE(ConfigTests, BlackBoxSyncOptionTestSync, BlackBoxSyncOptionTestConfig, (false))
 
 /// @brief                Tests if the SDAConfig sets and gets the DataCollectionSetting correctly
-/// @param p_env          The environment data setting
 /// @param p_car          The car data setting
 /// @param p_human        The human data setting
 /// @param p_intervention The intervention data setting
-void TestBoolArr(bool p_env, bool p_car, bool p_human, bool p_intervention)
+void TestBoolArr( bool p_car, bool p_human, bool p_intervention)
 {
     SDAConfig config;
-    tDataToStore arr = {p_env, p_car, p_human, p_intervention};
+    tDataToStore arr = {p_car, p_human, p_intervention};
     config.SetDataCollectionSettings(arr);
     tDataToStore dataToStore = config.GetDataCollectionSetting();
-    ASSERT_EQ(arr.EnvironmentData, dataToStore.EnvironmentData);
     ASSERT_EQ(arr.CarData, dataToStore.CarData);
     ASSERT_EQ(arr.HumanData, dataToStore.HumanData);
     ASSERT_EQ(arr.InterventionData, dataToStore.InterventionData);
@@ -204,7 +202,7 @@ void TestBoolArr(bool p_env, bool p_car, bool p_human, bool p_intervention)
 /// @brief Tests the SDAConfig DataCollectionSetting for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(ConfigTests, DataCollectionSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL4(TestBoolArr, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL3(TestBoolArr, booleans, 2, booleans, 2, booleans, 2)
 
 TEST(ConfigTests, ReplayFolderTest)
 {

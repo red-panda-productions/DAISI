@@ -9,12 +9,12 @@
         <section name="CheckboxEnvironmentData">
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Environment data"/>
-            <attstr name="tip" val="Save the settings from the chosen environment"/>
+            <attstr name="tip" val="The environment data is always stored"/>
             <attnum name="x" val="250"/>
             <attnum name="y" val="275"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
-            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="color" val="0x727272"/>
             <attstr name="font" val="medium"/>
             <attstr name="checked" val="yes"/>
         </section>

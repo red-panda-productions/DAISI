@@ -48,7 +48,7 @@
 
 /// @brief The constructor of the SQL database storage, defaults to storing all data.
 SQLDatabaseStorage::SQLDatabaseStorage()
-    : SQLDatabaseStorage({true, true, true, true}){};
+    : SQLDatabaseStorage({true, true, true}){};
 
 /// @brief The parameterized constructor of the SQL database storage
 /// @param p_dataToStore The data to actually store in the database

@@ -37,9 +37,9 @@ bool m_isConnecting = false;
 
 /// @brief        Enables or disables whether the attributes of the environment will be collected real-time
 /// @param p_info Information on the checkbox
-static void ChangeEnvironmentStorage(tCheckBoxInfo* p_info)
+static void EnvironmentAlwaysStored(tCheckBoxInfo* p_info)
 {
-    m_dataToStore.EnvironmentData = p_info->bChecked;
+    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[0], true);
 }
 
 /// @brief        Enables or disables whether data on the car will be collected real-time
@@ -66,7 +66,6 @@ static void ChangeInterventionStorage(tCheckBoxInfo* p_info)
 /// @brief Synchronizes all the menu controls with the internal settings
 static void SynchronizeControls()
 {
-    GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[0], m_dataToStore.EnvironmentData);
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[1], m_dataToStore.CarData);
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[2], m_dataToStore.HumanData);
     GfuiCheckboxSetChecked(s_scrHandle, m_dataToStoreControl[3], m_dataToStore.InterventionData);
@@ -76,7 +75,6 @@ static void SynchronizeControls()
 /// @param p_param The configuration menu handle
 static void LoadConfigSettings(void* p_param)
 {
-    m_dataToStore.EnvironmentData = GfuiMenuControlGetBoolean(p_param, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, false);
     m_dataToStore.CarData = GfuiMenuControlGetBoolean(p_param, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, false);
     m_dataToStore.HumanData = GfuiMenuControlGetBoolean(p_param, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, false);
     m_dataToStore.InterventionData = GfuiMenuControlGetBoolean(p_param, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, false);
@@ -86,7 +84,6 @@ static void LoadConfigSettings(void* p_param)
 /// @brief Loads the default settings from the controls into the internal variables.
 static void LoadDefaultSettings()
 {
-    m_dataToStore.EnvironmentData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[0]);
     m_dataToStore.CarData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[1]);
     m_dataToStore.HumanData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[2]);
     m_dataToStore.InterventionData = GfuiCheckboxIsChecked(s_scrHandle, m_dataToStoreControl[3]);
@@ -108,7 +105,6 @@ static void SaveSettingsToDisk()
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
 
     // Save participant control settings to xml file
-    GfParmSetStr(readParam, PRM_ENV_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.EnvironmentData));
     GfParmSetStr(readParam, PRM_CAR_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.CarData));
     GfParmSetStr(readParam, PRM_HUMAN_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.HumanData));
     GfParmSetStr(readParam, PRM_INTRV_DATA, GFMNU_ATTR_CHECKED, GfuiMenuBoolToStr(m_dataToStore.InterventionData));
@@ -195,7 +191,7 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, "DatabaseButton", nullptr, DatabaseSettingsMenuActivate);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
-    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, nullptr, ChangeEnvironmentStorage);
+    m_dataToStoreControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ENV_DATA, nullptr, EnvironmentAlwaysStored);
     m_dataToStoreControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CAR_DATA, nullptr, ChangeCarStorage);
     m_dataToStoreControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_HUMAN_DATA, nullptr, ChangeHumanStorage);
     m_dataToStoreControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INTRV_DATA, nullptr, ChangeInterventionStorage);

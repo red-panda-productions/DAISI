@@ -162,20 +162,17 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
     TDecisionMaker decisionMaker;
     decisionMaker.SetDataCollectionSettings(p_dataToStore);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
-    ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().EnvironmentData == p_dataToStore.EnvironmentData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().HumanData == p_dataToStore.HumanData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().InterventionData == p_dataToStore.InterventionData);
 }
 
 /// @brief				 Performs the data collection test with the given parameters
-/// @param  p_environmentData whether the environment data will be saved
 /// @param  p_carData whether the car data will be saved
 /// @param  p_humanData whether the human data will be saved
 /// @param  p_interventionData whether the intervention data will be saved
-void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_humanData, bool p_interventionData)
+void DoSetDataCollectionTest(bool p_carData, bool p_humanData, bool p_interventionData)
 {
     DataToStore dataSettings = {
-        p_environmentData,
         p_carData,
         p_humanData,
         p_interventionData};
@@ -185,7 +182,7 @@ void DoSetDataCollectionTest(bool p_environmentData, bool p_carData, bool p_huma
 /// @brief Does the SetDataCollectionSettingsTest with all possible boolean combinations
 BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, SetDataCollectionSettingsTestAll)
 bool arr[2]{false, true};
-END_TEST_COMBINATORIAL4(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2);
+END_TEST_COMBINATORIAL3(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2);
 
 /// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct buffer paths
 TEST(DecisionMakerTests, RaceStopTest)

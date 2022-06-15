@@ -212,7 +212,7 @@ TEST(SQLDatabaseStorageTests, TestRunDataStorage)
 ///        by testing whether invalid buffer files are ignored and thus doesn't throw an error.
 TEST(SQLDatabaseStorageTests, TestRunParameterizedConstructor)
 {
-    tDataToStore settings = {false, false, false, false};
+    tDataToStore settings = {false, false, false};
     SQLDatabaseStorage sqlDataBaseStorage(settings);
 
     // Test whether settings were stored by checking whether the gamesate, etc. files are not being loaded.
