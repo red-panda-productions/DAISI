@@ -73,10 +73,6 @@
 
 ; Core name for each installer
 !define BASE_SETUP_KEY "base"
-!define HQCARSTRACKS_SETUP_KEY "hq-cars-and-tracks"
-!define MOREHQCARSTRACKS_SETUP_KEY "more-hq-cars-and-tracks"
-!define WIPCARSTRACKS_SETUP_KEY "wip-cars-and-tracks"
-!define UNMAINTAINED_SETUP_KEY "unmaintained"
 
 ; Common installer settings
 SetCompressor /SOLID lzma ; 1-block compression, smaller but longer (generation, extraction)
