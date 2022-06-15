@@ -142,88 +142,85 @@ void GfuiEventLoop::operator()()
 		while (!quitRequested() && SDL_PollEvent(&event))
 		{
 		    // Process events we care about, and ignore the others.
-			switch(event.type)
-			{
-				case SDL_KEYDOWN:
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
 #if SDL_MAJOR_VERSION < 2
-					   injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0,event.key.keysym.unicode);
+                    injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0, event.key.keysym.unicode);
 #else
-					if((event.key.keysym.sym & SDLK_SCANCODE_MASK) == SDLK_SCANCODE_MASK)
-					{
-						injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0,0);
-					}
-					else if(false == isprint(event.key.keysym.sym))
-					{
-						injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0,0);
-					}
-					else if((event.key.keysym.mod & KMOD_CTRL)
-							||(event.key.keysym.mod & KMOD_ALT)
-							||(event.key.keysym.mod & KMOD_GUI))
-					{
-						injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0,0);
-					}
-					else
-					{
-						//GfLogDebug("SDL_KEYDOWN: %c\r\n",(char)event.key.keysym.sym);
-						keysym = event.key.keysym.sym;
-					}
+                    if ((event.key.keysym.sym & SDLK_SCANCODE_MASK) == SDLK_SCANCODE_MASK)
+                    {
+                        injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0, 0);
+                    }
+                    else if (false == isprint(event.key.keysym.sym))
+                    {
+                        injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0, 0);
+                    }
+                    else if ((event.key.keysym.mod & KMOD_CTRL) || (event.key.keysym.mod & KMOD_ALT) || (event.key.keysym.mod & KMOD_GUI))
+                    {
+                        injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 0, 0);
+                    }
+                    else
+                    {
+                        // GfLogDebug("SDL_KEYDOWN: %c\r\n",(char)event.key.keysym.sym);
+                        keysym = event.key.keysym.sym;
+                    }
 #endif
-					break;
+                    break;
 
 #if SDL_MAJOR_VERSION >= 2
-				case SDL_TEXTINPUT:
-					unicode = (int)(event.text.text[0]);
-					modifier = SDL_GetModState();
-					injectKeyboardEvent(keysym, modifier, 0, unicode);
-					//GfLogDebug("SDL_TEXTINPUT: %c %X\r\n",(char)unicode,modifier);
-					break;
+                case SDL_TEXTINPUT:
+                    unicode = (int)(event.text.text[0]);
+                    modifier = SDL_GetModState();
+                    injectKeyboardEvent(keysym, modifier, 0, unicode);
+                    // GfLogDebug("SDL_TEXTINPUT: %c %X\r\n",(char)unicode,modifier);
+                    break;
 #endif
 
-				case SDL_KEYUP:
+                case SDL_KEYUP:
 #if SDL_MAJOR_VERSION < 2
-					injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 1,event.key.keysym.unicode);
+                    injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 1, event.key.keysym.unicode);
 #else
-					injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 1,0);
-					//GfLogDebug("SDL_KEYUP: %c\r\n",(char)event.key.keysym.sym);
+                    injectKeyboardEvent(event.key.keysym.sym, event.key.keysym.mod, 1, 0);
+                    // GfLogDebug("SDL_KEYUP: %c\r\n",(char)event.key.keysym.sym);
 #endif
-					break;
+                    break;
 
-				case SDL_MOUSEMOTION:
-					injectMouseMotionEvent(event.motion.state, event.motion.x, event.motion.y);
-					break;
+                case SDL_MOUSEMOTION:
+                    injectMouseMotionEvent(event.motion.state, event.motion.x, event.motion.y);
+                    break;
 
+                case SDL_MOUSEBUTTONDOWN:
+                case SDL_MOUSEBUTTONUP:
+                    injectMouseButtonEvent(event.button.button, event.button.state,
+                                           event.button.x, event.button.y);
+                    break;
 
-				case SDL_MOUSEBUTTONDOWN:
-				case SDL_MOUSEBUTTONUP:
-					injectMouseButtonEvent(event.button.button, event.button.state,
-										   event.button.x, event.button.y);
-					break;
-
-				case SDL_QUIT:
-					postQuit();
-					break;
+                case SDL_QUIT:
+                    postQuit();
+                    break;
 
 #if SDL_MAJOR_VERSION >= 2
 #if SDL_JOYSTICK
-				case SDL_JOYAXISMOTION:
-					injectJoystickAxisEvent(event.jaxis.which, event.jaxis.axis, (float) event.jaxis.value / 32768);
-					break;
+                case SDL_JOYAXISMOTION:
+                    injectJoystickAxisEvent(event.jaxis.which, event.jaxis.axis, (float)event.jaxis.value / 32768);
+                    break;
 
-				case SDL_JOYBUTTONDOWN:
-					injectJoystickButtonEvent(event.jbutton.which, event.jbutton.button, SDL_PRESSED);
-					break;
+                case SDL_JOYBUTTONDOWN:
+                    injectJoystickButtonEvent(event.jbutton.which, event.jbutton.button, SDL_PRESSED);
+                    break;
 
-				case SDL_JOYBUTTONUP:
-					injectJoystickButtonEvent(event.jbutton.which, event.jbutton.button, 0);
-					break;
+                case SDL_JOYBUTTONUP:
+                    injectJoystickButtonEvent(event.jbutton.which, event.jbutton.button, 0);
+                    break;
 #endif
-				case SDL_WINDOWEVENT_EXPOSED:
+                case SDL_WINDOWEVENT_EXPOSED:
 #else
-				case SDL_VIDEOEXPOSE:
+                case SDL_VIDEOEXPOSE:
 #endif
-					forceRedisplay();
-					break;
-			}
+                    forceRedisplay();
+                    break;
+            }
 		}
 
 		if (!quitRequested())

@@ -218,8 +218,61 @@ Section "!Base System" SEC01
   File /r /x *.lib "${BUILD_INST_DIR}\data\cars\models\primo\*.*"
 
   ; Base tracks
+
+  ; curved highways
   SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-4-80"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-4-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-small-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-small-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-small-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-small-4-100\*.*"
+
+  ; curved roads
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-2-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-small-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-small-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-small-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-small-2-100\*.*"
+
+  ; simple-highways
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-4-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-small-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-small-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-small-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-small-4-100\*.*"
+
+  ; simple-roads
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-2-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-small-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-small-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-small-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-small-2-100\*.*"
 
   ; Write the install dir to the registry so that optional installs can find it.
   WriteRegStr   ${GAME_ROOT_REGKEY} "${GAME_DIR_REGKEY}" "" "$INSTDIR"
