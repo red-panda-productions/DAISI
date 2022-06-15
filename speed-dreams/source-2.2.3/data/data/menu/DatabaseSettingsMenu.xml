@@ -71,8 +71,8 @@
             <attstr name="type" val="check box"/>
             <attstr name="text" val="Use SSL"/>
             <attstr name="tip" val="Enable/Disable the usage of SSL"/>
-            <attnum name="x" val="425"/>
-            <attnum name="y" val="290"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="320"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
