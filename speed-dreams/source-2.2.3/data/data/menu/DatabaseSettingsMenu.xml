@@ -11,7 +11,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="325"/>
+            <attnum name="y" val="340"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -23,7 +23,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="275"/>
+            <attnum name="y" val="290"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -35,7 +35,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="225"/>
+            <attnum name="y" val="210"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -47,7 +47,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="175"/>
+            <attnum name="y" val="160"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -59,7 +59,7 @@
             <attstr name="type" val="edit box"/>
             <attnum name="max len" val="32"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="125"/>
+            <attnum name="y" val="110"/>
             <attnum name="width" val="150"/>
             <attstr name="h align" val="center"/>
             <attstr name="font" val="medium"/>
@@ -72,7 +72,7 @@
             <attstr name="text" val="Use SSL"/>
             <attstr name="tip" val="Enable/Disable the usage of SSL"/>
             <attnum name="x" val="425"/>
-            <attnum name="y" val="325"/>
+            <attnum name="y" val="290"/>
             <attnum name="image width" val="20"/>
             <attnum name="image height" val="20"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -148,15 +148,48 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
+        <section name="CaCertLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="295"/>
+            <attstr name="text" val="Client Authority Certificate:"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+
+		
+        <!-- Delete password button -->
+        <section name="DeletePasswordButton">
+            <attstr name="type" val="text button"/>
+            <attstr name="show box" val="no"/>
+            <attstr name="text" val="Delete password"/>
+            <attstr name="tip" val="Delete the password locally for safety"/>
+            <attstr name="h align" val="left"/>
+            <attnum name="x" val="260"/>
+            <attnum name="y" val="267"/>
+            <attnum name="width" val="120"/>
+            <attstr name="font" val="medium"/>
+            <attstr name="color" val="0xFFFFFF"/>
+            <attstr name="focused color" val="0xFFFFFF"/>
+            <attstr name="pushed color" val="0xFFFFFF"/>
+            <attnum name="image x" val="-10"/>
+            <attnum name="image y" val="4"/>
+            <attnum name="image width" val="60"/>
+            <attnum name="image height" val="16"/>
+            <attstr name="focused image" val="data/img/button-left-focused.png"/>
+            <attstr name="enabled image" val="data/img/button-left.png"/>
+            <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
+
+        </section>
         
         <section name="CACertDialog">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <attstr name="text" val="Select CA certificate:"/>                                                                                                                                                                                                                                                                 "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="tip" val="Open a file dialog to select a certificate authority certificate with .pem extension"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="420"/>
-            <attnum name="y" val="250"/>
+            <attnum name="y" val="270"/>
             <attnum name="width" val="145"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -170,12 +203,21 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
+        <section name="PublicCertLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="245"/>
+            <attstr name="text" val="Public Server Certificate:"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
         
         <section name="PublicCertDialog">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <attstr name="text" val="Select public certificate:"/>                                                                                                                                                                                                                                                                 "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="tip" val="Open a file dialog to select a public server certificate with .pem extension"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="420"/>
             <attnum name="y" val="220"/>
@@ -192,15 +234,24 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
+        <section name="PrivateCertLabel">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="410"/>
+            <attnum name="y" val="195"/>
+            <attstr name="text" val="Private Client Key:"/>
+            <attstr name="h align" val="left"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
         
         <section name="PrivateCertDialog">
             <attstr name="type" val="text button"/>
-            <attstr name="show box" val="yes"/>
+            <attstr name="show box" val="no"/>
             <attstr name="text" val="Select private certificate:"/>                                                                                                                                                                                                                                                                 "/>
-            <attstr name="tip" val="Open a file dialog to choose the location of the black box"/>
+            <attstr name="tip" val="Open a file dialog to select a private client key with .key extension"/>
             <attstr name="h align" val="left"/>
             <attnum name="x" val="420"/>
-            <attnum name="y" val="190"/>
+            <attnum name="y" val="170"/>
             <attnum name="width" val="145"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
@@ -214,6 +265,7 @@
             <attstr name="enabled image" val="data/img/button-left.png"/>
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
+
         
         <section name="CertificateSettings">
             <attstr name="CA certificate" val="CA.pem"/>
@@ -238,11 +290,11 @@
             <attstr name="type" val="background image"/>
             <attstr name="image" val="data/img/main-menu-2.png"/>
         </section>
-        
+
         <section name="2">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="350"/>
+            <attnum name="y" val="365"/>
             <attstr name="text" val="Username"/>
             <attstr name="tip" val="Your username for the database server"/>
             <attstr name="h align" val="left"/>
@@ -252,7 +304,7 @@
         <section name="3">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="300"/>
+            <attnum name="y" val="315"/>
             <attstr name="text" val="Password"/>
             <attstr name="tip" val="Your password for the database server"/>
             <attstr name="h align" val="left"/>
@@ -262,7 +314,7 @@
         <section name="4">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="250"/>
+            <attnum name="y" val="235"/>
             <attstr name="text" val="Address"/>
             <attstr name="tip" val="The address of the database server"/>
             <attstr name="h align" val="left"/>
@@ -272,7 +324,7 @@
         <section name="5">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="200"/>
+            <attnum name="y" val="185"/>
             <attstr name="text" val="Port"/>
             <attstr name="tip" val="The port of the database server"/>
             <attstr name="h align" val="left"/>
@@ -282,7 +334,7 @@
         <section name="6">
             <attstr name="type" val="label"/>
             <attnum name="x" val="250"/>
-            <attnum name="y" val="150"/>
+            <attnum name="y" val="135"/>
             <attstr name="text" val="Schema"/>
             <attstr name="tip" val="The schema name of the database server"/>
             <attstr name="h align" val="left"/>
