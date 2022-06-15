@@ -1,35 +1,49 @@
 #include "SteerDecision.h"
 #include "Mediator.h"
 
-void SteerDecision::RunIndicateCommands()
+/// @brief Shows the intervention on the screen
+void SteerDecision::ShowIntervention(float p_interventionAmount)
 {
     float threshold = SMediator::GetInstance()->GetThresholdSettings().Steer;
-    if (SteerAmount <= -threshold)
+
+    // if negative the AI is steering right
+    if (p_interventionAmount < -threshold)
     {
         SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_RIGHT);
         return;
     }
-    if (SteerAmount >= threshold)
+
+    // if positive the AI is steering left
+    if (p_interventionAmount > threshold)
     {
         SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_LEFT);
         return;
     }
-    if (SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
-    {
-        SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_STRAIGHT);
-    }
-};
+
+    // if within the threshold bounds, the AI is steering straight
+    SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_STRAIGHT);
+}
 
 /// @brief Runs the intervene commands
-/// @param p_allowedActions The allowed black box actions, for determining whether or not the command may be ran
-void SteerDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
+/// @param p_interventionAmount The intervention amount
+void SteerDecision::DoIntervention(float p_interventionAmount)
+{
+    SMediator::GetInstance()->CarControl.SetSteerCmd(p_interventionAmount);
+}
+
+/// @brief tells whether the intervention amount is higher than the threshold
+/// @param p_interventionAmount The intervention amount
+/// @return whether the threshold is reached
+bool SteerDecision::ReachThreshold(float p_interventionAmount)
 {
     float threshold = SMediator::GetInstance()->GetThresholdSettings().Steer;
-    if (abs(SteerAmount) < threshold || !p_allowedActions.Steer)
-    {
-        SMediator::GetInstance()->SetSteerDecision(false);
-        return;
-    }
+    return threshold < abs(p_interventionAmount);
+}
 
-    SMediator::GetInstance()->CarControl.SetSteerCmd(SteerAmount);
-};
+/// @brief tells whether the simulator can be intervened by the decision
+/// @param p_allowedActions The allowed black box actions
+/// @return whether the simulator can be intervened
+bool SteerDecision::CanIntervene(tAllowedActions p_allowedActions)
+{
+    return p_allowedActions.Steer;
+}
