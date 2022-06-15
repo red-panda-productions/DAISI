@@ -4,6 +4,6 @@
 
 <params name="elevation-highway" type="parameter">
   <section name="Header">
-    <attstr name="name" val="Elevation Highway"/>
+    <attstr name="name" val="Elevated Highway"/>
   </section>
 </params>
