@@ -186,7 +186,7 @@ static void TestBlackBoxAsync()
     {
         cars[i] = GenerateCar(segments);
         situations[i] = GenerateSituation();
-        testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(random.NextUInt()), segments.NextSegments, segments.NextSegmentsCount);
+        testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
     }
     auto start = std::chrono::system_clock::now();
     blackBox.Initialize(false, testData[0], testData, BLACK_BOX_TESTS);
