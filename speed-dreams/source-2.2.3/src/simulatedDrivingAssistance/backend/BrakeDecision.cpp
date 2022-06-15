@@ -1,22 +1,32 @@
 #include "BrakeDecision.h"
 #include "Mediator.h"
 
-void BrakeDecision::RunIndicateCommands()
+/// @brief Shows the intervention on the screen
+void BrakeDecision::ShowIntervention(float p_interventionAmount)
 {
-    if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake && SMediator::GetInstance()->GetInterventionType() != INTERVENTION_TYPE_AUTONOMOUS_AI) return;
-
     SMediator::GetInstance()->CarControl.ShowIntervention(INTERVENTION_ACTION_SPEED_BRAKE);
 }
 
 /// @brief Runs the intervene commands
-/// @param p_allowedActions The allowed black box actions, for determining whether or not the command may be rans
-void BrakeDecision::RunInterveneCommands(tAllowedActions p_allowedActions)
+/// @param p_interventionAmount The intervention amount
+void BrakeDecision::DoIntervention(float p_interventionAmount)
 {
-    if (BrakeAmount < SMediator::GetInstance()->GetThresholdSettings().Brake || !p_allowedActions.Brake)
-    {
-        SMediator::GetInstance()->SetBrakeDecision(false);
-        return;
-    }
+    SMediator::GetInstance()->CarControl.SetBrakeCmd(p_interventionAmount);
+}
 
-    SMediator::GetInstance()->CarControl.SetBrakeCmd(BrakeAmount);
+/// @brief tells whether the intervention amount is higher than the threshold
+/// @param p_interventionAmount The intervention amount
+/// @return whether the threshold is reached
+bool BrakeDecision::ReachThreshold(float p_interventionAmount)
+{
+    float threshold = SMediator::GetInstance()->GetThresholdSettings().Brake;
+    return threshold < p_interventionAmount;
+}
+
+/// @brief tells whether the simulator can be intervened by the decision
+/// @param p_allowedActions The allowed black box actions
+/// @return whether the simulator can be intervened
+bool BrakeDecision::CanIntervene(tAllowedActions p_allowedActions)
+{
+    return p_allowedActions.Brake;
 }

@@ -7,9 +7,9 @@ class SocketBlackBoxMock
 public:
     SocketBlackBoxMock()
     {
-        Decisions.SetSteer(20);
-        Decisions.SetBrake(40);
-        Decisions.SetAccel(60);
+        Decisions.SetSteerDecision(20);
+        Decisions.SetBrakeDecision(40);
+        Decisions.SetAccelDecision(60);
     }
 
     void Initialize(bool p_connectAsync, BlackBoxData& p_initialDriveSituation, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0)

@@ -38,7 +38,7 @@ void AccelTest(CarController p_carController, float p_accel)
 {
     float start = p_carController.GetCar()->ctrl.accelCmd;
     p_carController.SetAccelCmd(p_accel);
-    ASSERT_EQ(p_carController.GetAccelCmd(), p_accel + start);
+    ASSERT_EQ(p_carController.GetAccelCmd(), std::max(p_accel, start));
 }
 
 /// @brief                 Tests the brake parameter of a car controller
@@ -56,8 +56,9 @@ void BrakeTest(CarController p_carController, float p_brake)
 /// @param p_clutch        The clutch value
 void ClutchTest(CarController p_carController, float p_clutch)
 {
+    float start = p_carController.GetCar()->ctrl.clutchCmd;
     p_carController.SetClutchCmd(p_clutch);
-    ASSERT_EQ(p_carController.GetClutchCmd(), p_clutch);
+    ASSERT_EQ(p_carController.GetClutchCmd(), start + p_clutch);
 }
 
 /// @brief                 Tests the lights parameter of a car controller
@@ -139,51 +140,3 @@ void ShowInterventionTest(InterventionAction p_action)
 TEST_CASE(CarControllerTests, ShowInterventionTestSteer, ShowInterventionTest, (INTERVENTION_ACTION_STEER_LEFT))
 TEST_CASE(CarControllerTests, ShowInterventionTestSteer2, ShowInterventionTest, (INTERVENTION_ACTION_STEER_RIGHT))
 TEST_CASE(CarControllerTests, ShowInterventionTestBrake, ShowInterventionTest, (INTERVENTION_ACTION_SPEED_BRAKE))
-
-/// @brief tests if the steer decision is correctly set
-TEST(CarControllerTests, SetSteerDecisionTest)
-{
-    IndicatorConfig::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-    CarController carController;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool steerBool = random.NextBool();
-        carController.SetSteerDecision(steerBool);
-        ASSERT_EQ(carController.HasMadeSteerDecision(), steerBool);
-    }
-}
-
-/// @brief tests if the brake decision is correctly set
-TEST(CarControllerTests, SetBrakeDecisionTest)
-{
-    IndicatorConfig::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-    CarController carController;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool brakeBool = random.NextBool();
-        carController.SetBrakeDecision(brakeBool);
-        ASSERT_EQ(carController.HasMadeBrakeDecision(), brakeBool);
-    }
-}
-
-/// @brief tests if the accel decision is correctly set
-TEST(CarControllerTests, SetAccelDecisionTest)
-{
-    IndicatorConfig::ClearInstance();
-    ASSERT_TRUE(SetupSingletonsFolder());
-    Random random;
-    CarController carController;
-
-    for (int i = 0; i < 10; i++)
-    {
-        bool accelBool = random.NextBool();
-        carController.SetAccelDecision(accelBool);
-        ASSERT_EQ(carController.HasMadeAccelDecision(), accelBool);
-    }
-}

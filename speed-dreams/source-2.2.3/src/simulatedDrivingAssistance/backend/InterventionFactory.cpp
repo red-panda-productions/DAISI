@@ -6,12 +6,10 @@
 #include "InterventionExecutorPerformWhenNeeded.h"
 #include <iostream>
 
-// THE STD::COUT LINE CAN BE REMOVED AFTER THE DEMO (IF WE DO ONE)
-#define CASE(type, class)                \
-    case type:                           \
-    {                                    \
-        std::cout << #type << std::endl; \
-        return new class();              \
+#define CASE(type, class)   \
+    case type:              \
+    {                       \
+        return new class(); \
     }
 
 /// @brief			Creates the correct interventionExecutor based on the Intervention type

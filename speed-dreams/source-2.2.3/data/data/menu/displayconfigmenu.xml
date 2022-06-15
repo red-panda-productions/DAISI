@@ -96,7 +96,7 @@
 	<section name="VideoInitModeCombo">
 		<attstr name="type" val="combo box"/>	  	  	  	  	  
 		<attnum name="max len" val="15"/>
-		<attstr name="tip" val="Compatible initialization should work most of the time ; best might not, but try it out !"/>
+		<attstr name="tip" val="Compatible initialization should work most of the time ; best might not, but try it out"/>
 		<attnum name="x" val="270"/>
 		<attnum name="y" val="198"/>
 		<attnum name="width" val="220"/>
@@ -152,7 +152,7 @@
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>            
 		<attstr name="text" val="Apply"/>
-		<attstr name="tip" val="Accept and save changes (and restart the game)"/>
+		<attstr name="tip" val="Accept and save changes (and restart DAISI)"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="550"/>
 		<attnum name="y" val="41"/>
