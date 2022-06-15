@@ -35,7 +35,8 @@ int m_dbStatus;
 
 bool m_isConnecting = false;
 
-/// @brief        Enables or disables whether the attributes of the environment will be collected real-time
+/// @brief The callback for the environment checkbox, will ensure that the checkbox is always on.
+///        The client wanted this checkbox to still exist even though it doesnt do anything.
 /// @param p_info Information on the checkbox
 static void EnvironmentAlwaysStored(tCheckBoxInfo* p_info)
 {
