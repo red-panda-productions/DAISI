@@ -126,7 +126,6 @@ typedef unsigned int SyncType;
 /// @brief The different types of data that can be stored
 typedef struct DataToStore
 {
-    bool EnvironmentData;
     bool CarData;
     bool HumanData;
     bool InterventionData;
