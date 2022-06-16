@@ -27,16 +27,16 @@
 #define PRM_CTRL_STEER       "CheckboxPControlSteer"
 #define PRM_CTRL_ACCEL       "CheckboxPControlAccel"
 #define PRM_CTRL_BRAKE       "CheckboxPControlBrake"
-#define PRM_FORCE_FEEDBACK   "CheckboxForceFeedback"
 #define PRM_CTRL_INTRV_TGGLE "CheckboxPControlInterventionToggle"
 
 #define PRM_MAX_TIME     "MaxTimeEdit"
 #define PRM_USER_ID      "UserIdEdit"
 #define PRM_UID_GENERATE "UserIdGenerateButton"
 
-#define PRM_BLACKBOX    "ChooseBlackBoxButton"
-#define PRM_ERROR_LABEL "ErrorLabel"
-#define PRM_ENVIRONMENT "ChooseEnvironmentButton"
+#define PRM_BLACKBOX           "ChooseBlackBoxButton"
+#define PRM_ERROR_LABEL        "ErrorLabel"
+#define PRM_ENVIRONMENT        "ChooseEnvironmentButton"
+#define PRM_DEFAULT_THRESHOLDS "SetDefaultThresholdsButton"
 
 #define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
 #define PRM_ENVIRONMENT_NAME     "EnvironmentName"
@@ -120,12 +120,6 @@ int m_environmentButton;
 bool m_environmentChosen = false;
 GfTrack* m_environment = nullptr;
 tRmTrackSelect m_trackMenuSettings;
-
-// Apply Button
-int m_applyButton;
-
-// Back button;
-int m_backButton;
 
 /// @brief Save the given GfTrack as the used environment
 /// @param p_gfTrack Pointer to the GfTrack to use
@@ -372,6 +366,13 @@ static void SelectEnvironment(void* /* dummy */)
     RmTrackSelect(&m_trackMenuSettings);
 }
 
+/// @brief Opens the developer menu
+static void GoToDevMenu(void* /* dummy */)
+{
+    SetTempInterventionType(m_interventionType);
+    GfuiScreenActivate(DeveloperMenuInit(s_scrHandle));
+}
+
 /// @brief Returns to the main menu
 static void BackToMain(void* /* dummy */)
 {
@@ -577,6 +578,13 @@ static void GenerateUid(void* /* dummy */)
     m_userIdChosen = true;
 }
 
+/// @brief Set the default values of threshold boxes based on the InterventionType
+static void SetDefaultThresholdValues(void* /* dummy */)
+{
+    SetTempInterventionType(m_interventionType);
+    RemoteSetDefaultThresholdValues();
+}
+
 /// @brief            Initializes the researcher menu
 /// @param p_nextMenu The scrHandle of the next menu
 /// @return           The researcherMenu scrHandle
@@ -599,19 +607,41 @@ void* ResearcherMenuInit(void* p_nextMenu)
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
     // ApplyButton control
-    m_applyButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "NextButton", s_scrHandle, SaveSettings);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "NextButton", s_scrHandle, SaveSettings);
 
-    // Task radio button controls
+    // Task checkboxes controls
     m_allowedActionsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_STEER, nullptr, SelectAllowedSteer);
     m_allowedActionsControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_ACCELERATE, nullptr, SelectAllowedAccelerate);
     m_allowedActionsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_ALLOWED_BRAKE, nullptr, SelectAllowedBrake);
 
+    // Participant-Control checkboxes controls
+    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEER, nullptr, SelectControlSteer);
+    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_ACCEL, nullptr, SelectControlAccel);
+    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_BRAKE, nullptr, SelectControlBrake);
+    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
+
+    // InterventionTypes radio button controls
+    m_interventionTypeControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_INTERVENTIONTYPE, nullptr, SelectInterventionType);
+
+    // Indicator checkboxes controls
+    m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
+    m_indicatorsControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_VISUAL, nullptr, SelectIcon);
+    m_indicatorsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_TEXT, nullptr, SelectText);
+
+    // Textbox controls
+    m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
+    m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
+
+#if SDL_FORCEFEEDBACK
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_FORCE_FEEDBACK_BUTTON, nullptr, rmForceFeedbackConfigHookActivate);
+#endif
+
     // Choose black box control
-    m_blackBoxButtonControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, s_scrHandle, SelectBlackBox);
+    m_blackBoxButtonControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, nullptr, SelectBlackBox);
     m_errorLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_ERROR_LABEL);
 
     // Choose environment control
-    m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, s_scrHandle, SelectEnvironment);
+    m_environmentButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_ENVIRONMENT, nullptr, SelectEnvironment);
     m_trackMenuSettings = {
         SetTrackFromGfTrack,
         GetTrackAsGfTrack,
@@ -621,41 +651,24 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Ensure the track loader is initialized
     InitializeTrackLoader();
 
-    // Indicator checkboxes controls
-    m_indicatorsControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_AUDITORY, nullptr, SelectAudio);
-    m_indicatorsControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_VISUAL, nullptr, SelectIcon);
-    m_indicatorsControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_INDCTR_TEXT, nullptr, SelectText);
+    // Set default threshold values button
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEFAULT_THRESHOLDS, nullptr, SetDefaultThresholdValues);
 
-    // InterventionTypes radio button controls
-    m_interventionTypeControl = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_INTERVENTIONTYPE, nullptr, SelectInterventionType);
+    // Back button
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", nullptr, BackToMain);
 
     // Dev button control
-    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, s_scrHandle, DeveloperMenuRun);
-
-    // Participant-Control checkboxes controls
-    m_pControlControl[0] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_STEER, nullptr, SelectControlSteer);
-    m_pControlControl[1] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_ACCEL, nullptr, SelectControlAccel);
-    m_pControlControl[2] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_BRAKE, nullptr, SelectControlBrake);
-    m_pControlControl[3] = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_CTRL_INTRV_TGGLE, nullptr, SelectControlInterventionOnOff);
-
-    // Textbox controls
-    m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
-    m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, nullptr, GoToDevMenu);
 
     // Generate UID button
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
-#if SDL_FORCEFEEDBACK
-    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_FORCE_FEEDBACK_BUTTON, nullptr, rmForceFeedbackConfigHookActivate);
-#endif
-
-    // Back button
-    m_backButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, BackToMain);
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
-    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Developer Screen", nullptr, DeveloperMenuRun, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", nullptr, BackToMain, nullptr);
+    GfuiAddKey(s_scrHandle, GFUIK_F2, "Switch to Developer Screen", nullptr, GoToDevMenu, nullptr);
 
     // Set default userId
     GfuiEditboxSetString(s_scrHandle, m_userIdControl, m_userId);

@@ -5,18 +5,21 @@
 #include <functional>
 
 #define IPC_BUFFER_BYTE_SIZE 512
+#define EMPTY_STATE          0b10000000
 
 /// @brief A worker thread that can be commanded to receive data
 class IPCLIB_EXPORT ReceivingThread
 {
 public:
-    explicit ReceivingThread(const std::function<void(bool*)>& p_receiveDataFunc);
+    explicit ReceivingThread(const std::function<void()>& p_receiveDataFunc);
 
     bool HasReceivedMessage() const;
 
+    bool HasError() const;
+
     bool StartedReceiving() const;
 
-    int GetErrorCode() const;
+    int GetErrorCode();
 
     void StartReceive();
 
@@ -29,14 +32,11 @@ public:
 private:
     void ReceivingLoop();
 
-    bool m_stop = false;
-    bool m_receiving = false;
-    bool m_startedReceiving = false;
-    bool m_received = false;
+    uint8_t m_state = EMPTY_STATE;
 
-    int m_error = 0;
+    int m_error = IPCLIB_SUCCEED;
 
-    std::function<void(bool*)>* m_receiveDataFunc = nullptr;
+    std::function<void()>* m_receiveDataFunc = nullptr;
 
     std::thread* m_thread = nullptr;
 };
@@ -52,7 +52,7 @@ public:
     bool GetData(char* p_dataBuffer, int p_size);
 
 private:
-    void ReceiveData(bool* p_started = nullptr);
+    void ReceiveData();
 
     bool m_internalReceive = false;
     bool m_externalReceive = false;
