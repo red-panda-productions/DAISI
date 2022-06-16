@@ -141,6 +141,8 @@ void WriteExpectedDecisions(std::stringstream& p_expected, const DecisionTuple& 
 ///        and whether the correct initial information has been written to the buffer files.
 TEST(FileDataStorageTests, TestInitialization)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {true, true, true};
@@ -188,12 +190,13 @@ TEST(FileDataStorageTests, TestInitialization)
     gameStateStream.close();
     userInputStream.close();
     decisionsStream.close();
-
 };
 
 /// @brief Tests whether the gamestate is correctly written to the corresponding buffer file
 TEST(FileDataStorageTests, TestWriteGameStateData)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {true, false, false};
@@ -230,6 +233,8 @@ TEST(FileDataStorageTests, TestWriteGameStateData)
 /// @brief Tests whether the userinput is correctly written to the corresponding buffer file
 TEST(FileDataStorageTests, TestWriteUserInputData)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {false, true, false};
@@ -346,6 +351,8 @@ END_TEST_COMBINATORIAL6(TestWriteDecisions, booleans, 2, booleans, 2, booleans, 
 /// @param p_numberOfTicks How many ticks to save (default 1)
 void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {false, false, false};
@@ -381,6 +388,8 @@ void TestNoStorageWithTimestamps(unsigned int p_numberOfTicks = 1)
 /// @param p_storeDecisions   Whether to save intervention data
 void TestWriteData(bool p_storeCar, bool p_storeControls, bool p_storeDecisions)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {
@@ -487,6 +496,8 @@ float HelperGetMedian(float* p_values, int p_compressionRate)
 /// @param p_compressionRate The compression rate to be tested with
 void TestDataStorageSaveCompressionRates(int p_compressionRate)
 {
+    SMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {true, true, false};
