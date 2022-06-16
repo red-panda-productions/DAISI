@@ -201,7 +201,9 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     }
     catch (std::exception& e)
     {
-        GfLogError("Cannot open database. Database is offline or invalid ");
+        GfLogError("Error occurred while checking connectability of database: ");
+        GfLogError(e.what());
+        GfLogError("\n");
     }
     if (connectable)
     {
@@ -210,12 +212,14 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
         *p_isConnecting = false;
+        GfuiApp().eventLoop().postRedisplay();
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, color);
     *p_isConnecting = false;
+    GfuiApp().eventLoop().postRedisplay();
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database with saved settings
@@ -258,31 +262,6 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
     GfuiEditboxSetString(p_scrHandle, p_usernameControl, s_tempDbSettings.Username);
 }
 
-/// @brief Handle input in the Password textbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_passwordControl the corresponding ui element control integers
-/// @param p_password the password filled in by the user
-void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
-{
-    char replacement[SETTINGS_NAME_LENGTH];
-    auto length = strlen(p_password);
-    for (int i = 0; i < length; i++)
-    {
-        replacement[i] = '*';
-    }
-    replacement[length] = '\0';
-
-    GfuiEditboxSetString(p_scrHandle, p_passwordControl, replacement);
-}
-
-/// @brief Handle input in the Password textbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_passwordControl the corresponding ui element control integers
-void ClearPassword(void* p_scrHandle, int p_passwordControl)
-{
-    GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
-}
-
 /// @brief Delete the password in from the settings and from the XML file
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
@@ -304,7 +283,7 @@ void DeletePassword(void* p_scrHandle, int p_passwordControl)
 /// @param p_passwordControl the corresponding ui element control integers
 void FillInPassword(void* p_scrHandle, int p_passwordControl)
 {
-    SetPassword(p_scrHandle, p_passwordControl, s_dbSettings.Password);
+    GfuiEditboxSetString(p_scrHandle, p_passwordControl, s_dbSettings.Password);
 }
 
 /// @brief Fill in the password typed by the user and save the given password in the tempDbSettings
@@ -313,7 +292,6 @@ void FillInPassword(void* p_scrHandle, int p_passwordControl)
 void ChangePassword(void* p_scrHandle, int p_passwordControl)
 {
     strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
-    SetPassword(p_scrHandle, p_passwordControl, s_tempDbSettings.Password);
 }
 
 /// @brief Handle input in the Address textbox

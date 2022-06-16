@@ -35,7 +35,7 @@ jobs:
     - name: Install Packages
       run: |
         sudo apt-get update && sudo apt-get upgrade
-        wget https://github.com/red-panda-productions/ipc-lib/releases/download/v1.1.0/ipclib.deb
+        wget https://github.com/red-panda-productions/ipc-lib/releases/download/v1.2.0/ipclib.deb
         sudo apt install ./ipclib.deb
         sudo apt-get install libplib-dev
         sudo apt-get install libexpat1-dev
