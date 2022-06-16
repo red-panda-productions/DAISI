@@ -155,7 +155,7 @@ TEST_P(IntegrationTests, RunReplayRecording)
         KillAllInterveningProcesses();
         succeeded = RunTest(GetParam());
         tries--;
-        if (!succeeded) std::cout << "FAILED INTEGRATION TEST, TRIES LEFT: " << tries;
+        if (!succeeded) std::cout << "FAILED INTEGRATION TEST, TRIES LEFT: " << tries << std::endl;
     }
 
     ASSERT_TRUE(succeeded);
