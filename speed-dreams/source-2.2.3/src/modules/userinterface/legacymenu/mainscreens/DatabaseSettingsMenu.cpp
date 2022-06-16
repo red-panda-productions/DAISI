@@ -199,6 +199,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     control.PrivateCertificateButton = m_privateCertFileDialogControl;
     control.PrivateCertificateLabel = m_publicCertDialogLabel;
     LoadDBSettings(s_scrHandle, control);
+    SetDBSettings();
     SynchronizeControls(s_scrHandle, control, m_caCertLabel, m_publicCertLabel, m_privateCertLabel);
 
     return s_scrHandle;
