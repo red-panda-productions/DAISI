@@ -28,9 +28,6 @@
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 
-// Control for apply button
-int m_applyButtonDev;
-
 // Control for synchronization option
 int m_syncButtonList;
 
@@ -45,8 +42,8 @@ int m_accelThresholdControl;
 int m_brakeThresholdControl;
 int m_steerThresholdControl;
 
-// Control for the default values
-int m_defaultButton;
+// The current interventionType set in the researcher menu
+InterventionType m_tempInterventionType;
 
 // Synchronization type
 SyncType m_sync;
@@ -289,13 +286,13 @@ static void SetDefaultThresholdValues(void*)
     if (m_xmlHandle == nullptr)
         throw std::invalid_argument("DeveloperMenu.xml does not exists");
 
-    // load the path in the xml based on the interventiontype
+    // load the path in the xml based on the intervention type
     std::string m_path = "DefaultThresholdValues/";
-    int m_interventionType = SMediator::GetInstance()->GetInterventionType();
+
     // if the intervention type is no signals, don't change any values
-    if (m_interventionType == INTERVENTION_TYPE_NO_SIGNALS)
+    if (m_tempInterventionType == INTERVENTION_TYPE_NO_SIGNALS)
         return;
-    m_path += s_interventionTypeString[m_interventionType];
+    m_path += s_interventionTypeString[m_tempInterventionType];
 
     // set the values to their default determined by the xml file.
     m_decisionThresholds.Accel = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
@@ -306,6 +303,20 @@ static void SetDefaultThresholdValues(void*)
     WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Brake, m_brakeThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Steer, m_steerThresholdControl);
+}
+
+/// @brief Set the default values of threshold boxes based on the InterventionType.
+void RemoteSetDefaultThresholdValues()
+{
+    SetDefaultThresholdValues(nullptr);
+    SaveSettings();
+}
+
+/// @brief                    Set the temporary interventionType to p_interventionType
+/// @param p_interventionType The intervention type
+void SetTempInterventionType(InterventionType p_interventionType)
+{
+    m_tempInterventionType = p_interventionType;
 }
 
 /// @brief            Initializes the developer menu
@@ -323,18 +334,22 @@ void* DeveloperMenuInit(void* p_prevMenu)
     void* param = GfuiMenuLoad("DeveloperMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // Buttons
+    // Apply and cancel buttons
     GfuiMenuCreateButtonControl(s_scrHandle, param, "CancelButton", s_scrHandle, SwitchToResearcherMenu);
-    m_applyButtonDev = GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveAndGoBack);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveAndGoBack);
+
+    // BB sync option
     m_syncButtonList = GfuiMenuCreateRadioButtonListControl(s_scrHandle, param, PRM_SYNC, nullptr, SelectSync);
+
+    // Replay options
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
-    m_defaultButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultThresholdValues);
 
-    // Edit boxes
+    // Decision threshold options
     m_accelThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "AccelThresholdEdit", nullptr, nullptr, SetAccelThreshold);
     m_brakeThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "BrakeThresholdEdit", nullptr, nullptr, SetBrakeThreshold);
     m_steerThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "SteerThresholdEdit", nullptr, nullptr, SetSteerThreshold);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultThresholdValues);
 
     GfParmReleaseHandle(param);
 
