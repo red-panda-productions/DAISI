@@ -14,13 +14,13 @@
   </section>
 
   <section name="intervention_type">
-    <attnum name="selected" val="2.000000"/>
+    <attnum name="selected" val="0.000000"/>
   </section>
 
   <section name="environment">
     <section name="track">
-      <attstr name="category" val="curved-highway"/>
-      <attstr name="internal_name" val="curved-highway-4-100"/>
+      <attstr name="category" val="simple-road"/>
+      <attstr name="internal_name" val="simple-road-small-2-80"/>
     </section>
 
   </section>
@@ -29,8 +29,7 @@
     <attstr name="control_steering" val="true"/>
     <attstr name="control_gas" val="true"/>
     <attstr name="control_brake" val="true"/>
-    <attstr name="control_intervention_toggle" val="true"/>
-    <attstr name="force_feedback" val="true"/>
+    <attstr name="control_intervention_toggle" val="false"/>
   </section>
 
   <section name="max_time">
@@ -46,7 +45,7 @@
   <section name="thresholds">
     <attnum name="treshold_accel" val="0.820000"/>
     <attnum name="treshold_brake" val="0.500000"/>
-    <attnum name="treshold_steer" val="0.010000"/>
+    <attnum name="treshold_steer" val="0.100000"/>
   </section>
 
 </params>

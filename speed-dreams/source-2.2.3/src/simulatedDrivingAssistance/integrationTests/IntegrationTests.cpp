@@ -150,7 +150,7 @@ TEST_P(IntegrationTests, RunReplayRecording)
     bool succeeded = false;
     int tries = 3;
 
-    while (!succeeded && tries >= 0)
+    while (!succeeded && tries > 0)
     {
         KillAllInterveningProcesses();
         succeeded = RunTest(GetParam());

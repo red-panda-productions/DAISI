@@ -450,7 +450,7 @@ bool Recorder::LoadRecording(const filesystem::path& p_recordingFolder)
     mediator->SetBlackBoxFilePath("");
 
     tDataToStore dataToStore{};
-    dataToStore.CarData = dataToStore.EnvironmentData = dataToStore.HumanData = dataToStore.InterventionData = false;
+    dataToStore.CarData = dataToStore.HumanData = dataToStore.InterventionData = false;
     mediator->SetDataCollectionSettings(dataToStore);
 
     tIndicator indicators{};

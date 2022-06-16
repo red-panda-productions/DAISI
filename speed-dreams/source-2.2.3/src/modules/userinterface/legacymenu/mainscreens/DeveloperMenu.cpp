@@ -400,7 +400,6 @@ void* DeveloperMenuInit(void* p_prevMenu)
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
     m_startReplayButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_START_REPLAY, s_scrHandle, StartReplay);
-    m_defaultButton = GfuiMenuCreateButtonControl(s_scrHandle, param, "DefaultButton", nullptr, SetDefaultThresholdValues);
 
     // Decision threshold options
     m_accelThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "AccelThresholdEdit", nullptr, nullptr, SetAccelThreshold);
