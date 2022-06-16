@@ -183,6 +183,8 @@ Changed:
 
                 added   GfuiDrawString(): overload
                 added   GfuiFontClass: expose to API
+            forcefeedback.cpp
+                changed updateForce(tCarElt* car, tSituation *s): Check if force feedback is enabled
     main/
         main.cpp
             added singletonfolder setup
