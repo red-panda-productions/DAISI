@@ -219,6 +219,10 @@ int ForceFeedbackManager::updateForce(tCarElt* car, tSituation *s){
 
     this->force = 0;
 
+    if(!this->effectsConfig["globalEffect"]["enabled"]) {
+        return this->force;
+    }
+
     //calculate autocenter if enabled
     if (this->effectsConfig["autocenterEffect"]["enabled"]){
         this->force = this->autocenterEffect(car, s);
