@@ -873,7 +873,8 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
                             pszText, bChecked, userData, onChange,
                             userDataOnFocus, onFocus, onFocusLost);
 
-    GfuiColor c = getControlColor(hparm, pszName, GFMNU_ATTR_COLOR);
+    // SIMULATED DRIVING ASSISTANCE: fixed the xml path given to getControlColor function
+    GfuiColor c = getControlColor(hparm, strControlPath.c_str(), GFMNU_ATTR_COLOR);
     if (c.alpha)
         GfuiCheckboxSetTextColor(hscr, id, c);
 

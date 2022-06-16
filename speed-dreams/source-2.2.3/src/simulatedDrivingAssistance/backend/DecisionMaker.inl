@@ -152,7 +152,7 @@ void TEMP_DECISIONMAKER::CloseRecorder()
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::SaveData()
 {
-    SQLDatabaseStorage sqlDatabaseStorage;
+    SQLDatabaseStorage sqlDatabaseStorage(Config.GetDataCollectionSetting());
     sqlDatabaseStorage.Run(m_bufferPaths);
 }
 
