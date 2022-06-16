@@ -11,7 +11,7 @@ class SQLDatabaseStorageMock : IDataStorage
 {
 public:
     SQLDatabaseStorageMock()
-        : SQLDatabaseStorageMock({true, true, true, true}) {}
+        : SQLDatabaseStorageMock({true, true, true}) {}
 
     explicit SQLDatabaseStorageMock(tDataToStore p_dataToStore)
     {
