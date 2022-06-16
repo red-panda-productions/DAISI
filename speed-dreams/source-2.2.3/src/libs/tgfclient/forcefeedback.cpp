@@ -219,6 +219,7 @@ int ForceFeedbackManager::updateForce(tCarElt* car, tSituation *s){
 
     this->force = 0;
 
+    // SIMULATED DRIVING ASSISTANCE: Return 0 if force feedback is globally disabled.
     if(!this->effectsConfig["globalEffect"]["enabled"]) {
         return this->force;
     }
