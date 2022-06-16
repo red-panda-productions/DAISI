@@ -14,8 +14,20 @@
 #include "portability.h"
 #include "RppUtils.hpp"
 #include "VariableStore.h"
+#include "Mediator.h"
+#include "Mediator.inl"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 #define TDecisionMaker DecisionMaker<SocketBlackBoxMock, ConfigMock, FileDataStorageMock, SQLDatabaseStorageMock, RecorderMock>
+
+#define TEST_COUNT 20
 
 /// @brief				 Tests if the decision maker can be initialized
 /// @param  p_decisionMaker the decision maker that will be initialized
@@ -66,6 +78,8 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 /// @brief Runs the initialize test function
 TEST(DecisionMakerTests, InitializeTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
 }
@@ -73,6 +87,8 @@ TEST(DecisionMakerTests, InitializeTest)
 /// @brief Runs the initialize test function with empty path
 TEST(DecisionMakerTests, InitializeTestEmpty)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker, true);
 }
@@ -81,6 +97,9 @@ TEST(DecisionMakerTests, InitializeTestEmpty)
 /// @param  p_isDecision Whether the black box made a decision
 void DecisionTest(bool p_isDecision)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
@@ -99,10 +118,10 @@ void DecisionTest(bool p_isDecision)
 
     RecorderMock* recorder = decisionMaker.GetRecorder();
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
-    ASSERT_EQ(recorder->CurrentDecisions.GetSteer(), storage->SavedDecisions->GetSteer());
-    ASSERT_EQ(recorder->CurrentDecisions.GetBrake(), storage->SavedDecisions->GetBrake());
-    ASSERT_EQ(recorder->CurrentDecisions.GetAccel(), storage->SavedDecisions->GetAccel());
-    ASSERT_EQ(recorder->CurrentDecisions.GetGear(), storage->SavedDecisions->GetGear());
+    ASSERT_EQ(recorder->CurrentDecisions.GetSteerAmount(), storage->SavedDecisions->GetSteerAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetBrakeAmount(), storage->SavedDecisions->GetBrakeAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetAccelAmount(), storage->SavedDecisions->GetAccelAmount());
+    ASSERT_EQ(recorder->CurrentDecisions.GetGearAmount(), storage->SavedDecisions->GetGearAmount());
     ASSERT_EQ(recorder->CurrentTimestamp, 0);
     InterventionExecutorMock* mock = dynamic_cast<InterventionExecutorMock*>(decisionMaker.InterventionExec);
     ASSERT_FALSE(mock == nullptr);
@@ -117,6 +136,9 @@ TEST_CASE(DecisionMakerTests, DecisionTestFalse, DecisionTest, (false))
 /// @param  p_intervention  The setting that needs to be set
 void ChangeSettingsTest(InterventionType p_intervention)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     TDecisionMaker decisionMaker;
     decisionMaker.ChangeSettings(p_intervention);
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
@@ -135,6 +157,8 @@ TEST_CASE(DecisionMakerTests, ChangeSettingsTestAutonomousAI, ChangeSettingsTest
 /// @param  p_dataToStore data settings that will be set.
 void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     decisionMaker.SetDataCollectionSettings(p_dataToStore);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
@@ -166,6 +190,8 @@ END_TEST_COMBINATORIAL4(DoSetDataCollectionTest, arr, 2, arr, 2, arr, 2, arr, 2)
 /// @brief Tests if the RaceStop function is correctly implemented and if it uses the correct buffer paths
 TEST(DecisionMakerTests, RaceStopTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
@@ -174,7 +200,7 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_NO_THROW(decisionMaker.SaveData());
     ASSERT_NO_THROW(decisionMaker.ShutdownBlackBox());
 
-    tBufferPaths vsBufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[0]);
+    tBufferPaths vsBufferPaths = *static_cast<tBufferPaths*>(VariableStore::GetInstance().Variables[1]);
     tBufferPaths dmBufferPaths = decisionMaker.GetBufferPaths();
     ASSERT_EQ(vsBufferPaths.MetaData, dmBufferPaths.MetaData);
     ASSERT_EQ(vsBufferPaths.TimeSteps, dmBufferPaths.TimeSteps);
@@ -182,13 +208,65 @@ TEST(DecisionMakerTests, RaceStopTest)
     ASSERT_EQ(vsBufferPaths.UserInput, dmBufferPaths.UserInput);
     ASSERT_EQ(vsBufferPaths.Decisions, dmBufferPaths.Decisions);
     ASSERT_EQ(nullptr, decisionMaker.GetRecorder());
-
 }
+
+/// @brief Tests whether the DataToStore is correctly set in the SQLDataBaseStorage when calling SaveData.
+/// @param p_carData          Whether to store gamestate car data.
+/// @param p_humanData        Whether to store human user input data.
+/// @param p_interventionData Whether to store invervention decision data.
+void TestOnlySaveDataToStore(bool p_carData, bool p_humanData, bool p_interventionData)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    TDecisionMaker decisionMaker;
+    InitializeTest(decisionMaker);
+    decisionMaker.SetDataCollectionSettings({false, p_carData, p_humanData, p_interventionData});
+    decisionMaker.SaveData();
+
+    // Assert whether the dataToStore is correctly stored in the variable store (by the SQLDatabaseStorageMock)
+    tDataToStore storedDataToStore = *static_cast<tDataToStore*>(VariableStore::GetInstance().Variables[0]);
+    ASSERT_EQ(p_carData, storedDataToStore.CarData);
+    ASSERT_EQ(p_humanData, storedDataToStore.HumanData);
+    ASSERT_EQ(p_interventionData, storedDataToStore.InterventionData);
+}
+
+/// @brief Run the TestOnlySaveDataToStore(bool,bool,bool) test with all possible combinations.
+BEGIN_TEST_COMBINATORIAL(DecisionMakerTests, OnlySaveDataToStoreTest)
+bool booleans[2]{true, false};
+END_TEST_COMBINATORIAL3(TestOnlySaveDataToStore, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief Tests if the GetFileDataStorage correctly gets the variable
 TEST(DecisionMakerTests, GetFileDataStorageTest)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
     ASSERT_FALSE(storage == nullptr);
+}
+
+/// @brief Tests if the GetDecision correctly gets the decision tuple
+TEST(DecisionMakerTests, GetDecisionTest)
+{
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    TDecisionMaker decisionMaker;
+
+    Random random;
+
+    for (int i = 0; i < TEST_COUNT; i++)
+    {
+        DecisionTuple decision;
+        float accel = random.NextFloat();
+        float brake = random.NextFloat();
+        float steer = random.NextFloat();
+        decision.SetAccelDecision(accel);
+        decision.SetBrakeDecision(brake);
+        decision.SetSteerDecision(steer);
+
+        decisionMaker.SetDecisions(decision);
+        ASSERT_EQ(accel, decisionMaker.GetDecisions().GetAccelAmount());
+        ASSERT_EQ(brake, decisionMaker.GetDecisions().GetBrakeAmount());
+        ASSERT_EQ(steer, decisionMaker.GetDecisions().GetSteerAmount());
+    }
 }

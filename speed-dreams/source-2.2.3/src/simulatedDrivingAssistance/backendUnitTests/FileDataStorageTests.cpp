@@ -1,9 +1,18 @@
-#include "FileSystem.hpp"
 #include <gtest/gtest.h>
+#include "FileSystem.hpp"
 #include "TestUtils.h"
 #include "FileDataStorage.h"
 #include "mocks/BlackBoxDataMock.h"
 #include <algorithm>
+#include "Mediator.h"
+#include "SDAConfig.h"
+#include "mocks/DecisionMakerMock.h"
+
+/// @brief A mediator that uses the standard SDecisionMakerMock
+#define MockMediator Mediator<SDecisionMakerMock>
+
+/// @brief A mediator that uses SDAConfig in DecisionmakerMock internally
+#define SDAConfigMediator Mediator<DecisionMakerMock<SDAConfig>>
 
 /// @brief Get dummy time variables. These set the trial to have started now,
 ///  the black box to have been created yesterday, and the environment last year.
@@ -107,11 +116,11 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
 {
     // Generate a random decision based on parameters
     DecisionTuple decisions;
-    if (p_doSteer) decisions.SetSteer(p_random.NextFloat());
-    if (p_doBrake) decisions.SetBrake(p_random.NextFloat());
-    if (p_doAccel) decisions.SetAccel(p_random.NextFloat());
-    if (p_doGear) decisions.SetGear(p_random.NextInt());
-    if (p_doLights) decisions.SetLights(p_random.NextBool());
+    if (p_doSteer) decisions.SetSteerDecision(p_random.NextFloat());
+    if (p_doBrake) decisions.SetBrakeDecision(p_random.NextFloat());
+    if (p_doAccel) decisions.SetAccelDecision(p_random.NextFloat());
+    if (p_doGear) decisions.SetGearDecision(p_random.NextInt());
+    if (p_doLights) decisions.SetLightsDecision(p_random.NextBool());
     return decisions;
 }
 
@@ -120,11 +129,11 @@ DecisionTuple GenerateDecisions(Random& p_random, bool p_doSteer, bool p_doBrake
 /// @param p_decisions The struct containg the decisions
 void WriteExpectedDecisions(std::stringstream& p_expected, const DecisionTuple& p_decisions)
 {
-    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsSteer(), p_decisions.GetSteer(), ',');
-    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsBrake(), p_decisions.GetBrake(), ',');
-    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsAccel(), p_decisions.GetAccel(), ',');
-    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsGear(), p_decisions.GetGear(), ',');
-    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsLights(), p_decisions.GetLights(), '\n');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsSteer(), p_decisions.GetSteerAmount(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsBrake(), p_decisions.GetBrakeAmount(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsAccel(), p_decisions.GetAccelAmount(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsGear(), p_decisions.GetGearAmount(), ',');
+    WRITE_EXPECTED_DECISION(p_expected, p_decisions.ContainsLights(), p_decisions.GetLightsAmount(), '\n');
 }
 
 /// @brief Tests whether the file data storage is initialized correctly.
@@ -257,6 +266,9 @@ TEST(FileDataStorageTests, TestWriteUserInputData)
 /// @param p_doLights       Whether to store the lights on decision
 void TestWriteDecisions(bool p_storeDecisions, bool p_doSteer, bool p_doBrake, bool p_doAccel, bool p_doGear, bool p_doLights)
 {
+    SDAConfigMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+
     GET_DUMMY_TIMES;
 
     tDataToStore settings = {false, false, false, p_storeDecisions};

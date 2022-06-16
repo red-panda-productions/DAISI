@@ -63,8 +63,7 @@ void SaveDBSettingsToDisk()
     // Save max time to xml file
     GfParmSetStr(readParam, PRM_USERNAME, GFMNU_ATTR_TEXT, s_dbSettings.Username);
 
-    // Do not save the password
-    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, s_dbSettings.Password);
 
     GfParmSetStr(readParam, PRM_ADDRESS, GFMNU_ATTR_TEXT, s_dbSettings.Address);
     GfParmSetStr(readParam, PRM_PORT, GFMNU_ATTR_TEXT, s_portString);
@@ -81,7 +80,11 @@ void SaveDBSettingsToDisk()
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_control the corresponding ui element control integers
-void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
+/// @param p_caCertLabel the corresponding ui element control integer
+/// @param p_publicCertLabel the corresponding ui element control integer
+/// @param p_privateCertLabel the corresponding ui element control integer
+void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control,
+                         int p_caCertLabel, int p_publicCertLabel, int p_privateCertLabel)
 {
     GfuiEditboxSetString(p_scrHandle, p_control.Username, s_dbSettings.Username);
     GfuiEditboxSetString(p_scrHandle, p_control.Address, s_dbSettings.Address);
@@ -107,6 +110,9 @@ void SynchronizeControls(void* p_scrHandle, tDbControlSettings& p_control)
     GfuiVisibilitySet(p_scrHandle, p_control.CACertificateButton, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_control.PublicCertificateButton, s_dbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_control.PrivateCertificateButton, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_caCertLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateCertLabel, s_dbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicCertLabel, s_dbSettings.UseSSL);
 }
 
 /// @brief Loads the default menu settings from the controls into the internal variables
@@ -131,16 +137,16 @@ void LoadDefaultSettings(void* p_scrHandle, tDbControlSettings& p_control)
 void LoadConfigSettings(void* p_param, tDbControlSettings& p_control)
 {
     // Set the max time setting from the xml file
-    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, nullptr));
-
-    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, nullptr));
-    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Username, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_USERNAME, GFMNU_ATTR_TEXT, "User"));
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PASSWORD, GFMNU_ATTR_TEXT, ""));
+    strcpy_s(s_dbSettings.Address, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_ADDRESS, GFMNU_ATTR_TEXT, "Localhost"));
+    strcpy_s(s_portString, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_PORT, GFMNU_ATTR_TEXT, "3306"));
     ConvertSavedPortString();
-    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, nullptr));
+    strcpy_s(s_dbSettings.Schema, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_SCHEMA, GFMNU_ATTR_TEXT, "sda_schema"));
     s_dbSettings.UseSSL = GfuiMenuControlGetBoolean(p_param, PRM_SSL, GFMNU_ATTR_CHECKED, false);
-    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr));
-    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, nullptr));
-    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, nullptr));
+    strcpy_s(s_dbSettings.CACertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, "CA.pem"));
+    strcpy_s(s_dbSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PUBLIC_CERT, "Server.pem"));
+    strcpy_s(s_dbSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_PRIVATE_CERT, "priv.pem"));
 
     const char* filePath = GfParmGetStr(p_param, PRM_CERT, GFMNU_ATTR_CA_CERT, nullptr);
     if (filePath)
@@ -195,7 +201,9 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     }
     catch (std::exception& e)
     {
-        GfLogError("Cannot open database. Database is offline or invalid ");
+        GfLogError("Error occurred while checking connectability of database: ");
+        GfLogError(e.what());
+        GfLogError("\n");
     }
     if (connectable)
     {
@@ -204,6 +212,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         float* colotPtr = color;
         GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
         *p_isConnecting = false;
+        GfuiApp().eventLoop().postRedisplay();
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
@@ -211,6 +220,7 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
     GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
     *p_isConnecting = false;
+    GfuiApp().eventLoop().postRedisplay();
 }
 
 /// @brief                    Checks if a connection can be established between speed dreams and the database with saved settings
@@ -253,29 +263,20 @@ void SetUsername(void* p_scrHandle, int p_usernameControl)
     GfuiEditboxSetString(p_scrHandle, p_usernameControl, s_tempDbSettings.Username);
 }
 
-/// @brief Handle input in the Password textbox
+/// @brief Delete the password in from the settings and from the XML file
 /// @param p_scrHandle The screen handle which to operate the functions on
 /// @param p_passwordControl the corresponding ui element control integers
-/// @param p_password the password filled in by the user
-void SetPassword(void* p_scrHandle, int p_passwordControl, char* p_password)
-{
-    char replacement[SETTINGS_NAME_LENGTH];
-    auto length = strlen(p_password);
-    for (int i = 0; i < length; i++)
-    {
-        replacement[i] = '*';
-    }
-    replacement[length] = '\0';
-
-    GfuiEditboxSetString(p_scrHandle, p_passwordControl, replacement);
-}
-
-/// @brief Handle input in the Password textbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_passwordControl the corresponding ui element control integers
-void ClearPassword(void* p_scrHandle, int p_passwordControl)
+void DeletePassword(void* p_scrHandle, int p_passwordControl)
 {
     GfuiEditboxSetString(p_scrHandle, p_passwordControl, "");
+    strcpy_s(s_dbSettings.Password, SETTINGS_NAME_LENGTH, "");
+    strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, "");
+    std::string dstStr("config/DatabaseSettingsMenu.xml");
+    char dst[512];
+    sprintf(dst, "%s%s", GfLocalDir(), dstStr.c_str());
+    void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+    GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
+    GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
 }
 
 /// @brief Fill in the saved password
@@ -283,7 +284,7 @@ void ClearPassword(void* p_scrHandle, int p_passwordControl)
 /// @param p_passwordControl the corresponding ui element control integers
 void FillInPassword(void* p_scrHandle, int p_passwordControl)
 {
-    SetPassword(p_scrHandle, p_passwordControl, s_dbSettings.Password);
+    GfuiEditboxSetString(p_scrHandle, p_passwordControl, s_dbSettings.Password);
 }
 
 /// @brief Fill in the password typed by the user and save the given password in the tempDbSettings
@@ -292,7 +293,6 @@ void FillInPassword(void* p_scrHandle, int p_passwordControl)
 void ChangePassword(void* p_scrHandle, int p_passwordControl)
 {
     strcpy_s(s_tempDbSettings.Password, SETTINGS_NAME_LENGTH, GfuiEditboxGetString(p_scrHandle, p_passwordControl));
-    SetPassword(p_scrHandle, p_passwordControl, s_tempDbSettings.Password);
 }
 
 /// @brief Handle input in the Address textbox
@@ -327,18 +327,25 @@ void SetSchema(void* p_scrHandle, int p_schemaControl)
     GfuiEditboxSetString(p_scrHandle, p_schemaControl, s_tempDbSettings.Schema);
 }
 
-/// @brief        Enables/disables the SSL option
-/// @param p_info Information on the checkbox
-/// @param p_scrHandle The screen handle which to operate the functions on
-/// @param p_caControl the corresponding ui element control integers
-/// @param p_publicControl the corresponding ui element control integers
+/// @brief                  Enables/disables the SSL option
+/// @param p_info           Information on the checkbox
+/// @param p_scrHandle      The screen handle which to operate the functions on
+/// @param p_caControl      the corresponding ui element control integers
+/// @param p_publicControl  the corresponding ui element control integers
 /// @param p_privateControl the corresponding ui element control integers
-void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl)
+/// @param p_caLabel        the corresponding ui element control integers
+/// @param p_publicLabel    the corresponding ui element control integers
+/// @para, p_privateLabel   the corresponding ui element control integers
+void SetUseSSL(tCheckBoxInfo* p_info, void* p_scrHandle, int p_caControl, int p_publicControl, int p_privateControl,
+               int p_caLabel, int p_publicLabel, int p_privateLabel)
 {
     s_tempDbSettings.UseSSL = p_info->bChecked;
     GfuiVisibilitySet(p_scrHandle, p_caControl, s_tempDbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_publicControl, s_tempDbSettings.UseSSL);
     GfuiVisibilitySet(p_scrHandle, p_privateControl, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_caLabel, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_publicLabel, s_tempDbSettings.UseSSL);
+    GfuiVisibilitySet(p_scrHandle, p_privateLabel, s_tempDbSettings.UseSSL);
 }
 
 /// @brief Initializes the certificate filepaths.

@@ -13,12 +13,17 @@ public:
     SQLDatabaseStorage();
     explicit SQLDatabaseStorage(tDataToStore p_dataToStore);
 
+    bool TestConnection(DatabaseSettings p_dbSettings);
     bool Run(const tBufferPaths& p_bufferPaths);
     bool StoreData(const tBufferPaths& p_bufferPaths) override;
     bool OpenDatabase(DatabaseSettings p_dbSettings);
     bool CloseDatabase(bool p_returnVal);
+    void SaveTrialIdToMetadata(int p_trialId);
+
+    static void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
 
 private:
+    void CreateDatabaseSchema(DatabaseSettings p_dbSettings);
     void CreateTables();
 
     int InsertMetaData(std::ifstream& p_inputFileStream);
@@ -27,7 +32,7 @@ private:
     void InsertUserInput(const filesystem::path& p_userInputPath, int p_trialId);
     void InsertDecisions(const filesystem::path& p_decisionsPath, int p_trialId);
 
-    void PutKeys(sql::ConnectOptionsMap& p_connectionProperties, DatabaseSettings p_dbSettings);
+    std::vector<std::string> GetMissingPrivileges(DatabaseSettings p_dbSettings);
 
     sql::Driver* m_driver;
     sql::Connection* m_connection;
@@ -35,4 +40,5 @@ private:
     sql::ResultSet* m_resultSet;
 
     tDataToStore m_dataToStore;
+    bool ConnectDatabase(DatabaseSettings p_dbSettings);
 };

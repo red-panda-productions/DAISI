@@ -24,7 +24,9 @@
     template DecisionMaker<type1, type2, type3, type4, type5>::~DecisionMaker();                                                                \
     template FileDataStorage* DecisionMaker<type1, type2, type3, type4, type5>::GetFileDataStorage();                                           \
     template tBufferPaths DecisionMaker<type1, type2, type3, type4, type5>::GetBufferPaths();                                                   \
-    template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();
+    template Recorder* DecisionMaker<type1, type2, type3, type4, type5>::GetRecorder();                                                         \
+    template DecisionTuple DecisionMaker<type1, type2, type3, type4, type5>::GetDecisions();                                                    \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SetDecisions(DecisionTuple p_decision);
 
 #define TEMP_DECISIONMAKER DecisionMaker<SocketBlackBox, SDAConfig, FileDataStorage, SQLDatabaseStorage, Recorder>
 #define MAX_ULONG          4294967295
@@ -89,6 +91,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
                                                    trackFileName, trackName, trackVersion,
                                                    interventionType);
     m_fileBufferStorage.SetCompressionRate(Config.GetCompressionRate());
+    m_decision.Reset();
 }
 
 /// @brief              Tries to get a decision from the black box
@@ -108,7 +111,7 @@ bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigne
     }
 
     int decisionCount = 0;
-    IDecision** decisions = m_decision.GetActiveDecisions(decisionCount);
+    Decision** decisions = m_decision.GetActiveDecisions(decisionCount);
 
     InterventionExec->RunDecision(decisions, decisionCount);
 
@@ -149,7 +152,7 @@ void TEMP_DECISIONMAKER::CloseRecorder()
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::SaveData()
 {
-    SQLDatabaseStorage sqlDatabaseStorage;
+    SQLDatabaseStorage sqlDatabaseStorage(Config.GetDataCollectionSetting());
     sqlDatabaseStorage.Run(m_bufferPaths);
 }
 
@@ -159,20 +162,42 @@ void TEMP_DECISIONMAKER::ShutdownBlackBox()
     BlackBox.Shutdown();
 }
 
+/// @brief Gets the file data storage buffer
+/// @return the file data storage buffer
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 FileDataStorage* TEMP_DECISIONMAKER::GetFileDataStorage()
 {
     return &m_fileBufferStorage;
 }
 
+/// @brief Gets the file data storage buffer path
+/// @return the file data storage buffer path
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 tBufferPaths TEMP_DECISIONMAKER::GetBufferPaths()
 {
     return m_bufferPaths;
 }
 
+/// @brief Gets the recorder
+/// @return the recorder
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 Recorder* TEMP_DECISIONMAKER::GetRecorder()
 {
     return m_recorder;
+}
+
+/// @brief Gets the decision tuple
+/// @return the decision tuple
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+DecisionTuple TEMP_DECISIONMAKER::GetDecisions()
+{
+    return m_decision;
+}
+
+/// @brief Sets the decision tuple
+/// @param p_decision the decision tuple
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SetDecisions(DecisionTuple p_decision)
+{
+    m_decision = p_decision;
 }
