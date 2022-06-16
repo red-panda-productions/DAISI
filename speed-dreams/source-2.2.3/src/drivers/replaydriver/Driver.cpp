@@ -227,6 +227,7 @@ void Driver::EndRace(tCarElt* p_car, tSituation* p_situation)
 void Driver::Shutdown()
 {
     SMediator::GetInstance()->RaceStop();
+    SMediator::GetInstance()->ShutdownBlackBox();
 }
 
 /// @brief Terminate the driver.
