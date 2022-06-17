@@ -11,7 +11,10 @@
 #include "tracks.h"
 #include "FileSystem.hpp"
 #include "mainmenu.h"
+#include "SocketBlackBox.h"
+#include "GeneratorUtils.h"
 #include <playerpref.h>
+#include <string>
 
 // Parameters used in the xml files
 #define PRM_ALLOWED_STEER      "CheckboxAllowedSteer"
@@ -41,6 +44,8 @@
 #define PRM_ENVIRONMENT_CATEGORY "EnvironmentCategory"
 #define PRM_ENVIRONMENT_NAME     "EnvironmentName"
 
+#define PRM_BLACK_BOX_STATUS "BlackBoxStatus"
+
 #define PRM_DEV         "DevButton"
 #define GFMNU_ATTR_PATH "path"
 
@@ -66,10 +71,44 @@
 #define MSG_ERROR_NO_ENVIRONMENT    "You need to select a valid Environment"
 #define MSG_ERROR_NO_UID            "You need to have a user id"
 
+// Amount of black box tests
+#define BLACK_BOX_TESTS 5
+
+// Black box test result messages
+#define MSG_BLACK_BOX_FAST     "Fast"
+#define MSG_BLACK_BOX_MODERATE "Moderate"
+#define MSG_BLACK_BOX_SLOW     "Slow"
+#define MSG_BLACK_BOX_TESTING  "Testing"
+
+// Black box test result colors
+
+#define FAST_TEXT_COLOR \
+    {                   \
+        0, 1, 0, 1      \
+    }
+
+#define MODERATE_TEXT_COLOR \
+    {                       \
+        1, 1, 0, 1          \
+    }
+
+#define SLOW_TEXT_COLOR \
+    {                   \
+        1, 0, 0, 1      \
+    }
+
+#define CONNECTING_TEXT_COLOR \
+    {                         \
+        1, 1, 1, 1            \
+    }
+
 // Lengths of file dialog selection items
 #define AMOUNT_OF_NAMES_BLACK_BOX_FILES 1
 
 #define TRACK_LOADER_MODULE_NAME "trackv1"
+
+#define MODERATE_TIME 100
+#define SLOW_TIME     250
 
 #if SDL_FORCEFEEDBACK
 #include <forcefeedbackconfig.h>
@@ -120,6 +159,95 @@ int m_environmentButton;
 bool m_environmentChosen = false;
 GfTrack* m_environment = nullptr;
 tRmTrackSelect m_trackMenuSettings;
+
+// Blackbox Test result
+int m_blackBoxTestResultControl;
+
+static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* p_result, bool* p_terminate)
+{
+    TestSegments segments = GenerateSegments();
+    tCarElt cars[BLACK_BOX_TESTS];
+    tSituation situations[BLACK_BOX_TESTS];
+    BlackBoxData testData[BLACK_BOX_TESTS];
+    for (int i = 0; i < BLACK_BOX_TESTS; i++)
+    {
+        cars[i] = GenerateCar(segments);
+        situations[i] = GenerateSituation();
+        testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
+    }
+    StartExecutable(m_blackBoxFilePath);
+    auto start = std::chrono::system_clock::now();
+    p_blackbox->Initialize(false, testData[0], testData, BLACK_BOX_TESTS, p_terminate);
+    auto end = std::chrono::system_clock::now();
+    p_blackbox->Shutdown();
+    *p_result = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
+}
+
+/// @brief The async function that tests the black box connection
+static void TestBlackBoxAsync()
+{
+    float connectingColor[4] = CONNECTING_TEXT_COLOR;
+    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
+
+    SSocketBlackBox* blackbox = new SSocketBlackBox();
+    // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
+    long milliseconds = -1;
+    bool terminate = false;
+
+    std::thread t = std::thread(RunBlackBoxTests, blackbox, &milliseconds, &terminate);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLOW_TIME * BLACK_BOX_TESTS));
+
+    if (milliseconds == -1) terminate = true;
+
+    t.join();
+
+    delete blackbox;
+
+    if (terminate)
+    {
+        milliseconds = SLOW_TIME;
+    }
+
+    std::string time = " (" + std::to_string(milliseconds) + "ms)";
+
+    if (milliseconds >= SLOW_TIME)
+    {
+        float color[4] = SLOW_TEXT_COLOR;
+        std::string msg = MSG_BLACK_BOX_SLOW + time;
+        GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
+        GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
+        GfLogWarning("SLOW BLACKBOX: Blackbox took %ld+ milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
+        GfuiApp().eventLoop().postRedisplay();
+        return;
+    }
+    if (milliseconds > MODERATE_TIME)
+    {
+        float color[4] = MODERATE_TEXT_COLOR;
+        std::string msg = MSG_BLACK_BOX_MODERATE + time;
+        GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
+        GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
+        GfLogWarning("MODERATE BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this might not be fast enough!\n", milliseconds, BLACK_BOX_TESTS);
+        GfuiApp().eventLoop().postRedisplay();
+        return;
+    }
+
+    float color[4] = FAST_TEXT_COLOR;
+    std::string msg = MSG_BLACK_BOX_FAST + time;
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
+    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
+    GfLogInfo("Blackbox took %ld milliseconds (on average) to respond over %i tests\n", milliseconds, BLACK_BOX_TESTS);
+    GfuiApp().eventLoop().postRedisplay();
+}
+
+/// @brief Tests if the black box is considered fast enough for the program
+static void TestBlackBox()
+{
+    if (strcmp(m_blackBoxFilePath, "") == 0) return;
+    std::thread t(TestBlackBoxAsync);
+    t.detach();
+}
 
 /// @brief Save the given GfTrack as the used environment
 /// @param p_gfTrack Pointer to the GfTrack to use
@@ -514,6 +642,8 @@ static void OnActivate(void* /* dummy */)
     InitializeTrackLoader();
 
     SynchronizeControls();
+
+    TestBlackBox();
 }
 
 /// @brief Selects a black box
@@ -559,6 +689,7 @@ static void SelectBlackBox(void* /* dummy */)
     // Only after validation copy into the actual variable
     strcpy_s(m_blackBoxFilePath, BLACKBOX_PATH_SIZE, buf);
     m_blackBoxChosen = true;
+    TestBlackBox();
 }
 
 /// @brief Generates a random user id
@@ -659,6 +790,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Dev button control
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, nullptr, GoToDevMenu);
+
+    // Black box test result
+    m_blackBoxTestResultControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_BLACK_BOX_STATUS, false);
 
     // Generate UID button
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
