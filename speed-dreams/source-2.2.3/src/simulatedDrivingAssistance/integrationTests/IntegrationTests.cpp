@@ -91,21 +91,17 @@ bool CheckProcess(PROCESS_INFORMATION p_processInformation, bool terminate = fal
 bool RunTest(const std::string& p_path)
 {
     filesystem::path bbfile;
-
     CheckFiles(p_path, bbfile);
 
     std::string simulationArgs = GenerateSimulationArguments(p_path);
-
     PROCESS_INFORMATION simulationInfo;
     StartProcess(SD_EXECUTABLE, simulationArgs.c_str(), simulationInfo, SD_EXECUTABLE_WORKING_DIRECTORY);
 
     std::string bbArgs = GenerateBBArguments(bbfile);
-
     PROCESS_INFORMATION bbInfo;
     StartProcess(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str(), bbInfo, INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY);
 
     bool p1 = CheckProcess(bbInfo);
-
     bool p2 = CheckProcess(simulationInfo, !p1);
 
     std::cerr << "bbinfo(p1): " << p1 << ", simulation(p2): " << p2 << std::endl;
@@ -138,10 +134,11 @@ void KillProcessByName(const char* p_filename)
     CloseHandle(hSnapShot);
 }
 
+/// @brief Kills both the simulation (DAISI.exe) and the replay blackbox (SDAReplay.exe) processes
 void KillAllInterveningProcesses()
 {
     KillProcessByName("SDAReplay.exe");
-    KillProcessByName("speed-dreams-2.exe");
+    KillProcessByName("DAISI.exe");
 }
 
 /// @brief The class that instantiates the different integration tests
