@@ -2,6 +2,7 @@
 #include <string>
 #include <regex>
 #include <fstream>
+#include <sstream>
 #include "../../libs/portability/portability.h"
 #include <iostream>
 #include <tgf.h>
@@ -10,6 +11,7 @@
 
 #define ROOT_FOLDER "source-2.2.3"
 #define PATH_SIZE   256
+#define BB_ARG      "--bbfile "
 
 #ifdef WIN32
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
@@ -210,6 +212,8 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
                   nullptr,
                   &startupInformation,
                   &processInformation);
+
+    free(args);
 }
 
 /// @brief                       Starts a process from which you can also get the process handle
@@ -352,6 +356,24 @@ inline const char* BoolToString(const bool p_boolean)
 inline bool StringToBool(const char* p_string)
 {
     return strcmp(p_string, BOOL_TRUE_STRING) == 0;
+}
+
+/// @brief           Generates arguments for the black box executable
+/// @param  p_bbfile The path to the black box recording file
+/// @param  p_filename The name of the file that will be executed, optionally set as the first argument as some environments expect that to be the case.
+/// @return          The arguments
+inline std::string GenerateBBArguments(const filesystem::path& p_bbfile, const std::string& p_filename = "")
+{
+    std::stringstream args;
+
+    if(!p_filename.empty())
+    {
+        args << p_filename << " ";
+    }
+
+    args << BB_ARG << "\"" << p_bbfile << "\"";
+
+    return {args.str()};
 }
 
 /// @brief Assert the contents of the binary file in filePath match the binary stream contents

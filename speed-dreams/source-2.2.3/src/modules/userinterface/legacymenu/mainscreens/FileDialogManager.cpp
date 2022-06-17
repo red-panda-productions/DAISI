@@ -28,9 +28,10 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog, COMDLG_FILTERSP
 /// @param p_folder   Whether to select files (true) or folders (false)
 /// @param p_names    The names of the types of file to select
 /// @param p_exts     The extension filters of the types of file to select
-///	@param p_extCount The amount of extensions/names provided
+/// @param p_extCount The amount of extensions/names provided
+/// @param p_linuxDirectories Whether to allow the user to select directories on Linux or not, ignored on windows
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
-bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount)
+bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount, bool p_linuxDirectories)
 {
     // Opens a file dialog on Windows
     // Functions returning an HRESULT are from shobjidl.h can all fail. In each such if block where it has failed, we provide the docs associated with that function
@@ -174,6 +175,7 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 #else
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 /// @brief            Opens a file dialog for the user to select a file, limiting the files shown to the provided parameters
 /// @param p_buf      A buffer to write the filename to
@@ -181,11 +183,19 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog)
 /// @param p_folder   Whether to select files (true) or folders (false)
 /// @param p_names    The names of the types of file to select
 /// @param p_exts     The extension filters of the types of file to select
-///	@param p_extCount The amount of extensions/names provided
+/// @param p_extCount The amount of extensions/names provided
+/// @param p_linuxDirectories Whether to allow the user to select directories on Linux or not, ignored on windows
 /// @note             See SelectBlackBox in ResearcherMenu.cpp for an example on how to call this function
-bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount)
+bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names, const wchar_t** p_exts, int p_extCount, bool p_linuxDirectories)
 {
-    FILE* f = popen("zenity --file-selection --title=\"Choose a Black Box\"", "r");
+    std::string command = "zenity --file-selection ";
+    if(p_linuxDirectories)
+    {
+        command += "--directory ";
+    }
+    command += "--title=\"Choose a Black Box\"";
+
+    FILE* f = popen(command.c_str(), "r");
     fgets(p_buf, MAX_PATH_SIZE, f);
 
     int len = strlen(p_buf);

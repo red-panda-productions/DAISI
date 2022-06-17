@@ -102,6 +102,13 @@ public:
     {
         return m_inRace;
     }
+
+    /// @brief Gets the set blackbox file path
+    /// @return The filepath to the blackbox
+    const char* GetBlackBoxFilePath()
+    {
+        return m_decisionMaker.Config.GetBlackBoxFilePath();
+    }
 #endif
 
     /// @brief Removes copy constructor for singleton behaviour
@@ -117,7 +124,7 @@ private:
 
     DecisionMaker m_decisionMaker;
 
-    unsigned long m_tickCount = 0;
+    uint32_t m_tickCount = 0;
     tDatabaseSettings m_dbSettings;
 
     tTrack* m_track = nullptr;
