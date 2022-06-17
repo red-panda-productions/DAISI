@@ -189,7 +189,6 @@ static void TestBlackBoxAsync()
     float connectingColor[4] = CONNECTING_TEXT_COLOR;
     GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
     GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
-    
 
     SSocketBlackBox* blackbox = new SSocketBlackBox();
     // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
@@ -206,7 +205,7 @@ static void TestBlackBoxAsync()
 
     delete blackbox;
 
-    if(terminate)
+    if (terminate)
     {
         milliseconds = SLOW_TIME;
     }
