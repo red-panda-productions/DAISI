@@ -24,9 +24,11 @@ public:
 
     void Initialize();
 
-    void Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0);
+    void Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests = nullptr, int p_amountOfTests = 0, bool* p_terminate = nullptr);
 
     void Shutdown();
+
+    void ForceServerClose();
 
     void SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);
 

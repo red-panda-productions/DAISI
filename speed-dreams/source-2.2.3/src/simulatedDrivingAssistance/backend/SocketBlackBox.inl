@@ -5,13 +5,14 @@
 #include "DecisionMaker.h"
 #include "RppUtils.hpp"
 
-#define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                       \
-    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(IPC_IP_TYPE p_ip, int p_port);                                                                          \
-    template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                     \
-    template void SocketBlackBox<p_type1, p_type2>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests); \
-    template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                       \
-    template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                                 \
-    template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);      \
+#define CREATE_SOCKET_BLACKBOX_IMPLEMENTATION(p_type1, p_type2)                                                                                                                          \
+    template SocketBlackBox<p_type1, p_type2>::SocketBlackBox(IPC_IP_TYPE p_ip, int p_port);                                                                                             \
+    template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                                        \
+    template void SocketBlackBox<p_type1, p_type2>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests, bool* p_terminate); \
+    template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                                          \
+    template void SocketBlackBox<p_type1, p_type2>::ForceServerClose();                                                                                                                  \
+    template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                                                    \
+    template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);                         \
     template bool SocketBlackBox<p_type1, p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
 
 // inserts value from BlackBoxData variables in vector
@@ -56,13 +57,29 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     m_variableDecisionMap["Accel"] = CONVERT_TO_ACCEL_DECISION;
 }
 
+/// @brief               Awaits data with termination
+/// @param  p_buffer     The write buffer
+/// @param  p_bufferSize The size of the write buffer
+#define AWAIT_WITH_TERMINATE(p_buffer, p_bufferSize)  \
+    while (!m_server.GetData(p_buffer, p_bufferSize)) \
+    {                                                 \
+        if (*p_terminate) return;                     \
+    }
+#define CHECK_TERMINATE() if (*p_terminate) return;
+#define AWAIT_CONNECTION_WITH_TERMINATE() \
+    while (!m_server.Connected())\
+    {\
+        if (*p_terminate) return;\
+    }
+
 /// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
 /// @param p_connectAsync True if blackbox will run async (not waiting for response), false if sync (wait for response)
 /// @param p_initialBlackBoxData The initial drive situation
 /// @param p_tests Control data used in tests
 /// @param p_amountOfTests Amount of tests in p_tests
+/// @param p_terminate A boolean callback to terminate the initialization
 template <class BlackBoxData, class PointerManager>
-void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests)
+void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests, bool* p_terminate)
 {
     Initialize();
     std::cout << "Connecting ";
@@ -73,12 +90,16 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     }
     std::cout << "sync" << std::endl;
 
-    m_server.AwaitClientConnection();
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    CHECK_TERMINATE()
+    m_server.ConnectAsync();
+    AWAIT_CONNECTION_WITH_TERMINATE()
+    m_server.ReceiveDataAsync();
+    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
     if (std::string(m_buffer) != "AI ACTIVE") THROW_RPP_EXCEPTION("Black Box send wrong message: AI ACTIVE expected");
+    CHECK_TERMINATE()
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
     msgpack::unpacked msg;
     msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
     std::vector<std::string> orderVec;
@@ -95,9 +116,10 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::sbuffer sbuffer;
     std::string data[1] = {std::to_string(p_amountOfTests)};
     msgpack::pack(sbuffer, data);
+    CHECK_TERMINATE()
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
-    m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') THROW_RPP_EXCEPTION("Black box send wrong message: OK expected");
 
     DecisionTuple decisionTuple;
@@ -105,9 +127,10 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     {
         sbuffer.clear();
         SerializeBlackBoxData(sbuffer, &p_tests[i]);
+        CHECK_TERMINATE()
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
-        m_server.AwaitData(m_buffer, SBB_BUFFER_SIZE);
+        AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
     }
 
@@ -116,6 +139,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     if (m_asyncConnection)
     {
         SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
+        CHECK_TERMINATE()
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
     }
@@ -138,6 +162,13 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     m_server.CloseServer();
     VariablesToReceive.clear();
     m_variableDecisionMap.clear();
+}
+
+/// @brief Closes the underlying server
+template <class BlackBoxData, class PointerManager>
+void SocketBlackBox<BlackBoxData, PointerManager>::ForceServerClose()
+{
+    m_server.CloseServer();
 }
 
 /// @brief                  Inserts a string of value of a pointer into a msgpack message

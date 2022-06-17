@@ -163,22 +163,24 @@ tRmTrackSelect m_trackMenuSettings;
 // Blackbox Test result
 int m_blackBoxTestResultControl;
 
-static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* result)
+static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* p_result, bool* p_terminate)
 {
     TestSegments segments = GenerateSegments();
     tCarElt cars[BLACK_BOX_TESTS];
     tSituation situations[BLACK_BOX_TESTS];
     BlackBoxData testData[BLACK_BOX_TESTS];
-    Random random;
     for (int i = 0; i < BLACK_BOX_TESTS; i++)
     {
         cars[i] = GenerateCar(segments);
         situations[i] = GenerateSituation();
         testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
     }
+    StartExecutable(m_blackBoxFilePath);
     auto start = std::chrono::system_clock::now();
-    p_blackbox->Initialize(false, testData[0], testData, BLACK_BOX_TESTS);
+    p_blackbox->Initialize(false, testData[0], testData, BLACK_BOX_TESTS, p_terminate);
     auto end = std::chrono::system_clock::now();
+    p_blackbox->Shutdown();
+    *p_result = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
 }
 
 /// @brief The async function that tests the black box connection
@@ -187,21 +189,22 @@ static void TestBlackBoxAsync()
     float connectingColor[4] = CONNECTING_TEXT_COLOR;
     GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
     GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
-    StartExecutable(m_blackBoxFilePath);
+    
 
-    SSocketBlackBox blackbox;
+    SSocketBlackBox* blackbox = new SSocketBlackBox();
     // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
     long milliseconds = -1;
+    bool terminate = false;
 
-    std::thread* t = new std::thread(RunBlackBoxTests, &blackbox, &milliseconds);
+    std::thread t = std::thread(RunBlackBoxTests, blackbox, &milliseconds, &terminate);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(SLOW_TIME * BLACK_BOX_TESTS));
 
-    if (milliseconds == -1) milliseconds = 250;
+    if (milliseconds == -1) terminate = true;
 
-    delete t;
+    t.join();
 
-    blackbox.Shutdown();
+    delete blackbox;
 
     std::string time = " (" + std::to_string(milliseconds) + "ms)";
 
@@ -237,7 +240,6 @@ static void TestBlackBoxAsync()
 /// @brief Tests if the black box is considered fast enough for the program
 static void TestBlackBox()
 {
-    std::cout << "testing bb " << std::endl;
     if (strcmp(m_blackBoxFilePath, "") == 0) return;
     std::thread t(TestBlackBoxAsync);
     t.detach();
@@ -635,9 +637,9 @@ static void OnActivate(void* /* dummy */)
     // (When a race is started and abandoned, this menu may be visited again. However, ending a race may destroy the track loader.)
     InitializeTrackLoader();
 
-    TestBlackBox();
-
     SynchronizeControls();
+
+    TestBlackBox();
 }
 
 /// @brief Selects a black box
