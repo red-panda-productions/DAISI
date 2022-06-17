@@ -63,13 +63,14 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
 #define AWAIT_WITH_TERMINATE(p_buffer, p_bufferSize)  \
     while (!m_server.GetData(p_buffer, p_bufferSize)) \
     {                                                 \
-        if (*p_terminate) return;                     \
+        if (p_terminate && *p_terminate) return;      \
     }
-#define CHECK_TERMINATE() if (*p_terminate) return;
-#define AWAIT_CONNECTION_WITH_TERMINATE() \
-    while (!m_server.Connected())\
-    {\
-        if (*p_terminate) return;\
+#define CHECK_TERMINATE() \
+    if (p_terminate && *p_terminate) return;
+#define AWAIT_CONNECTION_WITH_TERMINATE()        \
+    while (!m_server.Connected())                \
+    {                                            \
+        if (p_terminate && *p_terminate) return; \
     }
 
 /// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
