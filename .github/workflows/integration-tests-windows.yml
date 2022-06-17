@@ -1,15 +1,13 @@
 name: CI Pipeline Integration Tests Windows
 
 on:
-  # Run everyday at 3 am
-  schedule:
-    - cron: "0 3 * * *"
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
   # Allow manually triggering from the actions tab
   workflow_dispatch:
-
-  pull_request:
-    types: [ labeled, opened, synchronize, reopened ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)

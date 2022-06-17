@@ -333,7 +333,7 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::RaceStop()
 {
-    if (!m_inRace) return;
+    std::cout << "RACE STOP CALLED" << std::endl;
     m_inRace = false;
 }
 
@@ -341,6 +341,7 @@ void Mediator<DecisionMaker>::RaceStop()
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::ShutdownBlackBox()
 {
+    std::cout << "SHUTDOWN CALLED" << std::endl;
     m_decisionMaker.ShutdownBlackBox();
 }
 
