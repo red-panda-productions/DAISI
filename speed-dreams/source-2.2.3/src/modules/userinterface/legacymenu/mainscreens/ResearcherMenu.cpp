@@ -206,15 +206,20 @@ static void TestBlackBoxAsync()
 
     delete blackbox;
 
+    if(terminate)
+    {
+        milliseconds = SLOW_TIME;
+    }
+
     std::string time = " (" + std::to_string(milliseconds) + "ms)";
 
-    if (milliseconds > SLOW_TIME)
+    if (milliseconds >= SLOW_TIME)
     {
         float color[4] = SLOW_TEXT_COLOR;
         std::string msg = MSG_BLACK_BOX_SLOW + time;
         GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, msg.c_str());
         GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, color);
-        GfLogWarning("SLOW BLACKBOX: Blackbox took %ld milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
+        GfLogWarning("SLOW BLACKBOX: Blackbox took %ld+ milliseconds (on average) to respond over %i tests, this is relatively slow!\n", milliseconds, BLACK_BOX_TESTS);
         GfuiApp().eventLoop().postRedisplay();
         return;
     }
