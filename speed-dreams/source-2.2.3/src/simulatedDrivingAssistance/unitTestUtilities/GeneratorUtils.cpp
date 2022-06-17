@@ -322,7 +322,7 @@ tCarElt GenerateCar(TestSegments& p_segments)
         car.priv.gearRatio[i] = random.NextFloat();
     }
     car.priv.gearNb = random.NextInt();
-    car.priv.gearOffset = random.NextInt();
+    car.priv.gearOffset = random.NextInt(0, 2);  // client bb can't handle this
     for (int i = 0; i < 4; i++)
     {
         car.priv.skid[i] = random.NextFloat();
