@@ -1,37 +1,29 @@
 #include "Driver.h"
 #include "Mediator.h"
-#include "ConfigEnums.h"
 #include <tgf.h>
 #include <Recorder.h>
 
 #include "RppUtils.hpp"
-
-// When NDEBUG is not defined assert is a no-op, for the integration tests it needs to throw an exception.
-#ifdef NDEBUG
-
-#undef assert
-
-// Disable naming inspection since this needs to be "assert" lowercase, while our naming standard would require it to be ASSERT
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCInconsistentNamingInspection"
+#include <inttypes.h>
 
 // Throw an exception when the expression is false
-#define assert(expression)                                                        \
-    if (!(expression))                                                            \
-    {                                                                             \
-        GfLogError("Assertion failed: " #expression " was false!\n");             \
-        throw std::runtime_error("Assertion failed: " #expression " was false!"); \
+#define ASSERT_OR_THROW(expression, time)                                              \
+    if (!(expression))                                                                 \
+    {                                                                                  \
+        GfLogError("Assertion failed: " #expression " was false at time %f!\n", time); \
+        throw std::runtime_error("Assertion failed: " #expression " was false!");      \
     }
-#pragma clang diagnostic pop
 
-#endif
+#define ASSERT_EQ_OR_THROW(a, b, time)                                                          \
+    if (a != b)                                                                                 \
+    {                                                                                           \
+        GfLogError("Assertion failed: " #a " = %f, but expected %f at time %f!\n", a, b, time); \
+        throw std::runtime_error("Assertion failed: " #a "!= " #b);                             \
+    }
 
-/// @brief Initialize the driver with the given track
-/// Make sure the human driver is initialized and ready to drive.
-/// @param p_index The driver's index (starting from 1)
-/// @param p_name The driver's name
-Driver::Driver(int p_index, const char* p_name)
-    : m_index(p_index), m_inputTime(0)
+/// @brief Initialize the replay driver
+Driver::Driver()
+    : m_inputTime(0)
 {
 }
 
@@ -44,7 +36,7 @@ Driver::Driver(int p_index, const char* p_name)
 void Driver::InitTrack(tTrack* p_track, void* p_carHandle, void** p_carParmHandle, tSituation* p_situation)
 {
     const filesystem::path& replayFolder = SMediator::GetInstance()->GetReplayFolder();
-    assert(Recorder::ValidateAndUpdateRecording(replayFolder));
+    ASSERT_OR_THROW(Recorder::ValidateAndUpdateRecording(replayFolder), p_situation->currentTime);
     const filesystem::path carSettingsFile = filesystem::path(replayFolder).append(CAR_SETTINGS_FILE_NAME);
     const filesystem::path userRecordingFile = filesystem::path(replayFolder).append(USER_INPUT_RECORDING_FILE_NAME);
     const filesystem::path simulationFile = filesystem::path(replayFolder).append(SIMULATION_DATA_RECORDING_FILE_NAME);
@@ -103,24 +95,25 @@ void ValidateSimulationData(tCarElt* p_car, std::ifstream& p_simulationDataFile)
     p_simulationDataFile >> bits(acc.y);
     p_simulationDataFile >> bits(acc.z);
 
-    assert(p_car->pub.DynGCg.pos.x == posG.x);
-    assert(p_car->pub.DynGCg.pos.y == posG.y);
-    assert(p_car->pub.DynGCg.pos.z == posG.z);
-    assert(p_car->pub.DynGCg.vel.x == velG.x);
-    assert(p_car->pub.DynGCg.vel.y == velG.y);
-    assert(p_car->pub.DynGCg.vel.z == velG.z);
-    assert(p_car->pub.DynGCg.acc.x == accG.x);
-    assert(p_car->pub.DynGCg.acc.y == accG.y);
-    assert(p_car->pub.DynGCg.acc.z == accG.z);
-    assert(p_car->pub.DynGC.pos.x == pos.x);
-    assert(p_car->pub.DynGC.pos.y == pos.y);
-    assert(p_car->pub.DynGC.pos.z == pos.z);
-    assert(p_car->pub.DynGC.vel.x == vel.x);
-    assert(p_car->pub.DynGC.vel.y == vel.y);
-    assert(p_car->pub.DynGC.vel.z == vel.z);
-    assert(p_car->pub.DynGC.acc.x == acc.x);
-    assert(p_car->pub.DynGC.acc.y == acc.y);
-    assert(p_car->pub.DynGC.acc.z == acc.z);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.pos.x, posG.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.pos.y, posG.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.pos.z, posG.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.vel.x, velG.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.vel.y, velG.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.vel.z, velG.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.acc.x, accG.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.acc.y, accG.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGCg.acc.z, accG.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.pos.x, pos.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.pos.y, pos.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.pos.z, pos.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.vel.x, vel.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.vel.y, vel.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.vel.z, vel.z, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.x, acc.x, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.y, acc.y, currentTime);
+    ASSERT_EQ_OR_THROW(p_car->pub.DynGC.acc.z, acc.z, currentTime);
+    GfLogInfo("Simulation data validated at time %f\n", currentTime);
 }
 
 /// @brief Update the car's controls based on recording at that currentTime.
@@ -234,6 +227,7 @@ void Driver::EndRace(tCarElt* p_car, tSituation* p_situation)
 void Driver::Shutdown()
 {
     SMediator::GetInstance()->RaceStop();
+    SMediator::GetInstance()->ShutdownBlackBox();
 }
 
 /// @brief Terminate the driver.

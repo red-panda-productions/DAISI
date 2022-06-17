@@ -27,11 +27,12 @@
 #define KEY_INDICATOR_ICON  "icon"
 #define KEY_INDICATOR_TEXT  "text"
 
-#define KEY_SELECTED "selected"
-#define KEY_FILENAME "filename"
-#define KEY_CATEGORY "category"
-#define KEY_NAME     "name"
-#define KEY_VERSION  "version"
+#define KEY_SELECTED      "selected"
+#define KEY_FILENAME      "filename"
+#define KEY_CATEGORY      "category"
+#define KEY_NAME          "name"
+#define KEY_INTERNAL_NAME "internal_name"
+#define KEY_VERSION       "version"
 
 #define KEY_PARTICIPANT_CONTROL_CONTROL_STEERING            "control_steering"
 #define KEY_PARTICIPANT_CONTROL_CONTROL_GAS                 "control_gas"
@@ -56,7 +57,7 @@
 #define DECISION_RECORD_PARAM_AMOUNT 4
 
 // Current version of the recorder, should be incremented every time a new version comes out.
-#define CURRENT_RECORDER_VERSION 5
+#define CURRENT_RECORDER_VERSION 6
 
 /// @brief A class that can record the input of a player for integration tests
 class Recorder
@@ -68,12 +69,13 @@ public:
                           const InterventionType& p_interventionType, const tParticipantControl& p_participantControl,
                           int p_maxTime, const tAllowedActions& p_allowedActions, tDecisionThresholds p_thresholds);
     void WriteUserInput(const float* p_userInput, double p_timestamp, bool p_useCompression = false);
-    void WriteDecisions(const DecisionTuple* p_decisions, unsigned long p_timestamp);
+    void WriteDecisions(const DecisionTuple* p_decisions, uint32_t p_timestamp);
     void WriteSimulationData(const float* p_simulationData, double p_timeStamp, bool p_useCompression = false);
 
     template <typename TIME>
     void WriteRecording(const float* p_input, TIME p_currentTime, std::ofstream& p_file, int p_paramAmount, bool p_useCompression, float* p_prevInput);
 
+    static bool LoadRecording(const filesystem::path& p_recordingFolder);
     static bool ValidateAndUpdateRecording(const filesystem::path& p_recordingFolder, int p_targetVersion = CURRENT_RECORDER_VERSION);
 
 private:

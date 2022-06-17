@@ -3,6 +3,11 @@
 #include <sstream>
 #include <tgf.h>
 #include "RppUtils.hpp"
+#include "Mediator.h"
+
+static_assert(sizeof(float) == 4, "Float should be 4 bytes");
+static_assert(std::numeric_limits<float>::is_iec559, "Should support IEEE 754");
+static_assert(sizeof(double) == 8, "Double should be 8 bytes");
 
 /// @brief Create a file to record the data to. Truncate if the file already exists.
 /// @param p_recordingsFolder The folder to place the file in
@@ -105,7 +110,7 @@ void Recorder::WriteRunSettings(const tCarElt* p_carElt, const tTrack* p_track, 
     GfParmSetNum(settingsFileHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, static_cast<float>(p_interventionType));
 
     GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_CATEGORY, p_track->category);
-    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_NAME, p_track->name);
+    GfParmSetStr(settingsFileHandle, PATH_TRACK, KEY_INTERNAL_NAME, p_track->internalname);
 
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, BoolToString(p_participantControl.ControlSteer));
     GfParmSetStr(settingsFileHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, BoolToString(p_participantControl.ControlAccel));
@@ -145,8 +150,8 @@ void Recorder::WriteSimulationData(const float* p_simulationData, const double p
 
 /// @brief Write decision data to the output file
 /// @param p_userInput Decision data to write, should be an array >= m_decisionParamAmount
-/// @param p_timestamp Timestamp at which the decision data occured
-void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const unsigned long p_timestamp)
+/// @param p_timestamp Timestamp at which the decision data occurred
+void Recorder::WriteDecisions(const DecisionTuple* p_decisions, const uint32_t p_timestamp)
 {
     if (p_decisions == nullptr)
     {
@@ -327,6 +332,60 @@ void UpdateV4RecorderToV5(void* p_settingsHandle)
     GfParmSetNum(p_settingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, STANDARD_THRESHOLD_STEER);
 }
 
+/// @brief Update a v5 recording to a v6 recording. This means:
+///  - Finding the track with the correct category and name and setting the right internal name.
+/// @param p_settingsHandle Handle to the settings file
+/// @return true if succesfully updated, false if no track was found
+bool UpdateV5RecorderToV6(void* p_settingsHandle)
+{
+    const char* category = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    const char* name = GfParmGetStr(p_settingsHandle, PATH_TRACK, KEY_NAME, nullptr);
+
+    if (category == nullptr || name == nullptr)
+    {
+        GfLogWarning("Failed to read category or name.\n");
+        return false;
+    }
+
+    filesystem::path categoryPath = filesystem::path("tracks").append(category);
+
+    if(!filesystem::exists(categoryPath) || !filesystem::is_directory(categoryPath)) return false;
+
+    for (auto const& entry : filesystem::directory_iterator{categoryPath})
+    {
+        // Ignore non directories, for example the CMakeLists.txt
+        if (!filesystem::exists(entry.path()) || !is_directory(entry.path())) continue;
+
+        // Build the file path, note that the filesystem api is not used here since it needs to use "/" and on windows the filesystem api uses "\"
+        std::stringstream xmlLocationStream;
+        xmlLocationStream << entry.path().string() << "/" << entry.path().filename().string() << ".xml";
+        std::string xmlLocation = xmlLocationStream.str();
+
+        void* trackHandle = GfParmReadFile(xmlLocation.c_str(), 0, false);
+
+        // If no trackhandle could be found this track is invalid, so skip it
+        if (trackHandle == nullptr) continue;
+
+        const char* trackName = GfParmGetStr(trackHandle, TRK_SECT_HDR, TRK_ATT_NAME, nullptr);
+
+        // If the trackname is invalid, or does not match the track we are looking for skip it
+        if (trackName == nullptr) continue;
+        if (strcmp(name, trackName) != 0) continue;
+
+        // The track with the right category and name has been found, so set the internal name and remove the name
+        GfParmSetStr(p_settingsHandle, PATH_TRACK, KEY_INTERNAL_NAME, entry.path().filename().string().c_str());
+        GfParmRemove(p_settingsHandle, PATH_TRACK, KEY_NAME);
+
+        GfParmReleaseHandle(trackHandle);
+
+        return true;
+    }
+
+    GfLogWarning("Failed to find matching track.\n");
+
+    return false;
+}
+
 /// @brief                          Upgrades the recording from given version to the next version.
 /// @param p_currVersion            The current version of the recording to upgrade.
 /// @param p_settingsHandle         Handle to the run settings file
@@ -340,12 +399,7 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
     switch (p_currVersion)
     {
         case 0:
-            if (!UpdateV0RecorderToV1(p_settingsHandle, p_userRecordingFile, p_decisionsRecordingFile, p_simulationFile))
-            {
-                GfParmReleaseHandle(p_settingsHandle);
-                return false;
-            }
-            return true;
+            return UpdateV0RecorderToV1(p_settingsHandle, p_userRecordingFile, p_decisionsRecordingFile, p_simulationFile);
         case 1:
             UpdateV1RecorderToV2(p_settingsHandle);
             return true;
@@ -358,10 +412,84 @@ bool UpgradeRecording(int p_currVersion, void* p_settingsHandle, filesystem::pat
         case 4:
             UpdateV4RecorderToV5(p_settingsHandle);
             return true;
+        case 5:
+            return UpdateV5RecorderToV6(p_settingsHandle);
         default:
             GfLogError("There is no more possible upgrade from the current version");
             return false;
     }
+}
+
+/// @brief Read the settings from a recording file and set them correctly internally
+/// @param p_recordingFolder The path to the folder containing all recording data
+/// @return true if the recording was loaded correctly, false if it could not be loaded
+bool Recorder::LoadRecording(const filesystem::path& p_recordingFolder)
+{
+    if (!ValidateAndUpdateRecording(p_recordingFolder))
+    {
+        GfLogError("Failed to validate and/or update recording: '%s'\n", p_recordingFolder.c_str());
+        return false;
+    }
+
+    SMediator* mediator = SMediator::GetInstance();
+
+    mediator->SetReplayFolder(p_recordingFolder);
+
+    filesystem::path recordingSettingsPath = p_recordingFolder;
+    recordingSettingsPath.append(RUN_SETTINGS_FILE_NAME);
+    std::string path = recordingSettingsPath.string();
+    auto replaySettingsHandle = GfParmReadFile(path.c_str(), 0, true);
+
+    // Recreate the path of the environment descriptor file, which is always at "tracks/[category]/[name]/[name].xml"
+    const char* trackCategory = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_CATEGORY, nullptr);
+    const char* trackName = GfParmGetStr(replaySettingsHandle, PATH_TRACK, KEY_INTERNAL_NAME, nullptr);
+    std::stringstream trackFilename("tracks/");
+    trackFilename << "tracks/" << trackCategory << "/" << trackName << "/" << trackName << ".xml";
+    mediator->SetEnvironmentFilePath(trackFilename.str().c_str());
+
+    mediator->SetBlackBoxFilePath("");
+
+    tDataToStore dataToStore{};
+    dataToStore.CarData = dataToStore.HumanData = dataToStore.InterventionData = false;
+    mediator->SetDataCollectionSettings(dataToStore);
+
+    tIndicator indicators{};
+    indicators.Audio = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_AUDIO, "false"));
+    indicators.Icon = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_ICON, "false"));
+    indicators.Text = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_INDICATORS, KEY_INDICATOR_TEXT, "false"));
+    mediator->SetIndicatorSettings(indicators);
+
+    InterventionType interventionType = static_cast<InterventionType>(GfParmGetNum(replaySettingsHandle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, INTERVENTION_TYPE_NO_SIGNALS));
+    mediator->SetInterventionType(interventionType);
+
+    int maxTime = static_cast<int>(GfParmGetNum(replaySettingsHandle, PATH_MAX_TIME, KEY_MAX_TIME, nullptr, -1));
+    mediator->SetMaxTime(maxTime);
+
+    tParticipantControl participantControl{};
+    participantControl.ControlSteer = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_STEERING, "false"));
+    participantControl.ControlAccel = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_GAS, "false"));
+    participantControl.ControlBrake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_BRAKE, "false"));
+    participantControl.ControlInterventionToggle = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_PARTICIPANT_CONTROL, KEY_PARTICIPANT_CONTROL_CONTROL_INTERVENTION_TOGGLE, "false"));
+    mediator->SetPControlSettings(participantControl);
+
+    tAllowedActions allowedActions{};
+    allowedActions.Steer = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_STEER, "false"));
+    allowedActions.Accelerate = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, "false"));
+    allowedActions.Brake = StringToBool(GfParmGetStr(replaySettingsHandle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, "false"));
+    mediator->SetAllowedActions(allowedActions);
+
+    tDecisionThresholds decisionThresholds{};
+    decisionThresholds.Accel = GfParmGetNum(replaySettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_ACCEL, nullptr, STANDARD_THRESHOLD_ACCEL);
+    decisionThresholds.Brake = GfParmGetNum(replaySettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_BRAKE, nullptr, STANDARD_THRESHOLD_BRAKE);
+    decisionThresholds.Steer = GfParmGetNum(replaySettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER, nullptr, STANDARD_THRESHOLD_STEER);
+    mediator->SetThresholdSettings(decisionThresholds);
+
+    // SyncOption false = synchronous, SyncOption true = asynchronous.
+    mediator->SetBlackBoxSyncOption(false);
+
+    GfParmReleaseHandle(replaySettingsHandle);
+
+    return true;
 }
 
 /// @brief                   Validate a recording, and update it if it is an older version

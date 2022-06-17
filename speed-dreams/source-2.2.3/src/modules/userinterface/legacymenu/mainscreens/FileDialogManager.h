@@ -17,4 +17,4 @@ void Release(IShellItem* p_shellItem, IFileDialog* p_fileDialog);
 #define Release(...)
 #endif
 
-bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0);
+bool SelectFile(char* p_buf, char* p_err, bool p_folder, const wchar_t** p_names = nullptr, const wchar_t** p_exts = nullptr, int p_extCount = 0, bool p_linuxDirectories = false);

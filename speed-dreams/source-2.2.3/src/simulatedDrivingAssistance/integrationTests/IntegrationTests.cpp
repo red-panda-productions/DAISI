@@ -9,6 +9,8 @@
 #include <TlHelp32.h>
 #include <Winbase.h>
 #include "TestUtils.h"
+#include "Mediator.h"
+#include "IndicatorConfig.h"
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
@@ -16,10 +18,9 @@
 #define BB_FILE       DECISIONS_RECORDING_FILE_NAME
 #define REPLAY_ARG    "--replay \""
 #define SD_EXTRA_ARGS "--textonly"
-#define BB_ARG        "--bbfile "
 
 /// @brief 15 seconds for tests
-#define TIMEOUT 15000 
+#define TIMEOUT 15000
 
 /// @brief              Checks if all files for an integration test are present in the folder
 ///                     and returns the path to all files if they are present
@@ -52,18 +53,6 @@ std::string GenerateSimulationArguments(const filesystem::path& p_path)
     return {args.str()};
 }
 
-/// @brief           Generates arguments for the black box executable
-/// @param  p_bbfile The path to the black box recording file
-/// @return          The arguments
-std::string GenerateBBArguments(const filesystem::path& p_bbfile)
-{
-    std::stringstream args;
-
-    args << BB_ARG << "\"" << p_bbfile << "\"";
-
-    return {args.str()};
-}
-
 /// @brief                       Checks and waits on a process until it exits
 /// @param  p_processInformation The information handle
 bool CheckProcess(PROCESS_INFORMATION p_processInformation, bool terminate = false)
@@ -78,7 +67,7 @@ bool CheckProcess(PROCESS_INFORMATION p_processInformation, bool terminate = fal
 
     if (await == WAIT_TIMEOUT)
     {
-        TerminateProcess(p_processInformation.hProcess,9);
+        TerminateProcess(p_processInformation.hProcess, 9);
         CloseHandle(p_processInformation.hProcess);
         CloseHandle(p_processInformation.hThread);
 
@@ -118,12 +107,15 @@ bool RunTest(const std::string& p_path)
     bool p1 = CheckProcess(bbInfo);
 
     bool p2 = CheckProcess(simulationInfo, !p1);
+
+    std::cerr << "bbinfo(p1): " << p1 << ", simulation(p2): " << p2 << std::endl;
+
     return p1 && p2;
 }
 
 /// @brief           https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
 /// @param  filename The process name to kill
-void KillProcessByName(const char* filename)
+void KillProcessByName(const char* p_filename)
 {
     HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
     PROCESSENTRY32 pEntry;
@@ -131,7 +123,7 @@ void KillProcessByName(const char* filename)
     BOOL hRes = Process32First(hSnapShot, &pEntry);
     while (hRes)
     {
-        if (strcmp(pEntry.szExeFile, filename) == 0)
+        if (strcmp(pEntry.szExeFile, p_filename) == 0)
         {
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
                                           (DWORD)pEntry.th32ProcessID);
@@ -160,18 +152,12 @@ class IntegrationTests : public testing::TestWithParam<std::string>
 /// @brief The parameterized test, with all of the information needed for an integration test
 TEST_P(IntegrationTests, RunReplayRecording)
 {
-    bool succeeded = false;
-    int tries = 3;
+    SMediator::ClearInstance();
+    IndicatorConfig::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
 
-    while (!succeeded && tries >= 0)
-    {
-        KillAllInterveningProcesses();
-        succeeded = RunTest(GetParam());
-        tries--;
-        if (!succeeded) std::cout << "FAILED INTEGRATION TEST, TRIES LEFT: " << tries;
-    }
-
-    ASSERT_TRUE(succeeded);
+    KillAllInterveningProcesses();
+    ASSERT_TRUE(RunTest(GetParam()));
 }
 
 /// @brief                  Instantiates the parameterized test

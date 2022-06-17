@@ -11,7 +11,7 @@
 				<attstr name="name" val="Replay Driver"/>
 				<attstr name="short name" val="rpDriver"/>
 				<attstr name="code name" val="APL"></attstr>
-				<attstr name="car name" val="sc-lynx-220"/>
+				<attstr name="car name" val="primo"/>
 				<attnum name="race number" val="36.69"/>
 				<attnum name="red" val="0.000000"/>
 				<attnum name="green" val="1.000000"/>

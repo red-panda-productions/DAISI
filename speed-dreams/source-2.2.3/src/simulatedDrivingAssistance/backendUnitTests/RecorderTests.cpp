@@ -211,7 +211,7 @@ TEST(RecorderTests, WriteOnlyTime)
 
     std::stringstream expectedDecisions;
 
-    expectedDecisions << bits(0ul) << bits(3ul) << bits(435ul) << bits(95875ul);
+    expectedDecisions << bits(uint32_t(0)) << bits(uint32_t(3)) << bits(uint32_t(435)) << bits(uint32_t(95875));
 
     ASSERT_BINARY_RECORDER_CONTENTS(folder, "test_recorder_time_only", DECISIONS_RECORDING_FILE_NAME, expectedDecisions);
 
@@ -262,7 +262,7 @@ TEST(RecorderTests, WriteDecisions)
     std::stringstream expectedDecisionsData;
 
     Recorder recorder(TEST_DIRECTORY, "test_recorder_write_decisions", 0, 0);
-    unsigned long timestamp = 0;
+    uint32_t timestamp = 0;
 
     for (int i = 0; i < 10; i++)
     {
@@ -342,7 +342,9 @@ TEST(RecorderTests, WriteRunSettingsTests)
 
     // Write the car data
     tTrack track{};
-    track.name = "track_name";
+    char internalNameBuf[16];
+    strcpy(internalNameBuf, "track_name");
+    track.internalname = internalNameBuf;
     track.category = "track_category";
     tIndicator indicators;
     indicators.Audio = random.NextBool();
@@ -397,7 +399,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_ACCELERATE, nullptr), BoolToString(allowedActions.Accelerate));
     ASSERT_STREQ(GfParmGetStr(handle, PATH_ALLOWED_ACTION, KEY_ALLOWED_ACTION_BRAKE, nullptr), BoolToString(allowedActions.Brake));
 
-    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_NAME, nullptr), track.name);
+    ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_INTERNAL_NAME, nullptr), track.internalname);
     ASSERT_STREQ(GfParmGetStr(handle, PATH_TRACK, KEY_CATEGORY, nullptr), track.category);
 
     ASSERT_EQ(static_cast<InterventionType>(GfParmGetNum(handle, PATH_INTERVENTION_TYPE, KEY_SELECTED, nullptr, NAN)), interventionType);
@@ -421,6 +423,7 @@ TEST(RecorderTests, WriteRunSettingsTests)
     GfInit(false);                                                                          \
     filesystem::path varName;                                                               \
     filesystem::current_path(SD_DATADIR_SRC);                                               \
+    ASSERT_TRUE(SetupSingletonsFolder());                                                   \
                                                                                             \
     {                                                                                       \
         filesystem::path sourcePath(RECORDING_TEST_DATA);                                   \
@@ -494,6 +497,15 @@ void AssertV4ToV5Changes(void* p_upgradedRunSettingsHandle)
     ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_DECISION_THRESHOLDS, KEY_THRESHOLD_STEER));
 }
 
+/// @brief                             Tests that the changes from V5 to V6 are present: internal name instead of normal name
+/// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
+void AssertV5ToV6Changes(void* p_upgradedRunSettingsHandle)
+{
+    ASSERT_TRUE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_INTERNAL_NAME));
+    ASSERT_FALSE(GfParmExistsParam(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_NAME));
+    ASSERT_STREQ(GfParmGetStr(p_upgradedRunSettingsHandle, PATH_TRACK, KEY_INTERNAL_NAME, nullptr), "simple-highway-small-4-80");
+}
+
 /// @brief                             Asserts whether the last changes to reach the target version are actually in the file now.
 /// @param p_upgradedRunSettingsHandle The handle to read the settings file for the upgraded recording
 /// @param p_toUpgrade                 The filepath to the recording
@@ -516,6 +528,9 @@ void AssertTargetVersionChanges(void* p_upgradedRunSettingsHandle, filesystem::p
             break;
         case 5:
             AssertV4ToV5Changes(p_upgradedRunSettingsHandle);
+            break;
+        case 6:
+            AssertV5ToV6Changes(p_upgradedRunSettingsHandle);
             break;
         default:
             THROW_RPP_EXCEPTION("Unknown target version, cannot assert");
@@ -625,4 +640,60 @@ TEST(RecorderTests, MissingTrackPathV0Validation)
     INIT_VALIDATE_OR_UPGRADE_TEST("v0-missing-track-path-recording", toValidate);
 
     ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingCategoryV5Upgrade)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v5-missing-track-category-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingNameV5Upgrade)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v5-missing-track-name-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, MissingTrackV5Upgrade)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v5-missing-track-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::ValidateAndUpdateRecording(toValidate));
+}
+
+TEST(RecorderTests, ReadInvalidRecording)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("v5-missing-track-recording", toValidate);
+
+    ASSERT_FALSE(Recorder::LoadRecording(toValidate));
+}
+
+TEST(RecorderTests, ReadValidRecording)
+{
+    INIT_VALIDATE_OR_UPGRADE_TEST("latest-valid", toValidate);
+
+    ASSERT_TRUE(Recorder::LoadRecording(toValidate));
+
+    SMediator* mediator = SMediator::GetInstance();
+
+    ASSERT_STREQ(mediator->GetReplayFolder().string().c_str(), toValidate.string().c_str());
+    ASSERT_STREQ(mediator->GetEnvironmentFilePath(), "tracks/curved-highway/curved-highway-small-4-80/curved-highway-small-4-80.xml");
+    ASSERT_STREQ(mediator->GetBlackBoxFilePath(), "");
+
+    ASSERT_TRUE(mediator->GetIndicatorSettings().Icon);
+    ASSERT_TRUE(mediator->GetIndicatorSettings().Text);
+    ASSERT_TRUE(mediator->GetIndicatorSettings().Audio);
+
+    ASSERT_TRUE(mediator->GetPControlSettings().ControlSteer);
+    ASSERT_TRUE(mediator->GetPControlSettings().ControlAccel);
+    ASSERT_TRUE(mediator->GetPControlSettings().ControlBrake);
+    ASSERT_TRUE(mediator->GetPControlSettings().ControlInterventionToggle);
+
+    ASSERT_EQ(mediator->GetThresholdSettings().Accel, STANDARD_THRESHOLD_ACCEL);
+    ASSERT_EQ(mediator->GetThresholdSettings().Brake, STANDARD_THRESHOLD_BRAKE);
+    ASSERT_EQ(mediator->GetThresholdSettings().Steer, STANDARD_THRESHOLD_STEER);
+
+    ASSERT_FALSE(mediator->GetBlackBoxSyncOption());
 }
