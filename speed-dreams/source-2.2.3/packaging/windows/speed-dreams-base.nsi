@@ -223,7 +223,25 @@ Section "!Base System" SEC01
 
   SetOutPath "$INSTDIR\data\tracks\road\test_highway"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\road\test_highway\*.*"
+  
+  SetOutPath "$INSTDIR\data\tracks\speed-zones\curved-road-small-speed-zone"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\curved-road-small-speed-zone\*.*"
+  
+  SetOutPath "$INSTDIR\data\tracks\speed-zones\curved-road-speed-zone"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\curved-road-speed-zone\*.*"
+  
+  SetOutPath "$INSTDIR\data\tracks\speed-zones\simple-road-small-speed-zone"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\simple-road-small-speed-zone\*.*"
+  
+  SetOutPath "$INSTDIR\data\tracks\speed-zones\simple-road-speed-zone"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\simple-road-speed-zone\*.*"
+  
+  SetOutPath "$INSTDIR\data\tracks\elevation-highway\elevation-highway-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\elevation-highway\elevation-highway-4-80\*.*"
 
+  SetOutPath "$INSTDIR\data\tracks\elevation-highway\elevation-highway-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\elevation-highway\elevation-highway-4-100\*.*"
+  
   ; Write the install dir to the registry so that optional installs can find it.
   WriteRegStr   ${GAME_ROOT_REGKEY} "${GAME_DIR_REGKEY}" "" "$INSTDIR"
 
