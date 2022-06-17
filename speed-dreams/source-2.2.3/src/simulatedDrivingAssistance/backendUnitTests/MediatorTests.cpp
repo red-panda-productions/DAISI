@@ -318,19 +318,17 @@ TEST(MediatorTests, EnvironmentFilePathTest)
 }
 
 /// @brief                Tests if the Mediator sets and gets the DataCollectionSetting correctly
-/// @param p_env          The environment data setting
 /// @param p_car          The car data setting
 /// @param p_human        The human data setting
 /// @param p_intervention The intervention data setting
-void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_intervention)
+void TestBoolArrMediator(bool p_car, bool p_human, bool p_intervention)
 {
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
-    tDataToStore arr = {p_env, p_car, p_human, p_intervention};
+    tDataToStore arr = {p_car, p_human, p_intervention};
     SDAConfigMediator::GetInstance()->SetDataCollectionSettings(arr);
     const SDAConfig config = SDAConfigMediator::GetInstance()->GetDecisionMaker()->Config;
     tDataToStore dataToStore = config.GetDataCollectionSetting();
-    ASSERT_EQ(arr.EnvironmentData, dataToStore.EnvironmentData);
     ASSERT_EQ(arr.CarData, dataToStore.CarData);
     ASSERT_EQ(arr.HumanData, dataToStore.HumanData);
     ASSERT_EQ(arr.InterventionData, dataToStore.InterventionData);
@@ -339,7 +337,7 @@ void TestBoolArrMediator(bool p_env, bool p_car, bool p_human, bool p_interventi
 /// @brief Tests the Mediator DataCollectionSetting for every possible boolean combination
 BEGIN_TEST_COMBINATORIAL(MediatorTests, DataCollectionSettings)
 bool booleans[] = {false, true};
-END_TEST_COMBINATORIAL4(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2, booleans, 2)
+END_TEST_COMBINATORIAL3(TestBoolArrMediator, booleans, 2, booleans, 2, booleans, 2)
 
 /// @brief                         Tests if the mediator gets and sets the replay recorder option correctly
 /// @param p_replayRecorderSetting The replay recorder option
