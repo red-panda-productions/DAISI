@@ -69,6 +69,15 @@
             <attstr name="pushed image" val="data/img/button-left-pushed.png"/>
         </section>
 
+        <section name="BlackBoxStatus">
+            <attstr name="type" val="label"/>
+            <attnum name="x" val="540"/>
+            <attnum name="y" val="155"/>
+            <attstr name="text" val="Unknown       "/>
+            <attstr name="h align" val="right"/>
+            <attstr name="font" val="medium_t"/>
+        </section>
+
         <!-- Checkboxes for selecting how to indicate an intervention -->
         <section name="CheckboxIndicatorAuditory">
             <attstr name="type" val="check box"/>
@@ -341,7 +350,7 @@
             <attnum name="y" val="217"/>
             <attnum name="width" val="75"/>
             <attstr name="text" val="Generate"/>
-            <attstr name="tip" val ="Generate a random, four-digit user id"/>
+            <attstr name="tip" val="Generate a random, four-digit user id"/>
             <attstr name="h align" val="left"/>
             <attstr name="font" val="medium"/>
             <attstr name="color" val="0xFFFFFF"/>
