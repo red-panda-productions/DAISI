@@ -28,8 +28,6 @@ public:
 
     void Shutdown();
 
-    void ForceServerClose();
-
     void SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);
 
     void DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);

@@ -10,7 +10,6 @@
     template void SocketBlackBox<p_type1, p_type2>::Initialize();                                                                                                                        \
     template void SocketBlackBox<p_type1, p_type2>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests, bool* p_terminate); \
     template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                                          \
-    template void SocketBlackBox<p_type1, p_type2>::ForceServerClose();                                                                                                                  \
     template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                                                    \
     template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);                         \
     template bool SocketBlackBox<p_type1, p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
@@ -163,13 +162,6 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     m_server.CloseServer();
     VariablesToReceive.clear();
     m_variableDecisionMap.clear();
-}
-
-/// @brief Closes the underlying server
-template <class BlackBoxData, class PointerManager>
-void SocketBlackBox<BlackBoxData, PointerManager>::ForceServerClose()
-{
-    m_server.CloseServer();
 }
 
 /// @brief                  Inserts a string of value of a pointer into a msgpack message
