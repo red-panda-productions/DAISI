@@ -169,14 +169,8 @@ int m_backButton;
 // Blackbox Test result
 int m_blackBoxTestResultControl;
 
-/// @brief The async function that tests the black box connection
-static void TestBlackBoxAsync()
+static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* result)
 {
-    float connectingColor[4] = CONNECTING_TEXT_COLOR;
-    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
-    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
-    StartExecutable(m_blackBoxFilePath);
-    SSocketBlackBox blackBox;
     TestSegments segments = GenerateSegments();
     tCarElt cars[BLACK_BOX_TESTS];
     tSituation situations[BLACK_BOX_TESTS];
@@ -189,12 +183,31 @@ static void TestBlackBoxAsync()
         testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
     }
     auto start = std::chrono::system_clock::now();
-    blackBox.Initialize(false, testData[0], testData, BLACK_BOX_TESTS);
+    p_blackbox->Initialize(false, testData[0], testData, BLACK_BOX_TESTS);
     auto end = std::chrono::system_clock::now();
-    blackBox.Shutdown();
+}
 
+/// @brief The async function that tests the black box connection
+static void TestBlackBoxAsync()
+{
+    float connectingColor[4] = CONNECTING_TEXT_COLOR;
+    GfuiLabelSetColor(s_scrHandle, m_blackBoxTestResultControl, connectingColor);
+    GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
+    StartExecutable(m_blackBoxFilePath);
+
+    SSocketBlackBox blackbox;
     // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
-    long milliseconds = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
+    long milliseconds = -1;
+
+    std::thread* t = new std::thread(RunBlackBoxTests, &blackbox, &milliseconds);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLOW_TIME * BLACK_BOX_TESTS));
+
+    if (milliseconds == -1) milliseconds = 250;
+
+    delete t;
+
+    blackbox.Shutdown();
 
     std::string time = " (" + std::to_string(milliseconds) + "ms)";
 
