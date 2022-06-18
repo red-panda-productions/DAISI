@@ -53,16 +53,14 @@ void BlackBoxSideAsync()
 
     tCarElt car;
     tSituation situation;
-    // no decision should be made yet
-    ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    // awaited the client so a decision should be here
-    ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
+    ASSERT_DURATION_LE(1, while (!bb.GetDecisions(&car, &situation, 0, decisions)) {std::this_thread::yield();})
 
     // check the result
     ASSERT_ALMOST_EQ(decisions.GetSteerAmount(), STEER_VALUE, TOLERANCE);
     ASSERT_ALMOST_EQ(decisions.GetBrakeAmount(), BRAKE_VALUE, TOLERANCE);
+
+    ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions)); // to check whether the async function can return false
 
     // shut the server down
     bb.Shutdown();
