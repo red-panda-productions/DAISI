@@ -275,5 +275,8 @@ TEST(SocketBlackBoxTests, NoActionOrderSend)
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, order);
+
+    std::cout << "sending data" << std::endl;
     ASSERT_EQ(client.SendData(sbuffer.data(), static_cast<int>(sbuffer.size())), IPCLIB_SUCCEED);
+    client.Disconnect();
 }
