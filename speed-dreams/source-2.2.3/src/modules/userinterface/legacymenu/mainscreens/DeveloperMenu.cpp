@@ -7,12 +7,14 @@
 #include "FileDialogManager.h"
 #include "RppUtils.hpp"
 #include "FileSystem.hpp"
+#include "racemanagers.h"
 #include "IndicatorConfig.h"
 
 // Parameters used in the xml files
 #define PRM_SYNC               "SynchronizationButtonList"
 #define PRM_RECORD_TOGGLE      "CheckboxRecorderToggle"
 #define PRM_CHOOSE_REPLAY      "ChooseReplayFileButton"
+#define PRM_START_REPLAY       "StartReplayButton"
 #define PRM_DECISION_THRESHOLD "Threshold Settings"
 #define GFMNU_ATTR_PATH        "path"
 #define GFMNU_ATT_ACCEL        "Accel"
@@ -25,6 +27,17 @@
 
 #define MSG_CHOOSE_REPLAY_NORMAL_TEXT "Choose Replay File: "
 
+#define RACE_MANAGER_NAME "replay_visual"
+
+#ifdef WIN32
+#define INTEGRATION_TESTS_EXTENSION ".exe"
+#else
+#define INTEGRATION_TESTS_EXTENSION
+#endif
+
+#define INTEGRATION_TESTS_BLACK_BOX                   "replayBlackbox/SDAReplay" INTEGRATION_TESTS_EXTENSION
+#define INTEGRATION_TESTS_BLACK_BOX_WORKING_DIRECTORY "replayBlackbox/"
+
 static void* s_scrHandle = nullptr;
 static void* s_prevHandle = nullptr;
 
@@ -36,6 +49,9 @@ int m_replayRecorder;
 
 // Control for choosing replay file
 int m_chooseReplayFileButton;
+
+// Control for starting a replay
+int m_startReplayButton;
 
 // Controls for decision thresholds
 int m_accelThresholdControl;
@@ -219,7 +235,7 @@ static void ChooseReplayFile(void* /* dummy */)
 {
     char buf[MAX_PATH_SIZE];
     char err[MAX_PATH_SIZE];
-    bool success = SelectFile(buf, err, true);
+    bool success = SelectFile(buf, err, true,nullptr,  nullptr, 0, true);
     if (!success)
     {
         return;
@@ -274,6 +290,45 @@ static void SetBrakeThreshold(void*)
 static void SetSteerThreshold(void*)
 {
     SetThreshold(m_decisionThresholds.Steer, m_steerThresholdControl);
+}
+
+/// @brief Starts the raceEngine according to legacymenu.cpp::startRace and sets replay values
+static void StartReplay(void*)
+{
+    if (!Recorder::LoadRecording(m_replayFilePath))
+    {
+        GfLogError("Failed to read recording: {}\n", m_replayFilePath);
+        GfuiScreenActivate(DeveloperMenuInit(s_scrHandle));
+        return;
+    }
+
+    // get the racemanager and run it if there's such a race manager.
+    GfRaceManager* RaceManager = GfRaceManagers::self()->getRaceManager(RACE_MANAGER_NAME);
+    if (RaceManager)
+    {
+        // Initialize the race engine.
+        LmRaceEngine().reset();
+
+        // Give the selected race manager to the race engine.
+        LmRaceEngine().selectRaceman(RaceManager);
+
+        // Configure the new race (but don't enter the config. menu tree).
+        LmRaceEngine().configureRace(/* bInteractive */ false);
+
+        std::string bbArgs = GenerateBBArguments(filesystem::path(m_replayFilePath).append(DECISIONS_RECORDING_FILE_NAME), INTEGRATION_TESTS_BLACK_BOX);
+
+        // Start the replay black box
+        StartExecutable(INTEGRATION_TESTS_BLACK_BOX, bbArgs.c_str());
+
+        // Start the race engine state automaton
+        LmRaceEngine().startNewRace();
+        return;
+    }
+    else
+    {
+        GfLogError("No such race type '%s'\n", RACE_MANAGER_NAME);
+        GfuiScreenActivate(DeveloperMenuInit(s_scrHandle));
+    }
 }
 
 /// @brief Set the default values of threshold boxes based on the InterventionType.
@@ -344,6 +399,7 @@ void* DeveloperMenuInit(void* p_prevMenu)
     // Replay options
     m_replayRecorder = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_RECORD_TOGGLE, nullptr, SelectRecorderOnOff);
     m_chooseReplayFileButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CHOOSE_REPLAY, s_scrHandle, ChooseReplayFile);
+    m_startReplayButton = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_START_REPLAY, s_scrHandle, StartReplay);
 
     // Decision threshold options
     m_accelThresholdControl = GfuiMenuCreateEditControl(s_scrHandle, param, "AccelThresholdEdit", nullptr, nullptr, SetAccelThreshold);

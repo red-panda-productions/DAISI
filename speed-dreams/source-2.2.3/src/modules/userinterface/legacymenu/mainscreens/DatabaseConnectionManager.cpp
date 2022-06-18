@@ -216,9 +216,8 @@ void AsyncCheckConnection(void* p_scrHandle, int p_dbStatusControl, tDatabaseSet
         return;
     }
     float color[4] = OFFLINE_TEXT_COLOR;
-    float* colotPtr = color;
     GfuiLabelSetText(p_scrHandle, p_dbStatusControl, OFFLINE);
-    GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, colotPtr);
+    GfuiLabelSetColor(p_scrHandle, p_dbStatusControl, color);
     *p_isConnecting = false;
     GfuiApp().eventLoop().postRedisplay();
 }

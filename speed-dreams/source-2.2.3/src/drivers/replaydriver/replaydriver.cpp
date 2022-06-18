@@ -55,7 +55,7 @@ static int InitFuncPt(int p_index, void* p_pt)
     itf->index = p_index;
 
     // Create the driver, speed-dreams counts from 1 so subtract 1 from the index to get the array index.
-    s_drivers[p_index - 1] = new Driver(p_index, "replaydriver");
+    s_drivers[p_index - 1] = new Driver();
 
     return 0;
 }
