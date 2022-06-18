@@ -100,7 +100,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     AWAIT_CONNECTION_WITH_TERMINATE()
     m_server.ReceiveDataAsync();
     AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
-    if (std::string(m_buffer) != "AI ACTIVE") THROW_RPP_EXCEPTION("Black Box send wrong message: AI ACTIVE expected");
+    if (std::string(m_buffer) != "AI ACTIVE") GRACEFULL_DISCONNECT("Black Box send wrong message: AI ACTIVE expected");
     CHECK_TERMINATE()
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
