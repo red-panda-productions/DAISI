@@ -266,8 +266,8 @@ void* SoundMenuInit(void *prevMenu)
 	void *param = GfuiMenuLoad("soundconfigmenu.xml");
 	GfuiMenuCreateStaticControls(scrHandle, param);
     //SIMULATED DRIVING ASSISTANCE: removed sound fx system
+        GfuiMenuCreateButtonControl(scrHandle,param,"CancelButton",prevMenu,GfuiScreenActivate);
 	GfuiMenuCreateButtonControl(scrHandle,param,"ApplyButton",NULL,saveSoundOption);
-	GfuiMenuCreateButtonControl(scrHandle,param,"CancelButton",prevMenu,GfuiScreenActivate);
 
 	VolumeValueId = GfuiMenuCreateEditControl(scrHandle,param,"volumeedit",NULL,NULL,changeVolume);
 
@@ -282,13 +282,10 @@ void* SoundMenuInit(void *prevMenu)
 	InterventionVolumeControl = GfuiMenuCreateEditControl(scrHandle, param, "intervention-volume-edit", NULL, NULL, ChangeInterventionVolume);
 
 	GfParmReleaseHandle(param);
-    
-	GfuiAddKey(scrHandle, GFUIK_RETURN, "Apply", NULL, saveSoundOption, NULL);
+
+        // SIMULATED DRIVING ASSISTANCE: add default key controls
+        GfuiMenuDefaultKeysAdd(scrHandle);
 	GfuiAddKey(scrHandle, GFUIK_ESCAPE, "Cancel", prevMenu, GfuiScreenActivate, NULL);
-	GfuiAddKey(scrHandle, GFUIK_F1, "Help", scrHandle, GfuiHelpScreen, NULL);
-	GfuiAddKey(scrHandle, GFUIK_F12, "Screen-Shot", NULL, GfuiScreenShot, NULL);
-	GfuiAddKey(scrHandle, GFUIK_LEFT, "Previous Option in list", (void*)-1, changeSoundState, NULL);
-	GfuiAddKey(scrHandle, GFUIK_RIGHT, "Next Option in list", (void*)1, changeSoundState, NULL);
 
 	return scrHandle;
 }

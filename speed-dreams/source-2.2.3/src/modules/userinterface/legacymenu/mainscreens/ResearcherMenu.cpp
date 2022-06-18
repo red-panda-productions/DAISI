@@ -632,6 +632,9 @@ void* ResearcherMenuInit(void* p_nextMenu)
     m_maxTimeControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_MAX_TIME, nullptr, nullptr, SetMaxTime);
     m_userIdControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USER_ID, nullptr, nullptr, SetUserId);
 
+    // Second time UID button is added (for better arrow key controls)
+    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
+
 #if SDL_FORCEFEEDBACK
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_FORCE_FEEDBACK_BUTTON, nullptr, rmForceFeedbackConfigHookActivate);
 #endif
@@ -659,9 +662,6 @@ void* ResearcherMenuInit(void* p_nextMenu)
 
     // Dev button control
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_DEV, nullptr, GoToDevMenu);
-
-    // Generate UID button
-    GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_UID_GENERATE, nullptr, GenerateUid);
 
     GfParmReleaseHandle(param);
 

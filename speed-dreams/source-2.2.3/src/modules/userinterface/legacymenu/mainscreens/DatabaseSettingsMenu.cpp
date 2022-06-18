@@ -153,32 +153,39 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
 
     // ApplyButton control
     GfuiMenuCreateButtonControl(s_scrHandle, param, "ApplyButton", s_scrHandle, SaveSettings);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, GoBack);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnectionCallback);
+
+    // Textbox controls
+    m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsernameCallback);
+    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPasswordCallback);
+    GfuiEditboxSetMasked(s_scrHandle, m_passwordControl, true);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "DeletePasswordButton", s_scrHandle, DeletePasswordCallback);
+    m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddressCallback);
+    m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPortCallback);
+    m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchemaCallback);
+
+    // Use SSL checkbox control
+    m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSLCallback);
+
+    // Certificate button controls
     m_caCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_CA_CERT_DIALOG, s_scrHandle, SelectCACert);
     m_publicCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PUBLIC_CERT_DIALOG, s_scrHandle, SelectPublicCert);
     m_privateCertFileDialogControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_PRIVATE_CERT_DIALOG, s_scrHandle, SelectPrivateCert);
     m_caCertLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_CA_CERT_LABEL, false);
     m_privateCertLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_PRIVATE_CERT_LABEL, false);
     m_publicCertLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_PUBLIC_CERT_LABEL, false);
-
-    // Textbox controls
-    m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsernameCallback);
-    m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPasswordCallback);
-    GfuiEditboxSetMasked(s_scrHandle, m_passwordControl, true);
-    m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddressCallback);
-    m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPortCallback);
-    m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchemaCallback);
-    m_useSSLControl = GfuiMenuCreateCheckboxControl(s_scrHandle, param, PRM_SSL, nullptr, SetUseSSLCallback);
     m_dbStatusControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_DBSTATUS, false);
 
     InitCertificates(param);
+
+    // Back and test connection button controls
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "TestConnectionButton", s_scrHandle, CheckConnectionCallback);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_scrHandle, GoBack);
 
     GfParmReleaseHandle(param);
 
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(s_scrHandle);
+    GfuiAddKey(s_scrHandle, GFUIK_ESCAPE, "Back", s_scrHandle, GoBack, nullptr);
 
     // Set s_dbSettings on start so that the menu doesn't have to be activated manually
     OnActivate(s_scrHandle);
