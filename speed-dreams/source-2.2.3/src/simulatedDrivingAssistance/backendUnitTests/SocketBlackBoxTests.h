@@ -27,15 +27,15 @@
 
 /// @brief				Sets up the connection between the AI and the test
 /// @param  method_name The method that needs to be tested
-#define SETUP(method_name)                                                 \
-    std::thread t = std::thread(method_name);                              \
-    t.detach();                                                            \
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));           \
-    ClientSocket client;                                                   \
-    ASSERT_EQ(client.Initialize(), IPCLIB_SUCCEED);                        \
-    ASSERT_EQ(client.SendData("AI ACTIVE", 9), IPCLIB_SUCCEED);            \
-    char buffer[TEST_BUFFER_SIZE];                                         \
-    ASSERT_EQ(client.AwaitData(buffer, TEST_BUFFER_SIZE), IPCLIB_SUCCEED); \
+#define SETUP(method_name)                                                               \
+    std::thread t = std::thread(method_name);                                            \
+    t.detach();                                                                          \
+    ClientSocket client;                                                                 \
+    ASSERT_DURATION_LE(                                                                  \
+        2, while (client.Initialize() != IPCLIB_SUCCEED) { std::this_thread::yield(); }) \
+    ASSERT_EQ(client.SendData("AI ACTIVE", 9), IPCLIB_SUCCEED);                          \
+    char buffer[TEST_BUFFER_SIZE];                                                       \
+    ASSERT_EQ(client.AwaitData(buffer, TEST_BUFFER_SIZE), IPCLIB_SUCCEED);               \
     ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
 /// @brief The black box side of the test, as these tests have to run in parallel
