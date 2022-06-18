@@ -125,7 +125,12 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
     AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
-    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') THROW_RPP_EXCEPTION("Black box send wrong message: OK expected");
+    if (m_buffer[0] != 'O' || m_buffer[1] != 'K')
+    {
+        m_server.Disconnect();
+        m_server.CloseServer();
+        THROW_RPP_EXCEPTION("Black box send wrong message: OK expected");
+    }
 
     DecisionTuple decisionTuple;
     for (int i = 0; i < p_amountOfTests; i++)
