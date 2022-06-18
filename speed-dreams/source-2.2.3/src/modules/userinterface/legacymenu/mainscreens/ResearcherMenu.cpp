@@ -773,7 +773,7 @@ void* ResearcherMenuInit(void* p_nextMenu)
     // Choose black box control
     m_blackBoxButtonControl = GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_BLACKBOX, nullptr, SelectBlackBox);
     m_errorLabel = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_ERROR_LABEL);
-  
+
     // Black box test result
     m_blackBoxTestResultControl = GfuiMenuCreateLabelControl(s_scrHandle, param, PRM_BLACK_BOX_STATUS, false);
 
