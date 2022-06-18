@@ -105,7 +105,12 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     std::vector<std::string> orderVec;
     msg->convert(orderVec);
     int i = 0;
-    if (orderVec[i] != "ACTIONORDER") THROW_RPP_EXCEPTION("Black box send wrong message: ACTIONORDER expected");
+    if (orderVec[i] != "ACTIONORDER")
+    {
+        m_server.Disconnect();
+        m_server.CloseServer();
+        THROW_RPP_EXCEPTION("Black box send wrong message: ACTIONORDER expected");
+    }
     i++;
     while (i < orderVec.size())
     {
