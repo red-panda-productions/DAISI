@@ -54,13 +54,14 @@ void BlackBoxSideAsync()
     tCarElt car;
     tSituation situation;
 
-    ASSERT_DURATION_LE(1, while (!bb.GetDecisions(&car, &situation, 0, decisions)) {std::this_thread::yield();})
+    ASSERT_DURATION_LE(
+        1, while (!bb.GetDecisions(&car, &situation, 0, decisions)) { std::this_thread::yield(); })
 
     // check the result
     ASSERT_ALMOST_EQ(decisions.GetSteerAmount(), STEER_VALUE, TOLERANCE);
     ASSERT_ALMOST_EQ(decisions.GetBrakeAmount(), BRAKE_VALUE, TOLERANCE);
 
-    ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions)); // to check whether the async function can return false
+    ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));  // to check whether the async function can return false
 
     // shut the server down
     bb.Shutdown();
