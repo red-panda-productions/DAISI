@@ -20,7 +20,7 @@
   <section name="environment">
     <section name="track">
       <attstr name="category" val="simple-road"/>
-      <attstr name="internal_name" val="simple-road-small-2-80"/>
+      <attstr name="internal_name" val="simple-road-small-2-100"/>
     </section>
 
   </section>

@@ -320,17 +320,20 @@ initStartingGrid(void)
     switch (curseg->type) {
       case TR_STR:
         car->_trkPos.toStart = ts;
-        RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TORIGHT);
+        // SIMULATED DRIVING ASSISTANCE: updated pole position to start in the middle of the road.
+        RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TOMIDDLE);
         car->_yaw = curseg->angle[TR_ZS];
         break;
       case TR_RGT:
         car->_trkPos.toStart = ts / curseg->radius;
-        RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TORIGHT);
+        // SIMULATED DRIVING ASSISTANCE: updated pole position to start in the middle of the road.
+        RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TOMIDDLE);
         car->_yaw = curseg->angle[TR_ZS] - car->_trkPos.toStart;
         break;
       case TR_LFT:
         car->_trkPos.toStart = ts / curseg->radius;
-        RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TORIGHT);
+        // SIMULATED DRIVING ASSISTANCE: updated pole position to start in the middle of the road.
+        RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TOMIDDLE);
         car->_yaw = curseg->angle[TR_ZS] + car->_trkPos.toStart;
         break;
     }
