@@ -71,7 +71,12 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     {                                            \
         if (p_terminate && *p_terminate) return; \
     }
-
+#define GRACEFULL_DISCONNECT(p_errmsg) \
+    {                                  \
+        m_server.Disconnect();         \
+        m_server.CloseServer();        \
+        THROW_RPP_EXCEPTION(p_errmsg); \
+    }
 /// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
 /// @param p_connectAsync True if blackbox will run async (not waiting for response), false if sync (wait for response)
 /// @param p_initialBlackBoxData The initial drive situation
@@ -95,7 +100,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     AWAIT_CONNECTION_WITH_TERMINATE()
     m_server.ReceiveDataAsync();
     AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
-    if (std::string(m_buffer) != "AI ACTIVE") THROW_RPP_EXCEPTION("Black Box send wrong message: AI ACTIVE expected");
+    if (std::string(m_buffer) != "AI ACTIVE") GRACEFULL_DISCONNECT("Black Box send wrong message: AI ACTIVE expected");
     CHECK_TERMINATE()
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
@@ -103,9 +108,9 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::unpacked msg;
     msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
     std::vector<std::string> orderVec;
-    msg->convert(orderVec);
+    msg.get().convert(orderVec);
     int i = 0;
-    if (orderVec[i] != "ACTIONORDER") THROW_RPP_EXCEPTION("Black box send wrong message: ACTIONORDER expected");
+    if (orderVec[i] != "ACTIONORDER") GRACEFULL_DISCONNECT("Black box send wrong message: ACTIONORDER expected")
     i++;
     while (i < orderVec.size())
     {
@@ -120,7 +125,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
     AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
-    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') THROW_RPP_EXCEPTION("Black box send wrong message: OK expected");
+    if (m_buffer[0] != 'O' || m_buffer[1] != 'K') GRACEFULL_DISCONNECT("Black box send wrong message: OK expected")
 
     DecisionTuple decisionTuple;
     for (int i = 0; i < p_amountOfTests; i++)

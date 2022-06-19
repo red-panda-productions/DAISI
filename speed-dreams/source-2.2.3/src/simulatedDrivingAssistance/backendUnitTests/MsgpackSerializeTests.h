@@ -31,7 +31,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
         msgpack::unpacked msg;
         msgpack::unpack(msg, sbuffer.data(), sbuffer.size());
         std::vector<std::string> data;
-        msg->convert(data);
+        msg.get().convert(data);
 
         std::stringstream oss;
         oss << &mock;
