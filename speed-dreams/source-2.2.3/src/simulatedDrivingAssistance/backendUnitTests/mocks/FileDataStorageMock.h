@@ -4,7 +4,7 @@
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
-#include <cstring>
+#include <string>
 
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include "experimental/filesystem"
