@@ -18,7 +18,7 @@ void RmShowEndExperiment(RaceEndType p_raceEndType)
 
     // Add "Continue" button
     GfuiMenuCreateButtonControl(s_menuHandle, param, "ok", prevHandle, GfuiScreenReplace);
-    GfuiAddKey(s_menuHandle, GFUIK_SPACE, "Continue", prevHandle, GfuiScreenReplace, nullptr);
+    GfuiAddKey(s_menuHandle, GFUIK_RETURN, "Continue", prevHandle, GfuiScreenReplace, nullptr);
 
     GfuiScreenActivate(s_menuHandle);
 }

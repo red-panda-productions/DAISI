@@ -37,7 +37,7 @@
 
 	<section name="left steer button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -62,7 +62,7 @@
 
 	<section name="right steer button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -87,7 +87,7 @@
 
 	<section name="throttle button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -112,7 +112,7 @@
 
 	<section name="brake button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -137,7 +137,7 @@
 
 	<section name="ebrake cmd button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -162,7 +162,7 @@
 
 	<section name="Speed Limiter button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -187,7 +187,7 @@
 
 	<section name="clutch button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -212,7 +212,7 @@
 
 	<section name="ABS cmd button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -237,7 +237,7 @@
 
 	<section name="ASR cmd button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -262,7 +262,7 @@
 
 	<section name="Light1 cmd button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -287,7 +287,7 @@
 
 	<section name="left glance button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -312,7 +312,7 @@
 
 	<section name="right glance button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="170"/>
@@ -338,7 +338,7 @@
 
 	<section name="reverse gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -363,7 +363,7 @@
     
 	<section name="neutral gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -388,7 +388,7 @@
 
 	<section name="down shift button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -413,7 +413,7 @@
     
 	<section name="up shift button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -440,7 +440,7 @@
     <!--SIMULATED DRIVING ASSISTANCE-->
     <section name="intervention-toggle button">
         <attstr name="type" val="text button"/>
-        <attstr name="show box" val="no"/>
+        <attstr name="show box" val="yes"/>
         <attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
         <attstr name="tip" val="Click to configure, cannot be a keyboard key"/>
         <attnum name="x" val="435"/>
@@ -465,7 +465,7 @@
 
 	<section name="hbox x button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -490,7 +490,7 @@
     
 	<section name="hbox y button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -514,7 +514,7 @@
 
 	<section name="1st gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -539,7 +539,7 @@
     
 	<section name="2nd gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -564,7 +564,7 @@
 
 	<section name="3rd gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -589,7 +589,7 @@
 
 	<section name="4th gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -614,7 +614,7 @@
 
 	<section name="5th gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
@@ -639,7 +639,7 @@
 
 	<section name="6th gear button">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="no"/>
+		<attstr name="show box" val="yes"/>
 		<attstr name="text" val="MOUSE_MIDDLE_BUTTON"/>
 		<attstr name="tip" val="Click to configure"/>
 		<attnum name="x" val="435"/>
