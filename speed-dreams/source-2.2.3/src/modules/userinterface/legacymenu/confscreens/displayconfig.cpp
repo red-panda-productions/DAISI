@@ -448,7 +448,10 @@ bool DisplayMenu::initialize(void *pPreviousMenu)
     openXMLDescriptor();
     
     createStaticControls();
-    
+
+        createButtonControl("CancelButton", this, onCancel);
+        createButtonControl("ApplyButton", this, onAccept);
+
 	createComboboxControl("ScreenSizeCombo", this, onChangeScreenSize);
 
 	createComboboxControl("ColorDepthCombo", this, onChangeColorDepth);
@@ -467,16 +470,12 @@ bool DisplayMenu::initialize(void *pPreviousMenu)
 	const int nVideoInitComboId =
 		createComboboxControl("VideoInitModeCombo", this, onChangeVideoInitMode);
 
-	createButtonControl("ApplyButton", this, onAccept);
-	createButtonControl("CancelButton", this, onCancel);
-
-	addShortcut(GFUIK_RETURN, "Apply", this, onAccept, 0);
+        // SIMULATED DRIVING ASSISTANCE: add default key controls
+        GfuiMenuDefaultKeysAdd(PDisplayMenu->getMenuHandle());
 	addShortcut(GFUIK_ESCAPE, "Cancel", this, onCancel, 0);
     // TODO Keyboard shortcuts: Add support for shortcuts in GfuiCombobox ?
 	//addShortcut(GFUIK_LEFT, "Previous Resolution", this, onChangeScreenSize, 0);
 	//addShortcut(GFUIK_RIGHT, "Next Resolution", this, onChangeScreenSize, 0);
-	addShortcut(GFUIK_F1, "Help", getMenuHandle(), GfuiHelpScreen, 0);
-	addShortcut(GFUIK_F12, "Screen-Shot", 0, GfuiScreenShot, 0);
 
     closeXMLDescriptor();
 

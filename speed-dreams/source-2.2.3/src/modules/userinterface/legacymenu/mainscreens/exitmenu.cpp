@@ -65,8 +65,8 @@ void* ExitMenuInit(void* p_prevMenu)
     GfuiMenuCreateStaticControls(MenuHandle, param);
 
     // SIMULATED DRIVING ASSISTANCE: Looks where the exit game gets called and change the button functionality based on it.
-    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
     GfuiMenuCreateButtonControl(MenuHandle, param, "nobacktogame", p_prevMenu, GfuiScreenActivate);
+    GfuiMenuCreateButtonControl(MenuHandle, param, "yesquit", nullptr, onAcceptExit);
 
     GfParmReleaseHandle(param);
 
