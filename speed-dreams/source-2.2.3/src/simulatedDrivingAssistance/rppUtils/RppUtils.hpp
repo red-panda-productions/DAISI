@@ -8,7 +8,6 @@
 #include <tgf.h>
 #include "Random.hpp"
 #include "FileSystem.hpp"
-#include <process.h>
 
 #define ROOT_FOLDER "source-2.2.3"
 #define PATH_SIZE   256
@@ -19,6 +18,7 @@
 #include <windows.h>
 #include <winbase.h>
 #include <Tlhelp32.h>
+#include <process.h>
 #else
 #include <unistd.h>
 #include <sys/stat.h>
@@ -333,6 +333,14 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
 {
     std::string fullCommand = "gnome-terminal -- cd " + p_workingDirectory + "\n" + p_executablePath + " " + std::string(p_args);
     p_processInformation = popen(fullCommand.c_str(), "r");
+}
+
+/// @brief Kills a process with the given name if it exists.
+/// @param p_filename The name of the process to kill
+inline void KillProcessByName(const char* p_filename)
+{
+    std::string killCommand = "pkill " + std::string(p_filename);
+    system(killCommand);
 }
 
 /// @brief                Execute a command in the CLI
