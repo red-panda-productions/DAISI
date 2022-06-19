@@ -426,6 +426,7 @@ void GfuiEditboxSetString(void *scr, int id, const char *text)
 
     strncpy(label->text, text, label->maxlen);
 
+    // SIMULATED DRIVING ASSISTANCE
     editbox->cursorIdx = strlen(text);
 }
 

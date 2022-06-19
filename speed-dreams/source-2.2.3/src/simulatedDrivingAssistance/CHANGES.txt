@@ -146,6 +146,8 @@ Changed:
                 changed GfuiObject
             guicheckbox.cpp
                 changed GfuiCheckboxCreate: added focused images
+            guiedit.cpp
+                changed GfuiEditboxSetString(): made the cursor position update
             guimenu.cpp
                 added   GfuiMenuCreateRadioButtonListControl
                 added   GfuiMenuBoolToStr()
