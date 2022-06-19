@@ -163,6 +163,10 @@ tRmTrackSelect m_trackMenuSettings;
 // Blackbox Test result
 int m_blackBoxTestResultControl;
 
+/// @brief Performs tests on the blackbox to determine the speed of the blackbox.
+/// @param p_blackbox  The blackbox to test
+/// @param p_result    OUT result variable containing the average time for the tests to complete
+/// @param p_terminate A boolean callback to terminate the initialization
 static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* p_result, bool* p_terminate)
 {
     TestSegments segments = GenerateSegments();
