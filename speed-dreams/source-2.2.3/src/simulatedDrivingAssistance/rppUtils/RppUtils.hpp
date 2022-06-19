@@ -249,8 +249,9 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
                   &p_processInformation);
 }
 
-/// @brief           https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
-/// @param  filename The process name to kill
+/// @brief Kills a process with the given name if it exists.
+///        https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
+/// @param p_filename The process name to kill
 inline void KillProcessByName(const char* p_filename)
 {
     HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
