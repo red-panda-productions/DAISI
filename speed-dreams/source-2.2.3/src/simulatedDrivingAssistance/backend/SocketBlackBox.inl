@@ -28,9 +28,9 @@
 #define CONVERT_TO_GEAR_DECISION    DECISION_LAMBDA(p_decisionTuple.SetGearDecision(std::stoi(p_string)))
 #define CONVERT_TO_ACCEL_DECISION   DECISION_LAMBDA(p_decisionTuple.SetAccelDecision(stringToFloat(p_string)))
 
-/// @brief		   Checks if the action was reported successfully from IPCLib
-/// @param  p_stmt The action that needs to be checked
-/// @param  p_msg  The message that is pushed to the standard error output when the action has failed
+/// @brief Checks if the action was reported successfully from IPCLib
+/// @param p_stmt The action that needs to be checked
+/// @param p_msg  The message that is pushed to the standard error output when the action has failed
 #define IPC_OK(p_stmt, p_msg)              \
     if ((p_stmt) != IPCLIB_SUCCEED)        \
     {                                      \
@@ -61,10 +61,10 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
 #define CHECK_TERMINATE(p_terminate) \
     if (p_terminate && *p_terminate) return
 
-/// @brief               Awaits data with a termination check
-/// @param  p_buffer     The write buffer
-/// @param  p_bufferSize The size of the write buffer
-/// @param p_terminate A boolean callback to terminate the initialization
+/// @brief Awaits data with a termination check
+/// @param p_buffer     The write buffer
+/// @param p_bufferSize The size of the write buffer
+/// @param p_terminate  A boolean callback to terminate the initialization
 #define AWAIT_WITH_TERMINATE(p_buffer, p_bufferSize, p_terminate) \
     while (!m_server.GetData(p_buffer, p_bufferSize))             \
     {                                                             \
@@ -89,11 +89,11 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     }
 
 /// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
-/// @param p_connectAsync True if blackbox will run async (not waiting for response), false if sync (wait for response)
+/// @param p_connectAsync        True if blackbox will run async (not waiting for response), false if sync (wait for response)
 /// @param p_initialBlackBoxData The initial drive situation
-/// @param p_tests Control data used in tests
-/// @param p_amountOfTests Amount of tests in p_tests
-/// @param p_terminate A boolean callback to terminate the initialization
+/// @param p_tests               Control data used in tests
+/// @param p_amountOfTests       Amount of tests in p_tests
+/// @param p_terminate           A boolean callback to terminate the initialization
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData,
                                                               BlackBoxData* p_tests, int p_amountOfTests, bool* p_terminate)
@@ -190,8 +190,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Shutdown()
     m_variableDecisionMap.clear();
 }
 
-/// @brief                  Inserts a string of value of a pointer into a msgpack message
-/// @param p_sbuffer        Buffer to pack data in
+/// @brief Inserts a string of value of a pointer into a msgpack message
+/// @param p_sbuffer      Buffer to pack data in
 /// @param p_BlackBoxData Drive situation to serialize
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData)
@@ -207,7 +207,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::SerializeBlackBoxData(msgpack
     msgpack::pack(p_sbuffer, dataToSerialize);
 }
 
-/// @brief                 Deserializes received data and makes a decision array from this data
+/// @brief Deserializes received data and makes a decision array from this data
 /// @param p_decisionTuple Decision array to put decisions in
 /// @param p_dataReceived  Data received from black box
 /// @param p_size          Size of received data
