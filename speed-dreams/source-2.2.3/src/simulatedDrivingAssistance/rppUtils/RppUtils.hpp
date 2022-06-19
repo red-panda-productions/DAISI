@@ -340,7 +340,7 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
 inline void KillProcessByName(const char* p_filename)
 {
     std::string killCommand = "pkill " + std::string(p_filename);
-    system(killCommand);
+    system(killCommand.c_str());
 }
 
 /// @brief                Execute a command in the CLI
