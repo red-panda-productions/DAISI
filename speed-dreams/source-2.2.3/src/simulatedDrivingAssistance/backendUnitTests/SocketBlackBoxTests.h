@@ -127,7 +127,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
     msgpack::unpacked msg;
     msgpack::unpack(msg, buffer, TEST_BUFFER_SIZE);
     std::vector<std::string> amountOfTests;
-    msg->convert(amountOfTests);
+    msg.get().convert(amountOfTests);
     ASSERT_TRUE(amountOfTests.size() == 1);
     ASSERT_TRUE(stoi(amountOfTests[0]) == 2);  // 2 tests
 
@@ -138,7 +138,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
     msgpack::unpacked msg2;
     msgpack::unpack(msg2, buffer, TEST_BUFFER_SIZE);
     std::vector<std::string> driveSituation;
-    msg2->convert(driveSituation);
+    msg2.get().convert(driveSituation);
 
     Random random;
     BlackBoxDataMock mock = CreateRandomBlackBoxDataMock(random);
@@ -157,7 +157,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
     msgpack::unpacked msg3;
     msgpack::unpack(msg3, buffer, TEST_BUFFER_SIZE);
     std::vector<std::string> driveSituation2;
-    msg3->convert(driveSituation2);
+    msg3.get().convert(driveSituation2);
 
     // test if the drivesituation is expected
     BlackBoxDataMock exampleSituation = GetExampleBlackBoxDataMock();
@@ -173,7 +173,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
     msgpack::unpacked msg4;
     msgpack::unpack(msg4, buffer, TEST_BUFFER_SIZE);
     std::vector<std::string> driveSituation3;
-    msg4->convert(driveSituation3);
+    msg4.get().convert(driveSituation3);
 
     // tests if the drive situation is expected
     TestDriveSituation(driveSituation3, mock);
@@ -189,7 +189,7 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
         msgpack::unpacked msg5;
         msgpack::unpack(msg5, buffer, TEST_BUFFER_SIZE);
         std::vector<std::string> driveSituation4;
-        msg5->convert(driveSituation4);
+        msg5.get().convert(driveSituation4);
 
         // tests if the drive situation is expected
         TestDriveSituation(driveSituation4, exampleSituation);
