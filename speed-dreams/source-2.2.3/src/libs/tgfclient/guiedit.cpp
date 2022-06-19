@@ -425,6 +425,8 @@ void GfuiEditboxSetString(void *scr, int id, const char *text)
     tGfuiLabel* label = &(editbox->label);
 
     strncpy(label->text, text, label->maxlen);
+
+    editbox->cursorIdx = strlen(text);
 }
 
 

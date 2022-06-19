@@ -158,7 +158,7 @@ void* DatabaseSettingsMenuInit(void* p_nextMenu)
     m_usernameControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_USERNAME, nullptr, nullptr, SetUsernameCallback);
     m_passwordControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PASSWORD, nullptr, nullptr, SetPasswordCallback);
     GfuiEditboxSetMasked(s_scrHandle, m_passwordControl, true);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "DeletePasswordButton", s_scrHandle, DeletePasswordCallback);
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "DeletePasswordButton", nullptr, DeletePasswordCallback);
     m_addressControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_ADDRESS, nullptr, nullptr, SetAddressCallback);
     m_portControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_PORT, nullptr, nullptr, SetPortCallback);
     m_schemaControl = GfuiMenuCreateEditControl(s_scrHandle, param, PRM_SCHEMA, nullptr, nullptr, SetSchemaCallback);

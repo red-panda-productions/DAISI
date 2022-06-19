@@ -721,7 +721,7 @@
 <!-- Buttons -->
 	<section name="cancel">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="yes"/>
+		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Cancel"/>
 		<attstr name="tip" val="Cancel changes"/>
 		<attstr name="h align" val="left"/>
@@ -743,7 +743,7 @@
 
 	<section name="calibrate">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="yes"/>
+		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Calibrate"/>
 		<attstr name="tip" val="Calibrate input device(s)"/>
 		<attstr name="h align" val="left"/>
@@ -765,7 +765,7 @@
 
 	<section name="save">
 		<attstr name="type" val="text button"/>
-		<attstr name="show box" val="yes"/>
+		<attstr name="show box" val="no"/>
 		<attstr name="text" val="Apply"/>
 		<attstr name="tip" val="Accept and save changes"/>
 		<attstr name="h align" val="left"/>
