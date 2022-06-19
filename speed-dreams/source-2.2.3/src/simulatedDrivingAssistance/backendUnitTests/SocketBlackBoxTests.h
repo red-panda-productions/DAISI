@@ -27,15 +27,15 @@
 
 /// @brief				Sets up the connection between the AI and the test
 /// @param  method_name The method that needs to be tested
-#define SETUP(method_name)                                                 \
-    std::thread t = std::thread(method_name);                              \
-    t.detach();                                                            \
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));           \
-    ClientSocket client;                                                   \
-    ASSERT_EQ(client.Initialize(), IPCLIB_SUCCEED);                        \
-    ASSERT_EQ(client.SendData("AI ACTIVE", 9), IPCLIB_SUCCEED);            \
-    char buffer[TEST_BUFFER_SIZE];                                         \
-    ASSERT_EQ(client.AwaitData(buffer, TEST_BUFFER_SIZE), IPCLIB_SUCCEED); \
+#define SETUP(method_name)                                                               \
+    std::thread t = std::thread(method_name);                                            \
+    t.detach();                                                                          \
+    ClientSocket client;                                                                 \
+    ASSERT_DURATION_LE(                                                                  \
+        2, while (client.Initialize() != IPCLIB_SUCCEED) { std::this_thread::yield(); }) \
+    ASSERT_EQ(client.SendData("AI ACTIVE", 9), IPCLIB_SUCCEED);                          \
+    char buffer[TEST_BUFFER_SIZE];                                                       \
+    ASSERT_EQ(client.AwaitData(buffer, TEST_BUFFER_SIZE), IPCLIB_SUCCEED);               \
     ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
 /// @brief The black box side of the test, as these tests have to run in parallel
@@ -53,16 +53,15 @@ void BlackBoxSideAsync()
 
     tCarElt car;
     tSituation situation;
-    // no decision should be made yet
-    ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    // awaited the client so a decision should be here
-    ASSERT_TRUE(bb.GetDecisions(&car, &situation, 0, decisions));
+    ASSERT_DURATION_LE(
+        1, while (!bb.GetDecisions(&car, &situation, 0, decisions)) { std::this_thread::yield(); })
 
     // check the result
     ASSERT_ALMOST_EQ(decisions.GetSteerAmount(), STEER_VALUE, TOLERANCE);
     ASSERT_ALMOST_EQ(decisions.GetBrakeAmount(), BRAKE_VALUE, TOLERANCE);
+
+    ASSERT_FALSE(bb.GetDecisions(&car, &situation, 0, decisions));  // to check whether the async function can return false
 
     // shut the server down
     bb.Shutdown();
@@ -276,5 +275,8 @@ TEST(SocketBlackBoxTests, NoActionOrderSend)
     // sends required and sending data of client
     msgpack::sbuffer sbuffer;
     msgpack::pack(sbuffer, order);
+
+    std::cout << "sending data" << std::endl;
     ASSERT_EQ(client.SendData(sbuffer.data(), static_cast<int>(sbuffer.size())), IPCLIB_SUCCEED);
+    client.Disconnect();
 }
