@@ -217,7 +217,16 @@ void FailingBlackBox()
 /// @brief Tests what happens when no order is sent
 TEST(SocketBlackBoxTests, NoOrderSend)
 {
-    SETUP(FailingBlackBox)
+    std::thread t = std::thread(FailingBlackBox);
+    t.detach();
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    ClientSocket client;
+    ASSERT_DURATION_LE(
+        2, while (client.Initialize() != IPCLIB_SUCCEED) { std::this_thread::yield(); })
+    ASSERT_EQ(client.SendData("AI ACTIVE", 9), IPCLIB_SUCCEED);
+    char buffer[TEST_BUFFER_SIZE];
+    ASSERT_EQ(client.AwaitData(buffer, TEST_BUFFER_SIZE), IPCLIB_SUCCEED);
+    ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
     std::vector<std::string> order = {
         "Speed",
@@ -249,7 +258,16 @@ TEST(SocketBlackBoxTests, NoOrderSend)
 /// @brief Tests what happens when no action order is sent
 TEST(SocketBlackBoxTests, NoActionOrderSend)
 {
-    SETUP(FailingBlackBox)
+    std::thread t = std::thread(FailingBlackBox);
+    t.detach();
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    ClientSocket client;
+    ASSERT_DURATION_LE(
+        2, while (client.Initialize() != IPCLIB_SUCCEED) { std::this_thread::yield(); })
+    ASSERT_EQ(client.SendData("AI ACTIVE", 9), IPCLIB_SUCCEED);
+    char buffer[TEST_BUFFER_SIZE];
+    ASSERT_EQ(client.AwaitData(buffer, TEST_BUFFER_SIZE), IPCLIB_SUCCEED);
+    ASSERT_TRUE(buffer[0] == 'O' && buffer[1] == 'K');
 
     std::vector<std::string> order = {
         "DATAORDER",
