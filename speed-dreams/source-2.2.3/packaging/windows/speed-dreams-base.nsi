@@ -217,31 +217,85 @@ Section "!Base System" SEC01
   SetOutPath "$INSTDIR\data\cars\models\primo"
   File /r /x *.lib "${BUILD_INST_DIR}\data\cars\models\primo\*.*"
 
-  ; Base tracks (only Espie)
-  SetOutPath "$INSTDIR\data\tracks\circuit\espie"
-  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\circuit\espie\*.*"
+  ; Base tracks
 
-  SetOutPath "$INSTDIR\data\tracks\road\test_highway"
-  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\road\test_highway\*.*"
-  
+  ; curved highways
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-4-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-small-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-small-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-highway\curved-highway-small-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-highway\curved-highway-small-4-100\*.*"
+
+  ; curved roads
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-2-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-small-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-small-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\curved-road\curved-road-small-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\curved-road\curved-road-small-2-100\*.*"
+
+  ; simple-highways
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-4-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-small-4-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-small-4-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-highway\simple-highway-small-4-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-highway\simple-highway-small-4-100\*.*"
+
+  ; simple-roads
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-2-100\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-small-2-80"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-small-2-80\*.*"
+
+  SetOutPath "$INSTDIR\data\tracks\simple-road\simple-road-small-2-100"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\simple-road\simple-road-small-2-100\*.*"
+
+  ; speed zones
+
   SetOutPath "$INSTDIR\data\tracks\speed-zones\curved-road-small-speed-zone"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\curved-road-small-speed-zone\*.*"
-  
+
   SetOutPath "$INSTDIR\data\tracks\speed-zones\curved-road-speed-zone"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\curved-road-speed-zone\*.*"
-  
+
   SetOutPath "$INSTDIR\data\tracks\speed-zones\simple-road-small-speed-zone"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\simple-road-small-speed-zone\*.*"
-  
+
   SetOutPath "$INSTDIR\data\tracks\speed-zones\simple-road-speed-zone"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\speed-zones\simple-road-speed-zone\*.*"
-  
+
+  ; elevation highway
+
   SetOutPath "$INSTDIR\data\tracks\elevation-highway\elevation-highway-4-80"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\elevation-highway\elevation-highway-4-80\*.*"
 
   SetOutPath "$INSTDIR\data\tracks\elevation-highway\elevation-highway-4-100"
   File /r /x *.lib "${BUILD_INST_DIR}\data\tracks\elevation-highway\elevation-highway-4-100\*.*"
-  
+
   ; Write the install dir to the registry so that optional installs can find it.
   WriteRegStr   ${GAME_ROOT_REGKEY} "${GAME_DIR_REGKEY}" "" "$INSTDIR"
 
@@ -280,38 +334,6 @@ Section /o "Basic mod Tools" SEC02
   ; Includes for robot developers
   SetOutPath "$INSTDIR\include"
   File /r "${BUILD_INST_DIR}\include\*.*"
-
-SectionEnd
-
-Section /o "HQ cars and tracks (1)" SEC03
-
-  StrCpy $1 "speed-dreams-${HQCARSTRACKS_SETUP_KEY}-${GAME_LONG_VERSION}-win32-setup.exe"
-  StrCpy $2 "HQ cars and tracks (1)"
-  !insertmacro DownloadPackageIfNeededAndThenInstall $1 $2 475
-
-SectionEnd
-
-Section /o "HQ cars and tracks (2)" SEC04
-
-  StrCpy $1 "speed-dreams-${MOREHQCARSTRACKS_SETUP_KEY}-${GAME_LONG_VERSION}-win32-setup.exe"
-  StrCpy $2 "HQ cars and tracks (2)"
-  !insertmacro DownloadPackageIfNeededAndThenInstall $1 $2 480
-
-SectionEnd
-
-Section /o "WIP cars and tracks" SEC05
-
-  StrCpy $1 "speed-dreams-${WIPCARSTRACKS_SETUP_KEY}-${GAME_LONG_VERSION}-win32-setup.exe"
-  StrCpy $2 "WIP cars and tracks"
-  !insertmacro DownloadPackageIfNeededAndThenInstall $1 $2 600
-
-SectionEnd
-
-Section /o "Unmaintained" SEC06
-
-  StrCpy $1 "speed-dreams-${UNMAINTAINED_SETUP_KEY}-${GAME_LONG_VERSION}-win32-setup.exe"
-  StrCpy $2 "Unmaintained contents"
-  !insertmacro DownloadPackageIfNeededAndThenInstall $1 $2 1
 
 SectionEnd
 

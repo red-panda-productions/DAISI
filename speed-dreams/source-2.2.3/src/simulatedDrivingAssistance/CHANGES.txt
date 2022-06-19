@@ -43,7 +43,6 @@ Added:
         EndExperimentMenu.cpp
         ConformationMenu.cpp
   data/
-
     data/
         config/
             raceman/
@@ -90,6 +89,8 @@ Added:
         added simple-road
 
 Changed:
+  CMakeList.txt
+    changed speed-dreams-2 to DAISI
   src/
     tools/trackgen/
         track.cpp
@@ -199,6 +200,8 @@ Changed:
             changed main() changed application name
         CMakeLists.txt
             added rppUtils and Filesystem for Linux
+            changed _TARGET_NAME to DAISI
+            changed PROJECT to DAISI
     interfaces/
         playerpref.h
             added   HM_ADRV_FILE define
@@ -539,6 +542,9 @@ Changed:
             removed gprix.xml
             removed karting.xml
             removed speedway.xml
+        img/
+            changed header-vert.bmp to DAISI header
+            changed header.bmp to DAISI header
         menu/
             mainmenu.xml
                 renamed race button
@@ -583,6 +589,32 @@ Changed:
   cmake/
     checks.cmake
         changed IF(OPTION_3RDPARTY_SQLITE3) (removed if)
+    macros.cmake
+        changed speed-dreams-2 to DAISI
+    packagemaker-nsis.cmake
+        removed speed-dreams-hq-cars-and-tracks
+        removed speed-dreams-more-hq-cars-and-tracks
+        removed speed-dreams-wip-cars-and-tracks
+        removed speed-dreams-unmaintained
+  packaging/
+    windows/
+        speed-dreams-base.nsi
+            added new tracks
+            removed epsie track
+            removed speed-dreams-hq-cars-and-tracks
+            removed speed-dreams-more-hq-cars-and-tracks
+            removed speed-dreams-wip-cars-and-tracks
+            removed speed-dreams-unmaintained
+        speed-dreams.nsh and speed-dreams.nsh.in
+            changed version to 2.0.0
+            changed name to DAISI
+            changed subtitle to 'An AI Assisted Driving Simulator'
+            changed publisher to Red Panda Productions
+            changed website to github repository
+            removed speed-dreams-hq-cars-and-tracks
+            removed speed-dreams-more-hq-cars-and-tracks
+            removed speed-dreams-wip-cars-and-tracks
+            removed speed-dreams-unmaintained
 
 
 Deleted:
@@ -599,3 +631,9 @@ Deleted:
             simu4/
                simu.cpp
                   Removed 'RemoveCar' function
+   packaging/
+    windows/
+      speed-dreams-hq-cars-and-tracks.nsi
+      speed-dreams-more-hq-cars-and-tracks.nsi
+      speed-dreams-wip-cars-and-tracks.nsi
+      speed-dreams-unmaintained.nsi
