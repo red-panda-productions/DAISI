@@ -103,7 +103,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::unpacked msg;
     msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
     std::vector<std::string> orderVec;
-    msg->convert(orderVec);
+    msg.get().convert(orderVec);
     int i = 0;
     if (orderVec[i] != "ACTIONORDER") THROW_RPP_EXCEPTION("Black box send wrong message: ACTIONORDER expected");
     i++;
