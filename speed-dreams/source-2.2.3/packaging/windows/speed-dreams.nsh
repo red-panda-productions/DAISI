@@ -14,11 +14,11 @@
 !endif
 
 !ifndef VER_MINOR
-   !define VER_MINOR 2
+   !define VER_MINOR 0
 !endif
 
 !ifndef VER_PATCH
-   !define VER_PATCH 3
+   !define VER_PATCH 0
 !endif
 
 !ifndef VER_EXTRA
@@ -43,20 +43,20 @@
    !define OUT_PATH "."
 !endif
 
-!define GAME_SHORT_NAME "Speed Dreams"
-!define GAME_NAME "${GAME_SHORT_NAME} ${VER_MAJOR}"
-!define GAME_SHORT_FS_NAME "speed-dreams"
-!define GAME_FS_NAME "${GAME_SHORT_FS_NAME}-${VER_MAJOR}"
-!define GAME_SUBTITLE "'an Open Motorsport Sim'"
+!define GAME_SHORT_NAME "DAISI"
+!define GAME_NAME "${GAME_SHORT_NAME}"
+!define GAME_SHORT_FS_NAME "DAISI"
+!define GAME_FS_NAME "${GAME_SHORT_FS_NAME}"
+!define GAME_SUBTITLE "'An AI Assisted Driving Simulator'"
 !define GAME_VERSION "${VER_MAJOR}.${VER_MINOR}.${VER_PATCH}${VER_EXTRA}"
 !define GAME_VERSIONNED_NAME "${GAME_SHORT_NAME} ${GAME_VERSION}"
 !define GAME_LONG_VERSION "${GAME_VERSION}-${VER_REVISION}"
 !define GAME_LONG_NAME "${GAME_SHORT_NAME} ${GAME_LONG_VERSION}"
-!define GAME_PUBLISHER "The Speed Dreams Team"
-!define GAME_WEB_SITE "http://www.speed-dreams.org"
-!define GAME_BUG_TRACKER "http://sourceforge.net/p/speed-dreams/tickets/"
-!define GAME_DOWNLOAD_URL "http://sourceforge.net/projects/speed-dreams/files/${VER_MAJOR}.${VER_MINOR}.${VER_PATCH}"
-!define COMMUNITY_WEB_SITE "https://sourceforge.net/p/speed-dreams/discussion/"
+!define GAME_PUBLISHER "Red Panda Productions"
+!define GAME_WEB_SITE "https://github.com/red-panda-productions/DAISI"
+!define GAME_BUG_TRACKER "https://github.com/red-panda-productions/DAISI/issues"
+!define GAME_DOWNLOAD_URL "https://github.com/red-panda-productions/DAISI/releases"
+!define COMMUNITY_WEB_SITE "https://github.com/red-panda-productions"
 
 !define GAME_ROOT_REGKEY "HKLM"
 !define GAME_INST_REGKEY "Software\Microsoft\Windows\CurrentVersion\${GAME_FS_NAME}.exe"
@@ -73,10 +73,6 @@
 
 ; Core name for each installer
 !define BASE_SETUP_KEY "base"
-!define HQCARSTRACKS_SETUP_KEY "hq-cars-and-tracks"
-!define MOREHQCARSTRACKS_SETUP_KEY "more-hq-cars-and-tracks"
-!define WIPCARSTRACKS_SETUP_KEY "wip-cars-and-tracks"
-!define UNMAINTAINED_SETUP_KEY "unmaintained"
 
 ; Common installer settings
 SetCompressor /SOLID lzma ; 1-block compression, smaller but longer (generation, extraction)

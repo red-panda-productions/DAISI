@@ -1,8 +1,8 @@
 INCLUDE(../../cmake/macros.cmake)
 
-PROJECT(speed-dreams-2)
+PROJECT(DAISI)
 
-SET(_TARGET_NAME speed-dreams-2)
+SET(_TARGET_NAME DAISI)
 
 SET(_SOURCES main.cpp)
 IF(MSVC)

@@ -238,7 +238,7 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
         return true;
     }
 
-    else if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE))
+    if (!m_server.GetData(m_buffer, SBB_BUFFER_SIZE))
         return false;
 
     msgpack::sbuffer sbuffer;
