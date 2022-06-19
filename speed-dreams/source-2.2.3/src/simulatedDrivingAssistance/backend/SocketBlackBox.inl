@@ -48,7 +48,7 @@ SocketBlackBox<BlackBoxData, PointerManager>::SocketBlackBox(IPC_IP_TYPE p_ip, i
 template <class BlackBoxData, class PointerManager>
 void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
 {
-    m_server.Initialize();
+    if (!m_server.Initialize()) THROW_RPP_EXCEPTION("FAILED TO INTIALIZE SERVER");
     // Decision functions
     m_variableDecisionMap["Steer"] = CONVERT_TO_STEER_DECISION;
     m_variableDecisionMap["Brake"] = CONVERT_TO_BRAKE_DECISION;
