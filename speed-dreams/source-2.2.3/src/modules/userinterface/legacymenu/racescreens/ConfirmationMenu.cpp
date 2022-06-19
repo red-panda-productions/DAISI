@@ -54,6 +54,9 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
     void* param = GfuiMenuLoad("ConfirmationMenu.xml");
     GfuiMenuCreateStaticControls(s_menuHandle, param);
 
+    // add button functionality
+    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_DELTE_BUTTON, p_prevMenu, GfuiScreenReplace);
+
     switch (p_raceEndType)
     {
         case RACE_RESTART:
@@ -77,8 +80,6 @@ void* ConfirmationMenuInit(void* p_prevMenu, RaceEndType p_raceEndType)
             throw std::runtime_error("incorrect 'p_raceEndType', have you defined the new option in ConfigEnum.h?");
         }
     }
-    // add button functionality
-    GfuiMenuCreateButtonControl(s_menuHandle, param, PRM_DONT_DELTE_BUTTON, p_prevMenu, GfuiScreenReplace);
 
     GfParmReleaseHandle(param);
 

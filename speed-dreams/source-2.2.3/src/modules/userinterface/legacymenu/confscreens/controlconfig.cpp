@@ -1005,8 +1005,17 @@ ControlMenuInit(void *prevMenu, int saveOnExit)
     /* Default keyboard shortcuts */
     GfuiMenuDefaultKeysAdd(ScrHandle);
 
+    /* Cancel button */
+    GfuiMenuCreateButtonControl(ScrHandle,param,"cancel",PrevScrHandle,onQuit);
+
+    /* Mouse calibration screen access button */
+    CalibrateButtonId = GfuiMenuCreateButtonControl(ScrHandle,param,"calibrate",NULL, DevCalibrate);
+
+    /* Save button */
+    GfuiMenuCreateButtonControl(ScrHandle,param,"save",PrevScrHandle,onSave);
+
     /* For each control (in Cmd array), create the associated label and editbox */
-    for (i = 0; i < MaxCmd; i++) 
+    for (i = 0; i < MaxCmd; i++)
     {
 	Cmd[i].labelId = GfuiMenuCreateLabelControl(ScrHandle,param,Cmd[i].name);
 	std::string strCmdEdit(Cmd[i].name);
@@ -1018,23 +1027,17 @@ ControlMenuInit(void *prevMenu, int saveOnExit)
     GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Sensitivity");
     SteerSensEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Sensitivity Edit",NULL,NULL,onSteerSensChange);
 
-    /* Steer Dead Zone label and associated editbox */
-    DeadZoneLabelId = GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Dead Zone");
-    DeadZoneEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Dead Zone Edit",NULL,NULL,onDeadZoneChange);
-
     /* Steer Speed Sensibility label and associated editbox */
     GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Speed Sensitivity");
     SteerSpeedSensEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Speed Sensitivity Edit",NULL,NULL,onSteerSpeedSensChange);
 
-    /* Save button and associated keyboard shortcut */
-    GfuiMenuCreateButtonControl(ScrHandle,param,"save",PrevScrHandle,onSave);
-    GfuiAddKey(ScrHandle, GFUIK_RETURN /* Return */, "Save", PrevScrHandle, onSave, NULL);
+    /* Steer Dead Zone label and associated editbox */
+    DeadZoneLabelId = GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Dead Zone");
+    DeadZoneEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Dead Zone Edit",NULL,NULL,onDeadZoneChange);
 
-    /* Mouse calibration screen access button */
-    CalibrateButtonId = GfuiMenuCreateButtonControl(ScrHandle,param,"calibrate",NULL, DevCalibrate);
-
-    /* Cancel button and associated keyboard shortcut */
-    GfuiMenuCreateButtonControl(ScrHandle,param,"cancel",PrevScrHandle,onQuit);
+    // SIMULATED DRIVING ASSISTANCE
+    // Keyboard button controls
+    GfuiMenuDefaultKeysAdd(ScrHandle);
     GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel", PrevScrHandle, onQuit, NULL);
 
     /* General callback for keyboard keys */

@@ -162,7 +162,10 @@ ForceFeedbackMenuInit(void *prevMenu, void *nextMenu, int curPlayerIdx, const st
 	std::string editBoxName;
 	std::string sectionName;
 	int editBoxId = 0;
-	
+
+        // create Accept and Cancel buttons. (dynamic controls)
+        GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "CancelButton", NULL, onQuitForceFeedbackConfig);
+        GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ApplyButton", NULL, onSaveForceFeedbackConfig);
 
 	// iterate on the first map: the various effect config sections
 	typedef std::map<std::string, std::map<std::string, int> >::iterator it_type;
@@ -242,11 +245,6 @@ ForceFeedbackMenuInit(void *prevMenu, void *nextMenu, int curPlayerIdx, const st
 			}
 		}
 	}
-		   
-		   
-    // create Accept and Cancel buttons. (dynamic controls)
-    GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "ApplyButton", NULL, onSaveForceFeedbackConfig);
-    GfuiMenuCreateButtonControl(ScrHandle, menuXMLDescHdle, "CancelButton", NULL, onQuitForceFeedbackConfig);
 
     // Close menu XML descriptor.
     GfParmReleaseHandle(menuXMLDescHdle);
@@ -254,7 +252,6 @@ ForceFeedbackMenuInit(void *prevMenu, void *nextMenu, int curPlayerIdx, const st
     // Register keyboard shortcuts.
     GfuiMenuDefaultKeysAdd(ScrHandle);
     GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Quit", NULL, onQuitForceFeedbackConfig , NULL);
-    GfuiAddKey(ScrHandle, GFUIK_RETURN, "Save", NULL, onSaveForceFeedbackConfig, NULL);
 
     return ScrHandle;
 }

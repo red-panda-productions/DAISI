@@ -186,9 +186,8 @@ void* DataSelectionMenuInit(void* p_nextMenu)
     void* param = GfuiMenuLoad("DataSelectionMenu.xml");
     GfuiMenuCreateStaticControls(s_scrHandle, param);
 
-    // ApplyButton and Back-button controls
+    // ApplyButton controls
     GfuiMenuCreateButtonControl(s_scrHandle, param, "StartButton", s_scrHandle, StartExperiment);
-    GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
     GfuiMenuCreateButtonControl(s_scrHandle, param, "DatabaseButton", nullptr, DatabaseSettingsMenuActivate);
 
     // Checkboxes for choosing the simulation information to collect and store in real-time
@@ -200,6 +199,9 @@ void* DataSelectionMenuInit(void* p_nextMenu)
 
     // Compression button control
     GfuiMenuCreateButtonControl(s_scrHandle, param, PRM_COMP, s_scrHandle, DataCompressionMenuRun);
+
+    // Back-button control
+    GfuiMenuCreateButtonControl(s_scrHandle, param, "BackButton", s_prevHandle, GoBack);
 
     GfParmReleaseHandle(param);
 

@@ -31,7 +31,7 @@
 		<attstr name="text" val="Yes, quit"/>
 		<attstr name="tip" val="Exit from the simulation"/>
 		<attnum name="x" val="50"/>
-		<attnum name="y" val="330"/>
+		<attnum name="y" val="275"/>
 		<attnum name="width" val="320"/>
 		<attstr name="h align" val="left"/>
 		<attstr name="font" val="big"/>
@@ -54,7 +54,7 @@
 		<attstr name="tip" val="Return to previous menu"/>
 		<attstr name="h align" val="left"/>
 		<attnum name="x" val="50"/>
-		<attnum name="y" val="275"/>
+		<attnum name="y" val="330"/>
 		<attnum name="width" val="320"/>
 		<attstr name="font" val="big"/>
 		<attstr name="color" val="0xFFFFFF"/>

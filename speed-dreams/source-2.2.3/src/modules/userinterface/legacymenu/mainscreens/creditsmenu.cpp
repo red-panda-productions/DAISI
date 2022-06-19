@@ -197,35 +197,6 @@ static void* creditsPageCreate(int startChapterIndex, int startRecordIndex)
 	// Close credits file
 	GfParmReleaseHandle(hparmCredits);
 
-	// Create "Previous page" button, and disable it if not the first page.
-	const int nPrevButId =
-		GfuiMenuCreateButtonControl(hscrPage, hmenu, "previous page arrow",
-									(void*)&PrevPageRequest, creditsPageChange);
-	if (startRecordIndex > 0 || startChapterIndex > 0)
-	{
-		PrevPageRequest.prevPageScrHdle = hscrPage;
-		if (startRecordIndex > 0)
-		{
-			PrevPageRequest.startChapterIndex = startChapterIndex;
-			PrevPageRequest.startRecordIndex  = startRecordIndex - nMaxRecordsPerPage;
-		}
-		else
-		{
-			PrevPageRequest.startChapterIndex = startChapterIndex - 1;
-			PrevPageRequest.startRecordIndex  = -1;
-		}
-		GfuiAddKey(hscrPage, GFUIK_PAGEUP, "Previous page",
-				   (void*)&PrevPageRequest, creditsPageChange, NULL);
-	}
-	else
-	{
-		GfuiEnable(hscrPage, nPrevButId, GFUI_DISABLE);
-	}
-
-	// Add "Continue" button (credits screen exit).
-	GfuiMenuCreateButtonControl(hscrPage, hmenu, "back button",
-								RetScrHdle, GfuiScreenReplace);
-
 	// Add "Next page" button, and disable it  if not the last page.
 	const int nNextButId =
 		GfuiMenuCreateButtonControl(hscrPage, hmenu, "next page arrow",
@@ -243,25 +214,47 @@ static void* creditsPageCreate(int startChapterIndex, int startRecordIndex)
 			NextPageRequest.startChapterIndex = startChapterIndex + 1;
 			NextPageRequest.startRecordIndex  = 0;
 		}
-		GfuiAddKey(hscrPage, GFUIK_PAGEDOWN, "Next Page",
-				   (void*)&NextPageRequest, creditsPageChange, NULL);
 	}
 	else
 	{
 		GfuiEnable(hscrPage, nNextButId, GFUI_DISABLE);
 	}
 
+        // Add "Continue" button (credits screen exit).
+        GfuiMenuCreateButtonControl(hscrPage, hmenu, "back button",
+                                    RetScrHdle, GfuiScreenReplace);
+
+
+        // Create "Previous page" button, and disable it if not the first page.
+        const int nPrevButId =
+            GfuiMenuCreateButtonControl(hscrPage, hmenu, "previous page arrow",
+                                        (void*)&PrevPageRequest, creditsPageChange);
+        if (startRecordIndex > 0 || startChapterIndex > 0)
+        {
+            PrevPageRequest.prevPageScrHdle = hscrPage;
+            if (startRecordIndex > 0)
+            {
+                PrevPageRequest.startChapterIndex = startChapterIndex;
+                PrevPageRequest.startRecordIndex  = startRecordIndex - nMaxRecordsPerPage;
+            }
+            else
+            {
+                PrevPageRequest.startChapterIndex = startChapterIndex - 1;
+                PrevPageRequest.startRecordIndex  = -1;
+            }
+        }
+        else
+        {
+            GfuiEnable(hscrPage, nPrevButId, GFUI_DISABLE);
+        }
+
 	GfParmReleaseHandle(hmenu);
 
+        // SIMULATED DRIVING ASSISTANCE: added default key controls
 	// Add standard keyboard shortcuts.
+        GfuiMenuDefaultKeysAdd(hscrPage);
 	GfuiAddKey(hscrPage, GFUIK_ESCAPE, "Return to previous menu",
 			   RetScrHdle, GfuiScreenReplace, NULL);
-	GfuiAddKey(hscrPage, GFUIK_RETURN, "Return to previous menu",
-			   RetScrHdle, GfuiScreenReplace, NULL);
-	GfuiAddKey(hscrPage, GFUIK_F1, "Help",
-			   hscrPage, GfuiHelpScreen, NULL);
-	GfuiAddKey(hscrPage, GFUIK_F12, "Take a Screen Shot",
-			   NULL, GfuiScreenShot, NULL);
 
 	return hscrPage;
 }

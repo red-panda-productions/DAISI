@@ -147,6 +147,8 @@ Changed:
                 changed GfuiObject
             guicheckbox.cpp
                 changed GfuiCheckboxCreate: added focused images
+            guiedit.cpp
+                changed GfuiEditboxSetString(): made the cursor position update
             guimenu.cpp
                 added   GfuiMenuCreateRadioButtonListControl
                 added   GfuiMenuBoolToStr()
@@ -313,10 +315,11 @@ Changed:
                     changed onRaceFinished();
                     removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
                 mainscreens/
+                    creditsmenu.cpp
+                        added default key controls to creditsPageCreate()
                     mainmenu.cpp
                         included "DataSelectionMenu.h"
                         removed  <playerconfig.h>
-                        changed  MainMenuInit()
                         changed  MainMenuInit()
                         included "ConfigEnums.h"
                         changed  onExitMenuActive() method
@@ -372,6 +375,7 @@ Changed:
                         added ChangeInterventionVolume()
                         added logic to create new controls for intervention volume and store their data
                         changed readSoundCfg()
+                        added default key controls to init
                     controlconfig.cpp
                         added cmd info for intervention toggle on/off to the Cmd[] member variable.
                         added cmd disp info for intervention toggle on/off to the CmdDispInfo[] member.
@@ -390,6 +394,9 @@ Changed:
                         added Yn[] from removed playerconfig.cpp
                         added GenPlayerList() from removed playerconfig.cpp
                         removed parameters in init
+                        added default key controls to init
+                    displayconfig.cpp
+                        added default key controls to init
                 trackselect.cpp
                     changed rmtsSelect(): replaced usage of race manager with SetTrack function
                     changed RmTrackSelect(): replaced usage of race manager with GetTrack function
