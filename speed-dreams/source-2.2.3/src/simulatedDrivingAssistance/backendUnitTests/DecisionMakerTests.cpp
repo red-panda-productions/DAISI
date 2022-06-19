@@ -78,6 +78,10 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     }
     CompareCars(car, blackboxDataMock->Car, COMP_UTIL_VALUE_EQUALITY);
     CompareSituations(situation, blackboxDataMock->Situation, COMP_UTIL_VALUE_EQUALITY);
+
+    DestroyCar(car);
+    DestroySegments(segments);
+    DestroySituation(situation);
 }
 
 /// @brief Runs the initialize test function
