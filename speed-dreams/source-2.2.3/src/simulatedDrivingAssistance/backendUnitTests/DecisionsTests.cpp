@@ -33,7 +33,7 @@
         /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/                                     \
         SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_SHARED_CONTROL);                                      \
                                                                                                                               \
-        AllowedActions allowedActions;                                                                                        \
+        AllowedActions allowedActions{};                                                                                      \
         allowedActions.Steer = true;                                                                                          \
         allowedActions.Brake = true;                                                                                          \
         allowedActions.Accelerate = true;                                                                                     \
@@ -78,7 +78,7 @@ public:
 class DecisionTestCombinatorialFloat : public ::testing::TestWithParam<std::tuple<float, float>>
 {
 private:
-    tCarElt* m_car;
+    tCarElt* m_car = nullptr;
 
 public:
     /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
