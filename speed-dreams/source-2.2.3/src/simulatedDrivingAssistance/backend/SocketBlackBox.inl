@@ -56,27 +56,38 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
     m_variableDecisionMap["Accel"] = CONVERT_TO_ACCEL_DECISION;
 }
 
-/// @brief               Awaits data with termination
+/// @brief Checks whether terminate is set to true, if so it returns from the function.
+/// @param p_terminate A boolean callback to terminate the initialization
+#define CHECK_TERMINATE(p_terminate) \
+    if (p_terminate && *p_terminate) return
+
+/// @brief               Awaits data with a termination check
 /// @param  p_buffer     The write buffer
 /// @param  p_bufferSize The size of the write buffer
-#define AWAIT_WITH_TERMINATE(p_buffer, p_bufferSize)  \
-    while (!m_server.GetData(p_buffer, p_bufferSize)) \
-    {                                                 \
-        if (p_terminate && *p_terminate) return;      \
+/// @param p_terminate A boolean callback to terminate the initialization
+#define AWAIT_WITH_TERMINATE(p_buffer, p_bufferSize, p_terminate) \
+    while (!m_server.GetData(p_buffer, p_bufferSize))             \
+    {                                                             \
+        CHECK_TERMINATE(p_terminate);                             \
     }
-#define CHECK_TERMINATE() \
-    if (p_terminate && *p_terminate) return;
-#define AWAIT_CONNECTION_WITH_TERMINATE()        \
-    while (!m_server.Connected())                \
-    {                                            \
-        if (p_terminate && *p_terminate) return; \
+
+/// @brief Awaits the connection with a termination check
+/// @param p_terminate A boolean callback to terminate the initialization
+#define AWAIT_CONNECTION_WITH_TERMINATE(p_terminate) \
+    while (!m_server.Connected())                    \
+    {                                                \
+        CHECK_TERMINATE(p_terminate);                \
     }
+
+/// @brief Disconnects from and closes the server, then throws an exception.
+/// @p_errmsg The error message to throw in the exception
 #define GRACEFULL_DISCONNECT(p_errmsg) \
     {                                  \
         m_server.Disconnect();         \
         m_server.CloseServer();        \
         THROW_RPP_EXCEPTION(p_errmsg); \
     }
+
 /// @brief Sets keys and values for the functions that retrieve the correct information. Also initializes the AI
 /// @param p_connectAsync True if blackbox will run async (not waiting for response), false if sync (wait for response)
 /// @param p_initialBlackBoxData The initial drive situation
@@ -84,7 +95,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize()
 /// @param p_amountOfTests Amount of tests in p_tests
 /// @param p_terminate A boolean callback to terminate the initialization
 template <class BlackBoxData, class PointerManager>
-void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData, BlackBoxData* p_tests, int p_amountOfTests, bool* p_terminate)
+void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsync, BlackBoxData& p_initialBlackBoxData,
+                                                              BlackBoxData* p_tests, int p_amountOfTests, bool* p_terminate)
 {
     Initialize();
     std::cout << "Connecting ";
@@ -94,17 +106,21 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
         std::cout << "a";
     }
     std::cout << "sync" << std::endl;
+    CHECK_TERMINATE(p_terminate);
 
-    CHECK_TERMINATE()
     m_server.ConnectAsync();
-    AWAIT_CONNECTION_WITH_TERMINATE()
+    AWAIT_CONNECTION_WITH_TERMINATE(p_terminate)
+
     m_server.ReceiveDataAsync();
-    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
-    if (std::string(m_buffer) != "AI ACTIVE") GRACEFULL_DISCONNECT("Black Box send wrong message: AI ACTIVE expected");
-    CHECK_TERMINATE()
+    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE, p_terminate)
+
+    if (std::string(m_buffer) != "AI ACTIVE") GRACEFULL_DISCONNECT("Black Box send wrong message: AI ACTIVE expected")
+    CHECK_TERMINATE(p_terminate);
+
     m_server.ReceiveDataAsync();
     m_server.SendData("OK", 2);
-    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
+    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE, p_terminate)
+
     msgpack::unpacked msg;
     msgpack::unpack(msg, m_buffer, SBB_BUFFER_SIZE);
     std::vector<std::string> orderVec;
@@ -121,10 +137,12 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     msgpack::sbuffer sbuffer;
     std::string data[1] = {std::to_string(p_amountOfTests)};
     msgpack::pack(sbuffer, data);
-    CHECK_TERMINATE()
+    CHECK_TERMINATE(p_terminate);
+
     m_server.ReceiveDataAsync();
     m_server.SendData(sbuffer.data(), sbuffer.size());
-    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
+    AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE, p_terminate)
+
     if (m_buffer[0] != 'O' || m_buffer[1] != 'K') GRACEFULL_DISCONNECT("Black box send wrong message: OK expected")
 
     DecisionTuple decisionTuple;
@@ -132,10 +150,12 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     {
         sbuffer.clear();
         SerializeBlackBoxData(sbuffer, &p_tests[i]);
-        CHECK_TERMINATE()
+        CHECK_TERMINATE(p_terminate);
+
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
-        AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE);
+        AWAIT_WITH_TERMINATE(m_buffer, SBB_BUFFER_SIZE, p_terminate)
+
         DeserializeBlackBoxResults(m_buffer, SBB_BUFFER_SIZE, decisionTuple);
     }
 
@@ -144,7 +164,8 @@ void SocketBlackBox<BlackBoxData, PointerManager>::Initialize(bool p_connectAsyn
     if (m_asyncConnection)
     {
         SerializeBlackBoxData(sbuffer, &p_initialBlackBoxData);
-        CHECK_TERMINATE()
+        CHECK_TERMINATE(p_terminate);
+
         m_server.ReceiveDataAsync();
         m_server.SendData(sbuffer.data(), sbuffer.size());
     }
