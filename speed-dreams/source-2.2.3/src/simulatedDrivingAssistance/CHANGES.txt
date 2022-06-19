@@ -225,6 +225,7 @@ Changed:
                 changed reLoadSingleCar() to fix isHuman flag
                 changed ReInitCars() to fix isHuman flag
                 changed ReCleanup() to also shut down updaters
+                changed initStartingGrid() to place the car in the middle of the road.
                 removed WebServer functionalities
             racesituation.cpp
                 change deltaTime to be constant value
