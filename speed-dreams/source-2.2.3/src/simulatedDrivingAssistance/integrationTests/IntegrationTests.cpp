@@ -19,8 +19,8 @@
 #define REPLAY_ARG    "--replay \""
 #define SD_EXTRA_ARGS "--textonly"
 
-/// @brief 15 seconds for tests
-#define TIMEOUT 15000
+/// @brief 2 minute timeout for the integration tests tests, in case one of the executables crashes.
+#define TIMEOUT 120000
 
 /// @brief              Checks if all files for an integration test are present in the folder
 ///                     and returns the path to all files if they are present
