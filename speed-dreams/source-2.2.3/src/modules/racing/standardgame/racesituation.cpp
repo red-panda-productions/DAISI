@@ -52,7 +52,7 @@
 #include "racemessage.h"
 #include "racenetwork.h"
 
-// SIMULATED DRIVING ASSISTANCE: removed inclusion of webserver.h
+// DAISI: removed inclusion of webserver.h
 
 
 // The singleton.
@@ -327,7 +327,7 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
     GfProfStartProfile("rbDrive*");
     GfSchedBeginEvent("raceupdate", "robots");
     if ((s->currentTime - pCurrReInfo->_reLastRobTime) >= RCM_MAX_DT_ROBOTS) {
-        // SIMULATED DRIVING ASSISTANCE CHANGE: Make delta time consistent
+        // DAISI: Make delta time consistent
         s->deltaTime = RCM_MAX_DT_ROBOTS;
         tRobotItf *robot;
         for (int i = 0; i < s->_ncars; i++) {
@@ -379,7 +379,7 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
     }
 }
 
-// SIMULATED DRIVING ASSISTANCE: removed WebServer functionality (WebServer lap logger)
+// DAISI: removed WebServer functionality (WebServer lap logger)
 
 int ReSituationUpdater::threadLoop(void* pUpdater)
 {

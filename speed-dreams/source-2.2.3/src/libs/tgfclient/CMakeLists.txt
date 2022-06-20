@@ -14,7 +14,7 @@ ADD_PLIB_INCLUDEDIR()
 ADD_OPENAL_INCLUDEDIR()
 ADD_VORBIS_INCLUDEDIR()
 
-# SIMULATED DRIVING ASSISTANCE: removed WebServer functionality
+# DAISI: removed WebServer functionality
 
 SET(_SOURCES control.cpp glfeatures.cpp guibutton.cpp guifont.cpp
             guiimage.cpp guimenu.cpp guiscrollbar.cpp guitexture.cpp
@@ -25,7 +25,7 @@ SET(_SOURCES control.cpp glfeatures.cpp guibutton.cpp guifont.cpp
             musicplayer.cpp musicplayer.h
             glfeatures.h gui.h guiscreen.h guimenu.h tgfclient.h guifont.h)
 
-# SIMULATED DRIVING ASSISTANCE: removed WebServer functionality
+# DAISI: removed WebServer functionality
 
 IF(OPTION_SDL_FORCEFEEDBACK)
    SET(_SOURCES ${_SOURCES} forcefeedback.cpp forcefeedback.h)
@@ -74,7 +74,7 @@ ADD_SDLIB_LIBRARY(tgfclient portability tgf)
 ADD_PNG_LIBRARY(tgfclient)
 ADD_JPEG_LIBRARY(tgfclient)
 
-# SIMULATED DRIVING ASSISTANCE: removed WebServer functionality
+# DAISI: removed WebServer functionality
 
 IF(OPENGL_FOUND)
     TARGET_LINK_LIBRARIES(tgfclient ${OPENGL_LIBRARY})

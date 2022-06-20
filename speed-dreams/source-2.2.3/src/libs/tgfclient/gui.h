@@ -230,7 +230,7 @@ typedef struct
     tfuiCheckboxCallback onChange;
 } tGfuiCheckbox;
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Added radiobutton type and radiobutton-list type
+// DAISI: Added radiobutton type and radiobutton-list type
 /// @brief Radio Button type
 typedef struct
 {
@@ -304,7 +304,7 @@ typedef struct GfuiObject
         tGfuiCombobox combobox;
         tGfuiCheckbox checkbox;
         tGfuiProgressbar progressbar;
-        /* SIMULATED DRIVING ASSISTANCE CHANGE: added radiobuttons and radiobuttonlists */
+        /* DAISI: added radiobuttons and radiobuttonlists */
         tGfuiRadioButtonList radiobuttonlist;
         tGfuiRadioButton radiobutton;
     } u;
@@ -415,7 +415,7 @@ extern void gfuiDrawGrButton(tGfuiObject *obj);
 extern void gfuiDrawScrollist(tGfuiObject *obj);
 extern void gfuiDrawEditbox(tGfuiObject *obj);
 extern void gfuiDrawProgressbar(tGfuiObject *obj);
-// SIMULATED DRIVING ASSISTANCE CHANGE: added GfuiDrawRadioButtonList and GfuiDrawRadioButton
+// DAISI: added GfuiDrawRadioButtonList and GfuiDrawRadioButton
 extern void GfuiDrawRadioButtonList(tGfuiObject* p_obj);
 extern void GfuiDrawRadioButton(tGfuiObject* p_obj);
 
@@ -446,7 +446,7 @@ extern void gfuiReleaseEditbox(tGfuiObject *curObject);
 extern void gfuiReleaseCombobox(tGfuiObject *obj);
 extern void gfuiReleaseCheckbox(tGfuiObject *obj);
 extern void gfuiReleaseProgressbar(tGfuiObject *obj);
-// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiReleaseRadioButtonList and GfuiReleaseRadioButton
+// DAISI: Added GfuiReleaseRadioButtonList and GfuiReleaseRadioButton
 extern void GfuiReleaseRadioButtonList(tGfuiObject* p_obj);
 extern void GfuiReleaseRadioButton(tGfuiObject* p_obj);
 

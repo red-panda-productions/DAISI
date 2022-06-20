@@ -29,7 +29,7 @@
     <section name="Tracks">
       <attnum name="maximum number" val="1"/>
 
-      <!--SIMULATED DRIVING ASSISTANCE: changed standard track-->
+      <!--DAISI: changed standard track-->
 
       <section name="1">
         <attstr name="name" val="test_highway"/>

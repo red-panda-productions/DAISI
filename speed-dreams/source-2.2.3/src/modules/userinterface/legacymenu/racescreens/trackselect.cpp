@@ -58,7 +58,7 @@ static int OutlineImageId;
 static int AuthorsLabelId;
 static int LengthLabelId;
 static int WidthLabelId;
-// SIMULATED DRIVING ASSISTANCE: added estimated time label menu controls
+// DAISI: added estimated time label menu controls
 static int EstimatedTimeLabelId;
 static int DescLine1LabelId;
 static int DescLine2LabelId;
@@ -128,7 +128,7 @@ rmtsUpdateTrackInfo(void)
 	ossData << PCurTrack->getLength() << " m";
 	GfuiLabelSetText(ScrHandle, LengthLabelId, ossData.str().c_str());
 
-	// SIMULATED DRIVING ASSISTANCE: removed display of pit stops
+	// DAISI: removed display of pit stops
 
 	// 5) Outline image.
 	GfuiStaticImageSet(ScrHandle, OutlineImageId, PCurTrack->getOutlineFile().c_str());
@@ -136,7 +136,7 @@ rmtsUpdateTrackInfo(void)
 	// 6) Preview image (background).
 	GfuiScreenAddBgImg(ScrHandle, PCurTrack->getPreviewFile().c_str());
 
-	// SIMULATED DRIVING ASSISTANCE: add the estimated time text to the track select menu
+	// DAISI: add the estimated time text to the track select menu
     // 7) Estimated time to complete a track in minutes.
     ossData.str("");
     PCurTrack->SetEstimatedTime();
@@ -261,7 +261,7 @@ RmTrackSelect(void *vs)
 {
 	MenuData = (tRmTrackSelect*)vs;
 
-        // SIMULATED DRIVING ASSISTANCE change: Get track using GetTrack instead of race
+        // DAISI: Get track using GetTrack instead of race
 	// Get currently selected track for the current race type
 	// (or the first usable one in the selected category).
 	PCurTrack = MenuData->GetTrack();
@@ -319,7 +319,7 @@ RmTrackSelect(void *vs)
 	DescLine1LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description1label");
 	DescLine2LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description2label");
 	LengthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "lengthlabel");
-    // SIMULATED DRIVING ASSISTNACE: added label control for estimated time label
+    // DAISI: added label control for estimated time label
     EstimatedTimeLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "estimatedtimelabel");
 	WidthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "widthlabel");
 	MaxPitsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "pitslabel");

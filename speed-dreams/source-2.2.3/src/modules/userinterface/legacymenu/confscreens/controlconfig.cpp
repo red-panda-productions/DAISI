@@ -44,14 +44,14 @@
 static void *ScrHandle = NULL;
 static void	*PrevScrHandle = NULL;
 static void	*PrefHdle = NULL;
-// SIMULATED DRIVING ASSISTANCE: moved PlayerHdle from removed playerconfig.cpp
+// DAISI: moved PlayerHdle from removed playerconfig.cpp
 static void* PlayerHdle = NULL;
 static int	SaveOnExit = 0;
 
 static tCtrlMouseInfo MouseInfo;
 static char	CurrentSection[256];
 
-// SIMULATED DRIVING ASSISTANCE: add define for clarity of important magic number.
+// DAISI: add define for clarity of important magic number.
 #define ALLOW_KEYBOARD 1
 
 /* Control command information */
@@ -85,7 +85,7 @@ static tCmdInfo Cmd[] = {
     {HM_ATT_DASHB_INC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_INC_MIN,   0, HM_ATT_DASHB_INC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
     {HM_ATT_DASHB_DEC , {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, HM_ATT_DASHB_DEC_MIN,   0, HM_ATT_DASHB_DEC_MAX, 0, 0, 0, 1, HM_ATT_JOY_REQ_BUT, 0},
 
-    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off, keyboard allowed, preferred joy button.
+    // DAISI: add configurable control for toggling interventions on/off, keyboard allowed, preferred joy button.
     {HM_ATT_INTERV_TGGLE, {-1, GFCTRL_TYPE_NOT_AFFECTED}, 0, 0, nullptr, 0, nullptr, 0, nullptr, 0, ALLOW_KEYBOARD, HM_ATT_JOY_REQ_BUT, 0}};
 
 static const int MaxCmd = sizeof(Cmd) / sizeof(Cmd[0]);
@@ -128,7 +128,7 @@ static tCmdDispInfo CmdDispInfo[] = {
     { GEAR_MODE_AUTO | GEAR_MODE_SEQ | GEAR_MODE_GRID | GEAR_MODE_HBOX }, // DASHBOARD INC
     { GEAR_MODE_AUTO | GEAR_MODE_SEQ | GEAR_MODE_GRID | GEAR_MODE_HBOX }, // DASHBOARD DEC
 
-    // SIMULATED DRIVING ASSISTANCE: add disp info for configurable control for toggling interventions on/off.
+    // DAISI: add disp info for configurable control for toggling interventions on/off.
     {GEAR_MODE_AUTO | GEAR_MODE_SEQ | GEAR_MODE_GRID | GEAR_MODE_HBOX}    // INTERVENTION TOGGLE
 };
 
@@ -146,7 +146,7 @@ static float SteerSensVal;
 static float DeadZoneVal;
 static float SteerSpeedSensVal;
 
-// SIMULATED DRIVING ASSISTANCE: moved skillLevel  from removed playerconfig.cpp
+// DAISI: moved skillLevel  from removed playerconfig.cpp
 static const char* SkillLevelString[] = { ROB_VAL_ARCADE, ROB_VAL_SEMI_ROOKIE, ROB_VAL_ROOKIE, ROB_VAL_AMATEUR, ROB_VAL_SEMI_PRO, ROB_VAL_PRO };
 static const int NbSkillLevels = sizeof(SkillLevelString) / sizeof(SkillLevelString[0]);
 
@@ -155,7 +155,7 @@ static const char* NoPlayer = "-- No one --";
 static const char* HumanDriverModuleName = "human";
 static const char* DefaultCarName = "sc-lynx-220";
 
-// SIMULATED DRIVING ASSISTANCE: moved tInfo from removed playerconfig.cpp
+// DAISI: moved tInfo from removed playerconfig.cpp
 /* Struct to define a generic ("internal name / id", "displayable name") pair */
 typedef struct tInfo
 {
@@ -163,7 +163,7 @@ typedef struct tInfo
 	char* dispname;
 
 } tInfo;
-// SIMULATED DRIVING ASSISTANCE: moved tPlayerInfo from removed playerconfig.cpp
+// DAISI: moved tPlayerInfo from removed playerconfig.cpp
 /* Player info struct */
 struct tPlayerInfo
 {
@@ -297,17 +297,17 @@ private:
 	int				_autoreverse;
 };
 
-// SIMULATED DRIVING ASSISTANCE: moved tPlayerinfoList from removed playerconfig.cpp
+// DAISI: moved tPlayerinfoList from removed playerconfig.cpp
 /* The human driver (= player) info list */
 typedef std::deque<tPlayerInfo*> tPlayerInfoList;
 static tPlayerInfoList PlayersInfo;
 
-// SIMULATED DRIVING ASSISTANCE: moved currPlayer from removed playerconfig.cpp
+// DAISI: moved currPlayer from removed playerconfig.cpp
 
 /* The currently selected player (PlayersInfo.end() if none) */
 static tPlayerInfoList::iterator CurrPlayer;
 
-// SIMULATED DRIVING ASSISTANCE: moved Yn[] from removed playerconfig.cpp
+// DAISI: moved Yn[] from removed playerconfig.cpp
 /* A bool to ("yes", "no") conversion table */
 static const char* Yn[] = { HM_VAL_YES, HM_VAL_NO };
 
@@ -778,7 +778,7 @@ onPush(void *vi)
 }
 
 
-//SIMULATED DRIVING ASSISTANCE: moved GenPlayerList() from removed playerconfig.cpp
+//DAISI: moved GenPlayerList() from removed playerconfig.cpp
 /* Load human driver (= player) info list (PlayersInfo) from preferences and human drivers files ;
 load associated scroll list */
 static int
@@ -956,7 +956,7 @@ DevCalibrate(void * /* dummy */)
 	GfuiScreenActivate(nextCalMenu);
 }
 
-// SIMULATED DRIVING ASSISTANCE: removed prefHdle, index, GearChangeMode, and set those in the function
+// DAISI: removed prefHdle, index, GearChangeMode, and set those in the function
 // according to now removed playerconfigmenu
 /* */
 void *
@@ -1035,7 +1035,7 @@ ControlMenuInit(void *prevMenu, int saveOnExit)
     DeadZoneLabelId = GfuiMenuCreateLabelControl(ScrHandle,param,"Steer Dead Zone");
     DeadZoneEditId = GfuiMenuCreateEditControl(ScrHandle,param,"Steer Dead Zone Edit",NULL,NULL,onDeadZoneChange);
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     // Keyboard button controls
     GfuiMenuDefaultKeysAdd(ScrHandle);
     GfuiAddKey(ScrHandle, GFUIK_ESCAPE, "Cancel", PrevScrHandle, onQuit, NULL);

@@ -51,7 +51,7 @@ void grInitSound(tSituation* s, int ncars)
 	const char *optionName = GfParmGetStr(paramHandle, SND_SCT_SOUND, SND_ATT_SOUND_STATE, soundOpenALStr);
 	float global_volume = GfParmGetNum(paramHandle, SND_SCT_SOUND, SND_ATT_SOUND_VOLUME, "%", 100.0f);
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     float interventionVolume = GfParmGetNum(paramHandle, SND_SCT_INTERVENTION, SND_ATT_SOUND_VOLUME, "%", 100.0f);
 
 	if (!strcmp(optionName, soundDisabledStr)) {
@@ -157,7 +157,7 @@ void grInitSound(tSituation* s, int ncars)
 	sound_interface->setNCars(ncars);
 	soundInitialized = 1;
 
-    // SIMULATED DRIVING ASSISTANCE: Added intervention sound initialization
+    // DAISI: Added intervention sound initialization
     sound_interface->SetInterventionVolume(interventionVolume / 100.0f);
     sound_interface->LoadIndicatorSounds();
 

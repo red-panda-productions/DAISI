@@ -27,7 +27,7 @@
 #define _PLAYERPREF_H_
 
 #define HM_DRV_FILE  		"drivers/human/human.xml"
-// SIMULATED DRIVING ASSISTANCE: Add Assisted Driver define
+// DAISI: Add Assisted Driver define
 #define HM_ADRV_FILE  		"drivers/assistedhuman/assistedhuman.xml"
 #define HM_PREF_FILE		"drivers/human/preferences.xml"
 
@@ -151,7 +151,7 @@
 #define HM_ATT_DASHB_DEC_MIN    "dashboard decrease min"
 #define HM_ATT_DASHB_DEC_MAX    "dashboard decrease max"
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 #define HM_ATT_INTERV_TGGLE "intervention-toggle"
 
 #define	HM_SECT_PREF	"Preferences"
@@ -212,7 +212,7 @@
 #define CMD_DASHB_INC 26
 #define CMD_DASHB_DEC 27
 
-// SIMULATED DRIVING ASSISTANCE: add cmd for toggling the interventions on/off
+// DAISI: add cmd for toggling the interventions on/off
 #define CMD_INTERV_TGGLE 28
 
 #define CMD_END_OF_LIST 28	/* Change this to same value as last item */

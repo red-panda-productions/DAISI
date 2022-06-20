@@ -157,7 +157,7 @@ SimReConfig(tCarElt *carElt)
     carElt->setup.reqRepair.desired_value = 0.0;
 }
 
-/// SIMULATED DRIVING ASSISTANCE: removed 'RemoveCar' function
+/// DAISI: removed 'RemoveCar' function
 
 void
 SimCarTelemetry(int nCarIndex, bool bOn)
