@@ -226,7 +226,7 @@ const char* GfuiMenuBoolToStr(bool p_bool)
     return p_bool ? GFMNU_VAL_YES : GFMNU_VAL_NO;
 }
 
-// DAISI CHANGED: renamed this function and removed the static keyword
+// DAISI: renamed this function and removed the static keyword
 /// @brief              Retrieves the boolean value of a given control
 /// @param hparm        The file handle to search
 /// @param pszPath      The xml path in the file to look for the field
