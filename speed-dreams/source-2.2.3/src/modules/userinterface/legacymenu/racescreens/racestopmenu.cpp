@@ -342,7 +342,7 @@ RmStopRaceMenu()
     }
 #endif
 
-    // DAISI CHANGE: changed quit button to be abort
+    // DAISI: changed quit button to be abort
     buttonRole[i] = "abort";
     screen[i++] = rmAbortRaceHookInit();
 
