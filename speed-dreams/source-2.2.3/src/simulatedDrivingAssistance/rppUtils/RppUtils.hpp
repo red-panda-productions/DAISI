@@ -22,15 +22,18 @@
 #ifdef WIN32
 #define THROW_RPP_EXCEPTION(p_msg) throw std::exception(p_msg)
 #include <windows.h>
+#include <winbase.h>
+#include <Tlhelp32.h>
+#include <process.h>
 #else
 #include <unistd.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#define _mkdir(p_dir) mkdir(p_dir,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-#define PROCESS_INFORMATION FILE*
-#define THROW_RPP_EXCEPTION(p_msg) throw std::exception()
-#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest,p_src,p_len)
-#define strcat_s(p_dest, p_len, p_src) strncat(p_dest,p_src,p_len)
+#define _mkdir(p_dir)                  mkdir(p_dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#define PROCESS_INFORMATION            FILE*
+#define THROW_RPP_EXCEPTION(p_msg)     throw std::exception()
+#define strcpy_s(p_dest, p_len, p_src) strncpy(p_dest, p_src, p_len)
+#define strcat_s(p_dest, p_len, p_src) strncat(p_dest, p_src, p_len)
 #endif
 
 /// @brief      Converts a string to float, and NAN if not possible
@@ -252,6 +255,32 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
                   &p_processInformation);
 }
 
+/// @brief Kills a process with the given name if it exists.
+///        https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
+/// @param p_filename The process name to kill
+inline void KillProcessByName(const char* p_filename)
+{
+    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
+    PROCESSENTRY32 pEntry;
+    pEntry.dwSize = sizeof(pEntry);
+    BOOL hRes = Process32First(hSnapShot, &pEntry);
+    while (hRes)
+    {
+        if (strcmp(pEntry.szExeFile, p_filename) == 0)
+        {
+            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
+                                          (DWORD)pEntry.th32ProcessID);
+            if (hProcess != nullptr)
+            {
+                TerminateProcess(hProcess, 9);
+                CloseHandle(hProcess);
+            }
+        }
+        hRes = Process32Next(hSnapShot, &pEntry);
+    }
+    CloseHandle(hSnapShot);
+}
+
 /// @brief                Execute a command in the CLI
 /// @param  p_command     The command
 /// @param  p_showCommand Whether to show the output of the command
@@ -310,6 +339,14 @@ inline void StartProcess(const std::string& p_executablePath, const char* p_args
 {
     std::string fullCommand = "gnome-terminal -- cd " + p_workingDirectory + "\n" + p_executablePath + " " + std::string(p_args);
     p_processInformation = popen(fullCommand.c_str(), "r");
+}
+
+/// @brief Kills a process with the given name if it exists.
+/// @param p_filename The name of the process to kill
+inline void KillProcessByName(const char* p_filename)
+{
+    std::string killCommand = "pkill " + std::string(p_filename);
+    system(killCommand.c_str());
 }
 
 /// @brief                Execute a command in the CLI
@@ -372,7 +409,7 @@ inline std::string GenerateBBArguments(const filesystem::path& p_bbfile, const s
 {
     std::stringstream args;
 
-    if(!p_filename.empty())
+    if (!p_filename.empty())
     {
         args << p_filename << " ";
     }
