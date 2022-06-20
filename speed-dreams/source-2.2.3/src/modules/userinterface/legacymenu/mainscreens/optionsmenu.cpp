@@ -26,7 +26,7 @@
 
 #include "optionsmenu.h"
 
- // SIMULATED DRIVING ASSISTANCE: removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
+ // DAISI: removed player, graph, opengl, advanced graph, simu, ai, hostsettings configs
 static void *MenuHandle = NULL;
 
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
@@ -58,18 +58,18 @@ onSoundMenuActivate(void * /* dummy */)
     GfuiScreenActivate(SoundMenuInit(MenuHandle));
 }
 
-// SIMULATED DRIVING ASSISTANCE: added control menu
+// DAISI: added control menu
 static void OnControlMenuActivate(void* /* dummy */)
 {
     /* Here, we need to call OptionOptionInit each time the firing button
        is pressed, and not only once at the Main menu initialization,
        because the previous menu has to be saved (ESC, Back) and because it can be this menu,
        as well as the Raceman menu */
-       // SIMULATED DRIVING ASSISTANCE: SKIP PLAYER MENU
+       // DAISI: SKIP PLAYER MENU
     GfuiScreenActivate(ControlMenuInit(MenuHandle, 1));
 }
 
-//SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
+//DAISI: removed graphics, advanced graphics, opengl, simulation, ai opponents menu
 
 void *
 OptionsMenuInit(void *prevMenu)
@@ -83,7 +83,7 @@ OptionsMenuInit(void *prevMenu)
 
     GfuiMenuCreateStaticControls(MenuHandle, param);
 
-    // SIMULATED DRIVING ASSISTANCE: added configure button
+    // DAISI: added configure button
     GfuiMenuCreateButtonControl(MenuHandle, param, "configure", NULL, OnControlMenuActivate);
 // SDW hack to get access to Monitor menu, doesn't have a defined position yet
 #ifdef MonitorMenu

@@ -24,7 +24,7 @@
 <params name="mainmenu">
 
     <section name="dynamic controls">
-    <!-- SIMULATED DRIVING ASSISTANCE: Changed section and button name from race to start -->
+    <!-- DAISI: Changed section and button name from race to start -->
     <section name="start">
 	    <attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>

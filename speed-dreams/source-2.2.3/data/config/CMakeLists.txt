@@ -3,7 +3,7 @@ INCLUDE(../../cmake/macros.cmake)
 # User settings.
 SET(_CONFIG_USER_FILES logging.xml raceengine.xml screen.xml graph.xml sound.xml osghudconfig.xml)
 
-# SIMULATED DRIVING ASSISTANCE: removed WebServer functionality
+# DAISI: removed WebServer functionality
 
 #IF(OPTION_CLIENT_SERVER)
    #SET(_CONFIG_USER_FILES ${_CONFIG_USER_FILES} networking.xml)

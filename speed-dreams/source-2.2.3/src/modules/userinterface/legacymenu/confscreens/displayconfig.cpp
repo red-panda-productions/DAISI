@@ -470,7 +470,7 @@ bool DisplayMenu::initialize(void *pPreviousMenu)
 	const int nVideoInitComboId =
 		createComboboxControl("VideoInitModeCombo", this, onChangeVideoInitMode);
 
-        // SIMULATED DRIVING ASSISTANCE: add default key controls
+        // DAISI: add default key controls
         GfuiMenuDefaultKeysAdd(PDisplayMenu->getMenuHandle());
 	addShortcut(GFUIK_ESCAPE, "Cancel", this, onCancel, 0);
     // TODO Keyboard shortcuts: Add support for shortcuts in GfuiCombobox ?

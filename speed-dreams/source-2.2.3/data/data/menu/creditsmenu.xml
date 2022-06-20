@@ -33,7 +33,7 @@
   </section>
 
   <section name="template controls">
-      <!--SIMULATED DRIVING ASSISTANCE: new dev team section-->
+      <!--DAISI: new dev team section-->
       <!-- Dev. team (chapter 0) pages -->
       <section name="0.name">
           <attstr name="type" val="label"/>

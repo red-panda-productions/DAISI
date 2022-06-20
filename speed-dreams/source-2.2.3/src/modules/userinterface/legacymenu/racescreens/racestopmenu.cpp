@@ -31,7 +31,7 @@
 #include <playerpref.h>
 #include <robot.h>
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Removed include for force feedback config
+// DAISI CHANGE: Removed include for force feedback config
 
 
 extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
@@ -92,7 +92,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // Back to the race screen in next display loop.
     LegacyMenu::self().activateGameScreen();
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: Disable time modifier when unpausing
+    // DAISI CHANGE: Disable time modifier when unpausing
 }
 
 static void *pvBackToRaceHookHandle = 0;
@@ -127,7 +127,7 @@ rmRestartRaceHookInit()
     return pvRestartRaceHookHandle;
 }
 
-//SIMULATED DRIVING ASSISTANCE: removed controls settings, removed force feedback settings
+//DAISI: removed controls settings, removed force feedback settings
 
 // Quit race hook ******************************************************
 static void *rmStopScrHandle = 0;
@@ -202,7 +202,7 @@ rmStopRaceMenu(const tButtonDesc aButtons[], int nButtons, int nCancelIndex)
 
     // Register keyboard shortcuts.
     GfuiMenuDefaultKeysAdd(hscreen);
-    // SIMULATED DRIVING ASSISTANCE: removed esc keybind that moved to the next menu
+    // DAISI: removed esc keybind that moved to the next menu
 
     // Close menu XML descriptor.
     GfParmReleaseHandle(hmenu);
@@ -258,7 +258,7 @@ rmStopRaceMenu(const char *buttonRole1, void *screen1,
     return QuitHdle[nButtons-1];
 }
 
-// SIMULATED DRIVING ASSISTANCE: Assisted driver is also a human
+// DAISI: Assisted driver is also a human
 void
 RmStopRaceMenu()
 {
@@ -315,7 +315,7 @@ RmStopRaceMenu()
         screen[i++] = rmRestartRaceHookInit();
     }
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: Removed abort button
+    // DAISI CHANGE: Removed abort button
 
 #if 1
     // get current driver
@@ -337,16 +337,16 @@ RmStopRaceMenu()
             curPlayerIdx = j+1;
 
 
-            // SIMULATED DRIVING ASSISTANCE CHANGE: Removed force feedback button
+            // DAISI CHANGE: Removed force feedback button
         }
     }
 #endif
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: changed quit button to be abort
+    // DAISI CHANGE: changed quit button to be abort
     buttonRole[i] = "abort";
     screen[i++] = rmAbortRaceHookInit();
 
-    // SIMULATED DRIVING ASSISTANCE: removed controls menu's
+    // DAISI: removed controls menu's
     rmStopScrHandle = rmStopRaceMenu(buttonRole[0], screen[0],
                buttonRole[1], screen[1],
                buttonRole[2], screen[2],

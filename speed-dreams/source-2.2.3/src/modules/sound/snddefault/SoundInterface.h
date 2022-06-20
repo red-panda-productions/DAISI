@@ -80,7 +80,7 @@ class SoundInterface {
 	Sound* backfire_sound; ///< one-off backfire sound
 	Sound* gear_change_sound; ///< sound when changing gears
 
-    // SIMULATED DRIVING ASSISTANCE: array containing indicator sounds for every intervention action
+    // DAISI: array containing indicator sounds for every intervention action
 	std::vector<Sound*> m_indicatorSounds;
 
 	std::vector<Sound*> sound_list; ///< keeps track of sounds used
@@ -99,7 +99,7 @@ class SoundInterface {
 	float global_gain;
 	bool silent;
 
-    // SIMULATED DRIVING ASSISTANCE: intervention volume [0, 1]
+    // DAISI: intervention volume [0, 1]
     float InterventionVolume;
 	
 	/** Find the max amplitude sound in car_sound_data and put it in smap  */
@@ -142,7 +142,7 @@ class SoundInterface {
 	void setBackfireSound (const char* sound_name);
 	void setGearChangeSound (const char* sound_name);
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     void LoadIndicatorSounds();
 
 	/// Update sound for a given observer.
@@ -153,14 +153,14 @@ class SoundInterface {
 	virtual float getGlobalGain() const;
 	virtual void setGlobalGain(float g);
 
-    // SIMULATED DRIVING ASSISTANCE: add getter and setter for intervention volume
+    // DAISI: add getter and setter for intervention volume
     float GetInterventionVolume() const;
     void SetInterventionVolume(float p_volume);
 
 	virtual void mute(bool bOn = true);
 
 private:
-    // SIMULATED DRIVING ASSISTANCE: add helper function
+    // DAISI: add helper function
     float Clamp(float volume, float low, float high);
 };
 

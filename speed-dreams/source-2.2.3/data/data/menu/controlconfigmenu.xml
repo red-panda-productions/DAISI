@@ -426,7 +426,7 @@
 		<attstr name="pushed color" val="0xFFCC00"/>
 	</section>
 
-    <!--SIMULATED DRIVING ASSISTANCE-->
+    <!--DAISI-->
     <section name="intervention-toggle">
         <attstr name="type" val="label"/>
         <attnum name="x" val="290"/>
@@ -437,7 +437,7 @@
         <attstr name="font" val="small_t"/>
     </section>
 
-    <!--SIMULATED DRIVING ASSISTANCE-->
+    <!--DAISI-->
     <section name="intervention-toggle button">
         <attstr name="type" val="text button"/>
         <attstr name="show box" val="yes"/>
@@ -652,7 +652,7 @@
 		<attstr name="pushed color" val="0xFFCC00"/>
 		</section>
 
-	<!-- SIMULATED DRIVING ASSISTANCE: removed dashboard item controls -->
+	<!-- DAISI: removed dashboard item controls -->
 
 <!-- Row under -->
 	<section name="Steer Sensitivity">

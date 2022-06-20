@@ -248,7 +248,7 @@ void OpenalSound::start()
 				if (loop) {
 					playing = true;
 				}
-                // SIMULATED DRIVING ASSISTANCE: Set LastStart
+                // DAISI: Set LastStart
                 LastStart = GfTimeClock();
 				alSourcePlay (source);
 			}
@@ -274,7 +274,7 @@ void OpenalSound::start()
 				if (loop) {
 					playing = true;
 				}
-                // SIMULATED DRIVING ASSISTANCE: Set LastStart
+                // DAISI: Set LastStart
                 LastStart = GfTimeClock();
                 alSourcePlay (source);
 			}
@@ -307,7 +307,7 @@ void OpenalSound::resume()
 	if (paused) {
 		paused = false;
 
-        // SIMULATED DRIVING ASSISTANCE: Check if state is AL_PAUSED and only resume if it is, prevents all sounds playing at once
+        // DAISI: Check if state is AL_PAUSED and only resume if it is, prevents all sounds playing at once
         ALint state;
         alGetSourcei(source, AL_SOURCE_STATE, &state);
 
@@ -323,7 +323,7 @@ void OpenalSound::pause()
 	if (!paused) {
 		paused = true;
 
-        // SIMULATED DRIVING ASSISTANCE: Check if state is AL_PLAYING and only pause if it is, prevents all sounds playing at once
+        // DAISI: Check if state is AL_PLAYING and only pause if it is, prevents all sounds playing at once
         ALint state;
         alGetSourcei(source, AL_SOURCE_STATE, &state);
 
@@ -335,7 +335,7 @@ void OpenalSound::pause()
 
 void OpenalSound::update ()
 {
-    // SIMULATED DRIVING ASSISTANCE: Add check for playing state
+    // DAISI: Add check for playing state
     ALint state;
     alGetSourcei(source, AL_SOURCE_STATE, &state);
 

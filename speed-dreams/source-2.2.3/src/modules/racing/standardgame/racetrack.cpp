@@ -78,7 +78,7 @@ ReTrackInit(void)
 {
     char buf[1024];
 
-    // SIMULATED DRIVING ASSISTANCE change: Get the path for the track from the mediator
+    // DAISI change: Get the path for the track from the mediator
     SMediator* mediator = SMediator::GetInstance();
     const char* trackPath = mediator->GetEnvironmentFilePath();
     ReInfo->track = ReTrackLoader().load(trackPath);

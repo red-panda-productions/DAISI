@@ -1300,7 +1300,7 @@ void TDriver::InitTrack
                             , (char*) NULL, 100.0);
     LogSimplix.debug("#oMaxFuel (TORCS)   = %.1f\n",oMaxFuel);
 
-    // SIMULATED DRIVING ASSISTANCE: changed the oFuelCons value
+    // DAISI: changed the oFuelCons value
     oFuelCons = 0;
     LogSimplix.debug("#oFuelCons (TORCS)  = %.2f\n",oFuelCons);
 

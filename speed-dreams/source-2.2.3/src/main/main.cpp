@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
 
     // Create and initialize the application (graphical or text-only UI).
     GfApplication* pApp;
-    // SIMULATED DRIVING ASSISTANCE: changed name
+    // DAISI: changed name
     if (bTextOnly)
         pApp = new GfApplication("DAISI", "", "Driving Assistance Interface for Simulated Interventions");
     else
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
     // Register app. specific options and help text.
     pApp->registerOption("s", "startrace", /* nHasValue = */ true);
     pApp->registerOption("x", "textonly", /* nHasValue = */ false);
-    // SIMULATED DRIVING ASSISTANCE: Added replay option
+    // DAISI: Added replay option
     pApp->registerOption("r", "replay", true);
 
     pApp->addOptionsHelpSyntaxLine("[-s|--startrace <race name> [-x|--textonly] ]");
@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
     if (!pApp->parseOptions())
         return 1;
 
-    // SIMULATED DRIVING ASSISTANCE: Check for valid race start arguments
+    // DAISI: Check for valid race start arguments
     // Some more checks about command line options.
     std::string strRaceToStart;
     if(!HasValidRaceStartArguments(bTextOnly, pApp, strRaceToStart)) {
@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // SIMULATED DRIVING ASSISTANCE: Setup folder to support multi-module singletons
+    // DAISI: Setup folder to support multi-module singletons
     if (!SetupSingletonsFolder()) return 1;
 
     // Update user settings files from installed ones.
@@ -268,7 +268,7 @@ int main(int argc, char* argv[])
             pApp->eventLoop()();
         }
 
-        // SIMULATED DRIVING ASSISTANCE: safely shutdown the experiment
+        // DAISI: safely shutdown the experiment
         SMediator::GetInstance()->RaceStop();
 
         // Shutdown and unload the user interface and race engine modules.

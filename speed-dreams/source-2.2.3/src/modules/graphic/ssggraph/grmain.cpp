@@ -23,7 +23,7 @@
 #include <GL/glext.h>
 #endif
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Included ConfigEnums to force experiment setup
+// DAISI CHANGE: Included ConfigEnums to force experiment setup
 #include <ConfigEnums.h>
 
 #include <plib/ssg.h>
@@ -519,7 +519,7 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
         grScreens[i]->initBoard();
     }
 
-    // SIMULATED DRIVING ASSISTANCE: Removed these functionalities when FORCE_EXPERIMENT_SETUP is defined.
+    // DAISI: Removed these functionalities when FORCE_EXPERIMENT_SETUP is defined.
 #ifndef FORCE_EXPERIMENT_SETUP
     GfuiAddKey(screen, GFUIK_END,      "Zoom Minimum", (void*)GR_ZOOM_MIN,	grSetZoom, NULL);
     GfuiAddKey(screen, GFUIK_HOME,     "Zoom Maximum", (void*)GR_ZOOM_MAX,	grSetZoom, NULL);

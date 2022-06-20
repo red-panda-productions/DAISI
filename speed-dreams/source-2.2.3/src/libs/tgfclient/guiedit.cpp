@@ -426,7 +426,7 @@ void GfuiEditboxSetString(void *scr, int id, const char *text)
 
     strncpy(label->text, text, label->maxlen);
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     editbox->cursorIdx = strlen(text);
 }
 

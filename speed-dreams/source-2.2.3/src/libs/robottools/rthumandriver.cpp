@@ -70,7 +70,7 @@ extern TGFCLIENT_API ForceFeedbackManager forceFeedback;
 
 #endif
 
-// SIMULATED DRIVING ASSISTANCE: include mediator
+// DAISI: include mediator
 #include "Mediator.h"
 
 typedef enum { eTransAuto, eTransSeq, eTransGrid, eTransHbox } eTransmission;
@@ -148,7 +148,7 @@ typedef struct HumanContext
 } tHumanContext;
 
 static const int FuelReserve = 3;
-// SIMULATED DRIVING ASSISTANCE: changed the MaxFuelPerMeter value
+// DAISI: changed the MaxFuelPerMeter value
 static const tdble MaxFuelPerMeter = 0;	// [kg/m] fuel consumption.
 
 static void updateKeys(void);
@@ -171,7 +171,7 @@ static std::vector<tHumanContext*> HCtx;
 static bool speedLimiter = false;
 static tdble speedLimit;
 
-// SIMULATED DRIVING ASSISTANCE: store the last intervention type for toggling on/off
+// DAISI: store the last intervention type for toggling on/off
 InterventionType m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
 
 typedef struct
@@ -251,7 +251,7 @@ static const tControlCmd CmdControlRef[] = {
     {HM_ATT_DASHB_INC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_INC_MIN,  0.0, 0.0, HM_ATT_DASHB_INC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
     {HM_ATT_DASHB_DEC  ,GFCTRL_TYPE_NOT_AFFECTED, -1, HM_ATT_DASHB_DEC_MIN,  0.0, 0.0, HM_ATT_DASHB_DEC_MAX,  0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0, NULL, 0.0},
 
-    // SIMULATED DRIVING ASSISTANCE: add configurable control for toggling interventions on/off
+    // DAISI: add configurable control for toggling interventions on/off
     {HM_ATT_INTERV_TGGLE, GFCTRL_TYPE_NOT_AFFECTED, -1, nullptr, 0.0, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0, nullptr, 0.0}};
 
 static const int NbCmdControl = sizeof(CmdControlRef) / sizeof(CmdControlRef[0]);
@@ -293,7 +293,7 @@ void HumanDriver::shutdown(const int index)
 
     resume_keybd = true;
 
-    // SIMULATED DRIVING ASSISTANCE: Prevent usage of deleted recorder
+    // DAISI: Prevent usage of deleted recorder
     m_recorder = nullptr;
 }
 
@@ -612,7 +612,7 @@ void HumanDriver::init_track(int index,
 
 void HumanDriver::new_race(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: Save initial run settings
+    // DAISI: Save initial run settings
     if (m_recorder) {
         auto mediator = SMediator::GetInstance();
         tIndicator indicatorSettings = mediator->GetIndicatorSettings();
@@ -1078,7 +1078,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         }
     }
 
-    // SIMULATED DRIVING ASSISTANCE: added if condition: only handle steering cmd input if the participant is allowed to.
+    // DAISI: added if condition: only handle steering cmd input if the participant is allowed to.
     // Do not let the human control the car when the AI is in full control
     if (SMediator::GetInstance()->CanUseSteer())
     {
@@ -1446,7 +1446,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         }
     }
 
-    // SIMULATED DRIVING ASSISTANCE: added if condition: only handle brake cmd input if the participant is allowed to.
+    // DAISI: added if condition: only handle brake cmd input if the participant is allowed to.
     // Do not let the human control the car when the AI is in full control
     if (SMediator::GetInstance()->CanUseBrake())
     {
@@ -1556,7 +1556,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
         car->_ebrakeCmd = 0;
     }
 
-    // SIMULATED DRIVING ASSISTANCE: added if condition: only handle throttle cmd input if the participant is allowed to.
+    // DAISI: added if condition: only handle throttle cmd input if the participant is allowed to.
     // Do not let the human control the car when the AI is in full control
     if (SMediator::GetInstance()->CanUseAccel())
     {
@@ -1781,7 +1781,7 @@ static void common_drive(const int index, tCarElt* car, tSituation *s)
     }//if speedLimiter
 
 
-    // SIMULATED DRIVING ASSISTANCE: toggle intervention on/off
+    // DAISI: toggle intervention on/off
     tControlCmd input = cmd[CMD_INTERV_TGGLE];
     if (SMediator::GetInstance()->GetPControlSettings().ControlInterventionToggle && 
         ((input.type == GFCTRL_TYPE_JOY_BUT && joyInfo->edgeup[input.val]) 
@@ -2068,7 +2068,7 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
  */
 void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
 {
-    // SIMULATED DRIVING ASSISTANCE: added recording of simulation data
+    // DAISI: added recording of simulation data
     if(m_recorder) {
         float params[SIMULATION_RECORD_PARAM_AMOUNT] = {
             car->pub.DynGCg.pos.x,
@@ -2225,7 +2225,7 @@ void HumanDriver::drive_at(int index, tCarElt* car, tSituation *s)
 
     common_brake(idx, car, s);
 
-    // SIMULATED DRIVING ASSISTANCE: added recording of parameters
+    // DAISI: added recording of parameters
     if (m_recorder) {
         float inputs[USER_INPUT_RECORD_PARAM_AMOUNT] = {
             car->_accelCmd,
@@ -2320,7 +2320,7 @@ static void SetFuelAtRaceStart(tTrack* track, void *carHandle, void **carParmHan
         fuel_requested = initial_fuel;
     } else {
         // We must load and calculate parameters.
-        // SIMULATED DRIVING ASSISTANCE: changed the fuel_const_factor value
+        // DAISI: changed the fuel_const_factor value
         const tdble fuel_cons_factor =
             0;
         tdble fuel_per_lap = track->length * MaxFuelPerMeter * fuel_cons_factor;

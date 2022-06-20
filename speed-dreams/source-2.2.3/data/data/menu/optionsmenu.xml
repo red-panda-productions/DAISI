@@ -25,7 +25,7 @@
 
 	<section name="dynamic controls">
    
-    <!-- SIMULATED DRIVING ASSISTANCE: added configure button-->
+    <!-- DAISI: added configure button-->
     <section name="configure">
         <attstr name="type" val="text button"/>
         <attstr name="show box" val="no"/>
@@ -70,7 +70,7 @@
 		<attstr name="pushed image" val="data/img/bg-button-big-pushed.png"/>
 	</section>
     
-    <!--SIMULATED DRIVING ASSISTANCE: removed graphics, advanced graphics, opengl, simulation and ai opponents menus -->
+    <!--DAISI: removed graphics, advanced graphics, opengl, simulation and ai opponents menus -->
 	<section name="sound">
 		<attstr name="type" val="text button"/>
 		<attstr name="show box" val="no"/>

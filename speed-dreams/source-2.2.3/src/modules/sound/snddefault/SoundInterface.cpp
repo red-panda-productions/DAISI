@@ -90,7 +90,7 @@ SoundInterface::SoundInterface(float sampling_rate, int n_channels)
 	global_gain = 1.0f;
 	silent = false;
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     InterventionVolume = 1.0f;
 }
 
@@ -214,7 +214,7 @@ void SoundInterface::setGearChangeSound (const char* sound_name)
 	gear_change_sound = sound;
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief Loads the indicator sounds from their respective filepaths and stores them into an array.
 void SoundInterface::LoadIndicatorSounds() {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
@@ -231,7 +231,7 @@ void SoundInterface::LoadIndicatorSounds() {
     }
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief  Retrieves the volume of the intervention sounds
 /// @return The volume
 float SoundInterface::GetInterventionVolume() const
@@ -239,7 +239,7 @@ float SoundInterface::GetInterventionVolume() const
     return silent ? 0 : InterventionVolume;
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief        Sets and clamps the volume of the interventions
 /// @param volume The raw volume to set
 void SoundInterface::SetInterventionVolume(float volume)
@@ -271,7 +271,7 @@ void SoundInterface::mute(bool bOn)
 	GfLogInfo("Sound %s\n", silent ? "paused" : "restored");
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief      Clamps a number to the given range
 /// @param n    The number
 /// @param low  The lower bound

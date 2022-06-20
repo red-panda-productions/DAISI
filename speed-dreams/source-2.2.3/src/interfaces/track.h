@@ -46,7 +46,7 @@
 #define TRK_ATT_DESCR               "description"
 #define TRK_ATT_CAT                 "category"
 #define TRK_ATT_SUBCAT              "subcategory"
-// SIMULATED DRIVING ASSISTANCE: added the speed limit parameter
+// DAISI: added the speed limit parameter
 #define TRK_ATT_AVERAGE_SPEEDLIMIT  "average speed limit"
 
 #define TRK_ATT_NONE                "none"
@@ -177,7 +177,7 @@
 #define TRK_VAL_LFT                 "lft"
 #define TRK_VAL_RGT                 "rgt"
 #define TRK_ATT_LG                  "lg"
-// SIMULATED DRIVING ASSISTANCE: added speed limit
+// DAISI: added speed limit
 #define TRK_ATT_SPEEDLIMIT          "speedLimit"
 #define TRK_ATT_RADIUS              "radius"
 #define TRK_ATT_RADIUSEND           "end radius"
@@ -266,7 +266,7 @@
 #define TRK_SECT_SECTORS            "Sectors"
 #define TRK_ATT_SECTOR_DFS          "distance from start"
 
-// SIMULATED DRIVING ASSISTANCE: add default value for unspecified speed limit.
+// DAISI: add default value for unspecified speed limit.
 #define SPEED_LIMIT_UNSPECIFIED 0.0f
 
 
@@ -372,9 +372,9 @@ typedef struct trackSeg
 #define TR_FENCE	3           /**< Fence (no width) (barrier only) */
 #define TR_PITBUILDING	4       /**< Pit building wall (barrier only) */
 
-    float SpeedLimit;           // SIMULATED DRIVING ASSISTANCE: added a speed limit to the track
+    float SpeedLimit;           // DAISI: added a speed limit to the track
     tdble length;               /**< Length in meters of the middle of the track */
-    /// SIMULATED DRIVING ASSISTANCE: added tdble Time
+    /// DAISI: added tdble Time
     tdble Time;                 /**< Estimated time in seconds */
     tdble width;                /**< Width of the segment (if constant width) */
     tdble startWidth;           /**< Width of the beginning of the segment */
@@ -684,7 +684,7 @@ typedef struct Track
     tTrackSeg	  *seg;         /**< Segment list for the main track */
     tTrackSurface *surfaces;	/**< Segment surface list */
 
-    // SIMULATED DRIVING ASSISTANCE: added speedlimit and estimated time members
+    // DAISI: added speedlimit and estimated time members
     tdble SpeedLimit; /**< speed limit of the track */
     tdble Time;       /**< main track time (estimated) */  
 

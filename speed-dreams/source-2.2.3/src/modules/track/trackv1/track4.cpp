@@ -1319,7 +1319,7 @@ CreateSegRing(void *TrackHandle, tTrack *theTrack, tTrackSeg *start, tTrackSeg *
         // TODO: is the (int) intended?
         DoVfactor = (float) ((int) GfParmGetCurNum(TrackHandle, path, TRK_ATT_DOVFACTOR, (char*)NULL, 1.0)) ;
 
-        //SIMULATED DRIVING ASSISTANCE: added speed limit
+        //DAISI: added speed limit
         // if no speed limit is defined it will be infinity
         float speedLimit = GfParmGetCurNum(TrackHandle, path, TRK_ATT_SPEEDLIMIT, nullptr, HUGE_VALF);
 

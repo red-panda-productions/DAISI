@@ -215,7 +215,7 @@ Sound* OpenalSoundInterface::addSample (const char* filename, int flags, bool lo
 	return sound;
 }
 
-// SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+// DAISI: Update intervention sounds
 /// @brief                Updates all sounds related to interventions. Makes sure the right ones are playing and the right ones are stopped.
 /// @param p_carSoundData Data related to the car, like position data.
 void OpenalSoundInterface::UpdateInterventionSounds(CarSoundData** p_carSoundData)
@@ -318,7 +318,7 @@ void OpenalSoundInterface::update(CarSoundData** car_sound_data, int n_cars, sgV
 		engpri[id].a = car_src[id].a;
 	}
 
-    // SIMULATED DRIVING ASSISTANCE: Update intervention sounds
+    // DAISI: Update intervention sounds
     if (SMediator::GetInstance()->GetIndicatorSettings().Audio)
         UpdateInterventionSounds(car_sound_data);
 

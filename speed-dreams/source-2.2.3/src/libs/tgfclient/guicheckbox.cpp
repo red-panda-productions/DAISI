@@ -90,7 +90,7 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	checkbox->pInfo->userData = userData;
 	checkbox->scr = scr;
 
-	// SIMULATED DRIVING ASSISTANCE CHANGE: added onFocus to unchecked Radiobuttons and focused images: checked-focused and unchecked-focused
+	// DAISI CHANGE: added onFocus to unchecked Radiobuttons and focused images: checked-focused and unchecked-focused
 	// Initialize the checked and unchecked button children.
 	// Warning: All the images are supposed to be the same size.
 	// TODO: Make graphic properties XML-customizable (images, ...)
@@ -139,7 +139,7 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	if (height > gfuiFont[font]->getHeight())
 		yl += (height -  gfuiFont[font]->getHeight()) / 2;
 
-        // SIMULATED DRIVING ASSISTANCE CHANGE: added the hint to the label
+        // DAISI CHANGE: added the hint to the label
         checkbox->labelId =
             GfuiLabelCreate(scr, pszText, font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(pszText),
                             nullptr, nullptr, userDataOnFocus, onFocus, onFocusLost);

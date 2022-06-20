@@ -37,7 +37,7 @@ class GfRace;
 
 typedef struct RmTrackSelect
 {
-    // SIMULATED DRIVING ASSISTANCE change: replace race with SetTrack and GetTrack function
+    // DAISI change: replace race with SetTrack and GetTrack function
     /// @brief Pointer to function used to set the selected track
     void (*SetTrack)(GfTrack *);
     /// @brief Pointer to function used to get the selected track
@@ -128,7 +128,7 @@ extern void RmShowStandings(void* prevHdle, tRmInfo *info, int start = 0);
 extern void* RmFileSelect(void* vs);
 
 // From racemanmenus.
-// SIMULATED DRIVING ASSISTANCE: removed rmraceselectinit(), removed rmracemanmenu()
+// DAISI: removed rmraceselectinit(), removed rmracemanmenu()
 
 extern void RmNextEventMenu();
 extern void RmConfigureRace(void*  /* dummy */);
@@ -160,7 +160,7 @@ extern void RmResEraseScreen();
 extern void RmAddPreRacePauseItems();
 extern void RmAddCooldownItems();
 
-// SIMULATED DRIVING ASSISTANCE: removed networking and RmRaceSelectMenuHandle
+// DAISI: removed networking and RmRaceSelectMenuHandle
 
 // Progressive simulation time modifier, for more user-friendly resuming
 // a race from the Stop Race menu (progressively accelerates time from a low factor).
