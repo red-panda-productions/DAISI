@@ -415,7 +415,7 @@ extern void gfuiDrawGrButton(tGfuiObject *obj);
 extern void gfuiDrawScrollist(tGfuiObject *obj);
 extern void gfuiDrawEditbox(tGfuiObject *obj);
 extern void gfuiDrawProgressbar(tGfuiObject *obj);
-// DAISI CHANGE: added GfuiDrawRadioButtonList and GfuiDrawRadioButton
+// DAISI: added GfuiDrawRadioButtonList and GfuiDrawRadioButton
 extern void GfuiDrawRadioButtonList(tGfuiObject* p_obj);
 extern void GfuiDrawRadioButton(tGfuiObject* p_obj);
 
