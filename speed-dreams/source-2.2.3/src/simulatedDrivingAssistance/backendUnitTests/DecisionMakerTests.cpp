@@ -24,6 +24,8 @@
 #include "Mediator.inl"
 #include "SDAConfig.h"
 #include "mocks/DecisionMakerMock.h"
+#include "GeneratorUtils.h"
+#include "ComparerUtils.h"
 
 /// @brief A mediator that uses the standard SDecisionMakerMock
 #define MockMediator Mediator<SDecisionMakerMock>
@@ -40,8 +42,9 @@
 void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
 {
     GfInit(false);
-    tCarElt car;
-    tSituation situation;
+    TestSegments segments = GenerateSegments();
+    tCarElt car = GenerateCar(segments);
+    tSituation situation = GenerateSituation();
     situation.deltaTime = 108;
     car.pub.speed = 144;
     tTrack track;
@@ -72,13 +75,19 @@ void InitializeTest(TDecisionMaker& p_decisionMaker, bool p_emptyPath = false)
     BlackBoxData* blackboxDataMock = p_decisionMaker.BlackBox.GetBlackBoxData();
     FileDataStorageMock* storage = p_decisionMaker.GetFileDataStorage();
 
-    // TODO make comparer for car, track and situation so the entire object can be compared
     if (!p_emptyPath)
     {
-        ASSERT_TRUE(storage->EnvironmentVersion == track.version);
+        // Compare track: only a select few variables of tTrack are passed along in DecisionMaker::Initialize
+        ASSERT_EQ(track.version, storage->EnvironmentVersion);
+        ASSERT_EQ(0, strcmp(track.filename, storage->EnvironmentFilename));
+        ASSERT_EQ(0, strcmp(track.name, storage->EnvironmentName));
     }
-    ASSERT_TRUE(blackboxDataMock->Situation.deltaTime == situation.deltaTime);
-    ASSERT_TRUE(blackboxDataMock->Car.pub.speed == car.pub.speed);
+    CompareCars(car, blackboxDataMock->Car, COMP_UTIL_VALUE_EQUALITY);
+    CompareSituations(situation, blackboxDataMock->Situation, COMP_UTIL_VALUE_EQUALITY);
+
+    DestroyCar(car);
+    DestroySegments(segments);
+    DestroySituation(situation);
 }
 
 /// @brief Runs the initialize test function
