@@ -264,7 +264,7 @@ inline void KillProcessByName(const char* p_filename)
         {
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
                                           (DWORD)pEntry.th32ProcessID);
-            if (hProcess != NULL)
+            if (hProcess != nullptr)
             {
                 TerminateProcess(hProcess, 9);
                 CloseHandle(hProcess);
