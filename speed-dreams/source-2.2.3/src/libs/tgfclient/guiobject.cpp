@@ -434,7 +434,7 @@ gfuiSelectNext(void * /* dummy */)
 	    
 	default:
 	    curObject = curObject->next;
-	    // DAISI CHANGE: it now skips labels
+	    // DAISI: it now skips labels
 	    if ((curObject->focusMode != GFUI_FOCUS_NONE) &&
 		(curObject->state != GFUI_DISABLE) &&
 		(curObject->visible) &&
