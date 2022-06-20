@@ -297,7 +297,7 @@ typedef int (*tfuiKeyCallback)(int key, int modifier, int state);  /**< return 1
 typedef void (*tfuiComboboxCallback)(tComboBoxInfo *);
 typedef void (*tfuiCheckboxCallback)(tCheckBoxInfo *);
 
-// DAISI CHANGE: added radioButtonsCallback and tfuiRadioButtonListCallback typedef
+// DAISI: added radioButtonsCallback and tfuiRadioButtonListCallback typedef
 typedef void (*tfuiRadioButtonCallback)(tRadioButtonInfo*);
 
 
