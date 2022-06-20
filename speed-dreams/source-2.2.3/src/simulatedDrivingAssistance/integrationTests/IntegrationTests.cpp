@@ -1,19 +1,18 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
 #include "gtest/gtest.h"
 #include "RppUtils.hpp"
+#include "FileSystem.hpp"
 #include "IntegrationTestConfig.h"
-#include "Recorder.h"
 #include <fstream>
 #include <thread>
-#include <Windows.h>
-#include <process.h>
-#include <TlHelp32.h>
-#include <Winbase.h>
 #include "TestUtils.h"
 #include "Mediator.h"
 #include "IndicatorConfig.h"
-
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include "experimental/filesystem"
 
 #define BB_FILE       DECISIONS_RECORDING_FILE_NAME
 #define REPLAY_ARG    "--replay \""
@@ -107,31 +106,6 @@ bool RunTest(const std::string& p_path)
     std::cerr << "bbinfo(p1): " << p1 << ", simulation(p2): " << p2 << std::endl;
 
     return p1 && p2;
-}
-
-/// @brief           https://stackoverflow.com/questions/7956519/how-to-kill-processes-by-name-win32-api
-/// @param  filename The process name to kill
-void KillProcessByName(const char* p_filename)
-{
-    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
-    PROCESSENTRY32 pEntry;
-    pEntry.dwSize = sizeof(pEntry);
-    BOOL hRes = Process32First(hSnapShot, &pEntry);
-    while (hRes)
-    {
-        if (strcmp(pEntry.szExeFile, p_filename) == 0)
-        {
-            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
-                                          (DWORD)pEntry.th32ProcessID);
-            if (hProcess != NULL)
-            {
-                TerminateProcess(hProcess, 9);
-                CloseHandle(hProcess);
-            }
-        }
-        hRes = Process32Next(hSnapShot, &pEntry);
-    }
-    CloseHandle(hSnapShot);
 }
 
 /// @brief Kills both the simulation (DAISI.exe) and the replay blackbox (SDAReplay.exe) processes
