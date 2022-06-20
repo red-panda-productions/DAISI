@@ -261,7 +261,7 @@ RmTrackSelect(void *vs)
 {
 	MenuData = (tRmTrackSelect*)vs;
 
-        // DAISI change: Get track using GetTrack instead of race
+        // DAISI: Get track using GetTrack instead of race
 	// Get currently selected track for the current race type
 	// (or the first usable one in the selected category).
 	PCurTrack = MenuData->GetTrack();
