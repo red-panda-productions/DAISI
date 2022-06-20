@@ -23,7 +23,7 @@
     @version	$Id: racerunningmenus.cpp 6084 2015-08-21 00:07:15Z beaglejoe $
 */
 
-// DAISI CHANGE: Disable time modifier when unpausing and included ConfigEnums to force experiment setup
+// DAISI: Disable time modifier when unpausing and included ConfigEnums to force experiment setup
 #include <ConfigEnums.h>
 
 #include <cstdlib>
