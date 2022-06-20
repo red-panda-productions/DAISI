@@ -92,7 +92,7 @@ rmBackToRaceHookActivate(void * /* dummy */)
     // Back to the race screen in next display loop.
     LegacyMenu::self().activateGameScreen();
 
-    // DAISI CHANGE: Disable time modifier when unpausing
+    // DAISI: Disable time modifier when unpausing
 }
 
 static void *pvBackToRaceHookHandle = 0;
