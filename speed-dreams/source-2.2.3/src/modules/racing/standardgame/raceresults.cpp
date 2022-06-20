@@ -31,7 +31,7 @@
 #include <portability.h>
 #include <robot.h>
 
-// SIMUATED DRIVING ASSISTANCE: removed inclusion of webserver.h
+// DAISI: removed inclusion of webserver.h
 
 #include "standardgame.h"
 
