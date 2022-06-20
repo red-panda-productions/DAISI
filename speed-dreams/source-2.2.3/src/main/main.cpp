@@ -85,7 +85,7 @@ void ReleaseData(void)
 #endif
 // ... Use new Memory Manager
 
-// SIMULATED DRIVING ASSITANCE: Add HasValidRaceStartArguments
+// DAISI: Add HasValidRaceStartArguments
 /// @brief Check if the arguments given to speed dreams are valid: if text only is defined, startrace or replay need to have a value
 /// @param p_textOnly Whether text only is defined or not
 /// @param p_app The application itself

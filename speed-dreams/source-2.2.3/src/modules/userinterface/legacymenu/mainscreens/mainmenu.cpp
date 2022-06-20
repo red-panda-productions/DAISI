@@ -32,7 +32,7 @@
 
 static void *MenuHandle = 0;
 
-// SIMULATED DRIVING ASSITANCE: changed from race initialization to researcher menu initialization
+// DAISI: changed from race initialization to researcher menu initialization
 static void
 onResearcherSelectMenuActivate(void * /* dummy */)
 {

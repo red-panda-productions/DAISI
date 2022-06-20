@@ -39,7 +39,7 @@
 #include "IndicatorConfig.h"
 #include "Mediator.h"
 
-// SIMULATED DRIVING ASSITANCE: array to store the loaded (ssg) textures
+// DAISI: array to store the loaded (ssg) textures
 ssgSimpleState** m_textures;
 
 #define ALIGN_CENTER 0
