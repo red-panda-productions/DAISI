@@ -280,7 +280,7 @@ typedef struct RadioButtonInfo
     void* UserData; /**< Associated user data */
 } tRadioButtonInfo;
 
-// DAISI CHANGE: Added radiobutton-list information
+// DAISI: Added radiobutton-list information
 /// @brief Radio-button-list call-back information
 typedef struct RadioButtonListInfo
 {
