@@ -446,7 +446,7 @@ extern void gfuiReleaseEditbox(tGfuiObject *curObject);
 extern void gfuiReleaseCombobox(tGfuiObject *obj);
 extern void gfuiReleaseCheckbox(tGfuiObject *obj);
 extern void gfuiReleaseProgressbar(tGfuiObject *obj);
-// DAISI CHANGE: Added GfuiReleaseRadioButtonList and GfuiReleaseRadioButton
+// DAISI: Added GfuiReleaseRadioButtonList and GfuiReleaseRadioButton
 extern void GfuiReleaseRadioButtonList(tGfuiObject* p_obj);
 extern void GfuiReleaseRadioButton(tGfuiObject* p_obj);
 
