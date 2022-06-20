@@ -460,8 +460,8 @@ gfuiKeyboardDown(int key, int modifier, int /* x */, int /* y */)
 						&& key >= ' ' && key <= 'z')
 #else
 				|| (curKey->modifier == (modifier & (~GFUIM_SHIFT))
-					// DAISI CHANGE: Fix a debug assertion with pressing Shift (and perhaps other modifier keys) in conjunction with
-					// keys whose keycode is above the well-defined range for isprint (0�0xFF) (such as function keys, the keypad, or the arrow keys)
+					// DAISI: Fix a debug assertion with pressing Shift (and perhaps other modifier keys) in conjunction with
+					// keys whose keycode is above the well-defined range for isprint (0xFF) (such as function keys, the keypad, or the arrow keys)
 					// The keypress is ignored as long as the modifier key was pressed while pressing it
 					&& (key <= 0xFF && isprint(key)))
 #endif
