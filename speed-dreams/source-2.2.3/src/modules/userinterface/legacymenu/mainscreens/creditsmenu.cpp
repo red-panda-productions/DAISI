@@ -250,7 +250,7 @@ static void* creditsPageCreate(int startChapterIndex, int startRecordIndex)
 
 	GfParmReleaseHandle(hmenu);
 
-        // SIMULATED DRIVING ASSISTANCE: added default key controls
+        // DAISI: added default key controls
 	// Add standard keyboard shortcuts.
         GfuiMenuDefaultKeysAdd(hscrPage);
 	GfuiAddKey(hscrPage, GFUIK_ESCAPE, "Return to previous menu",

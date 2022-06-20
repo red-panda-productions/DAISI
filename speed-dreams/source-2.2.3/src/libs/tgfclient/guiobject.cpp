@@ -69,7 +69,7 @@ gfuiDrawString(int x, int y, GfuiFontClass *font, const char *string)
     glDisable(GL_TEXTURE_2D);
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief          Draws a string on the given position based on a specific font.
 /// @param p_x      The x position of the string
 /// @param p_y      The y position of the string
@@ -194,7 +194,7 @@ GfuiDraw(tGfuiObject *obj)
 		gfuiDrawProgressbar(obj);
 		break;
 
-    // SIMULATED DRIVING ASSISTANCE: Added radiobuttonlist and radiobutton
+    // DAISI: Added radiobuttonlist and radiobutton
     case GFUI_RADIOBUTTONLIST:
         GfuiDrawRadioButtonList(obj);
         break;
@@ -434,7 +434,7 @@ gfuiSelectNext(void * /* dummy */)
 	    
 	default:
 	    curObject = curObject->next;
-	    // SIMULATED DRIVING ASSISTANCE CHANGE: it now skips labels
+	    // DAISI: it now skips labels
 	    if ((curObject->focusMode != GFUI_FOCUS_NONE) &&
 		(curObject->state != GFUI_DISABLE) &&
 		(curObject->visible) &&
@@ -470,7 +470,7 @@ gfuiSelectPrev(void * /* dummy */)
 
 	default:
 	    curObject = curObject->prev;
-	    // SIMULATED DRIVING ASSISTANCE CHANGE: it now skips labels
+	    // DAISI: it now skips labels
 	    if ((curObject->focusMode != GFUI_FOCUS_NONE) &&
 		(curObject->state != GFUI_DISABLE) &&
 		(curObject->visible) &&
@@ -684,7 +684,7 @@ gfuiReleaseObject(tGfuiObject *curObject)
 	gfuiReleaseProgressbar(curObject);
 	break;
 
-    // SIMULATED DRIVING ASSISTANCE: Added radiobuttonlist and radiobutton
+    // DAISI: Added radiobuttonlist and radiobutton
     case GFUI_RADIOBUTTONLIST:
     GfuiReleaseRadioButtonList(curObject);
     break;

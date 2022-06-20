@@ -1561,7 +1561,7 @@ xmlGetOuputLine (struct parmHandle *parmHandle, char *buffer, int /* size */, bo
 			    s += sprintf (s, " unit=\"%s\"",curParam->unit);
 			}
 
-            // SIMULATED DRIVING ASSISTANCE: Use %f instead of %g to avoid rounding errors
+            // DAISI: Use %f instead of %g to avoid rounding errors
 			if (((forceMinMax) || (curParam->min != curParam->valnum)) && (curParam->min != -FLT_MAX)) 
 		    {
 				s += sprintf (s, " min=\"%f\"",

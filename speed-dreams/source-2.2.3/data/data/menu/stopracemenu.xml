@@ -30,7 +30,7 @@
 		<attnum name="yTopButton" val="330"/>
 		<attnum name="buttonShift" val="57"/>
 
-		<!--SIMULATED DRIVING ASSISTANCE: removed controls and force feedback-->
+		<!--DAISI: removed controls and force feedback-->
 		<!-- button texts and tips -->
 		<attstr name="restart.text" val="Restart"/>
 		<attstr name="restart.tip" val="Restart the experiment"/>

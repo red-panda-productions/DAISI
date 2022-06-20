@@ -53,7 +53,7 @@ class cGrBoard
 
     void grDispCounterBoard2();
 
-    // SIMULATED DRIVING ASSISTANCE: add display indicator methods
+    // DAISI: add display indicator methods
     void DispActiveIndicators();
     void DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture);
     void DispIndicatorText(tTextData* p_data);
@@ -83,7 +83,7 @@ private:
 
 extern void grInitBoardCar(tCarElt *car);
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 extern void LoadIndicatorTextures();
 
 #endif /* _GRBOARD_H_ */

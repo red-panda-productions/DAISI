@@ -60,7 +60,7 @@ static int MusicStateId;
 static float MusicVolumeValue = 100.0f;
 static int MusicVolumeValueId;
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 // Auditory interventions volume
 static float InterventionVolumeValue = 20.0f;
 static int InterventionVolumeControl;
@@ -126,7 +126,7 @@ static void readSoundCfg(void)
 	sprintf(buf, "%g", MusicVolumeValue);
 	GfuiEditboxSetString(scrHandle, MusicVolumeValueId, buf);
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     // Auditory interventions volume
     InterventionVolumeValue = GfParmGetNum(paramHandle, SND_SCT_INTERVENTION, SND_ATT_SOUND_VOLUME, "%", 100.0f);
     if (InterventionVolumeValue > 100.0f)
@@ -158,7 +158,7 @@ static void saveSoundOption(void *)
 	GfParmSetStr(paramHandle, SND_SCT_MUSIC, SND_ATT_MUSIC_STATE, musicStateList[curMusicState]);
 	GfParmSetNum(paramHandle, SND_SCT_MUSIC, SND_ATT_MUSIC_VOLUME, "%", MusicVolumeValue);
 
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     GfParmSetNum(paramHandle, SND_SCT_INTERVENTION, SND_ATT_SOUND_VOLUME, "%", InterventionVolumeValue);
 
 	GfParmWriteFile(NULL, paramHandle, "sound");
@@ -221,7 +221,7 @@ static void changeMusicVolume(void * )
     GfuiEditboxSetString(scrHandle, MusicVolumeValueId, buf);
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief Reads the value from the textbox, clamps it stores it as member and writes the value back.
 static void ChangeInterventionVolume(void*)
 {
@@ -265,7 +265,7 @@ void* SoundMenuInit(void *prevMenu)
 
 	void *param = GfuiMenuLoad("soundconfigmenu.xml");
 	GfuiMenuCreateStaticControls(scrHandle, param);
-    //SIMULATED DRIVING ASSISTANCE: removed sound fx system
+    //DAISI: removed sound fx system
         GfuiMenuCreateButtonControl(scrHandle,param,"CancelButton",prevMenu,GfuiScreenActivate);
 	GfuiMenuCreateButtonControl(scrHandle,param,"ApplyButton",NULL,saveSoundOption);
 
@@ -278,12 +278,12 @@ void* SoundMenuInit(void *prevMenu)
 
 	MusicVolumeValueId = GfuiMenuCreateEditControl(scrHandle,param,"musicvolumeedit",NULL,NULL,changeMusicVolume);
 
-	// SIMULATED DRIVING ASSISTANCE
+	// DAISI
 	InterventionVolumeControl = GfuiMenuCreateEditControl(scrHandle, param, "intervention-volume-edit", NULL, NULL, ChangeInterventionVolume);
 
 	GfParmReleaseHandle(param);
 
-        // SIMULATED DRIVING ASSISTANCE: add default key controls
+        // DAISI: add default key controls
         GfuiMenuDefaultKeysAdd(scrHandle);
 	GfuiAddKey(scrHandle, GFUIK_ESCAPE, "Cancel", prevMenu, GfuiScreenActivate, NULL);
 

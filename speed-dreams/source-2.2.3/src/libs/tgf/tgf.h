@@ -181,7 +181,7 @@ typedef struct Forces
  * Gaming framework managment *
  ******************************/
 
-// SIMULATED DRIVING ASSISTANCE: add clear macro's to enable/disable logging
+// DAISI: add clear macro's to enable/disable logging
 #define GF_LOGGING_ENABLE  true
 #define GF_LOGGING_DISABLE false
 

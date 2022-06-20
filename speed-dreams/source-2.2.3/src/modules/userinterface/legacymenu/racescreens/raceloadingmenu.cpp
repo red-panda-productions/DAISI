@@ -68,7 +68,7 @@ RmLoadingScreenStart(const char *title, const char *bgimg)
 
     GfuiMenuCreateStaticControls(HScreen, hmenu);
 
-    // SIMULATED DRIVING ASSISTANCE: removed title label
+    // DAISI: removed title label
 
 	// Get layout / coloring properties.
     NTextLines = (int)GfuiMenuGetNumProperty(hmenu, "nLines", 20);

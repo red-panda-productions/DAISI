@@ -75,7 +75,7 @@ class OpenalSoundInterface : public SoundInterface
 	virtual void mute(bool bOn = true);
 
 private:
-    // SIMULATED DRIVING ASSISTANCE
+    // DAISI
     void UpdateInterventionSounds(CarSoundData** p_carSoundData);
 };
 

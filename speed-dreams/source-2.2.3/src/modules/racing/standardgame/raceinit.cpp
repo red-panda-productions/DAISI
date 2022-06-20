@@ -50,7 +50,7 @@
 #include <racemanagers.h>
 #include <race.h>
 
-// SIMULATED DRIVING ASSISTANCE: removed inclusion of webserver.h
+// DAISI: removed inclusion of webserver.h
 
 #include "standardgame.h"
 
@@ -100,7 +100,7 @@ ReReset(void)
 // Race Engine cleanup
 void ReCleanup(void)
 {
-    // SIMULATED DRIVING ASSISTANCE: shut down updaters
+    // DAISI: shut down updaters
     ReShutdownUpdaters();
     ReSituation::terminate();
 
@@ -320,19 +320,19 @@ initStartingGrid(void)
     switch (curseg->type) {
       case TR_STR:
         car->_trkPos.toStart = ts;
-        // SIMULATED DRIVING ASSISTANCE: updated pole position to start in the middle of the road.
+        // DAISI: updated pole position to start in the middle of the road.
         RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TOMIDDLE);
         car->_yaw = curseg->angle[TR_ZS];
         break;
       case TR_RGT:
         car->_trkPos.toStart = ts / curseg->radius;
-        // SIMULATED DRIVING ASSISTANCE: updated pole position to start in the middle of the road.
+        // DAISI: updated pole position to start in the middle of the road.
         RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TOMIDDLE);
         car->_yaw = curseg->angle[TR_ZS] - car->_trkPos.toStart;
         break;
       case TR_LFT:
         car->_trkPos.toStart = ts / curseg->radius;
-        // SIMULATED DRIVING ASSISTANCE: updated pole position to start in the middle of the road.
+        // DAISI: updated pole position to start in the middle of the road.
         RtTrackLocal2Global(&(car->_trkPos), &(car->_pos_X), &(car->_pos_Y), TR_TOMIDDLE);
         car->_yaw = curseg->angle[TR_ZS] + car->_trkPos.toStart;
         break;
@@ -503,7 +503,7 @@ static tCarElt* reLoadSingleCar( int carindex, int listindex, int modindex, int 
 #endif
     GfLogInfo("Driver's name: %s\n", curModInfo->name);
 
-  // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman
+  // DAISI: add check for assistedhuman
   isHuman = strcmp( cardllname, "human" ) == 0 || strcmp( cardllname, "networkhuman" ) == 0 || strcmp(cardllname, "assistedhuman") == 0;
 
   /* Extended is forced for humans, so no need to increase robotIdx */
@@ -858,7 +858,7 @@ ReInitCars(void)
         snprintf(buf, sizeof(buf), "drivers/%s/%s.xml", robotModuleName, robotModuleName);
         robhdle = GfParmReadFile(buf, GFPARM_RMODE_STD);
       }
-      // SIMULATED DRIVING ASSISTANCE: add check for assistedhuman
+      // DAISI: add check for assistedhuman
       if (robhdle && (strcmp(robotModuleName, "human") == 0 || strcmp(robotModuleName, "networkhuman") == 0 || strcmp(robotModuleName, "assistedhuman") == 0))
       {
         /* Human driver */
@@ -972,7 +972,7 @@ ReInitCars(void)
 #endif
   }
 
-  // SIMULATED DRIVING ASSISTANCE: removed WebServer functionality (WebServer lap logger)
+  // DAISI: removed WebServer functionality (WebServer lap logger)
 
   ReInfo->_rePitRequester = 0;
 

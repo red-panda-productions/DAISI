@@ -20,7 +20,7 @@ ENDIF(NOT OPTION_USE_MACPORTS)
 SET(_OTHER_SOURCES ) 
 
 ADD_INTERFACE_INCLUDEDIR()
-# SIMULATED DRIVING ASSISTANCE: Add frontend
+# DAISI: Add frontend
 ADD_SDLIB_INCLUDEDIR(portability math tgf tgfclient robottools frontend backend rppUtils)
 ADD_PLIB_INCLUDEDIR()
 
