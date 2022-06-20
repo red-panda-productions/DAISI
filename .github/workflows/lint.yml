@@ -46,7 +46,7 @@ jobs:
       - uses: actions/setup-python@v3
 
       - name: Install linter package
-        run: python3 -m pip install git+https://github.com/shenxianpeng/cpp-linter-action.git@825315d1c819335a496c8d2d6b5b504e5d2c982
+        run: python3 -m pip install git+https://github.com/shenxianpeng/cpp-linter-action.git@c825315d1c819335a496c8d2d6b5b504e5d2c982
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
