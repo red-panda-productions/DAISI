@@ -44,7 +44,7 @@ static int curPlayerIdx = 0;
 // Abort race hook ******************************************************
 static void *pvAbortRaceHookHandle = 0;
 
-// SIMULATED DRIVING ASSISTANT: Go to the show end of experiment screen instead of start screen
+// DAISI: Go to the show end of experiment screen instead of start screen
 static void
 rmAbortRaceHookActivate(void * /* dummy */)
 {
@@ -109,7 +109,7 @@ RmBackToRaceHookInit()
 // Restart race hook ***************************************************
 static void *pvRestartRaceHookHandle = 0;
 
-// SIMULATED DRIVING ASSISTANT: go to the save menu screen
+// DAISI: go to the save menu screen
 static void
 rmRestartRaceHookActivate(void * /* dummy */)
 {

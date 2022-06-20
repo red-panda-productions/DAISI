@@ -524,7 +524,7 @@ void LegacyMenu::onRaceEventFinishing()
     }
 }
 
-// SIMULATED DRIVING ASSISTANT: remove showing standings
+// DAISI: remove showing standings
 void LegacyMenu::showStandings()
 {
     // Create the "Race Engine update state" hook if not already done.
