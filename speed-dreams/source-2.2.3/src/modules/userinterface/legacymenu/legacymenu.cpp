@@ -99,7 +99,7 @@ bool LegacyMenu::backLoad()
     // (to be able to get back to them, even when directly starting a given race).
 
 
-    // DAISI CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
+    // DAISI: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
     if (!ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers))))
         return false;
 
