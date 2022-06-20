@@ -31,8 +31,7 @@
     strcpy_s(testSettings.PublicCertFilePath, SETTINGS_NAME_LENGTH, "public.txt"); \
     strcpy_s(testSettings.PrivateCertFilePath, SETTINGS_NAME_LENGTH, "private.txt")
 
-#define TEST_DATA_DIRECTORY           "databaseTestData" OS_SEPARATOR
-#define FULL_TEST_DATA_PATH(filename) SD_DATADIR_SRC TEST_DATA_DIRECTORY "testSimulationData" OS_SEPARATOR filename
+#define FULL_TEST_DATA_PATH(p_filename) SD_DATADIR_SRC "databaseTestData" OS_SEPARATOR p_filename
 
 #define VALID_META_DATA FULL_TEST_DATA_PATH("meta-data-intervention-0.txt")
 #define VALID_TIMESTEPS FULL_TEST_DATA_PATH("timesteps-buffer.csv")
@@ -59,7 +58,7 @@
     std::string output = testing::internal::GetCapturedStderr(); \
     ASSERT_THAT(output, Not(testing::HasSubstr(errorMsg)));
 
-/// @brief Tests whether connection to the database fails due to invalid certificates.
+/// @brief Tests whether connection to the database fails due to unknown certificate files.
 TEST(SQLDatabaseStorageTests, TestOpenDatabaseFailSSL)
 {
     MAKE_TEST_SETTINGS;
