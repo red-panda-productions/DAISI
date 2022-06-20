@@ -31,7 +31,7 @@
 #include <playerpref.h>
 #include <robot.h>
 
-// DAISI CHANGE: Removed include for force feedback config
+// DAISI: Removed include for force feedback config
 
 
 extern RmProgressiveTimeModifier rmProgressiveTimeModifier;
