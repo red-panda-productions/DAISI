@@ -327,7 +327,7 @@ void ReSituationUpdater::runOneStep(double deltaTimeIncrement)
     GfProfStartProfile("rbDrive*");
     GfSchedBeginEvent("raceupdate", "robots");
     if ((s->currentTime - pCurrReInfo->_reLastRobTime) >= RCM_MAX_DT_ROBOTS) {
-        // DAISI CHANGE: Make delta time consistent
+        // DAISI: Make delta time consistent
         s->deltaTime = RCM_MAX_DT_ROBOTS;
         tRobotItf *robot;
         for (int i = 0; i < s->_ncars; i++) {
