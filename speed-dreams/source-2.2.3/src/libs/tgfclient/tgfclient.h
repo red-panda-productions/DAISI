@@ -556,7 +556,7 @@ TGFCLIENT_API void GfuiCheckboxSetText(void* scr, int id, const char *text);
 TGFCLIENT_API void GfuiCheckboxSetTextColor(void* scr, int id, const GfuiColor& color);
 TGFCLIENT_API bool GfuiCheckboxIsChecked(void* scr, int id);
 
-// DAISI CHANGE: Added radio button list functions and radio button functions
+// DAISI: Added radio button list functions and radio button functions
 /* Radio Button Lists */
 TGFCLIENT_API int GfuiRadioButtonListCreate(void* p_scr, int p_font, int p_x, int p_y,
                                             int p_imageWidth, int p_imageHeight, const char** p_pszText,
