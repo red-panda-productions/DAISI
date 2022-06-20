@@ -337,7 +337,7 @@ RmStopRaceMenu()
             curPlayerIdx = j+1;
 
 
-            // DAISI CHANGE: Removed force feedback button
+            // DAISI: Removed force feedback button
         }
     }
 #endif
