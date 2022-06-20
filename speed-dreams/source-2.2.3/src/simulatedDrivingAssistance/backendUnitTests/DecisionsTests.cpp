@@ -277,7 +277,7 @@ TEST_P(DecisionTestCombinatorialFloat, MultipleIndicatorTest)
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the accelerate amount is above the STANDARD_THRESHOLD_ACCEL, INTERVENTION_ACTION_ACCELERATE indicator should be active
-    if (accelDecision.GetInterventionAmount() > STANDARD_THRESHOLD_ACCEL || SMediator::GetInstance()->GetInterventionType() == INTERVENTION_TYPE_AUTONOMOUS_AI)
+    if (accelDecision.GetInterventionAmount() > STANDARD_THRESHOLD_ACCEL)
     {
         ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
     }
