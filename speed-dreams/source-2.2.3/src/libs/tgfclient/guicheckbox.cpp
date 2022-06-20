@@ -139,7 +139,7 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	if (height > gfuiFont[font]->getHeight())
 		yl += (height -  gfuiFont[font]->getHeight()) / 2;
 
-        // DAISI CHANGE: added the hint to the label
+        // DAISI: added the hint to the label
         checkbox->labelId =
             GfuiLabelCreate(scr, pszText, font, xl, yl, 0, GFUI_ALIGN_HL, (int)strlen(pszText),
                             nullptr, nullptr, userDataOnFocus, onFocus, onFocusLost);
