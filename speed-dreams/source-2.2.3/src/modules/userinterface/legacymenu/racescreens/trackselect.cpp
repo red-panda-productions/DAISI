@@ -319,7 +319,7 @@ RmTrackSelect(void *vs)
 	DescLine1LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description1label");
 	DescLine2LabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "description2label");
 	LengthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "lengthlabel");
-    // SIMULATED DRIVING ASSISTNACE: added label control for estimated time label
+    // DAISI: added label control for estimated time label
     EstimatedTimeLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "estimatedtimelabel");
 	WidthLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "widthlabel");
 	MaxPitsLabelId = GfuiMenuCreateLabelControl(ScrHandle, hparmMenu, "pitslabel");

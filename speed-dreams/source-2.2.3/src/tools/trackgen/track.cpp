@@ -307,7 +307,7 @@ InitScene(tTrack *Track, void *TrackHandle, int bump)
     printf("version   = %d\n", Track->version);
     printf("length    = %f\n", Track->length);
     printf("width     = %f\n", Track->width);
-   // SIMULATED DRIVING ASSISTNACE: added printf for printing the estimated time of a track
+   // DAISI: added printf for printing the estimated time of a track
     printf("time     = %f\n", Track->Time);
     printf("pits segs = %d\n", Track->pits.nPitSeg);
     printf("pits      = %d\n", Track->pits.nMaxPits);
