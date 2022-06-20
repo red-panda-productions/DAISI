@@ -881,7 +881,7 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
     return id;
 }
 
-// DAISI CHANGE: Added GfuiMenuCreateRadioButtonListControl
+// DAISI: Added GfuiMenuCreateRadioButtonListControl
 /// @brief            Creates the controls for a radiobutton-list
 /// @param p_hscr     The menu screen handle
 /// @param p_hparm    The menu information
