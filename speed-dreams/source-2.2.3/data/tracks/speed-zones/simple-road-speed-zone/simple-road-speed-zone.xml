@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-file                : Highway_with_Curves.xml
-auto generated      : by Track Editor
-version             : v 0.6.0 24/4/2005
-copyright           : (C) 2005 by Charalampos Alexopoulos
-email               : 
--->
+  ~ This program has been developed by students from the bachelor Computer Science at
+  ~ Utrecht University within the Software Project course.
+  ~ © Copyright Utrecht University (Department of Information and Computing Sciences)
+  -->
 <!--
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by
