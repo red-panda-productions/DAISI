@@ -193,6 +193,9 @@ void SocketTest(void (*p_blackboxFunction)(), bool p_async)
         // tests if the drive situation is expected
         TestDriveSituation(driveSituation4, exampleSituation);
 
+        // wait to make sure the blackbox can get to a finishing state
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+
         ASSERT_EQ(client.SendData(sbuffer.data(), sbuffer.size()), IPCLIB_SUCCEED);
     }
 
