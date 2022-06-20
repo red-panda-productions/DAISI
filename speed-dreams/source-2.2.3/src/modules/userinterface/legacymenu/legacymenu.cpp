@@ -33,7 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-// DAISI CHANGE: included ResearcherMenu.h, DataSelectionMenu.h
+// DAISI: included ResearcherMenu.h, DataSelectionMenu.h
 #include "ResearcherMenu.h"
 #include "DataSelectionMenu.h"
 
