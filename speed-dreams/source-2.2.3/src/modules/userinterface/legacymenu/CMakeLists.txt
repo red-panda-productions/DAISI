@@ -77,7 +77,7 @@ ADD_INTERFACE_INCLUDEDIR()
 
 
 
-# DAISI CHANGE: added backend and UnitTestUtilities
+# DAISI: added backend and UnitTestUtilities
 ADD_SDLIB_INCLUDEDIR(math portability tgf tgfclient tgfdata backend ${NETWORKING_INC} unitTestUtilities rppUtils)
 
 ADD_PLIB_INCLUDEDIR()
