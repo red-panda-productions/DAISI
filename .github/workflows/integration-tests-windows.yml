@@ -1,4 +1,4 @@
-name: CI Pipeline Integration Tests Windows
+name: Integration Tests Windows
 
 on:
   push:
