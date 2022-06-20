@@ -11,7 +11,7 @@
 class IPCLIB_EXPORT ReceivingThread
 {
 public:
-    explicit ReceivingThread(const std::function<void()>& p_receiveDataFunc);
+    explicit ReceivingThread(const std::function<int()>& p_receiveDataFunc);
 
     bool HasReceivedMessage() const;
 
@@ -36,7 +36,7 @@ private:
 
     int m_error = IPCLIB_SUCCEED;
 
-    std::function<void()>* m_receiveDataFunc = nullptr;
+    std::function<int()>* m_receiveDataFunc = nullptr;
 
     std::thread* m_thread = nullptr;
 };
@@ -52,7 +52,7 @@ public:
     bool GetData(char* p_dataBuffer, int p_size);
 
 private:
-    void ReceiveData();
+    int ReceiveData();
 
     bool m_internalReceive = false;
     bool m_externalReceive = false;

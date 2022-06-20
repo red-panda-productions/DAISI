@@ -163,6 +163,10 @@ tRmTrackSelect m_trackMenuSettings;
 // Blackbox Test result
 int m_blackBoxTestResultControl;
 
+/// @brief Performs tests on the blackbox to determine the speed of the blackbox.
+/// @param p_blackbox  The blackbox to test
+/// @param p_result    OUT result variable containing the average time for the tests to complete
+/// @param p_terminate A boolean callback to terminate the initialization
 static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* p_result, bool* p_terminate)
 {
     TestSegments segments = GenerateSegments();
@@ -175,11 +179,17 @@ static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* p_result, bool* 
         situations[i] = GenerateSituation();
         testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
     }
+
+    // Run test and cleanup
     StartExecutable(m_blackBoxFilePath);
     auto start = std::chrono::system_clock::now();
     p_blackbox->Initialize(false, testData[0], testData, BLACK_BOX_TESTS, p_terminate);
     auto end = std::chrono::system_clock::now();
     p_blackbox->Shutdown();
+    filesystem::path exe(m_blackBoxFilePath);
+    KillProcessByName(exe.filename().string().c_str());
+
+    // Calculate the average response time of the blackbox and store it in the OUT parameter
     *p_result = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() / BLACK_BOX_TESTS);
 }
 
@@ -191,25 +201,17 @@ static void TestBlackBoxAsync()
     GfuiLabelSetText(s_scrHandle, m_blackBoxTestResultControl, MSG_BLACK_BOX_TESTING);
 
     SSocketBlackBox* blackbox = new SSocketBlackBox();
-    // Divided by BLACK_BOX_TESTS to calculate the average response time of the blackbox
     long milliseconds = -1;
     bool terminate = false;
 
     std::thread t = std::thread(RunBlackBoxTests, blackbox, &milliseconds, &terminate);
-
     std::this_thread::sleep_for(std::chrono::milliseconds(SLOW_TIME * BLACK_BOX_TESTS));
-
     if (milliseconds == -1) terminate = true;
-
     t.join();
 
     delete blackbox;
 
-    if (terminate)
-    {
-        milliseconds = SLOW_TIME;
-    }
-
+    if (terminate) milliseconds = SLOW_TIME;
     std::string time = " (" + std::to_string(milliseconds) + "ms)";
 
     if (milliseconds >= SLOW_TIME)
