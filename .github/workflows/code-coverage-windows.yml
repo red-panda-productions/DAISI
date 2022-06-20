@@ -1,4 +1,4 @@
-name: CI Pipeline Code Coverage Windows
+name: Code Coverage Windows
 
 on:
   push:

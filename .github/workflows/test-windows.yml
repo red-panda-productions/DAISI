@@ -1,4 +1,4 @@
-name: CI Pipeline Tests Windows
+name: Unit Tests Windows
 
 on:
   push:

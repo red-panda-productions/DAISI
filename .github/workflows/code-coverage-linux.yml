@@ -1,4 +1,4 @@
-name: CI Pipeline Code Coverage Linux
+name: Code Coverage Linux
 
 on:
   push:

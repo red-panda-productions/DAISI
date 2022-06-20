@@ -1,4 +1,4 @@
-name: CI Pipeline Tests Linux
+name: Unit Tests Linux
 
 on:
   push:
