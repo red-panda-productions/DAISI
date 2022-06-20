@@ -464,7 +464,7 @@ rmAddKeys()
     GfuiAddKey(rmScreenHandle, '+', "Accelerate time",   (void*)+1, rmTimeMod, NULL);
     GfuiAddKey(rmScreenHandle, '.', "Restore real time", (void*)0, rmTimeMod, NULL);
 	
-    // DAISI CHANGE: Removed pause button
+    // DAISI: Removed pause button
 
     GfuiAddKey(rmScreenHandle, 'q', GFUIM_ALT, "Quit game now, save nothing",    (void*)RE_STATE_EXIT, rmApplyState, NULL);
     GfuiAddKey(rmScreenHandle, ' ', "Skip pre-start",    (void*)0, rmSkipPreStart, NULL);
