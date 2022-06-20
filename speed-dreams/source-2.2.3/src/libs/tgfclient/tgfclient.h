@@ -271,7 +271,7 @@ typedef struct CheckBoxInfo
     void        *userData;      /**< Associated user data */
 } tCheckBoxInfo;
 
-// DAISI CHANGE: Added radiobutton information
+// DAISI: Added radiobutton information
 /// @brief Radio-button call-back information
 typedef struct RadioButtonInfo
 {
