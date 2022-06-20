@@ -304,7 +304,7 @@ typedef struct GfuiObject
         tGfuiCombobox combobox;
         tGfuiCheckbox checkbox;
         tGfuiProgressbar progressbar;
-        /* DAISI CHANGE: added radiobuttons and radiobuttonlists */
+        /* DAISI: added radiobuttons and radiobuttonlists */
         tGfuiRadioButtonList radiobuttonlist;
         tGfuiRadioButton radiobutton;
     } u;
