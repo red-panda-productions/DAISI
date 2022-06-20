@@ -120,7 +120,7 @@ TGFCLIENT_API tScreenSize* GfScrGetDefaultSizes(int* pnSizes);
 #define GFUI_COMBOBOX	6
 #define GFUI_CHECKBOX	7
 #define GFUI_PROGRESSBAR 8
-// DAISI CHANGE: added radiobutton and radiobuttonlist types
+// DAISI: added radiobutton and radiobuttonlist types
 #define GFUI_RADIOBUTTON     9
 #define GFUI_RADIOBUTTONLIST 10
 
