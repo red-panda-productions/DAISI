@@ -1,3 +1,9 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
 #include <experimental/filesystem>
 
