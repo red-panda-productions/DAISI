@@ -23,7 +23,7 @@
 #include <GL/glext.h>
 #endif
 
-// DAISI CHANGE: Included ConfigEnums to force experiment setup
+// DAISI: Included ConfigEnums to force experiment setup
 #include <ConfigEnums.h>
 
 #include <plib/ssg.h>
