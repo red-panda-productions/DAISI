@@ -1,7 +1,7 @@
 INCLUDE(../../../../cmake/macros.cmake)
 
 SET(MS mainscreens)
-# DAISI CHANGE: added InterventionMenu.h and .cpp, DataSelectionMenu.h and .cpp and DatabaseSettingsMenu.h and .cpp
+# DAISI: added InterventionMenu.h and .cpp, DataSelectionMenu.h and .cpp and DatabaseSettingsMenu.h and .cpp
 SET(MAINSCREENS_SOURCES ${MS}/splash.cpp
                         ${MS}/mainmenu.cpp
                         ${MS}/ResearcherMenu.cpp
