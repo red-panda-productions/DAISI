@@ -230,7 +230,7 @@ typedef struct
     tfuiCheckboxCallback onChange;
 } tGfuiCheckbox;
 
-// DAISI CHANGE: Added radiobutton type and radiobutton-list type
+// DAISI: Added radiobutton type and radiobutton-list type
 /// @brief Radio Button type
 typedef struct
 {
