@@ -686,7 +686,7 @@ TGFCLIENT_API int GfuiMenuCreateComboboxControl(void* hscr, void* hparm, const c
 TGFCLIENT_API int GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,
                                                 void* userData, tfuiCheckboxCallback onChange);
 
-// DAISI CHANGE: Added GfuiMenuCreateRadioButtonListControl
+// DAISI: Added GfuiMenuCreateRadioButtonListControl
 TGFCLIENT_API int GfuiMenuCreateRadioButtonListControl(void* p_hscr, void* p_hparm, const char* p_pszName,
                                                        void* p_userData, tfuiRadioButtonCallback p_onChange);
 
