@@ -90,7 +90,7 @@ GfuiCheckboxCreate(void *scr, int font, int x, int y, int imagewidth, int imageh
 	checkbox->pInfo->userData = userData;
 	checkbox->scr = scr;
 
-	// DAISI CHANGE: added onFocus to unchecked Radiobuttons and focused images: checked-focused and unchecked-focused
+	// DAISI: added onFocus to unchecked Radiobuttons and focused images: checked-focused and unchecked-focused
 	// Initialize the checked and unchecked button children.
 	// Warning: All the images are supposed to be the same size.
 	// TODO: Make graphic properties XML-customizable (images, ...)
