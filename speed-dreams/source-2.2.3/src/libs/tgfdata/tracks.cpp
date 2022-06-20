@@ -528,7 +528,7 @@ int GfTrack::getMaxNumOfPitSlots() const
 	return _nMaxPitSlots;
 }
 
-// SIMULATED DRIVING ASSISTANCE: added the GetEstimatedTime function
+// DAISI: added the GetEstimatedTime function
 /// @brief  Gets the estimated time it takes to complete one round of a track
 /// @return The estimated time it takes to complete one round of a track
 float GfTrack::GetEstimatedTime() const
@@ -539,7 +539,7 @@ float GfTrack::GetEstimatedTime() const
     return EstimatedTime;
 }
 
-// SIMULATED DRIVING ASSISTANCE: added GetSpeedLimit function
+// DAISI: added GetSpeedLimit function
 /// @brief  Gets the speed limit of the track
 /// @return The speed limit of the track which is either 80 km/h or 100 km/h
 float GfTrack::GetSpeedLimit() const
@@ -603,7 +603,7 @@ void GfTrack::setWidth(float fWidth)
 	_fWidth = fWidth;
 }
 
-// SIMULATED DRIVING ASSISTANCE: added the SetEstimatedTime function
+// DAISI: added the SetEstimatedTime function
 /// @brief Calculates and sets the estimated time it takes to complete a track
 ///        Formulate to get to time in minutes: getLength is in meters and getSpeedLimit is in km/h
 void GfTrack::SetEstimatedTime()
@@ -655,7 +655,7 @@ bool GfTrack::load() const
 	_nMaxPitSlots = pTrack->pits.nMaxPits;
 
 	
-    /// SIMULATED DRIVING ASSISTANCE: added EstimatedTime and SpeedLimit
+    /// DAISI: added EstimatedTime and SpeedLimit
     EstimatedTime = pTrack->Time;
     SpeedLimit = pTrack->SpeedLimit;
 

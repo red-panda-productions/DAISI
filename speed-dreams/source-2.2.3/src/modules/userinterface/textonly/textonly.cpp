@@ -30,7 +30,7 @@
 
 #include "textonly.h"
 
-// SIMULATED DRIVING ASSISTANCE: Include filesystem, recorder for defines, Mediator and RPPUtils
+// DAISI: Include filesystem, recorder for defines, Mediator and RPPUtils
 #include "FileSystem.hpp"
 #include "Recorder.h"
 #include "Mediator.h"
@@ -89,7 +89,7 @@ TextOnlyUI::TextOnlyUI(const std::string& strShLibName, void* hShLibHandle)
 {
 }
 
-// SIMULATED DRIVING ASSISTANCE: Add LoadReplayConfiguration()
+// DAISI: Add LoadReplayConfiguration()
 /// @brief              Load the replay configuration from a file into the mediator.
 /// @param p_selRaceMan The pointer that should point to the replay race manager.
 /// @return             true if the replay configuration was loaded successfully
@@ -118,7 +118,7 @@ bool TextOnlyUI::activate()
 {
     // Get the race to start.
     std::string strRaceToStart;
-    // SIMULATED DRIVING ASSITANCE: Add replay check
+    // DAISI: Add replay check
     GfRaceManager* pSelRaceMan = nullptr;
     if(GfApp().hasOption("startrace", strRaceToStart))
     {

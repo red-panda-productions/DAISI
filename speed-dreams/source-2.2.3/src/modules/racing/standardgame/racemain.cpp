@@ -728,7 +728,7 @@ RePreRacePause(void)
         if ((ReSessionHasHuman()) && (true == ReUI().onRaceStartingPaused()))
         {
             mode = RM_ASYNC | RM_NEXT_STEP;
-            /// SIMULATED DRIVING ASSISTANCE: changed the message so that it communicates that the experiment is about to start
+            /// DAISI: changed the message so that it communicates that the experiment is about to start
             ReSituation::self().setRaceMessage("Hit <Enter> to Start Experiment",-1/*always*/, /*big=*/true);
             ReStop();
         }
@@ -1296,10 +1296,10 @@ ReRaceCooldown()
     if (RM_DISP_MODE_NORMAL == ReInfo->_displayMode)
     {
         // check if there is a human player AND if cooldown is enabled through the UI
-        /// SIMULATED DRIVING ASSISTANCE: removed check on whether cooldown is enabled through UI or not
+        /// DAISI: removed check on whether cooldown is enabled through UI or not
         if (ReSessionHasHuman())
         {
-            // SIMULATED DRIVING ASSISTANCE: removed message to hit enter for results
+            // DAISI: removed message to hit enter for results
             // and removed enabling of the actual cooldown
             mode = RE_STATE_RACE_END;
         }

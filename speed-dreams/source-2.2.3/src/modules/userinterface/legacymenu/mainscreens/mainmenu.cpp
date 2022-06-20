@@ -32,7 +32,7 @@
 
 static void *MenuHandle = 0;
 
-// SIMULATED DRIVING ASSITANCE: changed from race initialization to researcher menu initialization
+// DAISI: changed from race initialization to researcher menu initialization
 static void
 onResearcherSelectMenuActivate(void * /* dummy */)
 {
@@ -59,7 +59,7 @@ onCreditsMenuActivate(void * /* dummy */)
     CreditsMenuActivate(MenuHandle);
 }
 
-// SIMULATED DRIVING ASSISTANCE: added parameters
+// DAISI: added parameters
 static void
 onExitMenuActivate(void * /*dummy*/)
 {
@@ -106,7 +106,7 @@ MainMenuInit(bool SupportsHumanDrivers)
     GfuiMenuCreateStaticControls(MenuHandle, menuDescHdle);
 
     //Add buttons and create based on xml
-    // SIMULATED DRIVING ASSISTANCE: changed button name from race to start
+    // DAISI: changed button name from race to start
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "start", NULL, onResearcherSelectMenuActivate);
     //GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "weekend", NULL, onRaceWESelectMenuActivate);
     GfuiMenuCreateButtonControl(MenuHandle, menuDescHdle, "options", NULL, onOptionsMenuActivate);

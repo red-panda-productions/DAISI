@@ -217,7 +217,7 @@ gfuiMenuGetBoolean(const char* pszValue, bool bDefault)
     return bDefault;
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief         Converts a boolean into a menu bool str 'yes' or 'no'
 /// @param p_bool  The boolean to base the conversion on
 /// @return        The resulting string 'yes' or 'no'
@@ -226,7 +226,7 @@ const char* GfuiMenuBoolToStr(bool p_bool)
     return p_bool ? GFMNU_VAL_YES : GFMNU_VAL_NO;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGED: renamed this function and removed the static keyword
+// DAISI: renamed this function and removed the static keyword
 /// @brief              Retrieves the boolean value of a given control
 /// @param hparm        The file handle to search
 /// @param pszPath      The xml path in the file to look for the field
@@ -873,7 +873,7 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
                             pszText, bChecked, userData, onChange,
                             userDataOnFocus, onFocus, onFocusLost);
 
-    // SIMULATED DRIVING ASSISTANCE: fixed the xml path given to getControlColor function
+    // DAISI: fixed the xml path given to getControlColor function
     GfuiColor c = getControlColor(hparm, strControlPath.c_str(), GFMNU_ATTR_COLOR);
     if (c.alpha)
         GfuiCheckboxSetTextColor(hscr, id, c);
@@ -881,7 +881,7 @@ GfuiMenuCreateCheckboxControl(void* hscr, void* hparm, const char* pszName,void*
     return id;
 }
 
-// SIMULATED DRIVING ASSISTANCE CHANGE: Added GfuiMenuCreateRadioButtonListControl
+// DAISI: Added GfuiMenuCreateRadioButtonListControl
 /// @brief            Creates the controls for a radiobutton-list
 /// @param p_hscr     The menu screen handle
 /// @param p_hparm    The menu information

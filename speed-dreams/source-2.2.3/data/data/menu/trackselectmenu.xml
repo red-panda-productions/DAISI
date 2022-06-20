@@ -33,7 +33,7 @@
 
 <section name="dynamic controls">
 
-    <!-- SIMULATED DRIVING ASSISTANCE: changed size and position of track category -->
+    <!-- DAISI: changed size and position of track category -->
 <!-- Track category -->
 	<section name="trackcatleftarrow">
 		<attstr name="type" val="image button"/>
@@ -68,7 +68,7 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="medium"/>
 	</section>
-    <!-- SIMULATED DRIVING ASSISTANCE: changed size and position of track -->
+    <!-- DAISI: changed size and position of track -->
 <!-- Track -->
 	<section name="trackleftarrow">
 		<attstr name="type" val="image button"/>
@@ -139,7 +139,7 @@
 		<attstr name="color" val="0xFFFFFF"/>
 		<attstr name="font" val="small_t"/>
 	</section>
-    <!-- SIMULATED DRIVING ASSISTANCE: added estimated time label and removed pits label-->
+    <!-- DAISI: added estimated time label and removed pits label-->
     <section name="estimatedtimelabel">
         <attstr name="type" val="label"/>
         <attnum name="max len" val="10"/>
@@ -247,7 +247,7 @@
 		<attnum name="y" val="158"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
-    <!-- SIMULATED DRIVING ASSISTANCE: replaced number of pit stops with estimated time -->
+    <!-- DAISI: replaced number of pit stops with estimated time -->
     <section name="5">
         <attstr name="type" val="label"/>
         <attstr name="text" val="Time:"/>
@@ -264,7 +264,7 @@
 		<attnum name="y" val="118"/>
 		<attstr name="color" val="0xFFFFFF"/>
 	</section>
-    <!-- SIMULATED DRIVING ASSISTANCE: added category and track label-->
+    <!-- DAISI: added category and track label-->
     <section name="7">
         <attstr name="type" val="label"/>
         <attstr name="text" val="Category:"/>

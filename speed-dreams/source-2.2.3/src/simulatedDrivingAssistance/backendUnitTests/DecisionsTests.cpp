@@ -39,7 +39,7 @@
         /* Needs to be on something other than NO_SIGNALS to retrieve active indicators*/                                     \
         SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_SHARED_CONTROL);                                      \
                                                                                                                               \
-        AllowedActions allowedActions;                                                                                        \
+        AllowedActions allowedActions{};                                                                                      \
         allowedActions.Steer = true;                                                                                          \
         allowedActions.Brake = true;                                                                                          \
         allowedActions.Accelerate = true;                                                                                     \
@@ -71,6 +71,20 @@ class DecisionTestCombinatorial : public ::testing::TestWithParam<std::tuple<boo
 {
 private:
     tCarElt* m_car;
+
+public:
+    /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
+    SETUP_DECISION_TEST
+
+    /// @brief deletes the car from the heap at the end of a test
+    TEARDOWN_DECISION_TEST
+};
+
+// testing fixture for decision tests
+class DecisionTestCombinatorialFloat : public ::testing::TestWithParam<std::tuple<float, float>>
+{
+private:
+    tCarElt* m_car = nullptr;
 
 public:
     /// @brief Initializes the mediator with a car with brake, accel, and steer values of 0
@@ -185,7 +199,6 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     steerDecision.RunInterveneCommands(allowedActions);
     steerDecision.RunIndicateCommands();
 
-    // TODO: Update to have multiple indicators when indicator code is updated
     auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
 
     // if the steer amount is above the STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_LEFT indicator should be active
@@ -237,3 +250,54 @@ TEST_P(DecisionTest, AccelRunIndicateTests)
 }
 INSTANTIATE_TEST_SUITE_P(AccelRunIndicateTests, DecisionTest,
                          ::testing::Values(INT_MIN, -99, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, 2, 99, INT_MAX));
+
+TEST_P(DecisionTestCombinatorialFloat, MultipleIndicatorTest)
+{
+    SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_SHARED_CONTROL);
+
+    // Load indicators from XML used for assisting the human with visual/audio indicators.
+    char path[PATH_BUF_SIZE];
+    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
+
+    tAllowedActions allowedActions;
+    allowedActions.Steer = true;
+    allowedActions.Accelerate = true;
+
+    AccelDecision accelDecision = {};
+    accelDecision.SetInterventionAmount(std::get<0>(GetParam()));
+    accelDecision.RunInterveneCommands(allowedActions);
+    accelDecision.RunIndicateCommands();
+
+    SteerDecision steerDecision = {};
+    steerDecision.SetInterventionAmount(std::get<1>(GetParam()));
+    steerDecision.RunInterveneCommands(allowedActions);
+    steerDecision.RunIndicateCommands();
+
+    auto activeIndicators = IndicatorConfig::GetInstance()->GetActiveIndicators();
+
+    // if the accelerate amount is above the STANDARD_THRESHOLD_ACCEL, INTERVENTION_ACTION_ACCELERATE indicator should be active
+    if (accelDecision.GetInterventionAmount() > STANDARD_THRESHOLD_ACCEL)
+    {
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
+    }
+    else
+    {
+        ASSERT_FALSE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_SPEED_ACCEL));
+    }
+
+    // if the steer amount is above the STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_LEFT indicator should be active
+    if (steerDecision.GetInterventionAmount() > STANDARD_THRESHOLD_STEER)
+    {
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_LEFT));
+    }
+    // if the steer amount is below the -STANDARD_THRESHOLD_STEER, INTERVENTION_ACTION_TURN_RIGHT indicator should be active
+    else if (steerDecision.GetInterventionAmount() < -STANDARD_THRESHOLD_STEER)
+    {
+        ASSERT_TRUE(ActiveIndicatorsContains(activeIndicators, INTERVENTION_ACTION_STEER_RIGHT));
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(MultipleIndicatorTest, DecisionTestCombinatorialFloat,
+                         ::testing::Combine(::testing::Values(INT_MIN, -1, STANDARD_THRESHOLD_ACCEL, 0, STANDARD_THRESHOLD_ACCEL, 1, INT_MAX),
+                                            ::testing::Values(INT_MIN, -1, -STANDARD_THRESHOLD_STEER, 0, STANDARD_THRESHOLD_STEER, 1, INT_MAX)));

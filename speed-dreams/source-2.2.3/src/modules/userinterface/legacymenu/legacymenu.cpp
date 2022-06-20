@@ -33,7 +33,7 @@
 #include <racemanagers.h>
 
 #include "splash.h"
-// SIMULATED DRIVING ASSISTANCE CHANGE: included ResearcherMenu.h, DataSelectionMenu.h
+// DAISI: included ResearcherMenu.h, DataSelectionMenu.h
 #include "ResearcherMenu.h"
 #include "DataSelectionMenu.h"
 
@@ -99,7 +99,7 @@ bool LegacyMenu::backLoad()
     // (to be able to get back to them, even when directly starting a given race).
 
 
-    // SIMULATED DRIVING ASSISTANCE CHANGE: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
+    // DAISI: Pre-load the DataSelection menu, the Researcher menu and the Developer menu
     if (!ResearcherMenuInit(DataSelectionMenuInit(MainMenuInit(SupportsHumanDrivers))))
         return false;
 
@@ -486,7 +486,7 @@ void LegacyMenu::onRaceFinishing()
     }
 }
 
-// SIMULATED DRIVING ASSISTANCE: Made the screen go to the end of experiment screen
+// DAISI: Made the screen go to the end of experiment screen
 bool LegacyMenu::onRaceFinished(bool bEndOfSession)
 {
     tRmInfo* pReInfo = _piRaceEngine->inData();
@@ -524,7 +524,7 @@ void LegacyMenu::onRaceEventFinishing()
     }
 }
 
-// SIMULATED DRIVING ASSISTANT: remove showing standings
+// DAISI: remove showing standings
 void LegacyMenu::showStandings()
 {
     // Create the "Race Engine update state" hook if not already done.

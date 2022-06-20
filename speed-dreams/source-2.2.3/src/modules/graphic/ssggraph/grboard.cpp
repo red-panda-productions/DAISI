@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-// SIMULATED DRIVING ASSISTANCE: removed functions of unused hud elements 
+// DAISI: removed functions of unused hud elements
 // All changes are documented in src\simulatedDrivingAssistance\CHANGES.txt
 
 #include "grboard.h"
@@ -39,7 +39,7 @@
 #include "IndicatorConfig.h"
 #include "Mediator.h"
 
-// SIMULATED DRIVING ASSITANCE: array to store the loaded (ssg) textures
+// DAISI: array to store the loaded (ssg) textures
 ssgSimpleState** m_textures;
 
 #define ALIGN_CENTER 0
@@ -389,7 +389,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
 {
     car_ = currCar;  
 
-    // SIMULATED DRIVING ASSISTANCE: displays all currently active indicators
+    // DAISI: displays all currently active indicators
     DispActiveIndicators();
 
     grDispCounterBoard2();
@@ -400,7 +400,7 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
         grDispSplitScreenIndicator();
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief Displays the currently active indicators from IndicatorConfig
 ///        Depending on the indicator settings that are currently active.
 void cGrBoard::DispActiveIndicators()
@@ -414,7 +414,7 @@ void cGrBoard::DispActiveIndicators()
     }
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief           Displays the icon indicator (if the texture was loaded correctly)
 /// @param p_data    Pointer to struct containing data about the texture, like its position
 /// @param p_texture Pointer to the object containing the actual loaded OpenGL texture
@@ -453,7 +453,7 @@ void cGrBoard::DispIndicatorIcon(tTextureData* p_data, ssgSimpleState* p_texture
     glPopMatrix();
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief        Displays the intervention indicator text
 /// @param p_data Pointer to struct containing data about the text, like its position  
 void cGrBoard::DispIndicatorText(tTextData* p_data)
@@ -467,7 +467,7 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
         p_data->Text, p_data->Font, normal_color_);
 }
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 /// @brief Loads the textures for the indicators from their filepaths.
 ///        Must ONLY be called after the texture directory has been added to
 ///        grFilePath in grInitBoardCar, otherwise textures won't load.
@@ -548,7 +548,7 @@ void grInitBoardCar(tCarElt *car)
 
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/textures;");
 
-  // SIMULATED DRIVING ASSISTANCE
+  // DAISI
   // Add the folder containing indicator textures to the searchable filepaths for filenames.
   lg += snprintf(grFilePath + lg, nMaxTexPathSize - lg, "data/indicators/texture");
 

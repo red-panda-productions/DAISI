@@ -10,9 +10,9 @@
 #include "ConfigEnums.h"
 #include "DecisionTuple.h"
 #include <ctime>
+#include "RppUtils.hpp"
 
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING 1
-#include "experimental/filesystem"
+#include "FileSystem.hpp"
 
 class FileDataStorageMock
 {
@@ -33,6 +33,8 @@ public:
         BlackboxTime = p_blackboxTime;
         EnvironmentVersion = p_environmentVersion;
         Intervention = p_interventionType;
+        strcpy_s(EnvironmentFilename, 256, p_environmentFilename.c_str());
+        strcpy_s(EnvironmentName, 256, p_environmentName.c_str());
         filesystem::path filePath = filesystem::temp_directory_path();
         return {
             filePath.append("1"),
@@ -47,6 +49,8 @@ public:
     int EnvironmentVersion;
     InterventionType Intervention;
     DecisionTuple* SavedDecisions;
+    char EnvironmentFilename[256];
+    char EnvironmentName[256];
 
     void Shutdown()
     {

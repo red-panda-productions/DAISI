@@ -33,7 +33,7 @@
 
 #define SND_SCT_MUSIC                 "Music Settings"
 
-// SIMULATED DRIVING ASSISTANCE
+// DAISI
 #define SND_SCT_INTERVENTION          "Auditory Intervention Settings"
 
 //#define MM_ATT_SOUND_ENABLE             "enable"
