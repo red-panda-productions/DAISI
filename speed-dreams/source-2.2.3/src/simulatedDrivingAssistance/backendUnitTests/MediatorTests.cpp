@@ -565,3 +565,14 @@ TEST(MediatorTests, CanUseTest)
     InterventionType interventions[5]{INTERVENTION_TYPE_NO_SIGNALS, INTERVENTION_TYPE_ONLY_SIGNALS, INTERVENTION_TYPE_SHARED_CONTROL, INTERVENTION_TYPE_COMPLETE_TAKEOVER, INTERVENTION_TYPE_AUTONOMOUS_AI};
     PairWiseTest(TestCanUse, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, booleans, 2, interventions, 5);
 }
+
+/// @brief Tests if the car table can be set
+TEST(MediatorTests, SetSimCarTableTest)
+{
+    MockMediator::ClearInstance();
+    ASSERT_TRUE(SetupSingletonsFolder());
+    tCar car;
+    MockMediator::GetInstance()->SetSimCarTable(&car);
+
+    ASSERT_TRUE(MockMediator::GetInstance()->GetDecisionMaker()->SimCarTable == &car);
+}
