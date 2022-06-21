@@ -188,7 +188,7 @@
             <attstr name="text" val="Start replay"/>
             <attstr name="tip" val="Start replay"/>
             <attstr name="h align" val="left"/>
-            <attnum name="x" val="350"/>
+            <attnum name="x" val="273"/>
             <attnum name="y" val="41"/>
             <attnum name="width" val="130"/>
             <attstr name="font" val="medium"/>
