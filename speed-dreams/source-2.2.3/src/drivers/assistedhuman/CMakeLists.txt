@@ -16,4 +16,7 @@ ROBOT_MODULE(NAME ${ROBOT_NAME} VERSION 1.0.0 SOVERSION 1.0.0
 
 ADD_SDLIB_LIBRARY(${ROBOT_NAME} robottools tgfclient backend)
 
+ADD_SOLID_INCLUDEDIR()
+ADD_SOLID_LIBRARY(${ROBOT_NAME})
+
 # For data associated to the robot module, see data/drivers/assistedhuman/CMakeLists.txt
