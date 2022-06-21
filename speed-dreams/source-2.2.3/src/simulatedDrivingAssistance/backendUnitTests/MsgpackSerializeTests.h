@@ -21,7 +21,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
 {
     Random random;
 
-    tCar* table = new tCar[1];
+    tCar table{};
     for (int test = 0; test < 100; test++)
     {
         SocketBlackBox<BlackBoxDataMock, PointerManagerMock> socketBlackBox;
@@ -31,7 +31,7 @@ TEST(MsgpackSerializeTests, SerializeAll)
         tSituation situation;
 
         int r = random.NextInt();
-        BlackBoxDataMock mock(table, &car, &situation, r, nullptr, 0);
+        BlackBoxDataMock mock(&table, &car, &situation, r, nullptr, 0);
 
         msgpack::sbuffer sbuffer;
         socketBlackBox.SerializeBlackBoxData(sbuffer, &mock);
