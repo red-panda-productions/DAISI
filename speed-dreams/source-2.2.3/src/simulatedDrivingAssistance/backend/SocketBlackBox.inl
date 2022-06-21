@@ -18,7 +18,7 @@
     template void SocketBlackBox<p_type1, p_type2>::Shutdown();                                                                                                                          \
     template void SocketBlackBox<p_type1, p_type2>::SerializeBlackBoxData(msgpack::sbuffer& p_sbuffer, BlackBoxData* p_blackBoxData);                                                    \
     template void SocketBlackBox<p_type1, p_type2>::DeserializeBlackBoxResults(const char* p_dataReceived, unsigned int p_size, DecisionTuple& p_decisionTuple);                         \
-    template bool SocketBlackBox<p_type1, p_type2>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
+    template bool SocketBlackBox<p_type1, p_type2>::GetDecisions(tCar* p_carTable, tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions);
 
 // inserts value from BlackBoxData variables in vector
 #define PUSH_BACK_DS(p_getInfo)                 [](std::vector<std::string>& p_values, BlackBoxData& p_blackBoxData) { p_values.push_back(std::to_string(p_blackBoxData.p_GetInfo)); }
@@ -246,7 +246,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
 /// @param p_decisions Decision tuple to store decisions in
 /// @return returns true if a decision is made, else false (will always return true if connection is not async)
 template <class BlackBoxData, class PointerManager>
-bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
+bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCar* p_carTable, tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions)
 {
     if (!m_asyncConnection)
     {
@@ -254,7 +254,7 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
         msgpack::sbuffer sbuffer;
 
         delete m_currentData;
-        m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
+        m_currentData = new BlackBoxData(p_carTable, p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
         SerializeBlackBoxData(sbuffer, m_currentData);
 
         IPC_OK(m_server.SendData(sbuffer.data(), sbuffer.size()), "Failed to send data");
@@ -271,7 +271,7 @@ bool SocketBlackBox<BlackBoxData, PointerManager>::GetDecisions(tCarElt* p_car, 
     msgpack::sbuffer sbuffer;
 
     delete m_currentData;
-    m_currentData = new BlackBoxData(p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
+    m_currentData = new BlackBoxData(p_carTable, p_car, p_situation, p_tickCount, m_pointerManager.GetSegmentPointer(), LOOKAHEAD_SEGMENTS);
     SerializeBlackBoxData(sbuffer, m_currentData);
 
     m_server.ReceiveDataAsync();

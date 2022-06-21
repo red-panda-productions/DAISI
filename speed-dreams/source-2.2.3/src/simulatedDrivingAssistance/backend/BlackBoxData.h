@@ -6,14 +6,17 @@
 
 #pragma once
 #include "car.h"
+#include "carstruct.h"
 #include "raceman.h"
 
 struct BlackBoxData
 {
 public:
-    BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount);
+    BlackBoxData(tCar* p_carTable, tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount);
     BlackBoxData() = default;
     ~BlackBoxData();
+
+    tCar SimCar;
     tCarElt Car;
     tSituation Situation;
     unsigned long TickCount;

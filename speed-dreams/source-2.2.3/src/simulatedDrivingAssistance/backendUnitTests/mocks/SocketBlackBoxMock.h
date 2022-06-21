@@ -31,10 +31,11 @@ public:
     {
     }
 
-    bool GetDecisions(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions) const
+    bool GetDecisions(tCar* p_carTable, tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, DecisionTuple& p_decisions) const
     {
         if (!IsDecision) return false;
         p_decisions = Decisions;
+        p_carTable = CarTable;
         return true;
     }
 
@@ -51,4 +52,5 @@ public:
     bool IsDecision = false;
     BlackBoxData* InitialDriveSituation = nullptr;
     DecisionTuple Decisions;
+    tCar* CarTable;
 };

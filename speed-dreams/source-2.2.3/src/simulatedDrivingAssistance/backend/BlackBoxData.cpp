@@ -17,9 +17,10 @@
 /// @param p_tickCount The tick that this driving simulation is from
 /// @param p_nextSegments      Segment pointer to store the copied segments in
 /// @param p_nextSegmentsCount Amount of segments to copy
-BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
+BlackBoxData::BlackBoxData(tCar* p_carTable, tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_nextSegments, int p_nextSegmentsCount)
         : Car({}), Situation({}), TickCount(p_tickCount)
 {
+    if (!p_carTable) throw std::invalid_argument("p_carTable cannot be null");
     if (!p_car) throw std::invalid_argument("p_car cannot be null");
     if (!p_situation) throw std::invalid_argument("p_situation cannot be null");
     if (p_nextSegmentsCount < 0) throw std::invalid_argument("amount of segments cannot be less than 0");
@@ -105,6 +106,8 @@ BlackBoxData::BlackBoxData(tCarElt* p_car, tSituation* p_situation, unsigned lon
     // Copy p_situation
     Situation = *p_situation;
     Situation.cars = nullptr;  // TODO (maybe) // Pointer
+
+    SimCar = p_carTable[0]; // Update for more cars
 }
 
 BlackBoxData::~BlackBoxData()

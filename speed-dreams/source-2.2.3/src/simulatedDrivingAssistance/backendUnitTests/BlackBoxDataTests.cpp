@@ -52,7 +52,10 @@ protected:
 TEST_P(BlackBoxDataTestFixture, ElementCompareTests)
 {
     bool p_comparisonType = GetParam();
-    BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount);
+
+    tCar* table = new tCar[1];
+
+    BlackBoxData data(table, &Car, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount);
 
     // Compare tickCount
     if (p_comparisonType)
@@ -87,7 +90,8 @@ INSTANTIATE_TEST_SUITE_P(BlackBoxDataTests, BlackBoxDataTestFixture, ::testing::
 /// @brief Tests whether elements that are pointers have actually been copied into a new pointer
 TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 {
-    BlackBoxData data(&Car, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount);
+    tCar* table = new tCar[1];
+    BlackBoxData data(table, &Car, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount);
 
     EXPECT_NE(Car.pub.trkPos.seg, data.Car.pub.trkPos.seg);
     if (Car.pub.trkPos.seg && Segments)
@@ -106,7 +110,9 @@ TEST_F(BlackBoxDataTestFixture, PointerInequalityTest)
 /// @brief Tests whether BlackBoxData() indeed throws if it receives invalid input
 TEST_F(BlackBoxDataTestFixture, ExceptionsThrownTest)
 {
-    ASSERT_THROW(BlackBoxData(nullptr, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount), std::invalid_argument);
-    ASSERT_THROW(BlackBoxData(&Car, nullptr, TickCount, Segments, TestSegs.NextSegmentsCount), std::invalid_argument);
-    ASSERT_THROW(BlackBoxData(&Car, &Situation, TickCount, Segments, -TestSegs.NextSegmentsCount), std::invalid_argument);
+    tCar* table = new tCar[1];
+    ASSERT_THROW(BlackBoxData(table, nullptr, &Situation, TickCount, Segments, TestSegs.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(table, &Car, nullptr, TickCount, Segments, TestSegs.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(table, &Car, &Situation, TickCount, Segments, -TestSegs.NextSegmentsCount), std::invalid_argument);
+    ASSERT_THROW(BlackBoxData(nullptr, &Car, &Situation, TickCount, Segments, -TestSegs.NextSegmentsCount), std::invalid_argument);
 }

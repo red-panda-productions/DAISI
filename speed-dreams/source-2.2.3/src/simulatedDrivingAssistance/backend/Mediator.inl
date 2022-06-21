@@ -31,6 +31,7 @@
     template void Mediator<type>::SetReplayRecorderSetting(bool p_replayRecorderOn);                                                                    \
     template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
     template void Mediator<type>::SetCompressionRate(int p_compressionRate);                                                                            \
+    template void Mediator<type>::SetSimCarTable(tCar* p_carTable);                                                                                \
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
@@ -126,6 +127,14 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetCompressionRate(int p_compressionRate)
 {
     m_decisionMaker.Config.SetCompressionRate(p_compressionRate);
+}
+
+/// @brief          Sets the car table of the simulator
+/// @param p_compressionLevel The car table of the simulator
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetSimCarTable(tCar* p_carTable)
+{
+    m_decisionMaker.SetSimCarTable(p_carTable);
 }
 
 /// @brief               Sets the settings for data collection

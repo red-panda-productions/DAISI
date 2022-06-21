@@ -50,6 +50,12 @@ public:
         Config.SetInterventionType(p_type);
     }
 
+    void SetSimCarTable(tCar* p_dataSetting)
+    {
+        SimCarTable = p_dataSetting;
+    }
+
+
     void SetDataCollectionSettings(tDataToStore p_dataSetting)
     {
         Config.SetDataCollectionSettings(p_dataSetting);
@@ -83,6 +89,7 @@ public:
     bool Decision;
 
     tCarElt* Car;
+    tCar* SimCarTable;
     tSituation* Situation;
     tTrack* Track;
     unsigned long TickCount;
