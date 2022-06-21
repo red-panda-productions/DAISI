@@ -130,8 +130,8 @@ void ShowInterventionTest(InterventionAction p_action)
     GfSetDataDir(SD_DATADIR_SRC);
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     CarController carController;

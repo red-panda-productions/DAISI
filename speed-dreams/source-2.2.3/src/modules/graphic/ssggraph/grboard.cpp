@@ -40,7 +40,8 @@
 #include "Mediator.h"
 
 // DAISI: array to store the loaded (ssg) textures
-ssgSimpleState** m_textures;
+ssgSimpleState** m_textures = nullptr;
+int m_texturesSize = 0;
 
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
@@ -364,20 +365,6 @@ void cGrBoard::grDispCounterBoard2()
   glTranslatef(-centerAnchor, -BOTTOM_ANCHOR, 0);
   glTranslatef(0, -(speedoRise * TOP_ANCHOR / 100), 0);
 }  // grDispCounterBoard2
- 
-
-/// @brief Initializes the dashboard by creating a trackmap object.
-void cGrBoard::initBoard(void)
-{
-
-}
-
-
-/// @brief Shuts down the dashboard by releasing the trackmap object memory.
-void cGrBoard::shutdown(void)
-{
-
-}
 
 /// @brief              Refreshes the HUD, called every frame.
 /// @param s            The current situation
@@ -474,7 +461,8 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
 void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
-    m_textures = new ssgSimpleState*[indicators.size()];
+    m_texturesSize = indicators.size();
+    m_textures = new ssgSimpleState *[m_texturesSize];
     for (const tIndicatorData& indicator : indicators)
     {
         ssgSimpleState* texture = nullptr;
@@ -485,6 +473,21 @@ void LoadIndicatorTextures()
         }
         m_textures[indicator.Action] = texture;
     }
+}
+
+/// @brief Releases all indicator data textures, textures loaded in from the same path are pointing to the same texture.
+///        Therefore, we have to check whether the texture was already deleted.
+void ReleaseIndicatorTextures()
+{
+    std::vector<int> deletedPointers;
+    for (int i = 0; i < m_texturesSize; i++)
+    {
+        if (std::find(deletedPointers.begin(), deletedPointers.end(), (int)m_textures[i]) != deletedPointers.end()) continue;
+        deletedPointers.emplace_back((int)(m_textures[i]));
+        delete m_textures[i];
+    }
+    delete[] m_textures;
+    m_textures = nullptr;
 }
 
 
@@ -714,4 +717,15 @@ void cGrBoard::ReadDashColor(void *hdle, const string &color_name, float **color
   for (int i = 0; i < 4; ++i) {
     (*color)[i] = GfParmGetNum(hdle, buf, rgba[i].c_str(), NULL, 1.0);
   }
+}
+
+/// @brief Initializes the dashboard by creating a trackmap object.
+void cGrBoard::initBoard(void)
+{
+}
+
+/// @brief Shuts down the dashboard by releasing the trackmap object memory.
+void cGrBoard::shutdown(void)
+{
+    if(m_textures) ReleaseIndicatorTextures();
 }

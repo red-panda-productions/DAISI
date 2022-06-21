@@ -36,8 +36,8 @@ void InterventionExecutorTest(unsigned int p_interventionType)
     GfInit(GF_LOGGING_DISABLE);
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, INTERVENTION_TYPE_SHARED_CONTROL);
 
     SDAConfig config;

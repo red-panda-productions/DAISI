@@ -10,9 +10,6 @@
 #include "ConfigEnums.h"
 #include "IndicatorData.h"
 
-// Size of the path buffers, this will be used unchecked.
-#define PATH_BUF_SIZE 256
-
 // Location of the config.xml file with respect to the root data directory.
 #define CONFIG_XML_DIR_FORMAT "%sdata/indicators/Config.xml"
 #define SOUNDS_DIR_FORMAT     "%sdata/indicators/sound/%s"

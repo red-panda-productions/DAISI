@@ -15,3 +15,5 @@
 #define OS_SEPARATOR_CHAR '/'
 #endif
 namespace filesystem = std::experimental::filesystem;
+
+#define MAX_PATH 260

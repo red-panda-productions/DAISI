@@ -8,6 +8,9 @@
 
 #include "ConfigEnums.h"
 #include "guifont.h"
+#include "FileSystem.hpp"
+
+#define MAX_TEXT_SIZE 64
 
 /// @brief Represents a position on screen as percentages of the full screen.
 typedef struct ScreenPosition
@@ -25,7 +28,7 @@ typedef struct tTextureDimensions
 ///        The actual sounds are loaded from their path in the respective module.
 typedef struct SoundData
 {
-    const char* Path;
+    char Path[MAX_PATH];
     bool Looping;
     /// @brief How often it should loop, in seconds.
     float LoopInterval;
@@ -37,7 +40,7 @@ typedef struct SoundData
 ///        The actual textures are loaded from their path in the respective module.
 typedef struct TextureData
 {
-    const char* Path;
+    char Path[MAX_PATH];
     tScreenPosition ScrPos;
     tTextureDimensions Dimensions;
 } tTextureData;
@@ -45,7 +48,7 @@ typedef struct TextureData
 /// @brief Stores data related to drawing text on the Hud.
 typedef struct TextData
 {
-    const char* Text;
+    char Text[MAX_TEXT_SIZE];
     GfuiFontClass* Font;
     tScreenPosition ScrPos;
 } tTextData;

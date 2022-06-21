@@ -343,8 +343,8 @@ static void SetDefaultThresholdValues(void*)
     // load the xmlhandle
     char buf[512];
     sprintf(buf, "%s%s", GfDataDir(), DEV_XMLPATH);
-    void* m_xmlHandle = GfParmReadFile(buf, GFPARM_RMODE_STD);
-    if (m_xmlHandle == nullptr)
+    void* xmlHandle = GfParmReadFile(buf, GFPARM_RMODE_STD);
+    if (xmlHandle == nullptr)
         throw std::invalid_argument("DeveloperMenu.xml does not exists");
 
     // load the path in the xml based on the intervention type
@@ -356,14 +356,16 @@ static void SetDefaultThresholdValues(void*)
     m_path += s_interventionTypeString[m_tempInterventionType];
 
     // set the values to their default determined by the xml file.
-    m_decisionThresholds.Accel = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
-    m_decisionThresholds.Brake = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_BRAKE, nullptr, 0.9f);
-    m_decisionThresholds.Steer = GfParmGetNum(m_xmlHandle, m_path.c_str(), GFMNU_ATT_STEER, nullptr, 0.05f);
+    m_decisionThresholds.Accel = GfParmGetNum(xmlHandle, m_path.c_str(), GFMNU_ATT_ACCEL, nullptr, 0.9f);
+    m_decisionThresholds.Brake = GfParmGetNum(xmlHandle, m_path.c_str(), GFMNU_ATT_BRAKE, nullptr, 0.9f);
+    m_decisionThresholds.Steer = GfParmGetNum(xmlHandle, m_path.c_str(), GFMNU_ATT_STEER, nullptr, 0.05f);
 
     // set the edit boxes to the correct value
     WriteThresholdValue(m_decisionThresholds.Accel, m_accelThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Brake, m_brakeThresholdControl);
     WriteThresholdValue(m_decisionThresholds.Steer, m_steerThresholdControl);
+
+    GfParmReleaseHandle(xmlHandle);
 }
 
 /// @brief Set the default values of threshold boxes based on the InterventionType.
