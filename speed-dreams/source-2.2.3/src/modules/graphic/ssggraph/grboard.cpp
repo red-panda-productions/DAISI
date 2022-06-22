@@ -462,7 +462,7 @@ void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
     m_texturesSize = indicators.size();
-    m_textures = new ssgSimpleState *[m_texturesSize];
+    m_textures = new ssgSimpleState*[m_texturesSize];
     for (const tIndicatorData& indicator : indicators)
     {
         ssgSimpleState* texture = nullptr;
@@ -475,6 +475,7 @@ void LoadIndicatorTextures()
     }
 }
 
+// DAISI
 /// @brief Releases all indicator data textures, textures loaded in from the same path are pointing to the same texture.
 ///        Therefore, we have to check whether the texture was already deleted.
 void ReleaseIndicatorTextures()
