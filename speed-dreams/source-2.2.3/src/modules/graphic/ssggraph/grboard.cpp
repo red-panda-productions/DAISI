@@ -480,11 +480,11 @@ void LoadIndicatorTextures()
 ///        Therefore, we have to check whether the texture was already deleted.
 void ReleaseIndicatorTextures()
 {
-    std::vector<int> deletedPointers;
+    std::vector<ssgSimpleState*> deletedPointers;
     for (int i = 0; i < m_texturesSize; i++)
     {
-        if (std::find(deletedPointers.begin(), deletedPointers.end(), (int)m_textures[i]) != deletedPointers.end()) continue;
-        deletedPointers.emplace_back((int)(m_textures[i]));
+        if (std::find(deletedPointers.begin(), deletedPointers.end(), m_textures[i]) != deletedPointers.end()) continue;
+        deletedPointers.emplace_back(m_textures[i]);
         delete m_textures[i];
     }
     delete[] m_textures;
