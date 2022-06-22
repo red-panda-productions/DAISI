@@ -485,7 +485,6 @@ void ReleaseIndicatorTextures()
     {
         if (std::find(deletedPointers.begin(), deletedPointers.end(), m_textures[i]) != deletedPointers.end()) continue;
         deletedPointers.emplace_back(m_textures[i]);
-        GfTexFreeTexture(m_textures[i]->getTextureHandle());
         delete m_textures[i];
     }
     delete[] m_textures;
