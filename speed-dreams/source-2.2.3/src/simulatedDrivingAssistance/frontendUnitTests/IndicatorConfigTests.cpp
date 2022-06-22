@@ -14,9 +14,8 @@
 #include "IndicatorConfig.h"
 #include "Mediator.h"
 
-#define NUM_OF_TESTS    100
-#define MAX_TEXT_LENGTH 64
-#define TEST_XML_FILE   "test.xml"
+#define NUM_OF_TESTS  100
+#define TEST_XML_FILE "test.xml"
 
 // Enum to help generating random indicator data
 // Enable multiple flags by doing FLAG1 | FLAG2 | FLAG3
@@ -72,9 +71,7 @@ protected:
             data->LoopInterval = m_rnd.NextFloat(0, FLT_MAX);
         }
 
-        char* buf = new char[PATH_BUF_SIZE];
-        GenerateRandomCharArray(buf, m_rnd.NextInt(0, PATH_BUF_SIZE - 1));
-        data->Path = buf;
+        GenerateRandomCharArray(data->Path, m_rnd.NextInt(0, MAX_PATH - 1));
 
         return data;
     }
@@ -128,9 +125,7 @@ protected:
         // Otherwise generate random data object
         tTextureData* data = new TextureData;
 
-        char* buf = new char[PATH_BUF_SIZE];
-        GenerateRandomCharArray(buf, m_rnd.NextInt(0, PATH_BUF_SIZE - 1));
-        data->Path = buf;
+        GenerateRandomCharArray(data->Path, m_rnd.NextInt(0, MAX_PATH - 1));
         data->ScrPos = CreateRandomScreenPosition(p_gen);
         data->Dimensions = CreateRandomTextureDimensions(p_gen);
 
@@ -148,9 +143,7 @@ protected:
         // Otherwise generate random data object
         tTextData* data = new tTextData;
 
-        char* buf = new char[MAX_TEXT_LENGTH];
-        GenerateRandomCharArray(buf, m_rnd.NextInt(0, MAX_TEXT_LENGTH - 1));
-        data->Text = buf;
+        GenerateRandomCharArray(data->Text, m_rnd.NextInt(0, MAX_TEXT_SIZE - 1));
 
         data->ScrPos = CreateRandomScreenPosition(p_gen);
 
@@ -187,21 +180,21 @@ protected:
     const char* WriteIndicatorDataToXml(std::vector<tIndicatorData> p_data, InterventionType p_interventionType)
     {
         // Open or create the xml file to write to, clean the previous parameters.
-        char* path = new char[PATH_BUF_SIZE];
-        getcwd(path, PATH_BUF_SIZE);
-        snprintf(path, PATH_BUF_SIZE, "%s/" TEST_XML_FILE, path);
-        void* fileHandle = GfParmReadFile(path, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
+        char* path = new char[MAX_PATH];
+        getcwd(path, MAX_PATH);
+        snprintf(path, MAX_PATH, "%s/" TEST_XML_FILE, path);
+        void* fileHandle = GfParmReadFile(path, GFPARM_RMODE_STD | GFPARM_RMODE_CREAT);
         GfParmClean(fileHandle);
 
         // Write all data to the xml file.
-        char xmlSection[PATH_BUF_SIZE];
+        char xmlSection[MAX_PATH];
         for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
         {
             tIndicatorData data = p_data[i];
 
             if (data.Sound)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_SOUND);
+                snprintf(xmlSection, MAX_PATH, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_SOUND);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_SRC, data.Sound->Path);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_LOOPING, GfuiMenuBoolToStr(data.Sound->Looping));
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_LOOP_INTERVAL, nullptr, data.Sound->LoopInterval);
@@ -209,7 +202,7 @@ protected:
 
             if (data.Texture)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES);
+                snprintf(xmlSection, MAX_PATH, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXTURES);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Texture->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Texture->ScrPos.Y);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_WIDTH, nullptr, data.Texture->Dimensions.Width);
@@ -221,7 +214,7 @@ protected:
 
             if (data.Text)
             {
-                snprintf(xmlSection, PATH_BUF_SIZE, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXT);
+                snprintf(xmlSection, MAX_PATH, "%s/%s/%s", PRM_SECT_INDICATORS, s_interventionActionString[i], PRM_SECT_TEXT);
                 GfParmSetStr(fileHandle, xmlSection, PRM_ATTR_CONTENT, data.Text->Text);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_XPOS, nullptr, data.Text->ScrPos.X);
                 GfParmSetNum(fileHandle, xmlSection, PRM_ATTR_YPOS, nullptr, data.Text->ScrPos.Y);
@@ -250,8 +243,8 @@ protected:
             return;
         }
 
-        char* rndSndFullPath = new char[PATH_BUF_SIZE];
-        snprintf(rndSndFullPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), p_rndSnd->Path);
+        char* rndSndFullPath = new char[MAX_PATH];
+        snprintf(rndSndFullPath, MAX_PATH, SOUNDS_DIR_FORMAT, GfDataDir(), p_rndSnd->Path);
         ASSERT_STREQ(p_loadedSnd->Path, rndSndFullPath);
         ASSERT_EQ(p_loadedSnd->Looping, p_rndSnd->Looping);
         ASSERT_EQ(p_loadedSnd->LoopInterval, p_rndSnd->LoopInterval);
@@ -272,6 +265,8 @@ protected:
         ASSERT_STREQ(p_loadedTex->Path, p_rndTex->Path);
         ASSERT_EQ(p_loadedTex->ScrPos.X, p_rndTex->ScrPos.X);
         ASSERT_EQ(p_loadedTex->ScrPos.Y, p_rndTex->ScrPos.Y);
+        ASSERT_EQ(p_loadedTex->Dimensions.Height, p_rndTex->Dimensions.Height);
+        ASSERT_EQ(p_loadedTex->Dimensions.Width, p_rndTex->Dimensions.Width);
     }
 
     /// @brief             Asserts whether the loaded text is equal to the generated random text.

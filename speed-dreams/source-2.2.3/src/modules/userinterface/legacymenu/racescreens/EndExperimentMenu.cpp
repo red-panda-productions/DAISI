@@ -27,4 +27,5 @@ void RmShowEndExperiment(RaceEndType p_raceEndType)
     GfuiAddKey(s_menuHandle, GFUIK_RETURN, "Continue", prevHandle, GfuiScreenReplace, nullptr);
 
     GfuiScreenActivate(s_menuHandle);
+    GfParmReleaseHandle(param);
 }

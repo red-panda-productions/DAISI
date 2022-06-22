@@ -8,10 +8,12 @@
 #include <experimental/filesystem>
 
 #ifdef WIN32
-#define OS_SEPARATOR "\\"
+#define OS_SEPARATOR      "\\"
 #define OS_SEPARATOR_CHAR '\\'
 #else
-#define OS_SEPARATOR "/"
+#define OS_SEPARATOR      "/"
 #define OS_SEPARATOR_CHAR '/'
 #endif
 namespace filesystem = std::experimental::filesystem;
+
+#define MAX_PATH 260

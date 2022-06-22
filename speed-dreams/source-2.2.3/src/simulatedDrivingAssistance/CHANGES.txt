@@ -428,12 +428,14 @@ Changed:
                     included "Mediator.h"
                     included "IndicatorConfig.h"
 
-                    added   m_textures array
+                    added   m_textures     array
+                    added   m_texturesSize int
 
                     added   DispActiveIndicators()
                     added   DispIndicatorIcon();
                     added   DispIndicatorText();
                     added   LoadIndicatorTextures()
+                    added   ReleaseIndicatorTextures()
 
                     changed cGrBoard(): removed assignments of removed members
                     changed ~cGrBoard(): removed deletes of removed members
