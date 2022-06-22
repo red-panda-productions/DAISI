@@ -719,13 +719,13 @@ void cGrBoard::ReadDashColor(void *hdle, const string &color_name, float **color
   }
 }
 
-/// @brief Initializes the dashboard by creating a trackmap object.
+/// @brief Initializes the dashboard
 void cGrBoard::initBoard(void)
 {
 }
 
-/// @brief Shuts down the dashboard by releasing the trackmap object memory.
+/// @brief Shuts down the dashboard by releasing the indicator textures.
 void cGrBoard::shutdown(void)
 {
-    if(m_textures) ReleaseIndicatorTextures();
+    if (m_textures) ReleaseIndicatorTextures();
 }

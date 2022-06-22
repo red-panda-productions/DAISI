@@ -80,7 +80,7 @@
             <attnum name="x" val="540"/>
             <attnum name="y" val="170"/>
             <attstr name="tip" val="The speed of the black box"/>
-            <attstr name="text" val="Unknown       "/>
+            <attstr name="text" val="Unknown         "/>
             <attstr name="h align" val="right"/>
             <attstr name="font" val="medium_t"/>
         </section>
