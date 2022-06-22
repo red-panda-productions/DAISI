@@ -8,7 +8,6 @@
 #include "Mediator.h"
 #include <fstream>
 #include <portability.h>
-#include <SDL2/SDL_main.h>
 #include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
