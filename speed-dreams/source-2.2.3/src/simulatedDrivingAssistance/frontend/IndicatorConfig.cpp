@@ -107,8 +107,8 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
 /// @return         A struct containing the screen position data
 tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_path)
 {
-    float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, nullptr, 0);
-    float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, nullptr, 0);
+    float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, nullptr, 0.0f);
+    float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, nullptr, 0.0f);
 
     // Check whether x- and y-pos are valid percentages in range [0,1]
     if (xPos < 0.0f || yPos < 0.0f || xPos > 1.0f || yPos > 1.0f)
@@ -125,8 +125,8 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 /// @return         A struct containing the dimensions data
 tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
 {
-    float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0);
-    float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0);
+    float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0.0f);
+    float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0.0f);
 
     // Check whether width and height are not negative floats
     if (width < 0.0f || height < 0.0f)

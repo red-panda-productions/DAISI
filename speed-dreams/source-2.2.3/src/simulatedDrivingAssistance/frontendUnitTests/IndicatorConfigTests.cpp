@@ -14,8 +14,10 @@
 #include "IndicatorConfig.h"
 #include "Mediator.h"
 
-#define NUM_OF_TESTS    100
-#define TEST_XML_FILE   "test.xml"
+// Numbers in the xml file are stored with 6 decimal precision.
+#define FLOAT_FILE_WRITE_PRECISION 0.000001
+#define NUM_OF_TESTS               100
+#define TEST_XML_FILE              "test.xml"
 
 // Enum to help generating random indicator data
 // Enable multiple flags by doing FLAG1 | FLAG2 | FLAG3
@@ -227,6 +229,7 @@ protected:
         }
 
         GfParmWriteFile(nullptr, fileHandle, "test");
+        GfParmReleaseHandle(fileHandle);
 
         return path;
     }
@@ -263,8 +266,10 @@ protected:
         }
 
         ASSERT_STREQ(p_loadedTex->Path, p_rndTex->Path);
-        ASSERT_EQ(p_loadedTex->ScrPos.X, p_rndTex->ScrPos.X);
-        ASSERT_EQ(p_loadedTex->ScrPos.Y, p_rndTex->ScrPos.Y);
+        ASSERT_NEAR(p_loadedTex->ScrPos.X, p_rndTex->ScrPos.X, FLOAT_FILE_WRITE_PRECISION);
+        ASSERT_NEAR(p_loadedTex->ScrPos.Y, p_rndTex->ScrPos.Y, FLOAT_FILE_WRITE_PRECISION);
+        ASSERT_NEAR(p_loadedTex->Dimensions.Height, p_rndTex->Dimensions.Height, FLOAT_FILE_WRITE_PRECISION);
+        ASSERT_NEAR(p_loadedTex->Dimensions.Width, p_rndTex->Dimensions.Width, FLOAT_FILE_WRITE_PRECISION);
     }
 
     /// @brief             Asserts whether the loaded text is equal to the generated random text.
@@ -280,8 +285,8 @@ protected:
         }
 
         ASSERT_STREQ(p_loadedTxt->Text, p_rndTxt->Text);
-        ASSERT_EQ(p_loadedTxt->ScrPos.X, p_rndTxt->ScrPos.X);
-        ASSERT_EQ(p_loadedTxt->ScrPos.Y, p_rndTxt->ScrPos.Y);
+        ASSERT_NEAR(p_loadedTxt->ScrPos.X, p_rndTxt->ScrPos.X, FLOAT_FILE_WRITE_PRECISION);
+        ASSERT_NEAR(p_loadedTxt->ScrPos.Y, p_rndTxt->ScrPos.Y, FLOAT_FILE_WRITE_PRECISION);
     }
 
     /// @brief                    Asserts whether the loaded indicator is equal to the generated indicator

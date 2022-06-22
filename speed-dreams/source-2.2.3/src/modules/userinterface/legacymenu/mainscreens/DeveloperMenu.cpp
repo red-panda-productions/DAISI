@@ -104,8 +104,6 @@ static void LoadSettingsFromFile(void* p_param)
     Clamp(m_decisionThresholds.Accel, 0.0f, 1.0f);
     Clamp(m_decisionThresholds.Brake, 0.0f, 1.0f);
     Clamp(m_decisionThresholds.Steer, 0.0f, 1.0f);
-
-    GfParmReleaseHandle(p_param);
 }
 
 /// @brief Makes sure all visuals display the internal values
@@ -183,7 +181,6 @@ static void SaveSettingsToFile()
 
     // Write queued changes
     GfParmWriteFile(nullptr, readParam, DEV_SCREEN_NAME);
-
     GfParmReleaseHandle(readParam);
 }
 
