@@ -65,8 +65,6 @@ SET(_HEADERS
 ADD_INTERFACE_INCLUDEDIR()
 ADD_SDLIB_INCLUDEDIR(tgf math portability frontend rppUtils)
 
-
-
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 
 TARGET_INCLUDE_DIRECTORIES(backend PUBLIC ${CMAKE_SOURCE_DIR}/src/modules/simu/simuv4)
