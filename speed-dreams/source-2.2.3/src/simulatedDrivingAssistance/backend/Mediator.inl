@@ -31,7 +31,7 @@
     template void Mediator<type>::SetReplayRecorderSetting(bool p_replayRecorderOn);                                                                    \
     template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
     template void Mediator<type>::SetCompressionRate(int p_compressionRate);                                                                            \
-    template void Mediator<type>::SetSimCarTable(tCar* p_carTable);                                                                                \
+    template void Mediator<type>::SetSimCarTable(tCar* p_carTable);                                                                                     \
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \

@@ -123,7 +123,6 @@ void DecisionTest(bool p_isDecision)
     tCar carTable;
     decisionMaker.SetSimCarTable(&carTable);
 
-
     InitializeTest(decisionMaker);
     decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
 

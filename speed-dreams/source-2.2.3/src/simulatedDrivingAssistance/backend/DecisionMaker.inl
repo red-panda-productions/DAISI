@@ -150,7 +150,6 @@ void TEMP_DECISIONMAKER::SetSimCarTable(tCar* p_carTable)
     m_simCarTable = p_carTable;
 }
 
-
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 TEMP_DECISIONMAKER::~DecisionMaker()
 {

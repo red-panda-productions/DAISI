@@ -8,6 +8,7 @@
 #include "car.h"
 #include "raceman.h"
 #include "Random.hpp"
+#include "carstruct.h"
 
 struct BlackBoxDataMock
 {

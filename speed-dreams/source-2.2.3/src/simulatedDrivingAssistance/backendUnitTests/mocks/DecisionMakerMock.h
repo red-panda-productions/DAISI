@@ -55,7 +55,6 @@ public:
         SimCarTable = p_dataSetting;
     }
 
-
     void SetDataCollectionSettings(tDataToStore p_dataSetting)
     {
         Config.SetDataCollectionSettings(p_dataSetting);
