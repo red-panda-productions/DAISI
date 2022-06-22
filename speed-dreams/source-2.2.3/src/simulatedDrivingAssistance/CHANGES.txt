@@ -298,7 +298,7 @@ Changed:
                         included <ConfigEnums.h>
                         removed the help menu and other unnecessary functionalities for experiments when FORCE_EXPERIMENT_SETUP is defined
                 CMakeList.txt
-                  added    ResearcherMenu.h and .cppy
+                  added    ResearcherMenu.h and .cpp
                   added    DataSelectionMenu.h and .cpp
                   added    SaveMenu.cpp
                   added    ConfirmationMenu.cpp
