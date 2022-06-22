@@ -144,7 +144,7 @@ void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 }
 
 /// @brief          Sets the car table of the simulator
-/// @param p_compressionLevel The car table of the simulator
+/// @param p_carTable The car table of the simulator
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 void TEMP_DECISIONMAKER::SetSimCarTable(tCar* p_carTable)
 {

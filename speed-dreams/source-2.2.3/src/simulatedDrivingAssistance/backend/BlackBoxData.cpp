@@ -12,6 +12,7 @@
 
 /// @brief Constructs a data type for holding data provided to the black box.
 /// Makes deep copies of the provided data
+/// @param p_carTable  The sim car table
 /// @param p_car       The car data in the simulation
 /// @param p_situation The environment data in the simulation
 /// @param p_tickCount The tick that this driving simulation is from

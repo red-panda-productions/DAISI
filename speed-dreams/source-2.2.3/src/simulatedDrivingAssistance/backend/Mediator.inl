@@ -130,7 +130,7 @@ void Mediator<DecisionMaker>::SetCompressionRate(int p_compressionRate)
 }
 
 /// @brief          Sets the car table of the simulator
-/// @param p_compressionLevel The car table of the simulator
+/// @param p_carTable The car table of the simulator
 template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetSimCarTable(tCar* p_carTable)
 {
