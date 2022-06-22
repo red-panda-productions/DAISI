@@ -513,6 +513,8 @@ SimInit(int nbcars, tTrack* track)
 {
     SimNbCars = nbcars;
     SimCarTable = (tCar*)calloc(nbcars, sizeof(tCar));
+
+    //DAISI set sim car table
     SMediator::GetInstance()->SetSimCarTable(SimCarTable);
     PTrack = track;
     SimAtmospherePreConfig(PTrack);
