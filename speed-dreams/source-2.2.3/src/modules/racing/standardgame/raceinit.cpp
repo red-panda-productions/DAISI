@@ -780,12 +780,9 @@ ReInitCars(void)
   int robotIdx;
   void *robhdle;
   tCarElt *elt;
-
-  
   //const char *focused; // Never used.
   //int focusedIdx; // Never used.
   void *params = ReInfo->params;
-
 
   /* Get the number of cars (= drivers) racing */
   nCars = GfParmGetEltNb(params, RM_SECT_DRIVERS_RACING);
@@ -799,8 +796,6 @@ ReInitCars(void)
   //focusedIdx = (int)GfParmGetNum(ReInfo->params, RM_SECT_DRIVERS, RM_ATTR_FOCUSEDIDX, NULL, 0);
   index = 0;
 
-      //DAISI: initialize engine earlier
-  RePhysicsEngine().initialize(nCars, ReInfo->track); 
   /* For each car/driver : */
   for (int i = 1; i < nCars + 1; i++)
   {
@@ -985,6 +980,7 @@ ReInitCars(void)
   // I stuff for now anything into one call because collision detection works with the same
   // library on all objects, so it is a bit dangerous to distribute the handling to various
   // locations (because the library maintains global state like a default collision handler etc.).
+  RePhysicsEngine().initialize(nCars, ReInfo->track); 
 
   initStartingGrid();
 
