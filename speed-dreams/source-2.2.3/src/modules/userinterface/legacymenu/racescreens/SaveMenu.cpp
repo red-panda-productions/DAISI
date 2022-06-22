@@ -97,5 +97,7 @@ void* SaveMenuInit(RaceEndType p_raceEndType)
         GfuiScreenActivate(s_menuHandle);
     }
 
+    GfParmReleaseHandle(param);
+
     return s_menuHandle;
 }
