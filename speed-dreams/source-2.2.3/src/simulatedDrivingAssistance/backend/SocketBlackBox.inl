@@ -240,6 +240,7 @@ void SocketBlackBox<BlackBoxData, PointerManager>::DeserializeBlackBoxResults(co
 
 /// @brief Sends serialized drive situation to black box. Deserializes data received by black box.
 ///        Makes decisions from received data.
+/// @param p_carTable  The simulator car table
 /// @param p_car       Car to base decisions off.
 /// @param p_situation Situation to base decisions off.
 /// @param p_tickCount The current tick count.
