@@ -154,8 +154,8 @@ INSTANTIATE_TEST_SUITE_P(RunInterveneDecisions, DecisionTestCombinatorial,
 TEST_P(DecisionTest, BrakeRunIndicateTest)
 {
     // Load indicators from XML used for assisting the human with visual/audio indicators.
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     tAllowedActions allowedActions;
@@ -187,8 +187,8 @@ TEST_P(DecisionTest, SteerRunIndicateTests)
     SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_AUTONOMOUS_AI);
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     tAllowedActions allowedActions;
@@ -224,8 +224,8 @@ INSTANTIATE_TEST_SUITE_P(SteerRunIndicateTests, DecisionTest,
 TEST_P(DecisionTest, AccelRunIndicateTests)
 {
     // Load indicators from XML used for assisting the human with visual/audio indicators.
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     tAllowedActions allowedActions;
@@ -256,8 +256,8 @@ TEST_P(DecisionTestCombinatorialFloat, MultipleIndicatorTest)
     SMediator::GetInstance()->SetInterventionType(INTERVENTION_TYPE_SHARED_CONTROL);
 
     // Load indicators from XML used for assisting the human with visual/audio indicators.
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, CONFIG_XML_DIR_FORMAT, GfDataDir());
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, CONFIG_XML_DIR_FORMAT, GfDataDir());
     IndicatorConfig::GetInstance()->LoadIndicatorData(path, SMediator::GetInstance()->GetInterventionType());
 
     tAllowedActions allowedActions;

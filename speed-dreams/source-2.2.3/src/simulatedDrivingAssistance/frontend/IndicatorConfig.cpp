@@ -26,10 +26,10 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path, InterventionType p_i
     void* xmlHandle = GfParmReadFile(p_path, GFPARM_RMODE_STD);
 
     // Load the indicator data for every intervention action
-    char path[PATH_BUF_SIZE];
+    char path[MAX_PATH];
     for (int i = 0; i < NUM_INTERVENTION_ACTION; i++)
     {
-        snprintf(path, PATH_BUF_SIZE, "%s/%s/", PRM_SECT_INDICATORS, s_interventionActionString[i]);
+        snprintf(path, MAX_PATH, "%s/%s/", PRM_SECT_INDICATORS, s_interventionActionString[i]);
         m_indicatorData[i] = {
             static_cast<InterventionAction>(i),
             LoadSound(xmlHandle, std::string(path)),
@@ -39,6 +39,7 @@ void IndicatorConfig::LoadIndicatorData(const char* p_path, InterventionType p_i
 
     // Initially the active indicators are the neutral indicators.
     ResetActiveIndicatorsToNeutral();
+    GfParmReleaseHandle(xmlHandle);
 }
 
 /// @brief  Returns a vector of the indicator data
@@ -86,10 +87,7 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
 
     const char* source = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_SRC, "");
 
-    char* sndPath = new char[PATH_BUF_SIZE];
-    snprintf(sndPath, PATH_BUF_SIZE, SOUNDS_DIR_FORMAT, GfDataDir(), source);
-    data->Path = sndPath;
-
+    snprintf(data->Path, MAX_PATH, SOUNDS_DIR_FORMAT, GfDataDir(), source);
     data->Looping = strcmp(GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_LOOPING, VAL_NO), VAL_YES) == 0;
     data->LoopInterval = GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_LOOP_INTERVAL, nullptr, 0);
 
@@ -109,8 +107,8 @@ tSoundData* IndicatorConfig::LoadSound(void* p_handle, std::string p_path)
 /// @return         A struct containing the screen position data
 tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_path)
 {
-    float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, nullptr, 0);
-    float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, nullptr, 0);
+    float xPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_XPOS, nullptr, 0.0f);
+    float yPos = GfParmGetNum(p_handle, p_path, PRM_ATTR_YPOS, nullptr, 0.0f);
 
     // Check whether x- and y-pos are valid percentages in range [0,1]
     if (xPos < 0.0f || yPos < 0.0f || xPos > 1.0f || yPos > 1.0f)
@@ -127,8 +125,8 @@ tScreenPosition IndicatorConfig::LoadScreenPos(void* p_handle, const char* p_pat
 /// @return         A struct containing the dimensions data
 tTextureDimensions IndicatorConfig::LoadDimensions(void* p_handle, const char* p_path)
 {
-    float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0);
-    float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0);
+    float width = GfParmGetNum(p_handle, p_path, PRM_ATTR_WIDTH, nullptr, 0.0f);
+    float height = GfParmGetNum(p_handle, p_path, PRM_ATTR_HEIGHT, nullptr, 0.0f);
 
     // Check whether width and height are not negative floats
     if (width < 0.0f || height < 0.0f)
@@ -150,7 +148,8 @@ tTextureData* IndicatorConfig::LoadTexture(void* p_handle, std::string p_path, I
     if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextureData* data = new TextureData;
-    data->Path = GfParmGetStr(p_handle, p_path.c_str(), s_interventionTypeString[p_interventionType], "");
+
+    strcpy_s(data->Path, MAX_PATH, GfParmGetStr(p_handle, p_path.c_str(), s_interventionTypeString[p_interventionType], ""));
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
     data->Dimensions = LoadDimensions(p_handle, p_path.c_str());
     return data;
@@ -166,14 +165,15 @@ tTextData* IndicatorConfig::LoadText(void* p_handle, std::string p_path)
     if (!GfParmExistsSection(p_handle, p_path.c_str())) return nullptr;
 
     tTextData* data = new TextData;
-    data->Text = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_CONTENT, "");
+
+    strcpy_s(data->Text, MAX_TEXT_SIZE, GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_CONTENT, ""));
     data->ScrPos = LoadScreenPos(p_handle, p_path.c_str());
 
     const char* fontFile = GfParmGetStr(p_handle, p_path.c_str(), PRM_ATTR_FONT, "");
     int fontSize = (int)GfParmGetNum(p_handle, p_path.c_str(), PRM_ATTR_FONT_SIZE, nullptr, 10.0);
 
-    char path[PATH_BUF_SIZE];
-    snprintf(path, PATH_BUF_SIZE, "%sdata/fonts/%s", GfDataDir(), fontFile);
+    char path[MAX_PATH];
+    snprintf(path, MAX_PATH, "%sdata/fonts/%s", GfDataDir(), fontFile);
     data->Font = new GfuiFontClass(path);
     data->Font->create(fontSize);
 

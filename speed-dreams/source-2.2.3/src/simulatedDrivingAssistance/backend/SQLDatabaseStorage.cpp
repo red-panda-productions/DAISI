@@ -50,8 +50,6 @@
     delete p_prepStmt;                             \
     while (m_resultSet->next()) p_int = m_resultSet->getInt(1)
 
-#define STORE_ID_TRIGGER_NAME "store_id_trigger"
-
 /// @brief The constructor of the SQL database storage, defaults to storing all data.
 SQLDatabaseStorage::SQLDatabaseStorage()
     : SQLDatabaseStorage({true, true, true}){};
@@ -65,6 +63,12 @@ SQLDatabaseStorage::SQLDatabaseStorage(tDataToStore p_dataToStore)
     m_connection = nullptr;
     m_statement = nullptr;
     m_resultSet = nullptr;
+}
+
+/// @brief Destructor closes the database
+SQLDatabaseStorage::~SQLDatabaseStorage()
+{
+    CloseDatabase(false);
 }
 
 /// @brief Connect to the specified database. Initialize m_connection without further effects.
@@ -170,7 +174,6 @@ std::vector<std::string> SQLDatabaseStorage::GetMissingPrivileges(DatabaseSettin
         sql::SQLString missing_privilege = m_resultSet->getString(1);
         missing_privileges.push_back(missing_privilege.asStdString());
     }
-    delete m_resultSet;
     return missing_privileges;
 }
 
@@ -682,17 +685,16 @@ void SQLDatabaseStorage::InsertDecisions(const filesystem::path& p_decisionsPath
 /// @param returnVal The value to return, indicating whether the database was succesfully used.
 bool SQLDatabaseStorage::CloseDatabase(const bool p_returnVal)
 {
-    if (m_statement)
-    {
-        m_statement->close();
-        delete m_statement;
-    }
+    if (m_connection) m_connection->close();
+    if (m_statement) m_statement->close();
 
-    if (m_connection)
-    {
-        m_connection->close();
-        delete m_connection;
-    }
+    delete m_connection;
+    delete m_statement;
+    delete m_resultSet;
+
+    m_connection = nullptr;
+    m_statement = nullptr;
+    m_resultSet = nullptr;
 
     return p_returnVal;
 }

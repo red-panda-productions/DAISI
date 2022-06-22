@@ -75,6 +75,7 @@ static void LoadSettings()
         // Initialize settings with the retrieved xml file
         LoadSettingsFromFile(param);
         SynchronizeControls();
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings();
@@ -100,6 +101,7 @@ static void SaveSettingsToFile()
 
     // Write queued changes
     GfParmWriteFile(nullptr, readParam, COMPRESSION_SCREEN_NAME);
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Saves the settings so the mediator (or future instances) can access them

@@ -18,6 +18,7 @@ class SQLDatabaseStorage : IDataStorage
 public:
     SQLDatabaseStorage();
     explicit SQLDatabaseStorage(tDataToStore p_dataToStore);
+    ~SQLDatabaseStorage();
 
     bool TestConnection(DatabaseSettings p_dbSettings);
     bool Run(const tBufferPaths& p_bufferPaths);

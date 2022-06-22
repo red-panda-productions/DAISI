@@ -81,6 +81,7 @@ void SaveDBSettingsToDisk()
 
     // Write all the above queued changed to xml file
     GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Synchronizes all the menu controls in the database settings menu to the internal variables
@@ -186,6 +187,7 @@ void LoadDBSettings(void* p_scrHandle, tDbControlSettings& p_control)
         void* param = GfParmReadFile(buf, GFPARM_RMODE_STD);
         // Initialize settings with the retrieved xml file
         LoadConfigSettings(param, p_control);
+        GfParmReleaseHandle(param);
         return;
     }
     LoadDefaultSettings(p_scrHandle, p_control);
@@ -282,6 +284,7 @@ void DeletePassword(void* p_scrHandle, int p_passwordControl)
     void* readParam = GfParmReadFile(dst, GFPARM_RMODE_REREAD | GFPARM_RMODE_CREAT);
     GfParmSetStr(readParam, PRM_PASSWORD, GFMNU_ATTR_TEXT, "");
     GfParmWriteFile(nullptr, readParam, "DatabaseSettingsMenu");
+    GfParmReleaseHandle(readParam);
 }
 
 /// @brief Fill in the saved password
