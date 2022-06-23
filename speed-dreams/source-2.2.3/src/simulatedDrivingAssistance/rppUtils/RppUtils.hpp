@@ -206,8 +206,11 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
     // WARNING: This method of starting a process is Windows-exclusive.
     // Add a different method to run a process here if a Linux build is planned.
 
+    const char* workingDir = filesystem::path(p_executablePath).parent_path().string().c_str();
+
     LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
+    
     PROCESS_INFORMATION processInformation;                         // Allocate space for PROCESS_INFORMATION
     // Start the process. Nullpointers correspond to default values for this method.
     // Inherit handles is not necessary for our use case and is thus false.
@@ -218,7 +221,7 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
                   false,
                   0,
                   nullptr,
-                  nullptr,
+                  workingDir,
                   &startupInformation,
                   &processInformation);
 
