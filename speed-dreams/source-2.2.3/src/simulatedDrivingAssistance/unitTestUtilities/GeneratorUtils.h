@@ -7,6 +7,7 @@
 #pragma once
 #include "car.h"
 #include "raceman.h"
+#include "carstruct.h"
 
 struct TestSegments
 {
@@ -27,3 +28,7 @@ void DestroyCar(tCarElt& p_car);
 tSituation GenerateSituation();
 
 void DestroySituation(tSituation& p_situation);
+
+tCar GenerateSimCar();
+
+tCar GenerateSimCar(tCarElt& p_car);
