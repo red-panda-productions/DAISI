@@ -324,7 +324,10 @@ inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 /// @param p_args           The arguments for the executable
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
-    std::string fullCommand = "gnome-terminal -- " + p_executablePath + " " + std::string(p_args);
+    filesystem::path directory = filesystem::path(p_executablePath).parent_path();
+    std::string parent = directory.string();
+    std::string fullCommand = "gnome-terminal -- sh -c \"cd " + parent + "; " + p_executablePath + " " + std::string(p_args) + "\"";
+    std::cout << fullCommand << std::endl;
     popen(fullCommand.c_str(), "r");
 }
 
