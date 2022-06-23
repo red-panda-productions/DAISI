@@ -327,7 +327,6 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
     filesystem::path directory = filesystem::path(p_executablePath).parent_path();
     std::string parent = directory.string();
     std::string fullCommand = "gnome-terminal -- sh -c \"cd " + parent + "; " + p_executablePath + " " + std::string(p_args) + "\"";
-    std::cout << fullCommand << std::endl;
     popen(fullCommand.c_str(), "r");
 }
 
