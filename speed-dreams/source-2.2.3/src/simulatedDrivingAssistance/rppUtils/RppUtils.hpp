@@ -203,11 +203,6 @@ inline bool SetupSingletonsFolder()
 /// @param p_args           The arguments for the executable
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
-    // WARNING: This method of starting a process is Windows-exclusive.
-    // Add a different method to run a process here if a Linux build is planned.
-
-    const char* workingDir = filesystem::path(p_executablePath).parent_path().string().c_str();
-
     LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
     
@@ -221,7 +216,7 @@ inline void StartExecutable(const std::string& p_executablePath, const char* p_a
                   false,
                   0,
                   nullptr,
-                  workingDir,
+                  nullptr,
                   &startupInformation,
                   &processInformation);
 
