@@ -44,6 +44,8 @@ SET(_HEADERS TestUtils.h
              )
 
 SD_ADD_LIBRARY(unitTestUtilities STATIC ${_INLINES} ${_SOURCES} ${_HEADERS} )
+TARGET_INCLUDE_DIRECTORIES(unitTestUtilities PUBLIC ${CMAKE_SOURCE_DIR}/src/modules/simu/simuv4)
+
 SET_TARGET_PROPERTIES(unitTestUtilities PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(
