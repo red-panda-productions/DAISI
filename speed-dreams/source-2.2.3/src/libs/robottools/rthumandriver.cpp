@@ -295,6 +295,12 @@ void HumanDriver::shutdown(const int index)
 
     // DAISI: Prevent usage of deleted recorder
     m_recorder = nullptr;
+    if (m_prevIntervention != INTERVENTION_TYPE_NO_SIGNALS)
+    {
+        // Reset internal value in the mediator back to what was selected on the Researcher Menu.
+        SMediator::GetInstance()->SetInterventionType(m_prevIntervention);
+        m_prevIntervention = INTERVENTION_TYPE_NO_SIGNALS;
+    }
 }
 
 /*
