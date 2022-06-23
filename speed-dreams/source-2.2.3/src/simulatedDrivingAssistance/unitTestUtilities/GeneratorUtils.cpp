@@ -15,11 +15,11 @@
 /// @brief   Generates a random name; guarantees the last character is '\0', although one could pop up earlier
 /// @param a The array to generate the name in
 /// @param b The length of the array
-#define RAND_NAME(a, b)                   \
-    for (int i = 0; i < (b)-1; i++)       \
-    {                                     \
-        (a)[i] = (char)random.NextByte(); \
-    }                                     \
+#define RAND_NAME(a, b)                          \
+    for (int i = 0; i < (b)-1; i++)              \
+    {                                            \
+        (a)[i] = (char)random.NextByte(32, 126); \
+    }                                            \
     (a)[(b)-1] = '\0';
 
 /// @brief   Generates a random t3D

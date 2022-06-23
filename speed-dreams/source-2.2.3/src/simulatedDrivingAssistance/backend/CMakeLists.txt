@@ -63,7 +63,7 @@ SET(_HEADERS
 )
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(tgf math portability frontend rppUtils)
+ADD_SDLIB_INCLUDEDIR(tgf math portability frontend rppUtils unitTestUtilities)
 
 SD_ADD_LIBRARY(backend STATIC ${_SOURCES} ${_HEADERS} ${_INLINES})
 
@@ -73,7 +73,7 @@ SET_TARGET_PROPERTIES(backend PROPERTIES LINKER_LANGUAGE CXX)
 
 TARGET_LINK_LIBRARIES(backend frontend)
 
-ADD_SDLIB_LIBRARY(backend tgf portability)
+ADD_SDLIB_LIBRARY(backend tgf portability unitTestUtilities)
 
 ADD_MSGPACK_PACKAGE(backend)
 

@@ -12,6 +12,7 @@
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
 #include "FileSystem.hpp"
+#include "GeneratorUtils.h"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
@@ -325,7 +326,12 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 {
     m_tickCount = 0;
     m_track = p_track;
-    tCarElt car;
+
+    TestSegments testSegments;
+    testSegments.NextSegments = p_track->seg;
+    testSegments.NextSegmentsCount = p_track->nseg;
+
+    tCarElt car = GenerateCar(testSegments);
     bool recordBB = GetReplayRecorderSetting();
 
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();
