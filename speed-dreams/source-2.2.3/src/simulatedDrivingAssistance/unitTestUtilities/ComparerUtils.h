@@ -6,6 +6,7 @@
 
 #pragma once
 #include "car.h"
+#include "carstruct.h"
 #include "raceman.h"
 #include <gtest/gtest-spi.h>
 
@@ -30,6 +31,8 @@
 #define COMP_UTIL_POINTER_INEQUALITY false
 
 void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_comparisonType);
+
+void CompareSimCars(tCar& p_car1, tCar& p_car2, bool p_comparisonType);
 
 void CompareSituations(tSituation& p_situation1, tSituation& p_situation2, bool p_comparisonType);
 

@@ -485,6 +485,142 @@ void CompareCars(tCarElt& p_car1, tCarElt& p_car2, bool p_comparisonType)
     // COPY NOT IMPLEMENTED FOR car.nex
 }
 
+/// @brief                  Compares the values of two sim cars, not any of the values inside elements pointed to by a pointer
+/// @param p_car1           SimCar 1 to compare
+/// @param p_car2           SimCar 2 to compare
+/// @param p_comparisonType Whether to compare cars for equality by values (COMP_UTIL_VALUE_EQUALITY) or inequality of pointers (COMP_UTIL_POINTER_INEQUALITY)
+/// (the latter is only really relevant for testing BlackBoxData() works)
+void CompareSimCars(tCar& p_car1, tCar& p_car2, bool p_comparisonType)
+{
+    COMP_ELEM(p_car1.ctrl, p_car2.ctrl);
+    CompareCars(*p_car1.carElt, *p_car2.carElt, p_comparisonType);
+    COMP_TRKPOS(p_car1.trkPos, p_car2.trkPos);
+
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_TRKPOS(p_car1.wheel[i].trkPos, p_car2.wheel[i].trkPos);
+    }
+
+    // preCtrl
+    COMP_ELEM(p_car1.preCtrl.accelCmd, p_car2.preCtrl.accelCmd);
+    COMP_ELEM(p_car1.preCtrl.brakeCmd, p_car2.preCtrl.brakeCmd);
+    COMP_ELEM(p_car1.preCtrl.brakeFrontLeftCmd, p_car2.preCtrl.brakeFrontLeftCmd);
+    COMP_ELEM(p_car1.preCtrl.brakeFrontRightCmd, p_car2.preCtrl.brakeFrontRightCmd);
+    COMP_ELEM(p_car1.preCtrl.brakeRearLeftCmd, p_car2.preCtrl.brakeRearLeftCmd);
+    COMP_ELEM(p_car1.preCtrl.brakeRearRightCmd, p_car2.preCtrl.brakeRearRightCmd);
+    COMP_ELEM(p_car1.preCtrl.clutchCmd, p_car2.preCtrl.clutchCmd);
+    COMP_ELEM(p_car1.preCtrl.ebrakeCmd, p_car2.preCtrl.ebrakeCmd);
+    COMP_ELEM(p_car1.preCtrl.gear, p_car2.preCtrl.gear);
+    COMP_ELEM(p_car1.preCtrl.lightCmd, p_car2.preCtrl.lightCmd);
+    COMP_ELEM(p_car1.preCtrl.accelCmd, p_car2.preCtrl.accelCmd);
+
+    // axle
+    for (int i = 0; i < 2; i++)
+    {
+        COMP_ELEM(p_car1.axle[i].I, p_car2.axle[i].I);
+        COMP_ELEM(p_car1.axle[i].force[0], p_car2.axle[i].force[0]);
+        COMP_ELEM(p_car1.axle[i].force[1], p_car2.axle[i].force[1]);
+        COMP_ELEM(p_car1.axle[i].wheight0, p_car2.axle[i].wheight0);
+        COMP_ELEM(p_car1.axle[i].xpos, p_car2.axle[i].xpos);
+
+        // suspension
+        COMP_ELEM(p_car1.axle[i].arbSusp.a, p_car2.axle[i].arbSusp.a);
+        COMP_ELEM(p_car1.axle[i].arbSusp.force, p_car2.axle[i].arbSusp.force);
+        COMP_ELEM(p_car1.axle[i].arbSusp.inertance, p_car2.axle[i].arbSusp.inertance);
+        COMP_ELEM(p_car1.axle[i].arbSusp.v, p_car2.axle[i].arbSusp.v);
+        COMP_ELEM(p_car1.axle[i].arbSusp.x, p_car2.axle[i].arbSusp.x);
+        COMP_ELEM(p_car1.axle[i].arbSusp.state, p_car2.axle[i].arbSusp.state);
+        COMP_ELEM(p_car1.axle[i].xpos, p_car2.axle[i].xpos);
+
+        // damper
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.bump.C1, p_car2.axle[i].arbSusp.damper.bump.C1);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.bump.C2, p_car2.axle[i].arbSusp.damper.bump.C2);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.bump.b1, p_car2.axle[i].arbSusp.damper.bump.b1);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.bump.b2, p_car2.axle[i].arbSusp.damper.bump.b2);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.bump.v1, p_car2.axle[i].arbSusp.damper.bump.v1);
+
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.rebound.C1, p_car2.axle[i].arbSusp.damper.rebound.C1);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.rebound.C2, p_car2.axle[i].arbSusp.damper.rebound.C2);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.rebound.b1, p_car2.axle[i].arbSusp.damper.rebound.b1);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.rebound.b2, p_car2.axle[i].arbSusp.damper.rebound.b2);
+        COMP_ELEM(p_car1.axle[i].arbSusp.damper.rebound.v1, p_car2.axle[i].arbSusp.damper.rebound.v1);
+
+        // spring
+        COMP_ELEM(p_car1.axle[i].arbSusp.spring.F0, p_car2.axle[i].arbSusp.spring.F0);
+        COMP_ELEM(p_car1.axle[i].arbSusp.spring.K, p_car2.axle[i].arbSusp.spring.K);
+        COMP_ELEM(p_car1.axle[i].arbSusp.spring.bellcrank, p_car2.axle[i].arbSusp.spring.bellcrank);
+        COMP_ELEM(p_car1.axle[i].arbSusp.spring.packers, p_car2.axle[i].arbSusp.spring.packers);
+        COMP_ELEM(p_car1.axle[i].arbSusp.spring.x0, p_car2.axle[i].arbSusp.spring.x0);
+        COMP_ELEM(p_car1.axle[i].arbSusp.spring.xMax, p_car2.axle[i].arbSusp.spring.xMax);
+    }
+
+    // wheels
+    for (int i = 0; i < 4; i++)
+    {
+        COMP_ELEM(p_car1.wheel[i].AlignTqFactor, p_car2.wheel[i].AlignTqFactor);
+        COMP_ELEM(p_car1.wheel[i].I, p_car2.wheel[i].I);
+        COMP_ELEM(p_car1.wheel[i].Tinit, p_car2.wheel[i].Tinit);
+        COMP_ELEM(p_car1.wheel[i].Topt, p_car2.wheel[i].Topt);
+        COMP_ELEM(p_car1.wheel[i].Ttire, p_car2.wheel[i].Ttire);
+        COMP_ELEM(p_car1.wheel[i].aircoolm, p_car2.wheel[i].aircoolm);
+        COMP_ELEM(p_car1.wheel[i].axleFz, p_car2.wheel[i].axleFz);
+        COMP_ELEM(p_car1.wheel[i].axleFz3rd, p_car2.wheel[i].axleFz3rd);
+        COMP_ELEM(p_car1.wheel[i].camber, p_car2.wheel[i].camber);
+        COMP_ELEM(p_car1.wheel[i].rollRes, p_car2.wheel[i].rollRes);
+
+        // susp
+        COMP_ELEM(p_car1.wheel[i].susp.force, p_car2.wheel[i].susp.force);
+        COMP_ELEM(p_car1.wheel[i].susp.a, p_car2.wheel[i].susp.a);
+        COMP_ELEM(p_car1.wheel[i].susp.inertance, p_car2.wheel[i].susp.inertance);
+        COMP_ELEM(p_car1.wheel[i].susp.v, p_car2.wheel[i].susp.v);
+        COMP_ELEM(p_car1.wheel[i].susp.x, p_car2.wheel[i].susp.x);
+        COMP_ELEM(p_car1.wheel[i].susp.state, p_car2.wheel[i].susp.state);
+
+        // brake
+        COMP_ELEM(p_car1.wheel[i].brake.I, p_car2.wheel[i].brake.I);
+        COMP_ELEM(p_car1.wheel[i].brake.ABS, p_car2.wheel[i].brake.ABS);
+        COMP_ELEM(p_car1.wheel[i].brake.TCL, p_car2.wheel[i].brake.TCL);
+        COMP_ELEM(p_car1.wheel[i].brake.Tq, p_car2.wheel[i].brake.Tq);
+        COMP_ELEM(p_car1.wheel[i].brake.pressure, p_car2.wheel[i].brake.pressure);
+    }
+
+    // steer
+    COMP_ELEM(p_car1.steer.steer, p_car2.steer.steer);
+    COMP_ELEM(p_car1.steer.maxSpeed, p_car2.steer.maxSpeed);
+    COMP_ELEM(p_car1.steer.steerLock, p_car2.steer.steerLock);
+
+    // brakeSyst
+    COMP_ELEM(p_car1.brkSyst.coeff, p_car2.brkSyst.coeff);
+    COMP_ELEM(p_car1.brkSyst.ebrake_pressure, p_car2.brkSyst.ebrake_pressure);
+    COMP_ELEM(p_car1.brkSyst.rep, p_car2.brkSyst.rep);
+
+    // aero
+    COMP_ELEM(p_car1.aero.Cd, p_car2.aero.Cd);
+    COMP_ELEM(p_car1.aero.CdBody, p_car2.aero.CdBody);
+    COMP_ELEM(p_car1.aero.Clift[0], p_car2.aero.Clift[0]);
+    COMP_ELEM(p_car1.aero.Clift[1], p_car2.aero.Clift[1]);
+    COMP_ELEM(p_car1.aero.drag, p_car2.aero.drag);
+    COMP_ELEM(p_car1.aero.lift[0], p_car2.aero.lift[0]);
+    COMP_ELEM(p_car1.aero.lift[1], p_car2.aero.lift[1]);
+
+    // transmission
+    COMP_ELEM(p_car1.transmission.clutch.mode, p_car2.transmission.clutch.mode);
+    COMP_ELEM(p_car1.transmission.clutch.releaseTime, p_car2.transmission.clutch.releaseTime);
+    COMP_ELEM(p_car1.transmission.clutch.state, p_car2.transmission.clutch.state);
+    COMP_ELEM(p_car1.transmission.clutch.timeToRelease, p_car2.transmission.clutch.timeToRelease);
+    COMP_ELEM(p_car1.transmission.clutch.transferValue, p_car2.transmission.clutch.transferValue);
+    COMP_ELEM(p_car1.transmission.curI, p_car2.transmission.curI);
+
+    for (int i = 0; i < 10; i++)
+    {
+        COMP_ELEM(p_car1.transmission.driveI[i], p_car2.transmission.driveI[i]);
+        COMP_ELEM(p_car1.transmission.freeI[i], p_car2.transmission.freeI[i]);
+        COMP_ELEM(p_car1.transmission.gearEff[i], p_car2.transmission.gearEff[i]);
+        COMP_ELEM(p_car1.transmission.gearI[i], p_car2.transmission.gearI[i]);
+        COMP_ELEM(p_car1.transmission.overallRatio[i], p_car2.transmission.overallRatio[i]);
+    }
+}
+
 /// @brief                  Compares the values of two situation, not any of the values inside elements pointed to by a pointer
 /// @param p_situation1     Situation 1 to compare
 /// @param p_situation2     Situation 2 to compare
