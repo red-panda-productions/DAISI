@@ -628,6 +628,8 @@ void DestroySituation(tSituation& p_situation)
     delete p_situation.cars;  // COPY NOT IMPLEMENTED
 }
 
+/// @brief Generate a tCar with random values for all variables except ctrl, params or carElt;
+/// @return the tCar
 tCar GenerateSimCar()
 {
     Random random;
@@ -755,6 +757,9 @@ tCar GenerateSimCar()
     return car;
 }
 
+/// @brief Generate a random tCar element with ctrl carElt and trkPos set from p_car
+/// @param p_car The tCarElt to set the variables from
+/// @return the generated tCar element
 tCar GenerateSimCar(tCarElt& p_car)
 {
     tCar car = GenerateSimCar();
