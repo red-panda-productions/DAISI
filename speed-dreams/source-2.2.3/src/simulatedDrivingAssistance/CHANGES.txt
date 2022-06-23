@@ -429,7 +429,6 @@ Changed:
                     added   DispIndicatorIcon();
                     added   DispIndicatorText();
                     added   LoadIndicatorTextures()
-                    added   ReleaseIndicatorTextures()
 
                     changed cGrBoard(): removed assignments of removed members
                     changed ~cGrBoard(): removed deletes of removed members

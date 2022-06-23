@@ -41,7 +41,6 @@
 
 // DAISI: array to store the loaded (ssg) textures
 ssgSimpleState** m_textures = nullptr;
-int m_texturesSize = 0;
 
 #define ALIGN_CENTER 0
 #define ALIGN_LEFT   1
@@ -461,8 +460,7 @@ void cGrBoard::DispIndicatorText(tTextData* p_data)
 void LoadIndicatorTextures()
 {
     std::vector<tIndicatorData> indicators = IndicatorConfig::GetInstance()->GetIndicatorData();
-    m_texturesSize = indicators.size();
-    m_textures = new ssgSimpleState*[m_texturesSize];
+    m_textures = new ssgSimpleState*[indicators.size()];
     for (const tIndicatorData& indicator : indicators)
     {
         ssgSimpleState* texture = nullptr;
@@ -474,23 +472,6 @@ void LoadIndicatorTextures()
         m_textures[indicator.Action] = texture;
     }
 }
-
-// DAISI
-/// @brief Releases all indicator data textures, textures loaded in from the same path are pointing to the same texture.
-///        Therefore, we have to check whether the texture was already deleted.
-void ReleaseIndicatorTextures()
-{
-    std::vector<ssgSimpleState*> deletedPointers;
-    for (int i = 0; i < m_texturesSize; i++)
-    {
-        if (std::find(deletedPointers.begin(), deletedPointers.end(), m_textures[i]) != deletedPointers.end()) continue;
-        deletedPointers.emplace_back(m_textures[i]);
-        delete m_textures[i];
-    }
-    delete[] m_textures;
-    m_textures = nullptr;
-}
-
 
 void grInitBoardCar(tCarElt *car)
 {
@@ -725,8 +706,7 @@ void cGrBoard::initBoard(void)
 {
 }
 
-/// @brief Shuts down the dashboard by releasing the indicator textures.
+/// @brief Shuts down the dashboard
 void cGrBoard::shutdown(void)
 {
-    if (m_textures) ReleaseIndicatorTextures();
 }
