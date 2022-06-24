@@ -132,6 +132,20 @@ Section "!Base System" SEC01
   SetOutPath "$INSTDIR\data\config\raceman"
   File "${BUILD_INST_DIR}\data\config\raceman\quickrace.xml"
 
+  SetOutPath "$INSTDIR\data\config\raceman"
+  File "${BUILD_INST_DIR}\data\config\raceman\replay.xml"
+
+  SetOutPath "$INSTDIR\data\config\raceman"
+  File "${BUILD_INST_DIR}\data\config\raceman\replay_visual.xml"
+
+  ; Replay blackbox
+
+  SetOutPath "$INSTDIR\data\replayBlackbox"
+  File "${BUILD_INST_DIR}\data\replayBlackbox\SDAReplay.exe"
+
+  SetOutPath "$INSTDIR\data\replayBlackbox"
+  File "${BUILD_INST_DIR}\data\replayBlackbox\IPCLib.dll"
+
   ; Moved to 'speed-dreams-wip-cars-and-tracks.nsi' for version 2.1.0
   ;File "${BUILD_INST_DIR}\data\config\raceman\networkrace.xml"
 
@@ -148,6 +162,9 @@ Section "!Base System" SEC01
 
   SetOutPath "$INSTDIR\lib\drivers\assistedhuman"
   File /r /x *.lib "${BUILD_INST_DIR}\lib\drivers\assistedhuman\*.*"
+
+  SetOutPath "$INSTDIR\lib\drivers\replaydriver"
+  File /r /x *.lib "${BUILD_INST_DIR}\lib\drivers\replaydriver\*.*"
 
   SetOutPath "$INSTDIR\lib\drivers\networkhuman"
   File /r /x *.lib "${BUILD_INST_DIR}\lib\drivers\networkhuman\*.*"
@@ -170,6 +187,9 @@ Section "!Base System" SEC01
 
   SetOutPath "$INSTDIR\data\drivers\assistedhuman"
   File /r /x *.lib "${BUILD_INST_DIR}\data\drivers\assistedhuman\*.*"
+
+  SetOutPath "$INSTDIR\data\drivers\replaydriver"
+  File /r /x *.lib "${BUILD_INST_DIR}\data\drivers\replaydriver\*.*"
 
   SetOutPath "$INSTDIR\data\drivers\networkhuman"
   File /r /x *.lib "${BUILD_INST_DIR}\data\drivers\networkhuman\*.*"
