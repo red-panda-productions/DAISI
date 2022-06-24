@@ -8,11 +8,11 @@
 #include "Mediator.h"
 #include <fstream>
 #include <portability.h>
-#include <SDL2/SDL_main.h>
 #include "RppUtils.hpp"
 #include "IndicatorConfig.h"
 #include "SQLDatabaseStorage.h"
 #include "FileSystem.hpp"
+#include "GeneratorUtils.h"
 
 /// @brief Creates an implementation of the mediator
 #define CREATE_MEDIATOR_IMPLEMENTATION(type)                                                                                                            \
@@ -31,6 +31,7 @@
     template void Mediator<type>::SetReplayRecorderSetting(bool p_replayRecorderOn);                                                                    \
     template void Mediator<type>::SetMaxTime(int p_maxTime);                                                                                            \
     template void Mediator<type>::SetCompressionRate(int p_compressionRate);                                                                            \
+    template void Mediator<type>::SetSimCarTable(tCar* p_carTable);                                                                                     \
     template void Mediator<type>::SetUserId(char* p_userId);                                                                                            \
     template void Mediator<type>::SetDataCollectionSettings(tDataToStore p_dataSetting);                                                                \
     template void Mediator<type>::SetBlackBoxFilePath(const char* p_filePath);                                                                          \
@@ -126,6 +127,14 @@ template <typename DecisionMaker>
 void Mediator<DecisionMaker>::SetCompressionRate(int p_compressionRate)
 {
     m_decisionMaker.Config.SetCompressionRate(p_compressionRate);
+}
+
+/// @brief          Sets the car table of the simulator
+/// @param p_carTable The car table of the simulator
+template <typename DecisionMaker>
+void Mediator<DecisionMaker>::SetSimCarTable(tCar* p_carTable)
+{
+    m_decisionMaker.SetSimCarTable(p_carTable);
 }
 
 /// @brief               Sets the settings for data collection
@@ -317,7 +326,12 @@ void Mediator<DecisionMaker>::RaceStart(tTrack* p_track, void* p_carHandle, void
 {
     m_tickCount = 0;
     m_track = p_track;
-    tCarElt car;
+
+    TestSegments testSegments;
+    testSegments.NextSegments = p_track->seg;
+    testSegments.NextSegmentsCount = p_track->nseg;
+
+    tCarElt car = GenerateCar(testSegments);
     bool recordBB = GetReplayRecorderSetting();
 
     const char* blackBoxFilePath = m_decisionMaker.Config.GetBlackBoxFilePath();

@@ -181,9 +181,10 @@ static void RunBlackBoxTests(SSocketBlackBox* p_blackbox, long* p_result, bool* 
     BlackBoxData testData[BLACK_BOX_TESTS];
     for (int i = 0; i < BLACK_BOX_TESTS; i++)
     {
+        tCar carTable = GenerateSimCar(cars[i]);
         cars[i] = GenerateCar(segments);
         situations[i] = GenerateSituation();
-        testData[i] = BlackBoxData(&cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
+        testData[i] = BlackBoxData(&carTable, &cars[i], &situations[i], static_cast<unsigned long>(i), segments.NextSegments, segments.NextSegmentsCount);
     }
 
     // Run test and cleanup

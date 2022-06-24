@@ -203,11 +203,9 @@ inline bool SetupSingletonsFolder()
 /// @param p_args           The arguments for the executable
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
-    // WARNING: This method of starting a process is Windows-exclusive.
-    // Add a different method to run a process here if a Linux build is planned.
-
     LPSTR args = _strdup(p_args);                                   // Create an empty string of arguments for process
     STARTUPINFO startupInformation = {sizeof(startupInformation)};  // Create an empty STARTUPINFO
+    
     PROCESS_INFORMATION processInformation;                         // Allocate space for PROCESS_INFORMATION
     // Start the process. Nullpointers correspond to default values for this method.
     // Inherit handles is not necessary for our use case and is thus false.
@@ -326,7 +324,9 @@ inline bool GetSdaFolder(filesystem::path& p_sdaFolder)
 /// @param p_args           The arguments for the executable
 inline void StartExecutable(const std::string& p_executablePath, const char* p_args = "")
 {
-    std::string fullCommand = "gnome-terminal -- " + p_executablePath + " " + std::string(p_args);
+    filesystem::path directory = filesystem::path(p_executablePath).parent_path();
+    std::string parent = directory.string();
+    std::string fullCommand = "gnome-terminal -- sh -c \"cd " + parent + "; " + p_executablePath + " " + std::string(p_args) + "\"";
     popen(fullCommand.c_str(), "r");
 }
 

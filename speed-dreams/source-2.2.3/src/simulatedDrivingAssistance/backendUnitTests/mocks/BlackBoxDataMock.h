@@ -8,14 +8,18 @@
 #include "car.h"
 #include "raceman.h"
 #include "Random.hpp"
+#include "carstruct.h"
 
 struct BlackBoxDataMock
 {
 public:
-    BlackBoxDataMock(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_trackSegments, int p_trackSegmentsCount)
-        : Car(*p_car),
-        Situation(*p_situation),
-        TickCount(p_tickCount) {}
+    BlackBoxDataMock(tCar* p_carTable, tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount, tTrackSeg* p_trackSegments, int p_trackSegmentsCount)
+        : SimCar(p_carTable[0]),
+          Car(*p_car),
+          Situation(*p_situation),
+          TickCount(p_tickCount) {}
+
+    tCar SimCar;
     tCarElt Car;
     tSituation Situation;
     unsigned long TickCount;
@@ -23,18 +27,20 @@ public:
 
 inline BlackBoxDataMock GetExampleBlackBoxDataMock()
 {
+    tCar* table = new tCar[1];
     tCarElt* car = new tCarElt();
     tSituation* situation = new tSituation();
     unsigned long tickCount = 0;
 
-    return { car, situation, tickCount, nullptr, 0 };
+    return {table, car, situation, tickCount, nullptr, 0};
 }
 
 inline BlackBoxDataMock CreateRandomBlackBoxDataMock(Random& p_random)
 {
+    tCar* table = new tCar[1];
     tCarElt* car = new tCarElt();
     tSituation* situation = new tSituation();
     unsigned long tickCount = p_random.NextInt(0, 1000);
 
-    return { car, situation, tickCount, nullptr, 0 };
+    return {table, car, situation, tickCount, nullptr, 0};
 }

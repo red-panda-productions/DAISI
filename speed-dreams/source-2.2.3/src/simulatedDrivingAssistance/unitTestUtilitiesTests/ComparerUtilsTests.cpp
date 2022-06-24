@@ -22,6 +22,10 @@ TEST(ComparerUtilsTests, EmptyCompare)
 {
     tCarElt car1 = {};
     tCarElt car2 = {};
+    tCar simCar1 = {};
+    tCar simCar2 = {};
+    simCar1.carElt = &car1;
+    simCar2.carElt = &car2;
     tSituation situation1 = {};
     tSituation situation2 = {};
     TestSegments testSegments1 = {};
@@ -42,6 +46,8 @@ TEST(ComparerUtilsTests, EmptyCompare)
     CompareSegments(testSegments1.NextSegments, testSegments2.NextSegments, testSegments1.NextSegmentsCount, true);  // Should exit before getting to any checks
     CompareCars(car1, car2, true);                                                                                   // Test value equality
     CompareCars(car1, car2, false);                                                                                  // Test pointer inequality
+    CompareSimCars(simCar1, simCar2, true);                                                                          // Test value equality
+    CompareSimCars(simCar1, simCar2, false);                                                                         // Test pointer inequality
     CompareSituations(situation1, situation2, true);                                                                 // Test value equality
     CompareSituations(situation1, situation2, false);                                                                // Test pointer inequality
     CompareSegments(segments1, segments2, SEGMENT_COUNT_TEST, true);                                                 // Test value equality
@@ -63,12 +69,17 @@ TEST(ComparerUtilsTests, GeneratedCompare)
     tCarElt car1 = {};
     tCarElt car2 = GenerateCar(segments1);
     car1.index = car2.index + 1;  // Guarantee difference
+
+    tCar simCar1 = GenerateSimCar(car1);
+    tCar simCar2 = GenerateSimCar(car2);
+
     tSituation situation1 = {};
     tSituation situation2 = GenerateSituation();
     situation2.raceInfo.features = situation1.raceInfo.features + 1;  // Guarantee difference
 
     INVERT_COMP_TEST(CompareSegments(segments1.NextSegments, segments2, segments1.NextSegmentsCount, true))  // Test value inequality
     INVERT_COMP_TEST(CompareCars(car1, car2, true))                                                          // Test value inequality
+    INVERT_COMP_TEST(CompareSimCars(simCar1, simCar2, true))                                                 // Test value inequality
     INVERT_COMP_TEST(CompareSituations(situation1, situation2, true))                                        // Test value inequality
 
     delete[] segments2;
@@ -83,6 +94,8 @@ TEST(ComparerUtilsTests, AlmostEqual)
     TestSegments segments1 = GenerateSegments();
     tCarElt car1 = GenerateCar(segments1);
     tCarElt car2 = car1;
+    tCar simCar1 = GenerateSimCar(car1);
+    tCar simCar2 = simCar2;
     car2.pitcmd.stopType++;
     tSituation situation1 = GenerateSituation();
     tSituation situation2 = situation1;
@@ -102,6 +115,7 @@ TEST(ComparerUtilsTests, AlmostEqual)
     segments3[6].sin = segments2[6].sin + 1;
 
     INVERT_COMP_TEST(CompareCars(car1, car2, true))
+    INVERT_COMP_TEST(CompareSimCars(simCar1, simCar2, true))
     INVERT_COMP_TEST(CompareSituations(situation1, situation2, true))
     INVERT_COMP_TEST(CompareSegments(segments2, segments3, SEGMENT_COUNT_TEST, true))
 
@@ -137,10 +151,13 @@ TEST(ComparerUtilsTests, CompareGeneratedWithSelf)
 {
     TestSegments segments1 = GenerateSegments();
     tCarElt car1 = GenerateCar(segments1);
+    tCar simCar = GenerateSimCar(car1);
     tSituation situation1 = GenerateSituation();
 
-    CompareCars(car1, car1, true);                                                                                         // Test value equality
-    INVERT_COMP_TEST(CompareCars(car1, car1, false))                                                                       // Test pointer equality
+    CompareCars(car1, car1, true);                    // Test value equality
+    INVERT_COMP_TEST(CompareCars(car1, car1, false))  // Test pointer equality
+    CompareSimCars(simCar, simCar, true);             // Test value equality
+    INVERT_COMP_TEST(CompareSimCars(simCar, simCar, false));
     CompareSituations(situation1, situation1, true);                                                                       // Test value equality
     INVERT_COMP_TEST(CompareSituations(situation1, situation1, false))                                                     // Test pointer equality
     CompareSegments(segments1.NextSegments, segments1.NextSegments, segments1.NextSegmentsCount, true);                    // Test value equality

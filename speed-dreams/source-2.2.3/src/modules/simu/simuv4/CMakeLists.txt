@@ -37,7 +37,7 @@ ENDIF(NOT OPTION_3RDPARTY_SOLID)
 ADD_PLIB_INCLUDEDIR()
 
 ADD_INTERFACE_INCLUDEDIR()
-ADD_SDLIB_INCLUDEDIR(math tgf robottools)
+ADD_SDLIB_INCLUDEDIR(math tgf robottools backend rppUtils)
 
 # Note: Headers needed for having them available in IDEs.
 SD_ADD_LIBRARY(simuv4 MODULE ${SIMU_SOURCES} ${SIMU_HEADERS})
@@ -47,6 +47,6 @@ SD_ADD_LIBRARY(simuv4 MODULE ${SIMU_SOURCES} ${SIMU_HEADERS})
 
 ADD_SOLID_LIBRARY(simuv4) # Ignored if not OPTION_3RDPARTY_SOLID
 
-ADD_SDLIB_LIBRARY(simuv4 portability tgf robottools solid) # solid ignored if not OPTION_3RDPARTY_SOLID
+ADD_SDLIB_LIBRARY(simuv4 portability tgf robottools solid backend) # solid ignored if not OPTION_3RDPARTY_SOLID
 
 SD_INSTALL_FILES(LIB modules/simu TARGETS simuv4)

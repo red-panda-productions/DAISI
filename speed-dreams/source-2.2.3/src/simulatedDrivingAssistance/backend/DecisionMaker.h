@@ -38,6 +38,8 @@ public:
     void ChangeSettings(InterventionType p_dataSetting);
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
 
+    void SetSimCarTable(tCar* p_carTable);
+
     InterventionExecutor* InterventionExec = nullptr;
     SocketBlackBox BlackBox;
 
@@ -58,6 +60,7 @@ private:
     FileDataStorage m_fileBufferStorage;
     DecisionTuple m_decision;
     Recorder* m_recorder = nullptr;
+    tCar* m_simCarTable = nullptr;
 };
 
 /// @brief The standard type of the decisionMaker

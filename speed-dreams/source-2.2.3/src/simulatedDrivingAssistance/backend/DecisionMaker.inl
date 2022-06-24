@@ -24,6 +24,7 @@
     template bool DecisionMaker<type1, type2, type3, type4, type5>::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount); \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ChangeSettings(InterventionType p_dataSetting);                             \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SetDataCollectionSettings(tDataToStore p_dataSetting);                      \
+    template void DecisionMaker<type1, type2, type3, type4, type5>::SetSimCarTable(tCar* p_carTable);                                           \
     template void DecisionMaker<type1, type2, type3, type4, type5>::CloseRecorder();                                                            \
     template void DecisionMaker<type1, type2, type3, type4, type5>::SaveData();                                                                 \
     template void DecisionMaker<type1, type2, type3, type4, type5>::ShutdownBlackBox();                                                         \
@@ -71,7 +72,8 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
     StartExecutable(p_blackBoxExecutablePath);  // @NOCOVERAGE
 #endif
 
-    BlackBoxData initialData(p_initialCar, p_initialSituation, p_initialTickCount, nullptr, 0);
+    tCar table{};
+    BlackBoxData initialData(&table, p_initialCar, p_initialSituation, p_initialTickCount, nullptr, 0);
     BlackBox.Initialize(Config.GetBlackBoxSyncOption(), initialData, p_testSituations, p_testAmount);
 
     if (p_blackBoxExecutablePath.empty())
@@ -108,7 +110,7 @@ void TEMP_DECISIONMAKER::Initialize(unsigned long p_initialTickCount,
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
 bool TEMP_DECISIONMAKER::Decide(tCarElt* p_car, tSituation* p_situation, unsigned long p_tickCount)
 {
-    const bool decisionMade = BlackBox.GetDecisions(p_car, p_situation, p_tickCount, m_decision);
+    const bool decisionMade = BlackBox.GetDecisions(m_simCarTable, p_car, p_situation, p_tickCount, m_decision);
     m_fileBufferStorage.Save(p_car, m_decision, p_tickCount);
 
     if (decisionMade && m_recorder)
@@ -139,6 +141,14 @@ template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage,
 void TEMP_DECISIONMAKER::SetDataCollectionSettings(tDataToStore p_dataSetting)
 {
     Config.SetDataCollectionSettings(p_dataSetting);
+}
+
+/// @brief          Sets the car table of the simulator
+/// @param p_carTable The car table of the simulator
+template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>
+void TEMP_DECISIONMAKER::SetSimCarTable(tCar* p_carTable)
+{
+    m_simCarTable = p_carTable;
 }
 
 template <typename SocketBlackBox, typename SDAConfig, typename FileDataStorage, typename SQLDatabaseStorage, typename Recorder>

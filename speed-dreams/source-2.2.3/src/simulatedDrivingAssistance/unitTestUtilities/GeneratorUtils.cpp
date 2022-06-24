@@ -15,11 +15,11 @@
 /// @brief   Generates a random name; guarantees the last character is '\0', although one could pop up earlier
 /// @param a The array to generate the name in
 /// @param b The length of the array
-#define RAND_NAME(a, b)                   \
-    for (int i = 0; i < (b)-1; i++)       \
-    {                                     \
-        (a)[i] = (char)random.NextByte(); \
-    }                                     \
+#define RAND_NAME(a, b)                          \
+    for (int i = 0; i < (b)-1; i++)              \
+    {                                            \
+        (a)[i] = (char)random.NextByte(32, 126); \
+    }                                            \
     (a)[(b)-1] = '\0';
 
 /// @brief   Generates a random t3D
@@ -626,4 +626,150 @@ tSituation GenerateSituation()
 void DestroySituation(tSituation& p_situation)
 {
     delete p_situation.cars;  // COPY NOT IMPLEMENTED
+}
+
+/// @brief Generate a tCar with random values for all variables except ctrl, params or carElt;
+/// @return the tCar
+tCar GenerateSimCar()
+{
+    Random random;
+    tCar car{};
+    car.ctrl = nullptr;
+    car.params = nullptr;
+    car.carElt = nullptr;
+
+    // preCtrl
+    car.preCtrl.accelCmd = random.NextFloat();
+    car.preCtrl.brakeCmd = random.NextFloat();
+    car.preCtrl.brakeFrontLeftCmd = random.NextFloat();
+    car.preCtrl.brakeFrontRightCmd = random.NextFloat();
+    car.preCtrl.brakeRearLeftCmd = random.NextFloat();
+    car.preCtrl.brakeRearRightCmd = random.NextFloat();
+    car.preCtrl.clutchCmd = random.NextFloat();
+    car.preCtrl.ebrakeCmd = random.NextInt(0, 2);
+    car.preCtrl.gear = random.NextInt(-1, 2);
+    car.preCtrl.lightCmd = random.NextInt(0, 2);
+
+    // axle
+    for (int i = 0; i < 2; i++)
+    {
+        car.axle[i].I = random.NextFloat();
+        car.axle[i].force[0] = random.NextFloat();
+        car.axle[i].force[1] = random.NextFloat();
+        car.axle[i].wheight0 = random.NextFloat();
+        car.axle[i].xpos = random.NextFloat();
+
+        // suspension
+        car.axle[i].arbSusp.a = random.NextFloat();
+        car.axle[i].arbSusp.force = random.NextFloat();
+        car.axle[i].arbSusp.inertance = random.NextFloat();
+        car.axle[i].arbSusp.v = random.NextFloat();
+        car.axle[i].arbSusp.x = random.NextFloat();
+        car.axle[i].arbSusp.state = random.NextInt(0, 1);
+
+        // damper
+        car.axle[i].arbSusp.damper.bump.C1 = random.NextFloat();
+        car.axle[i].arbSusp.damper.bump.C2 = random.NextFloat();
+        car.axle[i].arbSusp.damper.bump.b1 = random.NextFloat();
+        car.axle[i].arbSusp.damper.bump.b2 = random.NextFloat();
+        car.axle[i].arbSusp.damper.bump.v1 = random.NextFloat();
+
+        car.axle[i].arbSusp.damper.rebound.C1 = random.NextFloat();
+        car.axle[i].arbSusp.damper.rebound.C2 = random.NextFloat();
+        car.axle[i].arbSusp.damper.rebound.b1 = random.NextFloat();
+        car.axle[i].arbSusp.damper.rebound.b2 = random.NextFloat();
+        car.axle[i].arbSusp.damper.rebound.v1 = random.NextFloat();
+
+        // spring
+        car.axle[i].arbSusp.spring.F0 = random.NextFloat();
+        car.axle[i].arbSusp.spring.K = random.NextFloat();
+        car.axle[i].arbSusp.spring.bellcrank = random.NextFloat();
+        car.axle[i].arbSusp.spring.packers = random.NextFloat();
+        car.axle[i].arbSusp.spring.x0 = random.NextFloat();
+        car.axle[i].arbSusp.spring.xMax = random.NextFloat();
+    }
+
+    // wheels
+    for (int i = 0; i < 4; i++)
+    {
+        car.wheel[i].AlignTqFactor = random.NextFloat();
+        car.wheel[i].I = random.NextFloat();
+        car.wheel[i].Tinit = random.NextFloat();
+        car.wheel[i].Topt = random.NextFloat();
+        car.wheel[i].Ttire = random.NextFloat();
+        car.wheel[i].aircoolm = random.NextFloat();
+        car.wheel[i].axleFz = random.NextFloat();
+        car.wheel[i].axleFz3rd = random.NextFloat();
+        car.wheel[i].camber = random.NextFloat();
+        car.wheel[i].rollRes = random.NextFloat();
+
+        // susp
+        car.wheel[i].susp.force = random.NextFloat();
+        car.wheel[i].susp.a = random.NextFloat();
+        car.wheel[i].susp.inertance = random.NextFloat();
+        car.wheel[i].susp.v = random.NextFloat();
+        car.wheel[i].susp.x = random.NextFloat();
+        car.wheel[i].susp.state = random.NextInt();
+
+        // brake
+        car.wheel[i].brake.I = random.NextFloat();
+        car.wheel[i].brake.ABS = random.NextFloat();
+        car.wheel[i].brake.TCL = random.NextFloat();
+        car.wheel[i].brake.Tq = random.NextFloat();
+        car.wheel[i].brake.pressure = random.NextFloat();
+    }
+
+    // steer
+    car.steer.steer = random.NextFloat();
+    car.steer.maxSpeed = random.NextFloat();
+    car.steer.steerLock = random.NextFloat();
+
+    // brakeSyst
+    car.brkSyst.coeff = random.NextFloat();
+    car.brkSyst.ebrake_pressure = random.NextFloat();
+    car.brkSyst.rep = random.NextFloat();
+
+    // aero
+    car.aero.Cd = random.NextFloat();
+    car.aero.CdBody = random.NextFloat();
+    car.aero.Clift[0] = random.NextFloat();
+    car.aero.Clift[1] = random.NextFloat();
+    car.aero.drag = random.NextFloat();
+    car.aero.lift[0] = random.NextFloat();
+    car.aero.lift[1] = random.NextFloat();
+
+    // transmission
+    car.transmission.clutch.mode = random.NextInt(0, 2);
+    car.transmission.clutch.releaseTime = random.NextFloat();
+    car.transmission.clutch.state = random.NextInt(0, 2);
+    car.transmission.clutch.timeToRelease = random.NextFloat();
+    car.transmission.clutch.transferValue = random.NextFloat();
+    car.transmission.curI = random.NextFloat();
+
+    for (int i = 0; i < 10; i++)
+    {
+        car.transmission.driveI[i] = random.NextFloat();
+        car.transmission.freeI[i] = random.NextFloat();
+        car.transmission.gearEff[i] = random.NextFloat();
+        car.transmission.gearI[i] = random.NextFloat();
+        car.transmission.overallRatio[i] = random.NextFloat();
+    }
+    return car;
+}
+
+/// @brief Generate a random tCar element with ctrl carElt and trkPos set from p_car
+/// @param p_car The tCarElt to set the variables from
+/// @return the generated tCar element
+tCar GenerateSimCar(tCarElt& p_car)
+{
+    tCar car = GenerateSimCar();
+    car.ctrl = &p_car.ctrl;
+    car.carElt = &p_car;
+    car.trkPos = p_car.pub.trkPos;
+
+    for (int i = 0; i < 4; i++)
+    {
+        car.wheel[i].trkPos = p_car.pub.trkPos;
+    }
+    return car;
 }

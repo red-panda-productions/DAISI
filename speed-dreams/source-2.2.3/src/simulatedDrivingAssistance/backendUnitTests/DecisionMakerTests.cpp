@@ -96,6 +96,8 @@ TEST(DecisionMakerTests, InitializeTest)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     InitializeTest(decisionMaker);
 }
 
@@ -105,6 +107,8 @@ TEST(DecisionMakerTests, InitializeTestEmpty)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     InitializeTest(decisionMaker, true);
 }
 
@@ -116,6 +120,9 @@ void DecisionTest(bool p_isDecision)
     ASSERT_TRUE(SetupSingletonsFolder());
 
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
+
     InitializeTest(decisionMaker);
     decisionMaker.ChangeSettings(INTERVENTION_TYPE_COMPLETE_TAKEOVER);
 
@@ -155,6 +162,8 @@ void ChangeSettingsTest(InterventionType p_intervention)
     ASSERT_TRUE(SetupSingletonsFolder());
 
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     decisionMaker.ChangeSettings(p_intervention);
     ASSERT_EQ(decisionMaker.Config.GetInterventionType(), p_intervention);
 
@@ -175,6 +184,8 @@ void SetDataCollectionSettingsTest(DataToStore p_dataToStore)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     decisionMaker.SetDataCollectionSettings(p_dataToStore);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().CarData == p_dataToStore.CarData);
     ASSERT_TRUE(decisionMaker.Config.GetDataCollectionSetting().HumanData == p_dataToStore.HumanData);
@@ -205,6 +216,8 @@ TEST(DecisionMakerTests, RaceStopTest)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     InitializeTest(decisionMaker);
     chdir(SD_DATADIR_SRC);
 
@@ -231,6 +244,8 @@ void TestOnlySaveDataToStore(bool p_carData, bool p_humanData, bool p_interventi
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     InitializeTest(decisionMaker);
     decisionMaker.SetDataCollectionSettings({p_carData, p_humanData, p_interventionData});
     decisionMaker.SaveData();
@@ -253,6 +268,8 @@ TEST(DecisionMakerTests, GetFileDataStorageTest)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
     FileDataStorageMock* storage = decisionMaker.GetFileDataStorage();
     ASSERT_FALSE(storage == nullptr);
 }
@@ -263,6 +280,8 @@ TEST(DecisionMakerTests, GetDecisionTest)
     SDAConfigMediator::ClearInstance();
     ASSERT_TRUE(SetupSingletonsFolder());
     TDecisionMaker decisionMaker;
+    tCar carTable;
+    decisionMaker.SetSimCarTable(&carTable);
 
     Random random;
 

@@ -33,6 +33,7 @@ jobs:
           sudo apt-get update && sudo apt-get upgrade
           wget https://github.com/red-panda-productions/ipc-lib/releases/download/v1.2.0/ipclib.deb
           sudo apt install ./ipclib.deb
+          sudo apt install ${{github.workspace}}/speed-dreams/3rdParty/Packages/solid2.deb
           sudo apt-get install libplib-dev
           sudo apt-get install libexpat1-dev
           sudo apt-get install libopenscenegraph-dev

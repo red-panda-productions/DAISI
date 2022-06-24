@@ -43,6 +43,8 @@ public:
 
     void SetCompressionRate(int p_compressionRate);
 
+    void SetSimCarTable(tCar* p_carTable);
+
     void SetDataCollectionSettings(tDataToStore p_dataSetting);
     void SetSaveRaceToDatabase(bool p_saveToDatabase);
     void SetBlackBoxFilePath(const char* p_filePath);

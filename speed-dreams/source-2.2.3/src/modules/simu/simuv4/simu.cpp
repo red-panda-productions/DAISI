@@ -27,6 +27,7 @@
 #include <robottools.h>
 
 #include "sim.h"
+#include "Mediator.h"
 
 
 tCar *SimCarTable = 0;
@@ -512,6 +513,9 @@ SimInit(int nbcars, tTrack* track)
 {
     SimNbCars = nbcars;
     SimCarTable = (tCar*)calloc(nbcars, sizeof(tCar));
+
+    //DAISI set sim car table
+    SMediator::GetInstance()->SetSimCarTable(SimCarTable);
     PTrack = track;
     SimAtmospherePreConfig(PTrack);
     GfLogInfo("Tair in Simu = %3f - Air Pressure in Simu = %3f - Air Density in Simu = %3f\n", Tair, SimAirPressure, SimAirDensity);
