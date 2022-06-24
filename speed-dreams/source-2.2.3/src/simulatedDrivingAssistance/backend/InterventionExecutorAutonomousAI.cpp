@@ -13,8 +13,6 @@
 void InterventionExecutorAutonomousAI::RunDecision(Decision** p_decisions, int p_decisionCount)
 {
     SMediator* mediator = SMediator::GetInstance();
-    mediator->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_NEUTRAL);
-    mediator->CarControl.ShowIntervention(INTERVENTION_ACTION_SPEED_NEUTRAL);
 
     tAllowedActions allowedActions = mediator->GetAllowedActions();
     for (int i = 0; i < p_decisionCount; i++)
@@ -22,4 +20,7 @@ void InterventionExecutorAutonomousAI::RunDecision(Decision** p_decisions, int p
         p_decisions[i]->RunInterveneCommands(allowedActions);
         p_decisions[i]->RunIndicateCommands();
     }
+
+    if (allowedActions.Steer) mediator->CarControl.ShowIntervention(INTERVENTION_ACTION_STEER_STRAIGHT);
+    if (allowedActions.Accelerate || allowedActions.Brake) mediator->CarControl.ShowIntervention(INTERVENTION_ACTION_SPEED_ACCEL);
 }

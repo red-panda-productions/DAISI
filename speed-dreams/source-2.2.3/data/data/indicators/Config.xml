@@ -84,6 +84,8 @@
             <section name="textures">
                 <attnum name ="xpos" val="0.75"/>
                 <attnum name ="ypos" val="0.04"/>
+                <attnum name ="width" val="80"/>
+                <attnum name ="height" val="80"/>
                 <attstr name ="no-help"           val="Steering_Off.png"/>
                 <attstr name ="signals-only"      val="Steering_Warning.png"/>
                 <attstr name ="shared-control"    val="Steering_SharedControl.png"/>
