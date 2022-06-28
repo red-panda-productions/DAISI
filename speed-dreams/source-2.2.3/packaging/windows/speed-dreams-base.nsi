@@ -418,8 +418,8 @@ SectionEnd
 ; Description of the installer sections (for the "Components" page)
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Game core components, Supercars set, AI drivers, and Espie track$\nA kind of minimal and / or demo package"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Basic tools for building / moding cars, tracks, robots, menus."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "Game core components, Primo car, Steering Blackbox, and 22 environments."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Basic tools for building / modding cars, tracks, robots, menus."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "HQ tracks, fine-tuned LS1 + 36GP cars and AI drivers$\n(will be downloaded if needed and agreed)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} "More HQ tracks, fine-tuned TRB1 cars and AI drivers$\n(will be downloaded if needed and agreed)"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} "Work-in-progress cars (LS2, RS, MP5) and tracks$\n(will be downloaded if needed and agreed)"
