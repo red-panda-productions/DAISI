@@ -94,7 +94,7 @@ One example algorithm is shipped with the source code and can be found in [speed
 
 To start an experiment with a blackbox select the blackbox executable and start the run. The blackbox will automatically be started and connected to DAISI.
 
-⚠Documentation is still WIP but will be found [here](documentation/).
+Documentation can be found [here](documentation/).
 
 ## Project structure
 
