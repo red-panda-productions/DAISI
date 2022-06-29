@@ -9,6 +9,8 @@
 
 Driving Assistance Interface for Simulated Interventions.
 
+A video showcasing the project:
+
 [![DAISI Showcase](https://img.youtube.com/vi/KRoTI88e170/0.jpg)](https://www.youtube.com/watch?v=KRoTI88e170)
 
 ## Description
